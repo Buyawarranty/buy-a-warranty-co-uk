@@ -54,7 +54,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             Car registration number <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
           <div 
-            className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-4 shadow-sm tracking-[3px] leading-tight cursor-pointer border-2 border-black"
+            className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-4 shadow-sm leading-tight cursor-pointer border-2 border-black"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <img 
@@ -68,7 +68,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
               value={regNumber}
               onChange={handleRegChange}
               placeholder="YOUR REG"
-              className="bg-transparent border-none outline-none text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal"
+              className="bg-transparent border-none outline-none text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal tracking-normal"
               maxLength={8}
             />
           </div>
