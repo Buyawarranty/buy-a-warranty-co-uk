@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, Plus, Minus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -86,9 +85,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const plans = [
     {
       id: 'basic',
-      name: 'Basic Extended Warranty',
+      name: 'Basic',
       color: '#0e3e87',
-      bgColor: '#0e3e87',
       features: [
         'Mechanical Breakdown Protection',
         'Labour up to £35 p/hr',
@@ -107,9 +105,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     },
     {
       id: 'gold',
-      name: 'Gold Extended Warranty',
+      name: 'Gold',
       color: '#f59e0b',
-      bgColor: '#f59e0b',
       popular: true,
       features: [
         'Mechanical & Electrical Breakdown Warranty',
@@ -137,9 +134,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     },
     {
       id: 'platinum',
-      name: 'Platinum Extended Warranty',
+      name: 'Platinum',
       color: '#dc4f20',
-      bgColor: '#dc4f20',
       features: [
         'Mechanical & Electrical Breakdown',
         'Labour up to £100 p/hr',
@@ -177,6 +173,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     console.log('Selected plan:', planId, 'for vehicle:', vehicleData.regNumber);
   };
 
+  const allFeatures = Array.from(new Set(plans.flatMap(plan => plan.features)));
+  const allAddOns = Array.from(new Set(plans.flatMap(plan => plan.addOns)));
+
   return (
     <div className="min-h-screen bg-[#e8f4fb] w-full">
       {/* Back Button */}
@@ -192,13 +191,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       </div>
 
       {/* Header */}
-      <div className="text-center mb-12 px-8">
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-8">
+      <div className="text-center mb-8 px-8">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
           Your Warranty Quote
         </h1>
         
         {/* Vehicle Registration Plate Display */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6">
           <div className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
             <img 
               src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
@@ -211,23 +210,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </div>
         </div>
         
-        <p className="text-xl text-gray-600 mb-12">
+        <p className="text-xl text-gray-600 mb-8">
           Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
         </p>
       </div>
 
       {/* Contribution Amount Selector */}
-      <div className="flex flex-col items-center mb-12 px-8">
-        <Label className="text-2xl font-semibold mb-8 text-gray-700">
+      <div className="flex flex-col items-center mb-8 px-8">
+        <Label className="text-xl font-semibold mb-6 text-gray-700">
           Select Your Contribution Amount
         </Label>
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center gap-4">
           {[0, 50, 100, 150, 200].map((amount) => (
             <Button
               key={amount}
               variant={contributionAmount === amount ? "default" : "outline"}
               onClick={() => setContributionAmount(amount)}
-              className={`px-10 py-4 text-xl font-semibold ${
+              className={`px-8 py-3 text-lg font-semibold ${
                 contributionAmount === amount 
                   ? 'bg-[#224380] hover:bg-[#1a3460]' 
                   : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
@@ -240,12 +239,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       </div>
 
       {/* Payment Toggle */}
-      <div className="flex items-center justify-center mb-16 px-8">
-        <div className="bg-white rounded-full p-6 shadow-lg border-2 border-gray-200">
-          <div className="flex items-center gap-12 px-12 py-6">
+      <div className="flex items-center justify-center mb-8 px-8">
+        <div className="bg-white rounded-full p-4 shadow-lg border-2 border-gray-200">
+          <div className="flex items-center gap-8 px-8 py-4">
             <Label 
               htmlFor="payment-type" 
-              className={`text-2xl font-semibold cursor-pointer ${paymentType === 'monthly' ? 'text-[#224380]' : 'text-gray-500'}`}
+              className={`text-lg font-semibold cursor-pointer ${paymentType === 'monthly' ? 'text-[#224380]' : 'text-gray-500'}`}
             >
               Pay Monthly
             </Label>
@@ -253,14 +252,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               id="payment-type"
               checked={paymentType === 'yearly'}
               onCheckedChange={(checked) => setPaymentType(checked ? 'yearly' : 'monthly')}
-              className="scale-[2]"
+              className="scale-150"
             />
             <Label 
               htmlFor="payment-type" 
-              className={`text-2xl font-semibold cursor-pointer ${paymentType === 'yearly' ? 'text-[#224380]' : 'text-gray-500'}`}
+              className={`text-lg font-semibold cursor-pointer ${paymentType === 'yearly' ? 'text-[#224380]' : 'text-gray-500'}`}
             >
               Pay Yearly 
-              <Badge variant="secondary" className="ml-4 bg-green-100 text-green-800 font-bold text-lg px-4 py-2">
+              <Badge variant="secondary" className="ml-3 bg-green-100 text-green-800 font-bold text-sm px-3 py-1">
                 Save 10%
               </Badge>
             </Label>
@@ -268,137 +267,141 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Pricing Cards - Full Width */}
+      {/* Pricing Table */}
       <div className="w-full px-8 pb-16">
-        <div className="grid lg:grid-cols-3 gap-8 w-full">
-          {plans.map((plan) => {
-            const pricing = getCurrentPricing();
-            const planPricing = pricing[plan.id as keyof PricingData];
-            const basePrice = paymentType === 'monthly' ? planPricing.monthly : planPricing.yearly;
-            const addOnPrice = calculateAddOnPrice(plan.id);
-            const totalPrice = basePrice + addOnPrice;
-            const savings = calculateSavings(planPricing.monthly, planPricing.yearly);
-            
-            return (
-              <Card key={plan.id} className={`relative overflow-hidden border-3 ${plan.popular ? 'scale-105 shadow-2xl ring-4 ring-yellow-300' : 'shadow-xl'} bg-white rounded-2xl h-full`}
-                style={{ borderColor: plan.color, borderWidth: '3px' }}>
-                {plan.popular && (
-                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-lg font-bold z-10 shadow-lg">
-                    MOST POPULAR
-                  </div>
-                )}
-                
-                {/* Header */}
-                <CardHeader className="text-center py-12" style={{ backgroundColor: plan.bgColor }}>
-                  <h3 className="text-3xl font-bold mb-4 text-white">{plan.name}</h3>
-                  <div className="text-lg opacity-90 mb-2 text-white">From</div>
-                  <div className="text-5xl font-bold mb-3 text-white">
-                    £{totalPrice}
-                  </div>
-                  <div className="text-xl opacity-90 mb-4 text-white">
-                    per {paymentType}
-                  </div>
-                  {paymentType === 'yearly' && (
-                    <div className="text-sm bg-white/20 rounded-full px-6 py-3 inline-block text-white">
-                      Save £{savings} (10% discount)
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-7xl mx-auto">
+          {/* Table Header */}
+          <div className="grid grid-cols-4 bg-gray-50 border-b">
+            <div className="p-6 font-bold text-gray-700 text-lg">Features</div>
+            {plans.map((plan) => {
+              const pricing = getCurrentPricing();
+              const planPricing = pricing[plan.id as keyof PricingData];
+              const basePrice = paymentType === 'monthly' ? planPricing.monthly : planPricing.yearly;
+              const addOnPrice = calculateAddOnPrice(plan.id);
+              const totalPrice = basePrice + addOnPrice;
+              
+              return (
+                <div key={plan.id} className="p-6 text-center relative">
+                  {plan.popular && (
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1 rounded-full text-sm font-bold z-10">
+                      MOST POPULAR
                     </div>
                   )}
-                </CardHeader>
-
-                {/* Content */}
-                <CardContent className="p-10 flex-1 flex flex-col">
-                  {/* What's Covered */}
-                  <div className="mb-10 flex-1">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                        <Check className="w-5 h-5 text-white" />
-                      </div>
-                      <h4 className="text-2xl font-bold text-gray-800">What's Covered:</h4>
+                  <div className="mb-2">
+                    <h3 className="text-2xl font-bold mb-2" style={{ color: plan.color }}>
+                      {plan.name}
+                    </h3>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
+                      £{totalPrice}
                     </div>
-                    <div className="grid grid-cols-1 gap-4">
-                      {plan.features.map((feature, index) => (
-                        <div key={index} className="flex items-start gap-4">
-                          <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                          <span className="text-gray-700 text-lg leading-relaxed">{feature}</span>
-                        </div>
-                      ))}
+                    <div className="text-sm text-gray-600">
+                      per {paymentType}
                     </div>
                   </div>
+                </div>
+              );
+            })}
+          </div>
 
-                  {/* Add-ons */}
-                  <div className="mb-10">
-                    <div className="flex items-center gap-3 mb-6">
-                      <Plus className="w-8 h-8 text-blue-500" />
-                      <h4 className="text-2xl font-bold text-gray-800">Optional Add-ons – £25.00 per item per year:</h4>
-                    </div>
-                    <div className="space-y-4 mb-6">
-                      {plan.addOns.map((addon, index) => (
-                        <div key={index} className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
-                          <span className="text-gray-700 text-lg font-medium">{addon}</span>
-                          <div className="flex items-center gap-3">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateAddOns(plan.id, -1)}
-                              disabled={selectedAddOns[plan.id] === 0}
-                              className="h-10 w-10 p-0 rounded-full"
-                            >
-                              <Minus className="w-4 h-4" />
-                            </Button>
-                            <span className="w-10 text-center font-bold text-lg">
-                              {selectedAddOns[plan.id]}
-                            </span>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateAddOns(plan.id, 1)}
-                              className="h-10 w-10 p-0 rounded-full"
-                            >
-                              <Plus className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {selectedAddOns[plan.id] > 0 && (
-                      <div className="text-lg text-gray-600 bg-blue-50 p-4 rounded-xl">
-                        Add-ons total: £{addOnPrice.toFixed(2)} per {paymentType}
-                      </div>
-                    )}
-                  </div>
+          {/* Core Features */}
+          {allFeatures.map((feature, index) => (
+            <div key={index} className="grid grid-cols-4 border-b border-gray-100 hover:bg-gray-50">
+              <div className="p-4 font-medium text-gray-700">{feature}</div>
+              {plans.map((plan) => (
+                <div key={plan.id} className="p-4 text-center">
+                  {plan.features.includes(feature) ? (
+                    <Check className="w-5 h-5 text-green-500 mx-auto" />
+                  ) : (
+                    <div className="w-5 h-5 mx-auto"></div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
 
-                  {/* Select Button */}
-                  <Button 
-                    className="w-full text-white font-bold py-8 text-2xl shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl mt-auto"
-                    style={{ backgroundColor: plan.bgColor }}
-                    onClick={() => handleSelectPlan(plan.id)}
-                  >
-                    Select {plan.name.split(' ')[0]}
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
+          {/* Add-ons Section */}
+          <div className="bg-blue-50 border-b">
+            <div className="grid grid-cols-4">
+              <div className="p-4 font-bold text-gray-800">
+                Optional Add-ons (£25/year each)
+              </div>
+              <div className="p-4"></div>
+              <div className="p-4"></div>
+              <div className="p-4"></div>
+            </div>
+          </div>
+
+          {allAddOns.map((addon, index) => (
+            <div key={index} className="grid grid-cols-4 border-b border-gray-100 hover:bg-gray-50">
+              <div className="p-4 font-medium text-gray-700">{addon}</div>
+              {plans.map((plan) => (
+                <div key={plan.id} className="p-4 text-center">
+                  {plan.addOns.includes(addon) ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateAddOns(plan.id, -1)}
+                        disabled={selectedAddOns[plan.id] === 0}
+                        className="h-8 w-8 p-0 rounded-full"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </Button>
+                      <span className="w-8 text-center font-bold">
+                        {selectedAddOns[plan.id]}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateAddOns(plan.id, 1)}
+                        className="h-8 w-8 p-0 rounded-full"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <span className="text-gray-400">—</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
+
+          {/* Action Buttons */}
+          <div className="grid grid-cols-4 bg-gray-50">
+            <div className="p-6"></div>
+            {plans.map((plan) => (
+              <div key={plan.id} className="p-6 text-center">
+                <Button 
+                  className="w-full text-white font-bold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                  style={{ backgroundColor: plan.color }}
+                  onClick={() => handleSelectPlan(plan.id)}
+                >
+                  Select {plan.name}
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Trust Indicators */}
       <div className="text-center text-gray-500 px-8 pb-12">
-        <div className="flex items-center justify-center gap-12 mb-6 text-lg">
-          <div className="flex items-center gap-3">
-            <Check className="w-6 h-6 text-green-500" />
+        <div className="flex items-center justify-center gap-8 mb-4 text-base flex-wrap">
+          <div className="flex items-center gap-2">
+            <Check className="w-5 h-5 text-green-500" />
             <span>Approved by financial authorities</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Check className="w-6 h-6 text-green-500" />
+          <div className="flex items-center gap-2">
+            <Check className="w-5 h-5 text-green-500" />
             <span>30-day money-back guarantee</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Check className="w-6 h-6 text-green-500" />
+          <div className="flex items-center gap-2">
+            <Check className="w-5 h-5 text-green-500" />
             <span>UK-based customer support</span>
           </div>
         </div>
-        <p className="text-lg">All prices include VAT. Terms and conditions apply.</p>
+        <p className="text-base">All prices include VAT. Terms and conditions apply.</p>
       </div>
     </div>
   );
