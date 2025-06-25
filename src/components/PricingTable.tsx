@@ -1,27 +1,16 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, X, ArrowLeft } from 'lucide-react';
+import { Check, ArrowLeft } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-interface PricingPlan {
-  id: string;
-  name: string;
-  monthlyPrice: number;
-  deposit: number;
-  fullPrice: number;
-  color: string;
-  popular?: boolean;
-  features: Array<{
-    name: string;
-    included: boolean;
-  }>;
-  addOns?: Array<{
-    name: string;
-    price: number;
-  }>;
+interface PricingData {
+  basic: { monthly: number; yearly: number; };
+  gold: { monthly: number; yearly: number; };
+  platinum: { monthly: number; yearly: number; };
 }
 
 interface PricingTableProps {
@@ -35,78 +24,140 @@ interface PricingTableProps {
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
-  const [paymentType, setPaymentType] = useState<'monthly' | 'full'>('monthly');
+  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly'>('monthly');
+  const [contributionAmount, setContributionAmount] = useState<number>(0);
 
-  const plans: PricingPlan[] = [
+  // Pricing data based on your Excel sheet
+  const pricingData: Record<number, PricingData> = {
+    0: {
+      basic: { monthly: 31, yearly: 381 },
+      gold: { monthly: 34, yearly: 409 },
+      platinum: { monthly: 36, yearly: 437 }
+    },
+    50: {
+      basic: { monthly: 29, yearly: 350 },
+      gold: { monthly: 31, yearly: 377 },
+      platinum: { monthly: 32, yearly: 396 }
+    },
+    100: {
+      basic: { monthly: 25, yearly: 308 },
+      gold: { monthly: 27, yearly: 336 },
+      platinum: { monthly: 29, yearly: 354 }
+    },
+    150: {
+      basic: { monthly: 23, yearly: 287 },
+      gold: { monthly: 26, yearly: 315 },
+      platinum: { monthly: 27, yearly: 333 }
+    },
+    200: {
+      basic: { monthly: 23, yearly: 287 },
+      gold: { monthly: 26, yearly: 315 },
+      platinum: { monthly: 27, yearly: 333 }
+    }
+  };
+
+  const getCurrentPricing = () => pricingData[contributionAmount];
+
+  const calculateSavings = (monthly: number, yearly: number) => {
+    const monthlyTotal = monthly * 12;
+    return monthlyTotal - yearly;
+  };
+
+  const plans = [
     {
-      id: 'essentials',
-      name: 'Essentials',
-      monthlyPrice: 67.30,
-      deposit: 99,
-      fullPrice: 699,
-      color: 'bg-gray-500',
+      id: 'basic',
+      name: 'Basic Extended Warranty',
+      color: 'from-blue-500 to-blue-600',
+      borderColor: 'border-blue-200',
+      buttonColor: 'bg-blue-500 hover:bg-blue-600',
       features: [
-        { name: 'Engine & Gearbox', included: true },
-        { name: 'Cooling System', included: true },
-        { name: 'Fuel System', included: true },
-        { name: 'Electrical Components', included: false },
-        { name: 'Air Conditioning', included: false },
-        { name: 'Turbo/Supercharger', included: false },
-        { name: 'Hybrid Components', included: false },
+        'Mechanical Breakdown Protection',
+        'Labour up to £35 p/hr',
+        '10 Claims per year',
+        'Engine',
+        'Manual Gearbox',
+        'Automatic Transmission',
+        'Torque Convertor',
+        'Overdrive',
+        'Differential',
+        'Electrics',
+        'Casings',
+        'Recovery'
       ],
-      addOns: [
-        { name: "Driver's Legal Protection", price: 15 },
-      ]
+      addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
     },
     {
-      id: 'classic',
-      name: 'Classic',
-      monthlyPrice: 69.80,
-      deposit: 109,
-      fullPrice: 799,
-      color: 'bg-blue-500',
+      id: 'gold',
+      name: 'Gold Extended Warranty',
+      color: 'from-yellow-500 to-yellow-600',
+      borderColor: 'border-yellow-200',
+      buttonColor: 'bg-yellow-500 hover:bg-yellow-600',
       popular: true,
       features: [
-        { name: 'Engine & Gearbox', included: true },
-        { name: 'Cooling System', included: true },
-        { name: 'Fuel System', included: true },
-        { name: 'Electrical Components', included: true },
-        { name: 'Air Conditioning', included: true },
-        { name: 'Turbo/Supercharger', included: false },
-        { name: 'Hybrid Components', included: false },
+        'Mechanical & Electrical Breakdown Warranty',
+        'Labour up to £75 p/hr',
+        'Halfords MOT test',
+        'Unlimited Claims',
+        'Engine',
+        'Manual Gearbox',
+        'Automatic Transmission',
+        'Overdrive',
+        'Clutch',
+        'Differential',
+        'Torque Converter',
+        'Cooling System',
+        'Fuel System',
+        'Electricals',
+        'Braking System',
+        'Propshaft',
+        'Casings',
+        'Vehicle Hire',
+        'Recovery',
+        'European Cover'
       ],
-      addOns: [
-        { name: "Driver's Legal Protection", price: 15 },
-        { name: 'Key Care Cover', price: 25 },
-      ]
+      addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
     },
     {
-      id: 'premier',
-      name: 'Premier',
-      monthlyPrice: 166.09,
-      deposit: 199,
-      fullPrice: 1899,
-      color: 'bg-green-600',
+      id: 'platinum',
+      name: 'Platinum Extended Warranty',
+      color: 'from-purple-500 to-purple-600',
+      borderColor: 'border-purple-200',
+      buttonColor: 'bg-purple-500 hover:bg-purple-600',
       features: [
-        { name: 'Engine & Gearbox', included: true },
-        { name: 'Cooling System', included: true },
-        { name: 'Fuel System', included: true },
-        { name: 'Electrical Components', included: true },
-        { name: 'Air Conditioning', included: true },
-        { name: 'Turbo/Supercharger', included: true },
-        { name: 'Hybrid Components', included: true },
+        'Mechanical & Electrical Breakdown',
+        'Labour up to £100 p/hr',
+        'Halfords MOT test',
+        'Unlimited Claims',
+        'Engine',
+        'Turbo Unit',
+        'Manual Gearbox',
+        'Automatic Transmission',
+        'Clutch',
+        'Differential',
+        'Drive Shafts',
+        'Brakes',
+        'Steering',
+        'Suspension',
+        'Bearings',
+        'Cooling System',
+        'Ventilation',
+        'E.C.U.',
+        'Electrics',
+        'Fuel System',
+        'Air Conditioning',
+        'Locks',
+        'Seals',
+        'Casings',
+        'Vehicle Hire',
+        'Vehicle Recovery',
+        'European Cover'
       ],
-      addOns: [
-        { name: "Driver's Legal Protection", price: 15 },
-        { name: 'Key Care Cover', price: 25 },
-        { name: 'Extended Roadside Assistance', price: 35 },
-      ]
+      addOns: ['Power Hood']
     }
   ];
 
   const handleSelectPlan = (planId: string) => {
     console.log('Selected plan:', planId, 'for vehicle:', vehicleData.regNumber);
-    // This would integrate with the Warranties 2000 API
   };
 
   return (
@@ -151,6 +202,29 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </p>
         </div>
 
+        {/* Contribution Amount Selector */}
+        <div className="flex flex-col items-center mb-6 px-4">
+          <Label className="text-lg font-semibold mb-4 text-gray-700">
+            Select Your Contribution Amount
+          </Label>
+          <div className="flex flex-wrap justify-center gap-3">
+            {[0, 50, 100, 150, 200].map((amount) => (
+              <Button
+                key={amount}
+                variant={contributionAmount === amount ? "default" : "outline"}
+                onClick={() => setContributionAmount(amount)}
+                className={`px-6 py-2 ${
+                  contributionAmount === amount 
+                    ? 'bg-[#224380] hover:bg-[#1a3460]' 
+                    : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
+                }`}
+              >
+                £{amount}
+              </Button>
+            ))}
+          </div>
+        </div>
+
         {/* Payment Toggle */}
         <div className="flex items-center justify-center gap-4 mb-8 px-4">
           <Label htmlFor="payment-type" className={paymentType === 'monthly' ? 'font-semibold' : 'text-gray-500'}>
@@ -158,78 +232,84 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </Label>
           <Switch
             id="payment-type"
-            checked={paymentType === 'full'}
-            onCheckedChange={(checked) => setPaymentType(checked ? 'full' : 'monthly')}
+            checked={paymentType === 'yearly'}
+            onCheckedChange={(checked) => setPaymentType(checked ? 'yearly' : 'monthly')}
           />
-          <Label htmlFor="payment-type" className={paymentType === 'full' ? 'font-semibold' : 'text-gray-500'}>
-            Pay in Full <Badge variant="secondary" className="ml-1">Save 15%</Badge>
+          <Label htmlFor="payment-type" className={paymentType === 'yearly' ? 'font-semibold' : 'text-gray-500'}>
+            Pay Yearly <Badge variant="secondary" className="ml-1 bg-green-100 text-green-800">Save 10%</Badge>
           </Label>
         </div>
 
         {/* Pricing Cards */}
-        <div className="w-full px-4">
-          <div className="grid lg:grid-cols-3 md:grid-cols-1 grid-cols-1 gap-8 max-w-6xl mx-auto mb-8">
-            {plans.map((plan) => (
-              <div key={plan.id} className={`relative ${plan.popular ? 'transform scale-105' : ''}`}>
-                {/* Card Header with Price */}
-                <div className={`${plan.color} text-white text-center py-6 rounded-t-lg relative`}>
+        <div className="w-full px-4 pb-8">
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 max-w-7xl mx-auto">
+            {plans.map((plan) => {
+              const pricing = getCurrentPricing();
+              const planPricing = pricing[plan.id as keyof PricingData];
+              const currentPrice = paymentType === 'monthly' ? planPricing.monthly : planPricing.yearly;
+              const savings = calculateSavings(planPricing.monthly, planPricing.yearly);
+              
+              return (
+                <Card key={plan.id} className={`relative overflow-hidden ${plan.borderColor} border-2 ${plan.popular ? 'scale-105 shadow-lg' : 'shadow-md'}`}>
                   {plan.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-bold">
-                      Selected
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-bold z-10">
+                      Most Popular
                     </div>
                   )}
-                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  {paymentType === 'monthly' ? (
-                    <div>
-                      <div className="text-3xl font-bold">£{plan.monthlyPrice.toFixed(2)}</div>
-                      <div className="text-sm opacity-90">per month</div>
+                  
+                  {/* Header with gradient */}
+                  <CardHeader className={`bg-gradient-to-r ${plan.color} text-white text-center py-6`}>
+                    <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                    <div className="text-3xl font-bold mb-1">
+                      £{currentPrice}
                     </div>
-                  ) : (
-                    <div>
-                      <div className="text-3xl font-bold">£{plan.fullPrice.toFixed(2)}</div>
-                      <div className="text-sm opacity-90">one-time payment</div>
+                    <div className="text-sm opacity-90 mb-2">
+                      per {paymentType}
                     </div>
-                  )}
-                </div>
-
-                {/* Card Body */}
-                <div className="bg-white border-l-2 border-r-2 border-gray-200">
-                  <div className="p-6 space-y-4">
-                    {plan.features.map((feature, index) => (
-                      <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
-                        <span className="text-sm text-gray-700">{feature.name}</span>
-                        {feature.included ? (
-                          <Check className="w-5 h-5 text-green-500" />
-                        ) : (
-                          <X className="w-5 h-5 text-red-500" />
-                        )}
+                    {paymentType === 'yearly' && (
+                      <div className="text-sm bg-white/20 rounded-full px-3 py-1 inline-block">
+                        Save £{savings} (10% discount)
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    )}
+                  </CardHeader>
 
-                {/* Card Footer with Price and Button */}
-                <div className={`${plan.color} text-white text-center py-4 rounded-b-lg`}>
-                  <div className="text-2xl font-bold mb-2">
-                    £{paymentType === 'monthly' ? plan.monthlyPrice.toFixed(2) : plan.fullPrice.toFixed(2)}
-                  </div>
-                  <div className="text-sm opacity-90 mb-4">
-                    {paymentType === 'monthly' ? 'per month' : 'one-time payment'}
-                  </div>
-                  <Button 
-                    className={`w-32 ${plan.popular ? 'bg-orange-500 hover:bg-orange-600' : 'bg-white text-gray-800 hover:bg-gray-100'} font-bold`}
-                    onClick={() => handleSelectPlan(plan.id)}
-                  >
-                    {plan.popular ? 'Selected' : plan.id === 'premier' ? 'Upgrade' : 'Select'}
-                  </Button>
-                  {plan.id === 'premier' && (
-                    <div className="mt-2 text-xs opacity-75">
-                      Upgrade for just £96.29 per month
+                  {/* Features */}
+                  <CardContent className="p-6">
+                    <div className="mb-6">
+                      <h4 className="font-semibold text-gray-800 mb-3">✅ What's Covered:</h4>
+                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                        {plan.features.map((feature, index) => (
+                          <div key={index} className="flex items-start gap-2">
+                            <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm text-gray-700">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            ))}
+
+                    {/* Add-ons */}
+                    <div className="mb-6">
+                      <h4 className="font-semibold text-gray-800 mb-3">➕ Optional Add-ons – £25.00 per item:</h4>
+                      <div className="space-y-1">
+                        {plan.addOns.map((addon, index) => (
+                          <div key={index} className="text-sm text-gray-600">
+                            • {addon}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Select Button */}
+                    <Button 
+                      className={`w-full ${plan.buttonColor} text-white font-bold py-3`}
+                      onClick={() => handleSelectPlan(plan.id)}
+                    >
+                      Select {plan.name.split(' ')[0]}
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
 
