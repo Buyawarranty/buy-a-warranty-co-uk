@@ -8,8 +8,18 @@ interface ProgressIndicatorProps {
 }
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, totalSteps, steps }) => {
+  const progressPercentage = (currentStep / totalSteps) * 100;
+
   return (
     <div className="w-full bg-white border-b border-gray-200 shadow-sm">
+      {/* Orange Top Progress Bar */}
+      <div className="w-full h-1 bg-gray-200">
+        <div 
+          className="h-full bg-orange-500 transition-all duration-300 ease-out"
+          style={{ width: `${progressPercentage}%` }}
+        />
+      </div>
+
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Centered Logo */}
         <div className="flex justify-center mb-8">
@@ -20,19 +30,14 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
           />
         </div>
 
-        {/* Progress Steps Text */}
-        <div className="text-center text-sm text-gray-500 font-medium mb-6">
-          Step {currentStep} of {totalSteps}
-        </div>
-
         {/* Progress Bar */}
         <div className="relative">
           {/* Background Progress Track */}
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-            {/* Active Progress Fill */}
+            {/* Active Progress Fill - Changed to blue to match logo */}
             <div 
-              className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+              className="h-full bg-blue-600 rounded-full transition-all duration-300 ease-out"
+              style={{ width: `${progressPercentage}%` }}
             />
           </div>
 
@@ -54,8 +59,8 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                   {/* Step Circle */}
                   <div 
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
-                      isActive ? 'bg-blue-500 text-white' :
-                      isCompleted ? 'bg-blue-500 text-white' : 
+                      isActive ? 'bg-blue-600 text-white' :
+                      isCompleted ? 'bg-blue-600 text-white' : 
                       'bg-gray-200 text-gray-400'
                     }`}
                   >
