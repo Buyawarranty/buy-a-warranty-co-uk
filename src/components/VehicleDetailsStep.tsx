@@ -3,6 +3,10 @@ import React, { useState, useEffect } from 'react';
 
 interface VehicleDetailsStepProps {
   onNext: (data: { regNumber: string; mileage: string }) => void;
+  onBack?: () => void;
+  onFormDataUpdate?: (data: any) => void;
+  currentStep?: number;
+  onStepChange?: (step: number) => void;
   initialData?: {
     regNumber: string;
     mileage: string;
@@ -101,13 +105,13 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             1
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-800">Your Car</h2>
-            <p className="text-sm text-gray-600">Let's start with your vehicle details</p>
+            <h2 className="text-4xl font-bold text-gray-800">Let's find your car 🚗 🔍</h2>
+            <p className="text-lg text-gray-600 mt-2">Let's start with your vehicle details</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700">
+          <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700 text-xl">
             Car registration number <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
           <div 
@@ -168,7 +172,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
           {vehicleFound && (
             <>
-              <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700">
+              <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700 text-xl">
                 What's your approximate mileage? <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your current mileage as shown on your odometer">?</span>
               </label>
               <input
@@ -180,9 +184,6 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] mb-2 focus:outline-none ${
                   mileageError ? 'border-red-500' : 'border-gray-300'
                 }`}
-                style={{
-                  focusBorderColor: mileageError ? '#ef4444' : '#224380'
-                }}
                 onFocus={(e) => {
                   if (!mileageError) {
                     e.target.style.borderColor = '#224380';
@@ -204,13 +205,13 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               <button 
                 type="submit"
                 disabled={!regNumber || !mileage || numericMileage > 150000 || mileageError !== ''}
-                className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed btn-breathing"
                 style={{
                   backgroundColor: (!regNumber || !mileage || numericMileage > 150000 || mileageError !== '') ? '#e5e7eb' : '#eb4b00',
                   borderColor: (!regNumber || !mileage || numericMileage > 150000 || mileageError !== '') ? '#d1d5db' : '#eb4b00'
                 }}
               >
-                Continue →
+                Get My Quote →
               </button>
             </>
           )}
