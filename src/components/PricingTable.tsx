@@ -1,10 +1,9 @@
 
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, Circle, ArrowLeft } from 'lucide-react';
+import { Check, X, ArrowLeft } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -46,7 +45,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       monthlyPrice: 67.30,
       deposit: 99,
       fullPrice: 699,
-      color: 'from-green-500 to-emerald-600',
+      color: 'bg-gray-500',
       features: [
         { name: 'Engine & Gearbox', included: true },
         { name: 'Cooling System', included: true },
@@ -66,7 +65,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       monthlyPrice: 69.80,
       deposit: 109,
       fullPrice: 799,
-      color: 'from-blue-500 to-indigo-600',
+      color: 'bg-blue-500',
       popular: true,
       features: [
         { name: 'Engine & Gearbox', included: true },
@@ -88,7 +87,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       monthlyPrice: 166.09,
       deposit: 199,
       fullPrice: 1899,
-      color: 'from-purple-500 to-pink-600',
+      color: 'bg-green-600',
       features: [
         { name: 'Engine & Gearbox', included: true },
         { name: 'Cooling System', included: true },
@@ -112,10 +111,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="w-full mx-auto">
+    <div className="min-h-screen bg-[#e8f4fb] w-full">
+      <div className="w-full">
         {/* Back Button */}
-        <div className="mb-6 max-w-6xl mx-auto">
+        <div className="mb-6 px-4 pt-8">
           <Button 
             variant="outline" 
             onClick={onBack}
@@ -127,17 +126,43 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
 
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 px-4">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Your Warranty Quote
           </h1>
           
-          {/* Vehicle Registration Plate Display */}
+          {/* Vehicle Registration Plate Display with GB Flag */}
           <div className="reg-plate-container mb-4">
             <div className="reg-plate-box">
-              <div className="flag-section">
-                <div className="eu-stars">★ ★ ★<br />★ ★ ★<br />★ ★ ★<br />★ ★ ★</div>
-                <div className="gb-text">GB</div>
+              <div className="flag-section relative">
+                {/* Union Jack Flag */}
+                <div className="w-full h-full relative overflow-hidden rounded-l-md">
+                  <div className="absolute inset-0 bg-blue-800"></div>
+                  
+                  {/* White diagonal cross */}
+                  <div className="absolute inset-0">
+                    <div className="absolute w-full h-0.5 bg-white top-1/2 transform -translate-y-0.5 rotate-45 origin-center"></div>
+                    <div className="absolute w-full h-0.5 bg-white top-1/2 transform -translate-y-0.5 -rotate-45 origin-center"></div>
+                  </div>
+                  
+                  {/* Red diagonal cross */}
+                  <div className="absolute inset-0">
+                    <div className="absolute w-full h-0.5 bg-red-600 top-1/2 transform -translate-y-0.5 rotate-45 origin-center scale-75"></div>
+                    <div className="absolute w-full h-0.5 bg-red-600 top-1/2 transform -translate-y-0.5 -rotate-45 origin-center scale-75"></div>
+                  </div>
+                  
+                  {/* White vertical and horizontal bars */}
+                  <div className="absolute w-full h-0.5 bg-white top-1/2 transform -translate-y-0.5"></div>
+                  <div className="absolute h-full w-0.5 bg-white left-1/2 transform -translate-x-0.5"></div>
+                  
+                  {/* Red vertical and horizontal bars */}
+                  <div className="absolute w-full h-0.5 bg-red-600 top-1/2 transform -translate-y-0.5 scale-75"></div>
+                  <div className="absolute h-full w-0.5 bg-red-600 left-1/2 transform -translate-x-0.5 scale-75"></div>
+                </div>
+                
+                <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-white text-xs font-bold">
+                  GB
+                </div>
               </div>
               <div className="reg-input" style={{ cursor: 'default' }}>
                 {vehicleData.regNumber || 'H12 FXL'}
@@ -151,7 +176,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
 
         {/* Payment Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-8">
+        <div className="flex items-center justify-center gap-4 mb-8 px-4">
           <Label htmlFor="payment-type" className={paymentType === 'monthly' ? 'font-semibold' : 'text-gray-500'}>
             Pay Monthly
           </Label>
@@ -166,77 +191,74 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 mb-8 px-4">
+        <div className="w-full px-4">
+          <div className="grid lg:grid-cols-3 md:grid-cols-1 grid-cols-1 gap-8 max-w-6xl mx-auto mb-8">
             {plans.map((plan) => (
-              <Card key={plan.id} className={`relative overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${plan.popular ? 'ring-2 ring-blue-500' : ''}`}>
-                {plan.popular && (
-                  <div className="absolute top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 text-sm font-semibold">
-                    Most Popular
-                  </div>
-                )}
-                
-                <CardHeader className={`bg-gradient-to-r ${plan.color} text-white ${plan.popular ? 'pt-8' : ''}`}>
-                  <h3 className="text-2xl font-bold text-center">{plan.name}</h3>
-                  <div className="text-center">
-                    {paymentType === 'monthly' ? (
-                      <div>
-                        <div className="text-4xl font-bold">£{plan.monthlyPrice.toFixed(2)}</div>
-                        <div className="text-sm opacity-90">per month</div>
-                        <div className="text-sm opacity-75">+ £{plan.deposit} deposit</div>
-                      </div>
-                    ) : (
-                      <div>
-                        <div className="text-4xl font-bold">£{plan.fullPrice.toFixed(2)}</div>
-                        <div className="text-sm opacity-90">one-time payment</div>
-                        <div className="text-xs opacity-75 line-through">£{(plan.monthlyPrice * 12 + plan.deposit).toFixed(2)}</div>
-                      </div>
-                    )}
-                  </div>
-                </CardHeader>
+              <div key={plan.id} className={`relative ${plan.popular ? 'transform scale-105' : ''}`}>
+                {/* Card Header with Price */}
+                <div className={`${plan.color} text-white text-center py-6 rounded-t-lg relative`}>
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                      Selected
+                    </div>
+                  )}
+                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                  {paymentType === 'monthly' ? (
+                    <div>
+                      <div className="text-3xl font-bold">£{plan.monthlyPrice.toFixed(2)}</div>
+                      <div className="text-sm opacity-90">per month</div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="text-3xl font-bold">£{plan.fullPrice.toFixed(2)}</div>
+                      <div className="text-sm opacity-90">one-time payment</div>
+                    </div>
+                  )}
+                </div>
 
-                <CardContent className="p-6">
-                  <div className="space-y-3 mb-6">
+                {/* Card Body */}
+                <div className="bg-white border-l-2 border-r-2 border-gray-200">
+                  <div className="p-6 space-y-4">
                     {plan.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-3">
+                      <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                        <span className="text-sm text-gray-700">{feature.name}</span>
                         {feature.included ? (
-                          <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                          <Check className="w-5 h-5 text-green-500" />
                         ) : (
-                          <Circle className="w-5 h-5 text-gray-300 flex-shrink-0" />
+                          <X className="w-5 h-5 text-red-500" />
                         )}
-                        <span className={feature.included ? 'text-gray-900' : 'text-gray-400'}>
-                          {feature.name}
-                        </span>
                       </div>
                     ))}
                   </div>
+                </div>
 
-                  {plan.addOns && plan.addOns.length > 0 && (
-                    <div className="border-t pt-4 mb-6">
-                      <h4 className="font-semibold text-gray-700 mb-2">Available Add-ons:</h4>
-                      {plan.addOns.map((addon, index) => (
-                        <div key={index} className="text-sm text-gray-600 flex justify-between">
-                          <span>{addon.name}</span>
-                          <span>+£{addon.price}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
+                {/* Card Footer with Price and Button */}
+                <div className={`${plan.color} text-white text-center py-4 rounded-b-lg`}>
+                  <div className="text-2xl font-bold mb-2">
+                    £{paymentType === 'monthly' ? plan.monthlyPrice.toFixed(2) : plan.fullPrice.toFixed(2)}
+                  </div>
+                  <div className="text-sm opacity-90 mb-4">
+                    {paymentType === 'monthly' ? 'per month' : 'one-time payment'}
+                  </div>
                   <Button 
-                    className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 text-lg font-semibold"
+                    className={`w-32 ${plan.popular ? 'bg-orange-500 hover:bg-orange-600' : 'bg-white text-gray-800 hover:bg-gray-100'} font-bold`}
                     onClick={() => handleSelectPlan(plan.id)}
                   >
-                    Select {plan.name}
+                    {plan.popular ? 'Selected' : plan.id === 'premier' ? 'Upgrade' : 'Select'}
                   </Button>
-                </CardContent>
-              </Card>
+                  {plan.id === 'premier' && (
+                    <div className="mt-2 text-xs opacity-75">
+                      Upgrade for just £96.29 per month
+                    </div>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         </div>
 
         {/* Trust Indicators */}
-        <div className="text-center text-sm text-gray-500 max-w-6xl mx-auto">
+        <div className="text-center text-sm text-gray-500 px-4 pb-8">
           <p className="mb-2">✓ Approved by financial authorities ✓ 30-day money-back guarantee ✓ UK-based customer support</p>
           <p>All prices include VAT. Terms and conditions apply.</p>
         </div>
@@ -246,4 +268,3 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 };
 
 export default PricingTable;
-
