@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Plus, Minus } from 'lucide-react';
+import { Check, ArrowLeft, X } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface PricingData {
   basic: { monthly: number; yearly: number; };
@@ -25,10 +26,10 @@ interface PricingTableProps {
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const [paymentType, setPaymentType] = useState<'monthly' | 'yearly'>('monthly');
   const [contributionAmount, setContributionAmount] = useState<number>(0);
-  const [selectedAddOns, setSelectedAddOns] = useState<{[key: string]: number}>({
-    basic: 0,
-    gold: 0,
-    platinum: 0
+  const [selectedAddOns, setSelectedAddOns] = useState<{[key: string]: {[addon: string]: boolean}}>({
+    basic: {},
+    gold: {},
+    platinum: {}
   });
 
   // Pricing data based on your Excel sheet
@@ -62,23 +63,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   const getCurrentPricing = () => pricingData[contributionAmount];
 
-  const calculateSavings = (monthly: number, yearly: number) => {
-    const monthlyTotal = monthly * 12;
-    return monthlyTotal - yearly;
-  };
-
   const calculateAddOnPrice = (planId: string) => {
-    const addOnCount = selectedAddOns[planId];
+    const selectedAddOnCount = Object.values(selectedAddOns[planId]).filter(Boolean).length;
     if (paymentType === 'monthly') {
-      return Math.round((25 * addOnCount) / 12 * 100) / 100;
+      return Math.round((25 * selectedAddOnCount) / 12 * 100) / 100;
     }
-    return 25 * addOnCount;
+    return 25 * selectedAddOnCount;
   };
 
-  const updateAddOns = (planId: string, change: number) => {
+  const toggleAddOn = (planId: string, addon: string) => {
     setSelectedAddOns(prev => ({
       ...prev,
-      [planId]: Math.max(0, prev[planId] + change)
+      [planId]: {
+        ...prev[planId],
+        [addon]: !prev[planId][addon]
+      }
     }));
   };
 
@@ -267,120 +266,96 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Pricing Table */}
+      {/* Pricing Cards */}
       <div className="w-full px-8 pb-16">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-7xl mx-auto">
-          {/* Table Header */}
-          <div className="grid grid-cols-4 bg-gray-50 border-b">
-            <div className="p-6 font-bold text-gray-700 text-lg">Features</div>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {plans.map((plan) => {
               const pricing = getCurrentPricing();
               const planPricing = pricing[plan.id as keyof PricingData];
               const basePrice = paymentType === 'monthly' ? planPricing.monthly : planPricing.yearly;
               const addOnPrice = calculateAddOnPrice(plan.id);
               const totalPrice = basePrice + addOnPrice;
+              const savings = paymentType === 'yearly' ? (planPricing.monthly * 12) - planPricing.yearly : 0;
               
               return (
-                <div key={plan.id} className="p-6 text-center relative">
+                <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
                   {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1 rounded-full text-sm font-bold z-10">
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full text-sm font-bold z-10">
                       MOST POPULAR
                     </div>
                   )}
-                  <div className="mb-2">
-                    <h3 className="text-2xl font-bold mb-2" style={{ color: plan.color }}>
+                  
+                  {/* Plan Header */}
+                  <div className="p-8 text-center bg-gray-50 border-b">
+                    <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>
                       {plan.name}
                     </h3>
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      £{totalPrice}
+                    <div className="mb-2">
+                      <span className="text-sm text-gray-600">£</span>
+                      <span className="text-5xl font-bold text-gray-900">{totalPrice}</span>
+                      <div className="text-gray-600 text-lg">/{paymentType}</div>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      per {paymentType}
+                    {savings > 0 && (
+                      <div className="text-green-600 font-semibold text-sm">
+                        £{savings} Saving
+                      </div>
+                    )}
+                    <Button 
+                      className="w-full mt-6 text-white font-bold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                      style={{ backgroundColor: plan.color }}
+                      onClick={() => handleSelectPlan(plan.id)}
+                    >
+                      Select {plan.name}
+                    </Button>
+                  </div>
+
+                  {/* Features Section */}
+                  <div className="p-6">
+                    <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">Core Features</h4>
+                    <div className="space-y-3 max-h-64 overflow-y-auto">
+                      {allFeatures.map((feature, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                          {plan.features.includes(feature) ? (
+                            <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                          ) : (
+                            <X className="w-5 h-5 text-red-400 flex-shrink-0" />
+                          )}
+                          <span className={`text-sm ${plan.features.includes(feature) ? 'text-gray-700' : 'text-gray-400'}`}>
+                            {feature}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Add-ons Section */}
+                    <div className="mt-6 pt-4 border-t">
+                      <h4 className="font-bold text-gray-800 mb-4">Optional Add-ons <span className="text-sm font-normal text-gray-600">(£25/year each)</span></h4>
+                      <div className="space-y-3">
+                        {allAddOns.map((addon, index) => (
+                          <div key={index} className="flex items-center gap-3">
+                            {plan.addOns.includes(addon) ? (
+                              <div className="flex items-center gap-2">
+                                <Checkbox
+                                  checked={selectedAddOns[plan.id][addon] || false}
+                                  onCheckedChange={() => toggleAddOn(plan.id, addon)}
+                                />
+                                <span className="text-sm text-gray-700">{addon}</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-3">
+                                <div className="w-4 h-4 bg-gray-200 rounded flex-shrink-0"></div>
+                                <span className="text-sm text-gray-400">{addon}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
               );
             })}
-          </div>
-
-          {/* Core Features */}
-          {allFeatures.map((feature, index) => (
-            <div key={index} className="grid grid-cols-4 border-b border-gray-100 hover:bg-gray-50">
-              <div className="p-4 font-medium text-gray-700">{feature}</div>
-              {plans.map((plan) => (
-                <div key={plan.id} className="p-4 text-center">
-                  {plan.features.includes(feature) ? (
-                    <Check className="w-5 h-5 text-green-500 mx-auto" />
-                  ) : (
-                    <div className="w-5 h-5 mx-auto"></div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-
-          {/* Add-ons Section */}
-          <div className="bg-blue-50 border-b">
-            <div className="grid grid-cols-4">
-              <div className="p-4 font-bold text-gray-800">
-                Optional Add-ons (£25/year each)
-              </div>
-              <div className="p-4"></div>
-              <div className="p-4"></div>
-              <div className="p-4"></div>
-            </div>
-          </div>
-
-          {allAddOns.map((addon, index) => (
-            <div key={index} className="grid grid-cols-4 border-b border-gray-100 hover:bg-gray-50">
-              <div className="p-4 font-medium text-gray-700">{addon}</div>
-              {plans.map((plan) => (
-                <div key={plan.id} className="p-4 text-center">
-                  {plan.addOns.includes(addon) ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => updateAddOns(plan.id, -1)}
-                        disabled={selectedAddOns[plan.id] === 0}
-                        className="h-8 w-8 p-0 rounded-full"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </Button>
-                      <span className="w-8 text-center font-bold">
-                        {selectedAddOns[plan.id]}
-                      </span>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => updateAddOns(plan.id, 1)}
-                        className="h-8 w-8 p-0 rounded-full"
-                      >
-                        <Plus className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <span className="text-gray-400">—</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-
-          {/* Action Buttons */}
-          <div className="grid grid-cols-4 bg-gray-50">
-            <div className="p-6"></div>
-            {plans.map((plan) => (
-              <div key={plan.id} className="p-6 text-center">
-                <Button 
-                  className="w-full text-white font-bold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
-                  style={{ backgroundColor: plan.color }}
-                  onClick={() => handleSelectPlan(plan.id)}
-                >
-                  Select {plan.name}
-                </Button>
-              </div>
-            ))}
           </div>
         </div>
       </div>
