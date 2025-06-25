@@ -6,14 +6,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save } from 'lucide-react';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface Customer {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  address?: string;
   plan_type: string;
   signup_date: string;
   voluntary_excess: number;
@@ -28,19 +35,43 @@ interface AdminNote {
   created_by: string;
 }
 
+interface Plan {
+  name: string;
+}
+
+// Number plate component
+const NumberPlate = ({ plateNumber }: { plateNumber: string }) => {
+  if (!plateNumber) return <span className="text-gray-400">N/A</span>;
+  
+  return (
+    <div className="inline-flex items-center bg-white border-2 border-black rounded-sm overflow-hidden font-mono text-lg font-bold shadow-md">
+      <div className="bg-blue-600 text-white px-2 py-1 text-xs font-normal">
+        GB
+      </div>
+      <div className="bg-yellow-400 text-black px-3 py-1 tracking-wider">
+        {plateNumber.toUpperCase()}
+      </div>
+    </div>
+  );
+};
+
 export const CustomersTab = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState<AdminNote[]>([]);
   const [newNote, setNewNote] = useState('');
+  const [noteDate, setNoteDate] = useState<Date>(new Date());
   const [notesLoading, setNotesLoading] = useState(false);
   const [debugInfo, setDebugInfo] = useState<string>('');
+  const [plans, setPlans] = useState<Plan[]>([]);
 
   useEffect(() => {
     fetchCustomers();
+    fetchPlans();
   }, []);
 
   useEffect(() => {
@@ -55,6 +86,20 @@ export const CustomersTab = () => {
       setFilteredCustomers(customers);
     }
   }, [searchTerm, customers]);
+
+  const fetchPlans = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('plans')
+        .select('name')
+        .eq('is_active', true);
+      
+      if (error) throw error;
+      setPlans(data || []);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+    }
+  };
 
   const fetchCustomers = async () => {
     try {
@@ -149,12 +194,14 @@ export const CustomersTab = () => {
         .insert([{
           customer_id: selectedCustomer.id,
           note: newNote,
+          created_at: noteDate.toISOString(),
           created_by: user?.id
         }]);
 
       if (error) throw error;
       
       setNewNote('');
+      setNoteDate(new Date());
       fetchNotes(selectedCustomer.id);
       toast.success('Note added successfully');
     } catch (error) {
@@ -163,13 +210,43 @@ export const CustomersTab = () => {
     }
   };
 
+  const updateCustomer = async () => {
+    if (!editingCustomer) return;
+
+    try {
+      const { error } = await supabase
+        .from('customers')
+        .update({
+          name: editingCustomer.name,
+          email: editingCustomer.email,
+          phone: editingCustomer.phone,
+          address: editingCustomer.address,
+          plan_type: editingCustomer.plan_type,
+          status: editingCustomer.status,
+          voluntary_excess: editingCustomer.voluntary_excess
+        })
+        .eq('id', editingCustomer.id);
+
+      if (error) throw error;
+      
+      toast.success('Customer updated successfully');
+      fetchCustomers();
+      setEditingCustomer(null);
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      toast.error('Failed to update customer');
+    }
+  };
+
   const exportToCSV = () => {
-    const headers = ['Name', 'Email', 'Registration Plate', 'Plan Type', 'Signup Date', 'Voluntary Excess', 'Status'];
+    const headers = ['Name', 'Email', 'Phone', 'Address', 'Registration Plate', 'Plan Type', 'Signup Date', 'Voluntary Excess', 'Status'];
     const csvContent = [
       headers.join(','),
       ...filteredCustomers.map(customer => [
         customer.name,
         customer.email,
+        customer.phone || '',
+        customer.address || '',
         customer.registration_plate || '',
         customer.plan_type,
         format(new Date(customer.signup_date), 'yyyy-MM-dd'),
@@ -187,8 +264,9 @@ export const CustomersTab = () => {
     window.URL.revokeObjectURL(url);
   };
 
-  const openNotesDialog = (customer: Customer) => {
+  const openCustomerDialog = (customer: Customer) => {
     setSelectedCustomer(customer);
+    setEditingCustomer({ ...customer });
     fetchNotes(customer.id);
   };
 
@@ -285,8 +363,8 @@ export const CustomersTab = () => {
                 <TableRow key={customer.id}>
                   <TableCell className="font-medium">{customer.name}</TableCell>
                   <TableCell>{customer.email}</TableCell>
-                  <TableCell className="font-mono text-sm">
-                    {customer.registration_plate || 'N/A'}
+                  <TableCell>
+                    <NumberPlate plateNumber={customer.registration_plate} />
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">{customer.plan_type}</Badge>
@@ -304,45 +382,208 @@ export const CustomersTab = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => openNotesDialog(customer)}
+                          onClick={() => openCustomerDialog(customer)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-2xl">
+                      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                          <DialogTitle>Notes for {selectedCustomer?.name}</DialogTitle>
+                          <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
                         </DialogHeader>
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Textarea
-                              placeholder="Add a new note..."
-                              value={newNote}
-                              onChange={(e) => setNewNote(e.target.value)}
-                              rows={3}
-                            />
-                            <Button onClick={addNote} disabled={!newNote.trim()}>
-                              Add Note
-                            </Button>
-                          </div>
-                          
-                          <div className="space-y-2 max-h-96 overflow-y-auto">
-                            {notesLoading ? (
-                              <div className="text-center py-4">Loading notes...</div>
-                            ) : notes.length === 0 ? (
-                              <div className="text-center py-4 text-gray-500">No notes yet</div>
-                            ) : (
-                              notes.map((note) => (
-                                <div key={note.id} className="bg-gray-50 p-3 rounded-lg">
-                                  <p className="text-sm text-gray-800">{note.note}</p>
-                                  <p className="text-xs text-gray-500 mt-1">
-                                    {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
-                                  </p>
+                        
+                        {editingCustomer && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Customer Details */}
+                            <div className="space-y-4">
+                              <h3 className="text-lg font-semibold">Customer Details</h3>
+                              
+                              <div className="space-y-3">
+                                <div>
+                                  <Label htmlFor="name">Name</Label>
+                                  <Input
+                                    id="name"
+                                    value={editingCustomer.name}
+                                    onChange={(e) => setEditingCustomer({
+                                      ...editingCustomer,
+                                      name: e.target.value
+                                    })}
+                                  />
                                 </div>
-                              ))
-                            )}
+                                
+                                <div>
+                                  <Label htmlFor="email">Email</Label>
+                                  <Input
+                                    id="email"
+                                    type="email"
+                                    value={editingCustomer.email}
+                                    onChange={(e) => setEditingCustomer({
+                                      ...editingCustomer,
+                                      email: e.target.value
+                                    })}
+                                  />
+                                </div>
+                                
+                                <div>
+                                  <Label htmlFor="phone">Phone</Label>
+                                  <Input
+                                    id="phone"
+                                    value={editingCustomer.phone || ''}
+                                    onChange={(e) => setEditingCustomer({
+                                      ...editingCustomer,
+                                      phone: e.target.value
+                                    })}
+                                  />
+                                </div>
+                                
+                                <div>
+                                  <Label htmlFor="address">Address</Label>
+                                  <Textarea
+                                    id="address"
+                                    value={editingCustomer.address || ''}
+                                    onChange={(e) => setEditingCustomer({
+                                      ...editingCustomer,
+                                      address: e.target.value
+                                    })}
+                                  />
+                                </div>
+                                
+                                <div>
+                                  <Label htmlFor="plan">Plan Type</Label>
+                                  <Select
+                                    value={editingCustomer.plan_type}
+                                    onValueChange={(value) => setEditingCustomer({
+                                      ...editingCustomer,
+                                      plan_type: value
+                                    })}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {plans.map((plan) => (
+                                        <SelectItem key={plan.name} value={plan.name}>
+                                          {plan.name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                
+                                <div>
+                                  <Label htmlFor="status">Status</Label>
+                                  <Select
+                                    value={editingCustomer.status}
+                                    onValueChange={(value) => setEditingCustomer({
+                                      ...editingCustomer,
+                                      status: value
+                                    })}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="Active">Active</SelectItem>
+                                      <SelectItem value="Inactive">Inactive</SelectItem>
+                                      <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                      <SelectItem value="Suspended">Suspended</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                
+                                <div>
+                                  <Label htmlFor="excess">Voluntary Excess (£)</Label>
+                                  <Input
+                                    id="excess"
+                                    type="number"
+                                    value={editingCustomer.voluntary_excess || 0}
+                                    onChange={(e) => setEditingCustomer({
+                                      ...editingCustomer,
+                                      voluntary_excess: parseFloat(e.target.value) || 0
+                                    })}
+                                  />
+                                </div>
+                              </div>
+                              
+                              <Button onClick={updateCustomer} className="w-full">
+                                <Save className="h-4 w-4 mr-2" />
+                                Save Changes
+                              </Button>
+                            </div>
+                            
+                            {/* Notes Section */}
+                            <div className="space-y-4">
+                              <h3 className="text-lg font-semibold">Customer Notes</h3>
+                              
+                              {/* Add New Note */}
+                              <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                  <Label htmlFor="note-date">Note Date</Label>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        className={cn(
+                                          "w-full justify-start text-left font-normal",
+                                          !noteDate && "text-muted-foreground"
+                                        )}
+                                      >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {noteDate ? format(noteDate, "PPP") : <span>Pick a date</span>}
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                      <Calendar
+                                        mode="single"
+                                        selected={noteDate}
+                                        onSelect={(date) => date && setNoteDate(date)}
+                                        initialFocus
+                                        className="pointer-events-auto"
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
+                                </div>
+                                
+                                <div>
+                                  <Label htmlFor="new-note">Add Note</Label>
+                                  <Textarea
+                                    id="new-note"
+                                    placeholder="Enter your note here..."
+                                    value={newNote}
+                                    onChange={(e) => setNewNote(e.target.value)}
+                                    rows={3}
+                                  />
+                                </div>
+                                
+                                <Button 
+                                  onClick={addNote} 
+                                  disabled={!newNote.trim()}
+                                  className="w-full"
+                                >
+                                  Add Note
+                                </Button>
+                              </div>
+                              
+                              {/* Existing Notes */}
+                              <div className="space-y-2 max-h-96 overflow-y-auto">
+                                {notesLoading ? (
+                                  <div className="text-center py-4">Loading notes...</div>
+                                ) : notes.length === 0 ? (
+                                  <div className="text-center py-4 text-gray-500">No notes yet</div>
+                                ) : (
+                                  notes.map((note) => (
+                                    <div key={note.id} className="bg-white p-3 rounded-lg border">
+                                      <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
+                                      <p className="text-xs text-gray-500 mt-2">
+                                        {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
+                                      </p>
+                                    </div>
+                                  ))
+                                )}
+                              </div>
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </DialogContent>
                     </Dialog>
                   </TableCell>
