@@ -15,15 +15,19 @@ const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
   
-  const steps = ['Vehicle Details', 'Contact Info', 'Choose Plan'];
+  const steps = ['Your Car', 'You', 'Choose Plan'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
     setVehicleData(data);
-    setCurrentStep(3); // Skip to pricing (step 2 is integrated into registration)
+    setCurrentStep(3);
   };
 
   const handleBackToRegistration = () => {
-    setCurrentStep(2); // Go back to contact info step
+    setCurrentStep(2);
+  };
+
+  const handleBackToVehicleDetails = () => {
+    setCurrentStep(1);
   };
 
   return (
@@ -31,11 +35,12 @@ const Index = () => {
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
       
       {(currentStep === 1 || currentStep === 2) ? (
-        <RegistrationForm onNext={handleRegistrationComplete} />
+        <RegistrationForm 
+          onNext={handleRegistrationComplete} 
+          onBack={currentStep === 2 ? handleBackToVehicleDetails : undefined}
+        />
       ) : (
-        <div className="py-8">
-          {vehicleData && <PricingTable vehicleData={vehicleData} onBack={handleBackToRegistration} />}
-        </div>
+        vehicleData && <PricingTable vehicleData={vehicleData} onBack={handleBackToRegistration} />
       )}
     </div>
   );
