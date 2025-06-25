@@ -48,6 +48,7 @@ export type Database = {
           id: string
           name: string
           plan_type: string
+          registration_plate: string | null
           signup_date: string
           status: string
           stripe_customer_id: string | null
@@ -60,6 +61,7 @@ export type Database = {
           id?: string
           name: string
           plan_type: string
+          registration_plate?: string | null
           signup_date?: string
           status?: string
           stripe_customer_id?: string | null
@@ -72,6 +74,7 @@ export type Database = {
           id?: string
           name?: string
           plan_type?: string
+          registration_plate?: string | null
           signup_date?: string
           status?: string
           stripe_customer_id?: string | null
@@ -130,7 +133,10 @@ export type Database = {
           is_active: boolean
           monthly_price: number
           name: string
+          three_yearly_price: number | null
+          two_yearly_price: number | null
           updated_at: string
+          yearly_price: number | null
         }
         Insert: {
           add_ons?: Json
@@ -140,7 +146,10 @@ export type Database = {
           is_active?: boolean
           monthly_price: number
           name: string
+          three_yearly_price?: number | null
+          two_yearly_price?: number | null
           updated_at?: string
+          yearly_price?: number | null
         }
         Update: {
           add_ons?: Json
@@ -150,7 +159,10 @@ export type Database = {
           is_active?: boolean
           monthly_price?: number
           name?: string
+          three_yearly_price?: number | null
+          two_yearly_price?: number | null
           updated_at?: string
+          yearly_price?: number | null
         }
         Relationships: []
       }

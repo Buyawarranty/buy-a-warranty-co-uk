@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,9 @@ interface Plan {
   id: string;
   name: string;
   monthly_price: number;
+  yearly_price: number;
+  two_yearly_price: number;
+  three_yearly_price: number;
   coverage: Json;
   add_ons: Json;
   is_active: boolean;
@@ -138,6 +140,9 @@ export const PlansTab = () => {
         .update({
           name: plan.name,
           monthly_price: plan.monthly_price,
+          yearly_price: plan.yearly_price,
+          two_yearly_price: plan.two_yearly_price,
+          three_yearly_price: plan.three_yearly_price,
           coverage: plan.coverage,
           add_ons: plan.add_ons,
           is_active: plan.is_active
@@ -241,7 +246,7 @@ export const PlansTab = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Plans Management</h2>
-        <p className="text-sm text-gray-600">Manage all coverage features and add-ons for each plan</p>
+        <p className="text-sm text-gray-600">Manage all pricing and features for each plan</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -255,9 +260,26 @@ export const PlansTab = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle className="text-xl">{plan.name}</CardTitle>
-                    <p className="text-2xl font-bold text-orange-600 mt-2">
-                      £{plan.monthly_price}/month
-                    </p>
+                    <div className="mt-2 space-y-1">
+                      <p className="text-lg font-bold text-orange-600">
+                        £{plan.monthly_price}/month
+                      </p>
+                      {plan.yearly_price && (
+                        <p className="text-sm text-gray-600">
+                          £{plan.yearly_price}/year
+                        </p>
+                      )}
+                      {plan.two_yearly_price && (
+                        <p className="text-sm text-gray-600">
+                          £{plan.two_yearly_price}/2 years
+                        </p>
+                      )}
+                      {plan.three_yearly_price && (
+                        <p className="text-sm text-gray-600">
+                          £{plan.three_yearly_price}/3 years
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Badge variant={plan.is_active ? "default" : "secondary"}>
@@ -276,17 +298,7 @@ export const PlansTab = () => {
                       </DialogTrigger>
                       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                          <DialogTitle className="flex items-center justify-between">
-                            <span>Edit {plan.name} Plan</span>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => resetToDefaults(plan.name)}
-                              className="text-orange-600 border-orange-300 hover:bg-orange-50"
-                            >
-                              Reset to Defaults
-                            </Button>
-                          </DialogTitle>
+                          <DialogTitle>Edit {plan.name} Plan</DialogTitle>
                         </DialogHeader>
                         
                         {editingPlan && (
@@ -311,6 +323,45 @@ export const PlansTab = () => {
                                   onChange={(e) => setEditingPlan({
                                     ...editingPlan,
                                     monthly_price: parseFloat(e.target.value) || 0
+                                  })}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4">
+                              <div>
+                                <label className="block text-sm font-medium mb-2">Yearly Price (£)</label>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  value={editingPlan.yearly_price || ''}
+                                  onChange={(e) => setEditingPlan({
+                                    ...editingPlan,
+                                    yearly_price: parseFloat(e.target.value) || 0
+                                  })}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium mb-2">2 Year Price (£)</label>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  value={editingPlan.two_yearly_price || ''}
+                                  onChange={(e) => setEditingPlan({
+                                    ...editingPlan,
+                                    two_yearly_price: parseFloat(e.target.value) || 0
+                                  })}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium mb-2">3 Year Price (£)</label>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  value={editingPlan.three_yearly_price || ''}
+                                  onChange={(e) => setEditingPlan({
+                                    ...editingPlan,
+                                    three_yearly_price: parseFloat(e.target.value) || 0
                                   })}
                                 />
                               </div>

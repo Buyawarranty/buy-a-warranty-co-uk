@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -19,6 +18,7 @@ interface Customer {
   signup_date: string;
   voluntary_excess: number;
   status: string;
+  registration_plate: string;
 }
 
 interface AdminNote {
@@ -46,7 +46,8 @@ export const CustomersTab = () => {
     if (searchTerm) {
       const filtered = customers.filter(customer =>
         customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.registration_plate?.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredCustomers(filtered);
     } else {
@@ -117,12 +118,13 @@ export const CustomersTab = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Name', 'Email', 'Plan Type', 'Signup Date', 'Voluntary Excess', 'Status'];
+    const headers = ['Name', 'Email', 'Registration Plate', 'Plan Type', 'Signup Date', 'Voluntary Excess', 'Status'];
     const csvContent = [
       headers.join(','),
       ...filteredCustomers.map(customer => [
         customer.name,
         customer.email,
+        customer.registration_plate || '',
         customer.plan_type,
         format(new Date(customer.signup_date), 'yyyy-MM-dd'),
         customer.voluntary_excess || 0,
@@ -176,6 +178,7 @@ export const CustomersTab = () => {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Registration Plate</TableHead>
               <TableHead>Plan Type</TableHead>
               <TableHead>Signup Date</TableHead>
               <TableHead>Voluntary Excess</TableHead>
@@ -188,6 +191,9 @@ export const CustomersTab = () => {
               <TableRow key={customer.id}>
                 <TableCell className="font-medium">{customer.name}</TableCell>
                 <TableCell>{customer.email}</TableCell>
+                <TableCell className="font-mono text-sm">
+                  {customer.registration_plate || 'N/A'}
+                </TableCell>
                 <TableCell>
                   <Badge variant="secondary">{customer.plan_type}</Badge>
                 </TableCell>
