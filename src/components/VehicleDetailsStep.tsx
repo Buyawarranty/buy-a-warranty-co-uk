@@ -43,7 +43,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
         <div className="flex items-center mb-6">
           <div className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded-full mr-4 font-bold">1</div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-800">Your Car</h2>
+            <h2 className="text-xl font-bold text-gray-800">Your Car</h2>
             <p className="text-sm text-gray-600">Let's start with your vehicle details</p>
           </div>
         </div>
@@ -67,7 +67,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
               value={regNumber || 'YOUR REG'}
               onChange={handleRegChange}
               className="bg-transparent border-none outline-none text-[28px] text-gray-900 flex-1"
-              style={{ fontFamily: 'Century Gothic', fontWeight: 700, letterSpacing: 0 }}
+              style={{ fontFamily: 'Inter', fontWeight: 700, letterSpacing: 0 }}
               maxLength={8}
             />
           </div>
