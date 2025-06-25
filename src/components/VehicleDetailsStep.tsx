@@ -57,7 +57,11 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             className="w-full flex items-center bg-[#ffdb00] text-gray-900 font-semibold text-[22px] px-[20px] py-[14px] rounded-[4px] mb-4 shadow-sm tracking-[2px] leading-tight cursor-pointer"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
-            <span className="bg-[#0052cc] text-white text-[10px] font-bold px-[6px] py-[3px] rounded-[3px] mr-[10px]">GB</span>
+            <img 
+              src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
+              alt="UK Flag" 
+              className="w-[30px] h-[20px] mr-[10px] object-cover rounded-[2px]"
+            />
             <input
               id="regInput"
               type="text"
