@@ -65,7 +65,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             <input
               id="regInput"
               type="text"
-              value={regNumber || 'AB12 CDE'}
+              value={regNumber || 'REG HERE'}
               onChange={handleRegChange}
               className="bg-transparent border-none outline-none font-semibold text-[28px] tracking-[3px] text-gray-900 flex-1"
               maxLength={8}
