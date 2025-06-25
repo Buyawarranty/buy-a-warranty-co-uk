@@ -15,7 +15,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <div className="pb-24"> {/* Increased bottom padding for larger footer */}
+      <div className="pb-80"> {/* Much larger bottom padding for huge footer */}
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
