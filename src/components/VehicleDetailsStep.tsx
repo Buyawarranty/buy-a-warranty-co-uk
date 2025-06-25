@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 interface VehicleDetailsStepProps {
@@ -58,7 +57,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <img 
-              src="/lovable-uploads/e1203f4f-ae13-482f-9e78-4a0d8f15f585.png" 
+              src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
               alt="GB Flag" 
               className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
             />
