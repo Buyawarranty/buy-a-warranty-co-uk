@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Car } from 'lucide-react';
 
@@ -66,10 +67,15 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({
           </div>
           <div className="reg-plate-container">
             <div className="reg-plate-box">
-              <div className="flag-section">
-                <div className="eu-stars">★★★★★★</div>
-                <div className="eu-stars">★★★★★★</div>
-                <div className="gb-text">GB</div>
+              <div className="british-flag-section">
+                <div className="union-jack">
+                  <div className="flag-background"></div>
+                  <div className="cross-diagonal-1"></div>
+                  <div className="cross-diagonal-2"></div>
+                  <div className="cross-vertical"></div>
+                  <div className="cross-horizontal"></div>
+                </div>
+                <div className="gb-identifier">GB</div>
               </div>
               <input
                 id="regNumber"
