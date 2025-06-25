@@ -7,8 +7,10 @@ import ProgressIndicator from '@/components/ProgressIndicator';
 interface VehicleData {
   regNumber: string;
   mileage: string;
-  email?: string;
-  phone?: string;
+  email: string;
+  phone: string;
+  fullName: string;
+  address: string;
 }
 
 const Index = () => {
@@ -18,7 +20,9 @@ const Index = () => {
     regNumber: '',
     mileage: '',
     email: '',
-    phone: ''
+    phone: '',
+    fullName: '',
+    address: ''
   });
   
   const steps = ['Your Car', 'You', 'Choose Plan'];
