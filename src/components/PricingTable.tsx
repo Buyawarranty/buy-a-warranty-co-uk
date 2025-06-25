@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, X } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface PricingData {
   basic: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
@@ -332,7 +332,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </p>
       </div>
 
-      {/* Contribution Amount Selector - Bigger */}
+      {/* Contribution Amount Selector */}
       <div className="flex flex-col items-center mb-10 px-8">
         <Label className="text-4xl font-bold mb-12 text-gray-800">
           Select Your Contribution Amount
@@ -355,51 +355,58 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Payment Period Radio Buttons - Blue Theme */}
+      {/* Payment Period Toggle Group - Modern Design */}
       <div className="flex justify-center mb-12 px-8">
-        <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-blue-300 max-w-5xl w-full">
+        <div className="bg-white rounded-2xl p-6 shadow-lg max-w-3xl w-full">
           <Label className="text-2xl font-bold mb-8 block text-center text-gray-800">
             Choose Payment Period
           </Label>
-          <RadioGroup
+          <ToggleGroup
+            type="single"
             value={paymentType}
-            onValueChange={(value) => setPaymentType(value as typeof paymentType)}
-            className="grid grid-cols-1 md:grid-cols-4 gap-6"
+            onValueChange={(value) => value && setPaymentType(value as typeof paymentType)}
+            className="grid grid-cols-4 gap-2 bg-gray-100 p-2 rounded-xl"
           >
-            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
-              <RadioGroupItem value="monthly" id="monthly" />
-              <Label htmlFor="monthly" className="font-semibold cursor-pointer text-lg">
-                Monthly
-              </Label>
-            </div>
-            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
-              <RadioGroupItem value="yearly" id="yearly" />
-              <Label htmlFor="yearly" className="font-semibold cursor-pointer text-lg">
-                1 Year
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-sm">
-                  Save 10%
+            <ToggleGroupItem
+              value="monthly"
+              className="relative bg-white data-[state=on]:bg-[#1e3a8a] data-[state=on]:text-white text-gray-700 border-0 rounded-lg py-4 px-6 font-semibold text-lg transition-all hover:bg-gray-50 data-[state=on]:hover:bg-[#1e3a8a]"
+            >
+              Monthly
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="yearly"
+              className="relative bg-white data-[state=on]:bg-[#1e3a8a] data-[state=on]:text-white text-gray-700 border-0 rounded-lg py-4 px-6 font-semibold text-lg transition-all hover:bg-gray-50 data-[state=on]:hover:bg-[#1e3a8a]"
+            >
+              <div className="flex flex-col items-center">
+                <span>Annual</span>
+                <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                  10% OFF
                 </Badge>
-              </Label>
-            </div>
-            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
-              <RadioGroupItem value="twoYear" id="twoYear" />
-              <Label htmlFor="twoYear" className="font-semibold cursor-pointer text-lg">
-                2 Years
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-sm">
-                  Save 15%
+              </div>
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="twoYear"
+              className="relative bg-white data-[state=on]:bg-[#1e3a8a] data-[state=on]:text-white text-gray-700 border-0 rounded-lg py-4 px-6 font-semibold text-lg transition-all hover:bg-gray-50 data-[state=on]:hover:bg-[#1e3a8a]"
+            >
+              <div className="flex flex-col items-center">
+                <span>2 Years</span>
+                <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                  15% OFF
                 </Badge>
-              </Label>
-            </div>
-            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
-              <RadioGroupItem value="threeYear" id="threeYear" />
-              <Label htmlFor="threeYear" className="font-semibold cursor-pointer text-lg">
-                3 Years
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-sm">
-                  Save 20%
+              </div>
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="threeYear"
+              className="relative bg-white data-[state=on]:bg-[#1e3a8a] data-[state=on]:text-white text-gray-700 border-0 rounded-lg py-4 px-6 font-semibold text-lg transition-all hover:bg-gray-50 data-[state=on]:hover:bg-[#1e3a8a]"
+            >
+              <div className="flex flex-col items-center">
+                <span>3 Years</span>
+                <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                  20% OFF
                 </Badge>
-              </Label>
-            </div>
-          </RadioGroup>
+              </div>
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
       </div>
 
@@ -417,13 +424,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               return (
                 <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
                   {plan.popular && (
-                    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-sm font-bold z-50 shadow-lg">
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-2 rounded-full text-sm font-bold z-10 shadow-lg">
                       MOST POPULAR
                     </div>
                   )}
                   
                   {/* Plan Header */}
-                  <div className={`p-8 text-center bg-gray-50 border-b ${plan.popular ? 'mt-8' : 'mt-0'}`}>
+                  <div className={`p-8 text-center bg-gray-50 border-b ${plan.popular ? 'mt-6' : 'mt-0'}`}>
                     <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>
                       {plan.name}
                     </h3>
