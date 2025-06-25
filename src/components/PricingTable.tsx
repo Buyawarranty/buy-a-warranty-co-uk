@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -93,7 +92,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       color: '#0e3e87',
       features: [
         'Mechanical Breakdown Protection',
-        'Labour up to £35 p/hr',
+        'Labour upto £35 p/hr',
         '10 Claims per year',
         'Engine',
         'Manual Gearbox',
@@ -114,7 +113,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       popular: true,
       features: [
         'Mechanical & Electrical Breakdown Warranty',
-        'Labour up to £75 p/hr',
+        'Labour upto £75 p/hr',
         'Halfords MOT test',
         'Unlimited Claims',
         'Engine',
@@ -142,7 +141,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       color: '#dc4f20',
       features: [
         'Mechanical & Electrical Breakdown',
-        'Labour up to £100 p/hr',
+        'Labour upto £100 p/hr',
         'Halfords MOT test',
         'Unlimited Claims',
         'Engine',
@@ -178,7 +177,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   };
 
   const allFeatures = Array.from(new Set(plans.flatMap(plan => plan.features)));
-  const allAddOns = Array.from(new Set(plans.flatMap(plan => plan.addOns)));
 
   const getPaymentLabel = () => {
     switch (paymentType) {
@@ -238,18 +236,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </p>
       </div>
 
-      {/* Contribution Amount Selector - Made Bigger */}
+      {/* Contribution Amount Selector - Bigger */}
       <div className="flex flex-col items-center mb-10 px-8">
-        <Label className="text-2xl font-bold mb-8 text-gray-800">
+        <Label className="text-3xl font-bold mb-10 text-gray-800">
           Select Your Contribution Amount
         </Label>
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center gap-8">
           {[0, 50, 100, 150, 200].map((amount) => (
             <Button
               key={amount}
               variant={contributionAmount === amount ? "default" : "outline"}
               onClick={() => setContributionAmount(amount)}
-              className={`px-10 py-4 text-xl font-bold ${
+              className={`px-12 py-6 text-2xl font-bold ${
                 contributionAmount === amount 
                   ? 'bg-[#224380] hover:bg-[#1a3460]' 
                   : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
@@ -261,46 +259,46 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Payment Period Radio Buttons */}
-      <div className="flex justify-center mb-10 px-8">
-        <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-gray-200">
-          <Label className="text-xl font-bold mb-6 block text-center text-gray-800">
+      {/* Payment Period Radio Buttons - Improved Styling */}
+      <div className="flex justify-center mb-12 px-8">
+        <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-300 max-w-4xl w-full">
+          <Label className="text-2xl font-bold mb-8 block text-center text-gray-800">
             Choose Payment Period
           </Label>
           <RadioGroup
             value={paymentType}
             onValueChange={(value) => setPaymentType(value as typeof paymentType)}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+            className="grid grid-cols-1 md:grid-cols-4 gap-6"
           >
-            <div className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+            <div className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors">
               <RadioGroupItem value="monthly" id="monthly" />
-              <Label htmlFor="monthly" className="font-semibold cursor-pointer">
+              <Label htmlFor="monthly" className="font-semibold cursor-pointer text-lg">
                 Monthly
               </Label>
             </div>
-            <div className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+            <div className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors">
               <RadioGroupItem value="yearly" id="yearly" />
-              <Label htmlFor="yearly" className="font-semibold cursor-pointer">
+              <Label htmlFor="yearly" className="font-semibold cursor-pointer text-lg">
                 1 Year
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-xs">
+                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-sm">
                   Save 10%
                 </Badge>
               </Label>
             </div>
-            <div className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+            <div className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors">
               <RadioGroupItem value="twoYear" id="twoYear" />
-              <Label htmlFor="twoYear" className="font-semibold cursor-pointer">
+              <Label htmlFor="twoYear" className="font-semibold cursor-pointer text-lg">
                 2 Years
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-xs">
+                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-sm">
                   Save 15%
                 </Badge>
               </Label>
             </div>
-            <div className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+            <div className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors">
               <RadioGroupItem value="threeYear" id="threeYear" />
-              <Label htmlFor="threeYear" className="font-semibold cursor-pointer">
+              <Label htmlFor="threeYear" className="font-semibold cursor-pointer text-lg">
                 3 Years
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-xs">
+                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-sm">
                   Save 20%
                 </Badge>
               </Label>
@@ -323,13 +321,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               return (
                 <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
                   {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full text-sm font-bold z-20 shadow-lg">
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-sm font-bold z-30 shadow-lg">
                       MOST POPULAR
                     </div>
                   )}
                   
                   {/* Plan Header */}
-                  <div className="p-8 text-center bg-gray-50 border-b mt-4">
+                  <div className={`p-8 text-center bg-gray-50 border-b ${plan.popular ? 'mt-6' : 'mt-0'}`}>
                     <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>
                       {plan.name}
                     </h3>
@@ -354,7 +352,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
                   {/* Features Section */}
                   <div className="p-6">
-                    <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">Core Features</h4>
+                    <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
                     <div className="space-y-3 max-h-64 overflow-y-auto">
                       {allFeatures.map((feature, index) => (
                         <div key={index} className="flex items-center gap-3">
@@ -372,24 +370,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
                     {/* Add-ons Section */}
                     <div className="mt-6 pt-4 border-t">
-                      <h4 className="font-bold text-gray-800 mb-4">Optional Add-ons <span className="text-sm font-normal text-gray-600">(£25/year each)</span></h4>
+                      <h4 className="font-bold text-gray-800 mb-4">Additional Components (Optional Add-ons - £25.00 per item p/year)</h4>
                       <div className="space-y-3">
-                        {allAddOns.map((addon, index) => (
+                        {plan.addOns.map((addon, index) => (
                           <div key={index} className="flex items-center gap-3">
-                            {plan.addOns.includes(addon) ? (
-                              <div className="flex items-center gap-2">
-                                <Checkbox
-                                  checked={selectedAddOns[plan.id][addon] || false}
-                                  onCheckedChange={() => toggleAddOn(plan.id, addon)}
-                                />
-                                <span className="text-sm text-gray-700">{addon}</span>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-3">
-                                <div className="w-4 h-4 bg-gray-200 rounded flex-shrink-0"></div>
-                                <span className="text-sm text-gray-400">{addon}</span>
-                              </div>
-                            )}
+                            <Checkbox
+                              checked={selectedAddOns[plan.id][addon] || false}
+                              onCheckedChange={() => toggleAddOn(plan.id, addon)}
+                            />
+                            <span className="text-sm text-gray-700">{addon}</span>
                           </div>
                         ))}
                       </div>
