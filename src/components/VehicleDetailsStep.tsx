@@ -71,7 +71,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             type="button"
             onClick={handleFindCar}
             disabled={!regNumber}
-            className="w-full bg-[#d4531a] hover:bg-[#b8461a] text-white text-[15px] font-semibold px-[20px] py-[8px] rounded-full transition duration-200 mb-6 disabled:opacity-50 disabled:cursor-not-allowed animate-[pulse_3s_ease-in-out_infinite]"
+            className="w-full bg-[#d4531a] hover:bg-[#b8461a] text-white text-[15px] font-semibold px-[20px] py-[8px] rounded-full transition duration-200 mb-6 disabled:opacity-50 disabled:cursor-not-allowed animate-[pulse_4s_ease-in-out_infinite] opacity-90 hover:opacity-100"
           >
             Find my car
           </button>
