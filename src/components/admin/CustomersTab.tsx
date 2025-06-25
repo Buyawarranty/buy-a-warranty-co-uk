@@ -173,7 +173,11 @@ export const CustomersTab = () => {
         .eq('customer_id', customerId)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching notes:', error);
+        throw error;
+      }
+      
       setNotes(data || []);
     } catch (error) {
       console.error('Error fetching notes:', error);
@@ -184,21 +188,40 @@ export const CustomersTab = () => {
   };
 
   const addNote = async () => {
-    if (!newNote.trim() || !selectedCustomer) return;
+    if (!newNote.trim() || !selectedCustomer) {
+      toast.error('Please enter a note');
+      return;
+    }
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      const { error } = await supabase
-        .from('admin_notes')
-        .insert([{
-          customer_id: selectedCustomer.id,
-          note: newNote,
-          created_at: noteDate.toISOString(),
-          created_by: user?.id
-        }]);
+      console.log('Adding note for customer:', selectedCustomer.id);
+      console.log('Note content:', newNote);
+      console.log('Note date:', noteDate.toISOString());
 
-      if (error) throw error;
+      // Check if user is authenticated or master admin
+      const { data: { user } } = await supabase.auth.getUser();
+      const isMasterAdmin = localStorage.getItem('masterAdmin') === 'true';
+      
+      const noteData = {
+        customer_id: selectedCustomer.id,
+        note: newNote,
+        created_at: noteDate.toISOString(),
+        created_by: isMasterAdmin ? null : user?.id
+      };
+
+      console.log('Inserting note data:', noteData);
+
+      const { data, error } = await supabase
+        .from('admin_notes')
+        .insert([noteData])
+        .select();
+
+      if (error) {
+        console.error('Database error adding note:', error);
+        throw error;
+      }
+
+      console.log('Note added successfully:', data);
       
       setNewNote('');
       setNoteDate(new Date());
@@ -206,7 +229,7 @@ export const CustomersTab = () => {
       toast.success('Note added successfully');
     } catch (error) {
       console.error('Error adding note:', error);
-      toast.error('Failed to add note');
+      toast.error(`Failed to add note: ${error.message || 'Unknown error'}`);
     }
   };
 
