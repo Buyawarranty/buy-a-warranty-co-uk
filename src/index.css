@@ -217,118 +217,30 @@ html {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* British Flag Section */
-.british-flag-section {
+/* EU Flag Section */
+.flag-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: #003399;
+  color: white;
   width: 60px;
   height: 100%;
   border-radius: 5px 0 0 5px;
   margin-right: 15px;
-  position: relative;
-  overflow: hidden;
 }
 
-/* Union Jack Flag Design */
-.union-jack {
-  width: 100%;
-  height: 70%;
-  position: relative;
-  border-radius: 3px;
+.eu-stars {
+  font-size: 10px;
+  line-height: 1;
+  margin-bottom: 2px;
+  letter-spacing: 1px;
 }
 
-.flag-background {
-  width: 100%;
-  height: 100%;
-  background-color: #012169;
-  position: absolute;
-}
-
-.cross-diagonal-1 {
-  position: absolute;
-  width: 141.42%;
-  height: 20%;
-  background-color: #fff;
-  top: 40%;
-  left: -20.71%;
-  transform: rotate(45deg);
-}
-
-.cross-diagonal-2 {
-  position: absolute;
-  width: 141.42%;
-  height: 20%;
-  background-color: #fff;
-  top: 40%;
-  left: -20.71%;
-  transform: rotate(-45deg);
-}
-
-.cross-vertical {
-  position: absolute;
-  width: 20%;
-  height: 100%;
-  background-color: #fff;
-  left: 40%;
-  top: 0;
-}
-
-.cross-horizontal {
-  position: absolute;
-  width: 100%;
-  height: 20%;
-  background-color: #fff;
-  top: 40%;
-  left: 0;
-}
-
-.cross-diagonal-1::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 60%;
-  background-color: #c8102e;
-  top: 20%;
-  left: 0;
-}
-
-.cross-diagonal-2::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 60%;
-  background-color: #c8102e;
-  top: 20%;
-  left: 0;
-}
-
-.cross-vertical::after {
-  content: '';
-  position: absolute;
-  width: 60%;
-  height: 100%;
-  background-color: #c8102e;
-  left: 20%;
-  top: 0;
-}
-
-.cross-horizontal::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 60%;
-  background-color: #c8102e;
-  top: 20%;
-  left: 0;
-}
-
-.gb-identifier {
+.gb-text {
   font-size: 12px;
   font-weight: bold;
-  color: #000;
-  margin-top: 2px;
   letter-spacing: 0.5px;
 }
 
@@ -599,20 +511,6 @@ html {
   background: #28a745;
 }
 
-/* Breathing Animation for CTA Button */
-@keyframes pulse-slow {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
-}
-
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .form-section-card {
@@ -625,7 +523,7 @@ html {
     height: 55px;
   }
 
-  .british-flag-section {
+  .flag-section {
     width: 45px;
   }
 

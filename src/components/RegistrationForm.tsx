@@ -55,11 +55,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     return (
       <VehicleDetailsStep 
         onNext={handleVehicleNext}
-        onBack={onBack ? () => onBack(1) : handleBackToVehicle}
         initialData={initialData}
-        onFormDataUpdate={onFormDataUpdate || (() => {})}
-        currentStep={currentStep}
-        onStepChange={onStepChange}
       />
     );
   }
