@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -105,7 +104,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Casings',
         'Recovery'
       ],
-      excludedFeatures: [
+      notIncluded: [
         'Mechanical & Electrical Breakdown Warranty',
         'Labour up to £75 p/hr',
         'Labour up to £100 p/hr',
@@ -130,8 +129,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Seals',
         'Vehicle Hire',
         'Vehicle Recovery',
-        'European Cover',
-        'Torque Converter'
+        'European Cover'
       ],
       addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
     },
@@ -162,7 +160,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Recovery',
         'European Cover'
       ],
-      excludedFeatures: [
+      notIncluded: [
         'Mechanical Breakdown Protection',
         'Labour up to £35 p/hr',
         'Labour up to £100 p/hr',
@@ -178,9 +176,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Air Conditioning',
         'Locks',
         'Seals',
-        'Vehicle Recovery',
-        'Torque Convertor',
-        'Electrics'
+        'Vehicle Recovery'
       ],
       addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
     },
@@ -217,18 +213,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Vehicle Recovery',
         'European Cover'
       ],
-      excludedFeatures: [
+      notIncluded: [
         'Mechanical Breakdown Protection',
         'Labour up to £35 p/hr',
         'Labour up to £75 p/hr',
         '10 Claims per year',
-        'Torque Convertor',
         'Overdrive',
-        'Torque Converter',
-        'Braking System',
+        'Torque Convertor',
         'Propshaft',
-        'Recovery',
-        'Electrics'
+        'Recovery'
       ],
       addOns: ['Power Hood']
     }
@@ -238,10 +231,48 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     console.log('Selected plan:', planId, 'for vehicle:', vehicleData.regNumber);
   };
 
-  const allFeatures = Array.from(new Set([
-    ...plans.flatMap(plan => plan.features),
-    ...plans.flatMap(plan => plan.excludedFeatures || [])
-  ]));
+  // Create a comprehensive list of all possible features
+  const allPossibleFeatures = [
+    'Mechanical Breakdown Protection',
+    'Mechanical & Electrical Breakdown Warranty',
+    'Labour up to £35 p/hr',
+    'Labour up to £75 p/hr',
+    'Labour up to £100 p/hr',
+    '10 Claims per year',
+    'Halfords MOT test',
+    'Unlimited Claims',
+    'Engine',
+    'Turbo Unit',
+    'Manual Gearbox',
+    'Automatic Transmission',
+    'Torque Convertor',
+    'Torque Converter',
+    'Overdrive',
+    'Clutch',
+    'Differential',
+    'Drive Shafts',
+    'Brakes',
+    'Steering',
+    'Suspension',
+    'Bearings',
+    'Cooling System',
+    'Ventilation',
+    'E.C.U.',
+    'Electrics',
+    'Electricals',
+    'Electricals (Extended)',
+    'Fuel System',
+    'Air Conditioning',
+    'Braking System',
+    'Propshaft',
+    'Locks',
+    'Seals',
+    'Casings',
+    'Vehicle Hire',
+    'Recovery',
+    'Vehicle Recovery',
+    'European Cover'
+  ];
 
   const getPaymentLabel = () => {
     switch (paymentType) {
@@ -324,9 +355,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Payment Period Radio Buttons - Better Styling */}
+      {/* Payment Period Radio Buttons - Blue Theme */}
       <div className="flex justify-center mb-12 px-8">
-        <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-gray-300 max-w-5xl w-full">
+        <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-blue-300 max-w-5xl w-full">
           <Label className="text-2xl font-bold mb-8 block text-center text-gray-800">
             Choose Payment Period
           </Label>
@@ -335,13 +366,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             onValueChange={(value) => setPaymentType(value as typeof paymentType)}
             className="grid grid-cols-1 md:grid-cols-4 gap-6"
           >
-            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-colors">
+            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
               <RadioGroupItem value="monthly" id="monthly" />
               <Label htmlFor="monthly" className="font-semibold cursor-pointer text-lg">
                 Monthly
               </Label>
             </div>
-            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-colors">
+            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
               <RadioGroupItem value="yearly" id="yearly" />
               <Label htmlFor="yearly" className="font-semibold cursor-pointer text-lg">
                 1 Year
@@ -350,7 +381,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 </Badge>
               </Label>
             </div>
-            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-colors">
+            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
               <RadioGroupItem value="twoYear" id="twoYear" />
               <Label htmlFor="twoYear" className="font-semibold cursor-pointer text-lg">
                 2 Years
@@ -359,7 +390,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 </Badge>
               </Label>
             </div>
-            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-colors">
+            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
               <RadioGroupItem value="threeYear" id="threeYear" />
               <Label htmlFor="threeYear" className="font-semibold cursor-pointer text-lg">
                 3 Years
@@ -386,13 +417,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               return (
                 <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
                   {plan.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-sm font-bold z-50 shadow-lg">
+                    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-sm font-bold z-50 shadow-lg">
                       MOST POPULAR
                     </div>
                   )}
                   
                   {/* Plan Header */}
-                  <div className={`p-8 text-center bg-gray-50 border-b ${plan.popular ? 'mt-6' : 'mt-0'}`}>
+                  <div className={`p-8 text-center bg-gray-50 border-b ${plan.popular ? 'mt-8' : 'mt-0'}`}>
                     <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>
                       {plan.name}
                     </h3>
@@ -419,18 +450,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <div className="p-6">
                     <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
                     <div className="space-y-3 max-h-64 overflow-y-auto">
-                      {allFeatures.map((feature, index) => (
-                        <div key={index} className="flex items-center gap-3">
-                          {plan.features.includes(feature) ? (
-                            <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                          ) : (
-                            <X className="w-5 h-5 text-red-400 flex-shrink-0" />
-                          )}
-                          <span className={`text-sm ${plan.features.includes(feature) ? 'text-gray-700' : 'text-gray-400'}`}>
-                            {feature}
-                          </span>
-                        </div>
-                      ))}
+                      {allPossibleFeatures.map((feature, index) => {
+                        const isIncluded = plan.features.includes(feature);
+                        const isExcluded = plan.notIncluded?.includes(feature);
+                        
+                        // Only show features that are explicitly included or excluded
+                        if (!isIncluded && !isExcluded) return null;
+                        
+                        return (
+                          <div key={index} className="flex items-center gap-3">
+                            {isIncluded ? (
+                              <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                            ) : (
+                              <X className="w-5 h-5 text-red-400 flex-shrink-0" />
+                            )}
+                            <span className={`text-sm ${isIncluded ? 'text-gray-700' : 'text-gray-400'}`}>
+                              {feature}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
 
                     {/* Add-ons Section */}
