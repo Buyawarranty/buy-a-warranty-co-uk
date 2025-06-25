@@ -54,7 +54,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             Car registration number <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
           <div 
-            className="w-full flex items-center bg-[#ffdb00] text-gray-900 font-semibold text-[20px] px-[20px] py-[12px] rounded-[4px] mb-4 shadow-sm tracking-[2px] leading-tight cursor-pointer"
+            className="w-full flex items-center bg-[#ffdb00] text-gray-900 font-semibold text-[22px] px-[20px] py-[14px] rounded-[4px] mb-4 shadow-sm tracking-[2px] leading-tight cursor-pointer"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <span className="bg-[#0052cc] text-white text-[10px] font-bold px-[6px] py-[3px] rounded-[3px] mr-[10px]">GB</span>
@@ -63,7 +63,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
               type="text"
               value={regNumber || 'AB12 CDE'}
               onChange={handleRegChange}
-              className="bg-transparent border-none outline-none font-semibold text-[20px] tracking-[2px] text-gray-900 flex-1"
+              className="bg-transparent border-none outline-none font-semibold text-[22px] tracking-[2px] text-gray-900 flex-1"
               maxLength={8}
             />
           </div>
@@ -71,7 +71,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             type="button"
             onClick={handleFindCar}
             disabled={!regNumber}
-            className="w-full bg-[#d4531a] hover:bg-[#b8461a] text-white text-[15px] font-semibold px-[20px] py-[8px] rounded-full transition duration-200 mb-6 disabled:opacity-50 disabled:cursor-not-allowed animate-[pulse_4s_ease-in-out_infinite] opacity-90 hover:opacity-100"
+            className="bg-[#d4531a] hover:bg-[#b8461a] text-white text-[15px] font-bold py-[14px] px-[20px] rounded-[2px] mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Find my car
           </button>
