@@ -54,20 +54,20 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             Car registration number <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
           <div 
-            className="w-full flex items-center bg-[#ffdb00] text-gray-900 font-semibold text-[22px] px-[20px] py-[14px] rounded-[4px] mb-4 shadow-sm tracking-[2px] leading-tight cursor-pointer"
+            className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-semibold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-4 shadow-sm tracking-[3px] leading-tight cursor-pointer border-2 border-black"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <img 
               src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
               alt="UK Flag" 
-              className="w-[30px] h-[20px] mr-[10px] object-cover rounded-[2px]"
+              className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
             />
             <input
               id="regInput"
               type="text"
               value={regNumber || 'AB12 CDE'}
               onChange={handleRegChange}
-              className="bg-transparent border-none outline-none font-semibold text-[22px] tracking-[2px] text-gray-900 flex-1"
+              className="bg-transparent border-none outline-none font-semibold text-[28px] tracking-[3px] text-gray-900 flex-1"
               maxLength={8}
             />
           </div>
