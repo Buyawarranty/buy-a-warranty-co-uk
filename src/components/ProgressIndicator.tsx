@@ -9,44 +9,62 @@ interface ProgressIndicatorProps {
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, totalSteps, steps }) => {
   return (
-    <div className="w-full bg-white shadow-sm border-b border-gray-200 py-4">
+    <div className="w-full bg-white shadow-sm border-b border-gray-200 py-6">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-center">
           {steps.map((step, index) => {
             const stepNumber = index + 1;
             const isActive = stepNumber === currentStep;
             const isCompleted = stepNumber < currentStep;
             
             return (
-              <div key={index} className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 text-sm font-semibold transition-all duration-300 ${
-                  isCompleted
-                    ? 'bg-green-500 border-green-500 text-white'
-                    : isActive
-                    ? 'bg-blue-500 border-blue-500 text-white'
-                    : 'bg-gray-100 border-gray-300 text-gray-500'
-                }`}>
-                  {isCompleted ? '✓' : stepNumber}
+              <div key={index} className="flex items-center relative">
+                {/* Step Arrow Container */}
+                <div className={`
+                  relative px-8 py-3 text-sm font-medium transition-all duration-300
+                  ${isActive 
+                    ? 'bg-blue-500 text-white' 
+                    : isCompleted 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'bg-gray-100 text-gray-500'
+                  }
+                  ${index === 0 ? 'rounded-l-lg' : ''}
+                  ${index === steps.length - 1 ? 'rounded-r-lg' : ''}
+                `}>
+                  
+                  {/* Arrow pointing right (except for last step) */}
+                  {index < steps.length - 1 && (
+                    <div className={`
+                      absolute top-0 right-0 w-0 h-0 transform translate-x-full
+                      border-t-[20px] border-b-[20px] border-l-[12px]
+                      ${isActive 
+                        ? 'border-l-blue-500 border-t-transparent border-b-transparent' 
+                        : isCompleted 
+                        ? 'border-l-blue-100 border-t-transparent border-b-transparent' 
+                        : 'border-l-gray-100 border-t-transparent border-b-transparent'
+                      }
+                    `} />
+                  )}
+                  
+                  {/* Arrow notch (except for first step) */}
+                  {index > 0 && (
+                    <div className={`
+                      absolute top-0 left-0 w-0 h-0 transform -translate-x-full
+                      border-t-[20px] border-b-[20px] border-r-[12px]
+                      ${isActive 
+                        ? 'border-r-blue-500 border-t-transparent border-b-transparent' 
+                        : isCompleted 
+                        ? 'border-r-blue-100 border-t-transparent border-b-transparent' 
+                        : 'border-r-gray-100 border-t-transparent border-b-transparent'
+                      }
+                    `} />
+                  )}
+                  
+                  <span className="relative z-10">{step}</span>
                 </div>
-                
-                {index < steps.length - 1 && (
-                  <div className={`h-1 w-16 mx-2 transition-all duration-300 ${
-                    isCompleted ? 'bg-green-500' : 'bg-gray-200'
-                  }`} />
-                )}
               </div>
             );
           })}
-        </div>
-        
-        <div className="flex justify-between mt-2">
-          {steps.map((step, index) => (
-            <div key={index} className={`text-xs text-center transition-all duration-300 ${
-              index + 1 === currentStep ? 'text-blue-600 font-semibold' : 'text-gray-500'
-            }`}>
-              {step}
-            </div>
-          ))}
         </div>
       </div>
     </div>
