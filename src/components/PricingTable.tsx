@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -112,9 +113,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="w-full mx-auto">
         {/* Back Button */}
-        <div className="mb-6">
+        <div className="mb-6 max-w-6xl mx-auto">
           <Button 
             variant="outline" 
             onClick={onBack}
@@ -165,75 +166,77 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {plans.map((plan) => (
-            <Card key={plan.id} className={`relative overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${plan.popular ? 'ring-2 ring-blue-500' : ''}`}>
-              {plan.popular && (
-                <div className="absolute top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 text-sm font-semibold">
-                  Most Popular
-                </div>
-              )}
-              
-              <CardHeader className={`bg-gradient-to-r ${plan.color} text-white ${plan.popular ? 'pt-8' : ''}`}>
-                <h3 className="text-2xl font-bold text-center">{plan.name}</h3>
-                <div className="text-center">
-                  {paymentType === 'monthly' ? (
-                    <div>
-                      <div className="text-4xl font-bold">£{plan.monthlyPrice.toFixed(2)}</div>
-                      <div className="text-sm opacity-90">per month</div>
-                      <div className="text-sm opacity-75">+ £{plan.deposit} deposit</div>
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="text-4xl font-bold">£{plan.fullPrice.toFixed(2)}</div>
-                      <div className="text-sm opacity-90">one-time payment</div>
-                      <div className="text-xs opacity-75 line-through">£{(plan.monthlyPrice * 12 + plan.deposit).toFixed(2)}</div>
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 mb-8 px-4">
+            {plans.map((plan) => (
+              <Card key={plan.id} className={`relative overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${plan.popular ? 'ring-2 ring-blue-500' : ''}`}>
+                {plan.popular && (
+                  <div className="absolute top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 text-sm font-semibold">
+                    Most Popular
+                  </div>
+                )}
+                
+                <CardHeader className={`bg-gradient-to-r ${plan.color} text-white ${plan.popular ? 'pt-8' : ''}`}>
+                  <h3 className="text-2xl font-bold text-center">{plan.name}</h3>
+                  <div className="text-center">
+                    {paymentType === 'monthly' ? (
+                      <div>
+                        <div className="text-4xl font-bold">£{plan.monthlyPrice.toFixed(2)}</div>
+                        <div className="text-sm opacity-90">per month</div>
+                        <div className="text-sm opacity-75">+ £{plan.deposit} deposit</div>
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="text-4xl font-bold">£{plan.fullPrice.toFixed(2)}</div>
+                        <div className="text-sm opacity-90">one-time payment</div>
+                        <div className="text-xs opacity-75 line-through">£{(plan.monthlyPrice * 12 + plan.deposit).toFixed(2)}</div>
+                      </div>
+                    )}
+                  </div>
+                </CardHeader>
 
-              <CardContent className="p-6">
-                <div className="space-y-3 mb-6">
-                  {plan.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      {feature.included ? (
-                        <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-gray-300 flex-shrink-0" />
-                      )}
-                      <span className={feature.included ? 'text-gray-900' : 'text-gray-400'}>
-                        {feature.name}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {plan.addOns && plan.addOns.length > 0 && (
-                  <div className="border-t pt-4 mb-6">
-                    <h4 className="font-semibold text-gray-700 mb-2">Available Add-ons:</h4>
-                    {plan.addOns.map((addon, index) => (
-                      <div key={index} className="text-sm text-gray-600 flex justify-between">
-                        <span>{addon.name}</span>
-                        <span>+£{addon.price}</span>
+                <CardContent className="p-6">
+                  <div className="space-y-3 mb-6">
+                    {plan.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                        {feature.included ? (
+                          <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                        ) : (
+                          <Circle className="w-5 h-5 text-gray-300 flex-shrink-0" />
+                        )}
+                        <span className={feature.included ? 'text-gray-900' : 'text-gray-400'}>
+                          {feature.name}
+                        </span>
                       </div>
                     ))}
                   </div>
-                )}
 
-                <Button 
-                  className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 text-lg font-semibold"
-                  onClick={() => handleSelectPlan(plan.id)}
-                >
-                  Select {plan.name}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                  {plan.addOns && plan.addOns.length > 0 && (
+                    <div className="border-t pt-4 mb-6">
+                      <h4 className="font-semibold text-gray-700 mb-2">Available Add-ons:</h4>
+                      {plan.addOns.map((addon, index) => (
+                        <div key={index} className="text-sm text-gray-600 flex justify-between">
+                          <span>{addon.name}</span>
+                          <span>+£{addon.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <Button 
+                    className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 text-lg font-semibold"
+                    onClick={() => handleSelectPlan(plan.id)}
+                  >
+                    Select {plan.name}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
 
         {/* Trust Indicators */}
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-gray-500 max-w-6xl mx-auto">
           <p className="mb-2">✓ Approved by financial authorities ✓ 30-day money-back guarantee ✓ UK-based customer support</p>
           <p>All prices include VAT. Terms and conditions apply.</p>
         </div>
@@ -243,3 +246,4 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 };
 
 export default PricingTable;
+
