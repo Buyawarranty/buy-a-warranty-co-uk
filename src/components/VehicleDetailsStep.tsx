@@ -65,9 +65,10 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             <input
               id="regInput"
               type="text"
-              value={regNumber || 'YOUR REG'}
+              value={regNumber}
               onChange={handleRegChange}
-              className="bg-transparent border-none outline-none text-[28px] text-gray-900 flex-1 font-bold font-sans"
+              placeholder="YOUR REG"
+              className="bg-transparent border-none outline-none text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal"
               maxLength={8}
             />
           </div>
