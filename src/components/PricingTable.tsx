@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, X } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface PricingData {
   basic: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
@@ -355,58 +355,76 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Payment Period Toggle Group - Modern Design */}
+      {/* Payment Period Toggle Group - Clean Design */}
       <div className="flex justify-center mb-12 px-8">
-        <div className="bg-white rounded-2xl p-6 shadow-lg max-w-3xl w-full">
-          <Label className="text-2xl font-bold mb-8 block text-center text-gray-800">
-            Choose Payment Period
-          </Label>
-          <ToggleGroup
-            type="single"
+        <div className="max-w-4xl w-full">
+          <RadioGroup
             value={paymentType}
             onValueChange={(value) => value && setPaymentType(value as typeof paymentType)}
-            className="grid grid-cols-4 gap-2 bg-gray-100 p-2 rounded-xl"
+            className="grid grid-cols-4 gap-3"
           >
-            <ToggleGroupItem
-              value="monthly"
-              className="relative bg-white data-[state=on]:bg-[#1e3a8a] data-[state=on]:text-white text-gray-700 border-0 rounded-lg py-4 px-6 font-semibold text-lg transition-all hover:bg-gray-50 data-[state=on]:hover:bg-[#1e3a8a]"
-            >
-              Monthly
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="yearly"
-              className="relative bg-white data-[state=on]:bg-[#1e3a8a] data-[state=on]:text-white text-gray-700 border-0 rounded-lg py-4 px-6 font-semibold text-lg transition-all hover:bg-gray-50 data-[state=on]:hover:bg-[#1e3a8a]"
-            >
-              <div className="flex flex-col items-center">
-                <span>Annual</span>
+            <div className="relative">
+              <RadioGroupItem
+                value="monthly"
+                id="monthly"
+                className="peer sr-only"
+              />
+              <label
+                htmlFor="monthly"
+                className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all duration-200"
+              >
+                <span className="font-semibold text-lg text-gray-700 peer-checked:text-blue-600">Monthly</span>
+              </label>
+            </div>
+            <div className="relative">
+              <RadioGroupItem
+                value="yearly"
+                id="yearly"
+                className="peer sr-only"
+              />
+              <label
+                htmlFor="yearly"
+                className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all duration-200"
+              >
+                <span className="font-semibold text-lg text-gray-700 peer-checked:text-blue-600">Annual</span>
                 <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                   10% OFF
                 </Badge>
-              </div>
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="twoYear"
-              className="relative bg-white data-[state=on]:bg-[#1e3a8a] data-[state=on]:text-white text-gray-700 border-0 rounded-lg py-4 px-6 font-semibold text-lg transition-all hover:bg-gray-50 data-[state=on]:hover:bg-[#1e3a8a]"
-            >
-              <div className="flex flex-col items-center">
-                <span>2 Years</span>
+              </label>
+            </div>
+            <div className="relative">
+              <RadioGroupItem
+                value="twoYear"
+                id="twoYear"
+                className="peer sr-only"
+              />
+              <label
+                htmlFor="twoYear"
+                className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all duration-200"
+              >
+                <span className="font-semibold text-lg text-gray-700 peer-checked:text-blue-600">2 Years</span>
                 <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                   15% OFF
                 </Badge>
-              </div>
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="threeYear"
-              className="relative bg-white data-[state=on]:bg-[#1e3a8a] data-[state=on]:text-white text-gray-700 border-0 rounded-lg py-4 px-6 font-semibold text-lg transition-all hover:bg-gray-50 data-[state=on]:hover:bg-[#1e3a8a]"
-            >
-              <div className="flex flex-col items-center">
-                <span>3 Years</span>
+              </label>
+            </div>
+            <div className="relative">
+              <RadioGroupItem
+                value="threeYear"
+                id="threeYear"
+                className="peer sr-only"
+              />
+              <label
+                htmlFor="threeYear"
+                className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all duration-200"
+              >
+                <span className="font-semibold text-lg text-gray-700 peer-checked:text-blue-600">3 Years</span>
                 <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                   20% OFF
                 </Badge>
-              </div>
-            </ToggleGroupItem>
-          </ToggleGroup>
+              </label>
+            </div>
+          </RadioGroup>
         </div>
       </div>
 
