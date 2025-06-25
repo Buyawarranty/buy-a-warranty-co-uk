@@ -19,7 +19,7 @@ export const AdminSidebar = ({ activeTab, setActiveTab }: AdminSidebarProps) => 
     <Sidebar className="border-r border-gray-200">
       <SidebarHeader className="p-6 border-b border-gray-200">
         <div className="flex items-center space-x-2">
-          <Shield className="h-8 w-8 text-blue-600" />
+          <Shield className="h-8 w-8 text-orange-600" />
           <h2 className="text-lg font-semibold text-gray-900">Admin Panel</h2>
         </div>
       </SidebarHeader>
