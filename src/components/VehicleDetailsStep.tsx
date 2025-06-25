@@ -53,15 +53,18 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
           <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700">
             Car registration number <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
-          <div className="flex items-center bg-[#ffdb00] text-gray-800 font-bold text-lg tracking-widest py-3 px-6 rounded mb-4 w-fit cursor-pointer" onClick={() => document.getElementById('regInput')?.focus()}>
-            <span className="bg-[#0052cc] text-white text-xs font-semibold py-1 px-2 rounded mr-3">GB</span>
+          <div 
+            className="flex items-center bg-[#ffdb00] text-gray-900 font-semibold text-[20px] px-[20px] py-[12px] rounded-[4px] mb-4 shadow-sm tracking-[2px] leading-tight cursor-pointer w-fit"
+            onClick={() => document.getElementById('regInput')?.focus()}
+          >
+            <span className="bg-[#0052cc] text-white text-[10px] font-bold px-[6px] py-[3px] rounded-[3px] mr-[10px]">GB</span>
             <input
               id="regInput"
               type="text"
               value={regNumber || 'AB12 CDE'}
               onChange={handleRegChange}
-              className="bg-transparent border-none outline-none font-bold text-lg tracking-widest text-gray-800"
-              style={{ width: regNumber ? `${regNumber.length * 0.8}ch` : '7ch', minWidth: '7ch' }}
+              className="bg-transparent border-none outline-none font-semibold text-[20px] tracking-[2px] text-gray-900"
+              style={{ width: regNumber ? `${regNumber.length * 1.2}ch` : '7ch', minWidth: '7ch' }}
               maxLength={8}
             />
           </div>
@@ -69,18 +72,18 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             type="button"
             onClick={handleFindCar}
             disabled={!regNumber}
-            className="w-full bg-[#b0d7f5] text-white font-semibold py-3 rounded hover:bg-[#8bc6f0] transition mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-[#b0d7f5] hover:bg-[#8bc6f0] text-white text-[15px] font-semibold px-[20px] py-[8px] rounded-[4px] transition duration-200 mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Find my car
           </button>
 
           {vehicleFound && (
-            <div className="bg-[#f0f9ff] border border-blue-300 rounded p-4 mb-6">
+            <div className="bg-[#f0f9ff] border border-blue-300 rounded-[4px] p-4 mb-6">
               <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following car</p>
               <p className="text-sm text-gray-600">AUDI A3 SE TDI 105 • 3-door • 1598cc • Diesel • Manual (2012–2014)</p>
               <button 
                 type="button"
-                className="mt-2 text-sm bg-white border border-gray-300 py-2 px-4 rounded hover:bg-gray-100 transition"
+                className="mt-2 text-sm bg-white border border-gray-300 px-[16px] py-[6px] rounded-[4px] hover:bg-gray-100 transition duration-200"
               >
                 This is not my car
               </button>
@@ -98,7 +101,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
                 value={mileage}
                 onChange={(e) => setMileage(e.target.value)}
                 placeholder="e.g. 32000"
-                className="w-full border border-gray-300 rounded py-3 px-4 mb-2 focus:outline-none focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-[4px] px-[16px] py-[12px] mb-2 focus:outline-none focus:border-blue-500"
                 max="150000"
               />
               <p className="text-sm text-gray-500 mb-6">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
@@ -106,7 +109,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
               <button 
                 type="submit"
                 disabled={!regNumber || !mileage || parseInt(mileage) > 150000}
-                className="w-full bg-[#ffaf94] text-white font-semibold py-3 rounded hover:bg-[#f98662] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#ffaf94] hover:bg-[#f98662] text-white text-[15px] font-semibold px-[20px] py-[12px] rounded-[4px] transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Continue →
               </button>
