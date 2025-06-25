@@ -22,7 +22,7 @@ interface Plan {
   is_active: boolean;
 }
 
-// Default plan features from the pricing page
+// Correct plan features that match the PricingTable component
 const defaultPlanFeatures = {
   basic: [
     'Mechanical Breakdown Protection',
@@ -91,6 +91,7 @@ const defaultPlanFeatures = {
   ]
 };
 
+// Correct add-ons that match the PricingTable component
 const defaultAddOns = {
   basic: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo'],
   gold: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo'],
@@ -365,6 +366,18 @@ export const PlansTab = () => {
                                   })}
                                 />
                               </div>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                              <div></div>
+                              <Button
+                                onClick={() => resetToDefaults(editingPlan.name)}
+                                variant="outline"
+                                size="sm"
+                                className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                              >
+                                Reset to Correct Defaults
+                              </Button>
                             </div>
 
                             <div>
