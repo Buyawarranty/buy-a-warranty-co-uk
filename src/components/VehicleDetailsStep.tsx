@@ -9,6 +9,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
   const [regNumber, setRegNumber] = useState('');
   const [mileage, setMileage] = useState('');
   const [vehicleFound, setVehicleFound] = useState(false);
+  const [mileageError, setMileageError] = useState('');
 
   const formatRegNumber = (value: string) => {
     const formatted = value.replace(/\s/g, '').toUpperCase();
@@ -18,11 +19,43 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
     return formatted;
   };
 
+  const formatMileage = (value: string) => {
+    // Remove all non-digits
+    const numericValue = value.replace(/\D/g, '');
+    // Add commas
+    return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
   const handleRegChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatRegNumber(e.target.value);
     if (formatted.length <= 8) {
       setRegNumber(formatted);
     }
+  };
+
+  const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/,/g, ''); // Remove commas for validation
+    const numericValue = parseInt(rawValue);
+    
+    if (rawValue === '') {
+      setMileage('');
+      setMileageError('');
+      return;
+    }
+    
+    if (isNaN(numericValue)) {
+      return; // Don't update if not a valid number
+    }
+    
+    if (numericValue > 150000) {
+      setMileageError('We can only provide warranty for vehicles with a maximum mileage of 150,000');
+      return;
+    } else {
+      setMileageError('');
+    }
+    
+    const formattedValue = formatMileage(rawValue);
+    setMileage(formattedValue);
   };
 
   const handleFindCar = () => {
@@ -33,10 +66,16 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (regNumber && mileage) {
-      onNext({ regNumber, mileage });
+    const rawMileage = mileage.replace(/,/g, '');
+    const numericMileage = parseInt(rawMileage);
+    
+    if (regNumber && mileage && numericMileage <= 150000) {
+      onNext({ regNumber, mileage: rawMileage });
     }
   };
+
+  const rawMileage = mileage.replace(/,/g, '');
+  const numericMileage = parseInt(rawMileage) || 0;
 
   return (
     <section className="bg-[#e8f4fb] py-10 min-h-screen">
@@ -100,19 +139,25 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
                 What's your approximate mileage? <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your current mileage as shown on your odometer">?</span>
               </label>
               <input
-                type="number"
+                type="text"
                 id="mileage"
                 value={mileage}
-                onChange={(e) => setMileage(e.target.value)}
-                placeholder="e.g. 32000"
-                className="w-full border border-gray-300 rounded-[4px] px-[16px] py-[12px] mb-2 focus:outline-none focus:border-blue-500"
-                max="150000"
+                onChange={handleMileageChange}
+                placeholder="e.g. 32,000"
+                className={`w-full border rounded-[4px] px-[16px] py-[12px] mb-2 focus:outline-none focus:border-blue-500 ${
+                  mileageError ? 'border-red-500' : 'border-gray-300'
+                }`}
               />
-              <p className="text-sm text-gray-500 mb-6">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
+              {mileageError && (
+                <p className="text-sm text-red-500 mb-2">{mileageError}</p>
+              )}
+              {!mileageError && (
+                <p className="text-sm text-gray-500 mb-6">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
+              )}
 
               <button 
                 type="submit"
-                disabled={!regNumber || !mileage || parseInt(mileage) > 150000}
+                disabled={!regNumber || !mileage || numericMileage > 150000 || mileageError !== ''}
                 className="w-full bg-[#ffaf94] hover:bg-[#f98662] text-white text-[15px] font-semibold px-[20px] py-[12px] rounded-[4px] transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Continue →
