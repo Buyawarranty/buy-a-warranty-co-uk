@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 
 interface VehicleDetailsStepProps {
@@ -93,7 +94,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     <section className="bg-[#e8f4fb] py-10 min-h-screen">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
         <div className="flex items-center mb-6">
-          <div className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded-full mr-4 font-bold">1</div>
+          <div 
+            className="flex items-center justify-center w-8 h-8 text-white rounded-full mr-4 font-bold"
+            style={{ backgroundColor: '#224380' }}
+          >
+            1
+          </div>
           <div>
             <h2 className="text-xl font-bold text-gray-800">Your Car</h2>
             <p className="text-sm text-gray-600">Let's start with your vehicle details</p>
@@ -102,7 +108,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700">
-            Car registration number <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your vehicle's registration number as shown on your number plate">?</span>
+            Car registration number <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
           <div 
             className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-4 shadow-sm leading-tight cursor-pointer border-2 border-black"
@@ -127,18 +133,33 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             type="button"
             onClick={handleFindCar}
             disabled={!regNumber}
-            className="bg-[#d4531a] hover:bg-[#b8461a] text-white text-[15px] font-bold py-[14px] px-[20px] rounded-[2px] mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-6 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            style={{
+              backgroundColor: regNumber ? '#224380' : '#e5e7eb',
+              borderColor: regNumber ? '#224380' : '#d1d5db',
+              color: regNumber ? 'white' : '#9ca3af'
+            }}
           >
             Find my car
           </button>
 
           {vehicleFound && (
-            <div className="bg-[#f0f9ff] border border-blue-300 rounded-[4px] p-4 mb-6">
+            <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-6">
               <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following car</p>
               <p className="text-sm text-gray-600">AUDI A3 SE TDI 105 • 3-door • 1598cc • Diesel • Manual (2012–2014)</p>
               <button 
                 type="button"
-                className="mt-2 text-sm bg-white border border-gray-300 px-[16px] py-[6px] rounded-[4px] hover:bg-gray-100 transition duration-200"
+                className="mt-2 text-sm bg-white border-2 px-[16px] py-[6px] rounded-[6px] transition-all duration-200"
+                style={{
+                  borderColor: '#224380',
+                  color: '#224380'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f0f8ff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                }}
               >
                 This is not my car
               </button>
@@ -148,7 +169,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           {vehicleFound && (
             <>
               <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700">
-                What's your approximate mileage? <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your current mileage as shown on your odometer">?</span>
+                What's your approximate mileage? <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your current mileage as shown on your odometer">?</span>
               </label>
               <input
                 type="text"
@@ -156,9 +177,22 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 value={mileage}
                 onChange={handleMileageChange}
                 placeholder="e.g. 32,000"
-                className={`w-full border rounded-[4px] px-[16px] py-[12px] mb-2 focus:outline-none focus:border-blue-500 ${
+                className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] mb-2 focus:outline-none ${
                   mileageError ? 'border-red-500' : 'border-gray-300'
                 }`}
+                style={{
+                  focusBorderColor: mileageError ? '#ef4444' : '#224380'
+                }}
+                onFocus={(e) => {
+                  if (!mileageError) {
+                    e.target.style.borderColor = '#224380';
+                  }
+                }}
+                onBlur={(e) => {
+                  if (!mileageError) {
+                    e.target.style.borderColor = '#d1d5db';
+                  }
+                }}
               />
               {mileageError && (
                 <p className="text-sm text-red-500 mb-2">{mileageError}</p>
@@ -170,7 +204,11 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               <button 
                 type="submit"
                 disabled={!regNumber || !mileage || numericMileage > 150000 || mileageError !== ''}
-                className="w-full bg-[#ffaf94] hover:bg-[#f98662] text-white text-[15px] font-semibold px-[20px] py-[12px] rounded-[4px] transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: (!regNumber || !mileage || numericMileage > 150000 || mileageError !== '') ? '#e5e7eb' : '#eb4b00',
+                  borderColor: (!regNumber || !mileage || numericMileage > 150000 || mileageError !== '') ? '#d1d5db' : '#eb4b00'
+                }}
               >
                 Continue →
               </button>

@@ -158,8 +158,6 @@ html {
   }
 }
 
-/* ... keep existing code (all Swinton Design System styles) */
-
 /* Swinton Design System Components */
 
 /* Form Section Card */
@@ -179,7 +177,7 @@ html {
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: #00a3e0;
+  background-color: #224380;
   color: white;
   border-radius: 50%;
   font-weight: bold;
@@ -266,21 +264,22 @@ html {
   font-weight: bold;
 }
 
-/* Primary Button - Swinton Light Blue */
+/* Primary Button - Official Brand Blue */
 .btn-primary {
-  background-color: #b0d7f5;
-  color: #333;
+  background-color: #224380;
+  color: white;
   font-weight: bold;
-  border: none;
+  border: 2px solid #224380;
   border-radius: 6px;
   padding: 12px 25px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #8bc6f0;
+  background-color: #1a3460;
+  border-color: #1a3460;
 }
 
 .btn-primary:disabled {
@@ -290,10 +289,10 @@ html {
 
 /* Secondary Button */
 .btn-secondary {
-  background: transparent;
-  border: 2px solid #ccc;
-  color: #333;
-  font-weight: normal;
+  background: white;
+  border: 2px solid #224380;
+  color: #224380;
+  font-weight: bold;
   border-radius: 6px;
   padding: 12px 25px;
   font-size: 16px;
@@ -302,16 +301,15 @@ html {
 }
 
 .btn-secondary:hover {
-  background-color: #f9f9f9;
-  border-color: #00a3e0;
+  background-color: #f0f8ff;
 }
 
-/* CTA Button - Orange */
+/* CTA Button - Official Brand Orange */
 .btn-cta {
-  background-color: #ff6b35;
+  background-color: #eb4b00;
   color: white;
-  font-weight: normal;
-  border: none;
+  font-weight: bold;
+  border: 2px solid #eb4b00;
   border-radius: 6px;
   padding: 12px 25px;
   font-size: 16px;
@@ -319,11 +317,12 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-cta:hover:not(:disabled) {
-  background-color: #e55a2e;
+  background-color: #d43f00;
+  border-color: #d43f00;
 }
 
 .btn-cta:disabled {
@@ -344,7 +343,7 @@ html {
 .form-input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   border-radius: 6px;
   font-size: 15px;
   box-sizing: border-box;
@@ -352,7 +351,7 @@ html {
 }
 
 .form-input:focus {
-  border-color: #00a3e0;
+  border-color: #224380;
   outline: none;
 }
 
@@ -361,12 +360,12 @@ html {
   display: inline-block;
   margin-left: 6px;
   cursor: pointer;
-  color: #00a3e0;
+  color: #224380;
   font-size: 16px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1px solid #00a3e0;
+  border: 1px solid #224380;
   text-align: center;
   line-height: 16px;
   font-weight: bold;
@@ -375,7 +374,7 @@ html {
 /* Vehicle Found Card */
 .vehicle-found-card {
   background-color: #f0f8ff;
-  border: 1px solid #b3d9ff;
+  border: 1px solid #224380;
   border-radius: 6px;
   padding: 16px;
 }
@@ -461,7 +460,7 @@ html {
 }
 
 .step.active {
-  color: #00a3e0;
+  color: #224380;
   font-weight: bold;
 }
 
@@ -474,7 +473,7 @@ html {
   width: 28px;
   height: 28px;
   background: #e8f4fb;
-  border: 2px solid #00a3e0;
+  border: 2px solid #224380;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -485,7 +484,7 @@ html {
 }
 
 .step.active .circle {
-  background: #00a3e0;
+  background: #224380;
   color: white;
 }
 
@@ -556,4 +555,3 @@ html {
     display: none;
   }
 }
-

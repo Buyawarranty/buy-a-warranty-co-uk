@@ -12,13 +12,13 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
 
   return (
     <div className="w-full bg-white border-b border-gray-200 shadow-sm">
-      {/* Orange Top Progress Bar - Using exact logo orange */}
+      {/* Orange Top Progress Bar - Using official brand orange */}
       <div className="w-full h-1 bg-gray-200">
         <div 
           className="h-full transition-all duration-300 ease-out"
           style={{ 
             width: `${progressPercentage}%`,
-            backgroundColor: '#ff6b35' // Exact orange from logo
+            backgroundColor: '#eb4b00' // Official brand orange
           }}
         />
       </div>
@@ -37,12 +37,12 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
         <div className="relative">
           {/* Background Progress Track */}
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-            {/* Active Progress Fill - Using exact logo blue */}
+            {/* Active Progress Fill - Using official brand blue */}
             <div 
               className="h-full rounded-full transition-all duration-300 ease-out"
               style={{ 
                 width: `${progressPercentage}%`,
-                backgroundColor: '#00a3e0' // Exact blue from logo
+                backgroundColor: '#224380' // Official brand blue
               }}
             />
           </div>
@@ -62,7 +62,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                     isCompleted ? '' : 'text-gray-400'
                   }`}
                   style={{
-                    color: isActive || isCompleted ? '#00a3e0' : undefined
+                    color: isActive || isCompleted ? '#224380' : undefined
                   }}
                 >
                   {/* Step Circle */}
@@ -71,7 +71,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                       isActive || isCompleted ? 'text-white' : 'bg-gray-200 text-gray-400'
                     }`}
                     style={{
-                      backgroundColor: isActive || isCompleted ? '#00a3e0' : undefined
+                      backgroundColor: isActive || isCompleted ? '#224380' : undefined
                     }}
                   >
                     {isCompleted ? '✓' : stepNumber}
