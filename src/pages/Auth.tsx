@@ -90,7 +90,7 @@ const Auth = () => {
         <CardHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
             <img 
-              src="/lovable-uploads/62854118-6cac-435e-9c23-eebc80100549.png" 
+              src="/lovable-uploads/94e2bb14-c4e8-4f82-8bda-81c5568b3534.png" 
               alt="BuyAWarranty Logo" 
               className="h-16 w-auto"
             />
@@ -161,7 +161,7 @@ const Auth = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#0EA5E9] hover:bg-[#0284C7] text-white"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white"
             >
               {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
             </Button>
@@ -171,15 +171,15 @@ const Auth = () => {
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-[#0EA5E9] hover:text-[#0284C7]"
+              className="text-sm text-orange-500 hover:text-orange-600"
             >
               {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </button>
           </div>
 
           {isLogin && (
-            <div className="mt-4 p-3 bg-blue-50 rounded-md">
-              <p className="text-xs text-blue-600 text-center">
+            <div className="mt-4 p-3 bg-orange-50 rounded-md">
+              <p className="text-xs text-orange-600 text-center">
                 Master Admin: Username "Admin", Password "Warranty1234"
               </p>
             </div>
