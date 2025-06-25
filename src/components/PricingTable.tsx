@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, Plus, Minus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface PricingData {
   basic: { monthly: number; yearly: number; };
@@ -72,9 +71,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const calculateAddOnPrice = (planId: string) => {
     const addOnCount = selectedAddOns[planId];
     if (paymentType === 'monthly') {
-      return Math.round((25 * addOnCount) / 12 * 100) / 100; // £25 per year divided by 12 months
+      return Math.round((25 * addOnCount) / 12 * 100) / 100;
     }
-    return 25 * addOnCount; // £25 per year
+    return 25 * addOnCount;
   };
 
   const updateAddOns = (planId: string, change: number) => {
@@ -89,9 +88,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       id: 'basic',
       name: 'Basic Extended Warranty',
       color: '#0e3e87',
-      bgGradient: 'from-[#0e3e87] to-[#1a4ba3]',
-      borderColor: 'border-[#0e3e87]',
-      buttonColor: 'bg-[#0e3e87] hover:bg-[#0d3675]',
+      bgColor: '#0e3e87',
       features: [
         'Mechanical Breakdown Protection',
         'Labour up to £35 p/hr',
@@ -112,9 +109,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       id: 'gold',
       name: 'Gold Extended Warranty',
       color: '#f59e0b',
-      bgGradient: 'from-yellow-500 to-yellow-600',
-      borderColor: 'border-yellow-400',
-      buttonColor: 'bg-yellow-500 hover:bg-yellow-600',
+      bgColor: '#f59e0b',
       popular: true,
       features: [
         'Mechanical & Electrical Breakdown Warranty',
@@ -144,9 +139,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       id: 'platinum',
       name: 'Platinum Extended Warranty',
       color: '#dc4f20',
-      bgGradient: 'from-[#dc4f20] to-[#c44018]',
-      borderColor: 'border-[#dc4f20]',
-      buttonColor: 'bg-[#dc4f20] hover:bg-[#c44018]',
+      bgColor: '#dc4f20',
       features: [
         'Mechanical & Electrical Breakdown',
         'Labour up to £100 p/hr',
@@ -186,225 +179,226 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   return (
     <div className="min-h-screen bg-[#e8f4fb] w-full">
-      <div className="w-full">
-        {/* Back Button */}
-        <div className="mb-6 px-6 pt-8">
-          <Button 
-            variant="outline" 
-            onClick={onBack}
-            className="flex items-center gap-2 hover:bg-white"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Contact Details
-          </Button>
-        </div>
+      {/* Back Button */}
+      <div className="mb-8 px-8 pt-8">
+        <Button 
+          variant="outline" 
+          onClick={onBack}
+          className="flex items-center gap-2 hover:bg-white text-lg px-6 py-3"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back to Contact Details
+        </Button>
+      </div>
 
-        {/* Header */}
-        <div className="text-center mb-8 px-6">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Your Warranty Quote
-          </h1>
-          
-          {/* Vehicle Registration Plate Display */}
-          <div className="flex justify-center mb-6">
-            <div className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
-              <img 
-                src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
-                alt="GB Flag" 
-                className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
-              />
-              <div className="flex-1 text-center font-bold font-sans tracking-normal">
-                {vehicleData.regNumber || 'H12 FXL'}
-              </div>
-            </div>
-          </div>
-          
-          <p className="text-lg text-gray-600 mb-8">
-            Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
-          </p>
-        </div>
-
-        {/* Contribution Amount Selector */}
-        <div className="flex flex-col items-center mb-8 px-6">
-          <Label className="text-xl font-semibold mb-6 text-gray-700">
-            Select Your Contribution Amount
-          </Label>
-          <div className="flex flex-wrap justify-center gap-4">
-            {[0, 50, 100, 150, 200].map((amount) => (
-              <Button
-                key={amount}
-                variant={contributionAmount === amount ? "default" : "outline"}
-                onClick={() => setContributionAmount(amount)}
-                className={`px-8 py-3 text-lg font-semibold ${
-                  contributionAmount === amount 
-                    ? 'bg-[#224380] hover:bg-[#1a3460]' 
-                    : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
-                }`}
-              >
-                £{amount}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {/* Payment Toggle - Larger and more prominent */}
-        <div className="flex items-center justify-center mb-12 px-6">
-          <div className="bg-white rounded-full p-2 shadow-lg border-2 border-gray-200">
-            <div className="flex items-center gap-6 px-6 py-3">
-              <Label 
-                htmlFor="payment-type" 
-                className={`text-lg font-semibold cursor-pointer ${paymentType === 'monthly' ? 'text-[#224380]' : 'text-gray-500'}`}
-              >
-                Pay Monthly
-              </Label>
-              <Switch
-                id="payment-type"
-                checked={paymentType === 'yearly'}
-                onCheckedChange={(checked) => setPaymentType(checked ? 'yearly' : 'monthly')}
-                className="scale-125"
-              />
-              <Label 
-                htmlFor="payment-type" 
-                className={`text-lg font-semibold cursor-pointer ${paymentType === 'yearly' ? 'text-[#224380]' : 'text-gray-500'}`}
-              >
-                Pay Yearly 
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 font-bold">
-                  Save 10%
-                </Badge>
-              </Label>
+      {/* Header */}
+      <div className="text-center mb-12 px-8">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-8">
+          Your Warranty Quote
+        </h1>
+        
+        {/* Vehicle Registration Plate Display */}
+        <div className="flex justify-center mb-8">
+          <div className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
+            <img 
+              src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
+              alt="GB Flag" 
+              className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
+            />
+            <div className="flex-1 text-center font-bold font-sans tracking-normal">
+              {vehicleData.regNumber || 'H12 FXL'}
             </div>
           </div>
         </div>
+        
+        <p className="text-xl text-gray-600 mb-12">
+          Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
+        </p>
+      </div>
 
-        {/* Pricing Cards - Full Width */}
-        <div className="w-full px-6 pb-12">
-          <div className="grid lg:grid-cols-3 gap-8 max-w-none">
-            {plans.map((plan) => {
-              const pricing = getCurrentPricing();
-              const planPricing = pricing[plan.id as keyof PricingData];
-              const basePrice = paymentType === 'monthly' ? planPricing.monthly : planPricing.yearly;
-              const addOnPrice = calculateAddOnPrice(plan.id);
-              const totalPrice = basePrice + addOnPrice;
-              const savings = calculateSavings(planPricing.monthly, planPricing.yearly);
-              
-              return (
-                <Card key={plan.id} className={`relative overflow-hidden ${plan.borderColor} border-2 ${plan.popular ? 'scale-105 shadow-2xl ring-4 ring-yellow-300' : 'shadow-xl'} bg-white`}>
-                  {plan.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full text-sm font-bold z-10 shadow-lg">
-                      MOST POPULAR
+      {/* Contribution Amount Selector */}
+      <div className="flex flex-col items-center mb-12 px-8">
+        <Label className="text-2xl font-semibold mb-8 text-gray-700">
+          Select Your Contribution Amount
+        </Label>
+        <div className="flex flex-wrap justify-center gap-6">
+          {[0, 50, 100, 150, 200].map((amount) => (
+            <Button
+              key={amount}
+              variant={contributionAmount === amount ? "default" : "outline"}
+              onClick={() => setContributionAmount(amount)}
+              className={`px-10 py-4 text-xl font-semibold ${
+                contributionAmount === amount 
+                  ? 'bg-[#224380] hover:bg-[#1a3460]' 
+                  : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
+              }`}
+            >
+              £{amount}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Payment Toggle */}
+      <div className="flex items-center justify-center mb-16 px-8">
+        <div className="bg-white rounded-full p-3 shadow-lg border-2 border-gray-200">
+          <div className="flex items-center gap-8 px-8 py-4">
+            <Label 
+              htmlFor="payment-type" 
+              className={`text-xl font-semibold cursor-pointer ${paymentType === 'monthly' ? 'text-[#224380]' : 'text-gray-500'}`}
+            >
+              Pay Monthly
+            </Label>
+            <Switch
+              id="payment-type"
+              checked={paymentType === 'yearly'}
+              onCheckedChange={(checked) => setPaymentType(checked ? 'yearly' : 'monthly')}
+              className="scale-150"
+            />
+            <Label 
+              htmlFor="payment-type" 
+              className={`text-xl font-semibold cursor-pointer ${paymentType === 'yearly' ? 'text-[#224380]' : 'text-gray-500'}`}
+            >
+              Pay Yearly 
+              <Badge variant="secondary" className="ml-3 bg-green-100 text-green-800 font-bold text-sm">
+                Save 10%
+              </Badge>
+            </Label>
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing Cards */}
+      <div className="w-full px-8 pb-16">
+        <div className="grid lg:grid-cols-3 gap-12 max-w-none">
+          {plans.map((plan) => {
+            const pricing = getCurrentPricing();
+            const planPricing = pricing[plan.id as keyof PricingData];
+            const basePrice = paymentType === 'monthly' ? planPricing.monthly : planPricing.yearly;
+            const addOnPrice = calculateAddOnPrice(plan.id);
+            const totalPrice = basePrice + addOnPrice;
+            const savings = calculateSavings(planPricing.monthly, planPricing.yearly);
+            
+            return (
+              <Card key={plan.id} className={`relative overflow-hidden border-3 ${plan.popular ? 'scale-105 shadow-2xl ring-4 ring-yellow-300' : 'shadow-xl'} bg-white rounded-2xl`}
+                style={{ borderColor: plan.color, borderWidth: '3px' }}>
+                {plan.popular && (
+                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-lg font-bold z-10 shadow-lg">
+                    MOST POPULAR
+                  </div>
+                )}
+                
+                {/* Header */}
+                <CardHeader className="text-center py-12" style={{ backgroundColor: plan.bgColor }}>
+                  <h3 className="text-3xl font-bold mb-4 text-white">{plan.name}</h3>
+                  <div className="text-lg opacity-90 mb-2 text-white">From</div>
+                  <div className="text-5xl font-bold mb-3 text-white">
+                    £{totalPrice}
+                  </div>
+                  <div className="text-xl opacity-90 mb-4 text-white">
+                    per {paymentType}
+                  </div>
+                  {paymentType === 'yearly' && (
+                    <div className="text-sm bg-white/20 rounded-full px-6 py-3 inline-block text-white">
+                      Save £{savings} (10% discount)
                     </div>
                   )}
-                  
-                  {/* Header with brand colors */}
-                  <CardHeader className={`bg-gradient-to-r ${plan.bgGradient} text-white text-center py-8`}>
-                    <h3 className="text-2xl font-bold mb-3">{plan.name}</h3>
-                    <div className="text-sm opacity-90 mb-2">From</div>
-                    <div className="text-4xl font-bold mb-2">
-                      £{totalPrice}
+                </CardHeader>
+
+                {/* Content */}
+                <CardContent className="p-10">
+                  {/* What's Covered */}
+                  <div className="mb-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-5 h-5 text-white" />
+                      </div>
+                      <h4 className="text-2xl font-bold text-gray-800">What's Covered:</h4>
                     </div>
-                    <div className="text-lg opacity-90 mb-3">
-                      per {paymentType}
+                    <div className="grid grid-cols-1 gap-4">
+                      {plan.features.map((feature, index) => (
+                        <div key={index} className="flex items-start gap-4">
+                          <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                          <span className="text-gray-700 text-lg leading-relaxed">{feature}</span>
+                        </div>
+                      ))}
                     </div>
-                    {paymentType === 'yearly' && (
-                      <div className="text-sm bg-white/20 rounded-full px-4 py-2 inline-block">
-                        Save £{savings} (10% discount)
+                  </div>
+
+                  {/* Add-ons */}
+                  <div className="mb-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <Plus className="w-8 h-8 text-blue-500" />
+                      <h4 className="text-2xl font-bold text-gray-800">Optional Add-ons – £25.00 per item per year:</h4>
+                    </div>
+                    <div className="space-y-4 mb-6">
+                      {plan.addOns.map((addon, index) => (
+                        <div key={index} className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
+                          <span className="text-gray-700 text-lg font-medium">{addon}</span>
+                          <div className="flex items-center gap-3">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => updateAddOns(plan.id, -1)}
+                              disabled={selectedAddOns[plan.id] === 0}
+                              className="h-10 w-10 p-0 rounded-full"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </Button>
+                            <span className="w-10 text-center font-bold text-lg">
+                              {selectedAddOns[plan.id]}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => updateAddOns(plan.id, 1)}
+                              className="h-10 w-10 p-0 rounded-full"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {selectedAddOns[plan.id] > 0 && (
+                      <div className="text-lg text-gray-600 bg-blue-50 p-4 rounded-xl">
+                        Add-ons total: £{addOnPrice.toFixed(2)} per {paymentType}
                       </div>
                     )}
-                  </CardHeader>
+                  </div>
 
-                  {/* Features */}
-                  <CardContent className="p-8">
-                    <div className="mb-8">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white" />
-                        </div>
-                        <h4 className="text-xl font-bold text-gray-800">What's Covered:</h4>
-                      </div>
-                      <div className="space-y-3 max-h-80 overflow-y-auto">
-                        {plan.features.map((feature, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700 leading-relaxed">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                  {/* Select Button */}
+                  <Button 
+                    className="w-full text-white font-bold py-6 text-xl shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl"
+                    style={{ backgroundColor: plan.bgColor }}
+                    onClick={() => handleSelectPlan(plan.id)}
+                  >
+                    Select {plan.name.split(' ')[0]}
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
 
-                    {/* Add-ons with interactive selection */}
-                    <div className="mb-8">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Plus className="w-6 h-6 text-blue-500" />
-                        <h4 className="text-xl font-bold text-gray-800">Optional Add-ons – £25.00 per item per year:</h4>
-                      </div>
-                      <div className="space-y-3 mb-4">
-                        {plan.addOns.map((addon, index) => (
-                          <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                            <span className="text-gray-700">{addon}</span>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => updateAddOns(plan.id, -1)}
-                                disabled={selectedAddOns[plan.id] === 0}
-                                className="h-8 w-8 p-0"
-                              >
-                                <Minus className="w-4 h-4" />
-                              </Button>
-                              <span className="w-8 text-center font-semibold">
-                                {selectedAddOns[plan.id]}
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => updateAddOns(plan.id, 1)}
-                                className="h-8 w-8 p-0"
-                              >
-                                <Plus className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      {selectedAddOns[plan.id] > 0 && (
-                        <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
-                          Add-ons total: £{addOnPrice.toFixed(2)} per {paymentType}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Select Button */}
-                    <Button 
-                      className={`w-full ${plan.buttonColor} text-white font-bold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200`}
-                      onClick={() => handleSelectPlan(plan.id)}
-                    >
-                      Select {plan.name.split(' ')[0]}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
+      {/* Trust Indicators */}
+      <div className="text-center text-gray-500 px-8 pb-12">
+        <div className="flex items-center justify-center gap-12 mb-6 text-lg">
+          <div className="flex items-center gap-3">
+            <Check className="w-6 h-6 text-green-500" />
+            <span>Approved by financial authorities</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Check className="w-6 h-6 text-green-500" />
+            <span>30-day money-back guarantee</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Check className="w-6 h-6 text-green-500" />
+            <span>UK-based customer support</span>
           </div>
         </div>
-
-        {/* Trust Indicators */}
-        <div className="text-center text-gray-500 px-6 pb-8">
-          <div className="flex items-center justify-center gap-8 mb-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-500" />
-              <span>Approved by financial authorities</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-500" />
-              <span>30-day money-back guarantee</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-500" />
-              <span>UK-based customer support</span>
-            </div>
-          </div>
-          <p className="text-sm">All prices include VAT. Terms and conditions apply.</p>
-        </div>
+        <p className="text-lg">All prices include VAT. Terms and conditions apply.</p>
       </div>
     </div>
   );
