@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
 import ProgressIndicator from '@/components/ProgressIndicator';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { Shield } from 'lucide-react';
 
 interface VehicleData {
   regNumber: string;
@@ -53,6 +56,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-[#e8f4fb]">
+      {/* Admin Login Button */}
+      <div className="absolute top-4 right-4 z-50">
+        <Link to="/auth">
+          <Button variant="outline" size="sm" className="flex items-center space-x-2">
+            <Shield className="h-4 w-4" />
+            <span>Admin</span>
+          </Button>
+        </Link>
+      </div>
+
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
       
       {(currentStep === 1 || currentStep === 2) ? (
