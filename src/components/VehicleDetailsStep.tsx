@@ -60,15 +60,19 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             <span className="help-icon" title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </div>
           
-          {/* Swinton-style Registration Plate */}
+          {/* UK Registration Plate - Exact Match */}
           <div className="reg-plate-container">
             <div className="reg-plate-box">
-              <div className="flag">GB</div>
+              <div className="flag-section">
+                <div className="eu-stars">★★★★★★</div>
+                <div className="eu-stars">★★★★★★</div>
+                <div className="gb-text">GB</div>
+              </div>
               <input
                 type="text"
-                value={regNumber}
+                value={regNumber || 'YOUR REG'}
                 onChange={handleRegChange}
-                placeholder="AB12 CDE"
+                placeholder="YOUR REG"
                 className="reg-input"
                 maxLength={8}
               />
