@@ -12,11 +12,14 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
 
   return (
     <div className="w-full bg-white border-b border-gray-200 shadow-sm">
-      {/* Orange Top Progress Bar */}
+      {/* Orange Top Progress Bar - Using exact logo orange */}
       <div className="w-full h-1 bg-gray-200">
         <div 
-          className="h-full bg-orange-500 transition-all duration-300 ease-out"
-          style={{ width: `${progressPercentage}%` }}
+          className="h-full transition-all duration-300 ease-out"
+          style={{ 
+            width: `${progressPercentage}%`,
+            backgroundColor: '#ff6b35' // Exact orange from logo
+          }}
         />
       </div>
 
@@ -34,10 +37,13 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
         <div className="relative">
           {/* Background Progress Track */}
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-            {/* Active Progress Fill - Changed to blue to match logo */}
+            {/* Active Progress Fill - Using exact logo blue */}
             <div 
-              className="h-full bg-blue-600 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${progressPercentage}%` }}
+              className="h-full rounded-full transition-all duration-300 ease-out"
+              style={{ 
+                width: `${progressPercentage}%`,
+                backgroundColor: '#00a3e0' // Exact blue from logo
+              }}
             />
           </div>
 
@@ -52,17 +58,21 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                 <div 
                   key={index} 
                   className={`flex flex-col items-center ${
-                    isActive ? 'text-blue-600 font-semibold' : 
-                    isCompleted ? 'text-blue-600' : 'text-gray-400'
+                    isActive ? 'font-semibold' : 
+                    isCompleted ? '' : 'text-gray-400'
                   }`}
+                  style={{
+                    color: isActive || isCompleted ? '#00a3e0' : undefined
+                  }}
                 >
                   {/* Step Circle */}
                   <div 
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
-                      isActive ? 'bg-blue-600 text-white' :
-                      isCompleted ? 'bg-blue-600 text-white' : 
-                      'bg-gray-200 text-gray-400'
+                      isActive || isCompleted ? 'text-white' : 'bg-gray-200 text-gray-400'
                     }`}
+                    style={{
+                      backgroundColor: isActive || isCompleted ? '#00a3e0' : undefined
+                    }}
                   >
                     {isCompleted ? '✓' : stepNumber}
                   </div>
