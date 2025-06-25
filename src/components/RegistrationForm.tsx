@@ -4,14 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { ArrowRight, Car, Info, Phone, Mail } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Car, Info, Phone, Mail } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface RegistrationFormProps {
   onNext: (data: { regNumber: string; mileage: string; email?: string; phone?: string }) => void;
+  onBack?: () => void;
 }
 
-const RegistrationForm: React.FC<RegistrationFormProps> = ({ onNext }) => {
+const RegistrationForm: React.FC<RegistrationFormProps> = ({ onNext, onBack }) => {
   const [regNumber, setRegNumber] = useState('');
   const [mileage, setMileage] = useState('');
   const [email, setEmail] = useState('');
@@ -31,6 +32,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onNext }) => {
   const handleFinalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onNext({ regNumber, mileage, email: email || undefined, phone: phone || undefined });
+  };
+
+  const handleBackToStep1 = () => {
+    setCurrentStep(1);
   };
 
   const formatRegNumber = (value: string) => {
@@ -260,6 +265,15 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onNext }) => {
               </p>
 
               <div className="flex gap-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={handleBackToStep1}
+                  className="flex-1 py-3 text-lg"
+                >
+                  <ArrowLeft className="mr-2 w-5 h-5" />
+                  Back
+                </Button>
                 <Button 
                   type="button" 
                   variant="outline" 

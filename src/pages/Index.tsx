@@ -22,6 +22,10 @@ const Index = () => {
     setCurrentStep(3); // Skip to pricing (step 2 is integrated into registration)
   };
 
+  const handleBackToRegistration = () => {
+    setCurrentStep(2); // Go back to contact info step
+  };
+
   return (
     <div className="min-h-screen bg-[#e8f4fb]">
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
@@ -30,7 +34,7 @@ const Index = () => {
         <RegistrationForm onNext={handleRegistrationComplete} />
       ) : (
         <div className="py-8">
-          {vehicleData && <PricingTable vehicleData={vehicleData} />}
+          {vehicleData && <PricingTable vehicleData={vehicleData} onBack={handleBackToRegistration} />}
         </div>
       )}
     </div>
