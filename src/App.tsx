@@ -15,7 +15,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <div className="pb-20"> {/* Add bottom padding to prevent footer overlap */}
+      <div className="pb-24"> {/* Increased bottom padding for larger footer */}
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />

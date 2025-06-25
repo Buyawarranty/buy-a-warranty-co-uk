@@ -13,7 +13,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 pb-20"> {/* Add bottom padding for footer */}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 pb-24"> {/* Increased bottom padding for larger footer */}
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">404</h1>
         <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
