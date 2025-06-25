@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -131,40 +130,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             Your Warranty Quote
           </h1>
           
-          {/* Vehicle Registration Plate Display with GB Flag */}
-          <div className="reg-plate-container mb-4">
-            <div className="reg-plate-box">
-              <div className="flag-section relative">
-                {/* Union Jack Flag */}
-                <div className="w-full h-full relative overflow-hidden rounded-l-md">
-                  <div className="absolute inset-0 bg-blue-800"></div>
-                  
-                  {/* White diagonal cross */}
-                  <div className="absolute inset-0">
-                    <div className="absolute w-full h-0.5 bg-white top-1/2 transform -translate-y-0.5 rotate-45 origin-center"></div>
-                    <div className="absolute w-full h-0.5 bg-white top-1/2 transform -translate-y-0.5 -rotate-45 origin-center"></div>
-                  </div>
-                  
-                  {/* Red diagonal cross */}
-                  <div className="absolute inset-0">
-                    <div className="absolute w-full h-0.5 bg-red-600 top-1/2 transform -translate-y-0.5 rotate-45 origin-center scale-75"></div>
-                    <div className="absolute w-full h-0.5 bg-red-600 top-1/2 transform -translate-y-0.5 -rotate-45 origin-center scale-75"></div>
-                  </div>
-                  
-                  {/* White vertical and horizontal bars */}
-                  <div className="absolute w-full h-0.5 bg-white top-1/2 transform -translate-y-0.5"></div>
-                  <div className="absolute h-full w-0.5 bg-white left-1/2 transform -translate-x-0.5"></div>
-                  
-                  {/* Red vertical and horizontal bars */}
-                  <div className="absolute w-full h-0.5 bg-red-600 top-1/2 transform -translate-y-0.5 scale-75"></div>
-                  <div className="absolute h-full w-0.5 bg-red-600 left-1/2 transform -translate-x-0.5 scale-75"></div>
-                </div>
-                
-                <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-white text-xs font-bold">
-                  GB
-                </div>
-              </div>
-              <div className="reg-input" style={{ cursor: 'default' }}>
+          {/* Vehicle Registration Plate Display - matching step 1 design */}
+          <div className="flex justify-center mb-4">
+            <div 
+              className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black"
+            >
+              <img 
+                src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
+                alt="GB Flag" 
+                className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
+              />
+              <div className="flex-1 text-center font-bold font-sans tracking-normal">
                 {vehicleData.regNumber || 'H12 FXL'}
               </div>
             </div>
