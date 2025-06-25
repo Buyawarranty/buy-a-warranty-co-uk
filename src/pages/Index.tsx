@@ -22,19 +22,17 @@ const Index = () => {
     setCurrentStep(3); // Skip to pricing (step 2 is integrated into registration)
   };
 
-  if (currentStep === 1 || currentStep === 2) {
-    return (
-      <div>
-        <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
-        <RegistrationForm onNext={handleRegistrationComplete} />
-      </div>
-    );
-  }
-
   return (
-    <div>
+    <div className="min-h-screen bg-[#e8f4fb]">
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
-      {vehicleData && <PricingTable vehicleData={vehicleData} />}
+      
+      {(currentStep === 1 || currentStep === 2) ? (
+        <RegistrationForm onNext={handleRegistrationComplete} />
+      ) : (
+        <div className="py-8">
+          {vehicleData && <PricingTable vehicleData={vehicleData} />}
+        </div>
+      )}
     </div>
   );
 };

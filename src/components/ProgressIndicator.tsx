@@ -9,8 +9,8 @@ interface ProgressIndicatorProps {
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, totalSteps, steps }) => {
   return (
-    <div className="w-full bg-white shadow-sm border-b border-gray-200 py-6">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="w-full bg-white shadow-sm border-b border-gray-200">
+      <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="flex items-center justify-center">
           {steps.map((step, index) => {
             const stepNumber = index + 1;
@@ -21,7 +21,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
               <div key={index} className="flex items-center relative">
                 {/* Step Arrow Container */}
                 <div className={`
-                  relative px-8 py-3 text-sm font-medium transition-all duration-300
+                  relative px-6 py-3 text-sm font-medium transition-all duration-300
                   ${isActive 
                     ? 'bg-blue-500 text-white' 
                     : isCompleted 
@@ -36,7 +36,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                   {index < steps.length - 1 && (
                     <div className={`
                       absolute top-0 right-0 w-0 h-0 transform translate-x-full
-                      border-t-[20px] border-b-[20px] border-l-[12px]
+                      border-t-[24px] border-b-[24px] border-l-[12px]
                       ${isActive 
                         ? 'border-l-blue-500 border-t-transparent border-b-transparent' 
                         : isCompleted 
@@ -50,7 +50,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                   {index > 0 && (
                     <div className={`
                       absolute top-0 left-0 w-0 h-0 transform -translate-x-full
-                      border-t-[20px] border-b-[20px] border-r-[12px]
+                      border-t-[24px] border-b-[24px] border-r-[12px]
                       ${isActive 
                         ? 'border-r-blue-500 border-t-transparent border-b-transparent' 
                         : isCompleted 
@@ -60,7 +60,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                     `} />
                   )}
                   
-                  <span className="relative z-10">{step}</span>
+                  <span className="relative z-10 font-medium">{step}</span>
                 </div>
               </div>
             );
