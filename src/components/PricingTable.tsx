@@ -139,7 +139,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       name: 'Platinum',
       color: '#dc4f20',
       features: [
-        'Mechanical & Electrical Breakdown Warranty',
+        'Mechanical & Electrical Breakdown',
         'Labour up to £100 p/hr',
         'Halfords MOT test',
         'Unlimited Claims',
@@ -156,8 +156,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Bearings',
         'Cooling System',
         'Ventilation',
-        'E.C.U.',
-        'Electricals',
+        'ECU',
+        'Electrics',
         'Fuel System',
         'Air Conditioning',
         'Locks',
@@ -166,16 +166,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Vehicle Hire',
         'Vehicle Recovery',
         'European Cover'
-      ],
-      notIncluded: [
-        'Mechanical Breakdown Protection',
-        'Labour up to £35 p/hr',
-        'Labour up to £75 p/hr',
-        '10 Claims per year',
-        'Overdrive',
-        'Torque Convertor',
-        'Propshaft',
-        'Recovery'
       ],
       addOns: ['Power Hood']
     }
@@ -421,43 +411,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <div className="p-6">
                     <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
                     <div className="space-y-3 max-h-64 overflow-y-auto">
-                      {plan.id === 'basic' || plan.id === 'gold' ? (
-                        // For Basic and Gold plans, show only the specified features with ticks
-                        plan.features.map((feature, index) => (
-                          <div key={index} className="flex items-center gap-3">
-                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                              <Check className="w-3 h-3 text-white" />
-                            </div>
-                            <span className="text-sm text-gray-700">{feature}</span>
+                      {/* All plans now show only their specified features with ticks */}
+                      {plan.features.map((feature, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                          <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <Check className="w-3 h-3 text-white" />
                           </div>
-                        ))
-                      ) : (
-                        // For other plans, keep existing logic
-                        allPossibleFeatures.map((feature, index) => {
-                          const isIncluded = plan.features.includes(feature);
-                          const isExcluded = plan.notIncluded?.includes(feature);
-                          
-                          if (!isIncluded && !isExcluded) return null;
-                          
-                          return (
-                            <div key={index} className="flex items-center gap-3">
-                              {isIncluded ? (
-                                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                              ) : (
-                                <X className="w-5 h-5 text-red-400 flex-shrink-0" />
-                              )}
-                              <span className={`text-sm ${isIncluded ? 'text-gray-700' : 'text-gray-400'}`}>
-                                {feature}
-                              </span>
-                            </div>
-                          );
-                        })
-                      )}
+                          <span className="text-sm text-gray-700">{feature}</span>
+                        </div>
+                      ))}
                     </div>
 
                     {/* Add-ons Section */}
                     <div className="mt-6 pt-4 border-t">
-                      <h4 className="font-semibold text-gray-700 mb-3 text-sm">Additional Components (Optional Add-ons - £25.00 per item p/year)</h4>
+                      <h4 className="font-semibold text-gray-700 mb-3 text-xs">Additional Components (Optional Add-ons - £25.00 per item p/year)</h4>
                       <div className="space-y-3">
                         {plan.addOns.map((addon, index) => (
                           <div key={index} className="flex items-center gap-3">
