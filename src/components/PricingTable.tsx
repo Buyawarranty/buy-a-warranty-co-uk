@@ -241,11 +241,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
       {/* Payment Toggle */}
       <div className="flex items-center justify-center mb-16 px-8">
-        <div className="bg-white rounded-full p-3 shadow-lg border-2 border-gray-200">
-          <div className="flex items-center gap-8 px-8 py-4">
+        <div className="bg-white rounded-full p-6 shadow-lg border-2 border-gray-200">
+          <div className="flex items-center gap-12 px-12 py-6">
             <Label 
               htmlFor="payment-type" 
-              className={`text-xl font-semibold cursor-pointer ${paymentType === 'monthly' ? 'text-[#224380]' : 'text-gray-500'}`}
+              className={`text-2xl font-semibold cursor-pointer ${paymentType === 'monthly' ? 'text-[#224380]' : 'text-gray-500'}`}
             >
               Pay Monthly
             </Label>
@@ -253,14 +253,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               id="payment-type"
               checked={paymentType === 'yearly'}
               onCheckedChange={(checked) => setPaymentType(checked ? 'yearly' : 'monthly')}
-              className="scale-150"
+              className="scale-[2]"
             />
             <Label 
               htmlFor="payment-type" 
-              className={`text-xl font-semibold cursor-pointer ${paymentType === 'yearly' ? 'text-[#224380]' : 'text-gray-500'}`}
+              className={`text-2xl font-semibold cursor-pointer ${paymentType === 'yearly' ? 'text-[#224380]' : 'text-gray-500'}`}
             >
               Pay Yearly 
-              <Badge variant="secondary" className="ml-3 bg-green-100 text-green-800 font-bold text-sm">
+              <Badge variant="secondary" className="ml-4 bg-green-100 text-green-800 font-bold text-lg px-4 py-2">
                 Save 10%
               </Badge>
             </Label>
@@ -268,9 +268,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Pricing Cards */}
+      {/* Pricing Cards - Full Width */}
       <div className="w-full px-8 pb-16">
-        <div className="grid lg:grid-cols-3 gap-12 max-w-none">
+        <div className="grid lg:grid-cols-3 gap-8 w-full">
           {plans.map((plan) => {
             const pricing = getCurrentPricing();
             const planPricing = pricing[plan.id as keyof PricingData];
@@ -280,7 +280,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             const savings = calculateSavings(planPricing.monthly, planPricing.yearly);
             
             return (
-              <Card key={plan.id} className={`relative overflow-hidden border-3 ${plan.popular ? 'scale-105 shadow-2xl ring-4 ring-yellow-300' : 'shadow-xl'} bg-white rounded-2xl`}
+              <Card key={plan.id} className={`relative overflow-hidden border-3 ${plan.popular ? 'scale-105 shadow-2xl ring-4 ring-yellow-300' : 'shadow-xl'} bg-white rounded-2xl h-full`}
                 style={{ borderColor: plan.color, borderWidth: '3px' }}>
                 {plan.popular && (
                   <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-lg font-bold z-10 shadow-lg">
@@ -306,9 +306,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 </CardHeader>
 
                 {/* Content */}
-                <CardContent className="p-10">
+                <CardContent className="p-10 flex-1 flex flex-col">
                   {/* What's Covered */}
-                  <div className="mb-10">
+                  <div className="mb-10 flex-1">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                         <Check className="w-5 h-5 text-white" />
@@ -369,7 +369,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
                   {/* Select Button */}
                   <Button 
-                    className="w-full text-white font-bold py-6 text-xl shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl"
+                    className="w-full text-white font-bold py-8 text-2xl shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl mt-auto"
                     style={{ backgroundColor: plan.bgColor }}
                     onClick={() => handleSelectPlan(plan.id)}
                   >
