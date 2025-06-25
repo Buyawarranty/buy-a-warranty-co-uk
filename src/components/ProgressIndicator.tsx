@@ -10,22 +10,19 @@ interface ProgressIndicatorProps {
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, totalSteps, steps }) => {
   return (
     <div className="w-full bg-white border-b border-gray-200 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        {/* Logo and Progress Container */}
-        <div className="flex items-center justify-between mb-6">
-          {/* Logo */}
-          <div className="flex items-center">
-            <img 
-              src="/lovable-uploads/d825510b-f9c3-4b0d-ad87-4aaa8ab2c3c2.png" 
-              alt="Buy a Warranty" 
-              className="h-8 w-auto"
-            />
-          </div>
-          
-          {/* Progress Steps Text */}
-          <div className="text-sm text-gray-500 font-medium">
-            Step {currentStep} of {totalSteps}
-          </div>
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Centered Logo */}
+        <div className="flex justify-center mb-8">
+          <img 
+            src="/lovable-uploads/d825510b-f9c3-4b0d-ad87-4aaa8ab2c3c2.png" 
+            alt="Buy a Warranty" 
+            className="h-16 w-auto"
+          />
+        </div>
+
+        {/* Progress Steps Text */}
+        <div className="text-center text-sm text-gray-500 font-medium mb-6">
+          Step {currentStep} of {totalSteps}
         </div>
 
         {/* Progress Bar */}
