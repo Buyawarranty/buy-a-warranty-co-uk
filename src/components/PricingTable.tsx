@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, X } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface PricingData {
   basic: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
@@ -355,76 +354,66 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Payment Period Toggle Group - Clean Design */}
+      {/* Payment Period Toggle Group - Unified Box */}
       <div className="flex justify-center mb-12 px-8">
-        <div className="max-w-4xl w-full">
-          <RadioGroup
-            value={paymentType}
-            onValueChange={(value) => value && setPaymentType(value as typeof paymentType)}
-            className="grid grid-cols-4 gap-3"
-          >
+        <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200">
+          <div className="grid grid-cols-4 gap-1">
+            <button
+              onClick={() => setPaymentType('monthly')}
+              className={`px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                paymentType === 'monthly' 
+                  ? 'bg-[#1a365d] text-white shadow-md' 
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              Monthly
+            </button>
             <div className="relative">
-              <RadioGroupItem
-                value="monthly"
-                id="monthly"
-                className="peer sr-only"
-              />
-              <label
-                htmlFor="monthly"
-                className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all duration-200"
+              <button
+                onClick={() => setPaymentType('yearly')}
+                className={`w-full px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                  paymentType === 'yearly' 
+                    ? 'bg-[#1a365d] text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
               >
-                <span className="font-semibold text-lg text-gray-700 peer-checked:text-blue-600">Monthly</span>
-              </label>
+                Annual
+              </button>
+              <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                10% OFF
+              </div>
             </div>
             <div className="relative">
-              <RadioGroupItem
-                value="yearly"
-                id="yearly"
-                className="peer sr-only"
-              />
-              <label
-                htmlFor="yearly"
-                className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all duration-200"
+              <button
+                onClick={() => setPaymentType('twoYear')}
+                className={`w-full px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                  paymentType === 'twoYear' 
+                    ? 'bg-[#1a365d] text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
               >
-                <span className="font-semibold text-lg text-gray-700 peer-checked:text-blue-600">Annual</span>
-                <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                  10% OFF
-                </Badge>
-              </label>
+                2 Years
+              </button>
+              <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                15% OFF
+              </div>
             </div>
             <div className="relative">
-              <RadioGroupItem
-                value="twoYear"
-                id="twoYear"
-                className="peer sr-only"
-              />
-              <label
-                htmlFor="twoYear"
-                className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all duration-200"
+              <button
+                onClick={() => setPaymentType('threeYear')}
+                className={`w-full px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                  paymentType === 'threeYear' 
+                    ? 'bg-[#1a365d] text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
               >
-                <span className="font-semibold text-lg text-gray-700 peer-checked:text-blue-600">2 Years</span>
-                <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                  15% OFF
-                </Badge>
-              </label>
+                3 Years
+              </button>
+              <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                20% OFF
+              </div>
             </div>
-            <div className="relative">
-              <RadioGroupItem
-                value="threeYear"
-                id="threeYear"
-                className="peer sr-only"
-              />
-              <label
-                htmlFor="threeYear"
-                className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all duration-200"
-              >
-                <span className="font-semibold text-lg text-gray-700 peer-checked:text-blue-600">3 Years</span>
-                <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                  20% OFF
-                </Badge>
-              </label>
-            </div>
-          </RadioGroup>
+          </div>
         </div>
       </div>
 
@@ -442,13 +431,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               return (
                 <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
                   {plan.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-2 rounded-full text-sm font-bold z-10 shadow-lg">
-                      MOST POPULAR
+                    <div className="absolute top-4 left-4 z-10">
+                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                        MOST POPULAR
+                      </div>
                     </div>
                   )}
                   
                   {/* Plan Header */}
-                  <div className={`p-8 text-center bg-gray-50 border-b ${plan.popular ? 'mt-6' : 'mt-0'}`}>
+                  <div className="p-8 text-center bg-gray-50 border-b">
                     <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>
                       {plan.name}
                     </h3>
