@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -103,33 +102,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Electrics',
         'Casings',
         'Recovery'
-      ],
-      notIncluded: [
-        'Mechanical & Electrical Breakdown Warranty',
-        'Labour up to £75 p/hr',
-        'Labour up to £100 p/hr',
-        'Halfords MOT test',
-        'Unlimited Claims',
-        'Turbo Unit',
-        'Clutch',
-        'Drive Shafts',
-        'Brakes',
-        'Steering',
-        'Suspension',
-        'Bearings',
-        'Cooling System',
-        'Ventilation',
-        'E.C.U.',
-        'Fuel System',
-        'Air Conditioning',
-        'Electricals (Extended)',
-        'Braking System',
-        'Propshaft',
-        'Locks',
-        'Seals',
-        'Vehicle Hire',
-        'Vehicle Recovery',
-        'European Cover'
       ],
       addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
     },
@@ -467,26 +439,38 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <div className="p-6">
                     <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
                     <div className="space-y-3 max-h-64 overflow-y-auto">
-                      {allPossibleFeatures.map((feature, index) => {
-                        const isIncluded = plan.features.includes(feature);
-                        const isExcluded = plan.notIncluded?.includes(feature);
-                        
-                        // Only show features that are explicitly included or excluded
-                        if (!isIncluded && !isExcluded) return null;
-                        
-                        return (
+                      {plan.id === 'basic' ? (
+                        // For Basic plan, show only the specified features with ticks
+                        plan.features.map((feature, index) => (
                           <div key={index} className="flex items-center gap-3">
-                            {isIncluded ? (
-                              <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                            ) : (
-                              <X className="w-5 h-5 text-red-400 flex-shrink-0" />
-                            )}
-                            <span className={`text-sm ${isIncluded ? 'text-gray-700' : 'text-gray-400'}`}>
-                              {feature}
-                            </span>
+                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                              <Check className="w-3 h-3 text-white" />
+                            </div>
+                            <span className="text-sm text-gray-700">{feature}</span>
                           </div>
-                        );
-                      })}
+                        ))
+                      ) : (
+                        // For other plans, keep existing logic
+                        allPossibleFeatures.map((feature, index) => {
+                          const isIncluded = plan.features.includes(feature);
+                          const isExcluded = plan.notIncluded?.includes(feature);
+                          
+                          if (!isIncluded && !isExcluded) return null;
+                          
+                          return (
+                            <div key={index} className="flex items-center gap-3">
+                              {isIncluded ? (
+                                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                              ) : (
+                                <X className="w-5 h-5 text-red-400 flex-shrink-0" />
+                              )}
+                              <span className={`text-sm ${isIncluded ? 'text-gray-700' : 'text-gray-400'}`}>
+                                {feature}
+                              </span>
+                            </div>
+                          );
+                        })
+                      )}
                     </div>
 
                     {/* Add-ons Section */}
