@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -379,7 +380,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               >
                 Annual
               </button>
-              <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+              <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                 10% OFF
               </div>
             </div>
@@ -394,7 +395,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               >
                 2 Years
               </button>
-              <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+              <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                 15% OFF
               </div>
             </div>
@@ -409,7 +410,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               >
                 3 Years
               </button>
-              <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+              <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                 20% OFF
               </div>
             </div>
@@ -490,7 +491,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
                     {/* Add-ons Section */}
                     <div className="mt-6 pt-4 border-t">
-                      <h4 className="font-bold text-gray-800 mb-4">Additional Components (Optional Add-ons - £25.00 per item p/year)</h4>
+                      <h4 className="font-semibold text-gray-700 mb-3 text-sm">Additional Components (Optional Add-ons - £25.00 per item p/year)</h4>
                       <div className="space-y-3">
                         {plan.addOns.map((addon, index) => (
                           <div key={index} className="flex items-center gap-3">
