@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -92,7 +93,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       color: '#0e3e87',
       features: [
         'Mechanical Breakdown Protection',
-        'Labour upto £35 p/hr',
+        'Labour up to £35 p/hr',
         '10 Claims per year',
         'Engine',
         'Manual Gearbox',
@@ -104,6 +105,34 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Casings',
         'Recovery'
       ],
+      excludedFeatures: [
+        'Mechanical & Electrical Breakdown Warranty',
+        'Labour up to £75 p/hr',
+        'Labour up to £100 p/hr',
+        'Halfords MOT test',
+        'Unlimited Claims',
+        'Turbo Unit',
+        'Clutch',
+        'Drive Shafts',
+        'Brakes',
+        'Steering',
+        'Suspension',
+        'Bearings',
+        'Cooling System',
+        'Ventilation',
+        'E.C.U.',
+        'Fuel System',
+        'Air Conditioning',
+        'Electricals (Extended)',
+        'Braking System',
+        'Propshaft',
+        'Locks',
+        'Seals',
+        'Vehicle Hire',
+        'Vehicle Recovery',
+        'European Cover',
+        'Torque Converter'
+      ],
       addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
     },
     {
@@ -113,7 +142,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       popular: true,
       features: [
         'Mechanical & Electrical Breakdown Warranty',
-        'Labour upto £75 p/hr',
+        'Labour up to £75 p/hr',
         'Halfords MOT test',
         'Unlimited Claims',
         'Engine',
@@ -133,6 +162,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Recovery',
         'European Cover'
       ],
+      excludedFeatures: [
+        'Mechanical Breakdown Protection',
+        'Labour up to £35 p/hr',
+        'Labour up to £100 p/hr',
+        '10 Claims per year',
+        'Turbo Unit',
+        'Drive Shafts',
+        'Brakes',
+        'Steering',
+        'Suspension',
+        'Bearings',
+        'Ventilation',
+        'E.C.U.',
+        'Air Conditioning',
+        'Locks',
+        'Seals',
+        'Vehicle Recovery',
+        'Torque Convertor',
+        'Electrics'
+      ],
       addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
     },
     {
@@ -140,8 +189,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       name: 'Platinum',
       color: '#dc4f20',
       features: [
-        'Mechanical & Electrical Breakdown',
-        'Labour upto £100 p/hr',
+        'Mechanical & Electrical Breakdown Warranty',
+        'Labour up to £100 p/hr',
         'Halfords MOT test',
         'Unlimited Claims',
         'Engine',
@@ -158,7 +207,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Cooling System',
         'Ventilation',
         'E.C.U.',
-        'Electrics',
+        'Electricals',
         'Fuel System',
         'Air Conditioning',
         'Locks',
@@ -168,6 +217,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Vehicle Recovery',
         'European Cover'
       ],
+      excludedFeatures: [
+        'Mechanical Breakdown Protection',
+        'Labour up to £35 p/hr',
+        'Labour up to £75 p/hr',
+        '10 Claims per year',
+        'Torque Convertor',
+        'Overdrive',
+        'Torque Converter',
+        'Braking System',
+        'Propshaft',
+        'Recovery',
+        'Electrics'
+      ],
       addOns: ['Power Hood']
     }
   ];
@@ -176,7 +238,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     console.log('Selected plan:', planId, 'for vehicle:', vehicleData.regNumber);
   };
 
-  const allFeatures = Array.from(new Set(plans.flatMap(plan => plan.features)));
+  const allFeatures = Array.from(new Set([
+    ...plans.flatMap(plan => plan.features),
+    ...plans.flatMap(plan => plan.excludedFeatures || [])
+  ]));
 
   const getPaymentLabel = () => {
     switch (paymentType) {
@@ -238,16 +303,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
       {/* Contribution Amount Selector - Bigger */}
       <div className="flex flex-col items-center mb-10 px-8">
-        <Label className="text-3xl font-bold mb-10 text-gray-800">
+        <Label className="text-4xl font-bold mb-12 text-gray-800">
           Select Your Contribution Amount
         </Label>
-        <div className="flex flex-wrap justify-center gap-8">
+        <div className="flex flex-wrap justify-center gap-10">
           {[0, 50, 100, 150, 200].map((amount) => (
             <Button
               key={amount}
               variant={contributionAmount === amount ? "default" : "outline"}
               onClick={() => setContributionAmount(amount)}
-              className={`px-12 py-6 text-2xl font-bold ${
+              className={`px-16 py-8 text-3xl font-bold ${
                 contributionAmount === amount 
                   ? 'bg-[#224380] hover:bg-[#1a3460]' 
                   : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
@@ -259,9 +324,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Payment Period Radio Buttons - Improved Styling */}
+      {/* Payment Period Radio Buttons - Better Styling */}
       <div className="flex justify-center mb-12 px-8">
-        <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-300 max-w-4xl w-full">
+        <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-gray-300 max-w-5xl w-full">
           <Label className="text-2xl font-bold mb-8 block text-center text-gray-800">
             Choose Payment Period
           </Label>
@@ -270,13 +335,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             onValueChange={(value) => setPaymentType(value as typeof paymentType)}
             className="grid grid-cols-1 md:grid-cols-4 gap-6"
           >
-            <div className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors">
+            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-colors">
               <RadioGroupItem value="monthly" id="monthly" />
               <Label htmlFor="monthly" className="font-semibold cursor-pointer text-lg">
                 Monthly
               </Label>
             </div>
-            <div className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors">
+            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-colors">
               <RadioGroupItem value="yearly" id="yearly" />
               <Label htmlFor="yearly" className="font-semibold cursor-pointer text-lg">
                 1 Year
@@ -285,7 +350,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 </Badge>
               </Label>
             </div>
-            <div className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors">
+            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-colors">
               <RadioGroupItem value="twoYear" id="twoYear" />
               <Label htmlFor="twoYear" className="font-semibold cursor-pointer text-lg">
                 2 Years
@@ -294,7 +359,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 </Badge>
               </Label>
             </div>
-            <div className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors">
+            <div className="flex items-center space-x-3 bg-blue-50 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-colors">
               <RadioGroupItem value="threeYear" id="threeYear" />
               <Label htmlFor="threeYear" className="font-semibold cursor-pointer text-lg">
                 3 Years
@@ -310,7 +375,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       {/* Pricing Cards */}
       <div className="w-full px-8 pb-16">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             {plans.map((plan) => {
               const pricing = getCurrentPricing();
               const planPricing = pricing[plan.id as keyof PricingData];
@@ -321,7 +386,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               return (
                 <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
                   {plan.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-sm font-bold z-30 shadow-lg">
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-full text-sm font-bold z-50 shadow-lg">
                       MOST POPULAR
                     </div>
                   )}
