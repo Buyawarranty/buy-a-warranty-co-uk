@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, X } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface PricingData {
-  basic: { monthly: number; yearly: number; };
-  gold: { monthly: number; yearly: number; };
-  platinum: { monthly: number; yearly: number; };
+  basic: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
+  gold: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
+  platinum: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
 }
 
 interface PricingTableProps {
@@ -24,7 +24,7 @@ interface PricingTableProps {
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
-  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly'>('monthly');
+  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'twoYear' | 'threeYear'>('monthly');
   const [contributionAmount, setContributionAmount] = useState<number>(0);
   const [selectedAddOns, setSelectedAddOns] = useState<{[key: string]: {[addon: string]: boolean}}>({
     basic: {},
@@ -32,32 +32,32 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     platinum: {}
   });
 
-  // Pricing data based on your Excel sheet
+  // Pricing data based on your Excel sheet with extended options
   const pricingData: Record<number, PricingData> = {
     0: {
-      basic: { monthly: 31, yearly: 381 },
-      gold: { monthly: 34, yearly: 409 },
-      platinum: { monthly: 36, yearly: 437 }
+      basic: { monthly: 31, yearly: 381, twoYear: 725, threeYear: 1050 },
+      gold: { monthly: 34, yearly: 409, twoYear: 777, threeYear: 1125 },
+      platinum: { monthly: 36, yearly: 437, twoYear: 831, threeYear: 1200 }
     },
     50: {
-      basic: { monthly: 29, yearly: 350 },
-      gold: { monthly: 31, yearly: 377 },
-      platinum: { monthly: 32, yearly: 396 }
+      basic: { monthly: 29, yearly: 350, twoYear: 665, threeYear: 965 },
+      gold: { monthly: 31, yearly: 377, twoYear: 717, threeYear: 1035 },
+      platinum: { monthly: 32, yearly: 396, twoYear: 752, threeYear: 1088 }
     },
     100: {
-      basic: { monthly: 25, yearly: 308 },
-      gold: { monthly: 27, yearly: 336 },
-      platinum: { monthly: 29, yearly: 354 }
+      basic: { monthly: 25, yearly: 308, twoYear: 586, threeYear: 846 },
+      gold: { monthly: 27, yearly: 336, twoYear: 638, threeYear: 921 },
+      platinum: { monthly: 29, yearly: 354, twoYear: 672, threeYear: 969 }
     },
     150: {
-      basic: { monthly: 23, yearly: 287 },
-      gold: { monthly: 26, yearly: 315 },
-      platinum: { monthly: 27, yearly: 333 }
+      basic: { monthly: 23, yearly: 287, twoYear: 546, threeYear: 787 },
+      gold: { monthly: 26, yearly: 315, twoYear: 598, threeYear: 862 },
+      platinum: { monthly: 27, yearly: 333, twoYear: 632, threeYear: 910 }
     },
     200: {
-      basic: { monthly: 23, yearly: 287 },
-      gold: { monthly: 26, yearly: 315 },
-      platinum: { monthly: 27, yearly: 333 }
+      basic: { monthly: 23, yearly: 287, twoYear: 546, threeYear: 787 },
+      gold: { monthly: 26, yearly: 315, twoYear: 598, threeYear: 862 },
+      platinum: { monthly: 27, yearly: 333, twoYear: 632, threeYear: 910 }
     }
   };
 
@@ -67,8 +67,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     const selectedAddOnCount = Object.values(selectedAddOns[planId]).filter(Boolean).length;
     if (paymentType === 'monthly') {
       return Math.round((25 * selectedAddOnCount) / 12 * 100) / 100;
+    } else if (paymentType === 'yearly') {
+      return 25 * selectedAddOnCount;
+    } else if (paymentType === 'twoYear') {
+      return 50 * selectedAddOnCount;
+    } else {
+      return 75 * selectedAddOnCount;
     }
-    return 25 * selectedAddOnCount;
   };
 
   const toggleAddOn = (planId: string, addon: string) => {
@@ -175,6 +180,25 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const allFeatures = Array.from(new Set(plans.flatMap(plan => plan.features)));
   const allAddOns = Array.from(new Set(plans.flatMap(plan => plan.addOns)));
 
+  const getPaymentLabel = () => {
+    switch (paymentType) {
+      case 'monthly': return 'per month';
+      case 'yearly': return 'per year';
+      case 'twoYear': return 'for 2 years';
+      case 'threeYear': return 'for 3 years';
+      default: return 'per month';
+    }
+  };
+
+  const getSavingsPercentage = () => {
+    switch (paymentType) {
+      case 'yearly': return '10%';
+      case 'twoYear': return '15%';
+      case 'threeYear': return '20%';
+      default: return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#e8f4fb] w-full">
       {/* Back Button */}
@@ -190,7 +214,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       </div>
 
       {/* Header */}
-      <div className="text-center mb-8 px-8">
+      <div className="text-center mb-10 px-8">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
           Your Warranty Quote
         </h1>
@@ -214,18 +238,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </p>
       </div>
 
-      {/* Contribution Amount Selector */}
-      <div className="flex flex-col items-center mb-8 px-8">
-        <Label className="text-xl font-semibold mb-6 text-gray-700">
+      {/* Contribution Amount Selector - Made Bigger */}
+      <div className="flex flex-col items-center mb-10 px-8">
+        <Label className="text-2xl font-bold mb-8 text-gray-800">
           Select Your Contribution Amount
         </Label>
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-6">
           {[0, 50, 100, 150, 200].map((amount) => (
             <Button
               key={amount}
               variant={contributionAmount === amount ? "default" : "outline"}
               onClick={() => setContributionAmount(amount)}
-              className={`px-8 py-3 text-lg font-semibold ${
+              className={`px-10 py-4 text-xl font-bold ${
                 contributionAmount === amount 
                   ? 'bg-[#224380] hover:bg-[#1a3460]' 
                   : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
@@ -237,32 +261,51 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Payment Toggle */}
-      <div className="flex items-center justify-center mb-8 px-8">
-        <div className="bg-white rounded-full p-4 shadow-lg border-2 border-gray-200">
-          <div className="flex items-center gap-8 px-8 py-4">
-            <Label 
-              htmlFor="payment-type" 
-              className={`text-lg font-semibold cursor-pointer ${paymentType === 'monthly' ? 'text-[#224380]' : 'text-gray-500'}`}
-            >
-              Pay Monthly
-            </Label>
-            <Switch
-              id="payment-type"
-              checked={paymentType === 'yearly'}
-              onCheckedChange={(checked) => setPaymentType(checked ? 'yearly' : 'monthly')}
-              className="scale-150"
-            />
-            <Label 
-              htmlFor="payment-type" 
-              className={`text-lg font-semibold cursor-pointer ${paymentType === 'yearly' ? 'text-[#224380]' : 'text-gray-500'}`}
-            >
-              Pay Yearly 
-              <Badge variant="secondary" className="ml-3 bg-green-100 text-green-800 font-bold text-sm px-3 py-1">
-                Save 10%
-              </Badge>
-            </Label>
-          </div>
+      {/* Payment Period Radio Buttons */}
+      <div className="flex justify-center mb-10 px-8">
+        <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-gray-200">
+          <Label className="text-xl font-bold mb-6 block text-center text-gray-800">
+            Choose Payment Period
+          </Label>
+          <RadioGroup
+            value={paymentType}
+            onValueChange={(value) => setPaymentType(value as typeof paymentType)}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+          >
+            <div className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+              <RadioGroupItem value="monthly" id="monthly" />
+              <Label htmlFor="monthly" className="font-semibold cursor-pointer">
+                Monthly
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+              <RadioGroupItem value="yearly" id="yearly" />
+              <Label htmlFor="yearly" className="font-semibold cursor-pointer">
+                1 Year
+                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-xs">
+                  Save 10%
+                </Badge>
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+              <RadioGroupItem value="twoYear" id="twoYear" />
+              <Label htmlFor="twoYear" className="font-semibold cursor-pointer">
+                2 Years
+                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-xs">
+                  Save 15%
+                </Badge>
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg">
+              <RadioGroupItem value="threeYear" id="threeYear" />
+              <Label htmlFor="threeYear" className="font-semibold cursor-pointer">
+                3 Years
+                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-800 text-xs">
+                  Save 20%
+                </Badge>
+              </Label>
+            </div>
+          </RadioGroup>
         </div>
       </div>
 
@@ -273,32 +316,31 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             {plans.map((plan) => {
               const pricing = getCurrentPricing();
               const planPricing = pricing[plan.id as keyof PricingData];
-              const basePrice = paymentType === 'monthly' ? planPricing.monthly : planPricing.yearly;
+              const basePrice = planPricing[paymentType];
               const addOnPrice = calculateAddOnPrice(plan.id);
               const totalPrice = basePrice + addOnPrice;
-              const savings = paymentType === 'yearly' ? (planPricing.monthly * 12) - planPricing.yearly : 0;
               
               return (
                 <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
                   {plan.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full text-sm font-bold z-10">
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full text-sm font-bold z-20 shadow-lg">
                       MOST POPULAR
                     </div>
                   )}
                   
                   {/* Plan Header */}
-                  <div className="p-8 text-center bg-gray-50 border-b">
+                  <div className="p-8 text-center bg-gray-50 border-b mt-4">
                     <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>
                       {plan.name}
                     </h3>
                     <div className="mb-2">
                       <span className="text-sm text-gray-600">£</span>
                       <span className="text-5xl font-bold text-gray-900">{totalPrice}</span>
-                      <div className="text-gray-600 text-lg">/{paymentType}</div>
+                      <div className="text-gray-600 text-lg">{getPaymentLabel()}</div>
                     </div>
-                    {savings > 0 && (
+                    {getSavingsPercentage() && (
                       <div className="text-green-600 font-semibold text-sm">
-                        £{savings} Saving
+                        {getSavingsPercentage()} Saving
                       </div>
                     )}
                     <Button 
