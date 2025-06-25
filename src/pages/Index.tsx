@@ -11,6 +11,11 @@ interface VehicleData {
   phone: string;
   fullName: string;
   address: string;
+  make?: string;
+  model?: string;
+  fuelType?: string;
+  transmission?: string;
+  year?: string;
 }
 
 const Index = () => {
@@ -22,7 +27,12 @@ const Index = () => {
     email: '',
     phone: '',
     fullName: '',
-    address: ''
+    address: '',
+    make: '',
+    model: '',
+    fuelType: '',
+    transmission: '',
+    year: ''
   });
   
   const steps = ['Your Car', 'You', 'Choose Plan'];

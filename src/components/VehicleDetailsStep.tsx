@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface VehicleDetailsStepProps {
-  onNext: (data: { regNumber: string; mileage: string }) => void;
+  onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string }) => void;
   onBack?: () => void;
   onFormDataUpdate?: (data: any) => void;
   currentStep?: number;
@@ -20,6 +20,14 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   const [mileage, setMileage] = useState(initialData?.mileage || '');
   const [vehicleFound, setVehicleFound] = useState(false);
   const [mileageError, setMileageError] = useState('');
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  
+  // Manual entry fields
+  const [make, setMake] = useState('');
+  const [model, setModel] = useState('');
+  const [fuelType, setFuelType] = useState('');
+  const [transmission, setTransmission] = useState('');
+  const [year, setYear] = useState('');
 
   // Set vehicleFound to true if we have initial data
   useEffect(() => {
@@ -81,18 +89,42 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     }
   };
 
+  const handleNotMyCar = () => {
+    setShowManualEntry(true);
+    setVehicleFound(false);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const rawMileage = mileage.replace(/,/g, '');
     const numericMileage = parseInt(rawMileage);
     
-    if (regNumber && mileage && numericMileage <= 150000) {
-      onNext({ regNumber, mileage: rawMileage });
+    if (showManualEntry) {
+      // Manual entry validation
+      if (regNumber && mileage && make && model && fuelType && transmission && year && numericMileage <= 150000) {
+        onNext({ 
+          regNumber, 
+          mileage: rawMileage,
+          make,
+          model,
+          fuelType,
+          transmission,
+          year
+        });
+      }
+    } else {
+      // Auto-detected car validation
+      if (regNumber && mileage && numericMileage <= 150000) {
+        onNext({ regNumber, mileage: rawMileage });
+      }
     }
   };
 
   const rawMileage = mileage.replace(/,/g, '');
   const numericMileage = parseInt(rawMileage) || 0;
+
+  const isManualFormValid = regNumber && mileage && make && model && fuelType && transmission && year && numericMileage <= 150000 && mileageError === '';
+  const isAutoFormValid = regNumber && mileage && numericMileage <= 150000 && mileageError === '';
 
   return (
     <section className="bg-[#e8f4fb] py-10 min-h-screen">
@@ -127,26 +159,30 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               maxLength={8}
             />
           </div>
-          <button 
-            type="button"
-            onClick={handleFindCar}
-            disabled={!regNumber}
-            className="text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-6 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-            style={{
-              backgroundColor: regNumber ? '#224380' : '#e5e7eb',
-              borderColor: regNumber ? '#224380' : '#d1d5db',
-              color: regNumber ? 'white' : '#9ca3af'
-            }}
-          >
-            Find my car
-          </button>
+          
+          {!showManualEntry && (
+            <button 
+              type="button"
+              onClick={handleFindCar}
+              disabled={!regNumber}
+              className="text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-6 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              style={{
+                backgroundColor: regNumber ? '#224380' : '#e5e7eb',
+                borderColor: regNumber ? '#224380' : '#d1d5db',
+                color: regNumber ? 'white' : '#9ca3af'
+              }}
+            >
+              Find my car
+            </button>
+          )}
 
-          {vehicleFound && (
+          {vehicleFound && !showManualEntry && (
             <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-6">
               <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following car</p>
               <p className="text-sm text-gray-600">AUDI A3 SE TDI 105 • 3-door • 1598cc • Diesel • Manual (2012–2014)</p>
               <button 
                 type="button"
+                onClick={handleNotMyCar}
                 className="mt-2 text-sm bg-white border-2 px-[16px] py-[6px] rounded-[6px] transition-all duration-200"
                 style={{
                   borderColor: '#224380',
@@ -164,7 +200,93 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             </div>
           )}
 
-          {vehicleFound && (
+          {showManualEntry && (
+            <div className="mb-6 p-4 border-2 border-gray-200 rounded-[6px]">
+              <h3 className="text-xl font-semibold mb-4 text-gray-700">Enter your car details manually</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-semibold mb-2 text-gray-700">Make</label>
+                  <input
+                    type="text"
+                    value={make}
+                    onChange={(e) => setMake(e.target.value)}
+                    placeholder="e.g. Audi"
+                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
+                    onFocus={(e) => e.target.style.borderColor = '#224380'}
+                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block font-semibold mb-2 text-gray-700">Model</label>
+                  <input
+                    type="text"
+                    value={model}
+                    onChange={(e) => setModel(e.target.value)}
+                    placeholder="e.g. A3"
+                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
+                    onFocus={(e) => e.target.style.borderColor = '#224380'}
+                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block font-semibold mb-2 text-gray-700">Fuel Type</label>
+                  <select
+                    value={fuelType}
+                    onChange={(e) => setFuelType(e.target.value)}
+                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
+                    onFocus={(e) => e.target.style.borderColor = '#224380'}
+                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                    required
+                  >
+                    <option value="">Select fuel type</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Electric">Electric</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block font-semibold mb-2 text-gray-700">Transmission</label>
+                  <select
+                    value={transmission}
+                    onChange={(e) => setTransmission(e.target.value)}
+                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
+                    onFocus={(e) => e.target.style.borderColor = '#224380'}
+                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                    required
+                  >
+                    <option value="">Select transmission</option>
+                    <option value="Manual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                  </select>
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block font-semibold mb-2 text-gray-700">Year</label>
+                  <input
+                    type="number"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    placeholder="e.g. 2020"
+                    min="1990"
+                    max={new Date().getFullYear()}
+                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
+                    onFocus={(e) => e.target.style.borderColor = '#224380'}
+                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(vehicleFound || showManualEntry) && (
             <>
               <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700 text-xl">
                 What's your approximate mileage? <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your current mileage as shown on your odometer">?</span>
@@ -198,11 +320,11 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
               <button 
                 type="submit"
-                disabled={!regNumber || !mileage || numericMileage > 150000 || mileageError !== ''}
+                disabled={showManualEntry ? !isManualFormValid : !isAutoFormValid}
                 className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed btn-breathing"
                 style={{
-                  backgroundColor: (!regNumber || !mileage || numericMileage > 150000 || mileageError !== '') ? '#e5e7eb' : '#eb4b00',
-                  borderColor: (!regNumber || !mileage || numericMileage > 150000 || mileageError !== '') ? '#d1d5db' : '#eb4b00'
+                  backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#e5e7eb',
+                  borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#d1d5db'
                 }}
               >
                 Get My Quote →
