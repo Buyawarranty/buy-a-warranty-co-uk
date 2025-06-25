@@ -58,16 +58,17 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <img 
-              src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
-              alt="UK Flag" 
+              src="/lovable-uploads/e1203f4f-ae13-482f-9e78-4a0d8f15f585.png" 
+              alt="GB Flag" 
               className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
             />
             <input
               id="regInput"
               type="text"
-              value={regNumber || 'REG HERE'}
+              value={regNumber || 'YOUR REG'}
               onChange={handleRegChange}
-              className="bg-transparent border-none outline-none font-semibold text-[28px] tracking-[3px] text-gray-900 flex-1"
+              className="bg-transparent border-none outline-none text-[28px] text-gray-900 flex-1"
+              style={{ fontFamily: 'Century Gothic', fontWeight: 700, letterSpacing: 0 }}
               maxLength={8}
             />
           </div>
