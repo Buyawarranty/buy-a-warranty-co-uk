@@ -54,7 +54,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             Car registration number <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
           <div 
-            className="flex items-center bg-[#ffdb00] text-gray-900 font-semibold text-[20px] px-[20px] py-[12px] rounded-[4px] mb-4 shadow-sm tracking-[2px] leading-tight cursor-pointer w-fit"
+            className="w-full flex items-center bg-[#ffdb00] text-gray-900 font-semibold text-[20px] px-[20px] py-[12px] rounded-[4px] mb-4 shadow-sm tracking-[2px] leading-tight cursor-pointer"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <span className="bg-[#0052cc] text-white text-[10px] font-bold px-[6px] py-[3px] rounded-[3px] mr-[10px]">GB</span>
@@ -63,8 +63,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
               type="text"
               value={regNumber || 'AB12 CDE'}
               onChange={handleRegChange}
-              className="bg-transparent border-none outline-none font-semibold text-[20px] tracking-[2px] text-gray-900"
-              style={{ width: regNumber ? `${regNumber.length * 1.2}ch` : '7ch', minWidth: '7ch' }}
+              className="bg-transparent border-none outline-none font-semibold text-[20px] tracking-[2px] text-gray-900 flex-1"
               maxLength={8}
             />
           </div>
@@ -72,7 +71,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
             type="button"
             onClick={handleFindCar}
             disabled={!regNumber}
-            className="w-full bg-[#b0d7f5] hover:bg-[#8bc6f0] text-white text-[15px] font-semibold px-[20px] py-[8px] rounded-[4px] transition duration-200 mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-[#ff6b35] hover:bg-[#e55a2e] text-white text-[15px] font-semibold px-[20px] py-[8px] rounded-full transition duration-200 mb-6 disabled:opacity-50 disabled:cursor-not-allowed animate-pulse"
           >
             Find my car
           </button>
