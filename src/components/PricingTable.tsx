@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -175,49 +176,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     console.log('Selected plan:', planId, 'for vehicle:', vehicleData.regNumber);
   };
 
-  // Create a comprehensive list of all possible features
-  const allPossibleFeatures = [
-    'Mechanical Breakdown Protection',
-    'Mechanical & Electrical Breakdown Warranty',
-    'Labour up to £35 p/hr',
-    'Labour up to £75 p/hr',
-    'Labour up to £100 p/hr',
-    '10 Claims per year',
-    'Halfords MOT test',
-    'Unlimited Claims',
-    'Engine',
-    'Turbo Unit',
-    'Manual Gearbox',
-    'Automatic Transmission',
-    'Torque Convertor',
-    'Torque Converter',
-    'Overdrive',
-    'Clutch',
-    'Differential',
-    'Drive Shafts',
-    'Brakes',
-    'Steering',
-    'Suspension',
-    'Bearings',
-    'Cooling System',
-    'Ventilation',
-    'E.C.U.',
-    'Electrics',
-    'Electricals',
-    'Electricals (Extended)',
-    'Fuel System',
-    'Air Conditioning',
-    'Braking System',
-    'Propshaft',
-    'Locks',
-    'Seals',
-    'Casings',
-    'Vehicle Hire',
-    'Recovery',
-    'Vehicle Recovery',
-    'European Cover'
-  ];
-
   const getPaymentLabel = () => {
     switch (paymentType) {
       case 'monthly': return 'per month';
@@ -237,48 +195,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-[#e8f4fb] w-full">
-      {/* Back Button */}
-      <div className="mb-8 px-8 pt-8">
-        <Button 
-          variant="outline" 
-          onClick={onBack}
-          className="flex items-center gap-2 hover:bg-white text-lg px-6 py-3"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Contact Details
-        </Button>
-      </div>
-
-      {/* Header */}
-      <div className="text-center mb-10 px-8">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-          Your Warranty Quote
-        </h1>
-        
-        {/* Vehicle Registration Plate Display */}
-        <div className="flex justify-center mb-6">
-          <div className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
-            <img 
-              src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
-              alt="GB Flag" 
-              className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
-            />
-            <div className="flex-1 text-center font-bold font-sans tracking-normal">
-              {vehicleData.regNumber || 'H12 FXL'}
-            </div>
-          </div>
-        </div>
-        
-        <p className="text-xl text-gray-600 mb-8">
-          Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
-        </p>
-      </div>
-
+  const SidebarContent = () => (
+    <>
       {/* Contribution Amount Selector */}
-      <div className="flex flex-col items-center mb-10 px-8">
-        <Label className="text-4xl font-bold mb-12 text-gray-800">
+      <div className="mb-10">
+        <Label className="text-4xl font-bold mb-12 text-gray-800 block">
           Select Your Contribution Amount
         </Label>
         <div className="flex flex-wrap justify-center gap-10">
@@ -299,8 +220,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
-      {/* Payment Period Toggle Group - Unified Box */}
-      <div className="flex justify-center mb-12 px-8">
+      {/* Payment Period Toggle Group */}
+      <div className="flex justify-center">
         <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200">
           <div className="grid grid-cols-4 gap-1">
             <button
@@ -361,9 +282,148 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </div>
         </div>
       </div>
+    </>
+  );
 
-      {/* Pricing Cards */}
-      <div className="w-full px-8 pb-16">
+  return (
+    <div className="min-h-screen bg-[#e8f4fb] w-full">
+      {/* Back Button */}
+      <div className="mb-8 px-8 pt-8">
+        <Button 
+          variant="outline" 
+          onClick={onBack}
+          className="flex items-center gap-2 hover:bg-white text-lg px-6 py-3"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back to Contact Details
+        </Button>
+      </div>
+
+      {/* Header */}
+      <div className="text-center mb-10 px-8">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Your Warranty Quote
+        </h1>
+        
+        {/* Vehicle Registration Plate Display */}
+        <div className="flex justify-center mb-6">
+          <div className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
+            <img 
+              src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
+              alt="GB Flag" 
+              className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
+            />
+            <div className="flex-1 text-center font-bold font-sans tracking-normal">
+              {vehicleData.regNumber || 'H12 FXL'}
+            </div>
+          </div>
+        </div>
+        
+        <p className="text-xl text-gray-600 mb-8">
+          Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
+        </p>
+      </div>
+
+      {/* Mobile Layout - Stack controls above cards */}
+      <div className="block lg:hidden px-8 mb-12">
+        <SidebarContent />
+      </div>
+
+      {/* Desktop Layout - Sidebar and main content */}
+      <div className="hidden lg:flex w-full px-8 pb-16">
+        {/* Sidebar */}
+        <div className="w-1/3 pr-8">
+          <div className="sticky top-8">
+            <SidebarContent />
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="w-2/3">
+          <div className="max-w-6xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+              {plans.map((plan) => {
+                const pricing = getCurrentPricing();
+                const planPricing = pricing[plan.id as keyof PricingData];
+                const basePrice = planPricing[paymentType];
+                const addOnPrice = calculateAddOnPrice(plan.id);
+                const totalPrice = basePrice + addOnPrice;
+                
+                return (
+                  <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
+                    {plan.popular && (
+                      <div className="absolute top-4 left-4 z-10">
+                        <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                          MOST POPULAR
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Plan Header */}
+                    <div className="p-8 text-center bg-gray-50 border-b">
+                      <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>
+                        {plan.name}
+                      </h3>
+                      <div className="mb-2">
+                        <span className="text-sm text-gray-600">£</span>
+                        <span className="text-5xl font-bold text-gray-900">{totalPrice}</span>
+                        <div className="text-gray-600 text-lg">{getPaymentLabel()}</div>
+                      </div>
+                      {getSavingsPercentage() && (
+                        <div className="text-green-600 font-semibold text-sm">
+                          {getSavingsPercentage()} Saving
+                        </div>
+                      )}
+                      <Button 
+                        className="w-full mt-6 text-white font-bold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                        style={{ backgroundColor: plan.color }}
+                        onClick={() => handleSelectPlan(plan.id)}
+                      >
+                        Select {plan.name}
+                      </Button>
+                    </div>
+
+                    {/* Features Section */}
+                    <div className="p-6">
+                      <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
+                      <div className="space-y-3 max-h-64 overflow-y-auto">
+                        {/* All plans now show only their specified features with ticks */}
+                        {plan.features.map((feature, index) => (
+                          <div key={index} className="flex items-center gap-3">
+                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                              <Check className="w-3 h-3 text-white" />
+                            </div>
+                            <span className="text-sm text-gray-700">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add-ons Section */}
+                      <div className="mt-6 pt-4 border-t">
+                        <h4 className="font-semibold text-gray-700 mb-3 text-xs">Additional Components (Optional Add-ons - £25.00 per item p/year)</h4>
+                        <div className="space-y-3">
+                          {plan.addOns.map((addon, index) => (
+                            <div key={index} className="flex items-center gap-3">
+                              <Checkbox
+                                checked={selectedAddOns[plan.id][addon] || false}
+                                onCheckedChange={() => toggleAddOn(plan.id, addon)}
+                              />
+                              <span className="text-sm text-gray-700">{addon}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Layout - Show pricing cards */}
+      <div className="block lg:hidden w-full px-8 pb-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             {plans.map((plan) => {
