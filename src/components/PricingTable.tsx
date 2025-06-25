@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -126,12 +127,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Your Warranty Quote
           </h1>
-          <p className="text-gray-600 mb-2">
-            For vehicle: <span className="font-mono font-semibold text-blue-600">{vehicleData.regNumber}</span>
-          </p>
+          
+          {/* Vehicle Registration Plate Display */}
+          <div className="reg-plate-container mb-4">
+            <div className="reg-plate-box">
+              <div className="flag-section">
+                <div className="eu-stars">★ ★ ★<br />★ ★ ★<br />★ ★ ★<br />★ ★ ★</div>
+                <div className="gb-text">GB</div>
+              </div>
+              <div className="reg-input" style={{ cursor: 'default' }}>
+                {vehicleData.regNumber || 'H12 FXL'}
+              </div>
+            </div>
+          </div>
+          
           <p className="text-sm text-gray-500">
             Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
           </p>
