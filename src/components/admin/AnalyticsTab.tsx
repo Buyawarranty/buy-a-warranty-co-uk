@@ -2,241 +2,267 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { TrendingUp, Users, Star, DollarSign } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Users, CreditCard, TrendingUp, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
-interface AnalyticsData {
-  revenue30Days: number;
-  revenue60Days: number;
-  revenue90Days: number;
-  revenue12Months: number;
-  totalUsers: number;
-  activeUsers: number;
-  topPlan: string;
-  averageExcess: number;
-  monthlyRevenue: Array<{ month: string; revenue: number }>;
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  plan_type: string;
+  signup_date: string;
+  status: string;
+  voluntary_excess: number;
+}
+
+interface Payment {
+  id: string;
+  amount: number;
+  plan_type: string;
+  payment_date: string;
 }
 
 export const AnalyticsTab = () => {
-  const [analytics, setAnalytics] = useState<AnalyticsData>({
-    revenue30Days: 0,
-    revenue60Days: 0,
-    revenue90Days: 0,
-    revenue12Months: 0,
-    totalUsers: 0,
-    activeUsers: 0,
-    topPlan: '',
-    averageExcess: 0,
-    monthlyRevenue: []
-  });
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAnalytics();
+    fetchAnalyticsData();
   }, []);
 
-  const fetchAnalytics = async () => {
+  const fetchAnalyticsData = async () => {
     try {
-      // Fetch revenue data
-      const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
-      const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-      const twelveMonthsAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+      console.log('Fetching analytics data...');
+      
+      const [customersResponse, paymentsResponse] = await Promise.all([
+        supabase.from('customers').select('*'),
+        supabase.from('payments').select('*')
+      ]);
 
-      // Revenue for different periods
-      const { data: revenue30 } = await supabase
-        .from('payments')
-        .select('amount')
-        .gte('payment_date', thirtyDaysAgo.toISOString());
-
-      const { data: revenue60 } = await supabase
-        .from('payments')
-        .select('amount')
-        .gte('payment_date', sixtyDaysAgo.toISOString());
-
-      const { data: revenue90 } = await supabase
-        .from('payments')
-        .select('amount')
-        .gte('payment_date', ninetyDaysAgo.toISOString());
-
-      const { data: revenue12 } = await supabase
-        .from('payments')
-        .select('amount')
-        .gte('payment_date', twelveMonthsAgo.toISOString());
-
-      // Customer data
-      const { data: customers } = await supabase
-        .from('customers')
-        .select('status, plan_type, voluntary_excess');
-
-      // Plan popularity
-      const planCounts = customers?.reduce((acc: any, customer) => {
-        acc[customer.plan_type] = (acc[customer.plan_type] || 0) + 1;
-        return acc;
-      }, {});
-
-      const topPlan = planCounts ? Object.keys(planCounts).reduce((a, b) => 
-        planCounts[a] > planCounts[b] ? a : b
-      ) : '';
-
-      // Average excess
-      const validExcess = customers?.filter(c => c.voluntary_excess > 0) || [];
-      const averageExcess = validExcess.length > 0 
-        ? validExcess.reduce((sum, c) => sum + c.voluntary_excess, 0) / validExcess.length 
-        : 0;
-
-      // Monthly revenue for chart
-      const monthlyData = [];
-      for (let i = 11; i >= 0; i--) {
-        const date = new Date();
-        date.setMonth(date.getMonth() - i);
-        const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
-        const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-        const { data: monthRevenue } = await supabase
-          .from('payments')
-          .select('amount')
-          .gte('payment_date', monthStart.toISOString())
-          .lte('payment_date', monthEnd.toISOString());
-
-        const total = monthRevenue?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
-        
-        monthlyData.push({
-          month: date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
-          revenue: total
-        });
+      if (customersResponse.error) {
+        console.error('Error fetching customers:', customersResponse.error);
+        throw customersResponse.error;
       }
 
-      setAnalytics({
-        revenue30Days: revenue30?.reduce((sum, p) => sum + p.amount, 0) || 0,
-        revenue60Days: revenue60?.reduce((sum, p) => sum + p.amount, 0) || 0,
-        revenue90Days: revenue90?.reduce((sum, p) => sum + p.amount, 0) || 0,
-        revenue12Months: revenue12?.reduce((sum, p) => sum + p.amount, 0) || 0,
-        totalUsers: customers?.length || 0,
-        activeUsers: customers?.filter(c => c.status === 'Active').length || 0,
-        topPlan,
-        averageExcess,
-        monthlyRevenue: monthlyData
-      });
+      if (paymentsResponse.error) {
+        console.error('Error fetching payments:', paymentsResponse.error);
+        throw paymentsResponse.error;
+      }
+
+      console.log('Customers data:', customersResponse.data);
+      console.log('Payments data:', paymentsResponse.data);
+      
+      setCustomers(customersResponse.data || []);
+      setPayments(paymentsResponse.data || []);
     } catch (error) {
-      console.error('Error fetching analytics:', error);
+      console.error('Error fetching analytics data:', error);
+      toast.error('Failed to load analytics data');
     } finally {
       setLoading(false);
     }
   };
 
+  // Calculate metrics with safe defaults
+  const totalCustomers = customers.length;
+  const activeCustomers = customers.filter(c => c.status === 'Active').length;
+  const totalRevenue = payments.length > 0 ? payments.reduce((sum, payment) => sum + Number(payment.amount), 0) : 0;
+  const averageExcess = customers.length > 0 && customers.some(c => c.voluntary_excess) 
+    ? customers.filter(c => c.voluntary_excess).reduce((sum, customer) => sum + Number(customer.voluntary_excess), 0) / customers.filter(c => c.voluntary_excess).length 
+    : 0;
+
+  // Plan distribution data
+  const planDistribution = customers.reduce((acc: Record<string, number>, customer) => {
+    acc[customer.plan_type] = (acc[customer.plan_type] || 0) + 1;
+    return acc;
+  }, {});
+
+  const planData = Object.entries(planDistribution).map(([name, value]) => ({
+    name,
+    value,
+  }));
+
+  // Monthly signup data (last 6 months)
+  const monthlySignups = React.useMemo(() => {
+    const months = Array.from({ length: 6 }, (_, i) => {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      return {
+        month: date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        signups: 0
+      };
+    }).reverse();
+
+    customers.forEach(customer => {
+      const signupDate = new Date(customer.signup_date);
+      const monthKey = signupDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      const monthData = months.find(m => m.month === monthKey);
+      if (monthData) {
+        monthData.signups++;
+      }
+    });
+
+    return months;
+  }, [customers]);
+
+  const COLORS = ['#f97316', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading analytics...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h2>
-
-      {/* Revenue Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Last 30 Days</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">£{analytics.revenue30Days.toFixed(2)}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Last 60 Days</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">£{analytics.revenue60Days.toFixed(2)}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Last 90 Days</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">£{analytics.revenue90Days.toFixed(2)}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Last 12 Months</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">£{analytics.revenue12Months.toFixed(2)}</div>
-          </CardContent>
-        </Card>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h2>
+        <p className="text-sm text-gray-600">Overview of your warranty business</p>
       </div>
 
-      {/* Revenue Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Monthly Revenue Trend</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={analytics.monthlyRevenue}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip formatter={(value) => [`£${value}`, 'Revenue']} />
-              <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* Stats Cards */}
+      {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalUsers}</div>
+            <div className="text-2xl font-bold">{totalCustomers}</div>
+            <p className="text-xs text-muted-foreground">
+              {activeCustomers} active customers
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-            <Users className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.activeUsers}</div>
+            <div className="text-2xl font-bold">£{totalRevenue.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground">
+              From {payments.length} payments
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Selling Plan</CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Average Excess</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.topPlan}</div>
+            <div className="text-2xl font-bold">£{averageExcess.toFixed(0)}</div>
+            <p className="text-xs text-muted-foreground">
+              Customer voluntary excess
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Excess</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Active Rate</CardTitle>
+            <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">£{analytics.averageExcess.toFixed(0)}</div>
+            <div className="text-2xl font-bold">
+              {totalCustomers > 0 ? Math.round((activeCustomers / totalCustomers) * 100) : 0}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Customer retention rate
+            </p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Monthly Signups</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={monthlySignups}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="signups" fill="#f97316" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Plan Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {planData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={planData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {planData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-[300px] text-gray-500">
+                No plan data available
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activity */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Customer Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {customers.length > 0 ? (
+            <div className="space-y-4">
+              {customers.slice(0, 5).map((customer) => (
+                <div key={customer.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium">{customer.name}</p>
+                    <p className="text-sm text-gray-600">{customer.email}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium">{customer.plan_type}</p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(customer.signup_date).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              No customer activity yet
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
