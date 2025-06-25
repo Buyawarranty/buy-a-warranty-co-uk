@@ -4,9 +4,17 @@ import React from 'react';
 const SupportFooter = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40">
-      {/* Main footer content - simple blue background */}
-      <div className="bg-[#224380] px-4 py-8">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="relative bg-[#224380] px-4 py-8 overflow-hidden">
+        {/* Diagonal orange stripe with curved edges */}
+        <div 
+          className="absolute inset-0 bg-[#eb4b00]"
+          style={{
+            clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 70%)',
+          }}
+        />
+        
+        {/* Content over the background */}
+        <div className="relative z-10 max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Logo - 5x bigger */}
           <div className="flex items-center">
             <img 
