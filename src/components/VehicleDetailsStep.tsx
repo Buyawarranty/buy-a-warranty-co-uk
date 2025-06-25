@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { Car } from 'lucide-react';
 
 interface VehicleDetailsStepProps {
   onNext: (data: { regNumber: string; mileage: string }) => void;
@@ -40,102 +39,82 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
   };
 
   return (
-    <div className="form-section-card">
-      {/* Step Header */}
-      <div className="flex items-center gap-4 mb-8">
-        <div className="step-circle">
-          <span className="step-number">1</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <Car className="w-6 h-6 text-[#00a3e0]" />
-          <h2 className="step-title">Your Car</h2>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        {/* Registration Number Field */}
-        <div className="mb-8">
-          <div className="flex items-center mb-4">
-            <label className="form-label">Car registration number</label>
-            <span className="help-icon" title="Enter your vehicle's registration number as shown on your number plate">?</span>
+    <section className="bg-[#e8f4fb] py-10 min-h-screen">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
+        <div className="flex items-center mb-6">
+          <div className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded-full mr-4 font-bold">1</div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">Your Car</h2>
+            <p className="text-sm text-gray-600">Let's start with your vehicle details</p>
           </div>
-          
-          {/* UK Registration Plate - Exact Match */}
-          <div className="reg-plate-container">
-            <div className="reg-plate-box">
-              <div className="flag-section">
-                <div className="eu-stars">★★★★★★</div>
-                <div className="eu-stars">★★★★★★</div>
-                <div className="gb-text">GB</div>
-              </div>
-              <input
-                type="text"
-                value={regNumber || 'YOUR REG'}
-                onChange={handleRegChange}
-                placeholder="YOUR REG"
-                className="reg-input"
-                maxLength={8}
-              />
-            </div>
-          </div>
+        </div>
 
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700">
+            Car registration number <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your vehicle's registration number as shown on your number plate">?</span>
+          </label>
+          <div className="flex items-center bg-[#ffdb00] text-gray-800 font-bold text-lg tracking-widest py-3 px-6 rounded mb-4 w-fit cursor-pointer" onClick={() => document.getElementById('regInput')?.focus()}>
+            <span className="bg-[#0052cc] text-white text-xs font-semibold py-1 px-2 rounded mr-3">GB</span>
+            <input
+              id="regInput"
+              type="text"
+              value={regNumber || 'AB12 CDE'}
+              onChange={handleRegChange}
+              className="bg-transparent border-none outline-none font-bold text-lg tracking-widest text-gray-800"
+              style={{ width: regNumber ? `${regNumber.length * 0.8}ch` : '7ch', minWidth: '7ch' }}
+              maxLength={8}
+            />
+          </div>
           <button 
-            type="button" 
-            className="btn-primary w-full"
+            type="button"
             onClick={handleFindCar}
             disabled={!regNumber}
+            className="w-full bg-[#b0d7f5] text-white font-semibold py-3 rounded hover:bg-[#8bc6f0] transition mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Find my car
           </button>
-        </div>
 
-        {/* Vehicle Found Card */}
-        {vehicleFound && (
-          <div className="vehicle-found-card mb-8">
-            <div className="flex items-center gap-3 mb-3">
-              <Car className="w-5 h-5 text-[#00a3e0]" />
-              <span className="font-semibold text-[#00a3e0]">We found the following car</span>
+          {vehicleFound && (
+            <div className="bg-[#f0f9ff] border border-blue-300 rounded p-4 mb-6">
+              <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following car</p>
+              <p className="text-sm text-gray-600">AUDI A3 SE TDI 105 • 3-door • 1598cc • Diesel • Manual (2012–2014)</p>
+              <button 
+                type="button"
+                className="mt-2 text-sm bg-white border border-gray-300 py-2 px-4 rounded hover:bg-gray-100 transition"
+              >
+                This is not my car
+              </button>
             </div>
-            <p className="vehicle-details">AUDI A3 SE TDI 105 - 3 door - 1598cc - Diesel - Manual (2012-2014)</p>
-            <button type="button" className="btn-secondary w-full mt-3">
-              This is not my car
-            </button>
-          </div>
-        )}
+          )}
 
-        {/* Mileage Field */}
-        {vehicleFound && (
-          <div className="mb-8">
-            <div className="flex items-center mb-4">
-              <label className="form-label">What's your approximate mileage?</label>
-              <span className="help-icon" title="Enter your current mileage as shown on your odometer">?</span>
-            </div>
-            <input
-              type="number"
-              value={mileage}
-              onChange={(e) => setMileage(e.target.value)}
-              placeholder="32000"
-              className="form-input"
-              max="150000"
-            />
-            <p className="field-hint">
-              We can only provide warranty for vehicles with a maximum mileage of 150,000
-            </p>
-          </div>
-        )}
+          {vehicleFound && (
+            <>
+              <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700">
+                What's your approximate mileage? <span className="text-blue-500 cursor-pointer text-sm ml-1" title="Enter your current mileage as shown on your odometer">?</span>
+              </label>
+              <input
+                type="number"
+                id="mileage"
+                value={mileage}
+                onChange={(e) => setMileage(e.target.value)}
+                placeholder="e.g. 32000"
+                className="w-full border border-gray-300 rounded py-3 px-4 mb-2 focus:outline-none focus:border-blue-500"
+                max="150000"
+              />
+              <p className="text-sm text-gray-500 mb-6">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
 
-        {/* Continue Button */}
-        {vehicleFound && (
-          <button 
-            type="submit" 
-            className="btn-cta w-full"
-            disabled={!regNumber || !mileage || parseInt(mileage) > 150000}
-          >
-            Continue
-          </button>
-        )}
-      </form>
-    </div>
+              <button 
+                type="submit"
+                disabled={!regNumber || !mileage || parseInt(mileage) > 150000}
+                className="w-full bg-[#ffaf94] text-white font-semibold py-3 rounded hover:bg-[#f98662] transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Continue →
+              </button>
+            </>
+          )}
+        </form>
+      </div>
+    </section>
   );
 };
 
