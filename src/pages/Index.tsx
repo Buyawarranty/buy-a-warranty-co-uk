@@ -52,11 +52,11 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#e8f4fb]">
+    <div className="bg-[#e8f4fb] p-2">
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
       
       {(currentStep === 1 || currentStep === 2) ? (
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 py-4">
           <RegistrationForm 
             onNext={handleRegistrationComplete} 
             onBack={(step: number) => handleBackToStep(step)}

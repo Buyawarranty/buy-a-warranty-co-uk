@@ -42,8 +42,8 @@ const ThankYou = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full text-center space-y-8">
+    <div className="bg-gradient-to-br from-blue-50 to-orange-50 p-4">
+      <div className="max-w-2xl w-full mx-auto text-center space-y-8 py-12">
         <div className="space-y-4">
           <div className="text-6xl mb-4">🎉</div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
