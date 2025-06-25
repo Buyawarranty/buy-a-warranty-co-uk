@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, Circle } from 'lucide-react';
+import { Check, Circle, ArrowLeft } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -32,9 +31,10 @@ interface PricingTableProps {
     email?: string;
     phone?: string;
   };
+  onBack: () => void;
 }
 
-const PricingTable: React.FC<PricingTableProps> = ({ vehicleData }) => {
+const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const [paymentType, setPaymentType] = useState<'monthly' | 'full'>('monthly');
 
   const plans: PricingPlan[] = [
@@ -112,6 +112,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
       <div className="max-w-6xl mx-auto">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Button 
+            variant="outline" 
+            onClick={onBack}
+            className="flex items-center gap-2 hover:bg-white"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Contact Details
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
