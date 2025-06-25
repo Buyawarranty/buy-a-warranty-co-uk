@@ -58,7 +58,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       <VehicleDetailsStep 
         onNext={handleVehicleNext}
         initialData={initialData}
-        onBack={onBack}
+        onBack={onBack ? () => onBack(1) : undefined}
         onFormDataUpdate={onFormDataUpdate}
         currentStep={currentStep}
         onStepChange={onStepChange}
@@ -69,7 +69,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   return (
     <ContactDetailsStep 
       onNext={handleContactNext} 
-      onBack={onBack ? () => onBack(1) : handleBackToVehicle}
+      onBack={handleBackToVehicle}
       initialData={initialData}
     />
   );
