@@ -161,16 +161,35 @@ export const PlansTab = () => {
     }
   };
 
-  const resetToDefaults = (planName: string) => {
+  const resetToDefaults = async (planName: string) => {
     if (!editingPlan) return;
     
     const defaults = initializePlanFeatures(planName);
-    setEditingPlan({
+    const updatedPlan = {
       ...editingPlan,
       coverage: defaults.coverage,
       add_ons: defaults.add_ons
-    });
-    toast.info(`Reset ${planName} to default features`);
+    };
+    
+    // Save to database immediately
+    try {
+      const { error } = await supabase
+        .from('plans')
+        .update({
+          coverage: defaults.coverage,
+          add_ons: defaults.add_ons
+        })
+        .eq('id', editingPlan.id);
+
+      if (error) throw error;
+      
+      setEditingPlan(updatedPlan);
+      fetchPlans(); // Refresh the plans list
+      toast.success(`Reset ${planName} to default features and saved to database`);
+    } catch (error) {
+      console.error('Error resetting plan features:', error);
+      toast.error('Failed to reset plan features');
+    }
   };
 
   const addCoverageItem = () => {
@@ -376,7 +395,7 @@ export const PlansTab = () => {
                                 size="sm"
                                 className="text-blue-600 border-blue-300 hover:bg-blue-50"
                               >
-                                Reset to Correct Defaults
+                                Reset to Correct Defaults & Save
                               </Button>
                             </div>
 

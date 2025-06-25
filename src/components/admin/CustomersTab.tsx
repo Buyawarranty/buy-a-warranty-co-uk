@@ -57,12 +57,18 @@ export const CustomersTab = () => {
 
   const fetchCustomers = async () => {
     try {
+      console.log('Fetching customers from database...');
       const { data, error } = await supabase
         .from('customers')
         .select('*')
         .order('signup_date', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      console.log('Fetched customers:', data);
       setCustomers(data || []);
       setFilteredCustomers(data || []);
     } catch (error) {
@@ -170,6 +176,9 @@ export const CustomersTab = () => {
             className="pl-10"
           />
         </div>
+        <div className="text-sm text-gray-600">
+          Showing {filteredCustomers.length} customers
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow">
@@ -187,73 +196,81 @@ export const CustomersTab = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredCustomers.map((customer) => (
-              <TableRow key={customer.id}>
-                <TableCell className="font-medium">{customer.name}</TableCell>
-                <TableCell>{customer.email}</TableCell>
-                <TableCell className="font-mono text-sm">
-                  {customer.registration_plate || 'N/A'}
-                </TableCell>
-                <TableCell>
-                  <Badge variant="secondary">{customer.plan_type}</Badge>
-                </TableCell>
-                <TableCell>{format(new Date(customer.signup_date), 'MMM dd, yyyy')}</TableCell>
-                <TableCell>£{customer.voluntary_excess || 0}</TableCell>
-                <TableCell>
-                  <Badge variant={customer.status === 'Active' ? 'default' : 'destructive'}>
-                    {customer.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openNotesDialog(customer)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
-                      <DialogHeader>
-                        <DialogTitle>Notes for {selectedCustomer?.name}</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Textarea
-                            placeholder="Add a new note..."
-                            value={newNote}
-                            onChange={(e) => setNewNote(e.target.value)}
-                            rows={3}
-                          />
-                          <Button onClick={addNote} disabled={!newNote.trim()}>
-                            Add Note
-                          </Button>
-                        </div>
-                        
-                        <div className="space-y-2 max-h-96 overflow-y-auto">
-                          {notesLoading ? (
-                            <div className="text-center py-4">Loading notes...</div>
-                          ) : notes.length === 0 ? (
-                            <div className="text-center py-4 text-gray-500">No notes yet</div>
-                          ) : (
-                            notes.map((note) => (
-                              <div key={note.id} className="bg-gray-50 p-3 rounded-lg">
-                                <p className="text-sm text-gray-800">{note.note}</p>
-                                <p className="text-xs text-gray-500 mt-1">
-                                  {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
-                                </p>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+            {filteredCustomers.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                  No customers found
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              filteredCustomers.map((customer) => (
+                <TableRow key={customer.id}>
+                  <TableCell className="font-medium">{customer.name}</TableCell>
+                  <TableCell>{customer.email}</TableCell>
+                  <TableCell className="font-mono text-sm">
+                    {customer.registration_plate || 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{customer.plan_type}</Badge>
+                  </TableCell>
+                  <TableCell>{format(new Date(customer.signup_date), 'MMM dd, yyyy')}</TableCell>
+                  <TableCell>£{customer.voluntary_excess || 0}</TableCell>
+                  <TableCell>
+                    <Badge variant={customer.status === 'Active' ? 'default' : 'destructive'}>
+                      {customer.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => openNotesDialog(customer)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl">
+                        <DialogHeader>
+                          <DialogTitle>Notes for {selectedCustomer?.name}</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Textarea
+                              placeholder="Add a new note..."
+                              value={newNote}
+                              onChange={(e) => setNewNote(e.target.value)}
+                              rows={3}
+                            />
+                            <Button onClick={addNote} disabled={!newNote.trim()}>
+                              Add Note
+                            </Button>
+                          </div>
+                          
+                          <div className="space-y-2 max-h-96 overflow-y-auto">
+                            {notesLoading ? (
+                              <div className="text-center py-4">Loading notes...</div>
+                            ) : notes.length === 0 ? (
+                              <div className="text-center py-4 text-gray-500">No notes yet</div>
+                            ) : (
+                              notes.map((note) => (
+                                <div key={note.id} className="bg-gray-50 p-3 rounded-lg">
+                                  <p className="text-sm text-gray-800">{note.note}</p>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
+                                  </p>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
