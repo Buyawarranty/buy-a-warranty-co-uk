@@ -67,7 +67,7 @@ const Index = () => {
           />
         </div>
       ) : (
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="w-full">
           {vehicleData && (
             <PricingTable 
               vehicleData={vehicleData} 
