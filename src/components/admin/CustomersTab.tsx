@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Customer {
@@ -38,6 +37,7 @@ export const CustomersTab = () => {
   const [notes, setNotes] = useState<AdminNote[]>([]);
   const [newNote, setNewNote] = useState('');
   const [notesLoading, setNotesLoading] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
     fetchCustomers();
@@ -58,35 +58,62 @@ export const CustomersTab = () => {
 
   const fetchCustomers = async () => {
     try {
-      console.log('Fetching customers from database...');
+      console.log('🔍 Starting customer fetch process...');
       setLoading(true);
+      setDebugInfo('Starting fetch...');
+
+      // Check current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      console.log('👤 Current user:', user);
+      console.log('❌ User error:', userError);
       
-      const { data, error, count } = await supabase
+      const isMasterAdmin = localStorage.getItem('masterAdmin') === 'true';
+      console.log('🔐 Is master admin:', isMasterAdmin);
+      
+      setDebugInfo(`User: ${user?.email || 'Master Admin'}, Master Admin: ${isMasterAdmin}`);
+
+      // Try direct query first
+      console.log('📊 Attempting direct query...');
+      const { data: directData, error: directError, count: directCount } = await supabase
         .from('customers')
-        .select('*', { count: 'exact' })
-        .order('signup_date', { ascending: false });
+        .select('*', { count: 'exact' });
 
-      console.log('Supabase response:', { data, error, count });
+      console.log('📊 Direct query result:', { data: directData, error: directError, count: directCount });
 
-      if (error) {
-        console.error('Supabase error:', error);
-        toast.error(`Failed to load customers: ${error.message}`);
+      if (directError) {
+        console.error('❌ Direct query error:', directError);
+        setDebugInfo(prev => prev + `\nDirect query error: ${directError.message}`);
+        
+        // If direct query fails, try with RLS bypass for master admin
+        if (isMasterAdmin) {
+          console.log('🔓 Attempting RLS bypass query...');
+          // For master admin, we might need to use a service role query
+          toast.error('RLS policies might be blocking access. Check database policies.');
+        } else {
+          toast.error(`Database query failed: ${directError.message}`);
+        }
         return;
       }
+
+      console.log('✅ Query successful, processing data...');
+      setDebugInfo(prev => prev + `\nQuery successful. Count: ${directCount}`);
       
-      console.log('Fetched customers:', data);
-      console.log('Total count:', count);
-      
-      if (!data || data.length === 0) {
-        console.warn('No customers found in database');
-        toast.info('No customers found in database');
+      if (!directData || directData.length === 0) {
+        console.warn('⚠️ No customers found in database');
+        setDebugInfo(prev => prev + '\nNo customers found in result');
+        toast.info('No customers found in database. Check if data was inserted correctly.');
+      } else {
+        console.log('✅ Found customers:', directData.length);
+        setDebugInfo(prev => prev + `\nFound ${directData.length} customers`);
+        toast.success(`Loaded ${directData.length} customers`);
       }
       
-      setCustomers(data || []);
-      setFilteredCustomers(data || []);
+      setCustomers(directData || []);
+      setFilteredCustomers(directData || []);
     } catch (error) {
-      console.error('Error fetching customers:', error);
-      toast.error('Failed to load customers');
+      console.error('💥 Unexpected error fetching customers:', error);
+      setDebugInfo(prev => prev + `\nUnexpected error: ${error}`);
+      toast.error('Unexpected error occurred while fetching customers');
     } finally {
       setLoading(false);
     }
@@ -194,6 +221,17 @@ export const CustomersTab = () => {
         </div>
       </div>
 
+      {/* Debug Information Panel */}
+      {debugInfo && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <AlertCircle className="h-5 w-5 text-yellow-600" />
+            <h3 className="font-medium text-yellow-800">Debug Information</h3>
+          </div>
+          <pre className="mt-2 text-sm text-yellow-700 whitespace-pre-wrap">{debugInfo}</pre>
+        </div>
+      )}
+
       <div className="flex items-center space-x-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -226,16 +264,20 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                  {loading ? 'Loading customers...' : 'No customers found'}
-                  {!loading && (
-                    <div className="mt-2">
-                      <Button onClick={fetchCustomers} variant="outline" size="sm">
-                        <RefreshCw className="h-4 w-4 mr-2" />
-                        Retry
-                      </Button>
+                <TableCell colSpan={8} className="text-center py-8">
+                  <div className="space-y-4">
+                    <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
+                    <div>
+                      <p className="text-gray-500 text-lg">No customers found</p>
+                      <p className="text-gray-400 text-sm mt-2">
+                        This might be due to RLS policies or missing data
+                      </p>
                     </div>
-                  )}
+                    <Button onClick={fetchCustomers} variant="outline" size="sm">
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Try Again
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
