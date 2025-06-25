@@ -121,7 +121,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Overdrive',
         'Clutch',
         'Differential',
-        'Torque Converter',
+        'Torque Convertor',
         'Cooling System',
         'Fuel System',
         'Electricals',
@@ -131,24 +131,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         'Vehicle Hire',
         'Recovery',
         'European Cover'
-      ],
-      notIncluded: [
-        'Mechanical Breakdown Protection',
-        'Labour up to £35 p/hr',
-        'Labour up to £100 p/hr',
-        '10 Claims per year',
-        'Turbo Unit',
-        'Drive Shafts',
-        'Brakes',
-        'Steering',
-        'Suspension',
-        'Bearings',
-        'Ventilation',
-        'E.C.U.',
-        'Air Conditioning',
-        'Locks',
-        'Seals',
-        'Vehicle Recovery'
       ],
       addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
     },
@@ -439,8 +421,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <div className="p-6">
                     <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
                     <div className="space-y-3 max-h-64 overflow-y-auto">
-                      {plan.id === 'basic' ? (
-                        // For Basic plan, show only the specified features with ticks
+                      {plan.id === 'basic' || plan.id === 'gold' ? (
+                        // For Basic and Gold plans, show only the specified features with ticks
                         plan.features.map((feature, index) => (
                           <div key={index} className="flex items-center gap-3">
                             <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
