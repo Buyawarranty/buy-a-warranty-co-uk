@@ -52,7 +52,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#e8f4fb] pb-80"> {/* Much larger bottom padding for huge footer */}
+    <div className="min-h-screen bg-[#e8f4fb]">
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
       
       {(currentStep === 1 || currentStep === 2) ? (
