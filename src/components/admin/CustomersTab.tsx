@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Edit, Download, Search } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Customer {
@@ -58,17 +59,29 @@ export const CustomersTab = () => {
   const fetchCustomers = async () => {
     try {
       console.log('Fetching customers from database...');
-      const { data, error } = await supabase
+      setLoading(true);
+      
+      const { data, error, count } = await supabase
         .from('customers')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('signup_date', { ascending: false });
+
+      console.log('Supabase response:', { data, error, count });
 
       if (error) {
         console.error('Supabase error:', error);
-        throw error;
+        toast.error(`Failed to load customers: ${error.message}`);
+        return;
       }
       
       console.log('Fetched customers:', data);
+      console.log('Total count:', count);
+      
+      if (!data || data.length === 0) {
+        console.warn('No customers found in database');
+        toast.info('No customers found in database');
+      }
+      
       setCustomers(data || []);
       setFilteredCustomers(data || []);
     } catch (error) {
@@ -153,17 +166,32 @@ export const CustomersTab = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading customers...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+        <span className="ml-2">Loading customers...</span>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Customer Management</h2>
-        <Button onClick={exportToCSV} className="flex items-center space-x-2">
-          <Download className="h-4 w-4" />
-          <span>Export CSV</span>
-        </Button>
+        <div className="flex space-x-2">
+          <Button 
+            onClick={fetchCustomers} 
+            variant="outline"
+            className="flex items-center space-x-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Refresh</span>
+          </Button>
+          <Button onClick={exportToCSV} className="flex items-center space-x-2">
+            <Download className="h-4 w-4" />
+            <span>Export CSV</span>
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center space-x-4">
@@ -199,7 +227,15 @@ export const CustomersTab = () => {
             {filteredCustomers.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                  No customers found
+                  {loading ? 'Loading customers...' : 'No customers found'}
+                  {!loading && (
+                    <div className="mt-2">
+                      <Button onClick={fetchCustomers} variant="outline" size="sm">
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Retry
+                      </Button>
+                    </div>
+                  )}
                 </TableCell>
               </TableRow>
             ) : (
