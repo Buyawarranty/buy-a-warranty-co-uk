@@ -1,15 +1,27 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface VehicleDetailsStepProps {
   onNext: (data: { regNumber: string; mileage: string }) => void;
+  initialData?: {
+    regNumber: string;
+    mileage: string;
+    email: string;
+    phone: string;
+  };
 }
 
-const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext }) => {
-  const [regNumber, setRegNumber] = useState('');
-  const [mileage, setMileage] = useState('');
+const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initialData }) => {
+  const [regNumber, setRegNumber] = useState(initialData?.regNumber || '');
+  const [mileage, setMileage] = useState(initialData?.mileage || '');
   const [vehicleFound, setVehicleFound] = useState(false);
   const [mileageError, setMileageError] = useState('');
+
+  // Set vehicleFound to true if we have initial data
+  useEffect(() => {
+    if (initialData?.regNumber) {
+      setVehicleFound(true);
+    }
+  }, [initialData]);
 
   const formatRegNumber = (value: string) => {
     const formatted = value.replace(/\s/g, '').toUpperCase();

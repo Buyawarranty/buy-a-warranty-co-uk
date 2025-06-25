@@ -1,11 +1,20 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import VehicleDetailsStep from './VehicleDetailsStep';
 import ContactDetailsStep from './ContactDetailsStep';
 
 interface RegistrationFormProps {
   onNext: (data: { regNumber: string; mileage: string; email?: string; phone?: string }) => void;
-  onBack?: () => void;
+  onBack?: (step: number) => void;
+  onFormDataUpdate?: (data: any) => void;
+  initialData?: {
+    regNumber: string;
+    mileage: string;
+    email: string;
+    phone: string;
+  };
+  currentStep: number;
+  onStepChange: (step: number) => void;
 }
 
 interface VehicleData {
@@ -13,13 +22,20 @@ interface VehicleData {
   mileage: string;
 }
 
-const RegistrationForm: React.FC<RegistrationFormProps> = ({ onNext, onBack }) => {
-  const [currentStep, setCurrentStep] = useState(1);
+const RegistrationForm: React.FC<RegistrationFormProps> = ({ 
+  onNext, 
+  onBack, 
+  onFormDataUpdate,
+  initialData,
+  currentStep,
+  onStepChange
+}) => {
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
 
   const handleVehicleNext = (data: VehicleData) => {
     setVehicleData(data);
-    setCurrentStep(2);
+    onFormDataUpdate?.(data);
+    onStepChange(2);
   };
 
   const handleContactNext = (contactData: { email?: string; phone?: string }) => {
@@ -32,17 +48,23 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onNext, onBack }) =
   };
 
   const handleBackToVehicle = () => {
-    setCurrentStep(1);
+    onStepChange(1);
   };
 
   if (currentStep === 1) {
-    return <VehicleDetailsStep onNext={handleVehicleNext} />;
+    return (
+      <VehicleDetailsStep 
+        onNext={handleVehicleNext}
+        initialData={initialData}
+      />
+    );
   }
 
   return (
     <ContactDetailsStep 
       onNext={handleContactNext} 
-      onBack={onBack || handleBackToVehicle}
+      onBack={onBack ? () => onBack(1) : handleBackToVehicle}
+      initialData={initialData}
     />
   );
 };

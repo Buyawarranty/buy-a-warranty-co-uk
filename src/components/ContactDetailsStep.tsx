@@ -1,15 +1,20 @@
-
 import React, { useState } from 'react';
 import { User, ArrowLeft } from 'lucide-react';
 
 interface ContactDetailsStepProps {
   onNext: (data: { email?: string; phone?: string }) => void;
   onBack: () => void;
+  initialData?: {
+    regNumber: string;
+    mileage: string;
+    email: string;
+    phone: string;
+  };
 }
 
-const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack }) => {
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack, initialData }) => {
+  const [email, setEmail] = useState(initialData?.email || '');
+  const [phone, setPhone] = useState(initialData?.phone || '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -14,20 +14,27 @@ interface VehicleData {
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
+  const [formData, setFormData] = useState({
+    regNumber: '',
+    mileage: '',
+    email: '',
+    phone: ''
+  });
   
   const steps = ['Your Car', 'You', 'Choose Plan'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
     setVehicleData(data);
+    setFormData({ ...formData, ...data });
     setCurrentStep(3);
   };
 
-  const handleBackToRegistration = () => {
-    setCurrentStep(2);
+  const handleBackToStep = (step: number) => {
+    setCurrentStep(step);
   };
 
-  const handleBackToVehicleDetails = () => {
-    setCurrentStep(1);
+  const handleFormDataUpdate = (data: Partial<VehicleData>) => {
+    setFormData({ ...formData, ...data });
   };
 
   return (
@@ -38,12 +45,21 @@ const Index = () => {
         <div className="max-w-4xl mx-auto px-4 py-8">
           <RegistrationForm 
             onNext={handleRegistrationComplete} 
-            onBack={currentStep === 2 ? handleBackToVehicleDetails : undefined}
+            onBack={(step: number) => handleBackToStep(step)}
+            onFormDataUpdate={handleFormDataUpdate}
+            initialData={formData}
+            currentStep={currentStep}
+            onStepChange={setCurrentStep}
           />
         </div>
       ) : (
         <div className="max-w-4xl mx-auto px-4 py-8">
-          {vehicleData && <PricingTable vehicleData={vehicleData} onBack={handleBackToRegistration} />}
+          {vehicleData && (
+            <PricingTable 
+              vehicleData={vehicleData} 
+              onBack={() => handleBackToStep(2)} 
+            />
+          )}
         </div>
       )}
     </div>
