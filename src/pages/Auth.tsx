@@ -1,165 +1,162 @@
 
 import React, { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import CreateTestCustomer from '@/components/CreateTestCustomer';
 
 const Auth = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const { user } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      // If user is already logged in, redirect to dashboard
-      navigate('/customer-dashboard');
-    }
-  }, [user, navigate]);
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/customer-dashboard');
+      }
+    });
+  }, [navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+    
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
 
-      toast.success('Successfully signed in!');
+      toast({
+        title: "Success",
+        description: "You have been signed in successfully!",
+      });
+
       navigate('/customer-dashboard');
     } catch (error: any) {
-      toast.error(error.message || 'An error occurred during sign in');
+      toast({
+        title: "Sign In Failed",
+        description: error.message,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBuyWarranty = () => {
-    navigate('/');
+  const handleResetPassword = async () => {
+    if (!email) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Reset Email Sent",
+        description: "Check your email for the password reset link.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Reset Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#e8f4fb] py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="max-w-md w-full space-y-8 shadow-xl">
-        <CardHeader className="space-y-6 text-center pb-8">
-          {/* Brand Logo */}
-          <div className="flex justify-center mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-6">
+        <Card>
+          <CardHeader className="text-center">
             <img 
-              src="/lovable-uploads/00df2d65-3877-4e69-8558-cd5acb7f6257.png" 
+              src="/lovable-uploads/9b53da8c-70f3-4fc2-8497-e1958a650b4a.png" 
               alt="BuyAWarranty" 
-              className="h-12 w-auto"
+              className="h-12 w-auto mx-auto mb-4"
             />
-          </div>
-          
-          <CardTitle className="text-3xl font-bold text-gray-900">
-            Customer Dashboard
-          </CardTitle>
-          <CardDescription className="text-lg text-gray-600">
-            Sign in to access your warranty dashboard
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          <form onSubmit={handleSignIn} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-base font-medium">Email Address</Label>
-              <Input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                className="h-12 text-base"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-base font-medium">Password</Label>
-              <div className="relative">
+            <CardTitle>Welcome Back</CardTitle>
+            <CardDescription>
+              Sign in to your customer account
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  type={showPassword ? 'text' : 'password'}
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
                   id="password"
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="h-12 text-base pr-12"
                   required
                 />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                  <span className="sr-only">Toggle password visibility</span>
-                </Button>
               </div>
-            </div>
-            
-            <Button 
-              disabled={loading} 
-              className="w-full h-12 text-lg font-semibold bg-orange-500 hover:bg-orange-600 text-white transition-colors duration-200"
-            >
-              {loading ? 'Signing in...' : 'Sign In to Dashboard'}
-            </Button>
-            
-            <div className="text-center">
+              
               <Button 
-                type="button" 
+                type="submit" 
+                disabled={loading}
+                className="w-full"
+              >
+                {loading ? 'Signing In...' : 'Sign In'}
+              </Button>
+            </form>
+            
+            <div className="mt-4 text-center">
+              <Button 
                 variant="link" 
-                onClick={() => navigate('/reset-password')}
-                className="text-blue-600 hover:text-blue-800"
+                onClick={handleResetPassword}
+                className="text-sm"
               >
                 Forgot your password?
               </Button>
             </div>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-300" />
+            
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-800 font-medium">Quick Test:</p>
+              <p className="text-xs text-blue-600">
+                Email: test@customer.com<br/>
+                Password: password123
+              </p>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500 font-medium">Don't have a warranty yet?</span>
-            </div>
-          </div>
-
-          {/* Buy Warranty Section */}
-          <div className="text-center space-y-4 p-6 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-900">Need a Warranty?</h3>
-            <p className="text-gray-600">
-              Purchase a warranty to get access to your customer dashboard with policy details, claims, and more.
-            </p>
-            <Button 
-              onClick={handleBuyWarranty}
-              className="w-full h-12 text-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Buy a Warranty
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        
+        <CreateTestCustomer />
+      </div>
     </div>
   );
 };
