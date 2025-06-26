@@ -97,10 +97,18 @@ const CustomerDashboard = () => {
     if (!policy) return;
 
     try {
+      // Convert AddressData to a plain object that matches Json type
+      const addressJson = {
+        street: address.street,
+        city: address.city,
+        postcode: address.postcode,
+        country: address.country
+      };
+
       const { error } = await supabase
         .from('customer_policies')
         .update({ 
-          address: address,
+          address: addressJson,
           updated_at: new Date().toISOString()
         })
         .eq('id', policy.id);
