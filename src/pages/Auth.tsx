@@ -17,32 +17,53 @@ const Auth = () => {
 
   useEffect(() => {
     // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        console.log("User already logged in, redirecting to dashboard");
+        navigate('/customer-dashboard');
+      }
+    };
+    
+    checkSession();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state change:", event, session?.user?.email);
+      if (event === 'SIGNED_IN' && session) {
+        toast({
+          title: "Success",
+          description: "You have been signed in successfully!",
+        });
         navigate('/customer-dashboard');
       }
     });
-  }, [navigate]);
+
+    return () => subscription.unsubscribe();
+  }, [navigate, toast]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
+      console.log("Attempting to sign in with:", email);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Sign in error:", error);
+        throw error;
+      }
 
-      toast({
-        title: "Success",
-        description: "You have been signed in successfully!",
-      });
-
-      navigate('/customer-dashboard');
+      console.log("Sign in successful:", data.user?.email);
+      
+      // The navigation will be handled by the auth state change listener
     } catch (error: any) {
+      console.error("Sign in failed:", error);
       toast({
         title: "Sign In Failed",
         description: error.message,

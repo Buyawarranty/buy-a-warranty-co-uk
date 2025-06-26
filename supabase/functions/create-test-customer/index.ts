@@ -24,8 +24,21 @@ serve(async (req) => {
 
     console.log("Starting test customer creation process...");
 
-    // Use lowercase plan type that matches database constraints
-    const planType = "basic";
+    // First, let's check what plan types are allowed in the database
+    const { data: plans, error: plansError } = await supabaseClient
+      .from('plans')
+      .select('name')
+      .eq('is_active', true)
+      .limit(5);
+
+    console.log("Available plans:", plans);
+    console.log("Plans query error:", plansError);
+
+    // Use a plan type that exists in the database, defaulting to the first available
+    let planType = "Basic"; // Default fallback
+    if (plans && plans.length > 0) {
+      planType = plans[0].name;
+    }
     console.log("Using plan type:", planType);
 
     // First, delete any existing user with this email
