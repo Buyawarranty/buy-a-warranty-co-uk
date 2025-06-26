@@ -5,6 +5,8 @@ import { Check, ArrowLeft, X, Info } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface PricingData {
   basic: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
@@ -34,6 +36,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     gold: {},
     platinum: {}
   });
+  const [loading, setLoading] = useState<{[key: string]: boolean}>({});
 
   // Pricing data based on your Excel sheet with extended options
   const pricingData: Record<number, PricingData> = {
@@ -186,8 +189,37 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     }
   ];
 
-  const handleSelectPlan = (planId: string) => {
-    console.log('Selected plan:', planId, 'for vehicle:', vehicleData.regNumber);
+  const handleSelectPlan = async (planId: string) => {
+    setLoading(prev => ({ ...prev, [planId]: true }));
+    
+    try {
+      console.log('Creating checkout session for:', planId, paymentType);
+      
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          planId,
+          paymentType
+        }
+      });
+
+      if (error) {
+        console.error('Stripe checkout error:', error);
+        toast.error('Failed to create checkout session');
+        return;
+      }
+
+      if (data?.url) {
+        // Open Stripe checkout in a new tab
+        window.open(data.url, '_blank');
+      } else {
+        toast.error('No checkout URL received');
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      toast.error('Failed to start checkout process');
+    } finally {
+      setLoading(prev => ({ ...prev, [planId]: false }));
+    }
   };
 
   // Create a comprehensive list of all possible features
@@ -254,7 +286,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-[#e8f4fb] w-full">
+      <div className="bg-[#e8f4fb] w-full">
         {/* Back Button */}
         <div className="mb-8 px-8 pt-8">
           <Button 
@@ -365,6 +397,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 const basePrice = planPricing[paymentType];
                 const addOnPrice = calculateAddOnPrice(plan.id);
                 const totalPrice = basePrice + addOnPrice;
+                const isLoading = loading[plan.id];
                 
                 return (
                   <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
@@ -392,11 +425,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         </div>
                       )}
                       <Button 
-                        className="w-full mt-6 text-white font-bold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                        className="w-full mt-6 text-white font-bold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
                         style={{ backgroundColor: plan.color }}
                         onClick={() => handleSelectPlan(plan.id)}
+                        disabled={isLoading}
                       >
-                        Select {plan.name}
+                        {isLoading ? 'Processing...' : `Select ${plan.name}`}
                       </Button>
                     </div>
 
