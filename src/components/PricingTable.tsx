@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +21,8 @@ interface PricingTableProps {
     mileage: string;
     email?: string;
     phone?: string;
+    fullName?: string;
+    address?: string;
   };
   onBack: () => void;
 }
@@ -107,6 +110,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     
     try {
       console.log('Creating checkout session for:', planId, paymentType);
+      console.log('Vehicle data:', vehicleData);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
@@ -116,6 +120,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         }
       });
 
+      console.log('Checkout response:', { data, error });
+
       if (error) {
         console.error('Stripe checkout error:', error);
         toast.error('Failed to create checkout session');
@@ -123,9 +129,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       }
 
       if (data?.url) {
-        // Redirect to Stripe checkout
-        window.location.href = data.url;
+        console.log('Redirecting to:', data.url);
+        // Force a full page redirect to Stripe checkout
+        window.location.assign(data.url);
       } else {
+        console.error('No checkout URL received:', data);
         toast.error('No checkout URL received');
       }
     } catch (error) {
