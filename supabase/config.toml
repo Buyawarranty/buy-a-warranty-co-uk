@@ -8,56 +8,18 @@ schemas = ["public", "graphql_public"]
 extra_search_path = ["public", "extensions"]
 max_rows = 1000
 
-[db]
-port = 54322
-
-[db.pooler]
-enabled = false
-port = 54329
-pool_mode = "transaction"
-default_pool_size = 20
-max_client_conn = 100
-
-[realtime]
-enabled = true
-port = 54324
-tenant_id = "realtime-dev"
-
-[studio]
-enabled = true
-port = 54323
-api_url = "http://127.0.0.1:54321"
-
-[inbucket]
-enabled = true
-port = 54325
-smtp_port = 54326
-pop3_port = 54327
-
-[storage]
-enabled = true
-port = 54328
-file_size_limit = "50MiB"
-
 [auth]
 enabled = true
-port = 54321
-site_url = "http://127.0.0.1:3000"
-additional_redirect_urls = ["https://mzlpuxzwyrcyrgrongeb.supabase.co/auth/v1/callback"]
+port = 54324
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000"]
 jwt_expiry = 3600
 refresh_token_rotation_enabled = true
-refresh_token_reuse_interval = 10
+security_refresh_token_reuse_interval = 10
 enable_signup = true
 
-[auth.email]
-enable_signup = true
-double_confirm_changes = true
-enable_confirmations = false
-
-[edge_runtime]
+[edge_functions]
 enabled = true
-port = 54321
-inspector_port = 8083
 
 [functions.create-checkout]
 verify_jwt = true
@@ -67,3 +29,20 @@ verify_jwt = true
 
 [functions.customer-portal]
 verify_jwt = true
+
+[functions.send-welcome-email]
+verify_jwt = false
+
+[functions.handle-successful-payment]
+verify_jwt = false
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324

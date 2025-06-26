@@ -41,6 +41,96 @@ export type Database = {
           },
         ]
       }
+      customer_documents: {
+        Row: {
+          created_at: string
+          document_name: string
+          file_size: number | null
+          file_url: string
+          id: string
+          plan_type: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_name: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          plan_type: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_name?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          plan_type?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
+      customer_policies: {
+        Row: {
+          address: Json | null
+          created_at: string
+          email: string
+          id: string
+          payment_type: string
+          pdf_basic_url: string | null
+          pdf_gold_url: string | null
+          pdf_platinum_url: string | null
+          plan_type: string
+          policy_end_date: string
+          policy_number: string
+          policy_start_date: string
+          status: string
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address?: Json | null
+          created_at?: string
+          email: string
+          id?: string
+          payment_type: string
+          pdf_basic_url?: string | null
+          pdf_gold_url?: string | null
+          pdf_platinum_url?: string | null
+          plan_type: string
+          policy_end_date: string
+          policy_number: string
+          policy_start_date?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: Json | null
+          created_at?: string
+          email?: string
+          id?: string
+          payment_type?: string
+          pdf_basic_url?: string | null
+          pdf_gold_url?: string | null
+          pdf_platinum_url?: string | null
+          plan_type?: string
+          policy_end_date?: string
+          policy_number?: string
+          policy_start_date?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           created_at: string
@@ -187,11 +277,60 @@ export type Database = {
         }
         Relationships: []
       }
+      welcome_emails: {
+        Row: {
+          created_at: string
+          email: string
+          email_sent_at: string
+          id: string
+          password_reset: boolean
+          policy_id: string | null
+          temporary_password: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          email_sent_at?: string
+          id?: string
+          password_reset?: boolean
+          policy_id?: string | null
+          temporary_password: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          email_sent_at?: string
+          id?: string
+          password_reset?: boolean
+          policy_id?: string | null
+          temporary_password?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "welcome_emails_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "customer_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      calculate_policy_end_date: {
+        Args: { payment_type: string; start_date: string }
+        Returns: string
+      }
+      generate_policy_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       is_admin: {
         Args: { _user_id: string }
         Returns: boolean
