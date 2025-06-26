@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,8 +7,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
 
 interface PricingData {
   basic: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
@@ -28,8 +25,6 @@ interface PricingTableProps {
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
   const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'twoYear' | 'threeYear'>('monthly');
   const [contributionAmounts, setContributionAmounts] = useState<{[key: string]: number}>({
     basic: 0,
@@ -105,6 +100,40 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       ...prev,
       [planId]: amount
     }));
+  };
+
+  const handleSelectPlan = async (planId: string) => {
+    setLoading(prev => ({ ...prev, [planId]: true }));
+    
+    try {
+      console.log('Creating checkout session for:', planId, paymentType);
+      
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          planId,
+          paymentType,
+          vehicleData: vehicleData
+        }
+      });
+
+      if (error) {
+        console.error('Stripe checkout error:', error);
+        toast.error('Failed to create checkout session');
+        return;
+      }
+
+      if (data?.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } else {
+        toast.error('No checkout URL received');
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      toast.error('Failed to start checkout process');
+    } finally {
+      setLoading(prev => ({ ...prev, [planId]: false }));
+    }
   };
 
   const plans = [
@@ -192,90 +221,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       ],
       addOns: ['Power Hood']
     }
-  ];
-
-  const handleSelectPlan = async (planId: string) => {
-    // Check if user is authenticated
-    if (!user) {
-      toast.error('Please sign in to purchase a warranty plan');
-      // Redirect to auth page with return URL
-      navigate('/auth?returnTo=' + encodeURIComponent(`/?plan=${planId}&payment=${paymentType}`));
-      return;
-    }
-
-    setLoading(prev => ({ ...prev, [planId]: true }));
-    
-    try {
-      console.log('Creating checkout session for:', planId, paymentType);
-      
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: {
-          planId,
-          paymentType
-        }
-      });
-
-      if (error) {
-        console.error('Stripe checkout error:', error);
-        toast.error('Failed to create checkout session');
-        return;
-      }
-
-      if (data?.url) {
-        // Open Stripe checkout in a new tab
-        window.open(data.url, '_blank');
-      } else {
-        toast.error('No checkout URL received');
-      }
-    } catch (error) {
-      console.error('Error creating checkout session:', error);
-      toast.error('Failed to start checkout process');
-    } finally {
-      setLoading(prev => ({ ...prev, [planId]: false }));
-    }
-  };
-
-  // Create a comprehensive list of all possible features
-  const allPossibleFeatures = [
-    'Mechanical Breakdown Protection',
-    'Mechanical & Electrical Breakdown Warranty',
-    'Labour up to £35 p/hr',
-    'Labour up to £75 p/hr',
-    'Labour up to £100 p/hr',
-    '10 Claims per year',
-    'Halfords MOT test',
-    'Unlimited Claims',
-    'Engine',
-    'Turbo Unit',
-    'Manual Gearbox',
-    'Automatic Transmission',
-    'Torque Convertor',
-    'Torque Converter',
-    'Overdrive',
-    'Clutch',
-    'Differential',
-    'Drive Shafts',
-    'Brakes',
-    'Steering',
-    'Suspension',
-    'Bearings',
-    'Cooling System',
-    'Ventilation',
-    'E.C.U.',
-    'Electrics',
-    'Electricals',
-    'Electricals (Extended)',
-    'Fuel System',
-    'Air Conditioning',
-    'Braking System',
-    'Propshaft',
-    'Locks',
-    'Seals',
-    'Casings',
-    'Vehicle Hire',
-    'Recovery',
-    'Vehicle Recovery',
-    'European Cover'
   ];
 
   const getPaymentLabel = () => {
@@ -445,18 +390,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       >
                         {isLoading ? 'Processing...' : `Select ${plan.name}`}
                       </Button>
-                      {!user && (
-                        <p className="text-xs text-gray-500 mt-2">
-                          You'll be prompted to sign in
-                        </p>
-                      )}
+                      <p className="text-xs text-gray-500 mt-2">
+                        Login details will be emailed after purchase
+                      </p>
                     </div>
 
                     {/* Features Section */}
                     <div className="p-6">
                       <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
                       <div className="space-y-3 max-h-64 overflow-y-auto">
-                        {/* All plans now show only their specified features with ticks */}
                         {plan.features.map((feature, index) => (
                           <div key={index} className="flex items-center gap-3">
                             <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">

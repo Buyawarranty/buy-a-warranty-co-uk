@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -17,19 +18,13 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const returnTo = searchParams.get('returnTo');
 
   useEffect(() => {
     if (user) {
-      // If user is already logged in, redirect them
-      if (returnTo) {
-        navigate(returnTo);
-      } else {
-        navigate('/customer-dashboard');
-      }
+      // If user is already logged in, redirect to dashboard
+      navigate('/customer-dashboard');
     }
-  }, [user, navigate, returnTo]);
+  }, [user, navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,13 +59,7 @@ const Auth = () => {
       if (error) throw error;
 
       toast.success('Successfully signed in!');
-      
-      // Redirect to return URL or dashboard
-      if (returnTo) {
-        navigate(returnTo);
-      } else {
-        navigate('/customer-dashboard');
-      }
+      navigate('/customer-dashboard');
     } catch (error: any) {
       toast.error(error.message || 'An error occurred during sign in');
     } finally {
