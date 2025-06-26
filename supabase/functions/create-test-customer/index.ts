@@ -25,15 +25,20 @@ serve(async (req) => {
     console.log("Starting test customer creation process...");
 
     // First, let's check what plan types exist in the database
-    const { data: existingPlans } = await supabaseClient
+    const { data: existingPlans, error: plansError } = await supabaseClient
       .from('plans')
-      .select('name')
-      .limit(5);
+      .select('name, monthly_price')
+      .limit(10);
     
     console.log("Existing plans:", existingPlans);
+    console.log("Plans error:", plansError);
 
-    // Use a plan type that should exist - let's try lowercase first
-    const planType = "basic";
+    // Use the first available plan or default to 'Basic'
+    let planType = "Basic";
+    if (existingPlans && existingPlans.length > 0) {
+      planType = existingPlans[0].name;
+    }
+    console.log("Using plan type:", planType);
 
     // First, delete any existing user with this email
     const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
@@ -45,15 +50,17 @@ serve(async (req) => {
     }
 
     // Delete any existing customer records
-    await supabaseClient
+    const { error: deleteCustomerError } = await supabaseClient
       .from('customers')
       .delete()
       .eq('email', testEmail);
+    console.log("Delete customer error:", deleteCustomerError);
 
-    await supabaseClient
+    const { error: deletePolicyError } = await supabaseClient
       .from('customer_policies')
       .delete()
       .eq('email', testEmail);
+    console.log("Delete policy error:", deletePolicyError);
 
     console.log("Creating new auth user...");
     
@@ -78,7 +85,7 @@ serve(async (req) => {
 
     console.log("Auth user created successfully:", authData.user.id);
 
-    // Create customer record - try with lowercase plan type
+    // Create customer record
     const { data: customerData, error: customerError } = await supabaseClient
       .from('customers')
       .insert({
@@ -93,21 +100,26 @@ serve(async (req) => {
 
     if (customerError) {
       console.error("Customer creation error:", customerError);
-      throw customerError;
+      throw new Error(`Customer creation failed: ${customerError.message}`);
     }
 
-    console.log("Customer record created successfully");
+    console.log("Customer record created successfully:", customerData);
 
-    // Create a customer policy - try with lowercase plan type
+    // Calculate policy end date (1 year from now for testing)
+    const policyStartDate = new Date();
+    const policyEndDate = new Date(policyStartDate.getTime() + 365 * 24 * 60 * 60 * 1000);
+
+    // Create a customer policy
     const { data: policyData, error: policyError } = await supabaseClient
       .from('customer_policies')
       .insert({
         user_id: authData.user.id,
         email: testEmail,
         plan_type: planType,
-        payment_type: "monthly",
-        policy_number: "TEST-POLICY-001",
-        policy_end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        payment_type: "yearly",
+        policy_number: "TEST-POL-" + Date.now(),
+        policy_start_date: policyStartDate.toISOString(),
+        policy_end_date: policyEndDate.toISOString(),
         status: "active",
         address: {
           street: "123 Test Street",
@@ -121,10 +133,10 @@ serve(async (req) => {
 
     if (policyError) {
       console.error("Policy creation error:", policyError);
-      throw policyError;
+      throw new Error(`Policy creation failed: ${policyError.message}`);
     }
 
-    console.log("Policy created successfully");
+    console.log("Policy created successfully:", policyData);
 
     // Verify the user can actually sign in
     const { data: signInTest, error: signInError } = await supabaseClient.auth.signInWithPassword({
@@ -139,6 +151,9 @@ serve(async (req) => {
 
     console.log("Sign in test successful");
 
+    // Sign out the test session
+    await supabaseClient.auth.signOut();
+
     return new Response(JSON.stringify({
       success: true,
       message: "Test customer created and verified successfully",
@@ -149,7 +164,8 @@ serve(async (req) => {
       customer: customerData,
       policy: policyData,
       auth_user_id: authData.user.id,
-      available_plans: existingPlans
+      available_plans: existingPlans,
+      plan_used: planType
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
