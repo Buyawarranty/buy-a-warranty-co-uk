@@ -111,7 +111,8 @@ serve(async (req) => {
       throw new Error(`Invalid payment type: ${paymentType}`);
     }
 
-    logStep("Creating checkout session", { amount, interval, intervalCount, customerEmail });
+    const origin = req.headers.get("origin") || "https://buyawarranty.com";
+    logStep("Creating checkout session", { amount, interval, intervalCount, customerEmail, origin });
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -121,8 +122,8 @@ serve(async (req) => {
           price_data: {
             currency: "gbp",
             product_data: { 
-              name: `${planId.charAt(0).toUpperCase() + planId.slice(1)} Plan`,
-              description: `${planId.toUpperCase()} warranty plan - ${paymentType} billing`
+              name: `${planId.charAt(0).toUpperCase() + planId.slice(1)} Warranty Plan`,
+              description: `Vehicle warranty coverage - ${paymentType} billing for ${vehicleData?.regNumber || 'vehicle'}`
             },
             unit_amount: amount,
             recurring: { 
@@ -134,8 +135,16 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/thank-you?plan=${planId}&payment=${paymentType}`,
-      cancel_url: `${req.headers.get("origin")}/`,
+      success_url: `${origin}/thank-you?plan=${planId}&payment=${paymentType}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/`,
+      automatic_tax: { enabled: false },
+      billing_address_collection: 'required',
+      customer_creation: customerId ? undefined : 'always',
+      phone_number_collection: { enabled: true },
+      // Remove SMS verification requirements
+      consent_collection: {
+        terms_of_service: 'none',
+      },
       // Custom branding
       custom_text: {
         submit: {

@@ -109,8 +109,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     setLoading(prev => ({ ...prev, [planId]: true }));
     
     try {
-      console.log('Creating checkout session for:', planId, paymentType);
-      console.log('Vehicle data:', vehicleData);
+      console.log('=== CHECKOUT PROCESS STARTED ===');
+      console.log('Plan ID:', planId);
+      console.log('Payment Type:', paymentType);
+      console.log('Vehicle Data:', vehicleData);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
@@ -120,21 +122,28 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         }
       });
 
-      console.log('Checkout response:', { data, error });
+      console.log('=== CHECKOUT RESPONSE ===');
+      console.log('Data:', data);
+      console.log('Error:', error);
 
       if (error) {
         console.error('Stripe checkout error:', error);
-        toast.error('Failed to create checkout session');
+        toast.error('Failed to create checkout session: ' + error.message);
         return;
       }
 
       if (data?.url) {
-        console.log('Redirecting to:', data.url);
-        // Force a full page redirect to Stripe checkout
-        window.location.assign(data.url);
+        console.log('=== REDIRECTING TO STRIPE ===');
+        console.log('Checkout URL:', data.url);
+        
+        // Add a small delay to ensure console logs are visible
+        setTimeout(() => {
+          // Force a full page redirect to Stripe checkout
+          window.location.href = data.url;
+        }, 100);
       } else {
         console.error('No checkout URL received:', data);
-        toast.error('No checkout URL received');
+        toast.error('No checkout URL received from payment processor');
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
