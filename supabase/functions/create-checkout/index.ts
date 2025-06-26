@@ -120,8 +120,19 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/thank-you`,
+      success_url: `${req.headers.get("origin")}/thank-you?plan=${planId}&payment=${paymentType}`,
       cancel_url: `${req.headers.get("origin")}/`,
+      // Custom branding
+      custom_text: {
+        submit: {
+          message: 'Your BuyAWarranty protection starts immediately after payment'
+        }
+      },
+      metadata: {
+        plan_type: planId,
+        payment_type: paymentType,
+        user_id: user.id
+      }
     });
 
     logStep("Checkout session created", { sessionId: session.id, url: session.url });
