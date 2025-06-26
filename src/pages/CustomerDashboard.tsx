@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -25,6 +24,13 @@ interface CustomerPolicy {
   pdf_platinum_url?: string;
 }
 
+interface AddressData {
+  street: string;
+  city: string;
+  postcode: string;
+  country: string;
+}
+
 const CustomerDashboard = () => {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
@@ -33,7 +39,7 @@ const CustomerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [editingAddress, setEditingAddress] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
-  const [address, setAddress] = useState({
+  const [address, setAddress] = useState<AddressData>({
     street: '',
     city: '',
     postcode: '',
@@ -69,8 +75,15 @@ const CustomerDashboard = () => {
 
       if (data) {
         setPolicy(data);
-        if (data.address) {
-          setAddress(data.address);
+        // Properly handle the address JSON data
+        if (data.address && typeof data.address === 'object') {
+          const addressData = data.address as Record<string, any>;
+          setAddress({
+            street: addressData.street || '',
+            city: addressData.city || '',
+            postcode: addressData.postcode || '',
+            country: addressData.country || 'United Kingdom'
+          });
         }
       }
     } catch (error) {
