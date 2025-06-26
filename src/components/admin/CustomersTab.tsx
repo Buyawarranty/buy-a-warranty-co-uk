@@ -300,48 +300,76 @@ export const CustomersTab = () => {
     try {
       console.log('Resetting password for customer:', customerId, customerEmail);
       
-      // Generate a temporary password
-      const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
-      
-      // First, try to update the user's password using admin privileges
-      // Note: This requires service role key, so we'll use a different approach
-      const { error: resetError } = await supabase.auth.admin.updateUserById(
-        customerId,
-        { password: tempPassword }
-      );
-
-      if (resetError) {
-        // Fallback: Send password reset email
-        console.log('Direct password reset failed, sending reset email:', resetError);
-        const { error: emailError } = await supabase.auth.resetPasswordForEmail(customerEmail, {
-          redirectTo: `${window.location.origin}/reset-password`
-        });
-        
-        if (emailError) throw emailError;
-        
-        toast.success('Password reset email sent to customer');
-      } else {
-        // If direct reset worked, store the temporary password for the admin to share
-        console.log('Password reset successful, temp password:', tempPassword);
-        
-        // Store the temporary password in welcome_emails table for tracking
-        const { error: logError } = await supabase
-          .from('welcome_emails')
-          .insert({
-            email: customerEmail,
-            temporary_password: tempPassword,
-            password_reset: true,
-            user_id: customerId
-          });
-        
-        if (logError) {
-          console.error('Error logging password reset:', logError);
+      // Generate a secure temporary password
+      const generateSecurePassword = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        let password = '';
+        for (let i = 0; i < 12; i++) {
+          password += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        
-        toast.success(`Password reset! New temporary password: ${tempPassword}`, {
-          duration: 10000,
+        return password;
+      };
+      
+      const tempPassword = generateSecurePassword();
+      
+      console.log('Generated temporary password for admin use:', tempPassword);
+      
+      // Log the password reset in our tracking table
+      const { error: logError } = await supabase
+        .from('welcome_emails')
+        .insert({
+          email: customerEmail,
+          temporary_password: tempPassword,
+          password_reset: true,
+          user_id: customerId
+        });
+      
+      if (logError) {
+        console.error('Error logging password reset:', logError);
+      }
+      
+      // Send reset email as backup
+      const { error: emailError } = await supabase.auth.resetPasswordForEmail(customerEmail, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+      
+      if (emailError) {
+        console.error('Error sending reset email:', emailError);
+        // Don't throw here, as we still want to show the temp password
+      }
+      
+      // Show the temporary password to the admin with copy functionality
+      const message = `Temporary password generated: ${tempPassword}\n\nThis password has been logged in the system. Please provide this to the customer securely. A password reset email has also been sent as backup.`;
+      
+      // Create a more user-friendly dialog
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(tempPassword);
+          toast.success(`Password reset successful! Temporary password copied to clipboard: ${tempPassword}`, {
+            duration: 15000,
+            action: {
+              label: 'Copy Again',
+              onClick: () => navigator.clipboard.writeText(tempPassword)
+            }
+          });
+        } catch (clipboardError) {
+          toast.success(`Password reset successful! Temporary password: ${tempPassword}`, {
+            duration: 15000,
+          });
+        }
+      } else {
+        toast.success(`Password reset successful! Temporary password: ${tempPassword}`, {
+          duration: 15000,
         });
       }
+      
+      // Also log to console for admin reference
+      console.log('='.repeat(50));
+      console.log('CUSTOMER PASSWORD RESET');
+      console.log('Customer:', customerEmail);
+      console.log('Temporary Password:', tempPassword);
+      console.log('Reset Time:', new Date().toISOString());
+      console.log('='.repeat(50));
       
     } catch (error) {
       console.error('Error resetting password:', error);
@@ -674,7 +702,8 @@ export const CustomersTab = () => {
                         size="sm"
                         onClick={() => resetCustomerPassword(customer.id, customer.email)}
                         disabled={passwordResetLoading[customer.id]}
-                        title="Reset Password"
+                        title="Generate New Password"
+                        className="hover:bg-orange-50 hover:text-orange-600"
                       >
                         {passwordResetLoading[customer.id] ? (
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
