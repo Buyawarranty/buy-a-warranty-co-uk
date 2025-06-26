@@ -24,20 +24,8 @@ serve(async (req) => {
 
     console.log("Starting test customer creation process...");
 
-    // First, let's check what plan types exist in the database
-    const { data: existingPlans, error: plansError } = await supabaseClient
-      .from('plans')
-      .select('name, monthly_price')
-      .limit(10);
-    
-    console.log("Existing plans:", existingPlans);
-    console.log("Plans error:", plansError);
-
-    // Use the first available plan or default to 'Basic'
-    let planType = "Basic";
-    if (existingPlans && existingPlans.length > 0) {
-      planType = existingPlans[0].name;
-    }
+    // Use lowercase plan type that matches database constraints
+    const planType = "basic";
     console.log("Using plan type:", planType);
 
     // First, delete any existing user with this email
@@ -164,7 +152,6 @@ serve(async (req) => {
       customer: customerData,
       policy: policyData,
       auth_user_id: authData.user.id,
-      available_plans: existingPlans,
       plan_used: planType
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
