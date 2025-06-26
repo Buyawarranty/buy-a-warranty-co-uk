@@ -67,14 +67,14 @@ serve(async (req) => {
 
     console.log("Auth user created successfully:", authData.user.id);
 
-    // Create customer record
+    // Create customer record - using 'Basic' instead of 'basic'
     const { data: customerData, error: customerError } = await supabaseClient
       .from('customers')
       .insert({
         name: "Test Customer",
         email: testEmail,
         registration_plate: "TEST123",
-        plan_type: "basic",
+        plan_type: "Basic",
         status: "Active"
       })
       .select()
@@ -87,13 +87,13 @@ serve(async (req) => {
 
     console.log("Customer record created successfully");
 
-    // Create a customer policy
+    // Create a customer policy - using 'Basic' instead of 'basic'
     const { data: policyData, error: policyError } = await supabaseClient
       .from('customer_policies')
       .insert({
         user_id: authData.user.id,
         email: testEmail,
-        plan_type: "basic",
+        plan_type: "Basic",
         payment_type: "monthly",
         policy_number: "TEST-POLICY-001",
         policy_end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
