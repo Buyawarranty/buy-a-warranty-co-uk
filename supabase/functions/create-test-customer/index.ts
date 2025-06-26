@@ -24,6 +24,17 @@ serve(async (req) => {
 
     console.log("Starting test customer creation process...");
 
+    // First, let's check what plan types exist in the database
+    const { data: existingPlans } = await supabaseClient
+      .from('plans')
+      .select('name')
+      .limit(5);
+    
+    console.log("Existing plans:", existingPlans);
+
+    // Use a plan type that should exist - let's try lowercase first
+    const planType = "basic";
+
     // First, delete any existing user with this email
     const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
     const existingUser = existingUsers.users?.find(user => user.email === testEmail);
@@ -67,14 +78,14 @@ serve(async (req) => {
 
     console.log("Auth user created successfully:", authData.user.id);
 
-    // Create customer record - using 'Basic' instead of 'basic'
+    // Create customer record - try with lowercase plan type
     const { data: customerData, error: customerError } = await supabaseClient
       .from('customers')
       .insert({
         name: "Test Customer",
         email: testEmail,
         registration_plate: "TEST123",
-        plan_type: "Basic",
+        plan_type: planType,
         status: "Active"
       })
       .select()
@@ -87,13 +98,13 @@ serve(async (req) => {
 
     console.log("Customer record created successfully");
 
-    // Create a customer policy - using 'Basic' instead of 'basic'
+    // Create a customer policy - try with lowercase plan type
     const { data: policyData, error: policyError } = await supabaseClient
       .from('customer_policies')
       .insert({
         user_id: authData.user.id,
         email: testEmail,
-        plan_type: "Basic",
+        plan_type: planType,
         payment_type: "monthly",
         policy_number: "TEST-POLICY-001",
         policy_end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
@@ -137,7 +148,8 @@ serve(async (req) => {
       },
       customer: customerData,
       policy: policyData,
-      auth_user_id: authData.user.id
+      auth_user_id: authData.user.id,
+      available_plans: existingPlans
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
