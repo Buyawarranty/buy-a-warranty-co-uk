@@ -22,21 +22,47 @@ serve(async (req) => {
     const testEmail = "test@customer.com";
     const testPassword = "password123";
 
+    // First, delete any existing user with this email
+    const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
+    const existingUser = existingUsers.users?.find(user => user.email === testEmail);
+    
+    if (existingUser) {
+      await supabaseClient.auth.admin.deleteUser(existingUser.id);
+    }
+
     // Create the auth user
     const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
       email: testEmail,
       password: testPassword,
-      email_confirm: true
+      email_confirm: true,
+      user_metadata: {
+        name: "Test Customer"
+      }
     });
 
-    if (authError && !authError.message.includes('already registered')) {
+    if (authError) {
       throw authError;
     }
+
+    if (!authData.user) {
+      throw new Error("Failed to create user");
+    }
+
+    // Delete any existing customer records
+    await supabaseClient
+      .from('customers')
+      .delete()
+      .eq('email', testEmail);
+
+    await supabaseClient
+      .from('customer_policies')
+      .delete()
+      .eq('email', testEmail);
 
     // Create customer record
     const { data: customerData, error: customerError } = await supabaseClient
       .from('customers')
-      .upsert({
+      .insert({
         name: "Test Customer",
         email: testEmail,
         registration_plate: "TEST123",
@@ -51,8 +77,8 @@ serve(async (req) => {
     // Create a customer policy
     const { data: policyData, error: policyError } = await supabaseClient
       .from('customer_policies')
-      .upsert({
-        user_id: authData?.user?.id,
+      .insert({
+        user_id: authData.user.id,
         email: testEmail,
         plan_type: "basic",
         payment_type: "monthly",

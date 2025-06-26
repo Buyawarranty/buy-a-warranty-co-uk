@@ -5,10 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import CreateTestCustomer from '@/components/CreateTestCustomer';
 
 const Auth = () => {
   const { toast } = useToast();
@@ -87,7 +85,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
             <img 
@@ -144,18 +142,8 @@ const Auth = () => {
                 Forgot your password?
               </Button>
             </div>
-            
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-800 font-medium">Quick Test:</p>
-              <p className="text-xs text-blue-600">
-                Email: test@customer.com<br/>
-                Password: password123
-              </p>
-            </div>
           </CardContent>
         </Card>
-        
-        <CreateTestCustomer />
       </div>
     </div>
   );

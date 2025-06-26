@@ -11,6 +11,7 @@ import ThankYou from "./pages/ThankYou";
 import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./pages/Auth";
 import CustomerDashboard from "./pages/CustomerDashboard";
+import AdminTest from "./pages/AdminTest";
 import PasswordReset from "./components/PasswordReset";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin-test" element={<AdminTest />} />
             <Route path="/customer-dashboard" element={<CustomerDashboard />} />
             <Route path="/reset-password" element={<PasswordReset />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
