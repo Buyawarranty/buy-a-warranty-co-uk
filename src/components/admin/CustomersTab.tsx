@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -68,6 +68,7 @@ export const CustomersTab = () => {
   const [notesLoading, setNotesLoading] = useState(false);
   const [debugInfo, setDebugInfo] = useState<string>('');
   const [plans, setPlans] = useState<Plan[]>([]);
+  const [passwordResetLoading, setPasswordResetLoading] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     fetchCustomers();
@@ -293,6 +294,63 @@ export const CustomersTab = () => {
     fetchNotes(customer.id);
   };
 
+  const resetCustomerPassword = async (customerId: string, customerEmail: string) => {
+    setPasswordResetLoading(prev => ({ ...prev, [customerId]: true }));
+    
+    try {
+      console.log('Resetting password for customer:', customerId, customerEmail);
+      
+      // Generate a temporary password
+      const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      
+      // First, try to update the user's password using admin privileges
+      // Note: This requires service role key, so we'll use a different approach
+      const { error: resetError } = await supabase.auth.admin.updateUserById(
+        customerId,
+        { password: tempPassword }
+      );
+
+      if (resetError) {
+        // Fallback: Send password reset email
+        console.log('Direct password reset failed, sending reset email:', resetError);
+        const { error: emailError } = await supabase.auth.resetPasswordForEmail(customerEmail, {
+          redirectTo: `${window.location.origin}/reset-password`
+        });
+        
+        if (emailError) throw emailError;
+        
+        toast.success('Password reset email sent to customer');
+      } else {
+        // If direct reset worked, store the temporary password for the admin to share
+        console.log('Password reset successful, temp password:', tempPassword);
+        
+        // Store the temporary password in welcome_emails table for tracking
+        const { error: logError } = await supabase
+          .from('welcome_emails')
+          .insert({
+            email: customerEmail,
+            temporary_password: tempPassword,
+            password_reset: true,
+            user_id: customerId
+          });
+        
+        if (logError) {
+          console.error('Error logging password reset:', logError);
+        }
+        
+        toast.success(`Password reset! New temporary password: ${tempPassword}`, {
+          duration: 10000,
+        });
+      }
+      
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      toast.error(`Failed to reset password: ${error.message || 'Unknown error'}`);
+    } finally {
+      setPasswordResetLoading(prev => ({ ...prev, [customerId]: false }));
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -400,215 +458,231 @@ export const CustomersTab = () => {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => openCustomerDialog(customer)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
-                        </DialogHeader>
-                        
-                        {editingCustomer && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Customer Details */}
-                            <div className="space-y-4">
-                              <h3 className="text-lg font-semibold">Customer Details</h3>
-                              
-                              <div className="space-y-3">
-                                <div>
-                                  <Label htmlFor="name">Name</Label>
-                                  <Input
-                                    id="name"
-                                    value={editingCustomer.name}
-                                    onChange={(e) => setEditingCustomer({
-                                      ...editingCustomer,
-                                      name: e.target.value
-                                    })}
-                                  />
+                    <div className="flex space-x-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openCustomerDialog(customer)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
+                          </DialogHeader>
+                          
+                          {editingCustomer && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              {/* Customer Details */}
+                              <div className="space-y-4">
+                                <h3 className="text-lg font-semibold">Customer Details</h3>
+                                
+                                <div className="space-y-3">
+                                  <div>
+                                    <Label htmlFor="name">Name</Label>
+                                    <Input
+                                      id="name"
+                                      value={editingCustomer.name}
+                                      onChange={(e) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        name: e.target.value
+                                      })}
+                                    />
+                                  </div>
+                                  
+                                  <div>
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                      id="email"
+                                      type="email"
+                                      value={editingCustomer.email}
+                                      onChange={(e) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        email: e.target.value
+                                      })}
+                                    />
+                                  </div>
+                                  
+                                  <div>
+                                    <Label htmlFor="phone">Phone</Label>
+                                    <Input
+                                      id="phone"
+                                      value={editingCustomer.phone || ''}
+                                      onChange={(e) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        phone: e.target.value
+                                      })}
+                                    />
+                                  </div>
+                                  
+                                  <div>
+                                    <Label htmlFor="address">Address</Label>
+                                    <Textarea
+                                      id="address"
+                                      value={editingCustomer.address || ''}
+                                      onChange={(e) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        address: e.target.value
+                                      })}
+                                    />
+                                  </div>
+                                  
+                                  <div>
+                                    <Label htmlFor="plan">Plan Type</Label>
+                                    <Select
+                                      value={editingCustomer.plan_type}
+                                      onValueChange={(value) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        plan_type: value
+                                      })}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {plans.map((plan) => (
+                                          <SelectItem key={plan.name} value={plan.name}>
+                                            {plan.name}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  
+                                  <div>
+                                    <Label htmlFor="status">Status</Label>
+                                    <Select
+                                      value={editingCustomer.status}
+                                      onValueChange={(value) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        status: value
+                                      })}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="Active">Active</SelectItem>
+                                        <SelectItem value="Inactive">Inactive</SelectItem>
+                                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                        <SelectItem value="Suspended">Suspended</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  
+                                  <div>
+                                    <Label htmlFor="excess">Voluntary Excess (£)</Label>
+                                    <Input
+                                      id="excess"
+                                      type="number"
+                                      value={editingCustomer.voluntary_excess || 0}
+                                      onChange={(e) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        voluntary_excess: parseFloat(e.target.value) || 0
+                                      })}
+                                    />
+                                  </div>
                                 </div>
                                 
-                                <div>
-                                  <Label htmlFor="email">Email</Label>
-                                  <Input
-                                    id="email"
-                                    type="email"
-                                    value={editingCustomer.email}
-                                    onChange={(e) => setEditingCustomer({
-                                      ...editingCustomer,
-                                      email: e.target.value
-                                    })}
-                                  />
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="phone">Phone</Label>
-                                  <Input
-                                    id="phone"
-                                    value={editingCustomer.phone || ''}
-                                    onChange={(e) => setEditingCustomer({
-                                      ...editingCustomer,
-                                      phone: e.target.value
-                                    })}
-                                  />
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="address">Address</Label>
-                                  <Textarea
-                                    id="address"
-                                    value={editingCustomer.address || ''}
-                                    onChange={(e) => setEditingCustomer({
-                                      ...editingCustomer,
-                                      address: e.target.value
-                                    })}
-                                  />
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="plan">Plan Type</Label>
-                                  <Select
-                                    value={editingCustomer.plan_type}
-                                    onValueChange={(value) => setEditingCustomer({
-                                      ...editingCustomer,
-                                      plan_type: value
-                                    })}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {plans.map((plan) => (
-                                        <SelectItem key={plan.name} value={plan.name}>
-                                          {plan.name}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="status">Status</Label>
-                                  <Select
-                                    value={editingCustomer.status}
-                                    onValueChange={(value) => setEditingCustomer({
-                                      ...editingCustomer,
-                                      status: value
-                                    })}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="Active">Active</SelectItem>
-                                      <SelectItem value="Inactive">Inactive</SelectItem>
-                                      <SelectItem value="Cancelled">Cancelled</SelectItem>
-                                      <SelectItem value="Suspended">Suspended</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="excess">Voluntary Excess (£)</Label>
-                                  <Input
-                                    id="excess"
-                                    type="number"
-                                    value={editingCustomer.voluntary_excess || 0}
-                                    onChange={(e) => setEditingCustomer({
-                                      ...editingCustomer,
-                                      voluntary_excess: parseFloat(e.target.value) || 0
-                                    })}
-                                  />
-                                </div>
-                              </div>
-                              
-                              <Button onClick={updateCustomer} className="w-full">
-                                <Save className="h-4 w-4 mr-2" />
-                                Save Changes
-                              </Button>
-                            </div>
-                            
-                            {/* Notes Section */}
-                            <div className="space-y-4">
-                              <h3 className="text-lg font-semibold">Customer Notes</h3>
-                              
-                              {/* Add New Note */}
-                              <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
-                                <div>
-                                  <Label htmlFor="note-date">Note Date</Label>
-                                  <Popover>
-                                    <PopoverTrigger asChild>
-                                      <Button
-                                        variant="outline"
-                                        className={cn(
-                                          "w-full justify-start text-left font-normal",
-                                          !noteDate && "text-muted-foreground"
-                                        )}
-                                      >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {noteDate ? format(noteDate, "PPP") : <span>Pick a date</span>}
-                                      </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                      <Calendar
-                                        mode="single"
-                                        selected={noteDate}
-                                        onSelect={(date) => date && setNoteDate(date)}
-                                        initialFocus
-                                        className="pointer-events-auto"
-                                      />
-                                    </PopoverContent>
-                                  </Popover>
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="new-note">Add Note</Label>
-                                  <Textarea
-                                    id="new-note"
-                                    placeholder="Enter your note here..."
-                                    value={newNote}
-                                    onChange={(e) => setNewNote(e.target.value)}
-                                    rows={3}
-                                  />
-                                </div>
-                                
-                                <Button 
-                                  onClick={addNote} 
-                                  disabled={!newNote.trim()}
-                                  className="w-full"
-                                >
-                                  Add Note
+                                <Button onClick={updateCustomer} className="w-full">
+                                  <Save className="h-4 w-4 mr-2" />
+                                  Save Changes
                                 </Button>
                               </div>
                               
-                              {/* Existing Notes */}
-                              <div className="space-y-2 max-h-96 overflow-y-auto">
-                                {notesLoading ? (
-                                  <div className="text-center py-4">Loading notes...</div>
-                                ) : notes.length === 0 ? (
-                                  <div className="text-center py-4 text-gray-500">No notes yet</div>
-                                ) : (
-                                  notes.map((note) => (
-                                    <div key={note.id} className="bg-white p-3 rounded-lg border">
-                                      <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
-                                      <p className="text-xs text-gray-500 mt-2">
-                                        {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
-                                      </p>
-                                    </div>
-                                  ))
-                                )}
+                              {/* Notes Section */}
+                              <div className="space-y-4">
+                                <h3 className="text-lg font-semibold">Customer Notes</h3>
+                                
+                                {/* Add New Note */}
+                                <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
+                                  <div>
+                                    <Label htmlFor="note-date">Note Date</Label>
+                                    <Popover>
+                                      <PopoverTrigger asChild>
+                                        <Button
+                                          variant="outline"
+                                          className={cn(
+                                            "w-full justify-start text-left font-normal",
+                                            !noteDate && "text-muted-foreground"
+                                          )}
+                                        >
+                                          <CalendarIcon className="mr-2 h-4 w-4" />
+                                          {noteDate ? format(noteDate, "PPP") : <span>Pick a date</span>}
+                                        </Button>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                          mode="single"
+                                          selected={noteDate}
+                                          onSelect={(date) => date && setNoteDate(date)}
+                                          initialFocus
+                                          className="pointer-events-auto"
+                                        />
+                                      </PopoverContent>
+                                    </Popover>
+                                  </div>
+                                  
+                                  <div>
+                                    <Label htmlFor="new-note">Add Note</Label>
+                                    <Textarea
+                                      id="new-note"
+                                      placeholder="Enter your note here..."
+                                      value={newNote}
+                                      onChange={(e) => setNewNote(e.target.value)}
+                                      rows={3}
+                                    />
+                                  </div>
+                                  
+                                  <Button 
+                                    onClick={addNote} 
+                                    disabled={!newNote.trim()}
+                                    className="w-full"
+                                  >
+                                    Add Note
+                                  </Button>
+                                </div>
+                                
+                                {/* Existing Notes */}
+                                <div className="space-y-2 max-h-96 overflow-y-auto">
+                                  {notesLoading ? (
+                                    <div className="text-center py-4">Loading notes...</div>
+                                  ) : notes.length === 0 ? (
+                                    <div className="text-center py-4 text-gray-500">No notes yet</div>
+                                  ) : (
+                                    notes.map((note) => (
+                                      <div key={note.id} className="bg-white p-3 rounded-lg border">
+                                        <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
+                                        <p className="text-xs text-gray-500 mt-2">
+                                          {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
+                                        </p>
+                                      </div>
+                                    ))
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          )}
+                        </DialogContent>
+                      </Dialog>
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => resetCustomerPassword(customer.id, customer.email)}
+                        disabled={passwordResetLoading[customer.id]}
+                        title="Reset Password"
+                      >
+                        {passwordResetLoading[customer.id] ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
+                        ) : (
+                          <Key className="h-4 w-4" />
                         )}
-                      </DialogContent>
-                    </Dialog>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
