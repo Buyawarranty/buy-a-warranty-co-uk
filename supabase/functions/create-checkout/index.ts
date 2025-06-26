@@ -26,28 +26,42 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { planId, paymentType } = await req.json();
-    logStep("Request data", { planId, paymentType });
+    const { planId, paymentType, vehicleData } = await req.json();
+    logStep("Request data", { planId, paymentType, vehicleData });
 
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
-    const user = data.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
-    logStep("User authenticated", { userId: user.id, email: user.email });
+    // Try to get authenticated user, but don't fail if not authenticated
+    let user = null;
+    let customerEmail = vehicleData?.email || "guest@buyawarranty.com";
+    
+    const authHeader = req.headers.get("Authorization");
+    if (authHeader && authHeader !== "Bearer null") {
+      try {
+        const token = authHeader.replace("Bearer ", "");
+        const { data } = await supabaseClient.auth.getUser(token);
+        user = data.user;
+        if (user?.email) {
+          customerEmail = user.email;
+          logStep("User authenticated", { userId: user.id, email: user.email });
+        }
+      } catch (authError) {
+        logStep("Auth failed, proceeding as guest", { error: authError });
+      }
+    } else {
+      logStep("No auth header, proceeding as guest checkout");
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
       apiVersion: "2023-10-16" 
     });
 
     // Check if customer exists
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const customers = await stripe.customers.list({ email: customerEmail, limit: 1 });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
       logStep("Existing customer found", { customerId });
     } else {
-      logStep("No existing customer found");
+      logStep("No existing customer found, will create new one");
     }
 
     // Define pricing based on plan and payment type
@@ -97,11 +111,11 @@ serve(async (req) => {
       throw new Error(`Invalid payment type: ${paymentType}`);
     }
 
-    logStep("Creating checkout session", { amount, interval, intervalCount });
+    logStep("Creating checkout session", { amount, interval, intervalCount, customerEmail });
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+      customer_email: customerId ? undefined : customerEmail,
       line_items: [
         {
           price_data: {
@@ -131,7 +145,12 @@ serve(async (req) => {
       metadata: {
         plan_type: planId,
         payment_type: paymentType,
-        user_id: user.id
+        user_id: user?.id || 'guest',
+        vehicle_reg: vehicleData?.regNumber || '',
+        vehicle_mileage: vehicleData?.mileage || '',
+        customer_name: vehicleData?.fullName || '',
+        customer_phone: vehicleData?.phone || '',
+        customer_address: vehicleData?.address || ''
       }
     });
 
