@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +8,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 interface PricingData {
   basic: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
@@ -25,6 +28,8 @@ interface PricingTableProps {
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'twoYear' | 'threeYear'>('monthly');
   const [contributionAmounts, setContributionAmounts] = useState<{[key: string]: number}>({
     basic: 0,
@@ -190,6 +195,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   ];
 
   const handleSelectPlan = async (planId: string) => {
+    // Check if user is authenticated
+    if (!user) {
+      toast.error('Please sign in to purchase a warranty plan');
+      // Redirect to auth page with return URL
+      navigate('/auth?returnTo=' + encodeURIComponent(`/?plan=${planId}&payment=${paymentType}`));
+      return;
+    }
+
     setLoading(prev => ({ ...prev, [planId]: true }));
     
     try {
@@ -432,6 +445,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       >
                         {isLoading ? 'Processing...' : `Select ${plan.name}`}
                       </Button>
+                      {!user && (
+                        <p className="text-xs text-gray-500 mt-2">
+                          You'll be prompted to sign in
+                        </p>
+                      )}
                     </div>
 
                     {/* Features Section */}

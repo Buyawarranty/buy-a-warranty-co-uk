@@ -1,189 +1,194 @@
-
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Shield } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Auth = () => {
-  const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get('returnTo');
 
   useEffect(() => {
-    // Check if user is already logged in
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate('/admin');
+    if (user) {
+      // If user is already logged in, redirect them
+      if (returnTo) {
+        navigate(returnTo);
+      } else {
+        navigate('/customer-dashboard');
       }
-    };
-    checkUser();
-  }, [navigate]);
+    }
+  }, [user, navigate, returnTo]);
 
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Check for master admin login
-      if (email === 'Admin' && password === 'Warranty1234') {
-        // For master admin, we'll simulate a successful login
-        toast.success('Master Admin logged in successfully!');
-        // Set a flag in localStorage to indicate master admin status
-        localStorage.setItem('masterAdmin', 'true');
-        navigate('/admin');
-        return;
-      }
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+      if (error) throw error;
 
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success('Successfully logged in!');
-          navigate('/admin');
-        }
+      toast.success('Check your email for the confirmation link!');
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred during sign up');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toast.success('Successfully signed in!');
+      
+      // Redirect to return URL or dashboard
+      if (returnTo) {
+        navigate(returnTo);
       } else {
-        if (password !== confirmPassword) {
-          toast.error('Passwords do not match');
-          setLoading(false);
-          return;
-        }
-
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/admin`
-          }
-        });
-
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success('Account created! Please check your email to confirm your account.');
-        }
+        navigate('/customer-dashboard');
       }
-    } catch (error) {
-      console.error('Auth error:', error);
-      toast.error('An unexpected error occurred');
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred during sign in');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center mb-4">
-            <img 
-              src="/lovable-uploads/94e2bb14-c4e8-4f82-8bda-81c5568b3534.png" 
-              alt="BuyAWarranty Logo" 
-              className="h-16 w-auto"
-            />
-          </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">
-            {isLogin ? 'Admin Login' : 'Create Admin Account'}
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="max-w-md w-full space-y-8">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-2xl font-bold">
+            Welcome to BuyAWarranty
           </CardTitle>
+          <CardDescription>
+            Sign in or create an account to continue
+          </CardDescription>
         </CardHeader>
-        
         <CardContent>
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                {isLogin ? 'Email or Username' : 'Email'}
-              </label>
-              <Input
-                id="email"
-                type={isLogin ? 'text' : 'email'}
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={isLogin ? 'admin@example.com or Admin' : 'admin@example.com'}
-                className="w-full"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="w-full pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-
-            {!isLogin && (
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password
-                </label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm your password"
-                  className="w-full"
-                />
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-            >
-              {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
-            </Button>
-          </form>
-
-          <div className="mt-4 text-center">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-orange-500 hover:text-orange-600"
-            >
-              {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
-            </button>
-          </div>
-
-          {isLogin && (
-            <div className="mt-4 p-3 bg-orange-50 rounded-md">
-              <p className="text-xs text-orange-600 text-center">
-                Master Admin: Username "Admin", Password "Warranty1234"
-              </p>
-            </div>
-          )}
+          <Tabs defaultValue="sign-in" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="sign-in">Sign In</TabsTrigger>
+              <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
+            </TabsList>
+            <TabsContent value="sign-in" className="space-y-4">
+              <form onSubmit={handleSignIn} className="space-y-4">
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      required
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                      <span className="sr-only">Toggle password</span>
+                    </Button>
+                  </div>
+                </div>
+                <Button disabled={loading} className="w-full">
+                  {loading ? 'Signing in...' : 'Sign In'}
+                </Button>
+                <Button type="button" variant="link" onClick={() => navigate('/reset-password')}>
+                  Forgot password?
+                </Button>
+              </form>
+            </TabsContent>
+            <TabsContent value="sign-up" className="space-y-4">
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      required
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                      <span className="sr-only">Toggle password</span>
+                    </Button>
+                  </div>
+                </div>
+                <Button disabled={loading} className="w-full">
+                  {loading ? 'Signing up...' : 'Sign Up'}
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
