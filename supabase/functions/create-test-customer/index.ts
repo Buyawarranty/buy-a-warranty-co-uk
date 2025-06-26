@@ -22,30 +22,15 @@ serve(async (req) => {
     const testEmail = "test@customer.com";
     const testPassword = "password123";
 
+    console.log("Starting test customer creation process...");
+
     // First, delete any existing user with this email
     const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
     const existingUser = existingUsers.users?.find(user => user.email === testEmail);
     
     if (existingUser) {
+      console.log("Deleting existing user:", existingUser.id);
       await supabaseClient.auth.admin.deleteUser(existingUser.id);
-    }
-
-    // Create the auth user
-    const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
-      email: testEmail,
-      password: testPassword,
-      email_confirm: true,
-      user_metadata: {
-        name: "Test Customer"
-      }
-    });
-
-    if (authError) {
-      throw authError;
-    }
-
-    if (!authData.user) {
-      throw new Error("Failed to create user");
     }
 
     // Delete any existing customer records
@@ -58,6 +43,29 @@ serve(async (req) => {
       .from('customer_policies')
       .delete()
       .eq('email', testEmail);
+
+    console.log("Creating new auth user...");
+    
+    // Create the auth user with explicit email confirmation
+    const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
+      email: testEmail,
+      password: testPassword,
+      email_confirm: true,
+      user_metadata: {
+        name: "Test Customer"
+      }
+    });
+
+    if (authError) {
+      console.error("Auth creation error:", authError);
+      throw authError;
+    }
+
+    if (!authData.user) {
+      throw new Error("Failed to create user - no user data returned");
+    }
+
+    console.log("Auth user created successfully:", authData.user.id);
 
     // Create customer record
     const { data: customerData, error: customerError } = await supabaseClient
@@ -72,7 +80,12 @@ serve(async (req) => {
       .select()
       .single();
 
-    if (customerError) throw customerError;
+    if (customerError) {
+      console.error("Customer creation error:", customerError);
+      throw customerError;
+    }
+
+    console.log("Customer record created successfully");
 
     // Create a customer policy
     const { data: policyData, error: policyError } = await supabaseClient
@@ -95,17 +108,36 @@ serve(async (req) => {
       .select()
       .single();
 
-    if (policyError) throw policyError;
+    if (policyError) {
+      console.error("Policy creation error:", policyError);
+      throw policyError;
+    }
+
+    console.log("Policy created successfully");
+
+    // Verify the user can actually sign in
+    const { data: signInTest, error: signInError } = await supabaseClient.auth.signInWithPassword({
+      email: testEmail,
+      password: testPassword
+    });
+
+    if (signInError) {
+      console.error("Sign in test failed:", signInError);
+      throw new Error(`Created user but sign in test failed: ${signInError.message}`);
+    }
+
+    console.log("Sign in test successful");
 
     return new Response(JSON.stringify({
       success: true,
-      message: "Test customer created successfully",
+      message: "Test customer created and verified successfully",
       credentials: {
         email: testEmail,
         password: testPassword
       },
       customer: customerData,
-      policy: policyData
+      policy: policyData,
+      auth_user_id: authData.user.id
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
@@ -114,7 +146,8 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error creating test customer:', error);
     return new Response(JSON.stringify({ 
-      error: error.message || "Failed to create test customer" 
+      error: error.message || "Failed to create test customer",
+      details: error
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
