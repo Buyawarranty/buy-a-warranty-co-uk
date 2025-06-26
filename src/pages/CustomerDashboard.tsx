@@ -49,7 +49,11 @@ const CustomerDashboard = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   useEffect(() => {
+    console.log("CustomerDashboard: useEffect triggered");
+    console.log("CustomerDashboard: user", user);
+    
     if (!user) {
+      console.log("CustomerDashboard: No user found, redirecting to auth");
       navigate('/auth');
       return;
     }
@@ -57,7 +61,12 @@ const CustomerDashboard = () => {
   }, [user, navigate]);
 
   const fetchPolicy = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log("fetchPolicy: No user available");
+      return;
+    }
+    
+    console.log("fetchPolicy: Fetching policy for user:", user.id);
     
     try {
       const { data, error } = await supabase
@@ -65,19 +74,22 @@ const CustomerDashboard = () => {
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
+
+      console.log("fetchPolicy: Query result:", { data, error });
 
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching policy:', error);
         return;
       }
 
-      if (data) {
-        setPolicy(data);
+      if (data && data.length > 0) {
+        const policyData = data[0];
+        console.log("fetchPolicy: Found policy:", policyData);
+        setPolicy(policyData);
         // Properly handle the address JSON data
-        if (data.address && typeof data.address === 'object') {
-          const addressData = data.address as Record<string, any>;
+        if (policyData.address && typeof policyData.address === 'object') {
+          const addressData = policyData.address as Record<string, any>;
           setAddress({
             street: addressData.street || '',
             city: addressData.city || '',
@@ -85,9 +97,12 @@ const CustomerDashboard = () => {
             country: addressData.country || 'United Kingdom'
           });
         }
+      } else {
+        console.log("fetchPolicy: No policy found for user");
+        setPolicy(null);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('fetchPolicy: Error:', error);
     } finally {
       setLoading(false);
     }
@@ -251,6 +266,14 @@ const CustomerDashboard = () => {
                 We couldn't find any active policies for your account. Please contact support if you believe this is an error.
               </CardDescription>
             </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 mb-4">
+                Debug info: User ID: {user?.id}
+              </p>
+              <Button onClick={fetchPolicy} variant="outline">
+                Refresh Policy Data
+              </Button>
+            </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

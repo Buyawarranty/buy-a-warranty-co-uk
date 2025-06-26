@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -21,21 +20,24 @@ const Auth = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         console.log("User already logged in, redirecting to dashboard");
-        navigate('/customer-dashboard');
+        navigate('/customer-dashboard', { replace: true });
       }
     };
     
     checkSession();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state change:", event, session?.user?.email);
       if (event === 'SIGNED_IN' && session) {
+        console.log("Sign in detected, navigating to dashboard...");
         toast({
           title: "Success",
           description: "You have been signed in successfully!",
         });
-        navigate('/customer-dashboard');
+        
+        // Use replace to prevent going back to login page
+        navigate('/customer-dashboard', { replace: true });
       }
     });
 
@@ -60,8 +62,14 @@ const Auth = () => {
       }
 
       console.log("Sign in successful:", data.user?.email);
+      console.log("Session:", data.session);
       
-      // The navigation will be handled by the auth state change listener
+      // Double check - if we have a session, navigate immediately
+      if (data.session) {
+        console.log("Direct navigation to dashboard after successful login");
+        navigate('/customer-dashboard', { replace: true });
+      }
+      
     } catch (error: any) {
       console.error("Sign in failed:", error);
       toast({
