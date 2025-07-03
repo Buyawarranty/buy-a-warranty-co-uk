@@ -5,9 +5,18 @@ import { X } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#2c5282] text-white">
+    <footer className="bg-[#2c5282] text-white relative overflow-hidden">
+      {/* Owl character background */}
+      <div className="absolute bottom-0 right-8 z-0">
+        <img 
+          src="/lovable-uploads/7a712a73-e863-4c30-864c-97ff50a30a0e.png" 
+          alt="Buy a Warranty Owl Mascot" 
+          className="h-64 w-auto opacity-20"
+        />
+      </div>
+      
       {/* Main footer section */}
-      <div className="py-12">
+      <div className="py-12 relative z-10">
         <div className="max-w-7xl mx-auto px-4">
           {/* Need help section */}
           <div className="text-center mb-8">
@@ -101,7 +110,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom section */}
-      <div className="bg-[#1a365d] py-4">
+      <div className="bg-[#1a365d] py-4 relative z-10">
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-300">
           <p>&copy; {new Date().getFullYear()} Buy a Warranty. All rights reserved.</p>
         </div>
