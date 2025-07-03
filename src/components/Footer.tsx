@@ -6,7 +6,7 @@ import { X } from 'lucide-react';
 const Footer = () => {
   return (
     <div className="px-4 pb-4">
-      <footer className="bg-[#2c5282] text-white relative overflow-hidden rounded-3xl max-w-7xl mx-auto">
+      <footer className="bg-[#2c5282] text-white relative overflow-hidden rounded-3xl w-4/5 mx-auto">
         {/* Main footer section */}
         <div className="py-12 relative z-10">
           <div className="max-w-6xl mx-auto px-6">
