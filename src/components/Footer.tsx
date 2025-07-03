@@ -6,15 +6,6 @@ import { X } from 'lucide-react';
 const Footer = () => {
   return (
     <footer className="bg-[#2c5282] text-white relative overflow-hidden">
-      {/* Owl character background - centered and peering over */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-0">
-        <img 
-          src="/lovable-uploads/3174e10f-48a6-44dc-a380-d2c78144dd6c.png" 
-          alt="Buy a Warranty Owl Mascot" 
-          className="h-80 w-auto opacity-90"
-        />
-      </div>
-      
       {/* Main footer section */}
       <div className="py-12 relative z-10">
         <div className="max-w-7xl mx-auto px-4">
