@@ -7,8 +7,17 @@ const Footer = () => {
   return (
     <div className="px-4 pb-4">
       <footer className="bg-[#2c5282] text-white relative overflow-hidden rounded-3xl w-4/5 mx-auto">
+        {/* Owl mascot positioned above the footer */}
+        <div className="absolute -top-24 left-1/2 transform -translate-x-1/2 z-20">
+          <img 
+            src="/lovable-uploads/8f903b28-7ff7-4a42-9cf3-b70e942bc224.png" 
+            alt="Owl Mascot" 
+            className="w-48 h-48 object-contain"
+          />
+        </div>
+
         {/* Main footer section */}
-        <div className="py-12 relative z-10">
+        <div className="py-12 pt-20 relative z-10">
           <div className="max-w-6xl mx-auto px-6">
             {/* Need help section */}
             <div className="text-center mb-8">
