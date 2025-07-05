@@ -40,21 +40,13 @@ const WebsiteFooter = () => {
           </div>
 
           {/* Looking for a new warranty provider */}
-          <div className="relative">
+          <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Looking for a new warranty provider?</h3>
-            <p className="text-gray-600 text-sm mb-6">
+            <p className="text-gray-600 text-sm">
               We make vehicle warranty simple, fast, and affordable to get vehicle warranty coverage 
               that suits your needs. Whether you drive a car, van, SUV, or motorbike — if it's under 12 years 
               old and has less than 150,000 miles, we've got you covered.
             </p>
-            {/* Owl mascot positioned in bottom right */}
-            <div className="absolute bottom-0 right-0">
-              <img 
-                src="/lovable-uploads/2562b621-096c-4da6-8c7b-d2b96d1cdd99.png" 
-                alt="Owl Mascot with Vehicles" 
-                className="w-48 h-auto"
-              />
-            </div>
           </div>
         </div>
       </div>
