@@ -127,12 +127,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   const isAutoFormValid = regNumber && mileage && numericMileage <= 150000 && mileageError === '';
 
   return (
-    <section className="bg-[#e8f4fb] py-10 min-h-screen">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
-        <div className="flex items-start mb-6">
+    <section className="bg-[#e8f4fb] py-4">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div className="flex items-start mb-4">
           <div>
             <h2 className="text-4xl font-bold text-gray-800 text-left">Let's find your car 🚗 🔍</h2>
-            <p className="text-lg text-gray-600 mt-2 text-left">Let's start with your vehicle details</p>
+            <p className="text-lg text-gray-600 mt-1 text-left">Let's start with your vehicle details</p>
           </div>
         </div>
 
@@ -141,7 +141,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             Car registration number <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
           <div 
-            className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-4 shadow-sm leading-tight cursor-pointer border-2 border-black"
+            className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <img 
@@ -165,7 +165,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               type="button"
               onClick={handleFindCar}
               disabled={!regNumber}
-              className="text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-6 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               style={{
                 backgroundColor: regNumber ? '#224380' : '#e5e7eb',
                 borderColor: regNumber ? '#224380' : '#d1d5db',
@@ -177,7 +177,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           )}
 
           {vehicleFound && !showManualEntry && (
-            <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-6">
+            <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-4">
               <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following car</p>
               <p className="text-sm text-gray-600">AUDI A3 SE TDI 105 • 3-door • 1598cc • Diesel • Manual (2012–2014)</p>
               <button 
@@ -201,7 +201,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           )}
 
           {showManualEntry && (
-            <div className="mb-6 p-4 border-2 border-gray-200 rounded-[6px]">
+            <div className="mb-4 p-4 border-2 border-gray-200 rounded-[6px]">
               <h3 className="text-xl font-semibold mb-4 text-gray-700">Enter your car details manually</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -315,7 +315,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <p className="text-sm text-red-500 mb-2">{mileageError}</p>
               )}
               {!mileageError && (
-                <p className="text-sm text-gray-500 mb-6">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
+                <p className="text-sm text-gray-500 mb-4">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
               )}
 
               <button 
