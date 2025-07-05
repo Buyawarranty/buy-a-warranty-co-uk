@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -481,23 +480,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
 
         {/* Trust Indicators */}
-        <div className="text-center text-gray-500 px-8 pb-12">
-          <div className="flex items-center justify-center gap-8 mb-4 text-base flex-wrap">
-            <div className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-500" />
-              <span>Approved by financial authorities</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-500" />
-              <span>30-day money-back guarantee</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-500" />
-              <span>UK-based customer support</span>
-            </div>
-          </div>
-          <p className="text-base">All prices include VAT. Terms and conditions apply.</p>
-        </div>
+        
       </div>
     </TooltipProvider>
   );
