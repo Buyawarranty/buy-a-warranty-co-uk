@@ -4,7 +4,16 @@ import React from 'react';
 const WebsiteFooter = () => {
   return (
     <div className="relative">
-      <footer className="bg-white border-t border-gray-200 py-12">
+      {/* Owl mascot appearing from behind the top of the footer, centered */}
+      <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 z-0">
+        <img 
+          src="/lovable-uploads/2fb08882-4b90-4c73-b8b1-7d270c83aa5f.png" 
+          alt="Buy a Warranty Owl Mascot" 
+          className="w-64 h-auto"
+        />
+      </div>
+      
+      <footer className="bg-white border-t border-gray-200 py-12 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Quick Links */}
@@ -52,15 +61,6 @@ const WebsiteFooter = () => {
           </div>
         </div>
       </footer>
-      
-      {/* Owl mascot appearing from underneath the footer, centered */}
-      <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2 z-10">
-        <img 
-          src="/lovable-uploads/2fb08882-4b90-4c73-b8b1-7d270c83aa5f.png" 
-          alt="Buy a Warranty Owl Mascot" 
-          className="w-48 h-auto"
-        />
-      </div>
     </div>
   );
 };
