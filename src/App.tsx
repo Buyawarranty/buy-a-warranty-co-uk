@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+import WebsiteFooter from "@/components/WebsiteFooter";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ThankYou from "./pages/ThankYou";
@@ -37,14 +38,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
-            {/* Full scale image replacing footer */}
-            <div className="w-full">
-              <img 
-                src="/lovable-uploads/fe8e3966-02d3-495a-baf0-23758e594e3e.png" 
-                alt="Vehicles with Owl Mascot" 
-                className="w-full h-auto object-cover"
-              />
-            </div>
+            <WebsiteFooter />
           </div>
         </BrowserRouter>
       </SubscriptionProvider>
