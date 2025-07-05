@@ -1,11 +1,10 @@
-
 import React from 'react';
 
 const WebsiteFooter = () => {
   return (
     <div className="relative">
       {/* Owl mascot appearing from behind the top of the footer, centered */}
-      <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 z-0">
+      <div className="absolute -top-40 left-1/2 transform -translate-x-1/2 z-0">
         <img 
           src="/lovable-uploads/2fb08882-4b90-4c73-b8b1-7d270c83aa5f.png" 
           alt="Buy a Warranty Owl Mascot" 
