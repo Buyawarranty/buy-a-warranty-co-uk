@@ -113,36 +113,122 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       console.log('Payment Type:', paymentType);
       console.log('Vehicle Data:', vehicleData);
       
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: {
-          planId,
-          paymentType,
-          vehicleData: vehicleData
-        }
-      });
-
-      console.log('=== CHECKOUT RESPONSE ===');
-      console.log('Data:', data);
-      console.log('Error:', error);
-
-      if (error) {
-        console.error('Stripe checkout error:', error);
-        toast.error('Failed to create checkout session: ' + error.message);
-        return;
-      }
-
-      if (data?.url) {
-        console.log('=== REDIRECTING TO STRIPE ===');
-        console.log('Checkout URL:', data.url);
+      // For monthly payments, try Bumper first, otherwise use Stripe
+      if (paymentType === 'monthly') {
+        console.log('=== ATTEMPTING BUMPER CHECKOUT FOR MONTHLY ===');
         
-        // Add a small delay to ensure console logs are visible
-        setTimeout(() => {
-          // Force a full page redirect to Stripe checkout
-          window.location.href = data.url;
-        }, 100);
+        const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
+          body: {
+            planId,
+            vehicleData: vehicleData
+          }
+        });
+
+        console.log('=== BUMPER RESPONSE ===');
+        console.log('Data:', bumperData);
+        console.log('Error:', bumperError);
+
+        if (bumperError) {
+          console.error('Bumper API error, falling back to Stripe:', bumperError);
+          toast.error('Payment method unavailable, redirecting to alternative payment');
+          
+          // Fallback to Stripe for monthly payments
+          const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
+            body: {
+              planId,
+              paymentType,
+              vehicleData: vehicleData
+            }
+          });
+
+          if (stripeError) {
+            console.error('Stripe fallback error:', stripeError);
+            toast.error('Failed to create payment session: ' + stripeError.message);
+            return;
+          }
+
+          if (stripeData?.url) {
+            console.log('=== REDIRECTING TO STRIPE FALLBACK ===');
+            setTimeout(() => {
+              window.location.href = stripeData.url;
+            }, 100);
+          }
+          return;
+        }
+
+        // Check if Bumper rejected and we need to fallback
+        if (bumperData?.fallbackToStripe) {
+          console.log('=== BUMPER REJECTED, FALLING BACK TO STRIPE ===');
+          toast.info('Redirecting to alternative payment method...');
+          
+          const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
+            body: {
+              planId,
+              paymentType,
+              vehicleData: vehicleData
+            }
+          });
+
+          if (stripeError) {
+            console.error('Stripe fallback error:', stripeError);
+            toast.error('Failed to create payment session: ' + stripeError.message);
+            return;
+          }
+
+          if (stripeData?.url) {
+            console.log('=== REDIRECTING TO STRIPE FALLBACK ===');
+            setTimeout(() => {
+              window.location.href = stripeData.url;
+            }, 100);
+          }
+          return;
+        }
+
+        // Bumper success
+        if (bumperData?.url) {
+          console.log('=== REDIRECTING TO BUMPER ===');
+          console.log('Bumper URL:', bumperData.url);
+          
+          setTimeout(() => {
+            window.location.href = bumperData.url;
+          }, 100);
+        } else {
+          console.error('No checkout URL received from Bumper:', bumperData);
+          toast.error('No payment URL received');
+        }
       } else {
-        console.error('No checkout URL received:', data);
-        toast.error('No checkout URL received from payment processor');
+        // For yearly, 2-year, and 3-year payments, use Stripe directly
+        console.log('=== USING STRIPE FOR NON-MONTHLY PAYMENT ===');
+        
+        const { data, error } = await supabase.functions.invoke('create-checkout', {
+          body: {
+            planId,
+            paymentType,
+            vehicleData: vehicleData
+          }
+        });
+
+        console.log('=== STRIPE RESPONSE ===');
+        console.log('Data:', data);
+        console.log('Error:', error);
+
+        if (error) {
+          console.error('Stripe checkout error:', error);
+          toast.error('Failed to create checkout session: ' + error.message);
+          return;
+        }
+
+        if (data?.url) {
+          console.log('=== REDIRECTING TO STRIPE ===');
+          console.log('Checkout URL:', data.url);
+          
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 100);
+        } else {
+          console.error('No checkout URL received:', data);
+          toast.error('No checkout URL received from payment processor');
+        }
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
