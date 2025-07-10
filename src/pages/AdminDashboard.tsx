@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { CustomersTab } from '@/components/admin/CustomersTab';
 import { PlansTab } from '@/components/admin/PlansTab';
-import { SpecialVehiclePlansTab } from '@/components/admin/SpecialVehiclePlansTab';
+import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { useAuth } from '@/hooks/useAuth';
