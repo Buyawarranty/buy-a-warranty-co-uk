@@ -18,7 +18,7 @@ const SupportFooter = () => {
           {/* Logo - 5x bigger */}
           <div className="flex items-center">
             <img 
-              src="/lovable-uploads/62854118-6cac-435e-9c23-eebc80100549.png" 
+              src="/lovable-uploads/ce43a78c-28ec-400b-8a16-1e98b15e0185.png" 
               alt="Buy a Warranty" 
               className="h-50 w-auto"
             />

@@ -27,7 +27,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
         {/* Centered Logo */}
         <div className="flex justify-center mb-8">
           <img 
-            src="/lovable-uploads/d825510b-f9c3-4b0d-ad87-4aaa8ab2c3c2.png" 
+            src="/lovable-uploads/ce43a78c-28ec-400b-8a16-1e98b15e0185.png" 
             alt="Buy a Warranty" 
             className="h-16 w-auto"
           />

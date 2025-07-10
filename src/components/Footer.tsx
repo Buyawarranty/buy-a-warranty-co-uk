@@ -41,7 +41,7 @@ const Footer = () => {
             {/* Logo section */}
             <div className="flex justify-center lg:justify-start">
               <img 
-                src="/lovable-uploads/9b53da8c-70f3-4fc2-8497-e1958a650b4a.png" 
+                src="/lovable-uploads/ce43a78c-28ec-400b-8a16-1e98b15e0185.png" 
                 alt="Buy a Warranty" 
                 className="h-16 w-auto"
               />
