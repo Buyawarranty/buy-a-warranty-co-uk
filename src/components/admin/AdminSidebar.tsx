@@ -1,45 +1,71 @@
 
 import React from 'react';
-import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { Users, BarChart3, Settings, Shield } from 'lucide-react';
+import { Users, FileText, Car, BarChart3 } from 'lucide-react';
 
 interface AdminSidebarProps {
   activeTab: string;
-  setActiveTab: (tab: string) => void;
+  onTabChange: (tab: string) => void;
 }
 
-export const AdminSidebar = ({ activeTab, setActiveTab }: AdminSidebarProps) => {
-  const menuItems = [
-    { id: 'customers', label: 'Customers', icon: Users },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'plans', label: 'Plans', icon: Settings },
+export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChange }) => {
+  const tabs = [
+    {
+      id: 'customers',
+      label: 'Customers',
+      icon: Users,
+      description: 'Manage customer accounts and policies'
+    },
+    {
+      id: 'plans',
+      label: 'Standard Plans',
+      icon: FileText,
+      description: 'Manage Basic, Gold, and Platinum plans'
+    },
+    {
+      id: 'special-plans',
+      label: 'Special Vehicle Plans',
+      icon: Car,
+      description: 'Manage EV, PHEV, and Motorbike plans'
+    },
+    {
+      id: 'analytics',
+      label: 'Analytics',
+      icon: BarChart3,
+      description: 'View reports and analytics'
+    }
   ];
 
   return (
-    <Sidebar className="border-r border-gray-200">
-      <SidebarHeader className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-2">
-          <Shield className="h-8 w-8 text-orange-600" />
-          <h2 className="text-lg font-semibold text-gray-900">Admin Panel</h2>
-        </div>
-      </SidebarHeader>
+    <div className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg border-r z-10">
+      <div className="p-6 border-b">
+        <h2 className="text-xl font-bold text-gray-800">Admin Panel</h2>
+        <p className="text-sm text-gray-600">Manage your warranty business</p>
+      </div>
       
-      <SidebarContent className="p-4">
-        <SidebarMenu>
-          {menuItems.map((item) => (
-            <SidebarMenuItem key={item.id}>
-              <SidebarMenuButton
-                onClick={() => setActiveTab(item.id)}
-                isActive={activeTab === item.id}
-                className="w-full justify-start"
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarContent>
-    </Sidebar>
+      <nav className="mt-6">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              className={`w-full text-left px-6 py-4 flex items-start space-x-3 hover:bg-gray-50 transition-colors ${
+                activeTab === tab.id 
+                  ? 'bg-orange-50 border-r-4 border-orange-600 text-orange-700' 
+                  : 'text-gray-700'
+              }`}
+            >
+              <Icon className={`h-5 w-5 mt-0.5 ${
+                activeTab === tab.id ? 'text-orange-600' : 'text-gray-500'
+              }`} />
+              <div>
+                <div className="font-medium">{tab.label}</div>
+                <div className="text-xs text-gray-500 mt-1">{tab.description}</div>
+              </div>
+            </button>
+          );
+        })}
+      </nav>
+    </div>
   );
 };

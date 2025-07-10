@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
+import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import ProgressIndicator from '@/components/ProgressIndicator';
 
 interface VehicleData {
@@ -16,6 +17,7 @@ interface VehicleData {
   fuelType?: string;
   transmission?: string;
   year?: string;
+  vehicleType?: string;
 }
 
 const Index = () => {
@@ -32,7 +34,8 @@ const Index = () => {
     model: '',
     fuelType: '',
     transmission: '',
-    year: ''
+    year: '',
+    vehicleType: ''
   });
   
   const steps = ['Your Car', 'You', 'Choose Plan'];
@@ -50,6 +53,9 @@ const Index = () => {
   const handleFormDataUpdate = (data: Partial<VehicleData>) => {
     setFormData({ ...formData, ...data });
   };
+
+  // Check if vehicle is a special type
+  const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
 
   return (
     <div className="bg-[#e8f4fb]">
@@ -69,10 +75,19 @@ const Index = () => {
       ) : (
         <div className="w-full">
           {vehicleData && (
-            <PricingTable 
-              vehicleData={vehicleData} 
-              onBack={() => handleBackToStep(2)} 
-            />
+            <>
+              {isSpecialVehicle ? (
+                <SpecialVehiclePricing 
+                  vehicleData={vehicleData as any}
+                  onBack={() => handleBackToStep(2)} 
+                />
+              ) : (
+                <PricingTable 
+                  vehicleData={vehicleData} 
+                  onBack={() => handleBackToStep(2)} 
+                />
+              )}
+            </>
           )}
         </div>
       )}

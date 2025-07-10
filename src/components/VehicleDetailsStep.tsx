@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface VehicleDetailsStepProps {
-  onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string }) => void;
+  onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string; vehicleType?: string }) => void;
   onBack?: () => void;
   onFormDataUpdate?: (data: any) => void;
   currentStep?: number;
@@ -23,6 +22,7 @@ interface DVLAVehicleData {
   fuelType?: string;
   transmission?: string;
   yearOfManufacture?: string;
+  vehicleType?: string;
   error?: string;
 }
 
@@ -157,7 +157,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           model,
           fuelType,
           transmission,
-          year
+          year,
+          vehicleType: 'standard'
         });
       }
     } else {
@@ -172,6 +173,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           submitData.fuelType = vehicleData.fuelType;
           submitData.transmission = vehicleData.transmission;
           submitData.year = vehicleData.yearOfManufacture;
+          submitData.vehicleType = vehicleData.vehicleType || 'standard';
         }
         
         onNext(submitData);
@@ -241,6 +243,11 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               <p className="text-sm text-gray-600">
                 {vehicleData.make} {vehicleData.model} • {vehicleData.fuelType} • {vehicleData.transmission} • {vehicleData.yearOfManufacture}
               </p>
+              {vehicleData.vehicleType && vehicleData.vehicleType !== 'standard' && (
+                <p className="text-sm text-blue-600 font-semibold mt-1">
+                  Special Vehicle Type: {vehicleData.vehicleType}
+                </p>
+              )}
               <button 
                 type="button"
                 onClick={handleNotMyCar}

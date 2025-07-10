@@ -56,6 +56,7 @@ export type Database = {
           plan_type: string
           updated_at: string
           uploaded_by: string | null
+          vehicle_type: string | null
         }
         Insert: {
           created_at?: string
@@ -66,6 +67,7 @@ export type Database = {
           plan_type: string
           updated_at?: string
           uploaded_by?: string | null
+          vehicle_type?: string | null
         }
         Update: {
           created_at?: string
@@ -76,6 +78,7 @@ export type Database = {
           plan_type?: string
           updated_at?: string
           uploaded_by?: string | null
+          vehicle_type?: string | null
         }
         Relationships: []
       }
@@ -257,6 +260,48 @@ export type Database = {
           three_yearly_price?: number | null
           two_yearly_price?: number | null
           updated_at?: string
+          yearly_price?: number | null
+        }
+        Relationships: []
+      }
+      special_vehicle_plans: {
+        Row: {
+          coverage: Json
+          created_at: string
+          id: string
+          is_active: boolean
+          monthly_price: number
+          name: string
+          three_yearly_price: number | null
+          two_yearly_price: number | null
+          updated_at: string
+          vehicle_type: string
+          yearly_price: number | null
+        }
+        Insert: {
+          coverage?: Json
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          monthly_price: number
+          name: string
+          three_yearly_price?: number | null
+          two_yearly_price?: number | null
+          updated_at?: string
+          vehicle_type: string
+          yearly_price?: number | null
+        }
+        Update: {
+          coverage?: Json
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          monthly_price?: number
+          name?: string
+          three_yearly_price?: number | null
+          two_yearly_price?: number | null
+          updated_at?: string
+          vehicle_type?: string
           yearly_price?: number | null
         }
         Relationships: []
