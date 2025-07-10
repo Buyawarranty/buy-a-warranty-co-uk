@@ -4,6 +4,7 @@ import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import ProgressIndicator from '@/components/ProgressIndicator';
+import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 
 interface VehicleData {
   regNumber: string;
@@ -38,12 +39,12 @@ const Index = () => {
     vehicleType: ''
   });
   
-  const steps = ['Your Car', 'You', 'Choose Plan'];
+  const steps = ['Input Reg Plate', 'Receive Quote', 'Choose Your Plan'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
     setVehicleData(data);
     setFormData({ ...formData, ...data });
-    setCurrentStep(3);
+    setCurrentStep(2);
   };
 
   const handleBackToStep = (step: number) => {
@@ -54,6 +55,13 @@ const Index = () => {
     setFormData({ ...formData, ...data });
   };
 
+  const handleQuoteDeliveryComplete = (contactData: { email: string; phone: string; fullName: string }) => {
+    const updatedData = { ...vehicleData, ...contactData };
+    setVehicleData(updatedData as VehicleData);
+    setFormData({ ...formData, ...contactData });
+    setCurrentStep(3);
+  };
+
   // Check if vehicle is a special type
   const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
 
@@ -61,7 +69,7 @@ const Index = () => {
     <div className="bg-[#e8f4fb]">
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
       
-      {(currentStep === 1 || currentStep === 2) ? (
+      {currentStep === 1 && (
         <div className="max-w-4xl mx-auto px-4 py-8">
           <RegistrationForm 
             onNext={handleRegistrationComplete} 
@@ -72,7 +80,20 @@ const Index = () => {
             onStepChange={setCurrentStep}
           />
         </div>
-      ) : (
+      )}
+
+      {currentStep === 2 && vehicleData && (
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <QuoteDeliveryStep 
+            vehicleData={vehicleData}
+            onNext={handleQuoteDeliveryComplete}
+            onBack={() => handleBackToStep(1)}
+            onSkip={() => setCurrentStep(3)}
+          />
+        </div>
+      )}
+
+      {currentStep === 3 && (
         <div className="w-full">
           {vehicleData && (
             <>

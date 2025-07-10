@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -192,14 +193,14 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
         <div className="flex items-start mb-4">
           <div>
-            <h2 className="text-4xl font-bold text-gray-800 text-left">Let's find your car 🚗 🔍</h2>
+            <h2 className="text-4xl font-bold text-gray-800 text-left">Let's find your vehicle 🚗 🔍</h2>
             <p className="text-lg text-gray-600 mt-1 text-left">Let's start with your vehicle details</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700 text-xl">
-            Car registration number <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your vehicle's registration number as shown on your number plate">?</span>
+            Vehicle registration number <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your vehicle's registration number as shown on your number plate">?</span>
           </label>
           <div 
             className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black"
@@ -233,13 +234,13 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 color: regNumber && !isLookingUp ? 'white' : '#9ca3af'
               }}
             >
-              {isLookingUp ? 'Looking up...' : 'Find my car'}
+              {isLookingUp ? 'Looking up...' : 'Find my vehicle'}
             </button>
           )}
 
           {vehicleFound && vehicleData?.found && !showManualEntry && (
             <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-4">
-              <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following car</p>
+              <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following vehicle</p>
               <p className="text-sm text-gray-600">
                 {vehicleData.make} {vehicleData.model} • {vehicleData.fuelType} • {vehicleData.transmission} • {vehicleData.yearOfManufacture}
               </p>
@@ -263,7 +264,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                   e.currentTarget.style.backgroundColor = 'white';
                 }}
               >
-                This is not my car
+                This is not my vehicle
               </button>
             </div>
           )}
@@ -279,7 +280,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
           {showManualEntry && (
             <div className="mb-4 p-4 border-2 border-gray-200 rounded-[6px]">
-              <h3 className="text-xl font-semibold mb-4 text-gray-700">Enter your car details manually</h3>
+              <h3 className="text-xl font-semibold mb-4 text-gray-700">Enter your vehicle details manually</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
