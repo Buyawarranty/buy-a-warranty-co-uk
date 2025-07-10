@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface VehicleDetailsStepProps {
   onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string }) => void;
@@ -15,12 +16,24 @@ interface VehicleDetailsStepProps {
   };
 }
 
+interface DVLAVehicleData {
+  found: boolean;
+  make?: string;
+  model?: string;
+  fuelType?: string;
+  transmission?: string;
+  yearOfManufacture?: string;
+  error?: string;
+}
+
 const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initialData }) => {
   const [regNumber, setRegNumber] = useState(initialData?.regNumber || '');
   const [mileage, setMileage] = useState(initialData?.mileage || '');
   const [vehicleFound, setVehicleFound] = useState(false);
   const [mileageError, setMileageError] = useState('');
   const [showManualEntry, setShowManualEntry] = useState(false);
+  const [isLookingUp, setIsLookingUp] = useState(false);
+  const [vehicleData, setVehicleData] = useState<DVLAVehicleData | null>(null);
   
   // Manual entry fields
   const [make, setMake] = useState('');
@@ -55,6 +68,10 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     const formatted = formatRegNumber(e.target.value);
     if (formatted.length <= 8) {
       setRegNumber(formatted);
+      // Reset vehicle found state when reg number changes
+      setVehicleFound(false);
+      setVehicleData(null);
+      setShowManualEntry(false);
     }
   };
 
@@ -83,9 +100,40 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     setMileage(formattedValue);
   };
 
-  const handleFindCar = () => {
-    if (regNumber) {
-      setVehicleFound(true);
+  const handleFindCar = async () => {
+    if (!regNumber) return;
+    
+    setIsLookingUp(true);
+    setVehicleFound(false);
+    setVehicleData(null);
+    
+    try {
+      console.log('Looking up vehicle:', regNumber);
+      
+      const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
+        body: { registrationNumber: regNumber }
+      });
+
+      if (error) {
+        console.error('DVLA lookup error:', error);
+        throw error;
+      }
+
+      console.log('DVLA lookup result:', data);
+      setVehicleData(data);
+      
+      if (data.found) {
+        setVehicleFound(true);
+      } else {
+        // If vehicle not found, show manual entry
+        setShowManualEntry(true);
+      }
+    } catch (error) {
+      console.error('Error looking up vehicle:', error);
+      // On error, fall back to manual entry
+      setShowManualEntry(true);
+    } finally {
+      setIsLookingUp(false);
     }
   };
 
@@ -115,7 +163,18 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     } else {
       // Auto-detected car validation
       if (regNumber && mileage && numericMileage <= 150000) {
-        onNext({ regNumber, mileage: rawMileage });
+        const submitData: any = { regNumber, mileage: rawMileage };
+        
+        // Include DVLA data if available
+        if (vehicleData?.found) {
+          submitData.make = vehicleData.make;
+          submitData.model = vehicleData.model;
+          submitData.fuelType = vehicleData.fuelType;
+          submitData.transmission = vehicleData.transmission;
+          submitData.year = vehicleData.yearOfManufacture;
+        }
+        
+        onNext(submitData);
       }
     }
   };
@@ -160,26 +219,28 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             />
           </div>
           
-          {!showManualEntry && (
+          {!showManualEntry && !vehicleFound && (
             <button 
               type="button"
               onClick={handleFindCar}
-              disabled={!regNumber}
+              disabled={!regNumber || isLookingUp}
               className="text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               style={{
-                backgroundColor: regNumber ? '#224380' : '#e5e7eb',
-                borderColor: regNumber ? '#224380' : '#d1d5db',
-                color: regNumber ? 'white' : '#9ca3af'
+                backgroundColor: regNumber && !isLookingUp ? '#224380' : '#e5e7eb',
+                borderColor: regNumber && !isLookingUp ? '#224380' : '#d1d5db',
+                color: regNumber && !isLookingUp ? 'white' : '#9ca3af'
               }}
             >
-              Find my car
+              {isLookingUp ? 'Looking up...' : 'Find my car'}
             </button>
           )}
 
-          {vehicleFound && !showManualEntry && (
+          {vehicleFound && vehicleData?.found && !showManualEntry && (
             <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-4">
               <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following car</p>
-              <p className="text-sm text-gray-600">AUDI A3 SE TDI 105 • 3-door • 1598cc • Diesel • Manual (2012–2014)</p>
+              <p className="text-sm text-gray-600">
+                {vehicleData.make} {vehicleData.model} • {vehicleData.fuelType} • {vehicleData.transmission} • {vehicleData.yearOfManufacture}
+              </p>
               <button 
                 type="button"
                 onClick={handleNotMyCar}
@@ -197,6 +258,15 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               >
                 This is not my car
               </button>
+            </div>
+          )}
+
+          {vehicleData && !vehicleData.found && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-[4px] p-4 mb-4">
+              <p className="text-sm text-yellow-800 mb-2 font-semibold">Vehicle not found</p>
+              <p className="text-sm text-yellow-700">
+                {vehicleData.error || 'We couldn\'t find this vehicle in the DVLA database. Please enter your vehicle details manually.'}
+              </p>
             </div>
           )}
 
