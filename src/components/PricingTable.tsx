@@ -77,13 +77,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const calculateAddOnPrice = (planId: string) => {
     const selectedAddOnCount = Object.values(selectedAddOns[planId]).filter(Boolean).length;
     if (paymentType === 'monthly') {
-      return Math.round((25 * selectedAddOnCount) / 12 * 100) / 100;
+      return 2 * selectedAddOnCount;
     } else if (paymentType === 'yearly') {
-      return 25 * selectedAddOnCount;
+      return 24 * selectedAddOnCount;
     } else if (paymentType === 'twoYear') {
-      return 50 * selectedAddOnCount;
+      return 48 * selectedAddOnCount;
     } else {
-      return 75 * selectedAddOnCount;
+      return 72 * selectedAddOnCount;
     }
   };
 
@@ -544,7 +544,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
                       {/* Add-ons Section */}
                       <div className="mt-6 pt-4 border-t">
-                        <h4 className="font-semibold text-gray-700 mb-3 text-xs">Additional Components (Optional Add-ons - £25.00 per item p/year)</h4>
+                        <h4 className="font-semibold text-gray-700 mb-3 text-xs">Additional Components (Optional Add-ons - £2.00 per item per month)</h4>
                         <div className="space-y-3">
                           {plan.addOns.map((addon, index) => (
                             <div key={index} className="flex items-center gap-3">
