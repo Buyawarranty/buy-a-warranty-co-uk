@@ -97,15 +97,15 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 onClick={onBack}
                 className="flex-1 flex items-center justify-center gap-2 text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] border-2 transition-all duration-200"
                 style={{
-                  backgroundColor: 'white',
-                  borderColor: '#224380',
-                  color: '#224380'
+                  backgroundColor: '#eb4b00',
+                  borderColor: '#eb4b00',
+                  color: 'white'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f0f8ff';
+                  e.currentTarget.style.backgroundColor = '#d43f00';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.backgroundColor = '#eb4b00';
                 }}
               >
                 <ArrowLeft className="w-5 h-5" />
@@ -207,15 +207,15 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   onClick={() => setShowContactForm(false)}
                   className="flex-1 flex items-center justify-center gap-2 text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] border-2 transition-all duration-200"
                   style={{
-                    backgroundColor: 'white',
-                    borderColor: '#224380',
-                    color: '#224380'
+                    backgroundColor: '#eb4b00',
+                    borderColor: '#eb4b00',
+                    color: 'white'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f0f8ff';
+                    e.currentTarget.style.backgroundColor = '#d43f00';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'white';
+                    e.currentTarget.style.backgroundColor = '#eb4b00';
                   }}
                 >
                   <ArrowLeft className="w-5 h-5" />
@@ -226,8 +226,8 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   disabled={!isFormValid}
                   className="flex-1 text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
-                    backgroundColor: isFormValid ? '#eb4b00' : '#e5e7eb',
-                    borderColor: isFormValid ? '#eb4b00' : '#d1d5db'
+                    backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
+                    borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
                   }}
                   onMouseEnter={(e) => {
                     if (isFormValid) {
