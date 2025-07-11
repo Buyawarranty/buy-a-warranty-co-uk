@@ -229,9 +229,10 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               disabled={!regNumber || isLookingUp}
               className="text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               style={{
-                backgroundColor: regNumber && !isLookingUp ? '#224380' : '#e5e7eb',
-                borderColor: regNumber && !isLookingUp ? '#224380' : '#d1d5db',
-                color: regNumber && !isLookingUp ? 'white' : '#9ca3af'
+                backgroundColor: regNumber && !isLookingUp ? '#eb4b00' : '#eb4b00',
+                borderColor: regNumber && !isLookingUp ? '#eb4b00' : '#eb4b00',
+                color: 'white',
+                opacity: regNumber && !isLookingUp ? 1 : 0.5
               }}
             >
               {isLookingUp ? 'Looking up...' : 'Find my vehicle'}
@@ -401,8 +402,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 disabled={showManualEntry ? !isManualFormValid : !isAutoFormValid}
                 className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed btn-breathing"
                 style={{
-                  backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#e5e7eb',
-                  borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#d1d5db'
+                  backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
+                  borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
+                  opacity: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 1 : 0.5
                 }}
               >
                 Get My Quote →
