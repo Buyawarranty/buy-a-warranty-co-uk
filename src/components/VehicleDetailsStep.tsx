@@ -227,7 +227,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               type="button"
               onClick={handleFindCar}
               disabled={!regNumber || isLookingUp}
-              className="text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="w-full text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               style={{
                 backgroundColor: regNumber && !isLookingUp ? '#eb4b00' : '#eb4b00',
                 borderColor: regNumber && !isLookingUp ? '#eb4b00' : '#eb4b00',
