@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Check, ArrowLeft } from 'lucide-react';
@@ -147,32 +146,32 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   }
 
   return (
-    <div className="bg-[#e8f4fb] min-h-screen py-8">
+    <div className="bg-[#e8f4fb] min-h-screen py-4 sm:py-8 overflow-x-hidden">
       <div className="max-w-4xl mx-auto px-4">
         <Button 
           onClick={onBack} 
           variant="ghost" 
-          className="mb-6 text-[#224380] hover:text-[#1a3460]"
+          className="mb-4 sm:mb-6 text-[#224380] hover:text-[#1a3460]"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to vehicle details
         </Button>
 
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-[#224380] mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-[#224380] mb-4">
             {plan.name}
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-gray-600">
             Specialized coverage for your {vehicleData.vehicleType} vehicle
           </p>
         </div>
 
         <Card className="w-full max-w-2xl mx-auto">
           <CardHeader className="text-center bg-[#224380] text-white">
-            <CardTitle className="text-2xl">{plan.name}</CardTitle>
-            <div className="text-3xl font-bold">
+            <CardTitle className="text-xl sm:text-2xl">{plan.name}</CardTitle>
+            <div className="text-2xl sm:text-3xl font-bold">
               £{getPrice()}
-              <span className="text-lg font-normal">
+              <span className="text-base sm:text-lg font-normal">
                 /{selectedPaymentType === 'monthly' ? 'month' : 
                   selectedPaymentType === 'yearly' ? 'year' : 
                   selectedPaymentType === 'two_yearly' ? '2 years' : '3 years'}
@@ -180,11 +179,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
             </div>
           </CardHeader>
           
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             {/* Payment Type Selection */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Choose payment period:</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <h3 className="font-semibold mb-3 text-sm sm:text-base">Choose payment period:</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 {[
                   { key: 'monthly' as const, label: 'Monthly', price: plan.monthly_price },
                   { key: 'yearly' as const, label: 'Yearly', price: plan.yearly_price },
@@ -194,7 +193,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   <button
                     key={option.key}
                     onClick={() => setSelectedPaymentType(option.key)}
-                    className={`p-3 rounded-md border text-sm font-medium transition-colors ${
+                    className={`p-2 sm:p-3 rounded-md border text-xs sm:text-sm font-medium transition-colors ${
                       selectedPaymentType === option.key 
                         ? 'bg-[#224380] text-white border-[#224380]' 
                         : 'bg-white text-gray-700 border-gray-300 hover:border-[#224380]'
@@ -212,18 +211,20 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
 
             {/* Coverage List */}
             <div className="space-y-3">
-              <h3 className="font-semibold text-lg mb-4">What's covered:</h3>
-              {plan.coverage.map((item, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">{item}</span>
-                </div>
-              ))}
+              <h3 className="font-semibold text-base sm:text-lg mb-4 border-b pb-2">What's covered:</h3>
+              <div className="max-h-48 sm:max-h-64 overflow-y-auto">
+                {plan.coverage.map((item, index) => (
+                  <div key={index} className="flex items-start gap-3 mb-3">
+                    <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm text-gray-700">{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <Button 
               onClick={handlePurchase}
-              className="w-full mt-8 bg-[#eb4b00] hover:bg-[#d43f00] text-white font-bold py-4 text-lg"
+              className="w-full mt-6 sm:mt-8 bg-[#eb4b00] hover:bg-[#d43f00] text-white font-bold py-3 sm:py-4 text-base sm:text-lg"
               size="lg"
             >
               Get My {vehicleData.vehicleType} Warranty - £{getPrice()}

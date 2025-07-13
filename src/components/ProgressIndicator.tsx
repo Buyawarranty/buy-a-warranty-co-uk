@@ -11,7 +11,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
   const progressPercentage = (currentStep / totalSteps) * 100;
 
   return (
-    <div className="w-full bg-white border-b border-gray-200 shadow-sm">
+    <div className="w-full bg-white border-b border-gray-200 shadow-sm overflow-x-hidden">
       {/* Orange Top Progress Bar - Using official brand orange */}
       <div className="w-full h-1 bg-gray-200">
         <div 
@@ -23,13 +23,13 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
         />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-4 sm:py-8">
         {/* Centered Logo */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-4 sm:mb-8">
           <img 
             src="/lovable-uploads/ce43a78c-28ec-400b-8a16-1e98b15e0185.png" 
             alt="Buy a Warranty" 
-            className="h-16 w-auto"
+            className="h-12 sm:h-16 w-auto"
           />
         </div>
 
@@ -57,7 +57,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
               return (
                 <div 
                   key={index} 
-                  className={`flex flex-col items-center ${
+                  className={`flex flex-col items-center text-center ${
                     isActive ? 'font-semibold' : 
                     isCompleted ? '' : 'text-gray-400'
                   }`}
@@ -67,7 +67,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                 >
                   {/* Step Circle */}
                   <div 
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mb-2 ${
+                    className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold mb-2 ${
                       isActive || isCompleted ? 'text-white' : 'bg-gray-200 text-gray-400'
                     }`}
                     style={{
@@ -78,7 +78,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                   </div>
                   
                   {/* Step Label */}
-                  <span className="text-sm font-medium">{step}</span>
+                  <span className="text-xs sm:text-sm font-medium px-1">{step}</span>
                 </div>
               );
             })}

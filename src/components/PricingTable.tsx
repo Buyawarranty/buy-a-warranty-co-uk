@@ -40,7 +40,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   });
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
 
-  // Pricing data based on your Excel sheet with extended options
   const pricingData: Record<number, PricingData> = {
     0: {
       basic: { monthly: 31, yearly: 381, twoYear: 725, threeYear: 1050 },
@@ -346,32 +345,32 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   return (
     <TooltipProvider>
-      <div className="bg-[#e8f4fb] w-full">
+      <div className="bg-[#e8f4fb] w-full min-h-screen overflow-x-hidden">
         {/* Back Button */}
-        <div className="mb-8 px-8 pt-8">
+        <div className="mb-4 sm:mb-8 px-4 sm:px-8 pt-4 sm:pt-8">
           <Button 
             variant="outline" 
             onClick={onBack}
-            className="flex items-center gap-2 hover:bg-white text-lg px-6 py-3"
+            className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             Back to Contact Details
           </Button>
         </div>
 
         {/* Header */}
-        <div className="text-center mb-10 px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+        <div className="text-center mb-6 sm:mb-10 px-4 sm:px-8">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             Your Warranty Quote
           </h1>
           
           {/* Vehicle Registration Plate Display */}
-          <div className="flex justify-center mb-6">
-            <div className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
+          <div className="flex justify-center mb-4 sm:mb-6">
+            <div className="w-full max-w-[280px] sm:max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-lg sm:text-[28px] px-4 sm:px-[25px] py-3 sm:py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
               <img 
                 src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
                 alt="GB Flag" 
-                className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
+                className="w-[25px] h-[18px] sm:w-[35px] sm:h-[25px] mr-3 sm:mr-[15px] object-cover rounded-[2px]"
               />
               <div className="flex-1 text-center font-bold font-sans tracking-normal">
                 {vehicleData.regNumber || 'H12 FXL'}
@@ -379,18 +378,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             </div>
           </div>
           
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
             Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
           </p>
         </div>
 
-        {/* Payment Period Toggle Group - Unified Box */}
-        <div className="flex justify-center mb-12 px-8">
-          <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200">
-            <div className="grid grid-cols-4 gap-1">
+        {/* Payment Period Toggle Group - Mobile Optimized */}
+        <div className="flex justify-center mb-8 sm:mb-12 px-4 sm:px-8">
+          <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-4xl">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
               <button
                 onClick={() => setPaymentType('monthly')}
-                className={`px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                className={`px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
                   paymentType === 'monthly' 
                     ? 'bg-[#1a365d] text-white shadow-md' 
                     : 'text-gray-600 hover:bg-gray-50'
@@ -401,7 +400,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               <div className="relative">
                 <button
                   onClick={() => setPaymentType('yearly')}
-                  className={`w-full px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
                     paymentType === 'yearly' 
                       ? 'bg-[#1a365d] text-white shadow-md' 
                       : 'text-gray-600 hover:bg-gray-50'
@@ -409,14 +408,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 >
                   Annual
                 </button>
-                <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
                   10% OFF
                 </div>
               </div>
               <div className="relative">
                 <button
                   onClick={() => setPaymentType('twoYear')}
-                  className={`w-full px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
                     paymentType === 'twoYear' 
                       ? 'bg-[#1a365d] text-white shadow-md' 
                       : 'text-gray-600 hover:bg-gray-50'
@@ -424,14 +423,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 >
                   2 Years
                 </button>
-                <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
                   15% OFF
                 </div>
               </div>
               <div className="relative">
                 <button
                   onClick={() => setPaymentType('threeYear')}
-                  className={`w-full px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
                     paymentType === 'threeYear' 
                       ? 'bg-[#1a365d] text-white shadow-md' 
                       : 'text-gray-600 hover:bg-gray-50'
@@ -439,7 +438,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 >
                   3 Years
                 </button>
-                <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
                   20% OFF
                 </div>
               </div>
@@ -447,10 +446,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </div>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="w-full px-8 pb-16">
+        {/* Pricing Cards - Mobile Stacked */}
+        <div className="w-full px-4 sm:px-8 pb-8 sm:pb-16">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8 relative">
               {plans.map((plan) => {
                 const pricing = getPlanPricing(plan.id);
                 const planPricing = pricing[plan.id as keyof PricingData];
@@ -460,7 +459,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 const isLoading = loading[plan.id];
                 
                 return (
-                  <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 ${plan.popular ? 'border-orange-400 shadow-xl' : 'border-gray-200'}`}>
+                  <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 w-full ${plan.popular ? 'border-orange-400 shadow-xl lg:scale-105' : 'border-gray-200'}`}>
                     {plan.popular && (
                       <div className="absolute top-4 left-4 z-10">
                         <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
@@ -470,14 +469,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     )}
                     
                     {/* Plan Header */}
-                    <div className="p-8 text-center bg-gray-50 border-b">
-                      <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>
+                    <div className="p-6 sm:p-8 text-center bg-gray-50 border-b">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: plan.color }}>
                         {plan.name}
                       </h3>
                       <div className="mb-2">
                         <span className="text-sm text-gray-600">£</span>
-                        <span className="text-5xl font-bold text-gray-900">{totalPrice}</span>
-                        <div className="text-gray-600 text-lg">{getPaymentLabel()}</div>
+                        <span className="text-3xl sm:text-5xl font-bold text-gray-900">{totalPrice}</span>
+                        <div className="text-gray-600 text-base sm:text-lg">{getPaymentLabel()}</div>
                       </div>
                       {getSavingsPercentage() && (
                         <div className="text-green-600 font-semibold text-sm">
@@ -485,7 +484,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         </div>
                       )}
                       <Button 
-                        className="w-full mt-6 text-white font-bold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+                        className="w-full mt-6 text-white font-bold py-3 sm:py-4 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
                         style={{ backgroundColor: plan.color }}
                         onClick={() => handleSelectPlan(plan.id)}
                         disabled={isLoading}
@@ -498,15 +497,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     </div>
 
                     {/* Features Section */}
-                    <div className="p-6">
+                    <div className="p-4 sm:p-6">
                       <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
-                      <div className="space-y-3 max-h-64 overflow-y-auto">
+                      <div className="space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
                         {plan.features.map((feature, index) => (
-                          <div key={index} className="flex items-center gap-3">
-                            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                              <Check className="w-3 h-3 text-white" />
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <Check className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                             </div>
-                            <span className="text-sm text-gray-700">{feature}</span>
+                            <span className="text-xs sm:text-sm text-gray-700">{feature}</span>
                           </div>
                         ))}
                       </div>
@@ -514,10 +513,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       {/* Voluntary Excess Section */}
                       <div className="mt-6 pt-4 border-t">
                         <div className="flex items-center gap-2 mb-4">
-                          <h4 className="font-bold text-gray-800">Voluntary Excess</h4>
+                          <h4 className="font-bold text-gray-800 text-sm sm:text-base">Voluntary Excess</h4>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Info className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+                              <Info className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-gray-600" />
                             </TooltipTrigger>
                             <TooltipContent>
                               <p className="text-sm">This is the amount you agree to pay toward a repair. A higher excess usually means a lower monthly cost.</p>
@@ -530,7 +529,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                               key={amount}
                               variant={contributionAmounts[plan.id] === amount ? "default" : "outline"}
                               onClick={() => setContributionAmount(plan.id, amount)}
-                              className={`px-3 py-2 text-sm font-bold ${
+                              className={`px-2 sm:px-3 py-2 text-xs sm:text-sm font-bold ${
                                 contributionAmounts[plan.id] === amount 
                                   ? 'bg-[#224380] hover:bg-[#1a3460]' 
                                   : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
@@ -552,7 +551,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                                 checked={selectedAddOns[plan.id][addon] || false}
                                 onCheckedChange={() => toggleAddOn(plan.id, addon)}
                               />
-                              <span className="text-sm text-gray-700">{addon}</span>
+                              <span className="text-xs sm:text-sm text-gray-700">{addon}</span>
                             </div>
                           ))}
                         </div>
@@ -564,9 +563,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             </div>
           </div>
         </div>
-
-        {/* Trust Indicators */}
-        
       </div>
     </TooltipProvider>
   );

@@ -66,35 +66,39 @@ const Index = () => {
   const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
 
   return (
-    <div className="bg-[#e8f4fb]">
+    <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
       
       {currentStep === 1 && (
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <RegistrationForm 
-            onNext={handleRegistrationComplete} 
-            onBack={(step: number) => handleBackToStep(step)}
-            onFormDataUpdate={handleFormDataUpdate}
-            initialData={formData}
-            currentStep={currentStep}
-            onStepChange={setCurrentStep}
-          />
+        <div className="w-full px-4 py-4 sm:py-8">
+          <div className="max-w-4xl mx-auto">
+            <RegistrationForm 
+              onNext={handleRegistrationComplete} 
+              onBack={(step: number) => handleBackToStep(step)}
+              onFormDataUpdate={handleFormDataUpdate}
+              initialData={formData}
+              currentStep={currentStep}
+              onStepChange={setCurrentStep}
+            />
+          </div>
         </div>
       )}
 
       {currentStep === 2 && vehicleData && (
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <QuoteDeliveryStep 
-            vehicleData={vehicleData}
-            onNext={handleQuoteDeliveryComplete}
-            onBack={() => handleBackToStep(1)}
-            onSkip={() => setCurrentStep(3)}
-          />
+        <div className="w-full px-4 py-4 sm:py-8">
+          <div className="max-w-4xl mx-auto">
+            <QuoteDeliveryStep 
+              vehicleData={vehicleData}
+              onNext={handleQuoteDeliveryComplete}
+              onBack={() => handleBackToStep(1)}
+              onSkip={() => setCurrentStep(3)}
+            />
+          </div>
         </div>
       )}
 
       {currentStep === 3 && (
-        <div className="w-full">
+        <div className="w-full overflow-x-hidden">
           {vehicleData && (
             <>
               {isSpecialVehicle ? (
