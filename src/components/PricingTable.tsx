@@ -507,38 +507,61 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         </button>
                         
                         {expandedPlan === plan.name && (
-                          <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden animate-fade-in">
-                            <div className="bg-gray-50 p-3 border-b">
-                              <div className="flex items-center justify-between">
-                                <h4 className="font-semibold text-gray-700">{plan.name} Plan Coverage Details</h4>
-                                <a 
-                                  href={pdfUrls[plan.name.toLowerCase()]} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="text-sm text-blue-600 hover:text-blue-800 underline"
-                                >
-                                  📄 Open in new tab
-                                </a>
-                              </div>
+                          <div className="mt-4 border border-gray-300 rounded-lg overflow-hidden bg-white">
+                            <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+                              <h4 className="font-semibold text-gray-900">{plan.name} Plan Coverage Details</h4>
                             </div>
-                            <div className="h-96">
-                              {pdfUrls[plan.name.toLowerCase()] ? (
-                                <embed
-                                  src={pdfUrls[plan.name.toLowerCase()]}
-                                  type="application/pdf"
-                                  className="w-full h-full"
-                                  title={`${plan.name} Plan Coverage Details`}
-                                />
-                              ) : (
-                                <div className="flex items-center justify-center w-full h-full">
-                                  <div className="text-center">
-                                    <p className="text-lg font-semibold text-gray-700 mb-2">
-                                      Coverage details not available
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                      Please upload a PDF for this plan in the admin section
-                                    </p>
+                            <div className="p-6 space-y-4">
+                              {plan.coverage && plan.coverage.length > 0 ? (
+                                <>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {plan.coverage.map((item: string, index: number) => (
+                                      <div key={index} className="flex items-start space-x-3">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <span className="text-gray-700 text-sm leading-relaxed">{item}</span>
+                                      </div>
+                                    ))}
                                   </div>
+                                  {pdfUrls[plan.name.toLowerCase()] && (
+                                    <div className="mt-6 pt-4 border-t border-gray-200">
+                                      <a
+                                        href={pdfUrls[plan.name.toLowerCase()]}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                                      >
+                                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                          <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                                        </svg>
+                                        Download Full Policy Document (PDF)
+                                      </a>
+                                    </div>
+                                  )}
+                                </>
+                              ) : (
+                                <div className="text-center py-8">
+                                  <div className="text-gray-500 mb-4">
+                                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                      </svg>
+                                    </div>
+                                    <p className="text-lg font-medium text-gray-700 mb-2">Coverage details coming soon</p>
+                                    <p className="text-sm text-gray-500">We're updating the coverage details for this plan.</p>
+                                  </div>
+                                  {pdfUrls[plan.name.toLowerCase()] && (
+                                    <a
+                                      href={pdfUrls[plan.name.toLowerCase()]}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                                    >
+                                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                                      </svg>
+                                      View Full Policy Document (PDF)
+                                    </a>
+                                  )}
                                 </div>
                               )}
                             </div>
