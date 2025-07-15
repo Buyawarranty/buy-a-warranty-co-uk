@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface QuoteDeliveryStepProps {
   vehicleData: {
@@ -54,7 +54,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             <div className="space-y-4 mb-8">
               <button 
                 onClick={handleSkipClick}
-                className="w-full text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] border-2 transition-all duration-200"
+                className="w-full flex items-center justify-center gap-3 text-white text-[18px] font-bold py-[18px] px-[24px] rounded-[12px] border-2 transition-all duration-200"
                 style={{
                   backgroundColor: '#224380',
                   borderColor: '#224380'
@@ -66,7 +66,10 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#224380';
                 }}
               >
-                No contact details, just show me what it costs now →
+                No contact details, just show me what it costs now
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <ArrowRight className="w-4 h-4" />
+                </div>
               </button>
 
               <div className="text-center text-gray-500 text-sm">
@@ -75,7 +78,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
               <button 
                 onClick={handleEmailQuoteClick}
-                className="w-full text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] border-2 transition-all duration-200"
+                className="w-full flex items-center justify-center gap-3 text-white text-[18px] font-bold py-[18px] px-[24px] rounded-[12px] border-2 transition-all duration-200"
                 style={{
                   backgroundColor: '#eb4b00',
                   borderColor: '#eb4b00'
@@ -87,7 +90,10 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#eb4b00';
                 }}
               >
-                Email my quote and show me what it costs now →
+                Email my quote and show me what it costs now
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <ArrowRight className="w-4 h-4" />
+                </div>
               </button>
             </div>
 
@@ -95,17 +101,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               <button 
                 type="button" 
                 onClick={onBack}
-                className="flex-1 flex items-center justify-center gap-2 text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] border-2 transition-all duration-200"
+                className="flex-1 flex items-center justify-center gap-2 text-[15px] font-medium py-[12px] px-[20px] rounded-[12px] border-2 transition-all duration-200"
                 style={{
-                  backgroundColor: '#eb4b00',
-                  borderColor: '#eb4b00',
+                  backgroundColor: '#6b7280',
+                  borderColor: '#6b7280',
                   color: 'white'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#d43f00';
+                  e.currentTarget.style.backgroundColor = '#555a63';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#eb4b00';
+                  e.currentTarget.style.backgroundColor = '#6b7280';
                 }}
               >
                 <ArrowLeft className="w-5 h-5" />
@@ -205,17 +211,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 <button 
                   type="button" 
                   onClick={() => setShowContactForm(false)}
-                  className="flex-1 flex items-center justify-center gap-2 text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] border-2 transition-all duration-200"
+                  className="flex-1 flex items-center justify-center gap-2 text-[15px] font-medium py-[12px] px-[20px] rounded-[12px] border-2 transition-all duration-200"
                   style={{
-                    backgroundColor: '#eb4b00',
-                    borderColor: '#eb4b00',
+                    backgroundColor: '#6b7280',
+                    borderColor: '#6b7280',
                     color: 'white'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#d43f00';
+                    e.currentTarget.style.backgroundColor = '#555a63';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#eb4b00';
+                    e.currentTarget.style.backgroundColor = '#6b7280';
                   }}
                 >
                   <ArrowLeft className="w-5 h-5" />
@@ -224,7 +230,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 <button 
                   type="submit" 
                   disabled={!isFormValid}
-                  className="flex-1 text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 flex items-center justify-center gap-3 text-white text-[18px] font-bold py-[18px] px-[24px] rounded-[12px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
                     borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
@@ -240,7 +246,10 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                     }
                   }}
                 >
-                  Get My Quote →
+                  Get My Quote
+                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
                 </button>
               </div>
             </form>
