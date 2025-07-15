@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Edit2, Save, X, Upload, FileText } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import DocumentUpload from './DocumentUpload';
 
 interface SpecialPlan {
   id: string;
@@ -111,122 +112,6 @@ const SpecialVehiclePlansTab = () => {
     setCoverageText('');
   };
 
-  const DocumentUploadDialog = ({ vehicleType }: { vehicleType: string }) => {
-    const [file, setFile] = useState<File | null>(null);
-    const [documentName, setDocumentName] = useState('');
-    const [uploading, setUploading] = useState(false);
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const selectedFile = event.target.files?.[0];
-      if (selectedFile) {
-        setFile(selectedFile);
-        setDocumentName(selectedFile.name);
-      }
-    };
-
-    const handleUpload = async () => {
-      if (!file || !documentName) {
-        toast({
-          title: "Error",
-          description: "Please select a file and enter a document name",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setUploading(true);
-      try {
-        // Create a unique file path
-        const fileExt = file.name.split('.').pop();
-        const filePath = `special-vehicle/${vehicleType}/${documentName}-${Date.now()}.${fileExt}`;
-
-        // Upload file to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('policy-documents')
-          .upload(filePath, file);
-
-        if (uploadError) throw uploadError;
-
-        // Get the public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('policy-documents')
-          .getPublicUrl(filePath);
-
-        // Save document metadata to database
-        const { error: dbError } = await supabase
-          .from('customer_documents')
-          .insert({
-            document_name: documentName,
-            file_url: publicUrl,
-            file_size: file.size,
-            plan_type: 'special_vehicle',
-            vehicle_type: vehicleType,
-          });
-
-        if (dbError) throw dbError;
-
-        toast({
-          title: "Success",
-          description: "Document uploaded successfully",
-        });
-
-        setFile(null);
-        setDocumentName('');
-      } catch (error) {
-        console.error('Error uploading document:', error);
-        toast({
-          title: "Error",
-          description: "Failed to upload document",
-          variant: "destructive",
-        });
-      } finally {
-        setUploading(false);
-      }
-    };
-
-    return (
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
-            <Upload className="w-4 h-4 mr-2" />
-            Upload PDF
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Upload {vehicleType} Document</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="documentName">Document Name</Label>
-              <Input
-                id="documentName"
-                value={documentName}
-                onChange={(e) => setDocumentName(e.target.value)}
-                placeholder="Enter document name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="file">Select PDF File</Label>
-              <Input
-                id="file"
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-              />
-            </div>
-            <Button 
-              onClick={handleUpload} 
-              disabled={uploading || !file || !documentName}
-              className="w-full"
-            >
-              {uploading ? 'Uploading...' : 'Upload Document'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  };
 
   if (loading) {
     return <div className="text-center py-4">Loading special vehicle plans...</div>;
@@ -237,6 +122,8 @@ const SpecialVehiclePlansTab = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Special Vehicle Plans</h2>
       </div>
+
+      <DocumentUpload />
 
       <div className="grid gap-6">
         {plans.map((plan) => (
@@ -251,7 +138,6 @@ const SpecialVehiclePlansTab = () => {
                 </CardTitle>
               </div>
               <div className="flex items-center gap-2">
-                <DocumentUploadDialog vehicleType={plan.vehicle_type} />
                 {editingPlan?.id === plan.id ? (
                   <div className="flex gap-2">
                     <Button onClick={handleSave} size="sm">
