@@ -507,32 +507,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                                  
                                  return (
                                    <div className="w-full h-full flex flex-col">
-                                     <div className="bg-blue-100 p-4 rounded-t-lg border-b">
-                                       <h3 className="font-bold mb-2">Debug Info:</h3>
-                                       <p><strong>Plan:</strong> {plan.name}</p>
-                                       <p><strong>Plan Key:</strong> "{planKey}"</p>
-                                       <p><strong>PDF URL Found:</strong> {pdfUrl ? 'YES' : 'NO'}</p>
-                                       {pdfUrl && <p><strong>URL:</strong> {pdfUrl}</p>}
-                                       <p><strong>Available Keys:</strong> {Object.keys(pdfUrls).join(', ')}</p>
+                                     <div className="mb-2 text-center bg-gray-100 p-2">
+                                       <a 
+                                         href={pdfUrl} 
+                                         target="_blank" 
+                                         rel="noopener noreferrer"
+                                         className="text-blue-600 hover:text-blue-800 underline font-medium"
+                                       >
+                                         📄 Open PDF in new tab
+                                       </a>
                                      </div>
                                      {pdfUrl ? (
-                                       <div className="flex flex-col h-full">
-                                         <div className="mb-2 text-center">
-                                           <a 
-                                             href={pdfUrl} 
-                                             target="_blank" 
-                                             rel="noopener noreferrer"
-                                             className="text-blue-600 hover:text-blue-800 underline text-sm"
-                                           >
-                                             Open PDF in new tab
-                                           </a>
-                                         </div>
-                                         <iframe
-                                           src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`}
-                                           className="flex-1 w-full border border-gray-300 rounded"
-                                           title={`${plan.name} Plan Coverage Details`}
-                                         />
-                                       </div>
+                                       <embed
+                                         src={pdfUrl}
+                                         type="application/pdf"
+                                         className="flex-1 w-full border border-gray-300 rounded"
+                                         title={`${plan.name} Plan Coverage Details`}
+                                       />
                                      ) : (
                                         <div className="flex items-center justify-center w-full h-full p-8">
                                           <div className="text-center bg-gray-50 p-6 rounded-lg border">
