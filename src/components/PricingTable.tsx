@@ -78,12 +78,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   const fetchPdfUrls = async () => {
     try {
+      console.log('Fetching PDF URLs...');
       const { data, error } = await supabase
         .from('customer_documents')
-        .select('plan_type, file_url')
+        .select('plan_type, file_url, document_name')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+
+      console.log('PDF documents from database:', data);
 
       if (data) {
         const urlMap: {[planName: string]: string} = {};
@@ -91,8 +94,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           // Use the first (most recent) document for each plan type
           if (!urlMap[doc.plan_type]) {
             urlMap[doc.plan_type] = doc.file_url;
+            console.log(`Mapped ${doc.plan_type} to ${doc.file_url}`);
           }
         });
+        console.log('Final PDF URL mapping:', urlMap);
         setPdfUrls(urlMap);
       }
     } catch (error) {
@@ -496,24 +501,36 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                           </DialogTrigger>
                           <DialogContent className="max-w-4xl w-[95vw] h-[90vh] p-0">
                             <div className="relative w-full h-full">
-                              {pdfUrls[plan.name.toLowerCase()] ? (
-                                <iframe
-                                  src={pdfUrls[plan.name.toLowerCase()]}
-                                  className="w-full h-full rounded-lg"
-                                  title={`${plan.name} Plan Coverage Details`}
-                                />
-                              ) : (
-                                <div className="flex items-center justify-center w-full h-full">
-                                  <div className="text-center">
-                                    <p className="text-lg font-semibold text-gray-700 mb-2">
-                                      Coverage details not available
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                      Please contact us for more information about this plan
-                                    </p>
+                              {(() => {
+                                const planKey = plan.name.toLowerCase();
+                                const pdfUrl = pdfUrls[planKey];
+                                console.log(`Looking for PDF for plan: "${plan.name}" (key: "${planKey}")`);
+                                console.log(`Available PDF URLs:`, Object.keys(pdfUrls));
+                                console.log(`Found PDF URL:`, pdfUrl);
+                                
+                                return pdfUrl ? (
+                                  <iframe
+                                    src={pdfUrl}
+                                    className="w-full h-full rounded-lg"
+                                    title={`${plan.name} Plan Coverage Details`}
+                                  />
+                                ) : (
+                                  <div className="flex items-center justify-center w-full h-full">
+                                    <div className="text-center">
+                                      <p className="text-lg font-semibold text-gray-700 mb-2">
+                                        Coverage details not available
+                                      </p>
+                                      <p className="text-sm text-gray-500">
+                                        Please contact us for more information about this plan
+                                      </p>
+                                      <div className="mt-4 text-xs text-gray-400">
+                                        Looking for: {planKey}<br/>
+                                        Available: {Object.keys(pdfUrls).join(', ') || 'none'}
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                              )}
+                                );
+                              })()}
                             </div>
                           </DialogContent>
                         </Dialog>
