@@ -41,20 +41,20 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const isFormValid = fullName && email && phone;
 
   return (
-    <section className="bg-[#e8f4fb] py-10 min-h-screen">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
+    <section className="bg-[#e8f4fb] py-6 sm:py-10 min-h-screen px-4 sm:px-0">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-8">
         {!showContactForm ? (
           <>
-            <div className="mb-6">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">Where should we send your quote?</h2>
-              <p className="text-lg text-gray-600 mb-2">Instant quote to your inbox</p>
-              <p className="text-gray-600">No spam, just your personalised prices</p>
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">Where should we send your quote?</h2>
+              <p className="text-base sm:text-lg text-gray-600 mb-2">Instant quote to your inbox</p>
+              <p className="text-sm sm:text-base text-gray-600">No spam, just your personalised prices</p>
             </div>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
               <button 
                 onClick={handleSkipClick}
-                className="w-full flex items-center justify-center gap-3 text-white text-[22px] font-bold py-[18px] px-[24px] rounded-[12px] border-2 transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 sm:gap-3 text-white text-[18px] sm:text-[22px] font-bold py-[14px] sm:py-[18px] px-[16px] sm:px-[24px] rounded-[12px] border-2 transition-all duration-200"
                 style={{
                   backgroundColor: '#224380',
                   borderColor: '#224380'
@@ -66,9 +66,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#224380';
                 }}
               >
-                No contact details, just show me what it costs now
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <ArrowRight className="w-4 h-4" />
+                <span className="text-center">No contact details, just show me what it costs now</span>
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
               </button>
 
@@ -78,7 +78,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
               <button 
                 onClick={handleEmailQuoteClick}
-                className="w-full flex items-center justify-center gap-3 text-white text-[22px] font-bold py-[18px] px-[24px] rounded-[12px] border-2 transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 sm:gap-3 text-white text-[18px] sm:text-[22px] font-bold py-[14px] sm:py-[18px] px-[16px] sm:px-[24px] rounded-[12px] border-2 transition-all duration-200"
                 style={{
                   backgroundColor: '#eb4b00',
                   borderColor: '#eb4b00'
@@ -90,9 +90,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#eb4b00';
                 }}
               >
-                Email my quote and show me what it costs now
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <ArrowRight className="w-4 h-4" />
+                <span className="text-center">Email my quote and show me what it costs now</span>
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
               </button>
             </div>
@@ -121,14 +121,14 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
           </>
         ) : (
           <>
-            <div className="mb-6">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">One last step - this won't take long</h2>
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">One last step - this won't take long</h2>
             </div>
 
             <form onSubmit={handleSubmitContactForm}>
-              <div className="mb-6">
-                <div className="flex items-center mb-3">
-                  <label className="block font-semibold mb-2 text-gray-700 text-xl">Full Name</label>
+              <div className="mb-4 sm:mb-6">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <label className="block font-semibold mb-1 sm:mb-2 text-gray-700 text-lg sm:text-xl">Full Name</label>
                   <span 
                     className="cursor-pointer text-sm ml-1" 
                     style={{ color: '#224380' }} 
@@ -142,7 +142,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. John Smith"
-                  className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none transition-all duration-200"
+                  className="w-full border-2 border-gray-300 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base"
                   onFocus={(e) => {
                     e.target.style.borderColor = '#224380';
                   }}
@@ -153,9 +153,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 />
               </div>
 
-              <div className="mb-6">
-                <div className="flex items-center mb-3">
-                  <label className="block font-semibold mb-2 text-gray-700 text-xl">Email Address</label>
+              <div className="mb-4 sm:mb-6">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <label className="block font-semibold mb-1 sm:mb-2 text-gray-700 text-lg sm:text-xl">Email Address</label>
                   <span 
                     className="cursor-pointer text-sm ml-1" 
                     style={{ color: '#224380' }} 
@@ -169,7 +169,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="johnsmith@email.com"
-                  className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none transition-all duration-200"
+                  className="w-full border-2 border-gray-300 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base"
                   onFocus={(e) => {
                     e.target.style.borderColor = '#224380';
                   }}
@@ -180,9 +180,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 />
               </div>
 
-              <div className="mb-6">
-                <div className="flex items-center mb-3">
-                  <label className="block font-semibold mb-2 text-gray-700 text-xl">Phone Number</label>
+              <div className="mb-4 sm:mb-6">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <label className="block font-semibold mb-1 sm:mb-2 text-gray-700 text-lg sm:text-xl">Phone Number</label>
                   <span 
                     className="cursor-pointer text-sm ml-1" 
                     style={{ color: '#224380' }} 
@@ -196,7 +196,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="07953866662"
-                  className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none transition-all duration-200"
+                  className="w-full border-2 border-gray-300 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base"
                   onFocus={(e) => {
                     e.target.style.borderColor = '#224380';
                   }}
