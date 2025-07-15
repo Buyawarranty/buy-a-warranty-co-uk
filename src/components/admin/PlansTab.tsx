@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Edit, Save, Plus, Trash2 } from 'lucide-react';
 import { Json } from '@/integrations/supabase/types';
+import DocumentUpload from './DocumentUpload';
 
 interface Plan {
   id: string;
@@ -268,6 +269,8 @@ export const PlansTab = () => {
         <h2 className="text-2xl font-bold text-gray-900">Plans Management</h2>
         <p className="text-sm text-gray-600">Manage all pricing and features for each plan</p>
       </div>
+
+      <DocumentUpload />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {plans.map((plan) => {

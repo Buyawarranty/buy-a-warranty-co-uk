@@ -82,16 +82,29 @@ const DocumentUpload = () => {
 
     setUploading(true);
     try {
-      // For now, we'll store a placeholder URL since we don't have storage bucket set up
-      // In a real implementation, you would upload to Supabase Storage first
-      const fileUrl = `https://placeholder-url.com/${selectedFile.name}`;
+      // Create a unique file path
+      const fileExt = selectedFile.name.split('.').pop();
+      const filePath = `${selectedPlan}/${documentName}-${Date.now()}.${fileExt}`;
       
+      // Upload file to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('policy-documents')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('policy-documents')
+        .getPublicUrl(filePath);
+      
+      // Save document metadata to database
       const { error } = await supabase
         .from('customer_documents')
         .insert({
           plan_type: selectedPlan,
           document_name: documentName,
-          file_url: fileUrl,
+          file_url: publicUrl,
           file_size: selectedFile.size,
         });
 
