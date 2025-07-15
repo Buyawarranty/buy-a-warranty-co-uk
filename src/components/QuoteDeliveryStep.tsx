@@ -103,15 +103,15 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 onClick={onBack}
                 className="flex-1 flex items-center justify-center gap-2 text-[15px] font-medium py-[12px] px-[20px] rounded-[12px] border-2 transition-all duration-200"
                 style={{
-                  backgroundColor: '#9ca3af',
-                  borderColor: '#9ca3af',
-                  color: 'white'
+                  backgroundColor: '#f3f4f6',
+                  borderColor: '#f3f4f6',
+                  color: '#374151'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#6b7280';
+                  e.currentTarget.style.backgroundColor = '#e5e7eb';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#9ca3af';
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
                 }}
               >
                 <ArrowLeft className="w-5 h-5" />
@@ -213,15 +213,15 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   onClick={() => setShowContactForm(false)}
                   className="flex-1 flex items-center justify-center gap-2 text-[15px] font-medium py-[12px] px-[20px] rounded-[12px] border-2 transition-all duration-200"
                 style={{
-                  backgroundColor: '#9ca3af',
-                  borderColor: '#9ca3af',
-                  color: 'white'
+                  backgroundColor: '#f3f4f6',
+                  borderColor: '#f3f4f6',
+                  color: '#374151'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#6b7280';
+                  e.currentTarget.style.backgroundColor = '#e5e7eb';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#9ca3af';
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
                 }}
                 >
                   <ArrowLeft className="w-5 h-5" />
