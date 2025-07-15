@@ -515,13 +515,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                                        {pdfUrl && <p><strong>URL:</strong> {pdfUrl}</p>}
                                        <p><strong>Available Keys:</strong> {Object.keys(pdfUrls).join(', ')}</p>
                                      </div>
-                                      {pdfUrl ? (
-                                        <iframe
-                                          src={pdfUrl}
-                                          className="flex-1 w-full border-0"
-                                          title={`${plan.name} Plan Coverage Details`}
-                                        />
-                                      ) : (
+                                     {pdfUrl ? (
+                                       <div className="flex flex-col h-full">
+                                         <div className="mb-2 text-center">
+                                           <a 
+                                             href={pdfUrl} 
+                                             target="_blank" 
+                                             rel="noopener noreferrer"
+                                             className="text-blue-600 hover:text-blue-800 underline text-sm"
+                                           >
+                                             Open PDF in new tab
+                                           </a>
+                                         </div>
+                                         <iframe
+                                           src={pdfUrl}
+                                           className="flex-1 w-full border border-gray-300 rounded"
+                                           title={`${plan.name} Plan Coverage Details`}
+                                           onError={() => console.log('PDF iframe failed to load')}
+                                         />
+                                       </div>
+                                     ) : (
                                         <div className="flex items-center justify-center w-full h-full p-8">
                                           <div className="text-center bg-gray-50 p-6 rounded-lg border">
                                             <p className="text-lg font-semibold text-gray-700 mb-4">
