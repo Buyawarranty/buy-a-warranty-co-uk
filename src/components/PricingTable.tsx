@@ -293,27 +293,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </div>
         </div>
 
-        {/* Voluntary Excess Selection */}
-        <div className="flex justify-center mb-8 px-4 sm:px-8">
-          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-200 w-full max-w-4xl">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4 text-center">Voluntary Excess</h3>
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
-              {[0, 50, 100, 150, 200].map((amount) => (
-                <button
-                  key={amount}
-                  onClick={() => setVoluntaryExcess(amount)}
-                  className={`p-3 sm:p-4 rounded-lg border text-sm sm:text-base font-semibold transition-all duration-200 ${
-                    voluntaryExcess === amount
-                      ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
-                      : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                  }`}
-                >
-                  £{amount}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
 
         {/* Pricing Cards */}
         <div className="w-full px-4 sm:px-8 pb-8 sm:pb-16">
@@ -367,6 +346,69 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                               <span className="text-sm text-gray-700">{feature}</span>
                             </div>
                           ))}
+                        </div>
+                      </div>
+
+                      {/* Voluntary Excess Selection */}
+                      <div>
+                        <h4 className="font-bold text-lg mb-4">Voluntary Excess</h4>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="flex flex-col gap-2">
+                            <button
+                              onClick={() => setVoluntaryExcess(0)}
+                              className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
+                                voluntaryExcess === 0
+                                  ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                              }`}
+                            >
+                              £0
+                            </button>
+                            <button
+                              onClick={() => setVoluntaryExcess(150)}
+                              className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
+                                voluntaryExcess === 150
+                                  ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                              }`}
+                            >
+                              £150
+                            </button>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <button
+                              onClick={() => setVoluntaryExcess(50)}
+                              className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
+                                voluntaryExcess === 50
+                                  ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                              }`}
+                            >
+                              £50
+                            </button>
+                            <button
+                              onClick={() => setVoluntaryExcess(200)}
+                              className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
+                                voluntaryExcess === 200
+                                  ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                              }`}
+                            >
+                              £200
+                            </button>
+                          </div>
+                          <div className="flex justify-center">
+                            <button
+                              onClick={() => setVoluntaryExcess(100)}
+                              className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 w-full ${
+                                voluntaryExcess === 100
+                                  ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                              }`}
+                            >
+                              £100
+                            </button>
+                          </div>
                         </div>
                       </div>
 
