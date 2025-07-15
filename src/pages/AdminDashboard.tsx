@@ -6,21 +6,21 @@ import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
-import { useAuth } from '@/hooks/useAuth';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('customers');
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   useEffect(() => {
     checkAdminAccess();
-  }, [user]);
+  }, []);
 
   const checkAdminAccess = async () => {
     try {
-      if (!user) {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user) {
         navigate('/auth');
         return;
       }
@@ -28,11 +28,11 @@ const AdminDashboard = () => {
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', user.id)
+        .eq('user_id', session.user.id)
         .single();
 
       if (error || data?.role !== 'admin') {
-        console.error('Access denied - not an admin');
+        console.error('Access denied - not an admin', error);
         navigate('/');
         return;
       }
