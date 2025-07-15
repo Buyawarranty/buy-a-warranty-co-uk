@@ -487,33 +487,101 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         </div>
                       )}
 
-                      {/* PDF Coverage Details Expandable Section */}
+                      {/* Complete Coverage Details Section */}
                       <div className="mt-6 mb-6">
-                        <button
-                          onClick={() => {
-                            console.log('Clicked plan:', plan.name);
-                            console.log('Current expandedPlan:', expandedPlan);
-                            setExpandedPlan(expandedPlan === plan.name ? null : plan.name);
-                            console.log('Setting expandedPlan to:', expandedPlan === plan.name ? null : plan.name);
-                          }}
-                          className="block w-full text-center bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-3 px-4 transition-colors duration-200"
-                        >
-                          <div className="font-semibold text-gray-900 text-base">
-                            {expandedPlan === plan.name ? 'Hide Coverage Details' : 'View Full Coverage Details'}
+                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                          <div className="flex items-start gap-3 mb-4">
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="text-lg font-bold text-gray-900 mb-1">Complete Coverage Details</h4>
+                              <p className="text-gray-600 text-sm">View full warranty terms & conditions</p>
+                            </div>
                           </div>
-                          <div className="text-sm text-gray-600 mt-1">
-                            Clear, simple breakdown — before you commit
+                          
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                console.log('Clicked plan:', plan.name);
+                                console.log('Current expandedPlan:', expandedPlan);
+                                setExpandedPlan(expandedPlan === plan.name ? null : plan.name);
+                                console.log('Setting expandedPlan to:', expandedPlan === plan.name ? null : plan.name);
+                              }}
+                              className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg py-3 px-4 transition-colors duration-200"
+                            >
+                              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              <span className="font-medium text-gray-900">View PDF Details</span>
+                            </button>
+                            
+                            {pdfUrls[plan.name.toLowerCase()] && (
+                              <a
+                                href={pdfUrls[plan.name.toLowerCase()]}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 rounded-lg py-3 px-3 transition-colors duration-200"
+                                title="Download PDF"
+                              >
+                                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                              </a>
+                            )}
                           </div>
-                        </button>
+                        </div>
                         
                         {expandedPlan === plan.name && (
                           <div className="mt-4 border border-gray-300 rounded-lg overflow-hidden bg-white">
-                            <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                              <h4 className="font-semibold text-gray-900">{plan.name} Plan Coverage Details</h4>
-                            </div>
-                            <div className="p-6 space-y-4">
-                              {plan.coverage && plan.coverage.length > 0 ? (
-                                <>
+                            {/* PDF Viewer Iframe */}
+                            {pdfUrls[plan.name.toLowerCase()] ? (
+                              <div className="relative">
+                                <div className="bg-gray-100 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                                  <h4 className="font-semibold text-gray-900">{plan.name} Plan - Full Policy Document</h4>
+                                  <button
+                                    onClick={() => setExpandedPlan(null)}
+                                    className="text-gray-500 hover:text-gray-700"
+                                  >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </button>
+                                </div>
+                                <div className="h-96 bg-white">
+                                  <iframe
+                                    src={`${pdfUrls[plan.name.toLowerCase()]}#toolbar=1&navpanes=1&scrollbar=1`}
+                                    className="w-full h-full border-none"
+                                    title={`${plan.name} Policy Document`}
+                                  />
+                                </div>
+                                <div className="bg-gray-50 px-4 py-3 border-t border-gray-200 flex justify-between items-center">
+                                  <p className="text-sm text-gray-600">Review the complete terms and conditions above</p>
+                                  <a
+                                    href={pdfUrls[plan.name.toLowerCase()]}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center px-3 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
+                                  >
+                                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                                    </svg>
+                                    Download PDF
+                                  </a>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+                                <h4 className="font-semibold text-gray-900">{plan.name} Plan Coverage Details</h4>
+                              </div>
+                            )}
+                            
+                            {!pdfUrls[plan.name.toLowerCase()] && (
+                              <div className="p-6 space-y-4">
+                                {plan.coverage && plan.coverage.length > 0 ? (
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {plan.coverage.map((item: string, index: number) => (
                                       <div key={index} className="flex items-start space-x-3">
@@ -522,8 +590,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                                       </div>
                                     ))}
                                   </div>
-                                  {pdfUrls[plan.name.toLowerCase()] && (
-                                    <div className="mt-6 pt-4 border-t border-gray-200">
+                                ) : (
+                                  <div className="text-center py-8">
+                                    <div className="text-gray-500 mb-4">
+                                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                      </div>
+                                      <p className="text-lg font-medium text-gray-700 mb-2">Coverage details coming soon</p>
+                                      <p className="text-sm text-gray-500">We're updating the coverage details for this plan.</p>
+                                    </div>
+                                    {pdfUrls[plan.name.toLowerCase()] && (
                                       <a
                                         href={pdfUrls[plan.name.toLowerCase()]}
                                         target="_blank"
@@ -533,38 +611,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                                         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                           <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
                                         </svg>
-                                        Download Full Policy Document (PDF)
+                                        View Full Policy Document (PDF)
                                       </a>
-                                    </div>
-                                  )}
-                                </>
-                              ) : (
-                                <div className="text-center py-8">
-                                  <div className="text-gray-500 mb-4">
-                                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                      </svg>
-                                    </div>
-                                    <p className="text-lg font-medium text-gray-700 mb-2">Coverage details coming soon</p>
-                                    <p className="text-sm text-gray-500">We're updating the coverage details for this plan.</p>
+                                    )}
                                   </div>
-                                  {pdfUrls[plan.name.toLowerCase()] && (
-                                    <a
-                                      href={pdfUrls[plan.name.toLowerCase()]}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
-                                    >
-                                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
-                                      </svg>
-                                      View Full Policy Document (PDF)
-                                    </a>
-                                  )}
-                                </div>
-                              )}
-                            </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
