@@ -13,15 +13,13 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [hasNavigated, setHasNavigated] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session && !hasNavigated) {
+      if (session) {
         console.log("User already logged in, checking role for redirect");
-        setHasNavigated(true);
         
         // Check if user is admin
         const { data: roleData } = await supabase
@@ -39,39 +37,7 @@ const Auth = () => {
     };
     
     checkSession();
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state change:", event, session?.user?.email);
-      if (event === 'SIGNED_IN' && session && !hasNavigated) {
-        console.log("Sign in detected, checking user role...");
-        setHasNavigated(true);
-        
-        // Check if user is admin
-        const { data: roleData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single();
-
-        toast({
-          title: "Success",
-          description: "You have been signed in successfully!",
-        });
-        
-        // Navigate based on role
-        if (roleData?.role === 'admin') {
-          console.log("Admin user detected, redirecting to admin dashboard");
-          navigate('/admin', { replace: true });
-        } else {
-          console.log("Regular user detected, redirecting to customer dashboard");
-          navigate('/customer-dashboard', { replace: true });
-        }
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate, toast, hasNavigated]);
+  }, [navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,20 +59,24 @@ const Auth = () => {
       console.log("Sign in successful:", data.user?.email);
       console.log("Session:", data.session);
       
-      // Double check - if we have a session, navigate immediately based on role
-      if (data.session && !hasNavigated) {
-        setHasNavigated(true);
+      // Check user role and navigate
+      if (data.session) {
         const { data: roleData } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', data.session.user.id)
           .single();
 
+        toast({
+          title: "Success",
+          description: "You have been signed in successfully!",
+        });
+
         if (roleData?.role === 'admin') {
-          console.log("Direct navigation to admin dashboard after successful login");
+          console.log("Admin user detected, redirecting to admin dashboard");
           navigate('/admin', { replace: true });
         } else {
-          console.log("Direct navigation to customer dashboard after successful login");
+          console.log("Regular user detected, redirecting to customer dashboard");
           navigate('/customer-dashboard', { replace: true });
         }
       }
@@ -211,7 +181,7 @@ const Auth = () => {
               >
                 Forgot your password?
               </Button>
-            </div>
+              </div>
           </CardContent>
         </Card>
       </div>
