@@ -41,6 +41,8 @@ interface PricingTableProps {
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
+  // Debug logging to see what vehicle data we're receiving
+  console.log('PricingTable received vehicleData:', vehicleData);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
   const [voluntaryExcess, setVoluntaryExcess] = useState<{[planId: string]: number}>({});
@@ -259,12 +261,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </div>
 
           {/* Vehicle Details */}
-          {(vehicleData.make && vehicleData.model) || vehicleData.regNumber ? (
+          {vehicleData.regNumber ? (
             <div className="mb-6 bg-white rounded-lg p-6 shadow-lg border-2 border-blue-100 max-w-2xl mx-auto">
-              {vehicleData.make && vehicleData.model ? (
+              {vehicleData.make ? (
                 <>
                   <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 text-center">
-                    {vehicleData.make} {vehicleData.model}
+                    {vehicleData.make} {vehicleData.model || 'Vehicle'}
                   </p>
                   <div className="grid grid-cols-2 gap-4 text-sm sm:text-base text-gray-700">
                     {vehicleData.fuelType && (
@@ -294,11 +296,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
               ) : (
                 <div className="text-center">
                   <p className="text-xl font-semibold text-gray-700 mb-2">Vehicle Details</p>
+                  <p className="text-lg text-gray-600 mb-2">
+                    <strong>Reg:</strong> {vehicleData.regNumber}
+                  </p>
                   <p className="text-lg text-gray-600">
                     <strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles
                   </p>
                   <p className="text-sm text-gray-500 mt-2">
-                    Vehicle information will be retrieved automatically
+                    Vehicle information retrieved via DVLA lookup
                   </p>
                 </div>
               )}

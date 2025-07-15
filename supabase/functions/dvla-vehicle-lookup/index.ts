@@ -70,7 +70,9 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       found: true,
       make: data.make,
+      model: data.model || null, // Model might not be available from DVLA
       fuelType: data.fuelType,
+      transmission: data.transmission || null, // Transmission might not be available
       yearOfManufacture: data.yearOfManufacture,
       colour: data.colour,
       engineCapacity: data.engineCapacity,
