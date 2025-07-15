@@ -13,13 +13,15 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [hasNavigated, setHasNavigated] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
+      if (session && !hasNavigated) {
         console.log("User already logged in, checking role for redirect");
+        setHasNavigated(true);
         
         // Check if user is admin
         const { data: roleData } = await supabase
@@ -41,8 +43,9 @@ const Auth = () => {
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state change:", event, session?.user?.email);
-      if (event === 'SIGNED_IN' && session) {
+      if (event === 'SIGNED_IN' && session && !hasNavigated) {
         console.log("Sign in detected, checking user role...");
+        setHasNavigated(true);
         
         // Check if user is admin
         const { data: roleData } = await supabase
@@ -68,7 +71,7 @@ const Auth = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, toast]);
+  }, [navigate, toast, hasNavigated]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +94,8 @@ const Auth = () => {
       console.log("Session:", data.session);
       
       // Double check - if we have a session, navigate immediately based on role
-      if (data.session) {
+      if (data.session && !hasNavigated) {
+        setHasNavigated(true);
         const { data: roleData } = await supabase
           .from('user_roles')
           .select('role')
