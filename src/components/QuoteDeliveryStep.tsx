@@ -72,7 +72,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 </div>
               </button>
 
-              <div className="text-center text-gray-500 text-lg font-semibold">
+              <div className="text-center text-gray-500 text-xl font-semibold">
                 - or -
               </div>
 
