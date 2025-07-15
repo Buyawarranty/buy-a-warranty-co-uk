@@ -136,20 +136,23 @@ const SpecialVehiclePlansTab = () => {
 
       setUploading(true);
       try {
+        // Create a unique file path
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        const filePath = `documents/${fileName}`;
+        const filePath = `special-vehicle/${vehicleType}/${documentName}-${Date.now()}.${fileExt}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('customer-documents')
+        // Upload file to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('policy-documents')
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
+        // Get the public URL
         const { data: { publicUrl } } = supabase.storage
-          .from('customer-documents')
+          .from('policy-documents')
           .getPublicUrl(filePath);
 
+        // Save document metadata to database
         const { error: dbError } = await supabase
           .from('customer_documents')
           .insert({
