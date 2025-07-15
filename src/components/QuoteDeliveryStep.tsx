@@ -46,7 +46,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
         {!showContactForm ? (
           <>
             <div className="text-center mb-12">
-              <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
+              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-8">
                 How would you like to receive your quote?
               </h1>
               <div className="space-y-3 mb-8">
@@ -64,7 +64,14 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             <div className="space-y-6 mb-12">
               <button 
                 onClick={handleSkipClick}
-                className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-center gap-3 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
+                style={{ backgroundColor: '#224380' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#1a3460';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#224380';
+                }}
               >
                 <Zap className="w-6 h-6" />
                 <span className="flex-1 text-center">See my pricing instantly (no email required)</span>
@@ -85,12 +92,12 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               <button 
                 onClick={handleEmailQuoteClick}
                 className="w-full flex items-center justify-center gap-3 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
-                style={{ backgroundColor: '#d97706' }}
+                style={{ backgroundColor: '#eb4b00' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#b45309';
+                  e.currentTarget.style.backgroundColor = '#d43f00';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#d97706';
+                  e.currentTarget.style.backgroundColor = '#eb4b00';
                 }}
               >
                 <Mail className="w-6 h-6" />
@@ -103,7 +110,14 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               <button 
                 type="button" 
                 onClick={onBack}
-                className="flex items-center justify-center gap-2 text-blue-600 text-lg font-medium py-3 px-8 rounded-lg border-2 border-blue-600 bg-white hover:bg-blue-50 transition-all duration-200"
+                className="flex items-center justify-center gap-2 text-lg font-medium py-3 px-8 rounded-lg border-2 bg-white transition-all duration-200"
+                style={{ color: '#224380', borderColor: '#224380' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f0f8ff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                }}
               >
                 <ArrowLeft className="w-5 h-5" />
                 Back
