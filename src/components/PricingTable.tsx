@@ -454,6 +454,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         </div>
                       )}
 
+                      {/* PDF Coverage Details Link */}
+                      <div className="mt-6 mb-6">
+                        <a
+                          href={`/lovable-uploads/${plan.name.toLowerCase()}-plan-coverage.pdf`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full text-center bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-3 px-4 transition-colors duration-200"
+                        >
+                          <div className="font-semibold text-gray-900 text-base">
+                            View Full Coverage Details
+                          </div>
+                          <div className="text-sm text-gray-600 mt-1">
+                            Clear, simple breakdown — before you commit
+                          </div>
+                        </a>
+                      </div>
+
                       <Button
                         onClick={() => handleSelectPlan(plan)}
                         disabled={isLoading}
