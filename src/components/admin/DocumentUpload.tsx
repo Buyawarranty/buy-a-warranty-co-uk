@@ -190,11 +190,9 @@ const DocumentUpload = () => {
                   <SelectItem value="basic">Basic</SelectItem>
                   <SelectItem value="gold">Gold</SelectItem>
                   <SelectItem value="platinum">Platinum</SelectItem>
-                  <SelectItem value="hybrid">Hybrid</SelectItem>
-                  <SelectItem value="electric">Electric</SelectItem>
-                  <SelectItem value="motorhome">Motorhome</SelectItem>
-                  <SelectItem value="caravan">Caravan</SelectItem>
-                  <SelectItem value="motorcycle">Motorcycle</SelectItem>
+                  <SelectItem value="electric">Electric Vehicle EV Extended Warranty</SelectItem>
+                  <SelectItem value="motorbike">Motorbike Extended Warranty</SelectItem>
+                  <SelectItem value="phev">PHEV Hybrid Extended Warranty</SelectItem>
                 </SelectContent>
               </Select>
             </div>
