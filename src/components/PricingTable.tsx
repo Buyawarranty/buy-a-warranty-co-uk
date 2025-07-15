@@ -261,54 +261,33 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </div>
 
           {/* Vehicle Details */}
-          {vehicleData.regNumber ? (
-            <div className="mb-6 bg-white rounded-lg p-6 shadow-lg border-2 border-blue-100 max-w-2xl mx-auto">
-              {vehicleData.make ? (
-                <>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 text-center">
-                    {vehicleData.make} {vehicleData.model || 'Vehicle'}
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 text-sm sm:text-base text-gray-700">
-                    {vehicleData.fuelType && (
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                        <span><strong>Fuel:</strong> {vehicleData.fuelType}</span>
-                      </div>
-                    )}
-                    {vehicleData.year && (
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                        <span><strong>Year:</strong> {vehicleData.year}</span>
-                      </div>
-                    )}
-                    {vehicleData.transmission && (
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                        <span><strong>Transmission:</strong> {vehicleData.transmission}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
-                      <span><strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles</span>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="text-center">
-                  <p className="text-xl font-semibold text-gray-700 mb-2">Vehicle Details</p>
-                  <p className="text-lg text-gray-600 mb-2">
-                    <strong>Reg:</strong> {vehicleData.regNumber}
-                  </p>
-                  <p className="text-lg text-gray-600">
-                    <strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles
-                  </p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Vehicle information retrieved via DVLA lookup
-                  </p>
-                </div>
-              )}
+          {vehicleData.make && (
+            <div className="mb-6 max-w-2xl mx-auto">
+              <div className="flex flex-wrap justify-center gap-4 text-sm sm:text-base text-gray-700">
+                <span className="font-semibold text-gray-900">
+                  {vehicleData.make} {vehicleData.model || 'Vehicle'}
+                </span>
+                {vehicleData.fuelType && (
+                  <span className="text-gray-600">
+                    <strong>Fuel:</strong> {vehicleData.fuelType}
+                  </span>
+                )}
+                {vehicleData.year && (
+                  <span className="text-gray-600">
+                    <strong>Year:</strong> {vehicleData.year}
+                  </span>
+                )}
+                {vehicleData.transmission && (
+                  <span className="text-gray-600">
+                    <strong>Transmission:</strong> {vehicleData.transmission}
+                  </span>
+                )}
+                <span className="text-gray-600">
+                  <strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles
+                </span>
+              </div>
             </div>
-          ) : null}
+          )}
         </div>
 
         {/* Payment Period Toggle */}
