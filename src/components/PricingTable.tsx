@@ -490,7 +490,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       {/* PDF Coverage Details Expandable Section */}
                       <div className="mt-6 mb-6">
                         <button
-                          onClick={() => setExpandedPlan(expandedPlan === plan.name ? null : plan.name)}
+                          onClick={() => {
+                            console.log('Clicked plan:', plan.name);
+                            console.log('Current expandedPlan:', expandedPlan);
+                            setExpandedPlan(expandedPlan === plan.name ? null : plan.name);
+                            console.log('Setting expandedPlan to:', expandedPlan === plan.name ? null : plan.name);
+                          }}
                           className="block w-full text-center bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-3 px-4 transition-colors duration-200"
                         >
                           <div className="font-semibold text-gray-900 text-base">
