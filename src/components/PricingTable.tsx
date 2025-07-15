@@ -46,9 +46,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const [voluntaryExcess, setVoluntaryExcess] = useState<{[planId: string]: number}>({});
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
+  const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
 
   useEffect(() => {
     fetchPlans();
+    fetchPdfUrls();
   }, []);
 
   const fetchPlans = async () => {
@@ -71,6 +73,30 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     } catch (error) {
       console.error('Error fetching plans:', error);
       toast.error('Failed to load pricing plans');
+    }
+  };
+
+  const fetchPdfUrls = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('customer_documents')
+        .select('plan_type, file_url')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (data) {
+        const urlMap: {[planName: string]: string} = {};
+        data.forEach(doc => {
+          // Use the first (most recent) document for each plan type
+          if (!urlMap[doc.plan_type]) {
+            urlMap[doc.plan_type] = doc.file_url;
+          }
+        });
+        setPdfUrls(urlMap);
+      }
+    } catch (error) {
+      console.error('Error fetching PDF URLs:', error);
     }
   };
 
@@ -470,11 +496,24 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                           </DialogTrigger>
                           <DialogContent className="max-w-4xl w-[95vw] h-[90vh] p-0">
                             <div className="relative w-full h-full">
-                              <iframe
-                                src={`/lovable-uploads/${plan.name.toLowerCase()}-plan-coverage.pdf`}
-                                className="w-full h-full rounded-lg"
-                                title={`${plan.name} Plan Coverage Details`}
-                              />
+                              {pdfUrls[plan.name.toLowerCase()] ? (
+                                <iframe
+                                  src={pdfUrls[plan.name.toLowerCase()]}
+                                  className="w-full h-full rounded-lg"
+                                  title={`${plan.name} Plan Coverage Details`}
+                                />
+                              ) : (
+                                <div className="flex items-center justify-center w-full h-full">
+                                  <div className="text-center">
+                                    <p className="text-lg font-semibold text-gray-700 mb-2">
+                                      Coverage details not available
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      Please contact us for more information about this plan
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </DialogContent>
                         </Dialog>
