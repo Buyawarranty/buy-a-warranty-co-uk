@@ -259,19 +259,51 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </div>
 
           {/* Vehicle Details */}
-          {vehicleData.make && vehicleData.model && (
-            <div className="mb-6 bg-white rounded-lg p-4 shadow-sm border max-w-md mx-auto">
-              <p className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                {vehicleData.make} {vehicleData.model}
-              </p>
-              <div className="grid grid-cols-2 gap-2 text-sm sm:text-base text-gray-600">
-                {vehicleData.fuelType && <span><strong>Fuel:</strong> {vehicleData.fuelType}</span>}
-                {vehicleData.year && <span><strong>Year:</strong> {vehicleData.year}</span>}
-                {vehicleData.transmission && <span><strong>Transmission:</strong> {vehicleData.transmission}</span>}
-                <span><strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles</span>
-              </div>
+          {(vehicleData.make && vehicleData.model) || vehicleData.regNumber ? (
+            <div className="mb-6 bg-white rounded-lg p-6 shadow-lg border-2 border-blue-100 max-w-2xl mx-auto">
+              {vehicleData.make && vehicleData.model ? (
+                <>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 text-center">
+                    {vehicleData.make} {vehicleData.model}
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 text-sm sm:text-base text-gray-700">
+                    {vehicleData.fuelType && (
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <span><strong>Fuel:</strong> {vehicleData.fuelType}</span>
+                      </div>
+                    )}
+                    {vehicleData.year && (
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        <span><strong>Year:</strong> {vehicleData.year}</span>
+                      </div>
+                    )}
+                    {vehicleData.transmission && (
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                        <span><strong>Transmission:</strong> {vehicleData.transmission}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
+                      <span><strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center">
+                  <p className="text-xl font-semibold text-gray-700 mb-2">Vehicle Details</p>
+                  <p className="text-lg text-gray-600">
+                    <strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Vehicle information will be retrieved automatically
+                  </p>
+                </div>
+              )}
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Payment Period Toggle */}
