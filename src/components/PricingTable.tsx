@@ -275,7 +275,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
 
         {/* Payment Period Toggle */}
-        <div className="flex justify-center mb-6 sm:mb-8 px-4 sm:px-8">
+        <div className="flex justify-center mb-12 sm:mb-16 px-4 sm:px-8">
           <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-4xl">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
               <button
@@ -338,7 +338,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         {/* Pricing Cards */}
         <div className="w-full px-4 sm:px-8 pb-8 sm:pb-16">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8 lg:items-start">
               {plans.map((plan) => {
                 const basePrice = calculatePlanPrice(plan);
                 const addOnPrice = calculateAddOnPrice(plan.id);
