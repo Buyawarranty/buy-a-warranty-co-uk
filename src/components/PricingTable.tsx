@@ -47,6 +47,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
+  const [expandedPlan, setExpandedPlan] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPlans();
@@ -486,62 +487,58 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         </div>
                       )}
 
-                      {/* PDF Coverage Details Dialog */}
+                      {/* PDF Coverage Details Expandable Section */}
                       <div className="mt-6 mb-6">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <button className="block w-full text-center bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-3 px-4 transition-colors duration-200">
-                              <div className="font-semibold text-gray-900 text-base">
-                                View Full Coverage Details
+                        <button
+                          onClick={() => setExpandedPlan(expandedPlan === plan.name ? null : plan.name)}
+                          className="block w-full text-center bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-3 px-4 transition-colors duration-200"
+                        >
+                          <div className="font-semibold text-gray-900 text-base">
+                            {expandedPlan === plan.name ? 'Hide Coverage Details' : 'View Full Coverage Details'}
+                          </div>
+                          <div className="text-sm text-gray-600 mt-1">
+                            Clear, simple breakdown — before you commit
+                          </div>
+                        </button>
+                        
+                        {expandedPlan === plan.name && (
+                          <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden animate-fade-in">
+                            <div className="bg-gray-50 p-3 border-b">
+                              <div className="flex items-center justify-between">
+                                <h4 className="font-semibold text-gray-700">{plan.name} Plan Coverage Details</h4>
+                                <a 
+                                  href={pdfUrls[plan.name.toLowerCase()]} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                                >
+                                  📄 Open in new tab
+                                </a>
                               </div>
-                              <div className="text-sm text-gray-600 mt-1">
-                                Clear, simple breakdown — before you commit
-                              </div>
-                            </button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-4xl w-[95vw] h-[90vh] p-0">
-                            <div className="relative w-full h-full">
-                               {(() => {
-                                 const planKey = plan.name.toLowerCase();
-                                 const pdfUrl = pdfUrls[planKey];
-                                 
-                                 return (
-                                   <div className="w-full h-full flex flex-col">
-                                     <div className="mb-2 text-center bg-gray-100 p-2">
-                                       <a 
-                                         href={pdfUrl} 
-                                         target="_blank" 
-                                         rel="noopener noreferrer"
-                                         className="text-blue-600 hover:text-blue-800 underline font-medium"
-                                       >
-                                         📄 Open PDF in new tab
-                                       </a>
-                                     </div>
-                                     {pdfUrl ? (
-                                       <embed
-                                         src={pdfUrl}
-                                         type="application/pdf"
-                                         className="flex-1 w-full border border-gray-300 rounded"
-                                         title={`${plan.name} Plan Coverage Details`}
-                                       />
-                                     ) : (
-                                        <div className="flex items-center justify-center w-full h-full p-8">
-                                          <div className="text-center bg-gray-50 p-6 rounded-lg border">
-                                            <p className="text-lg font-semibold text-gray-700 mb-4">
-                                              Coverage details not available
-                                            </p>
-                                            <p className="text-sm text-gray-500 mt-4">
-                                              Please upload a PDF for this plan in the admin section
-                                            </p>
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                              })()}
                             </div>
-                          </DialogContent>
-                        </Dialog>
+                            <div className="h-96">
+                              {pdfUrls[plan.name.toLowerCase()] ? (
+                                <embed
+                                  src={pdfUrls[plan.name.toLowerCase()]}
+                                  type="application/pdf"
+                                  className="w-full h-full"
+                                  title={`${plan.name} Plan Coverage Details`}
+                                />
+                              ) : (
+                                <div className="flex items-center justify-center w-full h-full">
+                                  <div className="text-center">
+                                    <p className="text-lg font-semibold text-gray-700 mb-2">
+                                      Coverage details not available
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      Please upload a PDF for this plan in the admin section
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       <Button
