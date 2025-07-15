@@ -497,8 +497,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                               </svg>
                             </div>
                             <div className="flex-1">
-                              <h4 className="text-lg font-bold text-gray-900 mb-1">Complete Coverage Details</h4>
-                              <p className="text-gray-600 text-sm">View full warranty terms & conditions</p>
+                              <h4 className="text-lg font-bold text-gray-900 mb-1">Warranty Plan Details</h4>
+                              <p className="text-gray-600 text-sm">Full breakdown of coverage</p>
                             </div>
                           </div>
                           
@@ -512,7 +512,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                               </svg>
-                              <span className="font-medium text-gray-900">View PDF details in new tab</span>
+                              <span className="font-medium text-gray-900">View PDF (Opens in New Tab)</span>
                             </a>
                           ) : (
                             <div className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-center">
