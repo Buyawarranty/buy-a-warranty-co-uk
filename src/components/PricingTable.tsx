@@ -347,7 +347,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 const isPopular = plan.name === 'Gold';
                 
                 return (
-                  <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 w-full h-full flex flex-col ${isPopular ? 'border-orange-400 shadow-xl lg:scale-105' : 'border-gray-200'}`}>
+                  <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 w-full ${isPopular ? 'border-orange-400 shadow-xl lg:scale-105' : 'border-gray-200'}`}>
                     {isPopular && (
                       <div className="absolute top-4 left-4 z-10">
                         <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
@@ -376,7 +376,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     </div>
 
                     {/* Plan Content */}
-                    <div className="p-6 sm:p-8 space-y-6 flex-grow flex flex-col">
+                    <div className="p-6 sm:p-8 space-y-6">
                       {/* What's Covered */}
                       <div>
                         <h4 className="font-bold text-lg mb-4">What's Covered:</h4>
@@ -525,7 +525,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       <Button
                         onClick={() => handleSelectPlan(plan)}
                         disabled={isLoading}
-                        className={`w-full py-4 text-lg font-bold rounded-xl mt-auto ${
+                        className={`w-full py-4 text-lg font-bold rounded-xl ${
                           plan.name === 'Basic' ? 'bg-[#0e3e87] hover:bg-[#0d3a7a]' :
                           plan.name === 'Gold' ? 'bg-[#f59e0b] hover:bg-[#e4930a]' :
                           'bg-[#dc4f20] hover:bg-[#c8451d]'
