@@ -204,14 +204,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </h1>
           
           {/* Vehicle Registration Display */}
-          <div className="flex justify-center mb-4 sm:mb-6">
-            <div className="w-full max-w-[200px] sm:max-w-[300px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-sm sm:text-lg px-3 sm:px-4 py-2 sm:py-3 rounded-[6px] shadow-sm leading-tight border-2 border-black">
+          <div className="flex justify-center mb-4">
+            <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-sm sm:text-lg px-3 sm:px-4 py-2 sm:py-3 rounded-[6px] shadow-sm leading-tight border-2 border-black">
               <img 
                 src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
                 alt="GB Flag" 
                 className="w-[20px] h-[14px] sm:w-[25px] sm:h-[18px] mr-2 sm:mr-3 object-cover rounded-[2px]"
               />
-              <div className="flex-1 text-center font-bold font-sans tracking-normal">
+              <div className="font-bold font-sans tracking-normal">
                 {vehicleData.regNumber || 'REG NUM'}
               </div>
             </div>
@@ -219,7 +219,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
           {/* Vehicle Details */}
           {vehicleData.make && vehicleData.model && (
-            <div className="mb-4 sm:mb-6 bg-white rounded-lg p-4 shadow-sm border max-w-md mx-auto">
+            <div className="mb-6 bg-white rounded-lg p-4 shadow-sm border max-w-md mx-auto">
               <p className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 {vehicleData.make} {vehicleData.model}
               </p>
@@ -293,6 +293,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </div>
         </div>
 
+        {/* Voluntary Excess Selection */}
+        <div className="flex justify-center mb-8 px-4 sm:px-8">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-200 w-full max-w-4xl">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 text-center">Voluntary Excess</h3>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
+              {[0, 50, 100, 150, 200].map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => setVoluntaryExcess(amount)}
+                  className={`p-3 sm:p-4 rounded-lg border text-sm sm:text-base font-semibold transition-all duration-200 ${
+                    voluntaryExcess === amount
+                      ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                  }`}
+                >
+                  £{amount}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
         {/* Pricing Cards */}
         <div className="w-full px-4 sm:px-8 pb-8 sm:pb-16">
@@ -336,26 +357,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
                     {/* Plan Content */}
                     <div className="p-6 sm:p-8 space-y-6">
-                      {/* Voluntary Excess Selection */}
-                      <div>
-                        <h4 className="font-bold text-lg mb-4">Voluntary Excess</h4>
-                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                          {[0, 50, 100, 150, 200].map((amount) => (
-                            <button
-                              key={amount}
-                              onClick={() => setVoluntaryExcess(amount)}
-                              className={`p-2 sm:p-3 rounded-lg border text-xs sm:text-sm font-semibold transition-all duration-200 ${
-                                voluntaryExcess === amount
-                                  ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
-                                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                              }`}
-                            >
-                              £{amount}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
                       {/* What's Covered */}
                       <div>
                         <h4 className="font-bold text-lg mb-4">What's Covered:</h4>
