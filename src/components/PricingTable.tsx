@@ -504,9 +504,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                               {(() => {
                                 const planKey = plan.name.toLowerCase();
                                 const pdfUrl = pdfUrls[planKey];
-                                console.log(`Looking for PDF for plan: "${plan.name}" (key: "${planKey}")`);
-                                console.log(`Available PDF URLs:`, Object.keys(pdfUrls));
-                                console.log(`Found PDF URL:`, pdfUrl);
                                 
                                 return pdfUrl ? (
                                   <iframe
@@ -515,18 +512,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                                     title={`${plan.name} Plan Coverage Details`}
                                   />
                                 ) : (
-                                  <div className="flex items-center justify-center w-full h-full">
-                                    <div className="text-center">
-                                      <p className="text-lg font-semibold text-gray-700 mb-2">
+                                  <div className="flex items-center justify-center w-full h-full p-8">
+                                    <div className="text-center bg-gray-50 p-6 rounded-lg border">
+                                      <p className="text-lg font-semibold text-gray-700 mb-4">
                                         Coverage details not available
                                       </p>
-                                      <p className="text-sm text-gray-500">
-                                        Please contact us for more information about this plan
-                                      </p>
-                                      <div className="mt-4 text-xs text-gray-400">
-                                        Looking for: {planKey}<br/>
-                                        Available: {Object.keys(pdfUrls).join(', ') || 'none'}
+                                      <div className="text-left text-sm space-y-2 bg-white p-4 rounded border">
+                                        <p><strong>Plan:</strong> {plan.name}</p>
+                                        <p><strong>Looking for key:</strong> "{planKey}"</p>
+                                        <p><strong>Available documents:</strong></p>
+                                        <ul className="list-disc list-inside ml-4">
+                                          {Object.keys(pdfUrls).length > 0 ? 
+                                            Object.keys(pdfUrls).map(key => (
+                                              <li key={key}>{key} → {pdfUrls[key] ? 'URL found' : 'No URL'}</li>
+                                            )) : 
+                                            <li>No documents uploaded yet</li>
+                                          }
+                                        </ul>
                                       </div>
+                                      <p className="text-sm text-gray-500 mt-4">
+                                        Please upload a PDF for this plan in the admin section
+                                      </p>
                                     </div>
                                   </div>
                                 );
