@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Zap, Mail } from 'lucide-react';
 
 interface QuoteDeliveryStepProps {
   vehicleData: {
@@ -42,77 +42,75 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   return (
     <section className="bg-[#e8f4fb] py-6 sm:py-10 min-h-screen px-4 sm:px-0">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 sm:p-12">
         {!showContactForm ? (
           <>
-            <div className="mb-4 sm:mb-6">
-              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">Where should we send your quote?</h2>
-              <p className="text-base sm:text-lg text-gray-600 mb-2">Instant quote to your inbox</p>
-              <p className="text-sm sm:text-base text-gray-600">No spam, just your personalised prices</p>
+            <div className="text-center mb-8 sm:mb-12">
+              <h1 className="text-3xl sm:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+                How would you like to receive your quote?
+              </h1>
+              <div className="space-y-2 text-gray-600">
+                <p className="flex items-center justify-center gap-2 text-base sm:text-lg">
+                  <span className="w-5 h-5 text-gray-400">⏰</span>
+                  Get accurate pricing in under 30 seconds
+                </p>
+                <p className="flex items-center justify-center gap-2 text-base sm:text-lg">
+                  <span className="w-5 h-5 text-gray-400">🛡️</span>
+                  Zero spam guarantee - pricing only
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+            <div className="space-y-6 mb-8">
               <button 
                 onClick={handleSkipClick}
-                className="w-full flex items-center justify-center gap-2 sm:gap-3 text-white text-[18px] sm:text-[22px] font-bold py-[14px] sm:py-[18px] px-[16px] sm:px-[24px] rounded-[12px] border-2 transition-all duration-200"
-                style={{
-                  backgroundColor: '#224380',
-                  borderColor: '#224380'
-                }}
+                className="w-full flex items-center justify-center gap-3 text-white text-lg sm:text-xl font-semibold py-4 sm:py-5 px-6 rounded-lg transition-all duration-200 hover:transform hover:scale-[1.02]"
+                style={{ backgroundColor: '#3b82f6' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#1a3460';
+                  e.currentTarget.style.backgroundColor = '#2563eb';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#224380';
+                  e.currentTarget.style.backgroundColor = '#3b82f6';
                 }}
               >
-                <span className="text-center">No contact details, just show me what it costs now</span>
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                </div>
+                <Zap className="w-5 h-5" />
+                See my pricing instantly (no email required)
+                <span className="ml-auto">→</span>
               </button>
 
-              <div className="text-center text-gray-500 text-xl font-semibold">
-                - or -
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-white px-4 py-2 text-gray-900 font-medium border border-gray-300 rounded-full">
+                    or
+                  </span>
+                </div>
               </div>
 
               <button 
                 onClick={handleEmailQuoteClick}
-                className="w-full flex items-center justify-center gap-2 sm:gap-3 text-white text-[18px] sm:text-[22px] font-bold py-[14px] sm:py-[18px] px-[16px] sm:px-[24px] rounded-[12px] border-2 transition-all duration-200"
-                style={{
-                  backgroundColor: '#eb4b00',
-                  borderColor: '#eb4b00'
-                }}
+                className="w-full flex items-center justify-center gap-3 text-white text-lg sm:text-xl font-semibold py-4 sm:py-5 px-6 rounded-lg transition-all duration-200 hover:transform hover:scale-[1.02]"
+                style={{ backgroundColor: '#ea580c' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#d43f00';
+                  e.currentTarget.style.backgroundColor = '#dc2626';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#eb4b00';
+                  e.currentTarget.style.backgroundColor = '#ea580c';
                 }}
               >
-                <span className="text-center">Email my quote and show me what it costs now</span>
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                </div>
+                <Mail className="w-5 h-5" />
+                Email me a detailed breakdown with pricing
+                <span className="ml-auto">→</span>
               </button>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex justify-center">
               <button 
                 type="button" 
                 onClick={onBack}
-                className="flex-1 flex items-center justify-center gap-2 text-[15px] font-medium py-[12px] px-[20px] rounded-[12px] border-2 transition-all duration-200"
-                style={{
-                  backgroundColor: '#f3f4f6',
-                  borderColor: '#f3f4f6',
-                  color: '#374151'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#e5e7eb';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f3f4f6';
-                }}
+                className="flex items-center justify-center gap-2 text-blue-600 text-lg font-medium py-3 px-8 rounded-lg border-2 border-blue-600 transition-all duration-200 hover:bg-blue-50"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Back
