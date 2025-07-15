@@ -70,11 +70,14 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       found: true,
       make: data.make,
-      model: data.model || data.modelName,
       fuelType: data.fuelType,
-      transmission: data.transmission,
       yearOfManufacture: data.yearOfManufacture,
-      vehicleType: vehicleType
+      colour: data.colour,
+      engineCapacity: data.engineCapacity,
+      vehicleType: vehicleType,
+      motStatus: data.motStatus,
+      motExpiryDate: data.motExpiryDate,
+      taxStatus: data.taxStatus
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

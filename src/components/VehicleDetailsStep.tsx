@@ -24,6 +24,11 @@ interface DVLAVehicleData {
   transmission?: string;
   yearOfManufacture?: string;
   vehicleType?: string;
+  colour?: string;
+  engineCapacity?: number;
+  motStatus?: string;
+  motExpiryDate?: string;
+  taxStatus?: string;
   error?: string;
 }
 
@@ -243,8 +248,18 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-4">
               <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following vehicle</p>
               <p className="text-sm text-gray-600">
-                {vehicleData.make} {vehicleData.model} • {vehicleData.fuelType} • {vehicleData.transmission} • {vehicleData.yearOfManufacture}
+                {vehicleData.make} • {vehicleData.fuelType} • {vehicleData.colour} • {vehicleData.yearOfManufacture}
+                {vehicleData.engineCapacity && (
+                  <span> • {vehicleData.engineCapacity}cc</span>
+                )}
               </p>
+              {(vehicleData.motStatus || vehicleData.taxStatus) && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {vehicleData.motStatus && `MOT: ${vehicleData.motStatus}`}
+                  {vehicleData.motStatus && vehicleData.taxStatus && ' • '}
+                  {vehicleData.taxStatus && `Tax: ${vehicleData.taxStatus}`}
+                </p>
+              )}
               {vehicleData.vehicleType && vehicleData.vehicleType !== 'standard' && (
                 <p className="text-sm text-blue-600 font-semibold mt-1">
                   Special Vehicle Type: {vehicleData.vehicleType}
