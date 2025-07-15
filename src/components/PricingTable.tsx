@@ -42,7 +42,7 @@ interface PricingTableProps {
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
-  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(0);
+  const [voluntaryExcess, setVoluntaryExcess] = useState<{[planId: string]: number}>({});
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
 
@@ -91,8 +91,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         basePrice = plan.monthly_price;
     }
 
-    // Apply voluntary excess discount
-    const excessDiscount = voluntaryExcess * 0.01; // 1% discount per £1 excess
+    // Apply voluntary excess discount for this specific plan
+    const planExcess = voluntaryExcess[plan.id] || 0;
+    const excessDiscount = planExcess * 0.01; // 1% discount per £1 excess
     return Math.max(basePrice * (1 - excessDiscount), basePrice * 0.7); // Min 30% of base price
   };
 
@@ -108,6 +109,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         ...prev[planId],
         [addon]: !prev[planId]?.[addon]
       }
+    }));
+  };
+
+  const toggleVoluntaryExcess = (planId: string, amount: number) => {
+    setVoluntaryExcess(prev => ({
+      ...prev,
+      [planId]: amount
     }));
   };
 
@@ -134,7 +142,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         basePrice,
         addOnPrice,
         totalPrice,
-        voluntaryExcess,
+        voluntaryExcess: voluntaryExcess[plan.id] || 0,
         selectedAddOns: selectedAddOns[plan.id] || {},
         vehicleData
       };
@@ -355,9 +363,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         <div className="grid grid-cols-3 gap-2">
                           <div className="flex flex-col gap-2">
                             <button
-                              onClick={() => setVoluntaryExcess(0)}
+                              onClick={() => toggleVoluntaryExcess(plan.id, 0)}
                               className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
-                                voluntaryExcess === 0
+                                (voluntaryExcess[plan.id] || 0) === 0
                                   ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
                                   : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
                               }`}
@@ -365,9 +373,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                               £0
                             </button>
                             <button
-                              onClick={() => setVoluntaryExcess(150)}
+                              onClick={() => toggleVoluntaryExcess(plan.id, 150)}
                               className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
-                                voluntaryExcess === 150
+                                (voluntaryExcess[plan.id] || 0) === 150
                                   ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
                                   : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
                               }`}
@@ -377,9 +385,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                           </div>
                           <div className="flex flex-col gap-2">
                             <button
-                              onClick={() => setVoluntaryExcess(50)}
+                              onClick={() => toggleVoluntaryExcess(plan.id, 50)}
                               className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
-                                voluntaryExcess === 50
+                                (voluntaryExcess[plan.id] || 0) === 50
                                   ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
                                   : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
                               }`}
@@ -387,9 +395,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                               £50
                             </button>
                             <button
-                              onClick={() => setVoluntaryExcess(200)}
+                              onClick={() => toggleVoluntaryExcess(plan.id, 200)}
                               className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
-                                voluntaryExcess === 200
+                                (voluntaryExcess[plan.id] || 0) === 200
                                   ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
                                   : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
                               }`}
@@ -399,9 +407,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                           </div>
                           <div className="flex justify-center">
                             <button
-                              onClick={() => setVoluntaryExcess(100)}
+                              onClick={() => toggleVoluntaryExcess(plan.id, 100)}
                               className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 w-full ${
-                                voluntaryExcess === 100
+                                (voluntaryExcess[plan.id] || 0) === 100
                                   ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
                                   : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
                               }`}
