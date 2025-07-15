@@ -19,8 +19,20 @@ const Auth = () => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        console.log("User already logged in, redirecting to dashboard");
-        navigate('/customer-dashboard', { replace: true });
+        console.log("User already logged in, checking role for redirect");
+        
+        // Check if user is admin
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+
+        if (roleData?.role === 'admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/customer-dashboard', { replace: true });
+        }
       }
     };
     
@@ -30,14 +42,28 @@ const Auth = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state change:", event, session?.user?.email);
       if (event === 'SIGNED_IN' && session) {
-        console.log("Sign in detected, navigating to dashboard...");
+        console.log("Sign in detected, checking user role...");
+        
+        // Check if user is admin
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+
         toast({
           title: "Success",
           description: "You have been signed in successfully!",
         });
         
-        // Use replace to prevent going back to login page
-        navigate('/customer-dashboard', { replace: true });
+        // Navigate based on role
+        if (roleData?.role === 'admin') {
+          console.log("Admin user detected, redirecting to admin dashboard");
+          navigate('/admin', { replace: true });
+        } else {
+          console.log("Regular user detected, redirecting to customer dashboard");
+          navigate('/customer-dashboard', { replace: true });
+        }
       }
     });
 
@@ -64,10 +90,21 @@ const Auth = () => {
       console.log("Sign in successful:", data.user?.email);
       console.log("Session:", data.session);
       
-      // Double check - if we have a session, navigate immediately
+      // Double check - if we have a session, navigate immediately based on role
       if (data.session) {
-        console.log("Direct navigation to dashboard after successful login");
-        navigate('/customer-dashboard', { replace: true });
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', data.session.user.id)
+          .single();
+
+        if (roleData?.role === 'admin') {
+          console.log("Direct navigation to admin dashboard after successful login");
+          navigate('/admin', { replace: true });
+        } else {
+          console.log("Direct navigation to customer dashboard after successful login");
+          navigate('/customer-dashboard', { replace: true });
+        }
       }
       
     } catch (error: any) {
