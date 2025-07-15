@@ -64,7 +64,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             <div className="space-y-6 mb-12">
               <button 
                 onClick={handleSkipClick}
-                className="w-full flex items-center justify-center gap-3 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
                 style={{ backgroundColor: '#224380' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#1a3460';
@@ -91,7 +91,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
               <button 
                 onClick={handleEmailQuoteClick}
-                className="w-full flex items-center justify-center gap-3 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
                 style={{ backgroundColor: '#eb4b00' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#d43f00';
@@ -101,16 +101,16 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 }}
               >
                 <Mail className="w-6 h-6" />
-                <span className="flex-1 text-center">Email me a detailed breakdown with pricing</span>
+                <span className="flex-1 text-center">View my Quote & Email it to me</span>
                 <span className="text-2xl">→</span>
               </button>
             </div>
 
-            <div className="flex justify-center">
+            <div className="w-full">
               <button 
                 type="button" 
                 onClick={onBack}
-                className="flex items-center justify-center gap-2 text-lg font-medium py-3 px-8 rounded-lg border-2 bg-white transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 text-xl font-semibold py-5 px-8 rounded-xl border-2 bg-white transition-all duration-200"
                 style={{ color: '#224380', borderColor: '#224380' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#f0f8ff';
