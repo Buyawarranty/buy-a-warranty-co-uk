@@ -527,12 +527,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                                              Open PDF in new tab
                                            </a>
                                          </div>
-                                         <iframe
-                                           src={pdfUrl}
+                                         <object
+                                           data={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                                           type="application/pdf"
                                            className="flex-1 w-full border border-gray-300 rounded"
                                            title={`${plan.name} Plan Coverage Details`}
-                                           onError={() => console.log('PDF iframe failed to load')}
-                                         />
+                                         >
+                                           <iframe
+                                             src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                                             className="flex-1 w-full border border-gray-300 rounded"
+                                             title={`${plan.name} Plan Coverage Details`}
+                                           />
+                                         </object>
                                        </div>
                                      ) : (
                                         <div className="flex items-center justify-center w-full h-full p-8">
