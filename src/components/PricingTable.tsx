@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, X, Info } from 'lucide-react';
-import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Check, ArrowLeft, Info } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-interface PricingData {
-  basic: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
-  gold: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
-  platinum: { monthly: number; yearly: number; twoYear: number; threeYear: number; };
+interface Plan {
+  id: string;
+  name: string;
+  monthly_price: number;
+  yearly_price: number | null;
+  two_yearly_price: number | null;
+  three_yearly_price: number | null;
+  coverage: string[];
+  add_ons: string[];
+  is_active: boolean;
 }
 
 interface PricingTableProps {
@@ -22,68 +29,76 @@ interface PricingTableProps {
     phone?: string;
     fullName?: string;
     address?: string;
+    make?: string;
+    model?: string;
+    fuelType?: string;
+    transmission?: string;
+    year?: string;
+    vehicleType?: string;
   };
   onBack: () => void;
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
-  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'twoYear' | 'threeYear'>('monthly');
-  const [contributionAmounts, setContributionAmounts] = useState<{[key: string]: number}>({
-    basic: 0,
-    gold: 0,
-    platinum: 0
-  });
-  const [selectedAddOns, setSelectedAddOns] = useState<{[key: string]: {[addon: string]: boolean}}>({
-    basic: {},
-    gold: {},
-    platinum: {}
-  });
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(0);
+  const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
 
-  const pricingData: Record<number, PricingData> = {
-    0: {
-      basic: { monthly: 31, yearly: 381, twoYear: 725, threeYear: 1050 },
-      gold: { monthly: 34, yearly: 409, twoYear: 777, threeYear: 1125 },
-      platinum: { monthly: 36, yearly: 437, twoYear: 831, threeYear: 1200 }
-    },
-    50: {
-      basic: { monthly: 29, yearly: 350, twoYear: 665, threeYear: 965 },
-      gold: { monthly: 31, yearly: 377, twoYear: 717, threeYear: 1035 },
-      platinum: { monthly: 32, yearly: 396, twoYear: 752, threeYear: 1088 }
-    },
-    100: {
-      basic: { monthly: 25, yearly: 308, twoYear: 586, threeYear: 846 },
-      gold: { monthly: 27, yearly: 336, twoYear: 638, threeYear: 921 },
-      platinum: { monthly: 29, yearly: 354, twoYear: 672, threeYear: 969 }
-    },
-    150: {
-      basic: { monthly: 23, yearly: 287, twoYear: 546, threeYear: 787 },
-      gold: { monthly: 26, yearly: 315, twoYear: 598, threeYear: 862 },
-      platinum: { monthly: 27, yearly: 333, twoYear: 632, threeYear: 910 }
-    },
-    200: {
-      basic: { monthly: 23, yearly: 287, twoYear: 546, threeYear: 787 },
-      gold: { monthly: 26, yearly: 315, twoYear: 598, threeYear: 862 },
-      platinum: { monthly: 27, yearly: 333, twoYear: 632, threeYear: 910 }
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  const fetchPlans = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('monthly_price');
+
+      if (error) throw error;
+
+      if (data) {
+        setPlans(data.map(plan => ({
+          ...plan,
+          coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
+          add_ons: Array.isArray(plan.add_ons) ? plan.add_ons.map(item => String(item)) : []
+        })));
+      }
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+      toast.error('Failed to load pricing plans');
     }
   };
 
-  const getPlanPricing = (planId: string) => {
-    const contributionAmount = contributionAmounts[planId];
-    return pricingData[contributionAmount];
+  // Calculate dynamic pricing based on voluntary excess
+  const calculatePlanPrice = (plan: Plan) => {
+    let basePrice = 0;
+    
+    switch (paymentType) {
+      case 'yearly':
+        basePrice = plan.yearly_price || plan.monthly_price * 12;
+        break;
+      case 'two_yearly':
+        basePrice = plan.two_yearly_price || plan.monthly_price * 24;
+        break;
+      case 'three_yearly':
+        basePrice = plan.three_yearly_price || plan.monthly_price * 36;
+        break;
+      default:
+        basePrice = plan.monthly_price;
+    }
+
+    // Apply voluntary excess discount
+    const excessDiscount = voluntaryExcess * 0.01; // 1% discount per £1 excess
+    return Math.max(basePrice * (1 - excessDiscount), basePrice * 0.7); // Min 30% of base price
   };
 
   const calculateAddOnPrice = (planId: string) => {
-    const selectedAddOnCount = Object.values(selectedAddOns[planId]).filter(Boolean).length;
-    if (paymentType === 'monthly') {
-      return 2 * selectedAddOnCount;
-    } else if (paymentType === 'yearly') {
-      return 24 * selectedAddOnCount;
-    } else if (paymentType === 'twoYear') {
-      return 48 * selectedAddOnCount;
-    } else {
-      return 72 * selectedAddOnCount;
-    }
+    const selectedAddOnCount = Object.values(selectedAddOns[planId] || {}).filter(Boolean).length;
+    return selectedAddOnCount * 2; // £2 per add-on per year
   };
 
   const toggleAddOn = (planId: string, addon: string) => {
@@ -91,255 +106,79 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       ...prev,
       [planId]: {
         ...prev[planId],
-        [addon]: !prev[planId][addon]
+        [addon]: !prev[planId]?.[addon]
       }
     }));
   };
 
-  const setContributionAmount = (planId: string, amount: number) => {
-    setContributionAmounts(prev => ({
-      ...prev,
-      [planId]: amount
-    }));
+  const getDiscountPercentage = () => {
+    switch (paymentType) {
+      case 'two_yearly': return 10;
+      case 'three_yearly': return 12;
+      default: return 0;
+    }
   };
 
-  const handleSelectPlan = async (planId: string) => {
-    setLoading(prev => ({ ...prev, [planId]: true }));
+  const handleSelectPlan = async (plan: Plan) => {
+    setLoading(prev => ({ ...prev, [plan.id]: true }));
     
     try {
-      console.log('=== CHECKOUT PROCESS STARTED ===');
-      console.log('Plan ID:', planId);
-      console.log('Payment Type:', paymentType);
-      console.log('Vehicle Data:', vehicleData);
-      
-      // For monthly payments, try Bumper first, otherwise use Stripe
+      const basePrice = calculatePlanPrice(plan);
+      const addOnPrice = calculateAddOnPrice(plan.id);
+      const totalPrice = basePrice + addOnPrice;
+
+      const checkoutData = {
+        planId: plan.id,
+        planName: plan.name,
+        paymentType,
+        basePrice,
+        addOnPrice,
+        totalPrice,
+        voluntaryExcess,
+        selectedAddOns: selectedAddOns[plan.id] || {},
+        vehicleData
+      };
+
+      // For monthly payments, try Bumper first
       if (paymentType === 'monthly') {
-        console.log('=== ATTEMPTING BUMPER CHECKOUT FOR MONTHLY ===');
-        
         const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
-          body: {
-            planId,
-            vehicleData: vehicleData
-          }
+          body: checkoutData
         });
 
-        console.log('=== BUMPER RESPONSE ===');
-        console.log('Data:', bumperData);
-        console.log('Error:', bumperError);
-
-        if (bumperError) {
-          console.error('Bumper API error, falling back to Stripe:', bumperError);
-          toast.error('Payment method unavailable, redirecting to alternative payment');
-          
-          // Fallback to Stripe for monthly payments
+        if (bumperError || bumperData?.fallbackToStripe) {
+          // Fallback to Stripe
           const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
-            body: {
-              planId,
-              paymentType,
-              vehicleData: vehicleData
-            }
+            body: checkoutData
           });
 
-          if (stripeError) {
-            console.error('Stripe fallback error:', stripeError);
-            toast.error('Failed to create payment session: ' + stripeError.message);
-            return;
-          }
-
-          if (stripeData?.url) {
-            console.log('=== REDIRECTING TO STRIPE FALLBACK ===');
-            setTimeout(() => {
-              window.location.href = stripeData.url;
-            }, 100);
-          }
-          return;
-        }
-
-        // Check if Bumper rejected and we need to fallback
-        if (bumperData?.fallbackToStripe) {
-          console.log('=== BUMPER REJECTED, FALLING BACK TO STRIPE ===');
-          toast.info('Redirecting to alternative payment method...');
-          
-          const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
-            body: {
-              planId,
-              paymentType,
-              vehicleData: vehicleData
-            }
-          });
-
-          if (stripeError) {
-            console.error('Stripe fallback error:', stripeError);
-            toast.error('Failed to create payment session: ' + stripeError.message);
-            return;
-          }
-
-          if (stripeData?.url) {
-            console.log('=== REDIRECTING TO STRIPE FALLBACK ===');
-            setTimeout(() => {
-              window.location.href = stripeData.url;
-            }, 100);
-          }
-          return;
-        }
-
-        // Bumper success
-        if (bumperData?.url) {
-          console.log('=== REDIRECTING TO BUMPER ===');
-          console.log('Bumper URL:', bumperData.url);
-          
-          setTimeout(() => {
-            window.location.href = bumperData.url;
-          }, 100);
-        } else {
-          console.error('No checkout URL received from Bumper:', bumperData);
-          toast.error('No payment URL received');
+          if (stripeError) throw stripeError;
+          if (stripeData?.url) window.location.href = stripeData.url;
+        } else if (bumperData?.url) {
+          window.location.href = bumperData.url;
         }
       } else {
-        // For yearly, 2-year, and 3-year payments, use Stripe directly
-        console.log('=== USING STRIPE FOR NON-MONTHLY PAYMENT ===');
-        
+        // Use Stripe for non-monthly payments
         const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: {
-            planId,
-            paymentType,
-            vehicleData: vehicleData
-          }
+          body: checkoutData
         });
 
-        console.log('=== STRIPE RESPONSE ===');
-        console.log('Data:', data);
-        console.log('Error:', error);
-
-        if (error) {
-          console.error('Stripe checkout error:', error);
-          toast.error('Failed to create checkout session: ' + error.message);
-          return;
-        }
-
-        if (data?.url) {
-          console.log('=== REDIRECTING TO STRIPE ===');
-          console.log('Checkout URL:', data.url);
-          
-          setTimeout(() => {
-            window.location.href = data.url;
-          }, 100);
-        } else {
-          console.error('No checkout URL received:', data);
-          toast.error('No checkout URL received from payment processor');
-        }
+        if (error) throw error;
+        if (data?.url) window.location.href = data.url;
       }
     } catch (error) {
-      console.error('Error creating checkout session:', error);
-      toast.error('Failed to start checkout process');
+      console.error('Error creating checkout:', error);
+      toast.error('Failed to create checkout session');
     } finally {
-      setLoading(prev => ({ ...prev, [planId]: false }));
+      setLoading(prev => ({ ...prev, [plan.id]: false }));
     }
   };
-
-  const plans = [
-    {
-      id: 'basic',
-      name: 'Basic',
-      color: '#0e3e87',
-      features: [
-        'Mechanical Breakdown Protection',
-        'Labour up to £35 p/hr',
-        '10 Claims per year',
-        'Engine',
-        'Manual Gearbox',
-        'Automatic Transmission',
-        'Torque Convertor',
-        'Overdrive',
-        'Differential',
-        'Electrics',
-        'Casings',
-        'Recovery'
-      ],
-      addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
-    },
-    {
-      id: 'gold',
-      name: 'Gold',
-      color: '#f59e0b',
-      popular: true,
-      features: [
-        'Mechanical & Electrical Breakdown Warranty',
-        'Labour up to £75 p/hr',
-        'Halfords MOT test',
-        'Unlimited Claims',
-        'Engine',
-        'Manual Gearbox',
-        'Automatic Transmission',
-        'Overdrive',
-        'Clutch',
-        'Differential',
-        'Torque Convertor',
-        'Cooling System',
-        'Fuel System',
-        'Electricals',
-        'Braking System',
-        'Propshaft',
-        'Casings',
-        'Vehicle Hire',
-        'Recovery',
-        'European Cover'
-      ],
-      addOns: ['Power Hood', 'ECU', 'Air Conditioning', 'Turbo']
-    },
-    {
-      id: 'platinum',
-      name: 'Platinum',
-      color: '#dc4f20',
-      features: [
-        'Mechanical & Electrical Breakdown',
-        'Labour up to £100 p/hr',
-        'Halfords MOT test',
-        'Unlimited Claims',
-        'Engine',
-        'Turbo Unit',
-        'Manual Gearbox',
-        'Automatic Transmission',
-        'Clutch',
-        'Differential',
-        'Drive Shafts',
-        'Brakes',
-        'Steering',
-        'Suspension',
-        'Bearings',
-        'Cooling System',
-        'Ventilation',
-        'ECU',
-        'Electrics',
-        'Fuel System',
-        'Air Conditioning',
-        'Locks',
-        'Seals',
-        'Casings',
-        'Vehicle Hire',
-        'Vehicle Recovery',
-        'European Cover'
-      ],
-      addOns: ['Power Hood']
-    }
-  ];
 
   const getPaymentLabel = () => {
     switch (paymentType) {
-      case 'monthly': return 'per month';
       case 'yearly': return 'per year';
-      case 'twoYear': return 'for 2 years';
-      case 'threeYear': return 'for 3 years';
+      case 'two_yearly': return 'for 2 years';
+      case 'three_yearly': return 'for 3 years';
       default: return 'per month';
-    }
-  };
-
-  const getSavingsPercentage = () => {
-    switch (paymentType) {
-      case 'yearly': return '10%';
-      case 'twoYear': return '15%';
-      case 'threeYear': return '20%';
-      default: return null;
     }
   };
 
@@ -358,13 +197,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           </Button>
         </div>
 
-        {/* Header */}
+        {/* Header with Vehicle Details */}
         <div className="text-center mb-6 sm:mb-10 px-4 sm:px-8">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             Your Warranty Quote
           </h1>
           
-          {/* Vehicle Registration Plate Display */}
+          {/* Vehicle Registration Display */}
           <div className="flex justify-center mb-4 sm:mb-6">
             <div className="w-full max-w-[280px] sm:max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-lg sm:text-[28px] px-4 sm:px-[25px] py-3 sm:py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
               <img 
@@ -373,18 +212,31 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 className="w-[25px] h-[18px] sm:w-[35px] sm:h-[25px] mr-3 sm:mr-[15px] object-cover rounded-[2px]"
               />
               <div className="flex-1 text-center font-bold font-sans tracking-normal">
-                {vehicleData.regNumber || 'H12 FXL'}
+                {vehicleData.regNumber || 'REG NUM'}
               </div>
             </div>
           </div>
+
+          {/* Vehicle Details */}
+          {vehicleData.make && vehicleData.model && (
+            <div className="mb-4 sm:mb-6">
+              <p className="text-lg sm:text-xl font-semibold text-gray-800">
+                {vehicleData.make} {vehicleData.model}
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 mt-2 text-sm sm:text-base text-gray-600">
+                {vehicleData.fuelType && <span>Fuel: {vehicleData.fuelType}</span>}
+                {vehicleData.year && <span>Year: {vehicleData.year}</span>}
+              </div>
+            </div>
+          )}
           
           <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
             Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
           </p>
         </div>
 
-        {/* Payment Period Toggle Group - Mobile Optimized */}
-        <div className="flex justify-center mb-8 sm:mb-12 px-4 sm:px-8">
+        {/* Payment Period Toggle */}
+        <div className="flex justify-center mb-6 sm:mb-8 px-4 sm:px-8">
           <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-4xl">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
               <button
@@ -406,17 +258,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  Annual
+                  1 Year
                 </button>
-                <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
-                  10% OFF
-                </div>
               </div>
               <div className="relative">
                 <button
-                  onClick={() => setPaymentType('twoYear')}
+                  onClick={() => setPaymentType('two_yearly')}
                   className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                    paymentType === 'twoYear' 
+                    paymentType === 'two_yearly' 
                       ? 'bg-[#1a365d] text-white shadow-md' 
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
@@ -424,14 +273,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   2 Years
                 </button>
                 <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
-                  15% OFF
+                  10% OFF
                 </div>
               </div>
               <div className="relative">
                 <button
-                  onClick={() => setPaymentType('threeYear')}
+                  onClick={() => setPaymentType('three_yearly')}
                   className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                    paymentType === 'threeYear' 
+                    paymentType === 'three_yearly' 
                       ? 'bg-[#1a365d] text-white shadow-md' 
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
@@ -439,123 +288,135 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   3 Years
                 </button>
                 <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
-                  20% OFF
+                  12% OFF
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Pricing Cards - Mobile Stacked */}
+        {/* Voluntary Excess Selection */}
+        <div className="flex justify-center mb-8 px-4 sm:px-8">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-200 w-full max-w-4xl">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 text-center">Voluntary Excess</h3>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
+              {[0, 50, 100, 150, 200].map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => setVoluntaryExcess(amount)}
+                  className={`p-3 sm:p-4 rounded-lg border text-sm sm:text-base font-semibold transition-all duration-200 ${
+                    voluntaryExcess === amount
+                      ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                  }`}
+                >
+                  £{amount}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Pricing Cards */}
         <div className="w-full px-4 sm:px-8 pb-8 sm:pb-16">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8 relative">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8">
               {plans.map((plan) => {
-                const pricing = getPlanPricing(plan.id);
-                const planPricing = pricing[plan.id as keyof PricingData];
-                const basePrice = planPricing[paymentType];
+                const basePrice = calculatePlanPrice(plan);
                 const addOnPrice = calculateAddOnPrice(plan.id);
                 const totalPrice = basePrice + addOnPrice;
                 const isLoading = loading[plan.id];
+                const isPopular = plan.name === 'Gold';
                 
                 return (
-                  <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 w-full ${plan.popular ? 'border-orange-400 shadow-xl lg:scale-105' : 'border-gray-200'}`}>
-                    {plan.popular && (
+                  <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative border-2 w-full ${isPopular ? 'border-orange-400 shadow-xl lg:scale-105' : 'border-gray-200'}`}>
+                    {isPopular && (
                       <div className="absolute top-4 left-4 z-10">
-                        <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                        <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
                           MOST POPULAR
-                        </div>
+                        </Badge>
                       </div>
                     )}
                     
                     {/* Plan Header */}
                     <div className="p-6 sm:p-8 text-center bg-gray-50 border-b">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: plan.color }}>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">
                         {plan.name}
                       </h3>
                       <div className="mb-2">
                         <span className="text-sm text-gray-600">£</span>
-                        <span className="text-3xl sm:text-5xl font-bold text-gray-900">{totalPrice}</span>
+                        <span className="text-3xl sm:text-5xl font-bold text-gray-900">
+                          {Math.round(totalPrice)}
+                        </span>
                         <div className="text-gray-600 text-base sm:text-lg">{getPaymentLabel()}</div>
                       </div>
-                      {getSavingsPercentage() && (
-                        <div className="text-green-600 font-semibold text-sm">
-                          {getSavingsPercentage()} Saving
+                      {paymentType !== 'monthly' && (
+                        <div className="text-sm text-gray-500">
+                          12 simple interest-free payments
                         </div>
                       )}
-                      <Button 
-                        className="w-full mt-6 text-white font-bold py-3 sm:py-4 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
-                        style={{ backgroundColor: plan.color }}
-                        onClick={() => handleSelectPlan(plan.id)}
+                    </div>
+
+                    {/* Plan Content */}
+                    <div className="p-6 sm:p-8 space-y-6">
+                      {/* What's Covered */}
+                      <div>
+                        <h4 className="font-bold text-lg mb-4">What's Covered:</h4>
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {plan.coverage.map((feature, index) => (
+                            <div key={index} className="flex items-start gap-3">
+                              <Check className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                              <span className="text-sm text-gray-700">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Add-ons */}
+                      {plan.add_ons.length > 0 && (
+                        <div>
+                          <h4 className="font-bold text-lg mb-4">
+                            Optional Add-ons
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 ml-2 inline" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>£2 per item per year</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </h4>
+                          <div className="space-y-3">
+                            {plan.add_ons.map((addon, index) => (
+                              <div key={index} className="flex items-center space-x-3">
+                                <Checkbox
+                                  id={`${plan.id}-${addon}`}
+                                  checked={selectedAddOns[plan.id]?.[addon] || false}
+                                  onCheckedChange={() => toggleAddOn(plan.id, addon)}
+                                />
+                                <label
+                                  htmlFor={`${plan.id}-${addon}`}
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                  {addon}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <Button
+                        onClick={() => handleSelectPlan(plan)}
                         disabled={isLoading}
+                        className={`w-full py-4 text-lg font-bold rounded-xl ${
+                          plan.name === 'Basic' ? 'bg-[#0e3e87] hover:bg-[#0d3a7a]' :
+                          plan.name === 'Gold' ? 'bg-[#f59e0b] hover:bg-[#e4930a]' :
+                          'bg-[#dc4f20] hover:bg-[#c8451d]'
+                        } text-white transition-colors duration-200`}
                       >
                         {isLoading ? 'Processing...' : `Select ${plan.name}`}
                       </Button>
-                      <p className="text-xs text-gray-500 mt-2">
-                        Login details will be emailed after purchase
-                      </p>
-                    </div>
-
-                    {/* Features Section */}
-                    <div className="p-4 sm:p-6">
-                      <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">What's Covered:</h4>
-                      <div className="space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
-                        {plan.features.map((feature, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <Check className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-                            </div>
-                            <span className="text-xs sm:text-sm text-gray-700">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Voluntary Excess Section */}
-                      <div className="mt-6 pt-4 border-t">
-                        <div className="flex items-center gap-2 mb-4">
-                          <h4 className="font-bold text-gray-800 text-sm sm:text-base">Voluntary Excess</h4>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-gray-600" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-sm">This is the amount you agree to pay toward a repair. A higher excess usually means a lower monthly cost.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2">
-                          {[0, 50, 100, 150, 200].map((amount) => (
-                            <Button
-                              key={amount}
-                              variant={contributionAmounts[plan.id] === amount ? "default" : "outline"}
-                              onClick={() => setContributionAmount(plan.id, amount)}
-                              className={`px-2 sm:px-3 py-2 text-xs sm:text-sm font-bold ${
-                                contributionAmounts[plan.id] === amount 
-                                  ? 'bg-[#224380] hover:bg-[#1a3460]' 
-                                  : 'border-[#224380] text-[#224380] hover:bg-[#f0f8ff]'
-                              }`}
-                            >
-                              £{amount}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Add-ons Section */}
-                      <div className="mt-6 pt-4 border-t">
-                        <h4 className="font-semibold text-gray-700 mb-3 text-xs">Additional Components (Optional Add-ons - £2.00 per item per month)</h4>
-                        <div className="space-y-3">
-                          {plan.addOns.map((addon, index) => (
-                            <div key={index} className="flex items-center gap-3">
-                              <Checkbox
-                                checked={selectedAddOns[plan.id][addon] || false}
-                                onCheckedChange={() => toggleAddOn(plan.id, addon)}
-                              />
-                              <span className="text-xs sm:text-sm text-gray-700">{addon}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
                     </div>
                   </div>
                 );

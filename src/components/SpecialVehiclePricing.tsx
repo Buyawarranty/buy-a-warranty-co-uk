@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, ArrowLeft } from 'lucide-react';
+import { Check, ArrowLeft, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 
 interface SpecialPlan {
@@ -39,51 +42,49 @@ interface SpecialVehiclePricingProps {
 
 const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleData, onBack }) => {
   const [plan, setPlan] = useState<SpecialPlan | null>(null);
-  const [selectedPaymentType, setSelectedPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
+  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchSpecialPlan = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('special_vehicle_plans')
-          .select('*')
-          .eq('vehicle_type', vehicleData.vehicleType)
-          .eq('is_active', true)
-          .single();
+    fetchSpecialPlan();
+  }, [vehicleData.vehicleType]);
 
-        if (error) throw error;
+  const fetchSpecialPlan = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('special_vehicle_plans')
+        .select('*')
+        .eq('vehicle_type', vehicleData.vehicleType)
+        .eq('is_active', true)
+        .single();
 
-        if (data) {
-          // Convert JSON coverage to string array
-          const coverage = Array.isArray(data.coverage) ? data.coverage : [];
-          setPlan({
-            ...data,
-            coverage: coverage as string[]
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching special vehicle plan:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load vehicle plan. Please try again.",
-          variant: "destructive",
+      if (error) throw error;
+
+      if (data) {
+        setPlan({
+          ...data,
+          coverage: Array.isArray(data.coverage) ? data.coverage.map(item => String(item)) : []
         });
-      } finally {
-        setLoading(false);
       }
-    };
-
-    if (vehicleData.vehicleType) {
-      fetchSpecialPlan();
+    } catch (error) {
+      console.error('Error fetching special vehicle plan:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load vehicle plan. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  }, [vehicleData.vehicleType, toast]);
+  };
 
-  const getPrice = () => {
+  const getBasePrice = () => {
     if (!plan) return 0;
     
-    switch (selectedPaymentType) {
+    switch (paymentType) {
       case 'yearly':
         return plan.yearly_price || plan.monthly_price * 12;
       case 'two_yearly':
@@ -95,23 +96,57 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     }
   };
 
+  const calculatePlanPrice = () => {
+    const basePrice = getBasePrice();
+    // Apply voluntary excess discount
+    const excessDiscount = voluntaryExcess * 0.01; // 1% discount per £1 excess
+    return Math.max(basePrice * (1 - excessDiscount), basePrice * 0.7); // Min 30% of base price
+  };
+
   const handlePurchase = async () => {
+    if (!plan) return;
+    
+    setCheckoutLoading(true);
+    
     try {
-      const response = await supabase.functions.invoke('create-checkout', {
-        body: {
-          planType: plan?.name || 'Special Vehicle Plan',
-          paymentType: selectedPaymentType,
-          price: getPrice(),
-          vehicleData: vehicleData,
-          isSpecialVehicle: true,
-          vehicleType: vehicleData.vehicleType
+      const totalPrice = calculatePlanPrice();
+
+      const checkoutData = {
+        planId: plan.id,
+        planName: plan.name,
+        paymentType,
+        totalPrice,
+        voluntaryExcess,
+        vehicleData,
+        isSpecialVehicle: true,
+        vehicleType: vehicleData.vehicleType
+      };
+
+      // For monthly payments, try Bumper first
+      if (paymentType === 'monthly') {
+        const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
+          body: checkoutData
+        });
+
+        if (bumperError || bumperData?.fallbackToStripe) {
+          // Fallback to Stripe
+          const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
+            body: checkoutData
+          });
+
+          if (stripeError) throw stripeError;
+          if (stripeData?.url) window.location.href = stripeData.url;
+        } else if (bumperData?.url) {
+          window.location.href = bumperData.url;
         }
-      });
+      } else {
+        // Use Stripe for non-monthly payments
+        const { data, error } = await supabase.functions.invoke('create-checkout', {
+          body: checkoutData
+        });
 
-      if (response.error) throw response.error;
-
-      if (response.data?.url) {
-        window.location.href = response.data.url;
+        if (error) throw error;
+        if (data?.url) window.location.href = data.url;
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
@@ -120,12 +155,32 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         description: "Failed to create checkout session. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  const getPaymentLabel = () => {
+    switch (paymentType) {
+      case 'yearly': return 'per year';
+      case 'two_yearly': return 'for 2 years';
+      case 'three_yearly': return 'for 3 years';
+      default: return 'per month';
+    }
+  };
+
+  const getVehicleTypeTitle = () => {
+    switch (vehicleData.vehicleType) {
+      case 'EV': return 'Electric Vehicle';
+      case 'PHEV': return 'PHEV / Hybrid';
+      case 'MOTORBIKE': return 'Motorbikes';
+      default: return vehicleData.vehicleType;
     }
   };
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="bg-[#e8f4fb] min-h-screen flex items-center justify-center">
         <div className="text-center">Loading special vehicle plan...</div>
       </div>
     );
@@ -133,10 +188,10 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
 
   if (!plan) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="text-center">
-          <p>No special plan found for this vehicle type.</p>
-          <Button onClick={onBack} className="mt-4">
+      <div className="bg-[#e8f4fb] min-h-screen flex items-center justify-center">
+        <div className="max-w-md mx-auto px-4 text-center">
+          <p className="mb-4">No special plan found for this vehicle type.</p>
+          <Button onClick={onBack}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Go Back
           </Button>
@@ -146,93 +201,203 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   }
 
   return (
-    <div className="bg-[#e8f4fb] min-h-screen py-4 sm:py-8 overflow-x-hidden">
-      <div className="max-w-4xl mx-auto px-4">
-        <Button 
-          onClick={onBack} 
-          variant="ghost" 
-          className="mb-4 sm:mb-6 text-[#224380] hover:text-[#1a3460]"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to vehicle details
-        </Button>
+    <TooltipProvider>
+      <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
+        {/* Back Button */}
+        <div className="mb-4 sm:mb-8 px-4 sm:px-8 pt-4 sm:pt-8">
+          <Button 
+            variant="outline" 
+            onClick={onBack}
+            className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3"
+          >
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            Back to Contact Details
+          </Button>
+        </div>
 
-        <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-4xl font-bold text-[#224380] mb-4">
-            {plan.name}
+        {/* Header with Vehicle Type Image */}
+        <div className="text-center mb-6 sm:mb-10 px-4 sm:px-8">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+            {getVehicleTypeTitle()}
           </h1>
-          <p className="text-base sm:text-lg text-gray-600">
-            Specialized coverage for your {vehicleData.vehicleType} vehicle
+          
+          {/* Vehicle Registration Display */}
+          <div className="flex justify-center mb-4 sm:mb-6">
+            <div className="w-full max-w-[280px] sm:max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-lg sm:text-[28px] px-4 sm:px-[25px] py-3 sm:py-[18px] rounded-[6px] shadow-sm leading-tight border-2 border-black">
+              <img 
+                src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
+                alt="GB Flag" 
+                className="w-[25px] h-[18px] sm:w-[35px] sm:h-[25px] mr-3 sm:mr-[15px] object-cover rounded-[2px]"
+              />
+              <div className="flex-1 text-center font-bold font-sans tracking-normal">
+                {vehicleData.regNumber}
+              </div>
+            </div>
+          </div>
+
+          {/* Vehicle Details */}
+          {vehicleData.make && vehicleData.model && (
+            <div className="mb-4 sm:mb-6">
+              <p className="text-lg sm:text-xl font-semibold text-gray-800">
+                {vehicleData.make} {vehicleData.model}
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 mt-2 text-sm sm:text-base text-gray-600">
+                {vehicleData.fuelType && <span>Fuel: {vehicleData.fuelType}</span>}
+                {vehicleData.year && <span>Year: {vehicleData.year}</span>}
+              </div>
+            </div>
+          )}
+          
+          <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
+            Mileage: {parseInt(vehicleData.mileage).toLocaleString()} miles
           </p>
         </div>
 
-        <Card className="w-full max-w-2xl mx-auto">
-          <CardHeader className="text-center bg-[#224380] text-white">
-            <CardTitle className="text-xl sm:text-2xl">{plan.name}</CardTitle>
-            <div className="text-2xl sm:text-3xl font-bold">
-              £{getPrice()}
-              <span className="text-base sm:text-lg font-normal">
-                /{selectedPaymentType === 'monthly' ? 'month' : 
-                  selectedPaymentType === 'yearly' ? 'year' : 
-                  selectedPaymentType === 'two_yearly' ? '2 years' : '3 years'}
-              </span>
-            </div>
-          </CardHeader>
-          
-          <CardContent className="p-4 sm:p-6">
-            {/* Payment Type Selection */}
-            <div className="mb-6">
-              <h3 className="font-semibold mb-3 text-sm sm:text-base">Choose payment period:</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-                {[
-                  { key: 'monthly' as const, label: 'Monthly', price: plan.monthly_price },
-                  { key: 'yearly' as const, label: 'Yearly', price: plan.yearly_price },
-                  { key: 'two_yearly' as const, label: '2 Years', price: plan.two_yearly_price },
-                  { key: 'three_yearly' as const, label: '3 Years', price: plan.three_yearly_price }
-                ].map(option => (
-                  <button
-                    key={option.key}
-                    onClick={() => setSelectedPaymentType(option.key)}
-                    className={`p-2 sm:p-3 rounded-md border text-xs sm:text-sm font-medium transition-colors ${
-                      selectedPaymentType === option.key 
-                        ? 'bg-[#224380] text-white border-[#224380]' 
-                        : 'bg-white text-gray-700 border-gray-300 hover:border-[#224380]'
-                    }`}
-                    disabled={!option.price}
-                  >
-                    {option.label}
-                    {option.price && (
-                      <div className="text-xs mt-1">£{option.price}</div>
-                    )}
-                  </button>
-                ))}
+        {/* Payment Period Toggle */}
+        <div className="flex justify-center mb-6 sm:mb-8 px-4 sm:px-8">
+          <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-4xl">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
+              <button
+                onClick={() => setPaymentType('monthly')}
+                className={`px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
+                  paymentType === 'monthly' 
+                    ? 'bg-[#1a365d] text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Monthly
+              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setPaymentType('yearly')}
+                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
+                    paymentType === 'yearly' 
+                      ? 'bg-[#1a365d] text-white shadow-md' 
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  1 Year
+                </button>
+              </div>
+              <div className="relative">
+                <button
+                  onClick={() => setPaymentType('two_yearly')}
+                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
+                    paymentType === 'two_yearly' 
+                      ? 'bg-[#1a365d] text-white shadow-md' 
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  2 Years
+                </button>
+                <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
+                  10% OFF
+                </div>
+              </div>
+              <div className="relative">
+                <button
+                  onClick={() => setPaymentType('three_yearly')}
+                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
+                    paymentType === 'three_yearly' 
+                      ? 'bg-[#1a365d] text-white shadow-md' 
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  3 Years
+                </button>
+                <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
+                  12% OFF
+                </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Coverage List */}
-            <div className="space-y-3">
-              <h3 className="font-semibold text-base sm:text-lg mb-4 border-b pb-2">What's covered:</h3>
-              <div className="max-h-48 sm:max-h-64 overflow-y-auto">
-                {plan.coverage.map((item, index) => (
-                  <div key={index} className="flex items-start gap-3 mb-3">
-                    <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-xs sm:text-sm text-gray-700">{item}</span>
+        {/* Voluntary Excess Selection */}
+        <div className="flex justify-center mb-8 px-4 sm:px-8">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-200 w-full max-w-4xl">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 text-center">Voluntary Excess</h3>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
+              {[0, 50, 100, 150, 200].map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => setVoluntaryExcess(amount)}
+                  className={`p-3 sm:p-4 rounded-lg border text-sm sm:text-base font-semibold transition-all duration-200 ${
+                    voluntaryExcess === amount
+                      ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                  }`}
+                >
+                  £{amount}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Single Plan Card */}
+        <div className="w-full px-4 sm:px-8 pb-8 sm:pb-16">
+          <div className="max-w-2xl mx-auto">
+            <Card className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-orange-400 shadow-xl">
+              <div className="absolute top-4 left-4 z-10">
+                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
+                  MOST POPULAR
+                </Badge>
+              </div>
+              
+              {/* Plan Header */}
+              <CardHeader className="p-6 sm:p-8 text-center bg-gray-50 border-b">
+                <CardTitle className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">
+                  {plan.name}
+                </CardTitle>
+                <div className="mb-2">
+                  <span className="text-sm text-gray-600">£</span>
+                  <span className="text-3xl sm:text-5xl font-bold text-gray-900">
+                    {Math.round(calculatePlanPrice())}
+                  </span>
+                  <div className="text-gray-600 text-base sm:text-lg">{getPaymentLabel()}</div>
+                </div>
+                {paymentType !== 'monthly' && (
+                  <div className="text-sm text-gray-500">
+                    12 simple interest-free payments
                   </div>
-                ))}
-              </div>
-            </div>
+                )}
+              </CardHeader>
 
-            <Button 
-              onClick={handlePurchase}
-              className="w-full mt-6 sm:mt-8 bg-[#eb4b00] hover:bg-[#d43f00] text-white font-bold py-3 sm:py-4 text-base sm:text-lg"
-              size="lg"
-            >
-              Get My {vehicleData.vehicleType} Warranty - £{getPrice()}
-            </Button>
-          </CardContent>
-        </Card>
+              {/* Plan Content */}
+              <CardContent className="p-6 sm:p-8 space-y-6">
+                {/* What's Covered */}
+                <div>
+                  <h4 className="font-bold text-lg mb-4">What's Covered:</h4>
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {plan.coverage.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <Check className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                        <span className="text-sm text-gray-700">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handlePurchase}
+                  disabled={checkoutLoading}
+                  className="w-full py-4 text-lg font-bold rounded-xl bg-[#f59e0b] hover:bg-[#e4930a] text-white transition-colors duration-200"
+                >
+                  {checkoutLoading ? 'Processing...' : `Select ${plan.name} - £${Math.round(calculatePlanPrice())}`}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Additional Information */}
+          <div className="max-w-2xl mx-auto mt-8 text-center text-sm text-gray-600">
+            <p className="mb-2">From £26 per month</p>
+            <p>{getVehicleTypeTitle()} Extended Warranty</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
