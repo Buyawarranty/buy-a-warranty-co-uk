@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Check, ArrowLeft, Info } from 'lucide-react';
+import { Check, ArrowLeft, Info, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -213,11 +214,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           
           {/* Vehicle Registration Display */}
           <div className="flex justify-center mb-4">
-            <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-sm sm:text-lg px-3 sm:px-4 py-2 sm:py-3 rounded-[6px] shadow-sm leading-tight border-2 border-black">
+            <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-lg sm:text-2xl md:text-3xl px-4 sm:px-6 py-3 sm:py-4 rounded-[6px] shadow-sm leading-tight border-2 border-black">
               <img 
                 src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
                 alt="GB Flag" 
-                className="w-[20px] h-[14px] sm:w-[25px] sm:h-[18px] mr-2 sm:mr-3 object-cover rounded-[2px]"
+                className="w-[25px] h-[18px] sm:w-[35px] sm:h-[25px] mr-3 sm:mr-4 object-cover rounded-[2px]"
               />
               <div className="font-bold font-sans tracking-normal">
                 {vehicleData.regNumber || 'REG NUM'}
@@ -454,21 +455,29 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         </div>
                       )}
 
-                      {/* PDF Coverage Details Link */}
+                      {/* PDF Coverage Details Dialog */}
                       <div className="mt-6 mb-6">
-                        <a
-                          href={`/lovable-uploads/${plan.name.toLowerCase()}-plan-coverage.pdf`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block w-full text-center bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-3 px-4 transition-colors duration-200"
-                        >
-                          <div className="font-semibold text-gray-900 text-base">
-                            View Full Coverage Details
-                          </div>
-                          <div className="text-sm text-gray-600 mt-1">
-                            Clear, simple breakdown — before you commit
-                          </div>
-                        </a>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <button className="block w-full text-center bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-3 px-4 transition-colors duration-200">
+                              <div className="font-semibold text-gray-900 text-base">
+                                View Full Coverage Details
+                              </div>
+                              <div className="text-sm text-gray-600 mt-1">
+                                Clear, simple breakdown — before you commit
+                              </div>
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-4xl w-[95vw] h-[90vh] p-0">
+                            <div className="relative w-full h-full">
+                              <iframe
+                                src={`/lovable-uploads/${plan.name.toLowerCase()}-plan-coverage.pdf`}
+                                className="w-full h-full rounded-lg"
+                                title={`${plan.name} Plan Coverage Details`}
+                              />
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
 
                       <Button
