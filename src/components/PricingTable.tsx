@@ -232,6 +232,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   };
 
   return (
+    <TooltipProvider>
     <div className="bg-[#e8f4fb] w-full min-h-screen">
       {/* Back Button */}
       <div className="mb-8 px-8 pt-8">
@@ -450,16 +451,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 <div className="px-6 mb-6">
                   <div className="flex items-center gap-2 mb-4">
                     <h4 className="font-bold text-lg text-gray-900">Optional Add-ons</h4>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="h-4 w-4 text-gray-500" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>£2 per add-on per month</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-4 w-4 text-gray-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>£2 per add-on per month</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                   <div className="space-y-3">
                     {plan.add_ons.length > 0 ? (
@@ -541,6 +540,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
     </div>
+    </TooltipProvider>
   );
 };
 
