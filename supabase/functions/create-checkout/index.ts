@@ -145,7 +145,7 @@ serve(async (req) => {
         }
       },
       metadata: {
-        plan_type: planId,
+        plan_type: planType,
         payment_type: paymentType,
         user_id: user?.id || 'guest',
         vehicle_reg: vehicleData?.regNumber || '',
