@@ -99,15 +99,8 @@ serve(async (req) => {
     const bumperApiKey = Deno.env.get("BUMPER_API_KEY");
     const bumperSecretKey = Deno.env.get("BUMPER_SECRET_KEY");
     
-    console.log("Bumper credentials check:", { 
-      hasApiKey: !!bumperApiKey, 
-      hasSecretKey: !!bumperSecretKey,
-      apiKeyLength: bumperApiKey?.length || 0,
-      secretKeyLength: bumperSecretKey?.length || 0
-    });
-    
     if (!bumperApiKey || !bumperSecretKey) {
-      console.log("Missing Bumper credentials, falling back to Stripe");
+      logStep("Missing Bumper credentials, falling back to Stripe");
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
         error: "Payment processing error, redirecting to alternative payment" 
