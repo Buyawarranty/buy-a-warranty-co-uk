@@ -25,17 +25,44 @@ serve(async (req) => {
 
     console.log(`Looking up vehicle: ${registrationNumber}`);
 
-    // Call DVLA API
-    const response = await fetch(`https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles`, {
-      method: 'POST',
-      headers: {
-        'x-api-key': dvlaApiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        registrationNumber: registrationNumber.replace(/\s/g, '').toUpperCase()
-      })
-    });
+    // Call DVLA API with retry logic
+    let response;
+    let lastError;
+    const maxRetries = 3;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`DVLA API attempt ${attempt} for ${registrationNumber}`);
+        
+        response = await fetch(`https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles`, {
+          method: 'POST',
+          headers: {
+            'x-api-key': dvlaApiKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            registrationNumber: registrationNumber.replace(/\s/g, '').toUpperCase()
+          }),
+          signal: AbortSignal.timeout(10000) // 10 second timeout
+        });
+        
+        break; // Success, exit retry loop
+      } catch (error) {
+        lastError = error;
+        console.error(`DVLA API attempt ${attempt} failed:`, error.message);
+        
+        if (attempt < maxRetries) {
+          // Wait before retrying (exponential backoff)
+          const waitTime = Math.pow(2, attempt - 1) * 1000;
+          console.log(`Waiting ${waitTime}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
+      }
+    }
+    
+    if (!response) {
+      throw new Error(`DVLA API failed after ${maxRetries} attempts: ${lastError?.message}`);
+    }
 
     if (!response.ok) {
       if (response.status === 404) {
