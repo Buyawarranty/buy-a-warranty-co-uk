@@ -57,7 +57,16 @@ const ThankYou = () => {
     // Trigger confetti animation on load
     const duration = 3000;
     const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    const defaults = { 
+      startVelocity: 30, 
+      spread: 360, 
+      ticks: 60, 
+      zIndex: 0,
+      scalar: 2.5, // Make confetti pieces much larger
+      gravity: 0.6,
+      drift: 0.1,
+      colors: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'] // Vibrant colors
+    };
 
     function randomInRange(min: number, max: number) {
       return Math.random() * (max - min) + min;
