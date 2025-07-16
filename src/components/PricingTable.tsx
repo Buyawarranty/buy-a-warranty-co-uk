@@ -280,10 +280,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             const isPopular = plan.name === 'Gold';
             
             return (
-              <div key={plan.id} className={`bg-white rounded-lg shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-orange-400' : 'border border-gray-200'}`}>
+              <div key={plan.id} className={`bg-white rounded-lg shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-500' : 'border border-gray-200'}`}>
                 {isPopular && (
                   <div className="absolute top-4 left-4 z-10">
-                    <Badge className="bg-orange-500 hover:bg-orange-500 text-white text-xs px-3 py-1">
+                    <Badge className="bg-yellow-500 hover:bg-yellow-500 text-white text-xs px-3 py-1">
                       MOST POPULAR
                     </Badge>
                   </div>
@@ -317,7 +317,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     disabled={isLoading}
                     className={`w-full py-3 text-white font-semibold rounded-lg ${
                       plan.name === 'Basic' ? 'bg-blue-800 hover:bg-blue-900' :
-                      plan.name === 'Gold' ? 'bg-orange-500 hover:bg-orange-600' :
+                      plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600' :
                       'bg-[#eb4b00] hover:bg-[#d43f00]'
                     } transition-colors duration-200`}
                   >
