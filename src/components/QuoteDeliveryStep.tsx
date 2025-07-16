@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Zap, Mail } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -62,30 +61,30 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const isFormValid = fullName && email && phone;
 
   return (
-    <section className="bg-[#e8f4fb] py-6 sm:py-10 min-h-screen px-4 sm:px-0">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 sm:p-12">
+    <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12">
         {!showContactForm ? (
           <>
-            <div className="text-center mb-12">
-              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-8">
+            <div className="text-center mb-8 sm:mb-12">
+              <h1 className="text-xl sm:text-4xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight px-2">
                 How would you like to receive your quote?
               </h1>
-              <div className="space-y-3 mb-8">
-                <p className="flex items-center justify-center gap-3 text-gray-600 text-lg">
-                  <span className="w-6 h-6 text-gray-400 flex items-center justify-center">⏰</span>
-                  Instant Quote – No Waiting, No Hassle
-                </p>
-                <p className="flex items-center justify-center gap-3 text-gray-600 text-lg">
-                  <span className="w-6 h-6 text-gray-400 flex items-center justify-center">🛡️</span>
-                  No Spam. Just Your Best Price
-                </p>
+              <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                <div className="flex items-center justify-center gap-3 text-gray-600 text-sm sm:text-lg px-2">
+                  <span className="w-6 h-6 text-red-400 flex items-center justify-center text-xl">⏰</span>
+                  <span className="text-center font-medium">Instant Quote – No Waiting, No Hassle</span>
+                </div>
+                <div className="flex items-center justify-center gap-3 text-gray-600 text-sm sm:text-lg px-2">
+                  <span className="w-6 h-6 text-orange-400 flex items-center justify-center text-xl">🛡️</span>
+                  <span className="text-center font-medium">No Spam. Just Your Best Price</span>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-6 mb-12">
+            <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
               <button 
                 onClick={handleSkipClick}
-                className="w-full flex items-center justify-between text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg"
                 style={{ backgroundColor: '#224380' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#1a3460';
@@ -94,17 +93,24 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#224380';
                 }}
               >
-                <Zap className="w-6 h-6 ml-4" />
-                <span className="flex-1 text-center">See my pricing now (no email required)</span>
-                <span className="text-2xl mr-4">→</span>
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
+                <div className="text-center px-8 sm:px-12">
+                  <div className="text-base sm:text-xl leading-tight">
+                    See my pricing
+                  </div>
+                  <div className="text-sm sm:text-lg opacity-90">
+                    now (no email required)
+                  </div>
+                </div>
+                <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
               </button>
 
-              <div className="relative">
+              <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
+                  <div className="w-full border-t border-gray-300"></div>
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-white px-6 py-2 text-gray-900 text-xl font-medium border border-gray-200 rounded-full">
+                  <span className="bg-white px-4 sm:px-6 py-2 text-gray-700 text-base sm:text-lg font-semibold border border-gray-300 rounded-full">
                     or
                   </span>
                 </div>
@@ -112,7 +118,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
               <button 
                 onClick={handleEmailQuoteClick}
-                className="w-full flex items-center justify-between text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg"
                 style={{ backgroundColor: '#eb4b00' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#d43f00';
@@ -121,17 +127,24 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#eb4b00';
                 }}
               >
-                <Mail className="w-6 h-6 ml-4" />
-                <span className="flex-1 text-center">View my quote and email it to me</span>
-                <span className="text-2xl mr-4">→</span>
+                <Mail className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
+                <div className="text-center px-8 sm:px-12">
+                  <div className="text-base sm:text-xl leading-tight">
+                    View my quote
+                  </div>
+                  <div className="text-sm sm:text-lg opacity-90">
+                    and email it to me
+                  </div>
+                </div>
+                <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
               </button>
             </div>
 
-            <div className="w-full">
+            <div className="w-full mt-8">
               <button 
                 type="button" 
                 onClick={onBack}
-                className="w-full flex items-center justify-center gap-2 text-xl font-semibold py-5 px-8 rounded-xl border-2 bg-white transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 font-semibold py-3 sm:py-4 px-4 sm:px-8 rounded-xl border-2 bg-white transition-all duration-200 text-base sm:text-lg"
                 style={{ color: '#224380', borderColor: '#224380' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#f0f8ff';
@@ -140,7 +153,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = 'white';
                 }}
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 Back
               </button>
             </div>
