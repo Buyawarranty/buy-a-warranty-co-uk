@@ -293,8 +293,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 <div className="p-6 text-center">
                   <h3 className={`text-2xl font-bold mb-4 ${
                     plan.name === 'Basic' ? 'text-blue-900' :
-                    plan.name === 'Gold' ? 'text-orange-600' :
-                    'text-red-700'
+                    plan.name === 'Gold' ? 'text-yellow-600' :
+                    'text-orange-600'
                   }`}>
                     {plan.name}
                   </h3>
@@ -318,7 +318,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     className={`w-full py-3 text-white font-semibold rounded-lg ${
                       plan.name === 'Basic' ? 'bg-blue-800 hover:bg-blue-900' :
                       plan.name === 'Gold' ? 'bg-orange-500 hover:bg-orange-600' :
-                      'bg-red-600 hover:bg-red-700'
+                      'bg-[#eb4b00] hover:bg-[#d43f00]'
                     } transition-colors duration-200`}
                   >
                     {isLoading ? 'Processing...' : `Select ${plan.name}`}
@@ -334,7 +334,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <div className="space-y-2">
                     {plan.coverage.map((feature, index) => (
                       <div key={index} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
                         <span className="text-sm text-gray-700">{feature}</span>
                       </div>
                     ))}
