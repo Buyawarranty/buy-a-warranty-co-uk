@@ -73,9 +73,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#224380';
                 }}
               >
-                <Zap className="w-6 h-6 ml-2" />
-                <span className="flex-1 text-center mr-2">See my pricing now (no email required)</span>
-                <span className="text-2xl mr-2">→</span>
+                <Zap className="w-6 h-6 ml-4" />
+                <span className="flex-1 text-center">See my pricing now (no email required)</span>
+                <span className="text-2xl mr-4">→</span>
               </button>
 
               <div className="relative">
@@ -100,9 +100,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#eb4b00';
                 }}
               >
-                <Mail className="w-6 h-6 ml-2" />
-                <span className="flex-1 text-center mr-2">View my quote and email it to me</span>
-                <span className="text-2xl mr-2">→</span>
+                <Mail className="w-6 h-6 ml-4" />
+                <span className="flex-1 text-center">View my quote and email it to me</span>
+                <span className="text-2xl mr-4">→</span>
               </button>
             </div>
 
@@ -132,16 +132,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
             <form onSubmit={handleSubmitContactForm}>
               <div className="mb-4 sm:mb-6">
-                <div className="flex items-center mb-2 sm:mb-3">
-                  <label className="block font-semibold mb-1 sm:mb-2 text-gray-700 text-lg sm:text-xl">Full Name</label>
-                  <span 
-                    className="cursor-pointer text-sm ml-1" 
-                    style={{ color: '#224380' }} 
-                    title="Your full name as it appears on official documents"
-                  >
-                    ?
-                  </span>
-                </div>
+                <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Full Name</label>
                 <input
                   type="text"
                   value={fullName}
@@ -159,16 +150,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               </div>
 
               <div className="mb-4 sm:mb-6">
-                <div className="flex items-center mb-2 sm:mb-3">
-                  <label className="block font-semibold mb-1 sm:mb-2 text-gray-700 text-lg sm:text-xl">Email Address</label>
-                  <span 
-                    className="cursor-pointer text-sm ml-1" 
-                    style={{ color: '#224380' }} 
-                    title="We'll send your quote to this email"
-                  >
-                    ?
-                  </span>
-                </div>
+                <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Email Address</label>
                 <input
                   type="email"
                   value={email}
@@ -186,16 +168,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               </div>
 
               <div className="mb-4 sm:mb-6">
-                <div className="flex items-center mb-2 sm:mb-3">
-                  <label className="block font-semibold mb-1 sm:mb-2 text-gray-700 text-lg sm:text-xl">Phone Number</label>
-                  <span 
-                    className="cursor-pointer text-sm ml-1" 
-                    style={{ color: '#224380' }} 
-                    title="For quick updates about your warranty"
-                  >
-                    ?
-                  </span>
-                </div>
+                <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Phone Number</label>
                 <input
                   type="tel"
                   value={phone}
@@ -235,7 +208,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 <button 
                   type="submit" 
                   disabled={!isFormValid}
-                  className="flex-1 flex items-center justify-center gap-3 text-white text-[22px] font-bold py-[18px] px-[24px] rounded-[12px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 flex items-center justify-center gap-3 text-white text-[22px] font-bold py-[18px] px-[24px] rounded-[12px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed btn-breathing"
                   style={{
                     backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
                     borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
