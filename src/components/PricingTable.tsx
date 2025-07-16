@@ -40,7 +40,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   console.log('PricingTable received vehicleData:', vehicleData);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
-  const [voluntaryExcess, setVoluntaryExcess] = useState<{[planId: string]: number}>({});
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(0);
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
@@ -101,26 +101,55 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     }
   };
 
-  const calculatePlanPrice = (plan: Plan) => {
-    let basePrice = 0;
-    
-    switch (paymentType) {
-      case 'yearly':
-        basePrice = plan.yearly_price || plan.monthly_price * 12;
-        break;
-      case 'two_yearly':
-        basePrice = plan.two_yearly_price || plan.monthly_price * 24;
-        break;
-      case 'three_yearly':
-        basePrice = plan.three_yearly_price || plan.monthly_price * 36;
-        break;
-      default:
-        basePrice = plan.monthly_price;
-    }
+  // Pricing data from Excel spreadsheet
+  const getPricingData = (excess: number) => {
+    const pricingTable = {
+      0: {
+        basic: { monthly: 31, total: 372 },
+        gold: { monthly: 56, total: 670, save: 74 },
+        platinum: { monthly: 65, total: 786, save: 87 }
+      },
+      50: {
+        basic: { monthly: 29, total: 348 },
+        gold: { monthly: 52, total: 626, save: 70 },
+        platinum: { monthly: 58, total: 691, save: 77 }
+      },
+      100: {
+        basic: { monthly: 25, total: 300 },
+        gold: { monthly: 45, total: 540, save: 60 },
+        platinum: { monthly: 52, total: 626, save: 70 }
+      },
+      150: {
+        basic: { monthly: 23, total: 276 },
+        gold: { monthly: 41, total: 497, save: 55 },
+        platinum: { monthly: 49, total: 583, save: 65 }
+      },
+      200: {
+        basic: { monthly: 20, total: 240 },
+        gold: { monthly: 38, total: 456, save: 50 },
+        platinum: { monthly: 45, total: 540, save: 60 }
+      }
+    };
+    return pricingTable[excess as keyof typeof pricingTable] || pricingTable[0];
+  };
 
-    const planExcess = voluntaryExcess[plan.id] || 0;
-    const excessDiscount = planExcess * 0.01;
-    return Math.max(basePrice * (1 - excessDiscount), basePrice * 0.7);
+  const calculatePlanPrice = (plan: Plan) => {
+    const pricing = getPricingData(voluntaryExcess);
+    const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
+    
+    if (paymentType === 'monthly') {
+      return pricing[planType].monthly;
+    } else {
+      return pricing[planType].total;
+    }
+  };
+
+  const getPlanSavings = (plan: Plan) => {
+    const pricing = getPricingData(voluntaryExcess);
+    const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
+    
+    if (planType === 'basic') return null;
+    return pricing[planType].save;
   };
 
   const calculateAddOnPrice = (planId: string) => {
@@ -138,11 +167,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     }));
   };
 
-  const toggleVoluntaryExcess = (planId: string, amount: number) => {
-    setVoluntaryExcess(prev => ({
-      ...prev,
-      [planId]: amount
-    }));
+  const toggleVoluntaryExcess = (amount: number) => {
+    setVoluntaryExcess(amount);
   };
 
   const handleSelectPlan = async (plan: Plan) => {
@@ -160,7 +186,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         basePrice,
         addOnPrice,
         totalPrice,
-        voluntaryExcess: voluntaryExcess[plan.id] || 0,
+        voluntaryExcess: voluntaryExcess,
         selectedAddOns: selectedAddOns[plan.id] || {},
         vehicleData
       };
@@ -329,6 +355,28 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
 
+      {/* Voluntary Excess Selection */}
+      <div className="flex justify-center mb-12 px-8">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 w-full max-w-2xl">
+          <h3 className="text-xl font-bold text-center mb-4 text-gray-900">Voluntary Excess Amount</h3>
+          <div className="grid grid-cols-5 gap-3">
+            {[0, 50, 100, 150, 200].map((amount) => (
+              <button
+                key={amount}
+                onClick={() => toggleVoluntaryExcess(amount)}
+                className={`p-3 rounded-lg border text-sm font-semibold transition-all duration-200 ${
+                  voluntaryExcess === amount
+                    ? 'bg-[#1a365d] text-white border-[#1a365d]'
+                    : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                }`}
+              >
+                £{amount}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Pricing Cards Container */}
       <div className="max-w-7xl mx-auto px-8 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -338,6 +386,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             const totalPrice = basePrice + addOnPrice;
             const isLoading = loading[plan.id];
             const isPopular = plan.name === 'Gold';
+            const savings = getPlanSavings(plan);
             
             return (
               <div key={plan.id} className={`bg-white rounded-lg shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-500' : 'border border-gray-200'}`}>
@@ -364,10 +413,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       {Math.round(totalPrice)}
                     </span>
                   </div>
-                  <div className="text-gray-600 text-base mb-2">{getPaymentLabel()}</div>
-                  <div className="text-sm text-gray-800 font-semibold">
-                    Only 12 easy payments
+                  <div className="text-gray-600 text-base mb-2">
+                    {paymentType === 'monthly' ? 'per month' : 
+                     plan.name === 'Basic' ? 'total for 1 year' :
+                     plan.name === 'Gold' ? 'total for 2 years' :
+                     'total for 3 years'}
                   </div>
+                  {paymentType === 'monthly' && (
+                    <div className="text-sm text-gray-800 font-semibold">
+                      Only 12 easy payments
+                    </div>
+                  )}
+                  {savings && paymentType !== 'monthly' && (
+                    <div className="text-green-600 font-bold text-lg">
+                      You Save £{savings}
+                    </div>
+                  )}
                 </div>
 
                 {/* Select Button */}
@@ -403,43 +464,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   </div>
                 </div>
 
-                {/* Voluntary Excess */}
-                <div className="px-6 mb-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <h4 className="font-bold text-lg text-gray-900">Voluntary Excess</h4>
-                    <Info className="h-4 w-4 text-gray-400" />
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 mb-2">
-                    {[0, 50, 100].map((amount) => (
-                      <button
-                        key={amount}
-                        onClick={() => toggleVoluntaryExcess(plan.id, amount)}
-                        className={`p-2 rounded border text-sm font-semibold transition-all duration-200 ${
-                          (voluntaryExcess[plan.id] || 0) === amount
-                            ? 'bg-[#1a365d] text-white border-[#1a365d]'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                        }`}
-                      >
-                        £{amount}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {[150, 200].map((amount) => (
-                      <button
-                        key={amount}
-                        onClick={() => toggleVoluntaryExcess(plan.id, amount)}
-                        className={`p-2 rounded border text-sm font-semibold transition-all duration-200 ${
-                          (voluntaryExcess[plan.id] || 0) === amount
-                            ? 'bg-[#1a365d] text-white border-[#1a365d]'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                        }`}
-                      >
-                        £{amount}
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Additional Components */}
                 <div className="px-6 pb-6">
