@@ -291,7 +291,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 
                 {/* Plan Header */}
                 <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold mb-4 text-blue-900">
+                  <h3 className={`text-2xl font-bold mb-4 ${
+                    plan.name === 'Basic' ? 'text-blue-900' :
+                    plan.name === 'Gold' ? 'text-orange-600' :
+                    'text-red-700'
+                  }`}>
                     {plan.name}
                   </h3>
                   <div className="mb-2">
@@ -343,7 +347,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     <h4 className="font-bold text-lg text-gray-900">Voluntary Excess</h4>
                     <Info className="h-4 w-4 text-gray-400" />
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-2 mb-2">
                     {[0, 50, 100].map((amount) => (
                       <button
                         key={amount}
@@ -357,6 +361,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         £{amount}
                       </button>
                     ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
                     {[150, 200].map((amount) => (
                       <button
                         key={amount}
