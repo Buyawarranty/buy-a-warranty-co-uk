@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, Info, FileText, ExternalLink } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -445,12 +446,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   </div>
                 </div>
 
-                {/* Additional Components */}
+                {/* Optional Add-ons */}
                 <div className="px-6 mb-6">
-                  <h4 className="font-bold text-lg mb-2 text-gray-900">
-                    Additional Components (Optional Add-ons - £2.00 per item per month)
-                  </h4>
-                  <div className="space-y-2">
+                  <div className="flex items-center gap-2 mb-4">
+                    <h4 className="font-bold text-lg text-gray-900">Optional Add-ons</h4>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4 text-gray-500" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>£2.00 per item per month</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                  <div className="space-y-3">
                     {plan.add_ons.length > 0 ? (
                       plan.add_ons.map((addon, index) => (
                         <div key={index} className="flex items-center space-x-3">
@@ -458,10 +469,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                             id={`${plan.id}-${addon}`}
                             checked={selectedAddOns[plan.id]?.[addon] || false}
                             onCheckedChange={() => toggleAddOn(plan.id, addon)}
+                            className="border-gray-400"
                           />
                           <label
                             htmlFor={`${plan.id}-${addon}`}
-                            className="text-sm font-medium text-gray-700"
+                            className="text-base text-gray-700 cursor-pointer"
                           >
                             {addon}
                           </label>
@@ -469,8 +481,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       ))
                     ) : (
                       <div className="flex items-center space-x-3">
-                        <Checkbox disabled />
-                        <span className="text-sm text-gray-700">Power Hood</span>
+                        <Checkbox disabled className="border-gray-400" />
+                        <span className="text-base text-gray-700">Power Hood</span>
                       </div>
                     )}
                   </div>
