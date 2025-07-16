@@ -99,8 +99,22 @@ serve(async (req) => {
     const bumperApiKey = Deno.env.get("BUMPER_API_KEY");
     const bumperSecretKey = Deno.env.get("BUMPER_SECRET_KEY");
     
+    console.log("Bumper credentials check:", { 
+      hasApiKey: !!bumperApiKey, 
+      hasSecretKey: !!bumperSecretKey,
+      apiKeyLength: bumperApiKey?.length || 0,
+      secretKeyLength: bumperSecretKey?.length || 0
+    });
+    
     if (!bumperApiKey || !bumperSecretKey) {
-      throw new Error("Bumper API credentials not configured");
+      console.log("Missing Bumper credentials, falling back to Stripe");
+      return new Response(JSON.stringify({ 
+        fallbackToStripe: true,
+        error: "Payment processing error, redirecting to alternative payment" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
     // Create Bumper checkout session
@@ -128,6 +142,16 @@ serve(async (req) => {
     logStep("Sending request to Bumper API", { payload: bumperPayload });
 
     // Make request to Bumper API
+    console.log("Making request to Bumper API:", {
+      url: "https://api.bumper.co/v1/checkout/sessions",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${bumperApiKey?.substring(0, 10)}...`,
+        "X-Secret-Key": `${bumperSecretKey?.substring(0, 10)}...`
+      }
+    });
+
     const bumperResponse = await fetch("https://api.bumper.co/v1/checkout/sessions", {
       method: "POST",
       headers: {
@@ -138,11 +162,40 @@ serve(async (req) => {
       body: JSON.stringify(bumperPayload)
     });
 
-    const bumperData = await bumperResponse.json();
+    console.log("Bumper API response status:", bumperResponse.status);
+    console.log("Bumper API response headers:", Object.fromEntries(bumperResponse.headers.entries()));
+
+    let bumperData;
+    try {
+      bumperData = await bumperResponse.json();
+      console.log("Bumper API response data:", bumperData);
+    } catch (parseError) {
+      console.log("Failed to parse Bumper API response as JSON:", parseError);
+      const responseText = await bumperResponse.text();
+      console.log("Raw Bumper API response:", responseText);
+      
+      logStep("Bumper API returned invalid JSON, falling back to Stripe", { 
+        status: bumperResponse.status,
+        responseText: responseText.substring(0, 500) // Limit log size
+      });
+      
+      return new Response(JSON.stringify({ 
+        fallbackToStripe: true,
+        error: "Payment processing error, redirecting to alternative payment" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     logStep("Bumper API response", { status: bumperResponse.status, data: bumperData });
 
     if (!bumperResponse.ok) {
-      logStep("Bumper API rejected, falling back to Stripe", { error: bumperData });
+      logStep("Bumper API rejected, falling back to Stripe", { 
+        status: bumperResponse.status,
+        error: bumperData,
+        statusText: bumperResponse.statusText
+      });
       
       // Return fallback flag to trigger Stripe checkout on frontend
       return new Response(JSON.stringify({ 
