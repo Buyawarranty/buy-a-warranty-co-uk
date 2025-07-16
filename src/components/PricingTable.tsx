@@ -39,7 +39,7 @@ interface PricingTableProps {
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   console.log('PricingTable received vehicleData:', vehicleData);
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
+  const [paymentType, setPaymentType] = useState<'yearly' | 'two_yearly' | 'three_yearly'>('yearly');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(0);
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
@@ -138,17 +138,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     const pricing = getPricingData(voluntaryExcess, paymentType);
     const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
     
-    if (paymentType === 'monthly') {
-      // For monthly, show the monthly amount from 1 year data
-      const monthlyPricing = getPricingData(voluntaryExcess, 'yearly');
-      return monthlyPricing[planType].monthly;
-    } else {
-      return pricing[planType].total;
-    }
+    // Always show monthly payment for all periods
+    return pricing[planType].monthly;
   };
 
   const getPlanSavings = (plan: Plan) => {
-    if (paymentType === 'monthly' || paymentType === 'yearly') return null;
+    if (paymentType === 'yearly') return null;
     
     const pricing = getPricingData(voluntaryExcess, paymentType);
     const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
@@ -195,7 +190,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         vehicleData
       };
 
-      if (paymentType === 'monthly') {
+      if (false) { // Remove monthly payment logic
         const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
           body: checkoutData
         });
@@ -228,9 +223,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   const getPaymentLabel = () => {
     switch (paymentType) {
-      case 'yearly': return 'total for 1 year';
-      case 'two_yearly': return 'total for 2 years';
-      case 'three_yearly': return 'total for 3 years';
+      case 'yearly': return 'per month for 1 year';
+      case 'two_yearly': return 'per month for 2 years';
+      case 'three_yearly': return 'per month for 3 years';
       default: return 'per month';
     }
   };
@@ -301,18 +296,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
       {/* Payment Period Toggle */}
       <div className="flex justify-center mb-12 px-8">
-        <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-4xl">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
-            <button
-              onClick={() => setPaymentType('monthly')}
-              className={`px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                paymentType === 'monthly' 
-                  ? 'bg-[#1a365d] text-white shadow-md' 
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              Monthly
-            </button>
+        <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-3xl">
+          <div className="grid grid-cols-3 gap-1">
             <div className="relative">
               <button
                 onClick={() => setPaymentType('yearly')}
@@ -420,12 +405,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <div className="text-gray-600 text-base mb-2">
                     {getPaymentLabel()}
                   </div>
-                  {paymentType === 'monthly' && (
-                    <div className="text-sm text-gray-800 font-semibold">
-                      Only 12 easy payments
-                    </div>
-                  )}
-                  {savings && paymentType !== 'monthly' && paymentType !== 'yearly' && (
+                  {savings && paymentType !== 'yearly' && (
                     <div className="text-green-600 font-bold text-lg">
                       You Save £{savings}
                     </div>
