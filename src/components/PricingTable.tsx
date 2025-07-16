@@ -198,7 +198,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         vehicleData
       };
 
-      if (false) { // Remove monthly payment logic
+      if (true) { // Try Bumper API first, fallback to Stripe if needed
         const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
           body: checkoutData
         });
