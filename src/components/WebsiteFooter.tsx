@@ -33,8 +33,10 @@ const WebsiteFooter = () => {
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
               <div className="space-y-2 text-gray-600">
-                <p className="font-medium">Call us directly</p>
-                <p className="text-lg font-bold text-[#eb4b00]">0300 445 678</p>
+                <p className="font-medium">Call Us:</p>
+                <p className="text-lg font-bold text-[#eb4b00]">0330 229 5040</p>
+                <p className="font-medium mt-4">Claims:</p>
+                <p className="text-lg font-bold text-[#eb4b00]">0330 229 5045</p>
                 <p className="font-medium mt-4">Email us directly</p>
                 <p className="text-[#eb4b00]">info@buyawarranty.co.uk</p>
               </div>
