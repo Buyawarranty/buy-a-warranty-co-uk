@@ -159,13 +159,29 @@ serve(async (req) => {
     console.log("Bumper API response headers:", Object.fromEntries(bumperResponse.headers.entries()));
 
     let bumperData;
+    const responseText = await bumperResponse.text();
+    console.log("Raw Bumper API response:", responseText);
+    
     try {
-      bumperData = await bumperResponse.json();
-      console.log("Bumper API response data:", bumperData);
+      if (responseText) {
+        bumperData = JSON.parse(responseText);
+        console.log("Bumper API response data:", bumperData);
+      } else {
+        console.log("Empty response from Bumper API");
+        logStep("Bumper API returned empty response, falling back to Stripe", { 
+          status: bumperResponse.status
+        });
+        
+        return new Response(JSON.stringify({ 
+          fallbackToStripe: true,
+          error: "Payment processing error, redirecting to alternative payment" 
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
     } catch (parseError) {
       console.log("Failed to parse Bumper API response as JSON:", parseError);
-      const responseText = await bumperResponse.text();
-      console.log("Raw Bumper API response:", responseText);
       
       logStep("Bumper API returned invalid JSON, falling back to Stripe", { 
         status: bumperResponse.status,

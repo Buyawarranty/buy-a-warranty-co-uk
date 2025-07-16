@@ -135,9 +135,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
           });
 
           if (stripeError) throw stripeError;
-          if (stripeData?.url) window.location.href = stripeData.url;
+          if (stripeData?.url) window.open(stripeData.url, '_blank');
         } else if (bumperData?.url) {
-          window.location.href = bumperData.url;
+          window.open(bumperData.url, '_blank');
         }
       } else {
         // Use Stripe for non-monthly payments
@@ -146,7 +146,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         });
 
         if (error) throw error;
-        if (data?.url) window.location.href = data.url;
+        if (data?.url) window.open(data.url, '_blank');
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
