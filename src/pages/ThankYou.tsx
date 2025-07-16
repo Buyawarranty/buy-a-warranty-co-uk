@@ -153,8 +153,7 @@ const ThankYou = () => {
         <div className="space-y-4">
           <Button 
             onClick={handleReturnHome}
-            variant="default"
-            className="px-8 py-3 text-lg font-semibold"
+            className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg font-semibold"
           >
             Return to BuyAWarranty.co.uk
           </Button>
