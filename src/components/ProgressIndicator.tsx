@@ -71,7 +71,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                       isActive || isCompleted ? 'text-white' : 'bg-gray-200 text-gray-400'
                     }`}
                     style={{
-                      backgroundColor: isActive || isCompleted ? '#224380' : undefined
+                      backgroundColor: isCompleted ? '#10b981' : isActive ? '#224380' : undefined
                     }}
                   >
                     {isCompleted ? '✓' : stepNumber}

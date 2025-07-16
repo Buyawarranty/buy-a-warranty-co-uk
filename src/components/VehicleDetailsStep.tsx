@@ -211,7 +211,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700 text-xl">
-            Vehicle registration number <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your vehicle's registration number as shown on your number plate">?</span>
+            Vehicle registration number
           </label>
           <div 
             className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black"
@@ -389,7 +389,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           {(vehicleFound || showManualEntry) && (
             <>
               <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700 text-xl">
-                What's your approximate mileage? <span className="cursor-pointer text-sm ml-1" style={{ color: '#224380' }} title="Enter your current mileage as shown on your odometer">?</span>
+                What's your approximate mileage?
               </label>
               <input
                 type="text"
