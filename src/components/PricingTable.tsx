@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -45,6 +44,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
+  const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
 
   useEffect(() => {
     fetchPlans();
@@ -171,6 +171,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     setVoluntaryExcess(amount);
   };
 
+  const toggleAddOnInfo = (planId: string) => {
+    setShowAddOnInfo(prev => ({
+      ...prev,
+      [planId]: !prev[planId]
+    }));
+  };
+
   const handleSelectPlan = async (plan: Plan) => {
     setLoading(prev => ({ ...prev, [plan.id]: true }));
     
@@ -232,7 +239,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   };
 
   return (
-    <TooltipProvider>
     <div className="bg-[#e8f4fb] w-full min-h-screen">
       {/* Back Button */}
       <div className="mb-8 px-8 pt-8">
@@ -451,15 +457,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 <div className="px-6 mb-6">
                   <div className="flex items-center gap-2 mb-4">
                     <h4 className="font-bold text-lg text-gray-900">Optional Add-ons</h4>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-4 w-4 text-gray-500" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>£2 per add-on per month</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <button
+                      onClick={() => toggleAddOnInfo(plan.id)}
+                      className="hover:bg-gray-100 rounded-full p-1 transition-colors"
+                    >
+                      <Info className="h-4 w-4 text-gray-500" />
+                    </button>
                   </div>
+                  
+                  {/* Dropdown info text */}
+                  {showAddOnInfo[plan.id] && (
+                    <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded-md animate-fade-in">
+                      <p className="text-sm text-blue-800">£2 per add-on per month</p>
+                    </div>
+                  )}
+                  
                   <div className="space-y-3">
                     {plan.add_ons.length > 0 ? (
                       plan.add_ons.map((addon, index) => (
@@ -540,7 +552,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         </div>
       </div>
     </div>
-    </TooltipProvider>
   );
 };
 
