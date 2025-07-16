@@ -295,7 +295,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             <div className="bg-yellow-50 border border-yellow-200 rounded-[4px] p-4 mb-4">
               <p className="text-sm text-yellow-800 mb-2 font-semibold">Vehicle not found</p>
               <p className="text-sm text-yellow-700">
-                {vehicleData.error || 'We couldn\'t find this vehicle in the DVLA database. Please enter your vehicle details manually.'}
+                Oops! We couldn't find that vehicle. Try entering a different or corrected plate.
               </p>
             </div>
           )}
