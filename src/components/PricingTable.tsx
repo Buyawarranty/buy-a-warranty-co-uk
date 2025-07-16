@@ -456,7 +456,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                           <Info className="h-4 w-4 text-gray-500" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>£2.00 per item per month</p>
+                          <p>£2 per add-on per month</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
