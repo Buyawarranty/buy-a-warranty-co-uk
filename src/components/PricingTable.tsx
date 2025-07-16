@@ -241,30 +241,30 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   return (
     <div className="bg-[#e8f4fb] w-full min-h-screen">
       {/* Back Button */}
-      <div className="mb-8 px-8 pt-8">
+      <div className="mb-6 sm:mb-8 px-4 sm:px-8 pt-6 sm:pt-8">
         <Button 
           variant="outline" 
           onClick={onBack}
-          className="flex items-center gap-2 hover:bg-white text-lg px-6 py-3"
+          className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3"
         >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Contact Details
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          Back
         </Button>
       </div>
 
       {/* Header with Vehicle Details */}
-      <div className="text-center mb-10 px-8">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">
+      <div className="text-center mb-8 sm:mb-10 px-4 sm:px-8">
+        <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
           Your Warranty Quote
         </h1>
         
         {/* Vehicle Registration Display */}
         <div className="flex justify-center mb-4">
-          <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-3xl px-6 py-4 rounded-[6px] shadow-sm leading-tight border-2 border-black">
+          <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-xl sm:text-2xl md:text-3xl px-4 sm:px-6 py-3 sm:py-4 rounded-[6px] shadow-sm leading-tight border-2 border-black">
             <img 
               src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
               alt="GB Flag" 
-              className="w-[35px] h-[25px] mr-4 object-cover rounded-[2px]"
+              className="w-[25px] h-[18px] sm:w-[30px] sm:h-[22px] md:w-[35px] md:h-[25px] mr-3 sm:mr-4 object-cover rounded-[2px]"
             />
             <div className="font-bold font-sans tracking-normal">
               {vehicleData.regNumber || 'REG NUM'}
@@ -274,27 +274,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
         {/* Vehicle Details */}
         {vehicleData.make && (
-          <div className="mb-6 max-w-2xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-4 text-base text-gray-700">
-              <span className="font-semibold text-gray-900">
+          <div className="mb-6 max-w-2xl mx-auto px-2">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2 sm:gap-4 text-sm sm:text-base text-gray-700">
+              <span className="font-semibold text-gray-900 text-center sm:text-left">
                 {vehicleData.make} {vehicleData.model || 'Vehicle'}
               </span>
               {vehicleData.fuelType && (
-                <span className="text-gray-600">
+                <span className="text-gray-600 text-center sm:text-left">
                   <strong>Fuel:</strong> {vehicleData.fuelType}
                 </span>
               )}
               {vehicleData.year && (
-                <span className="text-gray-600">
+                <span className="text-gray-600 text-center sm:text-left">
                   <strong>Year:</strong> {vehicleData.year}
                 </span>
               )}
               {vehicleData.transmission && (
-                <span className="text-gray-600">
+                <span className="text-gray-600 text-center sm:text-left">
                   <strong>Transmission:</strong> {vehicleData.transmission}
                 </span>
               )}
-              <span className="text-gray-600">
+              <span className="text-gray-600 text-center sm:text-left">
                 <strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles
               </span>
             </div>
