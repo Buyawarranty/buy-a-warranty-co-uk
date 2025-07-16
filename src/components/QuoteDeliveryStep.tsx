@@ -223,11 +223,11 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 />
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button 
                   type="button" 
                   onClick={() => setShowContactForm(false)}
-                  className="flex-1 flex items-center justify-center gap-2 text-[15px] font-medium py-[12px] px-[20px] rounded-[12px] border-2 transition-all duration-200"
+                  className="flex items-center justify-center gap-2 text-sm sm:text-base font-medium py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200"
                 style={{
                   backgroundColor: '#f3f4f6',
                   borderColor: '#f3f4f6',
@@ -240,13 +240,13 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#f3f4f6';
                 }}
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4" />
                   Back
                 </button>
                 <button 
                   type="submit" 
                   disabled={!isFormValid}
-                  className="flex-1 flex items-center justify-center gap-3 text-white text-[22px] font-bold py-[18px] px-[24px] rounded-[12px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed btn-breathing"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   style={{
                     backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
                     borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
@@ -263,9 +263,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   }}
                 >
                   Get My Quote
-                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </form>
