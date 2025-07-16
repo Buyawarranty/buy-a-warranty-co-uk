@@ -115,19 +115,22 @@ const ThankYou = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Thanks for your purchase!
           </h1>
+          <h2 className="text-2xl md:text-3xl font-semibold text-blue-600 mb-6">
+            Your warranty is successfully registered
+          </h2>
           
           {isProcessing ? (
             <div className="space-y-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="text-lg text-gray-600">
+              <h3 className="text-lg text-gray-600">
                 Processing your warranty registration...
-              </p>
+              </h3>
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-lg text-gray-600 max-w-md mx-auto leading-relaxed mb-4">
-                Your warranty is successfully registered — check your inbox for your plan details and terms & conditions.
-              </p>
+              <h3 className="text-lg text-gray-600 max-w-md mx-auto leading-relaxed mb-4">
+                Check your inbox for your plan details and terms & conditions.
+              </h3>
               {policyNumber && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
                   <p className="text-sm text-green-800 font-semibold">Policy Number:</p>
@@ -155,9 +158,9 @@ const ThankYou = () => {
           >
             Return to BuyAWarranty.co.uk
           </Button>
-          <div className="text-sm text-gray-500">
+          <h3 className="text-sm text-gray-500">
             Check your email for login details to access your customer dashboard
-          </div>
+          </h3>
         </div>
       </div>
     </div>
