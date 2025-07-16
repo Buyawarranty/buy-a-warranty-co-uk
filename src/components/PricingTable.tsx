@@ -416,8 +416,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         onClick={() => toggleVoluntaryExcess(plan.id, amount)}
                         className={`p-2 rounded border text-sm font-semibold transition-all duration-200 ${
                           (voluntaryExcess[plan.id] || 0) === amount
-                            ? 'bg-blue-800 text-white border-blue-800'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-blue-800'
+                            ? 'bg-[#1a365d] text-white border-[#1a365d]'
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
                         }`}
                       >
                         £{amount}
@@ -431,8 +431,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         onClick={() => toggleVoluntaryExcess(plan.id, amount)}
                         className={`p-2 rounded border text-sm font-semibold transition-all duration-200 ${
                           (voluntaryExcess[plan.id] || 0) === amount
-                            ? 'bg-blue-800 text-white border-blue-800'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-blue-800'
+                            ? 'bg-[#1a365d] text-white border-[#1a365d]'
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
                         }`}
                       >
                         £{amount}
