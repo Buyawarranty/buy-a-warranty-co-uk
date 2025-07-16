@@ -101,54 +101,58 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     }
   };
 
-  // Pricing data from Excel spreadsheet
-  const getPricingData = (excess: number) => {
+  // Pricing data from Excel spreadsheet organized by payment type and excess
+  const getPricingData = (excess: number, paymentPeriod: string) => {
     const pricingTable = {
-      0: {
-        basic: { monthly: 31, total: 372 },
-        gold: { monthly: 56, total: 670, save: 74 },
-        platinum: { monthly: 65, total: 786, save: 87 }
+      // 1 Year pricing (Columns D & E)
+      yearly: {
+        0: { basic: { monthly: 31, total: 372, save: 0 }, gold: { monthly: 34, total: 408, save: 0 }, platinum: { monthly: 36, total: 437, save: 0 } },
+        50: { basic: { monthly: 29, total: 348, save: 0 }, gold: { monthly: 31, total: 372, save: 0 }, platinum: { monthly: 32, total: 384, save: 0 } },
+        100: { basic: { monthly: 25, total: 300, save: 0 }, gold: { monthly: 27, total: 324, save: 0 }, platinum: { monthly: 29, total: 348, save: 0 } },
+        150: { basic: { monthly: 23, total: 276, save: 0 }, gold: { monthly: 26, total: 312, save: 0 }, platinum: { monthly: 27, total: 324, save: 0 } },
+        200: { basic: { monthly: 20, total: 240, save: 0 }, gold: { monthly: 23, total: 276, save: 0 }, platinum: { monthly: 25, total: 300, save: 0 } }
       },
-      50: {
-        basic: { monthly: 29, total: 348 },
-        gold: { monthly: 52, total: 626, save: 70 },
-        platinum: { monthly: 58, total: 691, save: 77 }
+      // 2 Year pricing (Columns F, G & H)
+      two_yearly: {
+        0: { basic: { monthly: 56, total: 670, save: 74 }, gold: { monthly: 61, total: 734, save: 82 }, platinum: { monthly: 65, total: 786, save: 87 } },
+        50: { basic: { monthly: 52, total: 626, save: 70 }, gold: { monthly: 56, total: 670, save: 74 }, platinum: { monthly: 58, total: 691, save: 77 } },
+        100: { basic: { monthly: 45, total: 540, save: 60 }, gold: { monthly: 49, total: 583, save: 65 }, platinum: { monthly: 52, total: 626, save: 70 } },
+        150: { basic: { monthly: 41, total: 497, save: 55 }, gold: { monthly: 47, total: 562, save: 62 }, platinum: { monthly: 49, total: 583, save: 65 } },
+        200: { basic: { monthly: 38, total: 456, save: 50 }, gold: { monthly: 44, total: 528, save: 58 }, platinum: { monthly: 46, total: 552, save: 61 } }
       },
-      100: {
-        basic: { monthly: 25, total: 300 },
-        gold: { monthly: 45, total: 540, save: 60 },
-        platinum: { monthly: 52, total: 626, save: 70 }
-      },
-      150: {
-        basic: { monthly: 23, total: 276 },
-        gold: { monthly: 41, total: 497, save: 55 },
-        platinum: { monthly: 49, total: 583, save: 65 }
-      },
-      200: {
-        basic: { monthly: 20, total: 240 },
-        gold: { monthly: 38, total: 456, save: 50 },
-        platinum: { monthly: 45, total: 540, save: 60 }
+      // 3 Year pricing (Columns J, K & L)
+      three_yearly: {
+        0: { basic: { monthly: 82, total: 982, save: 134 }, gold: { monthly: 90, total: 1077, save: 147 }, platinum: { monthly: 96, total: 1153, save: 157 } },
+        50: { basic: { monthly: 77, total: 919, save: 125 }, gold: { monthly: 82, total: 982, save: 134 }, platinum: { monthly: 84, total: 1014, save: 138 } },
+        100: { basic: { monthly: 66, total: 792, save: 108 }, gold: { monthly: 71, total: 855, save: 117 }, platinum: { monthly: 77, total: 919, save: 125 } },
+        150: { basic: { monthly: 61, total: 729, save: 99 }, gold: { monthly: 69, total: 824, save: 112 }, platinum: { monthly: 71, total: 855, save: 117 } },
+        200: { basic: { monthly: 56, total: 672, save: 92 }, gold: { monthly: 66, total: 792, save: 108 }, platinum: { monthly: 69, total: 828, save: 113 } }
       }
     };
-    return pricingTable[excess as keyof typeof pricingTable] || pricingTable[0];
+    
+    const periodData = pricingTable[paymentPeriod as keyof typeof pricingTable] || pricingTable.yearly;
+    return periodData[excess as keyof typeof periodData] || periodData[0];
   };
 
   const calculatePlanPrice = (plan: Plan) => {
-    const pricing = getPricingData(voluntaryExcess);
+    const pricing = getPricingData(voluntaryExcess, paymentType);
     const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
     
     if (paymentType === 'monthly') {
-      return pricing[planType].monthly;
+      // For monthly, show the monthly amount from 1 year data
+      const monthlyPricing = getPricingData(voluntaryExcess, 'yearly');
+      return monthlyPricing[planType].monthly;
     } else {
       return pricing[planType].total;
     }
   };
 
   const getPlanSavings = (plan: Plan) => {
-    const pricing = getPricingData(voluntaryExcess);
+    if (paymentType === 'monthly' || paymentType === 'yearly') return null;
+    
+    const pricing = getPricingData(voluntaryExcess, paymentType);
     const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
     
-    if (planType === 'basic') return null;
     return pricing[planType].save;
   };
 
@@ -224,9 +228,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   const getPaymentLabel = () => {
     switch (paymentType) {
-      case 'yearly': return 'per year';
-      case 'two_yearly': return 'for 2 years';
-      case 'three_yearly': return 'for 3 years';
+      case 'yearly': return 'total for 1 year';
+      case 'two_yearly': return 'total for 2 years';
+      case 'three_yearly': return 'total for 3 years';
       default: return 'per month';
     }
   };
@@ -414,17 +418,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     </span>
                   </div>
                   <div className="text-gray-600 text-base mb-2">
-                    {paymentType === 'monthly' ? 'per month' : 
-                     plan.name === 'Basic' ? 'total for 1 year' :
-                     plan.name === 'Gold' ? 'total for 2 years' :
-                     'total for 3 years'}
+                    {getPaymentLabel()}
                   </div>
                   {paymentType === 'monthly' && (
                     <div className="text-sm text-gray-800 font-semibold">
                       Only 12 easy payments
                     </div>
                   )}
-                  {savings && paymentType !== 'monthly' && (
+                  {savings && paymentType !== 'monthly' && paymentType !== 'yearly' && (
                     <div className="text-green-600 font-bold text-lg">
                       You Save £{savings}
                     </div>
