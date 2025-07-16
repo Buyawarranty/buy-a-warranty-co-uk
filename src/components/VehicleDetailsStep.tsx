@@ -153,6 +153,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     const rawMileage = mileage.replace(/,/g, '');
     const numericMileage = parseInt(rawMileage);
     
+    // Check if mileage is empty
+    if (!mileage.trim()) {
+      setMileageError('Please enter your vehicle mileage');
+      return;
+    }
+    
     if (showManualEntry) {
       // Manual entry validation
       if (regNumber && mileage && make && model && fuelType && transmission && year && numericMileage <= 150000) {
