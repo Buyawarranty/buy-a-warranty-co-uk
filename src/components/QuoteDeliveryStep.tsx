@@ -52,11 +52,11 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               <div className="space-y-3 mb-8">
                 <p className="flex items-center justify-center gap-3 text-gray-600 text-lg">
                   <span className="w-6 h-6 text-gray-400 flex items-center justify-center">⏰</span>
-                  Get accurate pricing in under 30 seconds
+                  Instant Quote – No Waiting, No Hassle
                 </p>
                 <p className="flex items-center justify-center gap-3 text-gray-600 text-lg">
                   <span className="w-6 h-6 text-gray-400 flex items-center justify-center">🛡️</span>
-                  Zero spam guarantee - pricing only
+                  No Spam. Just Your Best Price
                 </p>
               </div>
             </div>
@@ -64,7 +64,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             <div className="space-y-6 mb-12">
               <button 
                 onClick={handleSkipClick}
-                className="w-full flex items-center justify-center gap-2 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-between text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
                 style={{ backgroundColor: '#224380' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#1a3460';
@@ -73,9 +73,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#224380';
                 }}
               >
-                <Zap className="w-6 h-6" />
-                <span className="flex-1 text-center">See my pricing instantly (no email required)</span>
-                <span className="text-2xl">→</span>
+                <Zap className="w-6 h-6 ml-2" />
+                <span className="flex-1 text-center mr-2">See my pricing now (no email required)</span>
+                <span className="text-2xl mr-2">→</span>
               </button>
 
               <div className="relative">
@@ -91,7 +91,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
               <button 
                 onClick={handleEmailQuoteClick}
-                className="w-full flex items-center justify-center gap-2 text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-between text-white text-xl font-semibold py-5 px-8 rounded-xl transition-all duration-200"
                 style={{ backgroundColor: '#eb4b00' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#d43f00';
@@ -100,9 +100,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   e.currentTarget.style.backgroundColor = '#eb4b00';
                 }}
               >
-                <Mail className="w-6 h-6" />
-                <span className="flex-1 text-center">View my Quote & Email it to me</span>
-                <span className="text-2xl">→</span>
+                <Mail className="w-6 h-6 ml-2" />
+                <span className="flex-1 text-center mr-2">View my quote and email it to me</span>
+                <span className="text-2xl mr-2">→</span>
               </button>
             </div>
 
