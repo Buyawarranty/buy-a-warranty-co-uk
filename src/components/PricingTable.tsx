@@ -376,7 +376,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     onClick={() => handleSelectPlan(plan)}
                     disabled={isLoading}
                     className={`w-full py-3 text-white font-semibold rounded-lg ${
-                      plan.name === 'Basic' ? 'bg-blue-800 hover:bg-blue-900' :
+                      plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#0f2a4a]' :
                       plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600' :
                       'bg-[#eb4b00] hover:bg-[#d43f00]'
                     } transition-colors duration-200`}
