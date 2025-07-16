@@ -157,7 +157,7 @@ const ThankYou = () => {
           >
             Return to BuyAWarranty.co.uk
           </Button>
-          <h3 className="text-sm text-gray-500">
+          <h3 className="text-lg text-gray-500">
             Check your inbox for login details to access your customer dashboard
           </h3>
         </div>
