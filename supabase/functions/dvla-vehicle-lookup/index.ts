@@ -65,6 +65,9 @@ serve(async (req) => {
     }
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`DVLA API error: ${response.status} - ${errorText}`);
+      
       if (response.status === 404) {
         return new Response(JSON.stringify({
           found: false,
@@ -74,7 +77,7 @@ serve(async (req) => {
           status: 200,
         });
       }
-      throw new Error(`DVLA API error: ${response.status}`);
+      throw new Error(`DVLA API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
