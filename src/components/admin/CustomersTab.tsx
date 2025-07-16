@@ -26,6 +26,8 @@ interface Customer {
   voluntary_excess: number;
   status: string;
   registration_plate: string;
+  warranty_expiry?: string; // New field for warranty expiry date
+  customer_policies?: Array<{ policy_end_date: string }>; // Type for the joined data
 }
 
 interface AdminNote {
@@ -118,26 +120,49 @@ export const CustomersTab = () => {
       
       setDebugInfo(`User: ${user?.email || 'Master Admin'}, Master Admin: ${isMasterAdmin}`);
 
-      // Try direct query first
-      console.log('📊 Attempting direct query...');
+      // Updated query to include warranty expiry date from customer_policies
+      console.log('📊 Attempting query with warranty expiry data...');
       const { data: directData, error: directError, count: directCount } = await supabase
         .from('customers')
-        .select('*', { count: 'exact' });
+        .select(`
+          *,
+          customer_policies!inner(
+            policy_end_date
+          )
+        `, { count: 'exact' });
 
-      console.log('📊 Direct query result:', { data: directData, error: directError, count: directCount });
+      console.log('📊 Query result:', { data: directData, error: directError, count: directCount });
 
       if (directError) {
-        console.error('❌ Direct query error:', directError);
-        setDebugInfo(prev => prev + `\nDirect query error: ${directError.message}`);
+        console.error('❌ Query error, trying fallback without policies:', directError);
+        setDebugInfo(prev => prev + `\nQuery with policies error: ${directError.message}, trying fallback...`);
         
-        // If direct query fails, try with RLS bypass for master admin
-        if (isMasterAdmin) {
-          console.log('🔓 Attempting RLS bypass query...');
-          // For master admin, we might need to use a service role query
-          toast.error('RLS policies might be blocking access. Check database policies.');
-        } else {
-          toast.error(`Database query failed: ${directError.message}`);
+        // Fallback: try without joining policies table
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('customers')
+          .select('*');
+          
+        if (fallbackError) {
+          console.error('❌ Fallback query error:', fallbackError);
+          setDebugInfo(prev => prev + `\nFallback query error: ${fallbackError.message}`);
+          
+          if (isMasterAdmin) {
+            toast.error('RLS policies might be blocking access. Check database policies.');
+          } else {
+            toast.error(`Database query failed: ${fallbackError.message}`);
+          }
+          return;
         }
+        
+        // Process fallback data (without warranty expiry)
+        const processedData = fallbackData?.map((customer: any) => ({
+          ...customer,
+          warranty_expiry: null
+        })) || [];
+        
+        setCustomers(processedData);
+        setFilteredCustomers(processedData);
+        toast.success(`Loaded ${processedData.length} customers (warranty expiry unavailable)`);
         return;
       }
 
@@ -154,8 +179,14 @@ export const CustomersTab = () => {
         toast.success(`Loaded ${directData.length} customers`);
       }
       
-      setCustomers(directData || []);
-      setFilteredCustomers(directData || []);
+      // Process the data to flatten the customer_policies relationship
+      const processedData = directData?.map((customer: any) => ({
+        ...customer,
+        warranty_expiry: customer.customer_policies?.[0]?.policy_end_date || null
+      })) || [];
+      
+      setCustomers(processedData);
+      setFilteredCustomers(processedData);
     } catch (error) {
       console.error('💥 Unexpected error fetching customers:', error);
       setDebugInfo(prev => prev + `\nUnexpected error: ${error}`);
@@ -263,7 +294,7 @@ export const CustomersTab = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Name', 'Email', 'Phone', 'Address', 'Registration Plate', 'Plan Type', 'Signup Date', 'Voluntary Excess', 'Status'];
+    const headers = ['Name', 'Email', 'Phone', 'Address', 'Registration Plate', 'Plan Type', 'Signup Date', 'Warranty Expiry', 'Voluntary Excess', 'Status'];
     const csvContent = [
       headers.join(','),
       ...filteredCustomers.map(customer => [
@@ -274,6 +305,7 @@ export const CustomersTab = () => {
         customer.registration_plate || '',
         customer.plan_type,
         format(new Date(customer.signup_date), 'yyyy-MM-dd'),
+        customer.warranty_expiry ? format(new Date(customer.warranty_expiry), 'yyyy-MM-dd') : 'N/A',
         customer.voluntary_excess || 0,
         customer.status
       ].join(','))
@@ -443,6 +475,7 @@ export const CustomersTab = () => {
               <TableHead>Registration Plate</TableHead>
               <TableHead>Plan Type</TableHead>
               <TableHead>Signup Date</TableHead>
+              <TableHead>Warranty Expiry</TableHead>
               <TableHead>Voluntary Excess</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
@@ -451,7 +484,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8">
+                <TableCell colSpan={9} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -479,6 +512,29 @@ export const CustomersTab = () => {
                     <Badge variant="secondary">{customer.plan_type}</Badge>
                   </TableCell>
                   <TableCell>{format(new Date(customer.signup_date), 'MMM dd, yyyy')}</TableCell>
+                  <TableCell>
+                    {customer.warranty_expiry ? (
+                      <div className="flex flex-col">
+                        <span>{format(new Date(customer.warranty_expiry), 'MMM dd, yyyy')}</span>
+                        <span className={`text-xs ${
+                          new Date(customer.warranty_expiry) < new Date() 
+                            ? 'text-red-600 font-semibold' 
+                            : new Date(customer.warranty_expiry) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+                            ? 'text-orange-600 font-semibold'
+                            : 'text-green-600'
+                        }`}>
+                          {new Date(customer.warranty_expiry) < new Date() 
+                            ? 'Expired' 
+                            : new Date(customer.warranty_expiry) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+                            ? 'Expires Soon'
+                            : 'Active'
+                          }
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">N/A</span>
+                    )}
+                  </TableCell>
                   <TableCell>£{customer.voluntary_excess || 0}</TableCell>
                   <TableCell>
                     <Badge variant={customer.status === 'Active' ? 'default' : 'destructive'}>
