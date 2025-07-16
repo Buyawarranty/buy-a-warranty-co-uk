@@ -388,7 +388,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             return (
               <div key={plan.id} className={`bg-white rounded-lg shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-500' : 'border border-gray-200'}`}>
                 {isPopular && (
-                  <div className="absolute top-4 left-4 z-10">
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 z-10">
                     <Badge className="bg-yellow-500 hover:bg-yellow-500 text-white text-xs px-3 py-1">
                       MOST POPULAR
                     </Badge>
@@ -533,7 +533,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         onClick={() => window.open(pdfUrl, '_blank')}
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        View PDF (Opens in New Tab)
+                        <span className="hidden sm:inline">View PDF (Opens in New Tab)</span>
+                        <span className="sm:hidden">View PDF (New Tab)</span>
                       </Button>
                     ) : (
                       <Button
