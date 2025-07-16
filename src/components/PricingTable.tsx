@@ -445,6 +445,45 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   </div>
                 </div>
 
+                {/* Warranty Plan Details PDF */}
+                <div className="px-6 mb-6">
+                  <h4 className="font-bold text-lg mb-2 text-gray-900">Warranty Plan Details</h4>
+                  <p className="text-sm text-gray-600 mb-3">Full breakdown of coverage</p>
+                  {(() => {
+                    // Determine which PDF to show based on plan and vehicle type
+                    let pdfUrl = null;
+                    const planType = plan.name.toLowerCase();
+                    const vehicleType = vehicleData.vehicleType?.toLowerCase();
+
+                    if (vehicleType === 'motorbike') {
+                      pdfUrl = pdfUrls['motorbike'];
+                    } else if (vehicleType === 'electric' || vehicleType === 'ev') {
+                      pdfUrl = pdfUrls['electric'];
+                    } else if (vehicleType === 'phev' || vehicleType === 'hybrid') {
+                      pdfUrl = pdfUrls['phev'];
+                    } else {
+                      pdfUrl = pdfUrls[planType];
+                    }
+
+                    return pdfUrl ? (
+                      <Button
+                        variant="outline"
+                        className="w-full text-sm"
+                        onClick={() => window.open(pdfUrl, '_blank')}
+                      >
+                        View PDF (Opens in New Tab)
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full text-sm"
+                        disabled
+                      >
+                        PDF Not Available
+                      </Button>
+                    );
+                  })()}
+                </div>
 
                 {/* Additional Components */}
                 <div className="px-6 pb-6">
