@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Auth = () => {
   const { toast } = useToast();
@@ -13,6 +14,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -93,6 +95,50 @@ const Auth = () => {
     }
   };
 
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      console.log("Attempting to sign up with:", email);
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/customer-dashboard`
+        }
+      });
+
+      if (error) {
+        console.error("Sign up error:", error);
+        throw error;
+      }
+
+      console.log("Sign up successful:", data.user?.email);
+      
+      toast({
+        title: "Account Created",
+        description: "Your account has been created successfully! Please check your email to confirm your account.",
+      });
+
+      // For immediate testing, navigate to customer dashboard
+      if (data.session) {
+        navigate('/customer-dashboard', { replace: true });
+      }
+      
+    } catch (error: any) {
+      console.error("Sign up failed:", error);
+      toast({
+        title: "Sign Up Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleResetPassword = async () => {
     if (!email) {
       toast({
@@ -133,55 +179,101 @@ const Auth = () => {
               alt="BuyAWarranty" 
               className="h-12 w-auto mx-auto mb-4"
             />
-            <CardTitle>Welcome Back</CardTitle>
+            <CardTitle>Welcome</CardTitle>
             <CardDescription>
-              Sign in to your customer account
+              Sign in to your account or create a new one
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSignIn} className="space-y-4">
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="signin">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
               
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  required
-                />
-              </div>
+              <TabsContent value="signin">
+                <form onSubmit={handleSignIn} className="space-y-4">
+                  <div>
+                    <Label htmlFor="signin-email">Email</Label>
+                    <Input
+                      id="signin-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="signin-password">Password</Label>
+                    <Input
+                      id="signin-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      required
+                    />
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    disabled={loading}
+                    className="w-full"
+                  >
+                    {loading ? 'Signing In...' : 'Sign In'}
+                  </Button>
+                  
+                  <div className="text-center">
+                    <Button 
+                      variant="link" 
+                      onClick={handleResetPassword}
+                      className="text-sm"
+                    >
+                      Forgot your password?
+                    </Button>
+                  </div>
+                </form>
+              </TabsContent>
               
-              <Button 
-                type="submit" 
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? 'Signing In...' : 'Sign In'}
-              </Button>
-            </form>
-            
-            <div className="mt-4 text-center">
-              <Button 
-                variant="link" 
-                onClick={handleResetPassword}
-                className="text-sm"
-              >
-                Forgot your password?
-              </Button>
-              </div>
+              <TabsContent value="signup">
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <div>
+                    <Label htmlFor="signup-email">Email</Label>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="signup-password">Password</Label>
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Create a password"
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    disabled={loading}
+                    className="w-full"
+                  >
+                    {loading ? 'Creating Account...' : 'Create Account'}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>
