@@ -26,8 +26,12 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { planId, paymentType, vehicleData } = await req.json();
-    logStep("Request data", { planId, paymentType, vehicleData });
+    const body = await req.json();
+    const { planId, planName, paymentType, vehicleData } = body;
+    logStep("Request data", { planId, planName, paymentType, vehicleData });
+    
+    // Use planName for pricing lookup (basic, gold, platinum)
+    const planType = planName.toLowerCase();
 
     // Try to get authenticated user, but don't fail if not authenticated
     let user = null;
@@ -64,55 +68,48 @@ serve(async (req) => {
       logStep("No existing customer found, will create new one");
     }
 
-    // Define pricing based on plan and payment type
-    const pricingMap: { [key: string]: { [key: string]: number } } = {
-      basic: {
-        monthly: 3100, // £31.00 in pence
-        yearly: 38100, // £381.00 in pence
-        twoYear: 72500, // £725.00 in pence
-        threeYear: 105000, // £1050.00 in pence
+    // Define pricing structure matching the frontend pricing table
+    const pricingTable = {
+      yearly: {
+        0: { basic: { monthly: 31, total: 372 }, gold: { monthly: 34, total: 408 }, platinum: { monthly: 36, total: 437 } },
+        50: { basic: { monthly: 29, total: 348 }, gold: { monthly: 31, total: 372 }, platinum: { monthly: 32, total: 384 } },
+        100: { basic: { monthly: 25, total: 300 }, gold: { monthly: 27, total: 324 }, platinum: { monthly: 29, total: 348 } },
+        150: { basic: { monthly: 23, total: 276 }, gold: { monthly: 26, total: 312 }, platinum: { monthly: 27, total: 324 } },
+        200: { basic: { monthly: 20, total: 240 }, gold: { monthly: 23, total: 276 }, platinum: { monthly: 25, total: 300 } }
       },
-      gold: {
-        monthly: 3400, // £34.00 in pence
-        yearly: 40900, // £409.00 in pence
-        twoYear: 77700, // £777.00 in pence
-        threeYear: 112500, // £1125.00 in pence
+      two_yearly: {
+        0: { basic: { monthly: 56, total: 670 }, gold: { monthly: 61, total: 734 }, platinum: { monthly: 65, total: 786 } },
+        50: { basic: { monthly: 52, total: 626 }, gold: { monthly: 56, total: 670 }, platinum: { monthly: 58, total: 691 } },
+        100: { basic: { monthly: 45, total: 540 }, gold: { monthly: 49, total: 583 }, platinum: { monthly: 52, total: 626 } },
+        150: { basic: { monthly: 41, total: 497 }, gold: { monthly: 47, total: 562 }, platinum: { monthly: 49, total: 583 } },
+        200: { basic: { monthly: 38, total: 456 }, gold: { monthly: 44, total: 528 }, platinum: { monthly: 46, total: 552 } }
       },
-      platinum: {
-        monthly: 3600, // £36.00 in pence
-        yearly: 43700, // £437.00 in pence
-        twoYear: 83100, // £831.00 in pence
-        threeYear: 120000, // £1200.00 in pence
+      three_yearly: {
+        0: { basic: { monthly: 82, total: 982 }, gold: { monthly: 90, total: 1077 }, platinum: { monthly: 96, total: 1153 } },
+        50: { basic: { monthly: 77, total: 919 }, gold: { monthly: 82, total: 982 }, platinum: { monthly: 84, total: 1014 } },
+        100: { basic: { monthly: 66, total: 792 }, gold: { monthly: 71, total: 855 }, platinum: { monthly: 77, total: 919 } },
+        150: { basic: { monthly: 61, total: 729 }, gold: { monthly: 69, total: 824 }, platinum: { monthly: 71, total: 855 } },
+        200: { basic: { monthly: 56, total: 672 }, gold: { monthly: 66, total: 792 }, platinum: { monthly: 69, total: 828 } }
       }
     };
 
-    const amount = pricingMap[planId]?.[paymentType];
-    if (!amount) {
-      throw new Error(`Invalid plan or payment type: ${planId}, ${paymentType}`);
+    // Extract payment details from request body
+    const { voluntaryExcess = 0 } = body;
+    
+    // Get pricing data
+    const periodData = pricingTable[paymentType as keyof typeof pricingTable] || pricingTable.yearly;
+    const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
+    const planData = excessData[planType as keyof typeof excessData];
+    
+    if (!planData) {
+      throw new Error(`Invalid plan configuration: ${planType} for ${paymentType} with ${voluntaryExcess} excess`);
     }
 
-    // Create recurring interval based on payment type
-    let interval: 'month' | 'year';
-    let intervalCount = 1;
-    
-    if (paymentType === 'monthly') {
-      interval = 'month';
-      intervalCount = 1;
-    } else if (paymentType === 'yearly') {
-      interval = 'year';
-      intervalCount = 1;
-    } else if (paymentType === 'twoYear') {
-      interval = 'year';
-      intervalCount = 2;
-    } else if (paymentType === 'threeYear') {
-      interval = 'year';
-      intervalCount = 3;
-    } else {
-      throw new Error(`Invalid payment type: ${paymentType}`);
-    }
+    // For Stripe checkout (fallback), charge the FULL amount for the entire duration
+    const amount = planData.total * 100; // Convert to pence
 
     const origin = req.headers.get("origin") || "https://buyawarranty.com";
-    logStep("Creating checkout session", { amount, interval, intervalCount, customerEmail, origin });
+    logStep("Creating one-time payment session for fallback", { amount, customerEmail, origin });
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -122,19 +119,15 @@ serve(async (req) => {
           price_data: {
             currency: "gbp",
             product_data: { 
-              name: `${planId.charAt(0).toUpperCase() + planId.slice(1)} Warranty Plan`,
-              description: `Vehicle warranty coverage - ${paymentType} billing for ${vehicleData?.regNumber || 'vehicle'}`
+              name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Warranty Plan`,
+              description: `Vehicle warranty coverage - Full ${paymentType} payment for ${vehicleData?.regNumber || 'vehicle'}`
             },
             unit_amount: amount,
-            recurring: { 
-              interval: interval,
-              interval_count: intervalCount
-            },
           },
           quantity: 1,
         },
       ],
-      mode: "subscription",
+      mode: "payment", // One-time payment for fallback
       success_url: `${origin}/thank-you?plan=${planId}&payment=${paymentType}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/`,
       automatic_tax: { enabled: false },

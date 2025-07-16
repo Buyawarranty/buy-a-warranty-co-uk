@@ -25,8 +25,12 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { planId, vehicleData } = await req.json();
-    logStep("Request data", { planId, vehicleData });
+    const body = await req.json();
+    const { planId, planName, vehicleData } = body;
+    logStep("Request data", { planId, planName, vehicleData });
+    
+    // Use planName for pricing lookup (basic, gold, platinum)
+    const planType = planName.toLowerCase();
 
     // Get authenticated user
     let user = null;
@@ -49,20 +53,47 @@ serve(async (req) => {
       logStep("No auth header, proceeding as guest checkout");
     }
 
-    // Define pricing for monthly payments only
-    const monthlyPricing: { [key: string]: number } = {
-      basic: 31.00,
-      gold: 34.00,
-      platinum: 36.00
+    // Define pricing structure matching the frontend pricing table
+    const pricingTable = {
+      yearly: {
+        0: { basic: { monthly: 31, total: 372 }, gold: { monthly: 34, total: 408 }, platinum: { monthly: 36, total: 437 } },
+        50: { basic: { monthly: 29, total: 348 }, gold: { monthly: 31, total: 372 }, platinum: { monthly: 32, total: 384 } },
+        100: { basic: { monthly: 25, total: 300 }, gold: { monthly: 27, total: 324 }, platinum: { monthly: 29, total: 348 } },
+        150: { basic: { monthly: 23, total: 276 }, gold: { monthly: 26, total: 312 }, platinum: { monthly: 27, total: 324 } },
+        200: { basic: { monthly: 20, total: 240 }, gold: { monthly: 23, total: 276 }, platinum: { monthly: 25, total: 300 } }
+      },
+      two_yearly: {
+        0: { basic: { monthly: 56, total: 670 }, gold: { monthly: 61, total: 734 }, platinum: { monthly: 65, total: 786 } },
+        50: { basic: { monthly: 52, total: 626 }, gold: { monthly: 56, total: 670 }, platinum: { monthly: 58, total: 691 } },
+        100: { basic: { monthly: 45, total: 540 }, gold: { monthly: 49, total: 583 }, platinum: { monthly: 52, total: 626 } },
+        150: { basic: { monthly: 41, total: 497 }, gold: { monthly: 47, total: 562 }, platinum: { monthly: 49, total: 583 } },
+        200: { basic: { monthly: 38, total: 456 }, gold: { monthly: 44, total: 528 }, platinum: { monthly: 46, total: 552 } }
+      },
+      three_yearly: {
+        0: { basic: { monthly: 82, total: 982 }, gold: { monthly: 90, total: 1077 }, platinum: { monthly: 96, total: 1153 } },
+        50: { basic: { monthly: 77, total: 919 }, gold: { monthly: 82, total: 982 }, platinum: { monthly: 84, total: 1014 } },
+        100: { basic: { monthly: 66, total: 792 }, gold: { monthly: 71, total: 855 }, platinum: { monthly: 77, total: 919 } },
+        150: { basic: { monthly: 61, total: 729 }, gold: { monthly: 69, total: 824 }, platinum: { monthly: 71, total: 855 } },
+        200: { basic: { monthly: 56, total: 672 }, gold: { monthly: 66, total: 792 }, platinum: { monthly: 69, total: 828 } }
+      }
     };
 
-    const amount = monthlyPricing[planId];
-    if (!amount) {
-      throw new Error(`Invalid plan for monthly payment: ${planId}`);
+    // Extract payment details from request body
+    const { paymentType = 'yearly', voluntaryExcess = 0 } = body;
+    
+    // Get pricing data
+    const periodData = pricingTable[paymentType as keyof typeof pricingTable] || pricingTable.yearly;
+    const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
+    const planData = excessData[planType as keyof typeof excessData];
+    
+    if (!planData) {
+      throw new Error(`Invalid plan configuration: ${planType} for ${paymentType} with ${voluntaryExcess} excess`);
     }
 
+    const monthlyAmount = planData.monthly;
+
     const origin = req.headers.get("origin") || "https://buyawarranty.com";
-    logStep("Creating Bumper checkout", { amount, customerEmail, origin });
+    logStep("Creating Bumper checkout", { monthlyAmount, customerEmail, origin });
 
     // Prepare Bumper API request
     const bumperApiKey = Deno.env.get("BUMPER_API_KEY");
@@ -74,7 +105,7 @@ serve(async (req) => {
 
     // Create Bumper checkout session
     const bumperPayload = {
-      amount: amount,
+      amount: monthlyAmount,
       currency: "GBP",
       customer: {
         email: customerEmail,
@@ -83,7 +114,7 @@ serve(async (req) => {
         address: vehicleData?.address || ''
       },
       metadata: {
-        plan_type: planId,
+        plan_type: planType,
         payment_type: 'monthly',
         user_id: user?.id || 'guest',
         vehicle_reg: vehicleData?.regNumber || '',
