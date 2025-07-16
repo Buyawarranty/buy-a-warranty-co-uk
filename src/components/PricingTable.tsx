@@ -483,7 +483,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       <FileText className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900">Warranty Plan Details</h4>
+                      <h4 className="font-bold text-lg text-gray-900">Warranty Plan Details</h4>
                       <p className="text-sm text-gray-600">Full breakdown of coverage</p>
                     </div>
                   </div>
