@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Zap, Mail } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface QuoteDeliveryStepProps {
   vehicleData: {
@@ -24,7 +25,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const [phone, setPhone] = useState('');
 
   const handleSkipClick = () => {
-    onSkip();
+    // Trigger confetti
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+    
+    // Small delay to let confetti start before navigating
+    setTimeout(() => {
+      onSkip();
+    }, 300);
   };
 
   const handleEmailQuoteClick = () => {
@@ -34,7 +45,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const handleSubmitContactForm = (e: React.FormEvent) => {
     e.preventDefault();
     if (fullName && email && phone) {
-      onNext({ fullName, email, phone });
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      
+      // Small delay to let confetti start before navigating
+      setTimeout(() => {
+        onNext({ fullName, email, phone });
+      }, 300);
     }
   };
 
