@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -445,48 +445,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   </div>
                 </div>
 
-                {/* Warranty Plan Details PDF */}
-                <div className="px-6 mb-6">
-                  <h4 className="font-bold text-lg mb-2 text-gray-900">Warranty Plan Details</h4>
-                  <p className="text-sm text-gray-600 mb-3">Full breakdown of coverage</p>
-                  {(() => {
-                    // Determine which PDF to show based on plan and vehicle type
-                    let pdfUrl = null;
-                    const planType = plan.name.toLowerCase();
-                    const vehicleType = vehicleData.vehicleType?.toLowerCase();
-
-                    if (vehicleType === 'motorbike') {
-                      pdfUrl = pdfUrls['motorbike'];
-                    } else if (vehicleType === 'electric' || vehicleType === 'ev') {
-                      pdfUrl = pdfUrls['electric'];
-                    } else if (vehicleType === 'phev' || vehicleType === 'hybrid') {
-                      pdfUrl = pdfUrls['phev'];
-                    } else {
-                      pdfUrl = pdfUrls[planType];
-                    }
-
-                    return pdfUrl ? (
-                      <Button
-                        variant="outline"
-                        className="w-full text-sm"
-                        onClick={() => window.open(pdfUrl, '_blank')}
-                      >
-                        View PDF (Opens in New Tab)
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        className="w-full text-sm"
-                        disabled
-                      >
-                        PDF Not Available
-                      </Button>
-                    );
-                  })()}
-                </div>
-
                 {/* Additional Components */}
-                <div className="px-6 pb-6">
+                <div className="px-6 mb-6">
                   <h4 className="font-bold text-lg mb-2 text-gray-900">
                     Additional Components (Optional Add-ons - £2.00 per item per month)
                   </h4>
@@ -514,6 +474,54 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       </div>
                     )}
                   </div>
+                </div>
+
+                {/* Warranty Plan Details PDF - Bottom Section */}
+                <div className="p-6 bg-gray-100 rounded-lg m-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <FileText className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900">Warranty Plan Details</h4>
+                      <p className="text-sm text-gray-600">Full breakdown of coverage</p>
+                    </div>
+                  </div>
+                  {(() => {
+                    // Determine which PDF to show based on plan and vehicle type
+                    let pdfUrl = null;
+                    const planType = plan.name.toLowerCase();
+                    const vehicleType = vehicleData.vehicleType?.toLowerCase();
+
+                    if (vehicleType === 'motorbike') {
+                      pdfUrl = pdfUrls['motorbike'];
+                    } else if (vehicleType === 'electric' || vehicleType === 'ev') {
+                      pdfUrl = pdfUrls['electric'];
+                    } else if (vehicleType === 'phev' || vehicleType === 'hybrid') {
+                      pdfUrl = pdfUrls['phev'];
+                    } else {
+                      pdfUrl = pdfUrls[planType];
+                    }
+
+                    return pdfUrl ? (
+                      <Button
+                        variant="outline"
+                        className="w-full text-sm bg-white hover:bg-gray-50 border-gray-300"
+                        onClick={() => window.open(pdfUrl, '_blank')}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View PDF (Opens in New Tab)
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full text-sm bg-white border-gray-300"
+                        disabled
+                      >
+                        PDF Not Available
+                      </Button>
+                    );
+                  })()}
                 </div>
               </div>
             );
