@@ -10,33 +10,53 @@ export const useAuth = () => {
   const [isMasterAdmin, setIsMasterAdmin] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
+    
     // Check for master admin status
     const masterAdminStatus = localStorage.getItem('masterAdmin') === 'true';
     setIsMasterAdmin(masterAdminStatus);
 
+    // Get initial session first
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (mounted && !error) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error getting initial session:', error);
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-        
-        // Clear master admin status if regular user logs in
-        if (session?.user) {
-          setIsMasterAdmin(false);
-          localStorage.removeItem('masterAdmin');
+        if (mounted) {
+          console.log('Auth state changed:', event, session?.user?.email);
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+          
+          // Clear master admin status if regular user logs in
+          if (session?.user) {
+            setIsMasterAdmin(false);
+            localStorage.removeItem('masterAdmin');
+          }
         }
       }
     );
 
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    getInitialSession();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
