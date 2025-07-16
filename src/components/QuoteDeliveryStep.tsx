@@ -225,25 +225,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button 
-                  type="button" 
-                  onClick={() => setShowContactForm(false)}
-                  className="flex items-center justify-center gap-2 text-sm sm:text-base font-medium py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200"
-                style={{
-                  backgroundColor: '#f3f4f6',
-                  borderColor: '#f3f4f6',
-                  color: '#374151'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#e5e7eb';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f3f4f6';
-                }}
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back
-                </button>
-                <button 
                   type="submit" 
                   disabled={!isFormValid}
                   className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
@@ -264,6 +245,25 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 >
                   Get My Quote
                   <ArrowRight className="w-4 h-4" />
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowContactForm(false)}
+                  className="flex items-center justify-center gap-2 text-sm sm:text-base font-medium py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200"
+                style={{
+                  backgroundColor: '#f3f4f6',
+                  borderColor: '#f3f4f6',
+                  color: '#374151'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e5e7eb';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                }}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
                 </button>
               </div>
             </form>
