@@ -348,8 +348,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       <div className="flex justify-center mb-12 px-8">
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 w-full max-w-2xl">
           <h3 className="text-xl font-bold text-center mb-4 text-gray-900">Voluntary Excess Amount</h3>
-          <div className="grid grid-cols-5 gap-3">
-            {[0, 50, 100, 150, 200].map((amount) => (
+          <div className="grid grid-cols-4 gap-3">
+            {[0, 50, 100, 150].map((amount) => (
               <button
                 key={amount}
                 onClick={() => toggleVoluntaryExcess(amount)}
