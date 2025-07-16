@@ -269,6 +269,66 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         )}
       </div>
 
+      {/* Payment Period Toggle */}
+      <div className="flex justify-center mb-12 px-8">
+        <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-4xl">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
+            <button
+              onClick={() => setPaymentType('monthly')}
+              className={`px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
+                paymentType === 'monthly' 
+                  ? 'bg-[#1a365d] text-white shadow-md' 
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              Monthly
+            </button>
+            <div className="relative">
+              <button
+                onClick={() => setPaymentType('yearly')}
+                className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
+                  paymentType === 'yearly' 
+                    ? 'bg-[#1a365d] text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                1 Year
+              </button>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setPaymentType('two_yearly')}
+                className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
+                  paymentType === 'two_yearly' 
+                    ? 'bg-[#1a365d] text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                2 Years
+              </button>
+              <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
+                10% OFF
+              </div>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setPaymentType('three_yearly')}
+                className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
+                  paymentType === 'three_yearly' 
+                    ? 'bg-[#1a365d] text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                3 Years
+              </button>
+              <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
+                12% OFF
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Pricing Cards Container */}
       <div className="max-w-7xl mx-auto px-8 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
