@@ -153,7 +153,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   const calculateAddOnPrice = (planId: string) => {
     const selectedAddOnCount = Object.values(selectedAddOns[planId] || {}).filter(Boolean).length;
-    return selectedAddOnCount * 25; // £25 per add-on per year
+    return selectedAddOnCount * 2; // £2 per add-on per month
   };
 
   const toggleAddOn = (planId: string, addon: string) => {
@@ -449,7 +449,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 {/* Additional Components */}
                 <div className="px-6 pb-6">
                   <h4 className="font-bold text-lg mb-2 text-gray-900">
-                    Additional Components (Optional Add-ons - £25.00 per item p/year)
+                    Additional Components (Optional Add-ons - £2.00 per item per month)
                   </h4>
                   <div className="space-y-2">
                     {plan.add_ons.length > 0 ? (
