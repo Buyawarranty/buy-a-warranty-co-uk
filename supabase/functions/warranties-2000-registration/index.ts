@@ -27,6 +27,7 @@ interface RegistrationData {
   WarType: string;
   Month: string;
   MaxClm: string;
+  MOTExpiry: string; // MOT expiry date
 }
 
 serve(async (req) => {
