@@ -68,11 +68,10 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                   {/* Step Circle */}
                   <div 
                     className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-xs font-bold mb-1 ${
-                      isActive || isCompleted ? '' : 'bg-gray-200 text-gray-400'
+                      isActive || isCompleted ? 'text-white' : 'bg-gray-200 text-gray-400'
                     }`}
                     style={{
-                      backgroundColor: isCompleted ? '#006b3f' : isActive ? '#006b3f' : undefined,
-                      color: isActive || isCompleted ? '#006b3f' : undefined
+                      backgroundColor: isCompleted ? '#006b3f' : isActive ? '#006b3f' : undefined
                     }}
                   >
                     {isCompleted ? '✓' : stepNumber}
