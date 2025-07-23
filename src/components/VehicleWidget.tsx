@@ -51,8 +51,8 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
         <div className="relative">
           <div className="flex items-center bg-yellow-400 border-2 border-black rounded-lg p-3">
             <img 
-              src="/lovable-uploads/fe8e3966-02d3-495a-baf0-23758e594e3e.png" 
-              alt="UK Flag" 
+              src="/lovable-uploads/081c51be-1add-43a7-b083-4895a3a22de3.png" 
+              alt="UK Plate Symbol" 
               className="w-8 h-6 mr-3 rounded-sm"
             />
             <Input
