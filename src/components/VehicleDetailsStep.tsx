@@ -214,7 +214,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             Vehicle registration number
           </label>
           <div 
-            className="w-full max-w-[520px] mx-auto flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black"
+            className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <img 
