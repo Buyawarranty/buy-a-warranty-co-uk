@@ -413,7 +413,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 }}
               />
               {mileageError && (
-                <p className="text-sm text-red-500 mb-2">{mileageError}</p>
+                <div className="bg-red-50 border border-red-200 rounded-[4px] p-3 mb-2">
+                  <p className="text-sm text-red-800 font-semibold">{mileageError}</p>
+                </div>
               )}
               {!mileageError && (
                 <p className="text-sm text-black mb-4">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
