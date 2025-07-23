@@ -228,7 +228,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               type="text"
               value={regNumber}
               onChange={handleRegChange}
-              placeholder="YOUR REG"
+              placeholder="Your reg plate"
               className="bg-transparent border-none outline-none text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal tracking-normal"
               maxLength={8}
             />
