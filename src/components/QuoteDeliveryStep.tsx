@@ -61,10 +61,23 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const isFormValid = fullName && email && phone;
 
   return (
-    <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12">
+    <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {!showContactForm ? (
           <>
+            {/* Back button in top left corner */}
+            <div className="absolute top-4 left-4 z-10">
+              <button 
+                type="button" 
+                onClick={onBack}
+                className="flex items-center gap-2 font-semibold py-2 px-3 rounded-lg border-2 bg-white transition-all duration-200 text-sm hover:bg-gray-50"
+                style={{ color: '#224380', borderColor: '#224380' }}
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </button>
+            </div>
+
             <div className="text-center mb-8 sm:mb-12">
               <h1 className="text-xl sm:text-4xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight px-2">
                 How would you like to receive your quote?
@@ -130,23 +143,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               </button>
             </div>
 
-            <div className="w-full mt-8">
-              <button 
-                type="button" 
-                onClick={onBack}
-                className="w-full flex items-center justify-center gap-2 font-semibold py-3 sm:py-4 px-4 sm:px-8 rounded-xl border-2 bg-white transition-all duration-200 text-base sm:text-lg"
-                style={{ color: '#224380', borderColor: '#224380' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f0f8ff';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                }}
-              >
-                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                Back
-              </button>
-            </div>
           </>
         ) : (
           <>
