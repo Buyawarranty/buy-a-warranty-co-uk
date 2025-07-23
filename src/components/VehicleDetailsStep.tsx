@@ -82,26 +82,31 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   };
 
   const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/,/g, ''); // Remove commas for validation
+    const inputValue = e.target.value;
+    // Allow only numbers and commas
+    const cleanValue = inputValue.replace(/[^\d,]/g, '');
+    const rawValue = cleanValue.replace(/,/g, ''); // Remove commas for validation
     const numericValue = parseInt(rawValue);
     
-    if (rawValue === '') {
+    if (cleanValue === '' || rawValue === '') {
       setMileage('');
       setMileageError('');
       return;
     }
     
-    if (isNaN(numericValue)) {
-      return; // Don't update if not a valid number
+    if (isNaN(numericValue) || numericValue < 0) {
+      return; // Don't update if not a valid positive number
     }
     
     if (numericValue > 150000) {
       setMileageError('Vehicle mileage exceeds our maximum of 150,000 miles');
+      setMileage(cleanValue); // Still show what they typed
       return;
     } else {
       setMileageError('');
     }
     
+    // Format the value with commas if user didn't include them
     const formattedValue = formatMileage(rawValue);
     setMileage(formattedValue);
   };
