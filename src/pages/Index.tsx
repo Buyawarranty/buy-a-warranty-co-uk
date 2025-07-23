@@ -39,7 +39,7 @@ const Index = () => {
     vehicleType: ''
   });
   
-  const steps = ['Input Reg Plate', 'Receive Quote', 'Choose Your Plan'];
+  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
     setVehicleData(data);
