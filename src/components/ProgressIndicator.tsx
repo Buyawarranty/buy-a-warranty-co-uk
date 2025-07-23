@@ -37,12 +37,12 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
         <div className="relative">
           {/* Background Progress Track */}
           <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-          {/* Active Progress Fill - Using orange color to match button */}
+          {/* Active Progress Fill - Using green color */}
           <div 
             className="h-full rounded-full transition-all duration-300 ease-out"
             style={{ 
               width: `${progressPercentage}%`,
-              backgroundColor: '#eb4b00' // Orange color to match button
+              backgroundColor: '#00a86b' // Green color to match palette
             }}
           />
           </div>
@@ -62,7 +62,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                     isCompleted ? '' : 'text-gray-400'
                   }`}
                   style={{
-                    color: isActive || isCompleted ? '#eb4b00' : undefined
+                    color: isActive || isCompleted ? '#00a86b' : undefined
                   }}
                 >
                   {/* Step Circle */}
@@ -71,7 +71,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
                       isActive || isCompleted ? 'text-white' : 'bg-gray-200 text-gray-400'
                     }`}
                     style={{
-                      backgroundColor: isCompleted ? '#eb4b00' : isActive ? '#eb4b00' : undefined
+                      backgroundColor: isCompleted ? '#00a86b' : isActive ? '#00a86b' : undefined
                     }}
                   >
                     {isCompleted ? '✓' : stepNumber}
