@@ -202,14 +202,15 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   return (
     <section className="bg-[#e8f4fb] py-4">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-start mb-4">
-          <div>
-            <h2 className="text-4xl font-bold text-gray-800 text-left">Let's find your vehicle 🚗 🔍</h2>
-            <p className="text-lg text-gray-600 mt-1 text-left">Let's start with your vehicle details</p>
+        <div className="flex justify-center mb-4">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold text-gray-800">Let's find your vehicle 🚗 🔍</h2>
+            <p className="text-lg text-gray-600 mt-1">Let's start with your vehicle details</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <div className="flex flex-col items-center">
+          <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
           <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700 text-xl">
             Vehicle registration number
           </label>
@@ -432,7 +433,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               </button>
             </>
           )}
-        </form>
+          </form>
+        </div>
       </div>
     </section>
   );
