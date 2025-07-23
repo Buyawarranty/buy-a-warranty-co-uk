@@ -155,7 +155,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     
     // Check if mileage is empty
     if (!mileage.trim()) {
-      setMileageError('Please enter your vehicle mileage');
+      setMileageError('Please enter approximate mileage');
       return;
     }
     
