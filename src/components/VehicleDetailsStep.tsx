@@ -421,6 +421,13 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <p className="text-sm text-black mb-4">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
               )}
 
+              {/* Error message above Get My Quote button */}
+              {mileageError && (
+                <div className="bg-red-50 border border-red-200 rounded-[4px] p-3 mb-4">
+                  <p className="text-sm text-red-800 font-semibold">{mileageError}</p>
+                </div>
+              )}
+
               <button 
                 type="submit"
                 disabled={showManualEntry ? !isManualFormValid : !isAutoFormValid}
