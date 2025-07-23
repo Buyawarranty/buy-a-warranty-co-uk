@@ -244,7 +244,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               type="button"
               onClick={handleFindCar}
               disabled={!regNumber || isLookingUp}
-              className="w-full max-w-[520px] block text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 animate-pulse"
+              className="w-full max-w-[520px] block text-white text-[15px] font-bold py-[12px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 animate-[pulse_3s_ease-in-out_infinite]"
               style={{
                 backgroundColor: regNumber && !isLookingUp ? '#eb4b00' : '#eb4b00',
                 borderColor: regNumber && !isLookingUp ? '#eb4b00' : '#eb4b00',
@@ -430,7 +430,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               <button 
                 type="submit"
                 disabled={showManualEntry ? !isManualFormValid : !isAutoFormValid}
-                className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed btn-breathing animate-pulse"
+                className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed btn-breathing animate-[pulse_3s_ease-in-out_infinite]"
                 style={{
                   backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
                   borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
