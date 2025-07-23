@@ -226,7 +226,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             <img 
               src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
               alt="GB Flag" 
-              className="h-full w-auto mr-[15px] object-cover rounded-[2px]"
+              className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
             />
             <input
               id="regInput"
