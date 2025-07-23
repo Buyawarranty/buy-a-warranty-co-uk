@@ -69,20 +69,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               <h1 className="text-xl sm:text-4xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight px-2">
                 How would you like to receive your quote?
               </h1>
-              <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8">
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-700 text-sm sm:text-base px-2">
-                  <div className="w-8 h-8 bg-red-50 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-red-500 text-lg">⏰</span>
-                  </div>
-                  <span className="text-center font-medium">Instant Quote – No Waiting, No Hassle</span>
-                </div>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-700 text-sm sm:text-base px-2">
-                  <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-blue-500 text-lg">🛡️</span>
-                  </div>
-                  <span className="text-center font-medium">No Spam. Just Your Best Price</span>
-                </div>
-              </div>
             </div>
 
             <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
