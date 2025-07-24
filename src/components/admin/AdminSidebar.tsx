@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Users, FileText, Car, BarChart3 } from 'lucide-react';
+import { Users, FileText, Car, BarChart3, Mail } from 'lucide-react';
 
 interface AdminSidebarProps {
   activeTab: string;
@@ -26,6 +26,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
       label: 'Special Vehicle Plans',
       icon: Car,
       description: 'Manage EV, PHEV, and Motorbike plans'
+    },
+    {
+      id: 'emails',
+      label: 'Email Management',
+      icon: Mail,
+      description: 'Manage email templates and campaigns'
     },
     {
       id: 'analytics',
