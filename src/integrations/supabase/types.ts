@@ -231,6 +231,7 @@ export type Database = {
           is_active: boolean
           monthly_price: number
           name: string
+          pricing_matrix: Json | null
           three_yearly_price: number | null
           two_yearly_price: number | null
           updated_at: string
@@ -244,6 +245,7 @@ export type Database = {
           is_active?: boolean
           monthly_price: number
           name: string
+          pricing_matrix?: Json | null
           three_yearly_price?: number | null
           two_yearly_price?: number | null
           updated_at?: string
@@ -257,6 +259,7 @@ export type Database = {
           is_active?: boolean
           monthly_price?: number
           name?: string
+          pricing_matrix?: Json | null
           three_yearly_price?: number | null
           two_yearly_price?: number | null
           updated_at?: string
@@ -272,6 +275,7 @@ export type Database = {
           is_active: boolean
           monthly_price: number
           name: string
+          pricing_matrix: Json | null
           three_yearly_price: number | null
           two_yearly_price: number | null
           updated_at: string
@@ -285,6 +289,7 @@ export type Database = {
           is_active?: boolean
           monthly_price: number
           name: string
+          pricing_matrix?: Json | null
           three_yearly_price?: number | null
           two_yearly_price?: number | null
           updated_at?: string
@@ -298,6 +303,7 @@ export type Database = {
           is_active?: boolean
           monthly_price?: number
           name?: string
+          pricing_matrix?: Json | null
           three_yearly_price?: number | null
           two_yearly_price?: number | null
           updated_at?: string

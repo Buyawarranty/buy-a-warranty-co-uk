@@ -19,6 +19,7 @@ interface SpecialPlan {
   three_yearly_price: number | null;
   coverage: string[];
   is_active: boolean;
+  pricing_matrix?: any;
 }
 
 interface VehicleData {
@@ -149,8 +150,17 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const getMonthlyDisplayPrice = () => {
     if (!plan) return 0;
     
-    // Use the same pricing logic as gold plan from normal pricing table
-    const pricingTable = {
+    // Try to use database pricing matrix first, fallback to hardcoded
+    if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
+      const matrix = plan.pricing_matrix as any;
+      const periodData = matrix[paymentType];
+      if (periodData && periodData[voluntaryExcess.toString()]) {
+        return periodData[voluntaryExcess.toString()].monthly || 0;
+      }
+    }
+    
+    // Fallback to hardcoded pricing (Gold plan equivalent)
+    const fallbackPricingTable = {
       yearly: {
         0: { monthly: 34 },
         50: { monthly: 31 },
@@ -174,7 +184,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
       }
     };
     
-    const periodData = pricingTable[paymentType as keyof typeof pricingTable] || pricingTable.yearly;
+    const periodData = fallbackPricingTable[paymentType as keyof typeof fallbackPricingTable] || fallbackPricingTable.yearly;
     const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
     
     return excessData.monthly;

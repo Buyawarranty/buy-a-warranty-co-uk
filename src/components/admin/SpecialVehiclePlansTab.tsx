@@ -22,6 +22,7 @@ interface SpecialPlan {
   three_yearly_price: number | null;
   coverage: string[];
   is_active: boolean;
+  pricing_matrix: any;
 }
 
 const SpecialVehiclePlansTab = () => {
@@ -29,6 +30,7 @@ const SpecialVehiclePlansTab = () => {
   const [editingPlan, setEditingPlan] = useState<SpecialPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [coverageText, setCoverageText] = useState('');
+  const [showPricingMatrix, setShowPricingMatrix] = useState(false);
   const { toast } = useToast();
 
   const fetchPlans = async () => {
@@ -68,6 +70,32 @@ const SpecialVehiclePlansTab = () => {
     setCoverageText(plan.coverage.join('\n'));
   };
 
+  const updatePricingMatrix = (period: string, excess: string, field: string, value: number) => {
+    if (!editingPlan) return;
+    
+    const matrix = editingPlan.pricing_matrix || {};
+    const updatedMatrix = {
+      ...matrix,
+      [period]: {
+        ...(matrix[period] || {}),
+        [excess]: {
+          ...(matrix[period]?.[excess] || {}),
+          [field]: value
+        }
+      }
+    };
+    
+    setEditingPlan({
+      ...editingPlan,
+      pricing_matrix: updatedMatrix
+    });
+  };
+
+  const getPricingValue = (period: string, excess: string, field: string): number => {
+    if (!editingPlan?.pricing_matrix) return 0;
+    return editingPlan.pricing_matrix[period]?.[excess]?.[field] || 0;
+  };
+
   const handleSave = async () => {
     if (!editingPlan) return;
 
@@ -84,6 +112,7 @@ const SpecialVehiclePlansTab = () => {
           three_yearly_price: editingPlan.three_yearly_price,
           coverage: coverageArray,
           is_active: editingPlan.is_active,
+          pricing_matrix: editingPlan.pricing_matrix
         })
         .eq('id', editingPlan.id);
 
@@ -96,6 +125,7 @@ const SpecialVehiclePlansTab = () => {
 
       setEditingPlan(null);
       setCoverageText('');
+      setShowPricingMatrix(false);
       fetchPlans();
     } catch (error) {
       console.error('Error updating plan:', error);
@@ -110,6 +140,7 @@ const SpecialVehiclePlansTab = () => {
   const handleCancel = () => {
     setEditingPlan(null);
     setCoverageText('');
+    setShowPricingMatrix(false);
   };
 
 
@@ -222,6 +253,50 @@ const SpecialVehiclePlansTab = () => {
                       />
                     </div>
                   </div>
+
+                  <div className="flex justify-between items-center">
+                    <Button
+                      onClick={() => setShowPricingMatrix(!showPricingMatrix)}
+                      variant="outline"
+                      size="sm"
+                      className="text-purple-600 border-purple-300 hover:bg-purple-50"
+                    >
+                      {showPricingMatrix ? 'Hide' : 'Show'} Pricing Matrix
+                    </Button>
+                  </div>
+
+                  {showPricingMatrix && (
+                    <div className="space-y-6 border rounded-lg p-4 bg-gray-50">
+                      <h4 className="font-bold text-lg text-gray-900">Pricing Matrix (by Payment Period & Voluntary Excess)</h4>
+                      
+                      {['yearly', 'two_yearly', 'three_yearly'].map((period) => (
+                        <div key={period} className="space-y-3">
+                          <h5 className="font-semibold text-md capitalize text-gray-800">
+                            {period.replace('_', ' ')} Pricing
+                          </h5>
+                          <div className="grid grid-cols-5 gap-3">
+                            {['0', '50', '100', '150', '200'].map((excess) => (
+                              <div key={excess} className="bg-white p-3 rounded border">
+                                <div className="text-sm font-medium text-gray-600 mb-2">£{excess} Excess</div>
+                                <div className="space-y-2">
+                                  <div>
+                                    <label className="text-xs text-gray-500">Monthly £</label>
+                                    <Input
+                                      type="number"
+                                      step="0.01"
+                                      value={getPricingValue(period, excess, 'monthly')}
+                                      onChange={(e) => updatePricingMatrix(period, excess, 'monthly', parseFloat(e.target.value) || 0)}
+                                      className="text-xs h-8"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   <div>
                     <Label htmlFor="coverage">Coverage (one item per line)</Label>
