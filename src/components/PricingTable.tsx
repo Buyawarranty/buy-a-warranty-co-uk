@@ -317,68 +317,64 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       </div>
 
       {/* Payment Period Toggle */}
-      <div className="flex justify-center mb-12 px-8">
-        <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-3xl">
-          <div className="grid grid-cols-3 gap-1">
-            <div className="relative">
-              <button
-                onClick={() => setPaymentType('yearly')}
-                className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                  paymentType === 'yearly' 
-                    ? 'bg-[#1a365d] text-white shadow-md' 
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                1 year
-              </button>
+      <div className="flex justify-center mb-8 px-4">
+        <div className="bg-white rounded-2xl p-1 shadow-lg border border-gray-200 inline-flex">
+          <button
+            onClick={() => setPaymentType('yearly')}
+            className={`px-8 py-3 rounded-xl text-lg font-semibold transition-all duration-200 ${
+              paymentType === 'yearly' 
+                ? 'bg-[#1a365d] text-white shadow-md' 
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            1 year
+          </button>
+          <div className="relative">
+            <button
+              onClick={() => setPaymentType('two_yearly')}
+              className={`px-8 py-3 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                paymentType === 'two_yearly' 
+                  ? 'bg-[#1a365d] text-white shadow-md' 
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              2 year
+            </button>
+            <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+              10% OFF
             </div>
-            <div className="relative">
-              <button
-                onClick={() => setPaymentType('two_yearly')}
-                className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                  paymentType === 'two_yearly' 
-                    ? 'bg-[#1a365d] text-white shadow-md' 
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                2 year
-              </button>
-              <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
-                10% OFF
-              </div>
-            </div>
-            <div className="relative">
-              <button
-                onClick={() => setPaymentType('three_yearly')}
-                className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                  paymentType === 'three_yearly' 
-                    ? 'bg-[#1a365d] text-white shadow-md' 
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                3 year
-              </button>
-              <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
-                20% OFF
-              </div>
+          </div>
+          <div className="relative">
+            <button
+              onClick={() => setPaymentType('three_yearly')}
+              className={`px-8 py-3 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                paymentType === 'three_yearly' 
+                  ? 'bg-[#1a365d] text-white shadow-md' 
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              3 year
+            </button>
+            <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+              20% OFF
             </div>
           </div>
         </div>
       </div>
 
       {/* Voluntary Excess Selection */}
-      <div className="flex justify-center mb-12 px-8">
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 w-full max-w-2xl">
-          <h3 className="text-xl font-bold text-center mb-4 text-gray-900">Voluntary Excess Amount</h3>
-          <div className="grid grid-cols-4 gap-3">
+      <div className="flex justify-center mb-12 px-4">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 w-full max-w-3xl">
+          <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">Voluntary Excess Amount</h3>
+          <div className="flex justify-center gap-4">
             {[0, 50, 100, 150].map((amount) => (
               <button
                 key={amount}
                 onClick={() => toggleVoluntaryExcess(amount)}
-                className={`p-3 rounded-lg border text-sm font-semibold transition-all duration-200 ${
+                className={`px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 min-w-[100px] ${
                   voluntaryExcess === amount
-                    ? 'bg-[#1a365d] text-white border-[#1a365d]'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
+                    ? 'bg-[#1a365d] text-white border-2 border-[#1a365d]'
+                    : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-[#1a365d]'
                 }`}
               >
                 £{amount}
@@ -389,8 +385,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       </div>
 
       {/* Pricing Cards Container */}
-      <div className="max-w-7xl mx-auto px-8 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {plans.map((plan) => {
             const basePrice = calculatePlanPrice(plan);
             const addOnPrice = calculateAddOnPrice(plan.id);
@@ -400,56 +396,54 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             const savings = getPlanSavings(plan);
             
             return (
-              <div key={plan.id} className={`bg-white rounded-lg shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-500' : 'border border-gray-200'}`}>
+              <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-400' : 'border border-gray-200'}`}>
                 {isPopular && (
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 z-10">
-                    <Badge className="bg-yellow-500 hover:bg-yellow-500 text-white text-xs px-3 py-1 rounded-full">
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+                    <div className="bg-yellow-400 text-white text-sm font-bold px-4 py-1 rounded-full">
                       MOST POPULAR
-                    </Badge>
+                    </div>
                   </div>
                 )}
                 
                 {/* Plan Header */}
-                <div className="p-6 text-center pt-12">
-                  <h3 className={`text-5xl font-bold mb-4 ${
+                <div className="p-8 text-center">
+                  <h3 className={`text-4xl font-bold mb-4 ${
                     plan.name === 'Basic' ? 'text-blue-900' :
                     plan.name === 'Gold' ? 'text-yellow-600' :
                     'text-orange-600'
                   }`}>
                     {plan.name}
                   </h3>
-                  <p className="text-gray-900 text-2xl font-bold mb-6">
+                  <p className="text-gray-900 text-xl font-bold mb-6">
                     {paymentType === 'yearly' ? '1 Year warranty' :
                      paymentType === 'two_yearly' ? '2 Year warranty' :
                      paymentType === 'three_yearly' ? '3 Year warranty' :
                      '1 Year warranty'}
                    </p>
-                   <div className="text-4xl font-bold text-gray-900 mb-2">
+                   <div className="text-4xl font-bold text-gray-900 mb-3">
                      <span className="text-2xl">£</span>{totalPrice}<span className="text-2xl">/mo</span>
                    </div>
-                   <div className="text-gray-600 text-base mb-4">
+                   <div className="text-gray-600 text-base mb-6">
                      for 12 months interest free
                    </div>
                    {savings && paymentType !== 'yearly' && (
-                     <div className="text-green-600 font-bold text-lg mb-4">
+                     <div className="text-green-600 font-bold text-lg mb-6">
                        You Save £{savings}
                      </div>
                    )}
                    
-                   {/* Buy Now Button - moved here */}
-                   <div className="mb-6">
-                     <Button
-                       onClick={() => handleSelectPlan(plan)}
-                       disabled={isLoading}
-                       className={`w-full py-4 font-bold text-lg rounded-lg transition-colors duration-200 ${
-                         plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
-                         plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
-                         'bg-orange-500 hover:bg-orange-600 text-white'
-                       }`}
-                     >
-                       {isLoading ? 'Processing...' : 'Buy Now'}
-                     </Button>
-                   </div>
+                   {/* Buy Now Button */}
+                   <Button
+                     onClick={() => handleSelectPlan(plan)}
+                     disabled={isLoading}
+                     className={`w-full py-4 font-bold text-lg rounded-xl transition-colors duration-200 ${
+                       plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
+                       plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
+                       'bg-orange-500 hover:bg-orange-600 text-white'
+                     }`}
+                   >
+                     {isLoading ? 'Processing...' : 'Buy Now'}
+                   </Button>
                  </div>
 
                  {/* What's Covered */}
