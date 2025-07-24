@@ -242,7 +242,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
         )}
         
         {/* Grey back button at bottom */}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-end">
           <button 
             type="button" 
             onClick={onBack}
