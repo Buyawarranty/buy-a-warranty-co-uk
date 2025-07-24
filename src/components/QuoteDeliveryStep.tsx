@@ -107,6 +107,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   };
 
   const isFormValid = fullName.trim() && email.trim() && !errors.fullName && !errors.email && !errors.phone;
+  const areRequiredFieldsFilled = fullName.trim() && email.trim();
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
@@ -154,10 +155,14 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
               <button 
                 onClick={handleSkipClick}
-                className="w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg"
+                className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg ${
+                  areRequiredFieldsFilled ? '' : 'opacity-50'
+                }`}
                 style={{ backgroundColor: '#224380' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#1a3460';
+                  if (areRequiredFieldsFilled) {
+                    e.currentTarget.style.backgroundColor = '#1a3460';
+                  }
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = '#224380';
