@@ -110,6 +110,28 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
+      {/* Back button at top left */}
+      <div className="max-w-4xl mx-auto mb-4">
+        <button 
+          type="button" 
+          onClick={onBack}
+          className="flex items-center gap-2 text-sm sm:text-base font-medium py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200"
+          style={{
+            backgroundColor: '#f3f4f6',
+            borderColor: '#f3f4f6',
+            color: '#374151'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#e5e7eb';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#f3f4f6';
+          }}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </button>
+      </div>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {!showContactForm ? (
