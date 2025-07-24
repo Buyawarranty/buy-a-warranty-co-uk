@@ -439,9 +439,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   >
                     {isLoading ? 'Processing...' : 'Buy Now'}
                   </Button>
-                  <p className="text-xs text-gray-500 text-center mt-2">
-                    Login details will be emailed after purchase
-                  </p>
                 </div>
 
                 {/* What's Covered */}
