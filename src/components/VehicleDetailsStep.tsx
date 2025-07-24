@@ -212,7 +212,6 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           <div className="flex-1"></div>
           <div className="text-center flex-1">
             <h2 className="text-4xl font-bold text-gray-800">Let's find your vehicle 🚗 🔍</h2>
-            <p className="text-lg text-gray-600 mt-1">Let's start with your vehicle details</p>
           </div>
           <div className="flex-1 flex justify-end">
             <TrustpilotHeader className="pr-4" />
