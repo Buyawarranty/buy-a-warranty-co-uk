@@ -423,9 +423,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     {plan.name}
                   </h3>
                   <p className="text-gray-600 text-base mb-4">
-                    {plan.name === 'Basic' ? '1 Year warranty' :
-                     plan.name === 'Gold' ? '2 Year warranty' :
-                     '3 Year warranty'}
+                    {paymentType === 'yearly' ? '1 Year warranty' :
+                     paymentType === 'two_yearly' ? '2 Year warranty' :
+                     paymentType === 'three_yearly' ? '3 Year warranty' :
+                     '1 Year warranty'}
                   </p>
                   <div className="mb-2">
                     <span className="text-sm text-gray-600">£</span>
