@@ -208,7 +208,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     <section className="bg-[#e8f4fb] py-2">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
         <div className="mb-4">
-          <div className="text-left">
+          <div className="text-center">
             <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 whitespace-nowrap">Let's find your vehicle 🚗 🔍</h2>
           </div>
         </div>
