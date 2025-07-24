@@ -424,7 +424,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                      '1 Year warranty'}
                    </p>
                   <div className="text-3xl font-bold text-gray-900 mb-1">
-                    £{totalPrice}
+                    <span className="text-lg">£</span>{totalPrice}
                   </div>
                   <div className="text-gray-600 text-base mb-2">
                     for 12 months interest free
@@ -620,7 +620,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         {plan.name}
                       </h4>
                        <div className="flex items-baseline gap-1">
-                         <span className="text-2xl font-bold">£{Math.round(totalPrice)}</span>
+                         <span className="text-sm">£</span><span className="text-2xl font-bold">{Math.round(totalPrice)}</span>
                          <span className="text-sm text-gray-600">x 12</span>
                        </div>
                       {savings && paymentType !== 'yearly' && (
