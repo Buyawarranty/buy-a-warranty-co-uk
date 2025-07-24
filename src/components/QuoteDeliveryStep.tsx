@@ -304,28 +304,52 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   Back
                 </button>
                 
-                <button 
-                  type="submit" 
-                  title={!isFormValid ? "Please enter details" : ""}
-                  className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                  style={{
-                    backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
-                    borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (isFormValid) {
-                      e.currentTarget.style.backgroundColor = '#d43f00';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (isFormValid) {
-                      e.currentTarget.style.backgroundColor = '#eb4b00';
-                    }
-                  }}
-                >
-                  View my quote now
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                <div className="flex gap-3">
+                  <button 
+                    type="button" 
+                    onClick={onSkip}
+                    className="flex items-center justify-center gap-2 text-sm sm:text-base font-medium py-3 sm:py-3 px-4 sm:px-6 rounded-lg border-2 transition-all duration-200 hover-scale"
+                    style={{
+                      backgroundColor: 'transparent',
+                      borderColor: '#d1d5db',
+                      color: '#6b7280'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#9ca3af';
+                      e.currentTarget.style.color = '#374151';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#d1d5db';
+                      e.currentTarget.style.color = '#6b7280';
+                    }}
+                  >
+                    Skip this step
+                  </button>
+                  
+                  <button 
+                    type="submit" 
+                    disabled={!isFormValid}
+                    title={!isFormValid ? "Please enter details" : ""}
+                    className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                    style={{
+                      backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
+                      borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (isFormValid) {
+                        e.currentTarget.style.backgroundColor = '#d43f00';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (isFormValid) {
+                        e.currentTarget.style.backgroundColor = '#eb4b00';
+                      }
+                    }}
+                  >
+                    View my quote now
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </form>
           </>
