@@ -111,14 +111,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
-      {/* Sticky Trustpilot logo */}
-      <div className="sticky top-4 float-right z-20 mb-4">
-        <img 
-          src="/lovable-uploads/0ae93d6c-222e-46e2-8e73-9760bf2b943d.png" 
-          alt="Trustpilot 5 stars" 
-          className="h-10 sm:h-12 w-auto ml-auto"
-        />
-      </div>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {!showContactForm ? (
