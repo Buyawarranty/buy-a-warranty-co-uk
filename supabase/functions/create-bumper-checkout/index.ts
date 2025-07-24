@@ -145,7 +145,7 @@ serve(async (req) => {
       }
     });
 
-    const bumperResponse = await fetch("https://api.bumper.co/v1/checkout/sessions", {
+    const bumperResponse = await fetch("https://api.demo.bumper.co/v1/checkout/sessions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
