@@ -46,10 +46,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
 
   useEffect(() => {
     fetchPlans();
     fetchPdfUrls();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show floating bar when user scrolls past the initial pricing cards
+      const scrollY = window.scrollY;
+      setIsFloatingBarVisible(scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const fetchPlans = async () => {
@@ -574,6 +587,58 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           })}
         </div>
       </div>
+
+      {/* Floating Action Bar */}
+      {isFloatingBarVisible && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50 animate-slide-up">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              {plans.map((plan) => {
+                const basePrice = calculatePlanPrice(plan);
+                const addOnPrice = calculateAddOnPrice(plan.id);
+                const totalPrice = basePrice + addOnPrice;
+                const isLoading = loading[plan.id];
+                const savings = getPlanSavings(plan);
+                
+                return (
+                  <div key={plan.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex-1">
+                      <h4 className={`font-bold text-lg ${
+                        plan.name === 'Basic' ? 'text-blue-900' :
+                        plan.name === 'Gold' ? 'text-yellow-600' :
+                        'text-orange-600'
+                      }`}>
+                        {plan.name}
+                      </h4>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-bold">£{Math.round(totalPrice)}</span>
+                        <span className="text-sm text-gray-600">/month</span>
+                      </div>
+                      {savings && paymentType !== 'yearly' && (
+                        <div className="text-green-600 font-semibold text-sm">
+                          Save £{savings}
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      onClick={() => handleSelectPlan(plan)}
+                      disabled={isLoading}
+                      size="sm"
+                      className={`ml-4 px-6 py-2 font-semibold rounded-lg transition-colors duration-200 ${
+                        plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
+                        plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
+                        'bg-[#eb4b00] hover:bg-[#d44300] text-white'
+                      }`}
+                    >
+                      {isLoading ? 'Processing...' : 'Buy Now'}
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
