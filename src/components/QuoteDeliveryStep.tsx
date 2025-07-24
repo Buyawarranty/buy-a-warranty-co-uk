@@ -111,6 +111,15 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
+      {/* Back button positioned at top left */}
+      <button 
+        type="button" 
+        onClick={onBack}
+        className="absolute top-4 left-4 z-10 flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back
+      </button>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {!showContactForm ? (
@@ -181,18 +190,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 <p className="text-center text-sm text-gray-500 mt-2">
                   Unsubscribe at any time
                 </p>
-              </div>
-
-              {/* Back button positioned below email quote button */}
-              <div className="flex justify-center mt-8">
-                <button 
-                  type="button" 
-                  onClick={onBack}
-                  className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back
-                </button>
               </div>
             </div>
 
@@ -278,26 +275,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 )}
               </div>
 
-              <div className="flex justify-between items-center">
-                <button 
-                  type="button" 
-                  onClick={() => setShowContactForm(false)}
-                  className="flex items-center justify-center gap-2 text-sm sm:text-base font-medium py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200"
-                style={{
-                  backgroundColor: '#f3f4f6',
-                  borderColor: '#f3f4f6',
-                  color: '#374151'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#e5e7eb';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f3f4f6';
-                }}
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back
-                </button>
+              <div className="flex justify-end items-center">
                 
                 <div className="flex gap-3">
                   <button 
