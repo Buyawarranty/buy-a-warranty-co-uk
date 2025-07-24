@@ -70,6 +70,8 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
     if (!phone.trim()) {
       newErrors.phone = 'Phone number is required';
+    } else if (!/^(07\d{9}|01\d{8,9}|02\d{8,9})$/.test(phone.replace(/\s/g, ''))) {
+      newErrors.phone = 'Please enter a valid UK phone number';
     }
 
     setErrors(newErrors);
