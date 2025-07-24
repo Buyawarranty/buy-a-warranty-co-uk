@@ -116,29 +116,31 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 </div>
               </div>
 
-              <button 
-                onClick={handleEmailQuoteClick}
-                className="w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg"
-                style={{ backgroundColor: '#eb4b00' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#d43f00';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#eb4b00';
-                }}
-              >
-                <Mail className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
-                <div className="text-center px-8 sm:px-12">
-                  <div className="text-base sm:text-xl leading-tight">
-                    Email me my quote
+              <div>
+                <button 
+                  onClick={handleEmailQuoteClick}
+                  className="w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg"
+                  style={{ backgroundColor: '#eb4b00' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#d43f00';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#eb4b00';
+                  }}
+                >
+                  <Mail className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
+                  <div className="text-center px-8 sm:px-12">
+                    <div className="text-base sm:text-xl leading-tight">
+                      Email me my quote
+                    </div>
                   </div>
-                </div>
-                <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
-              </button>
-              
-              <p className="text-center text-sm text-gray-500 mt-2">
-                Unsubscribe at any time
-              </p>
+                  <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
+                </button>
+                
+                <p className="text-center text-sm text-gray-500 mt-2">
+                  Unsubscribe at any time
+                </p>
+              </div>
             </div>
 
           </>
