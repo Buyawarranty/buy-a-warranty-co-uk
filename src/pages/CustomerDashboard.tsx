@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, FileText, User, Mail, Lock, MapPin, CreditCard } from 'lucide-react';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 interface CustomerPolicy {
   id: string;
@@ -248,6 +249,7 @@ const CustomerDashboard = () => {
               <h1 className="text-2xl font-bold text-gray-900">Customer Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
+              <TrustpilotHeader />
               <span className="text-sm text-gray-600">Welcome, {user?.email}</span>
               <Button variant="outline" onClick={handleSignOut}>
                 Sign Out

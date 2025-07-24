@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Zap, Mail } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import trustpilotLogo from '@/assets/trustpilot-5-stars.png';
 
 interface QuoteDeliveryStepProps {
   vehicleData: {
@@ -136,7 +135,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
         {/* Trustpilot logo */}
         <div className="flex items-center">
           <img 
-            src={trustpilotLogo} 
+            src="/lovable-uploads/4e4faf8a-b202-4101-a858-9c58ad0a28c5.png" 
             alt="Trustpilot 5 stars" 
             className="h-10 sm:h-12 w-auto"
           />

@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 const PaymentFallback = () => {
   const [searchParams] = useSearchParams();
@@ -68,8 +69,16 @@ const PaymentFallback = () => {
   };
 
   return (
-    <div className="bg-[#e8f4fb] min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+    <div className="bg-[#e8f4fb] min-h-screen flex flex-col">
+      {/* Trustpilot header */}
+      <div className="w-full px-4 pt-4">
+        <div className="max-w-6xl mx-auto">
+          <TrustpilotHeader />
+        </div>
+      </div>
+      
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
         <div className="mb-6">
           <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,6 +116,7 @@ const PaymentFallback = () => {
           <p className="text-xs text-gray-500">
             Your payment will be processed securely. All personal information is encrypted and protected.
           </p>
+        </div>
         </div>
       </div>
     </div>

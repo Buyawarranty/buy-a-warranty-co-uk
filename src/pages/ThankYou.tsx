@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -101,16 +102,24 @@ const ThankYou = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4" style={{ minHeight: 'calc(100vh - 2rem)' }}>
-      <div className="max-w-2xl w-full text-center space-y-8">
-        <div className="space-y-4">
-          <div className="flex justify-center mb-6">
-            <img 
-              src="/lovable-uploads/9b53da8c-70f3-4fc2-8497-e1958a650b4a.png" 
-              alt="BuyAWarranty Logo" 
-              className="h-16 w-auto"
-            />
-          </div>
+    <div className="bg-gradient-to-br from-blue-50 to-orange-50 min-h-screen flex flex-col">
+      {/* Trustpilot header */}
+      <div className="w-full px-4 pt-4">
+        <div className="max-w-6xl mx-auto">
+          <TrustpilotHeader />
+        </div>
+      </div>
+      
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full text-center space-y-8">
+          <div className="space-y-4">
+            <div className="flex justify-center mb-6">
+              <img 
+                src="/lovable-uploads/9b53da8c-70f3-4fc2-8497-e1958a650b4a.png" 
+                alt="BuyAWarranty Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
           <div className="text-6xl mb-4">🎉</div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Thanks for your purchase!
@@ -160,6 +169,7 @@ const ThankYou = () => {
           <h3 className="text-lg text-gray-500">
             Check your inbox for login details to access your customer dashboard
           </h3>
+        </div>
         </div>
       </div>
     </div>

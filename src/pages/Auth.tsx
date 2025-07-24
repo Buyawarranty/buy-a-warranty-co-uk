@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 const Auth = () => {
   const { toast } = useToast();
@@ -170,8 +171,16 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex flex-col">
+      {/* Trustpilot header */}
+      <div className="w-full px-4 pt-4">
+        <div className="max-w-6xl mx-auto">
+          <TrustpilotHeader />
+        </div>
+      </div>
+      
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
             <img 
@@ -276,6 +285,7 @@ const Auth = () => {
             </Tabs>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );

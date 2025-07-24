@@ -5,6 +5,7 @@ import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import ProgressIndicator from '@/components/ProgressIndicator';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 interface VehicleData {
   regNumber: string;
@@ -67,6 +68,13 @@ const Index = () => {
 
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
+      {/* Trustpilot header */}
+      <div className="w-full px-4 pt-4">
+        <div className="max-w-6xl mx-auto">
+          <TrustpilotHeader />
+        </div>
+      </div>
+      
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
       
       {currentStep === 1 && (
