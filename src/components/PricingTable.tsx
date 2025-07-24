@@ -229,11 +229,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       };
 
       if (true) { // Try Bumper API first, fallback to Stripe if needed
+        console.log('Attempting Bumper checkout with data:', checkoutData);
         const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
           body: checkoutData
         });
 
+        console.log('Bumper response:', { bumperData, bumperError });
         if (bumperError || bumperData?.fallbackToStripe) {
+          console.log('Falling back to Stripe due to:', bumperError || 'Bumper fallback flag');
           const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
             body: checkoutData
           });

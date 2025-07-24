@@ -209,31 +209,24 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         vehicleType: vehicleData.vehicleType
       };
 
-      // For monthly payments, try Bumper first
-      if (paymentType === 'monthly') {
-        const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
+      // Try Bumper first for all payments
+      console.log('SpecialVehiclePricing attempting Bumper checkout with data:', checkoutData);
+      const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
+        body: checkoutData
+      });
+
+      console.log('SpecialVehiclePricing Bumper response:', { bumperData, bumperError });
+      if (bumperError || bumperData?.fallbackToStripe) {
+        console.log('SpecialVehiclePricing falling back to Stripe due to:', bumperError || 'Bumper fallback flag');
+        // Fallback to Stripe
+        const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
           body: checkoutData
         });
 
-        if (bumperError || bumperData?.fallbackToStripe) {
-          // Fallback to Stripe
-          const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
-            body: checkoutData
-          });
-
-          if (stripeError) throw stripeError;
-          if (stripeData?.url) window.open(stripeData.url, '_blank');
-        } else if (bumperData?.url) {
-          window.open(bumperData.url, '_blank');
-        }
-      } else {
-        // Use Stripe for non-monthly payments
-        const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: checkoutData
-        });
-
-        if (error) throw error;
-        if (data?.url) window.open(data.url, '_blank');
+        if (stripeError) throw stripeError;
+        if (stripeData?.url) window.open(stripeData.url, '_blank');
+      } else if (bumperData?.url) {
+        window.open(bumperData.url, '_blank');
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
