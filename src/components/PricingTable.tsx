@@ -389,6 +389,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             
             return (
               <div key={plan.id} className={`bg-white rounded-lg shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-500' : 'border border-gray-200'}`}>
+                {/* Top Quotation Mark */}
+                <div className="absolute top-4 left-4 text-gray-200 text-4xl font-serif leading-none">"</div>
+                
                 {isPopular && (
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 z-10">
                     <Badge className="bg-yellow-500 hover:bg-yellow-500 text-white text-xs px-3 py-1">
@@ -398,7 +401,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                 )}
                 
                 {/* Plan Header */}
-                <div className="p-6 text-center">
+                <div className="p-6 text-center pt-12">
                   <h3 className={`text-2xl font-bold mb-4 ${
                     plan.name === 'Basic' ? 'text-blue-900' :
                     plan.name === 'Gold' ? 'text-yellow-600' :
@@ -550,6 +553,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     );
                   })()}
                 </div>
+                
+                {/* Bottom Quotation Mark */}
+                <div className="absolute bottom-4 right-4 text-gray-200 text-4xl font-serif leading-none rotate-180">"</div>
               </div>
             );
           })}
