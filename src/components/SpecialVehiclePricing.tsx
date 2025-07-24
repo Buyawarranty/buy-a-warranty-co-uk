@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Info, Circle } from 'lucide-react';
+import { Check, ArrowLeft, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -374,11 +374,13 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   {/* What's Covered */}
                   <div>
                     <h4 className="font-bold text-lg mb-4 text-gray-900">What's Covered:</h4>
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                    <div className="space-y-2">
                       {plan.coverage.map((feature, index) => (
                         <div key={index} className="flex items-start gap-3">
-                          <Circle className="h-2 w-2 fill-green-600 text-green-600 mt-2 flex-shrink-0" />
-                          <span className="text-sm text-gray-700">{feature}</span>
+                          <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3 text-white" />
+                          </div>
+                          <span className="text-base text-gray-700">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -399,9 +401,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         {isFloatingBarVisible && plan && (
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
             <div className="max-w-6xl mx-auto px-4 py-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <h4 className="text-lg font-bold text-blue-900">
+              <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="flex-1">
+                  <h4 className="font-bold text-lg text-yellow-600">
                     {plan.name}
                   </h4>
                   <div className="flex items-baseline gap-1">
@@ -413,7 +415,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                 <Button
                   onClick={handlePurchase}
                   disabled={checkoutLoading}
-                  className="px-6 py-2 font-semibold rounded-lg bg-[#1a365d] hover:bg-[#2d4a6b] text-white transition-colors duration-200"
+                  className="ml-4 px-6 py-2 font-semibold rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white transition-colors duration-200"
                 >
                   {checkoutLoading ? 'Processing...' : 'Buy Now'}
                 </Button>
