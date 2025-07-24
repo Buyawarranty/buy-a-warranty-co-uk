@@ -68,9 +68,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       newErrors.email = 'Please enter a valid email address';
     }
 
-    if (!phone.trim()) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^(07\d{9}|01\d{8,9}|02\d{8,9}|03\d{8,9})$/.test(phone.replace(/\s/g, ''))) {
+    if (phone.trim() && !/^(07\d{9}|01\d{8,9}|02\d{8,9}|03\d{8,9})$/.test(phone.replace(/\s/g, ''))) {
       newErrors.phone = 'Please enter a valid UK phone number';
     }
 
@@ -108,7 +106,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     validateForm();
   };
 
-  const isFormValid = fullName.trim() && email.trim() && phone.trim() && !errors.fullName && !errors.email && !errors.phone;
+  const isFormValid = fullName.trim() && email.trim() && !errors.fullName && !errors.email && !errors.phone;
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
@@ -257,7 +255,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                     handleFieldBlur('phone');
                     e.target.style.borderColor = touched.phone && errors.phone ? '#ef4444' : '#d1d5db';
                   }}
-                  required
                 />
                 {touched.phone && errors.phone && (
                   <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
