@@ -22,6 +22,16 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [errors, setErrors] = useState({
+    fullName: '',
+    email: '',
+    phone: ''
+  });
+  const [touched, setTouched] = useState({
+    fullName: false,
+    email: false,
+    phone: false
+  });
 
   const handleSkipClick = () => {
     // Trigger confetti
@@ -41,9 +51,42 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     setShowContactForm(true);
   };
 
+  const validateForm = () => {
+    const newErrors = {
+      fullName: '',
+      email: '',
+      phone: ''
+    };
+
+    if (!fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    }
+
+    if (!email.trim()) {
+      newErrors.email = 'Email address is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    }
+
+    setErrors(newErrors);
+    return !newErrors.fullName && !newErrors.email && !newErrors.phone;
+  };
+
   const handleSubmitContactForm = (e: React.FormEvent) => {
     e.preventDefault();
-    if (fullName && email && phone) {
+    
+    // Mark all fields as touched
+    setTouched({
+      fullName: true,
+      email: true,
+      phone: true
+    });
+
+    if (validateForm()) {
       // Trigger confetti
       confetti({
         particleCount: 100,
@@ -58,7 +101,12 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     }
   };
 
-  const isFormValid = fullName && email && phone;
+  const handleFieldBlur = (field: 'fullName' | 'email' | 'phone') => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    validateForm();
+  };
+
+  const isFormValid = fullName.trim() && email.trim() && phone.trim() && !errors.fullName && !errors.email && !errors.phone;
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
@@ -146,15 +194,21 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. John Smith"
-                  className="w-full border-2 border-gray-300 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base"
+                  className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
+                    touched.fullName && errors.fullName ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   onFocus={(e) => {
-                    e.target.style.borderColor = '#224380';
+                    e.target.style.borderColor = touched.fullName && errors.fullName ? '#ef4444' : '#224380';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = '#d1d5db';
+                    handleFieldBlur('fullName');
+                    e.target.style.borderColor = touched.fullName && errors.fullName ? '#ef4444' : '#d1d5db';
                   }}
                   required
                 />
+                {touched.fullName && errors.fullName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                )}
               </div>
 
               <div className="mb-4 sm:mb-6">
@@ -164,15 +218,21 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="johnsmith@email.com"
-                  className="w-full border-2 border-gray-300 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base"
+                  className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
+                    touched.email && errors.email ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   onFocus={(e) => {
-                    e.target.style.borderColor = '#224380';
+                    e.target.style.borderColor = touched.email && errors.email ? '#ef4444' : '#224380';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = '#d1d5db';
+                    handleFieldBlur('email');
+                    e.target.style.borderColor = touched.email && errors.email ? '#ef4444' : '#d1d5db';
                   }}
                   required
                 />
+                {touched.email && errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div className="mb-4 sm:mb-6">
@@ -182,15 +242,21 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="07953866662"
-                  className="w-full border-2 border-gray-300 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base"
+                  className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
+                    touched.phone && errors.phone ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   onFocus={(e) => {
-                    e.target.style.borderColor = '#224380';
+                    e.target.style.borderColor = touched.phone && errors.phone ? '#ef4444' : '#224380';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = '#d1d5db';
+                    handleFieldBlur('phone');
+                    e.target.style.borderColor = touched.phone && errors.phone ? '#ef4444' : '#d1d5db';
                   }}
                   required
                 />
+                {touched.phone && errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                )}
               </div>
 
               <div className="flex justify-between items-center">
