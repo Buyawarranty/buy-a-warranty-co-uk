@@ -70,7 +70,7 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
         <Button 
           type="submit"
           disabled={!registrationNumber.trim() || isLoading}
-          className="w-full bg-pink-400 hover:bg-pink-500 text-white font-semibold py-4 text-lg rounded-lg border-2 border-black disabled:opacity-50"
+          className="w-full bg-pink-400 hover:bg-pink-500 text-white font-semibold py-3 text-lg rounded-lg border-2 border-black disabled:opacity-50"
         >
           {isLoading ? 'Finding...' : 'Find my vehicle'}
         </Button>
