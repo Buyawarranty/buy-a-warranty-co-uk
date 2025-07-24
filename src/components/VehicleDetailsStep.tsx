@@ -436,7 +436,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                     backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
                     borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
                     opacity: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 1 : 0.5,
-                    animationDuration: '3s'
+                    animationDuration: '5s'
                   }}
                 >
                   Get my quote →
