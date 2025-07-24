@@ -146,6 +146,15 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     return Math.max(basePrice * (1 - excessDiscount), basePrice * 0.7); // Min 30% of base price
   };
 
+  const getMonthlyDisplayPrice = () => {
+    if (!plan) return 0;
+    
+    // For display purposes, always show the monthly price regardless of payment type
+    const monthlyBasePrice = plan.monthly_price;
+    const excessDiscount = voluntaryExcess * 0.01; // 1% discount per £1 excess
+    return Math.max(monthlyBasePrice * (1 - excessDiscount), monthlyBasePrice * 0.7); // Min 30% of base price
+  };
+
   const handlePurchase = async () => {
     if (!plan) return;
     
@@ -380,7 +389,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                      '1 Year warranty'}
                   </p>
                   <div className="text-4xl font-bold text-gray-900 mb-3">
-                    <span className="text-2xl">£</span>{Math.round(calculatePlanPrice())}<span className="text-2xl">/mo</span>
+                    <span className="text-2xl">£</span>{Math.round(getMonthlyDisplayPrice())}<span className="text-2xl">/mo</span>
                   </div>
                   <div className="text-gray-600 text-base mb-6">
                     for 12 months interest free
@@ -482,7 +491,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   </h4>
                   <div className="flex items-baseline gap-1">
                     <span className="text-sm">£</span>
-                    <span className="text-2xl font-bold">{Math.round(calculatePlanPrice())}</span>
+                    <span className="text-2xl font-bold">{Math.round(getMonthlyDisplayPrice())}</span>
                     <span className="text-sm text-gray-600">x 12</span>
                   </div>
                 </div>
