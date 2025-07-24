@@ -5,7 +5,7 @@ import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import ProgressIndicator from '@/components/ProgressIndicator';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
-import TrustpilotHeader from '@/components/TrustpilotHeader';
+
 
 interface VehicleData {
   regNumber: string;
@@ -119,16 +119,6 @@ const Index = () => {
         </div>
       )}
       
-      {/* Trustpilot logo in bottom right corner - only show on step 3, not steps 1 and 2 */}
-      {currentStep === 3 && (
-        <div className="fixed top-4 right-4 z-10">
-          <img 
-            src="/lovable-uploads/bed8e125-f5d3-4bf5-a0f8-df4df5ff8693.png" 
-            alt="Trustpilot" 
-            className="h-12 w-auto opacity-90 hover:opacity-100 transition-opacity"
-          />
-        </div>
-      )}
     </div>
   );
 };
