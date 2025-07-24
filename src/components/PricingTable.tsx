@@ -550,6 +550,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     );
                   })()}
                 </div>
+
+                {/* Bottom Buy Now Button */}
+                <div className="px-6 pb-6">
+                  <Button
+                    onClick={() => handleSelectPlan(plan)}
+                    disabled={isLoading}
+                    variant="outline"
+                    className={`w-full py-3 font-semibold rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors duration-200 ${
+                      plan.name === 'Basic' ? 'border-[#1a365d] text-[#1a365d]' :
+                      plan.name === 'Gold' ? 'border-yellow-500 text-yellow-600' :
+                      'border-[#eb4b00] text-[#eb4b00]'
+                    }`}
+                  >
+                    {isLoading ? 'Processing...' : 'Buy Now'}
+                  </Button>
+                </div>
                 
                 {/* Bottom Quotation Mark */}
                 <div className="absolute bottom-4 right-4 text-gray-200 text-4xl font-serif leading-none rotate-180">"</div>
