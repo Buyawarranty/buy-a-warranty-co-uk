@@ -536,8 +536,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         onClick={() => window.open(pdfUrl, '_blank')}
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        <span className="hidden sm:inline">View PDF (Opens in New Tab)</span>
-                        <span className="sm:hidden">View PDF (New Tab)</span>
+                        <span className="hidden sm:inline">View PDF</span>
+                        <span className="sm:hidden">PDF</span>
                       </Button>
                     ) : (
                       <Button
