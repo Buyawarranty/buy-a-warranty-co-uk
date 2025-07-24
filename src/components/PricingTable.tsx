@@ -41,7 +41,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
   console.log('PricingTable received vehicleData:', vehicleData);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'yearly' | 'two_yearly' | 'three_yearly'>('yearly');
-  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(0);
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});

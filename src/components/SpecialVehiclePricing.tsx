@@ -44,7 +44,7 @@ interface SpecialVehiclePricingProps {
 const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleData, onBack }) => {
   const [plan, setPlan] = useState<SpecialPlan | null>(null);
   const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
-  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(0);
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const { toast } = useToast();
