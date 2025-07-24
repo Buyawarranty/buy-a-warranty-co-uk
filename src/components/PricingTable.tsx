@@ -241,8 +241,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   return (
     <div className="bg-[#e8f4fb] w-full min-h-screen">
-      {/* Back Button */}
-      <div className="mb-6 sm:mb-8 px-4 sm:px-8 pt-6 sm:pt-8">
+      {/* Back Button and Trustpilot Header */}
+      <div className="mb-6 sm:mb-8 px-4 sm:px-8 pt-6 sm:pt-8 flex justify-between items-center">
         <Button 
           variant="outline" 
           onClick={onBack}
@@ -251,11 +251,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           Back
         </Button>
-      </div>
-
-      {/* Trustpilot Header */}
-      <div className="flex justify-end px-4 sm:px-8 mb-4">
-        <TrustpilotHeader className="pr-4" />
+        <TrustpilotHeader />
       </div>
 
       {/* Header with Vehicle Details */}
