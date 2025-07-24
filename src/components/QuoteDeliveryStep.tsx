@@ -284,7 +284,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 
                 <button 
                   type="submit" 
-                  disabled={!isFormValid}
+                  title={!isFormValid ? "Please enter details" : ""}
                   className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   style={{
                     backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
