@@ -136,14 +136,14 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg ${
                   areRequiredFieldsFilled ? '' : 'opacity-50'
                 }`}
-                style={{ backgroundColor: '#0f1351' }}
+                style={{ backgroundColor: '#0066cc' }}
                 onMouseEnter={(e) => {
                   if (areRequiredFieldsFilled) {
-                    e.currentTarget.style.backgroundColor = '#0a0d3a';
+                    e.currentTarget.style.backgroundColor = '#0052a3';
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#0f1351';
+                  e.currentTarget.style.backgroundColor = '#0066cc';
                 }}
               >
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
