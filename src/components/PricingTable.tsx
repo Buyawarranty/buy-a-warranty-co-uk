@@ -450,7 +450,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       'border-[#eb4b00] text-[#eb4b00]'
                     }`}
                   >
-                    {isLoading ? 'Processing...' : 'Buy Now'}
+                     {isLoading ? 'Processing...' : 'Save Now'}
                   </Button>
                 </div>
 
@@ -576,7 +576,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       'border-[#eb4b00] text-[#eb4b00]'
                     }`}
                   >
-                    {isLoading ? 'Processing...' : 'Buy Now'}
+                     {isLoading ? 'Processing...' : 'Save Now'}
                   </Button>
                 </div>
                 
@@ -630,7 +630,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         'bg-[#eb4b00] hover:bg-[#d44300] text-white'
                       }`}
                     >
-                      {isLoading ? 'Processing...' : 'Buy Now'}
+                      {isLoading ? 'Processing...' : 'Save Now'}
                     </Button>
                   </div>
                 );
