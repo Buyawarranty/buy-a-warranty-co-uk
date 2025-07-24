@@ -111,18 +111,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
-      {/* Top section with back button */}
-      <div className="max-w-4xl mx-auto mb-4 flex justify-start items-center">
-        <button 
-          type="button" 
-          onClick={onBack}
-          className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </button>
-      </div>
-      
       {/* Fixed Trustpilot logo */}
       <div className="fixed top-4 right-4 z-10">
         <img 
@@ -201,6 +189,18 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 <p className="text-center text-sm text-gray-500 mt-2">
                   Unsubscribe at any time
                 </p>
+              </div>
+
+              {/* Back button positioned below email quote button */}
+              <div className="flex justify-center mt-8">
+                <button 
+                  type="button" 
+                  onClick={onBack}
+                  className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </button>
               </div>
             </div>
 
