@@ -243,13 +243,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     }
   };
 
-  const getPaymentLabel = () => {
-    switch (paymentType) {
-      case 'yearly': return 'Only 12 interest free payments';
-      case 'two_yearly': return 'Only 12 interest free payments';
-      case 'three_yearly': return 'Only 12 interest free payments';
-      default: return 'per month';
-    }
+  const getPaymentLabel = (price: number) => {
+    return `£${price}/mo for 12 months`;
   };
 
   return (
@@ -435,7 +430,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                     </span>
                   </div>
                   <div className="text-gray-600 text-base mb-2">
-                    <span className="font-bold">{getPaymentLabel()}</span>
+                    <span className="font-bold">{getPaymentLabel(totalPrice)}</span>
                   </div>
                   {savings && paymentType !== 'yearly' && (
                     <div className="text-green-600 font-bold text-lg">
