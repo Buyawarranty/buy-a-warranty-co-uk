@@ -149,10 +149,35 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const getMonthlyDisplayPrice = () => {
     if (!plan) return 0;
     
-    // For display purposes, always show the monthly price regardless of payment type
-    const monthlyBasePrice = plan.monthly_price;
-    const excessDiscount = voluntaryExcess * 0.01; // 1% discount per £1 excess
-    return Math.max(monthlyBasePrice * (1 - excessDiscount), monthlyBasePrice * 0.7); // Min 30% of base price
+    // Use the same pricing logic as gold plan from normal pricing table
+    const pricingTable = {
+      yearly: {
+        0: { monthly: 34 },
+        50: { monthly: 31 },
+        100: { monthly: 27 },
+        150: { monthly: 26 },
+        200: { monthly: 23 }
+      },
+      two_yearly: {
+        0: { monthly: 61 },
+        50: { monthly: 56 },
+        100: { monthly: 49 },
+        150: { monthly: 47 },
+        200: { monthly: 44 }
+      },
+      three_yearly: {
+        0: { monthly: 90 },
+        50: { monthly: 82 },
+        100: { monthly: 71 },
+        150: { monthly: 69 },
+        200: { monthly: 66 }
+      }
+    };
+    
+    const periodData = pricingTable[paymentType as keyof typeof pricingTable] || pricingTable.yearly;
+    const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
+    
+    return excessData.monthly;
   };
 
   const handlePurchase = async () => {
