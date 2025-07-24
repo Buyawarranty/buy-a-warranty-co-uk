@@ -245,7 +245,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
   const getPaymentLabel = () => {
     switch (paymentType) {
-      case 'yearly': return 'per month for 1 year';
+      case 'yearly': return 'Only 12 interest free payments';
       case 'two_yearly': return 'per month for 2 years';
       case 'three_yearly': return 'per month for 3 years';
       default: return 'per month';
