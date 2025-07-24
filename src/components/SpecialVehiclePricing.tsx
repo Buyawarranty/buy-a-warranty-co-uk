@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, ArrowLeft, Info } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -48,10 +48,12 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
+  const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
   const { toast } = useToast();
 
   useEffect(() => {
     fetchSpecialPlan();
+    fetchPdfUrls();
   }, [vehicleData.vehicleType]);
 
   useEffect(() => {
@@ -91,6 +93,34 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPdfUrls = async () => {
+    try {
+      console.log('Fetching PDF URLs...');
+      const { data, error } = await supabase
+        .from('customer_documents')
+        .select('plan_type, file_url, document_name')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      console.log('PDF documents from database:', data);
+
+      if (data) {
+        const urlMap: {[planName: string]: string} = {};
+        data.forEach(doc => {
+          if (!urlMap[doc.plan_type]) {
+            urlMap[doc.plan_type] = doc.file_url;
+            console.log(`Mapped ${doc.plan_type} to ${doc.file_url}`);
+          }
+        });
+        console.log('Final PDF URL mapping:', urlMap);
+        setPdfUrls(urlMap);
+      }
+    } catch (error) {
+      console.error('Error fetching PDF URLs:', error);
     }
   };
 
@@ -333,15 +363,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
           </div>
         </div>
 
-
         {/* Single Plan Card */}
         <div className="w-full px-4 pb-16">
           <div className="max-w-md mx-auto">
             <div className="relative">
               <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 relative">
-                {/* Removed MOST POPULAR badge for special vehicles */}
-                
-                
                 {/* Plan Header */}
                 <div className="p-8 text-center">
                   <h3 className="text-4xl font-bold mb-4 text-yellow-600">
@@ -385,6 +411,54 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                       ))}
                     </div>
                   </div>
+                </div>
+
+                {/* Warranty Plan Details PDF - Bottom Section */}
+                <div className="p-6 bg-gray-50 rounded-lg m-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <FileText className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg text-gray-900">Warranty Plan Details</h4>
+                      <p className="text-sm text-gray-600">*Full breakdown of coverage</p>
+                    </div>
+                  </div>
+                  {(() => {
+                    // Determine which PDF to show based on plan and vehicle type
+                    let pdfUrl = null;
+                    const planType = plan.name.toLowerCase();
+                    const vehicleType = vehicleData.vehicleType?.toLowerCase();
+
+                    if (vehicleType === 'motorbike') {
+                      pdfUrl = pdfUrls['motorbike'];
+                    } else if (vehicleType === 'electric' || vehicleType === 'ev') {
+                      pdfUrl = pdfUrls['electric'];
+                    } else if (vehicleType === 'phev' || vehicleType === 'hybrid') {
+                      pdfUrl = pdfUrls['phev'];
+                    } else {
+                      pdfUrl = pdfUrls[planType];
+                    }
+
+                    return pdfUrl ? (
+                      <Button
+                        variant="outline"
+                        className="w-full text-sm bg-white hover:bg-gray-50 border-gray-300"
+                        onClick={() => window.open(pdfUrl, '_blank')}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View PDF
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full text-sm bg-white border-gray-300"
+                        disabled
+                      >
+                        PDF Not Available
+                      </Button>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
