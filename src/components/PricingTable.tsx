@@ -630,7 +630,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         'bg-[#eb4b00] hover:bg-[#d44300] text-white'
                       }`}
                     >
-                      {isLoading ? 'Processing...' : 'Save Now'}
+                       {isLoading ? 'Processing...' : 'Buy Now'}
                     </Button>
                   </div>
                 );
