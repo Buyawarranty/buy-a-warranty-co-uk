@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, ArrowLeft, Info } from 'lucide-react';
+import { ArrowLeft, Info, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -338,12 +338,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         <div className="w-full px-4 pb-16">
           <div className="max-w-md mx-auto">
             <div className="relative">
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-yellow-400 relative mt-6">
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="bg-yellow-400 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg whitespace-nowrap">
-                    MOST POPULAR
-                  </div>
-                </div>
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 relative">
+                {/* Removed MOST POPULAR badge for special vehicles */}
+                
                 
                 {/* Plan Header */}
                 <div className="p-8 text-center">
@@ -380,7 +377,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                     <div className="space-y-2 max-h-64 overflow-y-auto">
                       {plan.coverage.map((feature, index) => (
                         <div key={index} className="flex items-start gap-3">
-                          <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                          <Circle className="h-2 w-2 fill-green-600 text-green-600 mt-2 flex-shrink-0" />
                           <span className="text-sm text-gray-700">{feature}</span>
                         </div>
                       ))}
@@ -400,24 +397,23 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
 
         {/* Floating Bottom Bar */}
         {isFloatingBarVisible && plan && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50">
-            <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+            <div className="max-w-6xl mx-auto px-4 py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="text-lg font-bold text-gray-900">
+                  <h4 className="text-lg font-bold text-blue-900">
                     {plan.name}
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    £{Math.round(calculatePlanPrice())}/mo
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    for 12 months interest free
+                  </h4>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-sm">£</span>
+                    <span className="text-2xl font-bold">{Math.round(calculatePlanPrice())}</span>
+                    <span className="text-sm text-gray-600">x 12</span>
                   </div>
                 </div>
                 <Button
                   onClick={handlePurchase}
                   disabled={checkoutLoading}
-                  className="px-8 py-3 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0"
+                  className="px-6 py-2 font-semibold rounded-lg bg-[#1a365d] hover:bg-[#2d4a6b] text-white transition-colors duration-200"
                 >
                   {checkoutLoading ? 'Processing...' : 'Buy Now'}
                 </Button>
