@@ -436,20 +436,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   )}
                 </div>
 
-                {/* Select Button */}
-                <div className="px-6 mb-6">
-                   <Button
-                     onClick={() => handleSelectPlan(plan)}
-                     disabled={isLoading}
-                     className={`w-full py-3 font-semibold rounded-lg transition-colors duration-200 text-white ${
-                       plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b]' :
-                       plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600' :
-                       'bg-[#eb4b00] hover:bg-[#d44300]'
-                     }`}
-                   >
-                      {isLoading ? 'Processing...' : 'Get My Cover'}
-                   </Button>
-                </div>
 
                 {/* What's Covered */}
                 <div className="px-6 mb-6">
@@ -561,20 +547,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   })()}
                 </div>
 
-                {/* Bottom Buy Now Button */}
-                <div className="px-6 pb-6">
-                  <Button
-                    onClick={() => handleSelectPlan(plan)}
-                    disabled={isLoading}
-                    className={`w-full py-3 font-semibold rounded-lg transition-colors duration-200 text-white ${
-                      plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b]' :
-                      plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600' :
-                      'bg-[#eb4b00] hover:bg-[#d44300]'
-                    }`}
-                  >
-                     {isLoading ? 'Processing...' : 'Save Now'}
-                  </Button>
-                </div>
                 
                 {/* Bottom Quotation Mark */}
                 <div className="absolute bottom-4 right-4 text-gray-200 text-4xl font-serif leading-none rotate-180">"</div>
