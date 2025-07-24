@@ -236,7 +236,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               </div>
 
               <div className="mb-4 sm:mb-6">
-                <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Phone Number</label>
+                <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Phone Number (Optional)</label>
                 <input
                   type="tel"
                   value={phone}
