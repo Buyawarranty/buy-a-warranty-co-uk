@@ -438,18 +438,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
 
                 {/* Select Button */}
                 <div className="px-6 mb-6">
-                  <Button
-                    onClick={() => handleSelectPlan(plan)}
-                    disabled={isLoading}
-                    variant="outline"
-                    className={`w-full py-3 font-semibold rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors duration-200 ${
-                      plan.name === 'Basic' ? 'border-[#1a365d] text-[#1a365d]' :
-                      plan.name === 'Gold' ? 'border-yellow-500 text-yellow-600' :
-                      'border-[#eb4b00] text-[#eb4b00]'
-                    }`}
-                  >
-                     {isLoading ? 'Processing...' : 'Get My Cover'}
-                  </Button>
+                   <Button
+                     onClick={() => handleSelectPlan(plan)}
+                     disabled={isLoading}
+                     className={`w-full py-3 font-semibold rounded-lg transition-colors duration-200 text-white ${
+                       plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b]' :
+                       plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600' :
+                       'bg-[#eb4b00] hover:bg-[#d44300]'
+                     }`}
+                   >
+                      {isLoading ? 'Processing...' : 'Get My Cover'}
+                   </Button>
                 </div>
 
                 {/* What's Covered */}
@@ -567,11 +566,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <Button
                     onClick={() => handleSelectPlan(plan)}
                     disabled={isLoading}
-                    variant="outline"
-                    className={`w-full py-3 font-semibold rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors duration-200 ${
-                      plan.name === 'Basic' ? 'border-[#1a365d] text-[#1a365d]' :
-                      plan.name === 'Gold' ? 'border-yellow-500 text-yellow-600' :
-                      'border-[#eb4b00] text-[#eb4b00]'
+                    className={`w-full py-3 font-semibold rounded-lg transition-colors duration-200 text-white ${
+                      plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b]' :
+                      plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600' :
+                      'bg-[#eb4b00] hover:bg-[#d44300]'
                     }`}
                   >
                      {isLoading ? 'Processing...' : 'Save Now'}
