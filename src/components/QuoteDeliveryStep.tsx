@@ -307,7 +307,19 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 <div className="flex gap-3">
                   <button 
                     type="button" 
-                    onClick={onSkip}
+                    onClick={() => {
+                      // Trigger confetti
+                      confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                      });
+                      
+                      // Small delay to let confetti start before navigating
+                      setTimeout(() => {
+                        onSkip();
+                      }, 300);
+                    }}
                     className="flex items-center justify-center gap-2 text-sm sm:text-base font-medium py-3 sm:py-3 px-4 sm:px-6 rounded-lg border-2 transition-all duration-200 hover-scale"
                     style={{
                       backgroundColor: 'transparent',
