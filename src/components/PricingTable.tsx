@@ -450,7 +450,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                       'border-[#eb4b00] text-[#eb4b00]'
                     }`}
                   >
-                     {isLoading ? 'Processing...' : 'Get Cover'}
+                     {isLoading ? 'Processing...' : 'Get My Cover'}
                   </Button>
                 </div>
 
