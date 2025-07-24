@@ -254,189 +254,136 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         </div>
 
         {/* Payment Period Toggle */}
-        <div className="flex justify-center mb-6 sm:mb-8 px-4 sm:px-8">
-          <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 w-full max-w-4xl">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
+        <div className="flex justify-center mb-8 px-4">
+          <div className="bg-white rounded-2xl p-1 shadow-lg border border-gray-200 inline-flex">
+            <button
+              onClick={() => setPaymentType('yearly')}
+              className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
+                paymentType === 'yearly' 
+                  ? 'bg-[#1a365d] text-white shadow-md' 
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              1 Year
+            </button>
+            <div className="relative">
               <button
-                onClick={() => setPaymentType('monthly')}
-                className={`px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                  paymentType === 'monthly' 
+                onClick={() => setPaymentType('two_yearly')}
+                className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
+                  paymentType === 'two_yearly' 
                     ? 'bg-[#1a365d] text-white shadow-md' 
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                Monthly
+                2 Years
               </button>
-              <div className="relative">
+              <div className="absolute -top-2 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-1">
+                10% OFF
+              </div>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setPaymentType('three_yearly')}
+                className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
+                  paymentType === 'three_yearly' 
+                    ? 'bg-[#1a365d] text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                3 Years
+              </button>
+              <div className="absolute -top-2 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-1">
+                20% OFF
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Voluntary Excess Selection */}
+        <div className="flex justify-center mb-8 px-4">
+          <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-200 w-full max-w-2xl">
+            <h3 className="text-xl font-bold text-center mb-4 text-gray-900">Voluntary Excess Amount</h3>
+            <div className="flex justify-center gap-3">
+              {[0, 50, 100, 150].map((amount) => (
                 <button
-                  onClick={() => setPaymentType('yearly')}
-                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                    paymentType === 'yearly' 
-                      ? 'bg-[#1a365d] text-white shadow-md' 
-                      : 'text-gray-600 hover:bg-gray-50'
+                  key={amount}
+                  onClick={() => setVoluntaryExcess(amount)}
+                  className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 min-w-[80px] ${
+                    voluntaryExcess === amount
+                      ? 'bg-[#1a365d] text-white border-2 border-[#1a365d]'
+                      : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-[#1a365d]'
                   }`}
                 >
-                  1 Year
+                  £{amount}
                 </button>
-              </div>
-              <div className="relative">
-                <button
-                  onClick={() => setPaymentType('two_yearly')}
-                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                    paymentType === 'two_yearly' 
-                      ? 'bg-[#1a365d] text-white shadow-md' 
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  2 Years
-                </button>
-                <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
-                  10% OFF
-                </div>
-              </div>
-              <div className="relative">
-                <button
-                  onClick={() => setPaymentType('three_yearly')}
-                  className={`w-full px-3 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-semibold transition-all duration-200 ${
-                    paymentType === 'three_yearly' 
-                      ? 'bg-[#1a365d] text-white shadow-md' 
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  3 Years
-                </button>
-                <div className="absolute -top-2 -right-1 sm:-right-2 bg-orange-500 text-white text-xs px-1 sm:px-2 py-1 rounded-full font-bold">
-                  20% OFF
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
 
 
         {/* Single Plan Card */}
-        <div className="w-full px-4 sm:px-8 pb-8 sm:pb-16">
-          <div className="max-w-2xl mx-auto">
-            <Card className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-orange-400 shadow-xl">
-              <div className="absolute top-4 left-4 z-10">
-                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
-                  MOST POPULAR
-                </Badge>
-              </div>
-              
-              {/* Plan Header */}
-              <CardHeader className="p-6 sm:p-8 text-center bg-gray-50 border-b">
-                <CardTitle className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">
-                  {plan.name}
-                </CardTitle>
-                <div className="mb-2">
-                  <span className="text-sm text-gray-600">£</span>
-                  <span className="text-3xl sm:text-5xl font-bold text-gray-900">
-                    {Math.round(calculatePlanPrice())}
-                  </span>
-                  <div className="text-gray-600 text-base sm:text-lg">{getPaymentLabel()}</div>
+        <div className="w-full px-4 pb-16">
+          <div className="max-w-md mx-auto">
+            <div className="relative">
+              <Card className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-orange-400 shadow-xl">
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-10">
+                  <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1">
+                    MOST POPULAR
+                  </Badge>
                 </div>
-                {paymentType !== 'monthly' && (
-                  <div className="text-sm text-gray-500">
-                    12 simple interest-free payments
+                
+                {/* Plan Header */}
+                <CardHeader className="p-6 text-center bg-gray-50 border-b">
+                  <CardTitle className="text-2xl font-bold mb-4 text-gray-900">
+                    {plan.name}
+                  </CardTitle>
+                  <div className="mb-2">
+                    <span className="text-sm text-gray-600">£</span>
+                    <span className="text-5xl font-bold text-gray-900">
+                      {Math.round(calculatePlanPrice())}
+                    </span>
+                    <div className="text-gray-600 text-lg">{getPaymentLabel()}</div>
                   </div>
-                )}
-              </CardHeader>
-
-              {/* Plan Content */}
-              <CardContent className="p-6 sm:p-8 space-y-6">
-                {/* What's Covered */}
-                <div>
-                  <h4 className="font-bold text-lg mb-4">What's Covered:</h4>
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {plan.coverage.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <Check className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
-                        <span className="text-sm text-gray-700">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Voluntary Excess Selection */}
-                <div>
-                  <h4 className="font-bold text-lg mb-4">Voluntary Excess</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="flex flex-col gap-2">
-                      <button
-                        onClick={() => setVoluntaryExcess(0)}
-                        className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
-                          voluntaryExcess === 0
-                            ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                        }`}
-                      >
-                        £0
-                      </button>
-                      <button
-                        onClick={() => setVoluntaryExcess(150)}
-                        className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
-                          voluntaryExcess === 150
-                            ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                        }`}
-                      >
-                        £150
-                      </button>
+                  {paymentType !== 'monthly' && (
+                    <div className="text-sm text-gray-500">
+                      12 simple interest-free payments
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <button
-                        onClick={() => setVoluntaryExcess(50)}
-                        className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
-                          voluntaryExcess === 50
-                            ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                        }`}
-                      >
-                        £50
-                      </button>
-                      <button
-                        onClick={() => setVoluntaryExcess(200)}
-                        className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 ${
-                          voluntaryExcess === 200
-                            ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                        }`}
-                      >
-                        £200
-                      </button>
-                    </div>
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => setVoluntaryExcess(100)}
-                        className={`p-2 rounded-lg border text-sm font-semibold transition-all duration-200 w-full ${
-                          voluntaryExcess === 100
-                            ? 'bg-[#1a365d] text-white border-[#1a365d] shadow-md'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#1a365d]'
-                        }`}
-                      >
-                        £100
-                      </button>
+                  )}
+                </CardHeader>
+
+                {/* Plan Content */}
+                <CardContent className="p-6 space-y-6">
+                  {/* What's Covered */}
+                  <div>
+                    <h4 className="font-bold text-lg mb-4">What's Covered:</h4>
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {plan.coverage.map((feature, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <Check className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">{feature}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
 
-                <Button
-                  onClick={handlePurchase}
-                  disabled={checkoutLoading}
-                  variant="outline"
-                  className="w-full py-4 text-lg font-bold rounded-xl border-2 border-[#f59e0b] text-[#f59e0b] bg-white hover:bg-gray-50 transition-colors duration-200"
-                >
-                  {checkoutLoading ? 'Processing...' : 'Buy Now'}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+                  <Button
+                    onClick={handlePurchase}
+                    disabled={checkoutLoading}
+                    variant="outline"
+                    className="w-full py-4 text-lg font-bold rounded-xl border-2 border-[#f59e0b] text-[#f59e0b] bg-white hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    {checkoutLoading ? 'Processing...' : 'Buy Now'}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
 
-          {/* Additional Information */}
-          <div className="max-w-2xl mx-auto mt-8 text-center text-sm text-gray-600">
-            <p className="mb-2">From £26 per month</p>
-            <p>{getVehicleTypeTitle()} Extended Warranty</p>
+            {/* Additional Information */}
+            <div className="mt-8 text-center text-sm text-gray-600">
+              <p className="mb-2">From £26 per month</p>
+              <p>{getVehicleTypeTitle()} Extended Warranty</p>
+            </div>
           </div>
         </div>
       </div>
