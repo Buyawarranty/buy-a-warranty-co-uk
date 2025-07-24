@@ -401,12 +401,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             
             return (
               <div key={plan.id} className={`bg-white rounded-lg shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-500' : 'border border-gray-200'}`}>
-                {/* Top Quotation Mark */}
-                <div className="absolute top-4 left-4 text-gray-200 text-4xl font-serif leading-none">"</div>
-                
                 {isPopular && (
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 z-10">
-                    <Badge className="bg-yellow-500 hover:bg-yellow-500 text-white text-xs px-3 py-1">
+                    <Badge className="bg-yellow-500 hover:bg-yellow-500 text-white text-xs px-3 py-1 rounded-full">
                       MOST POPULAR
                     </Badge>
                   </div>
@@ -427,14 +424,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                      paymentType === 'three_yearly' ? '3 Year warranty' :
                      '1 Year warranty'}
                    </p>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">
-                    <span className="text-lg">£</span>{totalPrice}
+                  <div className="text-4xl font-bold text-gray-900 mb-2">
+                    £{totalPrice}
                   </div>
-                  <div className="text-gray-600 text-base mb-2">
+                  <div className="text-gray-600 text-base mb-4">
                     for 12 months interest free
                   </div>
                   {savings && paymentType !== 'yearly' && (
-                    <div className="text-green-600 font-bold text-lg">
+                    <div className="text-green-600 font-bold text-lg mb-4">
                       You Save £{savings}
                     </div>
                   )}
@@ -445,11 +442,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <h4 className="font-bold text-lg mb-4 text-gray-900">What's Covered:</h4>
                   <div className="space-y-2">
                     {plan.coverage.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <div className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
                           <Check className="h-3 w-3 text-white" />
                         </div>
-                        <span className={`text-base text-gray-700 ${feature.includes("Basic plan plus:") || feature.includes("Gold plan plus:") ? "font-bold" : ""}`}>{feature}</span>
+                        <span className={`text-base text-gray-700 ${feature.includes("Basic plan plus:") || feature.includes("Gold plan plus:") ? "font-bold text-gray-900" : ""}`}>
+                          {feature}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -493,16 +492,30 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         </div>
                       ))
                     ) : (
-                      <div className="flex items-center space-x-3">
-                        <Checkbox disabled className="border-gray-400" />
-                        <span className="text-base text-gray-700">Power Hood</span>
-                      </div>
+                      <>
+                        <div className="flex items-center space-x-3">
+                          <Checkbox disabled className="border-gray-400" />
+                          <span className="text-base text-gray-700">Power Hood</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Checkbox disabled className="border-gray-400" />
+                          <span className="text-base text-gray-700">ECU</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Checkbox disabled className="border-gray-400" />
+                          <span className="text-base text-gray-700">Air Conditioning</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Checkbox disabled className="border-gray-400" />
+                          <span className="text-base text-gray-700">Turbo</span>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
 
                 {/* Warranty Plan Details PDF - Bottom Section */}
-                <div className="p-6 bg-gray-100 rounded-lg m-6">
+                <div className="p-6 bg-gray-50 rounded-lg m-6">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                       <FileText className="h-4 w-4 text-blue-600" />
@@ -535,8 +548,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         onClick={() => window.open(pdfUrl, '_blank')}
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        <span className="hidden sm:inline">View PDF</span>
-                        <span className="sm:hidden">PDF</span>
+                        View PDF
                       </Button>
                     ) : (
                       <Button
@@ -550,9 +562,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   })()}
                 </div>
 
-                
-                {/* Bottom Quotation Mark */}
-                <div className="absolute bottom-4 right-4 text-gray-200 text-4xl font-serif leading-none rotate-180">"</div>
+                {/* Buy Now Button */}
+                <div className="p-6 pt-0">
+                  <Button
+                    onClick={() => handleSelectPlan(plan)}
+                    disabled={isLoading}
+                    className={`w-full py-4 font-bold text-lg rounded-lg transition-colors duration-200 ${
+                      plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
+                      plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
+                      'bg-orange-500 hover:bg-orange-600 text-white'
+                    }`}
+                  >
+                    {isLoading ? 'Processing...' : 'Buy Now'}
+                  </Button>
+                </div>
               </div>
             );
           })}
