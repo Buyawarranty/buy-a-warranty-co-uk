@@ -427,17 +427,32 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <div className="text-4xl font-bold text-gray-900 mb-2">
                     £{totalPrice}
                   </div>
-                  <div className="text-gray-600 text-base mb-4">
-                    for 12 months interest free
-                  </div>
-                  {savings && paymentType !== 'yearly' && (
-                    <div className="text-green-600 font-bold text-lg mb-4">
-                      You Save £{savings}
-                    </div>
-                  )}
-                </div>
+                   <div className="text-gray-600 text-base mb-4">
+                     for 12 months interest free
+                   </div>
+                   {savings && paymentType !== 'yearly' && (
+                     <div className="text-green-600 font-bold text-lg mb-4">
+                       You Save £{savings}
+                     </div>
+                   )}
+                   
+                   {/* Buy Now Button - moved here */}
+                   <div className="mb-6">
+                     <Button
+                       onClick={() => handleSelectPlan(plan)}
+                       disabled={isLoading}
+                       className={`w-full py-4 font-bold text-lg rounded-lg transition-colors duration-200 ${
+                         plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
+                         plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
+                         'bg-orange-500 hover:bg-orange-600 text-white'
+                       }`}
+                     >
+                       {isLoading ? 'Processing...' : 'Buy Now'}
+                     </Button>
+                   </div>
+                 </div>
 
-                {/* What's Covered */}
+                 {/* What's Covered */}
                 <div className="px-6 mb-6">
                   <h4 className="font-bold text-lg mb-4 text-gray-900">What's Covered:</h4>
                   <div className="space-y-2">
@@ -562,20 +577,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   })()}
                 </div>
 
-                {/* Buy Now Button */}
-                <div className="p-6 pt-0">
-                  <Button
-                    onClick={() => handleSelectPlan(plan)}
-                    disabled={isLoading}
-                    className={`w-full py-4 font-bold text-lg rounded-lg transition-colors duration-200 ${
-                      plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
-                      plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
-                      'bg-orange-500 hover:bg-orange-600 text-white'
-                    }`}
-                  >
-                    {isLoading ? 'Processing...' : 'Buy Now'}
-                  </Button>
-                </div>
               </div>
             );
           })}
