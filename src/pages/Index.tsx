@@ -118,16 +118,7 @@ const Index = () => {
           )}
         </div>
       )}
-      
-      {/* Trustpilot logo in bottom right corner */}
-      <div className="fixed top-4 right-4 z-10">
-        <img 
-          src="/lovable-uploads/bed8e125-f5d3-4bf5-a0f8-df4df5ff8693.png" 
-          alt="Trustpilot" 
-          className="h-12 w-auto opacity-90 hover:opacity-100 transition-opacity"
-        />
       </div>
-    </div>
   );
 };
 
