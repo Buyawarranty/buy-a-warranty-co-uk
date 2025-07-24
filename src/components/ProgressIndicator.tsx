@@ -12,16 +12,6 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
 
   return (
     <div className="w-full bg-white border-b border-gray-200 shadow-sm overflow-x-hidden">
-      {/* Orange Top Progress Bar - Using official brand orange */}
-      <div className="w-full h-1 bg-gray-200">
-        <div 
-          className="h-full transition-all duration-300 ease-out"
-          style={{ 
-            width: `${progressPercentage}%`,
-            backgroundColor: '#eb4b00' // Official brand orange
-          }}
-        />
-      </div>
 
       <div className="max-w-4xl mx-auto px-4 py-2 sm:py-4">
         {/* Centered Logo - 25% smaller */}
