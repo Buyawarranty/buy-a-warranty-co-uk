@@ -5,6 +5,7 @@ import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp 
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 interface Plan {
   id: string;
@@ -250,6 +251,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           Back
         </Button>
+      </div>
+
+      {/* Trustpilot Header */}
+      <div className="flex justify-end px-4 sm:px-8 mb-4">
+        <TrustpilotHeader className="pr-4" />
       </div>
 
       {/* Header with Vehicle Details */}

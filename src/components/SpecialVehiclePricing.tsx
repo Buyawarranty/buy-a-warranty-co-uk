@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 interface SpecialPlan {
   id: string;
@@ -213,6 +214,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
             <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             Back to Contact Details
           </Button>
+        </div>
+
+        {/* Trustpilot Header */}
+        <div className="flex justify-end px-4 sm:px-8 mb-4">
+          <TrustpilotHeader className="pr-4" />
         </div>
 
         {/* Header with Vehicle Type Image */}
