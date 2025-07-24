@@ -68,12 +68,6 @@ const Index = () => {
 
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
-      {/* Trustpilot header */}
-      <div className="w-full px-4 pt-4">
-        <div className="max-w-6xl mx-auto">
-          <TrustpilotHeader />
-        </div>
-      </div>
       
       <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
       

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 interface VehicleDetailsStepProps {
   onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string; vehicleType?: string }) => void;
@@ -207,6 +208,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   return (
     <section className="bg-[#e8f4fb] py-4">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <TrustpilotHeader className="mb-4" />
         <div className="flex justify-center mb-4">
           <div className="text-center">
             <h2 className="text-4xl font-bold text-gray-800">Let's find your vehicle 🚗 🔍</h2>
