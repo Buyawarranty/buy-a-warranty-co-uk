@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Zap, Mail } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import trustpilotLogo from '@/assets/trustpilot-5-stars.png';
 
 interface QuoteDeliveryStepProps {
   vehicleData: {
@@ -110,8 +111,8 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
-      {/* Back button at top left */}
-      <div className="max-w-4xl mx-auto mb-4">
+      {/* Top section with back button and Trustpilot logo */}
+      <div className="max-w-4xl mx-auto mb-4 flex justify-between items-center">
         <button 
           type="button" 
           onClick={onBack}
@@ -131,6 +132,15 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
           <ArrowLeft className="w-4 h-4" />
           Back
         </button>
+        
+        {/* Trustpilot logo */}
+        <div className="flex items-center">
+          <img 
+            src={trustpilotLogo} 
+            alt="Trustpilot 5 stars" 
+            className="h-10 sm:h-12 w-auto"
+          />
+        </div>
       </div>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
