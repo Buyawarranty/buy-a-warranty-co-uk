@@ -422,15 +422,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                      paymentType === 'two_yearly' ? '2 Year warranty' :
                      paymentType === 'three_yearly' ? '3 Year warranty' :
                      '1 Year warranty'}
-                  </p>
-                  <div className="mb-2">
-                    <span className="text-sm text-gray-600">£</span>
-                    <span className="text-4xl font-bold text-black">
-                      {Math.round(totalPrice)}
-                    </span>
+                   </p>
+                  <div className="text-4xl font-bold text-gray-900 mb-1">
+                    £{totalPrice}/mo
                   </div>
                   <div className="text-gray-600 text-base mb-2">
-                    <span className="font-bold">{getPaymentLabel(totalPrice)}</span>
+                    for 12 months interest free
                   </div>
                   {savings && paymentType !== 'yearly' && (
                     <div className="text-green-600 font-bold text-lg">
