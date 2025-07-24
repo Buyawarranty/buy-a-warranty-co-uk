@@ -396,10 +396,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             const savings = getPlanSavings(plan);
             
             return (
-              <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-400' : 'border border-gray-200'}`}>
+              <div key={plan.id} className={`bg-white rounded-2xl shadow-lg overflow-hidden relative ${isPopular ? 'border-2 border-yellow-400' : 'border border-gray-200'} ${isPopular ? 'mt-6' : ''}`}>
                 {isPopular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                    <div className="bg-yellow-400 text-white text-sm font-bold px-4 py-1 rounded-full">
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <div className="bg-yellow-400 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg whitespace-nowrap">
                       MOST POPULAR
                     </div>
                   </div>
