@@ -130,14 +130,15 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 <Mail className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
                 <div className="text-center px-8 sm:px-12">
                   <div className="text-base sm:text-xl leading-tight">
-                    View my quote
-                  </div>
-                  <div className="text-sm sm:text-lg opacity-90">
-                    and email it to me
+                    Email me my quote
                   </div>
                 </div>
                 <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
               </button>
+              
+              <p className="text-center text-sm text-gray-500 mt-2">
+                Unsubscribe at any time
+              </p>
             </div>
 
           </>
