@@ -436,17 +436,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   )}
                 </div>
 
-                {/* Panda Image for Basic Plan */}
-                {plan.name === 'Basic' && (
-                  <div className="flex justify-center px-6 mb-6">
-                    <img 
-                      src="/lovable-uploads/72b69fe8-415a-43c3-8740-4068481cde81.png" 
-                      alt="I'm Covered Panda" 
-                      className="w-48 h-auto object-contain"
-                    />
-                  </div>
-                )}
-
                 {/* What's Covered */}
                 <div className="px-6 mb-6">
                   <h4 className="font-bold text-lg mb-4 text-gray-900">What's Covered:</h4>
