@@ -59,6 +59,7 @@ const defaultPlanFeatures = {
     'Casings',
     'Vehicle Hire',
     'Recovery',
+    'Basic plan plus:',
     'European Cover'
   ],
   platinum: [
