@@ -450,7 +450,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                         <div className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
                           <Check className="h-3 w-3 text-white" />
                         </div>
-                        <span className={`text-sm text-gray-700 ${feature.includes("Basic plan plus:") ? "font-bold" : ""}`}>{feature}</span>
+                        <span className={`text-base text-gray-700 ${feature.includes("Basic plan plus:") ? "font-bold" : ""}`}>{feature}</span>
                       </div>
                     ))}
                   </div>
