@@ -427,19 +427,21 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               )}
 
 
-              <button 
-                type="submit"
-                disabled={showManualEntry ? !isManualFormValid : !isAutoFormValid}
-                className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed animate-pulse"
-                style={{
-                  backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
-                  borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
-                  opacity: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 1 : 0.5,
-                  animationDuration: '2s'
-                }}
-              >
-                Get my quote →
-              </button>
+              <div className="relative">
+                <button 
+                  type="submit"
+                  disabled={showManualEntry ? !isManualFormValid : !isAutoFormValid}
+                  className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed animate-pulse"
+                  style={{
+                    backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
+                    borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
+                    opacity: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 1 : 0.5,
+                    animationDuration: '3s'
+                  }}
+                >
+                  Get my quote →
+                </button>
+              </div>
             </>
           )}
           </form>
