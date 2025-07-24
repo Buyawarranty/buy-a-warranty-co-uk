@@ -158,14 +158,14 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg ${
                   areRequiredFieldsFilled ? '' : 'opacity-50'
                 }`}
-                style={{ backgroundColor: '#224380' }}
+                style={{ backgroundColor: '#1a365d' }}
                 onMouseEnter={(e) => {
                   if (areRequiredFieldsFilled) {
-                    e.currentTarget.style.backgroundColor = '#1a3460';
+                    e.currentTarget.style.backgroundColor = '#0f2a4a';
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#224380';
+                  e.currentTarget.style.backgroundColor = '#1a365d';
                 }}
               >
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
@@ -358,17 +358,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                     title={!isFormValid ? "Please enter details" : ""}
                     className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                     style={{
-                      backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
-                      borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
+                      backgroundColor: isFormValid ? '#1a365d' : '#1a365d',
+                      borderColor: isFormValid ? '#1a365d' : '#1a365d'
                     }}
                     onMouseEnter={(e) => {
                       if (isFormValid) {
-                        e.currentTarget.style.backgroundColor = '#d43f00';
+                        e.currentTarget.style.backgroundColor = '#0f2a4a';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (isFormValid) {
-                        e.currentTarget.style.backgroundColor = '#eb4b00';
+                        e.currentTarget.style.backgroundColor = '#1a365d';
                       }
                     }}
                   >
