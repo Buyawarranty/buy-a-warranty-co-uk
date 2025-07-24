@@ -321,7 +321,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
         <div className="bg-white rounded-2xl p-1 shadow-lg border border-gray-200 inline-flex">
           <button
             onClick={() => setPaymentType('yearly')}
-            className={`px-8 py-3 rounded-xl text-lg font-semibold transition-all duration-200 ${
+            className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
               paymentType === 'yearly' 
                 ? 'bg-[#1a365d] text-white shadow-md' 
                 : 'text-gray-600 hover:bg-gray-50'
@@ -332,7 +332,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           <div className="relative">
             <button
               onClick={() => setPaymentType('two_yearly')}
-              className={`px-8 py-3 rounded-xl text-lg font-semibold transition-all duration-200 ${
+              className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
                 paymentType === 'two_yearly' 
                   ? 'bg-[#1a365d] text-white shadow-md' 
                   : 'text-gray-600 hover:bg-gray-50'
@@ -347,7 +347,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           <div className="relative">
             <button
               onClick={() => setPaymentType('three_yearly')}
-              className={`px-8 py-3 rounded-xl text-lg font-semibold transition-all duration-200 ${
+              className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
                 paymentType === 'three_yearly' 
                   ? 'bg-[#1a365d] text-white shadow-md' 
                   : 'text-gray-600 hover:bg-gray-50'
@@ -363,15 +363,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       </div>
 
       {/* Voluntary Excess Selection */}
-      <div className="flex justify-center mb-12 px-4">
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 w-full max-w-3xl">
-          <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">Voluntary Excess Amount</h3>
-          <div className="flex justify-center gap-4">
+      <div className="flex justify-center mb-8 px-4">
+        <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-200 w-full max-w-2xl">
+          <h3 className="text-xl font-bold text-center mb-4 text-gray-900">Voluntary Excess Amount</h3>
+          <div className="flex justify-center gap-3">
             {[0, 50, 100, 150].map((amount) => (
               <button
                 key={amount}
                 onClick={() => toggleVoluntaryExcess(amount)}
-                className={`px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 min-w-[100px] ${
+                className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 min-w-[80px] ${
                   voluntaryExcess === amount
                     ? 'bg-[#1a365d] text-white border-2 border-[#1a365d]'
                     : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-[#1a365d]'
