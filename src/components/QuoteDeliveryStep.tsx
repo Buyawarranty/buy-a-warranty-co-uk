@@ -62,18 +62,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
-      {/* Back button outside of the box */}
-      <div className="max-w-4xl mx-auto mb-4">
-        <button 
-          type="button" 
-          onClick={onBack}
-          className="flex items-center gap-2 font-semibold py-2 px-3 rounded-lg border-2 bg-white transition-all duration-200 text-sm hover:bg-gray-50"
-          style={{ color: '#224380', borderColor: '#224380' }}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </button>
-      </div>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {!showContactForm ? (
