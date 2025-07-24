@@ -13,9 +13,9 @@ const WebsiteFooter = () => {
               <ul className="space-y-2 text-gray-600">
                 <li><a href="/" className="hover:text-[#eb4b00] transition-colors">Home</a></li>
                 <li><a href="/claim" className="hover:text-[#eb4b00] transition-colors">Make a Claim</a></li>
-                <li><a href="/warranty-car-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Car United Kingdom</a></li>
-                <li><a href="/warranty-van-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Van United Kingdom</a></li>
-                <li><a href="/warranty-ev-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs United Kingdom</a></li>
+                <li><a href="/warranty-car-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Car</a></li>
+                <li><a href="/warranty-van-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Van</a></li>
+                <li><a href="/warranty-ev-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs</a></li>
                 <li><a href="/warranty-motorbike-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Motorbikes UK</a></li>
               </ul>
             </div>
