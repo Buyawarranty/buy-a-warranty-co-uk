@@ -431,12 +431,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <button 
                   type="submit"
                   disabled={showManualEntry ? !isManualFormValid : !isAutoFormValid}
-                  className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed animate-pulse"
+                  className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
                     borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
                     opacity: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 1 : 0.5,
-                    animationDuration: '5s'
+                    animation: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 'breathe 5s ease-in-out infinite' : 'none'
                   }}
                 >
                   Get my quote →

@@ -590,3 +590,13 @@ html {
     font-size: 1.5rem;
   }
 }
+
+/* Breathing animation for CTA buttons */
+@keyframes breathe {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.02); 
+  }
+}
