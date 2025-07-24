@@ -208,9 +208,11 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     <section className="bg-[#e8f4fb] py-2">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
         <div className="mb-4">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-4 flex-wrap">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 whitespace-nowrap">Let's find your vehicle 🚗 🔍</h2>
+          <div className="relative">
+            <div className="text-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Let's find your vehicle 🚗 🔍</h2>
+            </div>
+            <div className="absolute top-0 right-0">
               <img 
                 src="/lovable-uploads/bed8e125-f5d3-4bf5-a0f8-df4df5ff8693.png" 
                 alt="Trustpilot" 
