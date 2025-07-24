@@ -149,35 +149,30 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const getMonthlyDisplayPrice = () => {
     if (!plan) return 0;
     
-    // Use the same pricing logic as gold plan from normal pricing table
-    const pricingTable = {
-      yearly: {
-        0: { monthly: 34 },
-        50: { monthly: 31 },
-        100: { monthly: 27 },
-        150: { monthly: 26 },
-        200: { monthly: 23 }
-      },
-      two_yearly: {
-        0: { monthly: 61 },
-        50: { monthly: 56 },
-        100: { monthly: 49 },
-        150: { monthly: 47 },
-        200: { monthly: 44 }
-      },
-      three_yearly: {
-        0: { monthly: 90 },
-        50: { monthly: 82 },
-        100: { monthly: 71 },
-        150: { monthly: 69 },
-        200: { monthly: 66 }
+    // Calculate pricing based on database values and voluntary excess
+    const basePrice = (() => {
+      switch (paymentType) {
+        case 'yearly':
+          return plan.yearly_price || plan.monthly_price * 12;
+        case 'two_yearly':
+          return plan.two_yearly_price || plan.monthly_price * 24;
+        case 'three_yearly':
+          return plan.three_yearly_price || plan.monthly_price * 36;
+        default:
+          return plan.monthly_price;
       }
-    };
+    })();
+
+    // Apply voluntary excess discount (1% per £50 excess)
+    const excessDiscount = (voluntaryExcess / 50) * 0.01;
+    const discountedPrice = basePrice * (1 - excessDiscount);
     
-    const periodData = pricingTable[paymentType as keyof typeof pricingTable] || pricingTable.yearly;
-    const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
+    // Calculate monthly payment based on period
+    const periodMonths = paymentType === 'yearly' ? 12 : 
+                        paymentType === 'two_yearly' ? 24 : 
+                        paymentType === 'three_yearly' ? 36 : 1;
     
-    return excessData.monthly;
+    return Math.round(discountedPrice / periodMonths);
   };
 
   const handlePurchase = async () => {

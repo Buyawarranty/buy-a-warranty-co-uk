@@ -116,54 +116,55 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     }
   };
 
-  // Pricing data from Excel spreadsheet organized by payment type and excess
-  const getPricingData = (excess: number, paymentPeriod: string) => {
-    const pricingTable = {
-      // 1 Year pricing (Columns D & E)
-      yearly: {
-        0: { basic: { monthly: 31, total: 372, save: 0 }, gold: { monthly: 34, total: 408, save: 0 }, platinum: { monthly: 36, total: 437, save: 0 } },
-        50: { basic: { monthly: 29, total: 348, save: 0 }, gold: { monthly: 31, total: 372, save: 0 }, platinum: { monthly: 32, total: 384, save: 0 } },
-        100: { basic: { monthly: 25, total: 300, save: 0 }, gold: { monthly: 27, total: 324, save: 0 }, platinum: { monthly: 29, total: 348, save: 0 } },
-        150: { basic: { monthly: 23, total: 276, save: 0 }, gold: { monthly: 26, total: 312, save: 0 }, platinum: { monthly: 27, total: 324, save: 0 } },
-        200: { basic: { monthly: 20, total: 240, save: 0 }, gold: { monthly: 23, total: 276, save: 0 }, platinum: { monthly: 25, total: 300, save: 0 } }
-      },
-      // 2 Year pricing (Columns F, G & H)
-      two_yearly: {
-        0: { basic: { monthly: 56, total: 670, save: 74 }, gold: { monthly: 61, total: 734, save: 82 }, platinum: { monthly: 65, total: 786, save: 87 } },
-        50: { basic: { monthly: 52, total: 626, save: 70 }, gold: { monthly: 56, total: 670, save: 74 }, platinum: { monthly: 58, total: 691, save: 77 } },
-        100: { basic: { monthly: 45, total: 540, save: 60 }, gold: { monthly: 49, total: 583, save: 65 }, platinum: { monthly: 52, total: 626, save: 70 } },
-        150: { basic: { monthly: 41, total: 497, save: 55 }, gold: { monthly: 47, total: 562, save: 62 }, platinum: { monthly: 49, total: 583, save: 65 } },
-        200: { basic: { monthly: 38, total: 456, save: 50 }, gold: { monthly: 44, total: 528, save: 58 }, platinum: { monthly: 46, total: 552, save: 61 } }
-      },
-      // 3 Year pricing (Columns J, K & L)
-      three_yearly: {
-        0: { basic: { monthly: 82, total: 982, save: 134 }, gold: { monthly: 90, total: 1077, save: 147 }, platinum: { monthly: 96, total: 1153, save: 157 } },
-        50: { basic: { monthly: 77, total: 919, save: 125 }, gold: { monthly: 82, total: 982, save: 134 }, platinum: { monthly: 84, total: 1014, save: 138 } },
-        100: { basic: { monthly: 66, total: 792, save: 108 }, gold: { monthly: 71, total: 855, save: 117 }, platinum: { monthly: 77, total: 919, save: 125 } },
-        150: { basic: { monthly: 61, total: 729, save: 99 }, gold: { monthly: 69, total: 824, save: 112 }, platinum: { monthly: 71, total: 855, save: 117 } },
-        200: { basic: { monthly: 56, total: 672, save: 92 }, gold: { monthly: 66, total: 792, save: 108 }, platinum: { monthly: 69, total: 828, save: 113 } }
+  // Dynamic pricing calculation based on database values and voluntary excess
+  const calculateDynamicPricing = (plan: Plan, excess: number, paymentPeriod: string) => {
+    const basePrice = (() => {
+      switch (paymentPeriod) {
+        case 'yearly':
+          return plan.yearly_price || plan.monthly_price * 12;
+        case 'two_yearly':
+          return plan.two_yearly_price || plan.monthly_price * 24;
+        case 'three_yearly':
+          return plan.three_yearly_price || plan.monthly_price * 36;
+        default:
+          return plan.monthly_price;
       }
-    };
+    })();
+
+    // Apply voluntary excess discount (1% per £50 excess)
+    const excessDiscount = (excess / 50) * 0.01;
+    const discountedPrice = basePrice * (1 - excessDiscount);
     
-    const periodData = pricingTable[paymentPeriod as keyof typeof pricingTable] || pricingTable.yearly;
-    return periodData[excess as keyof typeof periodData] || periodData[0];
+    // Calculate monthly payment and total based on period
+    const periodMonths = paymentPeriod === 'yearly' ? 12 : 
+                        paymentPeriod === 'two_yearly' ? 24 : 
+                        paymentPeriod === 'three_yearly' ? 36 : 1;
+    
+    const monthlyPayment = Math.round(discountedPrice / periodMonths);
+    const total = monthlyPayment * periodMonths;
+    
+    // Calculate savings compared to yearly
+    const yearlyPrice = plan.yearly_price || plan.monthly_price * 12;
+    const yearlyWithExcess = yearlyPrice * (1 - excessDiscount);
+    const save = paymentPeriod !== 'yearly' ? Math.round(yearlyWithExcess - total) : 0;
+    
+    return {
+      monthly: monthlyPayment,
+      total: total,
+      save: Math.max(save, 0)
+    };
   };
 
   const calculatePlanPrice = (plan: Plan) => {
-    const pricing = getPricingData(voluntaryExcess, paymentType);
-    const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
-    
-    // Always show monthly payment for all periods
-    return pricing[planType].monthly;
+    const pricing = calculateDynamicPricing(plan, voluntaryExcess, paymentType);
+    return pricing.monthly;
   };
 
   const getPlanSavings = (plan: Plan) => {
     if (paymentType === 'yearly') return null;
     
-    const pricing = getPricingData(voluntaryExcess, paymentType);
-    const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
-    
-    return pricing[planType].save;
+    const pricing = calculateDynamicPricing(plan, voluntaryExcess, paymentType);
+    return pricing.save;
   };
 
   const calculateAddOnPrice = (planId: string) => {
