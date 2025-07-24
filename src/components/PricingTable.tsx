@@ -586,6 +586,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
             );
           })}
         </div>
+
+        {/* Mascot Section */}
+        <div className="flex justify-center items-center py-16 bg-[#e8f4fb]">
+          <div className="text-center">
+            <img 
+              src="/lovable-uploads/420758e9-8543-4a26-9251-29ec4d62a7e7.png" 
+              alt="I'm Covered Mascot - Friendly panda holding license plate" 
+              className="max-w-sm mx-auto h-auto"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Floating Action Bar */}
