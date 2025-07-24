@@ -437,7 +437,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                   opacity: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 1 : 0.5
                 }}
               >
-                Get My Quote →
+                View my quote now
               </button>
             </>
           )}
