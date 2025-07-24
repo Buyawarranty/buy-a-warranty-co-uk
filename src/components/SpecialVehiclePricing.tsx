@@ -424,9 +424,10 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                 <Button
                   onClick={handlePurchase}
                   disabled={checkoutLoading}
-                  className="w-full py-4 text-lg font-bold rounded-xl bg-[#f59e0b] hover:bg-[#e4930a] text-white transition-colors duration-200"
+                  variant="outline"
+                  className="w-full py-4 text-lg font-bold rounded-xl border-2 border-[#f59e0b] text-[#f59e0b] bg-white hover:bg-gray-50 transition-colors duration-200"
                 >
-                  {checkoutLoading ? 'Processing...' : `Select ${plan.name} - £${Math.round(calculatePlanPrice())}`}
+                  {checkoutLoading ? 'Processing...' : 'Buy Now'}
                 </Button>
               </CardContent>
             </Card>

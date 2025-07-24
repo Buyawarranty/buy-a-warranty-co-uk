@@ -427,13 +427,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
                   <Button
                     onClick={() => handleSelectPlan(plan)}
                     disabled={isLoading}
-                    className={`w-full py-3 text-white font-semibold rounded-lg ${
-                      plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#0f2a4a]' :
-                      plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600' :
-                      'bg-[#eb4b00] hover:bg-[#d43f00]'
-                    } transition-colors duration-200`}
+                    variant="outline"
+                    className={`w-full py-3 font-semibold rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors duration-200 ${
+                      plan.name === 'Basic' ? 'border-[#1a365d] text-[#1a365d]' :
+                      plan.name === 'Gold' ? 'border-yellow-500 text-yellow-600' :
+                      'border-[#eb4b00] text-[#eb4b00]'
+                    }`}
                   >
-                    {isLoading ? 'Processing...' : `Select ${plan.name}`}
+                    {isLoading ? 'Processing...' : 'Buy Now'}
                   </Button>
                   <p className="text-xs text-gray-500 text-center mt-2">
                     Login details will be emailed after purchase
