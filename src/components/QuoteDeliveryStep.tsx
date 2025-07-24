@@ -205,29 +205,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 />
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <button 
-                  type="submit" 
-                  disabled={!isFormValid}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                  style={{
-                    backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
-                    borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (isFormValid) {
-                      e.currentTarget.style.backgroundColor = '#d43f00';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (isFormValid) {
-                      e.currentTarget.style.backgroundColor = '#eb4b00';
-                    }
-                  }}
-                >
-                  Get My Quote
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+              <div className="flex justify-between items-center">
                 <button 
                   type="button" 
                   onClick={() => setShowContactForm(false)}
@@ -246,6 +224,29 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back
+                </button>
+                
+                <button 
+                  type="submit" 
+                  disabled={!isFormValid}
+                  className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  style={{
+                    backgroundColor: isFormValid ? '#eb4b00' : '#eb4b00',
+                    borderColor: isFormValid ? '#eb4b00' : '#eb4b00'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (isFormValid) {
+                      e.currentTarget.style.backgroundColor = '#d43f00';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (isFormValid) {
+                      e.currentTarget.style.backgroundColor = '#eb4b00';
+                    }
+                  }}
+                >
+                  Get My Quote
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </form>
