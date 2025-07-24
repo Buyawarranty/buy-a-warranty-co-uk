@@ -135,7 +135,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
         {/* Trustpilot logo */}
         <div className="flex items-center">
           <img 
-            src="/lovable-uploads/4e4faf8a-b202-4101-a858-9c58ad0a28c5.png" 
+            src="/lovable-uploads/0ae93d6c-222e-46e2-8e73-9760bf2b943d.png" 
             alt="Trustpilot 5 stars" 
             className="h-10 sm:h-12 w-auto"
           />
