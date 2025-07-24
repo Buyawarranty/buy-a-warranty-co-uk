@@ -145,7 +145,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
         ) : (
           <>
             <div className="mb-4 sm:mb-6">
-              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">One last step - get your quote now</h2>
+              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">One last step - this won't take long</h2>
             </div>
 
             <form onSubmit={handleSubmitContactForm}>
