@@ -206,7 +206,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   const isAutoFormValid = regNumber && mileage && numericMileage <= 150000 && mileageError === '';
 
   return (
-    <section className="bg-[#e8f4fb] py-4">
+    <section className="bg-[#e8f4fb] py-2">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
         <TrustpilotHeader className="mb-4" />
         <div className="flex justify-center mb-4">
