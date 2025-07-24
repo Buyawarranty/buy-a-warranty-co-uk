@@ -47,11 +47,23 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchSpecialPlan();
   }, [vehicleData.vehicleType]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show floating bar when user scrolls past the initial pricing cards
+      const scrollY = window.scrollY;
+      setIsFloatingBarVisible(scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const fetchSpecialPlan = async () => {
     try {
@@ -326,57 +338,56 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         <div className="w-full px-4 pb-16">
           <div className="max-w-md mx-auto">
             <div className="relative">
-              <Card className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-orange-400 shadow-xl">
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-10">
-                  <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1">
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-yellow-400 relative mt-6">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <div className="bg-yellow-400 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg whitespace-nowrap">
                     MOST POPULAR
-                  </Badge>
+                  </div>
                 </div>
                 
                 {/* Plan Header */}
-                <CardHeader className="p-6 text-center bg-gray-50 border-b">
-                  <CardTitle className="text-2xl font-bold mb-4 text-gray-900">
+                <div className="p-8 text-center">
+                  <h3 className="text-4xl font-bold mb-4 text-yellow-600">
                     {plan.name}
-                  </CardTitle>
-                  <div className="mb-2">
-                    <span className="text-sm text-gray-600">£</span>
-                    <span className="text-5xl font-bold text-gray-900">
-                      {Math.round(calculatePlanPrice())}
-                    </span>
-                    <div className="text-gray-600 text-lg">{getPaymentLabel()}</div>
+                  </h3>
+                  <p className="text-gray-900 text-xl font-bold mb-6">
+                    {paymentType === 'yearly' ? '1 Year warranty' :
+                     paymentType === 'two_yearly' ? '2 Year warranty' :
+                     paymentType === 'three_yearly' ? '3 Year warranty' :
+                     '1 Year warranty'}
+                  </p>
+                  <div className="text-4xl font-bold text-gray-900 mb-3">
+                    <span className="text-2xl">£</span>{Math.round(calculatePlanPrice())}<span className="text-2xl">/mo</span>
                   </div>
-                  {paymentType !== 'monthly' && (
-                    <div className="text-sm text-gray-500">
-                      12 simple interest-free payments
-                    </div>
-                  )}
-                </CardHeader>
+                  <div className="text-gray-600 text-base mb-6">
+                    for 12 months interest free
+                  </div>
+                  
+                  <Button
+                    onClick={handlePurchase}
+                    disabled={checkoutLoading}
+                    className="w-full py-4 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0 transition-colors duration-200"
+                  >
+                    {checkoutLoading ? 'Processing...' : 'Buy Now'}
+                  </Button>
+                </div>
 
                 {/* Plan Content */}
-                <CardContent className="p-6 space-y-6">
+                <div className="px-8 pb-8">
                   {/* What's Covered */}
                   <div>
-                    <h4 className="font-bold text-lg mb-4">What's Covered:</h4>
+                    <h4 className="font-bold text-lg mb-4 text-gray-900">What's Covered:</h4>
                     <div className="space-y-2 max-h-64 overflow-y-auto">
                       {plan.coverage.map((feature, index) => (
                         <div key={index} className="flex items-start gap-3">
-                          <Check className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                           <span className="text-sm text-gray-700">{feature}</span>
                         </div>
                       ))}
                     </div>
                   </div>
-
-                  <Button
-                    onClick={handlePurchase}
-                    disabled={checkoutLoading}
-                    variant="outline"
-                    className="w-full py-4 text-lg font-bold rounded-xl border-2 border-[#f59e0b] text-[#f59e0b] bg-white hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    {checkoutLoading ? 'Processing...' : 'Buy Now'}
-                  </Button>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
 
             {/* Additional Information */}
@@ -386,6 +397,34 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
             </div>
           </div>
         </div>
+
+        {/* Floating Bottom Bar */}
+        {isFloatingBarVisible && plan && (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50">
+            <div className="max-w-4xl mx-auto px-4 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="text-lg font-bold text-gray-900">
+                    {plan.name}
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    £{Math.round(calculatePlanPrice())}/mo
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    for 12 months interest free
+                  </div>
+                </div>
+                <Button
+                  onClick={handlePurchase}
+                  disabled={checkoutLoading}
+                  className="px-8 py-3 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0"
+                >
+                  {checkoutLoading ? 'Processing...' : 'Buy Now'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </TooltipProvider>
   );
