@@ -169,8 +169,17 @@ serve(async (req) => {
 
     logStep("Sending request to Bumper API", { amount: monthlyAmount, customerEmail });
 
-    // Minimal data for Bumper - let them collect customer details
+    // Test with minimal customer data (as requested by Bumper docs)
     const bumperRequestData = {
+      first_name: "Test",
+      last_name: "Customer", 
+      email: customerEmail,
+      mobile: "07000000000",
+      street: "123 Test Street",
+      town: "London",
+      county: "London", 
+      postcode: "SW1A 1AA",
+      country: "UK",
       order_reference: `plan_${planId}`,
       customer_reference: `plan_${planId}`,
       invoice_number: `plan_${planId}`,
@@ -178,7 +187,7 @@ serve(async (req) => {
       currency: "GBP",
       success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
       failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${originalPaymentType}`,
-      preferred_product_type: 'paylater', // PayLater for credit checks
+      preferred_product_type: 'paylater',
       api_key: bumperApiKey
     };
 
