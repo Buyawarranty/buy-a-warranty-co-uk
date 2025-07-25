@@ -26,8 +26,8 @@ serve(async (req) => {
     logStep("Function started");
 
     const body = await req.json();
-    const { planId, vehicleData, paymentType: originalPaymentType } = body;
-    logStep("Request data", { planId, vehicleData, originalPaymentType });
+    const { planId, vehicleData, paymentType: originalPaymentType, voluntaryExcess = 0 } = body;
+    logStep("Request data", { planId, vehicleData, originalPaymentType, voluntaryExcess });
     
     // CRITICAL: Bumper only accepts monthly payments, regardless of user selection
     const paymentType = 'monthly'; // Force monthly for Bumper credit checks
@@ -40,14 +40,20 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
     
+    logStep("Fetching plan data", { planId });
     const { data: planData, error: planError } = await supabaseService
       .from('plans')
       .select('name')
       .eq('id', planId)
       .single();
     
-    if (planError || !planData) {
-      logStep("Failed to fetch plan data", { planId, error: planError });
+    if (planError) {
+      logStep("Plan fetch error", { planId, error: planError });
+      throw new Error(`Database error fetching plan: ${planError.message}`);
+    }
+    
+    if (!planData) {
+      logStep("Plan not found", { planId });
       throw new Error(`Could not find plan with ID: ${planId}`);
     }
     
@@ -109,7 +115,6 @@ serve(async (req) => {
 
     // Extract payment details - FORCE MONTHLY for Bumper regardless of user choice
     const forcedPaymentType = 'monthly'; // Bumper only accepts monthly
-    const { voluntaryExcess = 0 } = body;
     logStep("Payment configuration", { userSelected: originalPaymentType, forcedForBumper: forcedPaymentType, voluntaryExcess });
     
     // Get pricing data - use monthly pricing for Bumper
