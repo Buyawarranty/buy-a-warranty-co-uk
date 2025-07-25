@@ -239,19 +239,21 @@ const CustomerDashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4">
             <div className="flex items-center">
               <img 
                 src="/lovable-uploads/9b53da8c-70f3-4fc2-8497-e1958a650b4a.png" 
                 alt="BuyAWarranty" 
-                className="h-8 w-auto mr-4"
+                className="h-6 sm:h-8 w-auto mr-3 sm:mr-4"
               />
-              <h1 className="text-2xl font-bold text-gray-900">Customer Dashboard</h1>
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Customer Dashboard</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <TrustpilotHeader />
-              <span className="text-sm text-gray-600">Welcome, {user?.email}</span>
-              <Button variant="outline" onClick={handleSignOut}>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+              <div className="hidden sm:block">
+                <TrustpilotHeader />
+              </div>
+              <span className="text-xs sm:text-sm text-gray-600">Welcome, {user?.email}</span>
+              <Button variant="outline" onClick={handleSignOut} size="sm">
                 Sign Out
               </Button>
             </div>
@@ -259,7 +261,7 @@ const CustomerDashboard = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {!policy ? (
           <Card>
             <CardHeader>
@@ -278,37 +280,37 @@ const CustomerDashboard = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Policy Overview */}
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center">
+                  <CardTitle className="flex items-center text-lg">
                     <FileText className="mr-2 h-5 w-5" />
                     Your Policy
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-sm font-medium text-gray-500">Policy Number</Label>
-                      <p className="font-semibold">{policy.policy_number}</p>
+                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy Number</Label>
+                      <p className="font-semibold text-sm sm:text-base">{policy.policy_number}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-500">Plan Type</Label>
-                      <p className="font-semibold capitalize">{policy.plan_type}</p>
+                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
+                      <p className="font-semibold capitalize text-sm sm:text-base">{policy.plan_type}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-500">Payment Type</Label>
-                      <p className="font-semibold">
+                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Payment Type</Label>
+                      <p className="font-semibold text-sm sm:text-base">
                         {policy.payment_type === 'twoYear' ? '2 Year' : 
                          policy.payment_type === 'threeYear' ? '3 Year' : 
                          policy.payment_type.charAt(0).toUpperCase() + policy.payment_type.slice(1)}
                       </p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-500">Status</Label>
-                      <p className={`font-semibold capitalize ${
+                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Status</Label>
+                      <p className={`font-semibold capitalize text-sm sm:text-base ${
                         policy.status === 'active' ? 'text-green-600' : 
                         policy.status === 'expired' ? 'text-red-600' : 'text-yellow-600'
                       }`}>
@@ -318,14 +320,14 @@ const CustomerDashboard = () => {
                   </div>
                   
                   <div className="pt-4 border-t">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
-                        <Label className="text-sm font-medium text-gray-500">Time Remaining</Label>
+                        <Label className="text-xs sm:text-sm font-medium text-gray-500">Time Remaining</Label>
                         <p className="text-lg font-semibold text-blue-600">{getTimeRemaining()}</p>
                       </div>
-                      <div className="text-right">
-                        <Label className="text-sm font-medium text-gray-500">Expires On</Label>
-                        <p className="font-semibold">
+                      <div className="sm:text-right">
+                        <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
+                        <p className="font-semibold text-sm sm:text-base">
                           {new Date(policy.policy_end_date).toLocaleDateString('en-GB')}
                         </p>
                       </div>

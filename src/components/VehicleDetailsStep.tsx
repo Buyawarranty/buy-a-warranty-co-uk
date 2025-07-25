@@ -205,14 +205,14 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   const isAutoFormValid = regNumber && mileage && numericMileage <= 150000 && mileageError === '';
 
   return (
-    <section className="bg-[#e8f4fb] py-2">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <section className="bg-[#e8f4fb] py-2 px-3 sm:px-0">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-6">
         <div className="mb-4">
           <div className="relative">
             <div className="text-center">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Let's find your vehicle 🚗 🔍</h2>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Let's find your vehicle 🚗 🔍</h2>
             </div>
-            <div className="absolute top-0 right-0">
+            <div className="absolute top-0 right-0 hidden sm:block">
               <img 
                 src="/lovable-uploads/bed8e125-f5d3-4bf5-a0f8-df4df5ff8693.png" 
                 alt="Trustpilot" 
@@ -224,17 +224,17 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
         <div className="flex flex-col items-center">
           <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
-          <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700 text-xl">
+          <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700 text-lg sm:text-xl">
             Vehicle registration number
           </label>
           <div 
-            className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-[28px] px-[25px] py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black"
+            className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-xl sm:text-[28px] px-[15px] sm:px-[25px] py-[12px] sm:py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <img 
               src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
               alt="GB Flag" 
-              className="w-[35px] h-[25px] mr-[15px] object-cover rounded-[2px]"
+              className="w-[25px] sm:w-[35px] h-[18px] sm:h-[25px] mr-[10px] sm:mr-[15px] object-cover rounded-[2px]"
             />
             <input
               id="regInput"
@@ -242,7 +242,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               value={regNumber}
               onChange={handleRegChange}
               placeholder="Your reg plate"
-              className="bg-transparent border-none outline-none text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal tracking-normal"
+              className="bg-transparent border-none outline-none text-xl sm:text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal tracking-normal"
               maxLength={8}
             />
           </div>
@@ -315,10 +315,10 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           )}
 
           {showManualEntry && (
-            <div className="mb-4 p-4 border-2 border-gray-200 rounded-[6px]">
-              <h3 className="text-xl font-semibold mb-4 text-gray-700">Enter your vehicle details manually</h3>
+            <div className="mb-4 p-3 sm:p-4 border-2 border-gray-200 rounded-[6px]">
+              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-700">Enter your vehicle details manually</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold mb-2 text-gray-700">Make</label>
                   <input
@@ -381,7 +381,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                   </select>
                 </div>
                 
-                <div className="md:col-span-2">
+                <div className="sm:col-span-2">
                   <label className="block font-semibold mb-2 text-gray-700">Year</label>
                   <input
                     type="number"
@@ -402,7 +402,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
           {(vehicleFound || showManualEntry) && (
             <>
-              <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700 text-xl">
+              <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700 text-lg sm:text-xl">
                 What's your approximate mileage?
               </label>
               <input

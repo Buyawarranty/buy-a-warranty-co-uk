@@ -74,22 +74,22 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
       <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       
-      <div className="flex-1 ml-64">
-        <header className="bg-white shadow-sm border-b px-6 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">
+      <div className="flex-1 lg:ml-64">
+        <header className="bg-white shadow-sm border-b px-4 lg:px-6 py-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
               Admin Dashboard
             </h1>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
               <span className="text-sm text-gray-600">
                 Welcome, Admin
               </span>
               <button
                 onClick={() => supabase.auth.signOut()}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
               >
                 Sign Out
               </button>
@@ -97,7 +97,7 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        <main className="p-6">
+        <main className="p-4 lg:p-6">
           {renderContent()}
         </main>
       </div>

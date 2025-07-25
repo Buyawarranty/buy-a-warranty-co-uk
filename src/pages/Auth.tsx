@@ -180,24 +180,24 @@ const Auth = () => {
       </div>
       
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-        <Card>
-          <CardHeader className="text-center">
+        <div className="w-full max-w-md space-y-6">
+        <Card className="shadow-lg">
+          <CardHeader className="text-center pb-6">
             <img 
               src="/lovable-uploads/9b53da8c-70f3-4fc2-8497-e1958a650b4a.png" 
               alt="BuyAWarranty" 
               className="h-12 w-auto mx-auto mb-4"
             />
-            <CardTitle>Welcome</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-xl md:text-2xl">Welcome</CardTitle>
+            <CardDescription className="text-sm">
               Sign in to your account or create a new one
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 md:px-6">
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="signin" className="text-sm">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="text-sm">Sign Up</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin">
