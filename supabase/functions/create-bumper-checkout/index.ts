@@ -169,22 +169,8 @@ serve(async (req) => {
 
     logStep("Sending request to Bumper API", { amount: monthlyAmount, customerEmail });
 
-    // Extract address components (Bumper requires specific fields)
-    const addressParts = (vehicleData?.address || '').split(' ');
-    const firstName = vehicleData?.fullName?.split(' ')[0] || 'Test';
-    const lastName = vehicleData?.fullName?.split(' ').slice(1).join(' ') || 'Customer';
-
-    // Build Bumper API payload exactly as their WordPress plugin does
+    // Minimal data for Bumper - let them collect customer details
     const bumperRequestData = {
-      first_name: firstName,
-      last_name: lastName,
-      email: customerEmail,
-      mobile: vehicleData?.phone || '07000000000',
-      street: vehicleData?.address || 'Not provided',
-      town: 'London', // Default for UK
-      county: 'London',
-      postcode: 'SW1A 1AA', // Default UK postcode
-      country: 'UK',
       order_reference: `plan_${planId}`,
       customer_reference: `plan_${planId}`,
       invoice_number: `plan_${planId}`,
