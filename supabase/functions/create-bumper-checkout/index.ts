@@ -137,25 +137,42 @@ serve(async (req) => {
 
     logStep("Sending request to Bumper API", { payload: bumperPayload });
 
-    // Make request to Bumper API
+    // Bumper requires v2/apply endpoint with different structure
+    const bumperRequestData = {
+      amount: monthlyAmount.toString(),
+      api_key: bumperApiKey,
+      currency: "GBP",
+      success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
+      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${paymentType}`,
+      order_reference: `plan_${planId}_${Date.now()}`,
+      first_name: vehicleData?.fullName?.split(' ')[0] || 'Customer',
+      last_name: vehicleData?.fullName?.split(' ').slice(1).join(' ') || '',
+      email: customerEmail,
+      mobile: vehicleData?.phone || '07000000000',
+      flat_number: '',
+      building_name: '',
+      building_number: vehicleData?.address?.split(' ')[0] || '1',
+      street: vehicleData?.address || 'Not provided',
+      town: 'London',
+      county: 'London',
+      postcode: 'SW1A 1AA',
+      signature: bumperSecretKey // Using secret key as signature for now
+    };
+
+    // Make request to Bumper API using correct endpoint
     console.log("Making request to Bumper API:", {
-      url: "https://api.bumper.co/v1/checkout/sessions",
+      url: "https://api.demo.bumper.co/v2/apply/",
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${bumperApiKey?.substring(0, 10)}...`,
-        "X-Secret-Key": `${bumperSecretKey?.substring(0, 10)}...`
-      }
+      data: { ...bumperRequestData, signature: "***" }
     });
 
-    const bumperResponse = await fetch("https://api.demo.bumper.co/v1/checkout/sessions", {
+    const bumperResponse = await fetch("https://api.demo.bumper.co/v2/apply/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${bumperApiKey}`,
-        "X-Secret-Key": bumperSecretKey
+        "Accept": "application/json"
       },
-      body: JSON.stringify(bumperPayload)
+      body: JSON.stringify(bumperRequestData)
     });
 
     console.log("Bumper API response status:", bumperResponse.status);
@@ -228,18 +245,19 @@ serve(async (req) => {
       });
     }
 
-    if (bumperData?.checkout_url) {
-      logStep("Bumper checkout session created", { url: bumperData.checkout_url });
+    if (bumperData?.redirect_url) {
+      logStep("Bumper application created successfully", { redirect_url: bumperData.redirect_url, token: bumperData.token });
       
       return new Response(JSON.stringify({ 
-        url: bumperData.checkout_url,
+        url: bumperData.redirect_url,
+        token: bumperData.token,
         source: 'bumper'
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
     } else {
-      throw new Error("No checkout URL received from Bumper");
+      throw new Error("No redirect URL received from Bumper");
     }
 
   } catch (error) {
