@@ -26,15 +26,33 @@ serve(async (req) => {
     logStep("Function started");
 
     const body = await req.json();
-    const { planId, planName, vehicleData, paymentType: originalPaymentType } = body;
-    logStep("Request data", { planId, planName, vehicleData, originalPaymentType });
+    const { planId, vehicleData, paymentType: originalPaymentType } = body;
+    logStep("Request data", { planId, vehicleData, originalPaymentType });
     
     // CRITICAL: Bumper only accepts monthly payments, regardless of user selection
     const paymentType = 'monthly'; // Force monthly for Bumper credit checks
     logStep("Forcing monthly payment for Bumper", { originalSelection: originalPaymentType, forcedPaymentType: paymentType });
     
-    // Use planName for pricing lookup (basic, gold, platinum)
-    const planType = planName.toLowerCase();
+    // Get plan name from database using planId
+    const supabaseService = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+    
+    const { data: planData, error: planError } = await supabaseService
+      .from('plans')
+      .select('name')
+      .eq('id', planId)
+      .single();
+    
+    if (planError || !planData) {
+      logStep("Failed to fetch plan data", { planId, error: planError });
+      throw new Error(`Could not find plan with ID: ${planId}`);
+    }
+    
+    const planType = planData.name.toLowerCase();
+    logStep("Retrieved plan type", { planId, planName: planData.name, planType });
 
     // Get authenticated user
     let user = null;
@@ -97,14 +115,14 @@ serve(async (req) => {
     // Get pricing data - use monthly pricing for Bumper
     const periodData = pricingTable['monthly'] || pricingTable.yearly; // Always use monthly for Bumper
     const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
-    const planData = excessData[planType as keyof typeof excessData];
+    const planPricing = excessData[planType as keyof typeof excessData];
     
-    if (!planData) {
+    if (!planPricing) {
       throw new Error(`Invalid plan configuration: ${planType} for ${paymentType} with ${voluntaryExcess} excess`);
     }
 
     // For Bumper: Always use monthly amount for 30-day payment periods (credit checks)
-    const monthlyAmount = planData.monthly;
+    const monthlyAmount = planPricing.monthly;
 
     const origin = req.headers.get("origin") || "https://buyawarranty.com";
     logStep("Creating Bumper checkout - ALWAYS MONTHLY for credit check", { 
