@@ -119,10 +119,17 @@ serve(async (req) => {
     const bumperApiKey = Deno.env.get("BUMPER_API_KEY");
     const bumperSecretKey = Deno.env.get("BUMPER_SECRET_KEY");
     
+    logStep("Checking Bumper credentials", { 
+      hasApiKey: !!bumperApiKey, 
+      hasSecretKey: !!bumperSecretKey,
+      apiKeyLength: bumperApiKey?.length || 0,
+      secretKeyLength: bumperSecretKey?.length || 0
+    });
+    
     if (!bumperApiKey || !bumperSecretKey) {
-      logStep("Missing Bumper credentials, falling back to Stripe", { 
-        hasApiKey: !!bumperApiKey, 
-        hasSecretKey: !!bumperSecretKey 
+      logStep("CRITICAL: Missing Bumper credentials - falling back to Stripe", { 
+        BUMPER_API_KEY: bumperApiKey ? "PRESENT" : "MISSING",
+        BUMPER_SECRET_KEY: bumperSecretKey ? "PRESENT" : "MISSING"
       });
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
