@@ -36,7 +36,7 @@ interface PricingTableProps {
     vehicleType?: string;
   };
   onBack: () => void;
-  onPlanSelected?: (planId: string, paymentType: string) => void;
+  onPlanSelected?: (planId: string, paymentType: string, planName?: string) => void;
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
@@ -211,7 +211,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   const handleSelectPlan = (plan: Plan) => {
     if (onPlanSelected) {
-      onPlanSelected(plan.id, paymentType);
+      onPlanSelected(plan.id, paymentType, plan.name);
     }
   };
 

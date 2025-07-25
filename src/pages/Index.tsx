@@ -26,7 +26,7 @@ interface VehicleData {
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<{id: string, paymentType: string} | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<{id: string, paymentType: string, name?: string} | null>(null);
   const [formData, setFormData] = useState({
     regNumber: '',
     mileage: '',
@@ -65,8 +65,8 @@ const Index = () => {
     setCurrentStep(3);
   };
 
-  const handlePlanSelected = (planId: string, paymentType: string) => {
-    setSelectedPlan({ id: planId, paymentType });
+  const handlePlanSelected = (planId: string, paymentType: string, planName?: string) => {
+    setSelectedPlan({ id: planId, paymentType, name: planName });
     setCurrentStep(4);
   };
 
@@ -138,6 +138,7 @@ const Index = () => {
           vehicleData={vehicleData}
           planId={selectedPlan.id}
           paymentType={selectedPlan.paymentType}
+          planName={selectedPlan.name}
           onNext={handleCustomerDetailsComplete}
           onBack={() => handleBackToStep(3)}
         />

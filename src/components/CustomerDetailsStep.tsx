@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,6 +30,7 @@ interface CustomerDetailsStepProps {
   vehicleData: any;
   planId: string;
   paymentType: string;
+  planName?: string;
 }
 
 const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
@@ -38,11 +39,23 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   initialData,
   vehicleData,
   planId,
-  paymentType
+  paymentType,
+  planName
 }) => {
+  // Split full name into first and last name from step 2
+  const splitName = (fullName: string) => {
+    if (!fullName) return { firstName: '', lastName: '' };
+    const nameParts = fullName.trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+    return { firstName, lastName };
+  };
+
+  const { firstName, lastName } = splitName(vehicleData?.fullName || '');
+
   const [formData, setFormData] = useState<CustomerDetailsData>({
-    first_name: initialData?.first_name || '',
-    last_name: initialData?.last_name || '',
+    first_name: initialData?.first_name || firstName,
+    last_name: initialData?.last_name || lastName,
     email: initialData?.email || vehicleData?.email || '',
     mobile: initialData?.mobile || vehicleData?.phone || '',
     flat_number: initialData?.flat_number || '',
@@ -59,6 +72,71 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [addressType, setAddressType] = useState<'flat' | 'building_name' | 'building_number'>('building_number');
   const { toast } = useToast();
+
+  // Track abandoned cart on page unload or navigation away
+  useEffect(() => {
+    const trackAbandonedCart = async () => {
+      // Only track if user has provided some information and email is available
+      const emailToUse = formData.email || vehicleData?.email;
+      if (!emailToUse) return;
+
+      try {
+        await supabase.functions.invoke('track-abandoned-cart', {
+          body: {
+            full_name: `${formData.first_name} ${formData.last_name}`.trim() || vehicleData?.fullName,
+            email: emailToUse,
+            phone: formData.mobile || vehicleData?.phone,
+            vehicle_reg: vehicleData?.regNumber,
+            vehicle_make: vehicleData?.make,
+            vehicle_model: vehicleData?.model,
+            vehicle_year: vehicleData?.year,
+            mileage: vehicleData?.mileage,
+            plan_id: planId,
+            plan_name: planName,
+            payment_type: paymentType,
+            step_abandoned: 4
+          }
+        });
+      } catch (error) {
+        console.error('Failed to track abandoned cart:', error);
+      }
+    };
+
+    const handleBeforeUnload = () => {
+      const emailToUse = formData.email || vehicleData?.email;
+      if (emailToUse) {
+        // Use sendBeacon for more reliable tracking during page unload
+        const payload = JSON.stringify({
+          full_name: `${formData.first_name} ${formData.last_name}`.trim() || vehicleData?.fullName,
+          email: emailToUse,
+          phone: formData.mobile || vehicleData?.phone,
+          vehicle_reg: vehicleData?.regNumber,
+          vehicle_make: vehicleData?.make,
+          vehicle_model: vehicleData?.model,
+          vehicle_year: vehicleData?.year,
+          mileage: vehicleData?.mileage,
+          plan_id: planId,
+          plan_name: planName,
+          payment_type: paymentType,
+          step_abandoned: 4
+        });
+
+        // Try to use the Supabase function URL for sendBeacon
+        const supabaseUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/track-abandoned-cart';
+        navigator.sendBeacon(supabaseUrl, payload);
+      }
+    };
+
+    // Track when component mounts (user reached step 4)
+    const timeoutId = setTimeout(trackAbandonedCart, 2000); // Track after 2 seconds on the page
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [formData, vehicleData, planId, planName, paymentType]);
 
   const handleInputChange = (field: keyof CustomerDetailsData, value: string) => {
     setFormData(prev => ({
@@ -162,6 +240,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 Final Step - Your Details
               </CardTitle>
             </div>
+            {planName && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <div className="flex items-center justify-center">
+                  <Shield className="h-5 w-5 text-blue-600 mr-2" />
+                  <span className="text-blue-800 font-semibold">
+                    Selected Plan: {planName} ({paymentType === 'yearly' ? 'Annual' : paymentType === 'monthly' ? 'Monthly' : paymentType})
+                  </span>
+                </div>
+              </div>
+            )}
             <p className="text-gray-600 font-sans">
               We need a few more details to complete your warranty purchase
             </p>

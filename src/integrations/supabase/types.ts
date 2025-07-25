@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_carts: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          mileage: string | null
+          payment_type: string | null
+          phone: string | null
+          plan_id: string | null
+          plan_name: string | null
+          step_abandoned: number
+          updated_at: string
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_reg: string | null
+          vehicle_year: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          mileage?: string | null
+          payment_type?: string | null
+          phone?: string | null
+          plan_id?: string | null
+          plan_name?: string | null
+          step_abandoned: number
+          updated_at?: string
+          vehicle_make?: string | null
+          vehicle_model?: string | null
+          vehicle_reg?: string | null
+          vehicle_year?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          mileage?: string | null
+          payment_type?: string | null
+          phone?: string | null
+          plan_id?: string | null
+          plan_name?: string | null
+          step_abandoned?: number
+          updated_at?: string
+          vehicle_make?: string | null
+          vehicle_model?: string | null
+          vehicle_reg?: string | null
+          vehicle_year?: string | null
+        }
+        Relationships: []
+      }
       admin_notes: {
         Row: {
           created_at: string

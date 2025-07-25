@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Zap, Mail } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { supabase } from '@/integrations/supabase/client';
 
 interface QuoteDeliveryStepProps {
   vehicleData: {
@@ -76,7 +77,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     return !newErrors.fullName && !newErrors.email && !newErrors.phone;
   };
 
-  const handleSubmitContactForm = (e: React.FormEvent) => {
+  const handleSubmitContactForm = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Mark all fields as touched
@@ -87,6 +88,25 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     });
 
     if (validateForm()) {
+      // Track abandoned cart for email quote users
+      try {
+        await supabase.functions.invoke('track-abandoned-cart', {
+          body: {
+            full_name: fullName,
+            email: email,
+            phone: phone || '',
+            vehicle_reg: vehicleData?.regNumber,
+            vehicle_make: vehicleData?.make,
+            vehicle_model: vehicleData?.model,
+            vehicle_year: vehicleData?.year,
+            mileage: vehicleData?.mileage,
+            step_abandoned: 2
+          }
+        });
+      } catch (error) {
+        console.error('Failed to track abandoned cart for email quote:', error);
+      }
+
       // Trigger confetti
       confetti({
         particleCount: 100,

@@ -40,7 +40,7 @@ interface VehicleData {
 interface SpecialVehiclePricingProps {
   vehicleData: VehicleData;
   onBack: () => void;
-  onPlanSelected?: (planId: string, paymentType: string) => void;
+  onPlanSelected?: (planId: string, paymentType: string, planName?: string) => void;
 }
 
 const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleData, onBack, onPlanSelected }) => {
@@ -195,7 +195,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     if (!plan) return;
     
     if (onPlanSelected) {
-      onPlanSelected(plan.id, paymentType);
+      onPlanSelected(plan.id, paymentType, plan.name);
     }
   };
 
