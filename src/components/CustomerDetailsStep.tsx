@@ -158,12 +158,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         <Card className="shadow-xl border-0">
           <CardHeader className="text-center pb-6">
             <div className="flex items-center justify-center mb-4">
-              <Shield className="h-8 w-8 text-primary mr-2" />
-              <CardTitle className="text-2xl font-bold text-gray-900">
+              <CardTitle className="text-2xl font-bold text-gray-900 font-sans">
                 Final Step - Your Details
               </CardTitle>
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-sans">
               We need a few more details to complete your warranty purchase
             </p>
           </CardHeader>
@@ -424,7 +423,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               <Button
                 onClick={handlePurchase}
                 disabled={!isFormValid() || isLoading}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transform transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                className="flex-1 bg-[#eb4b00] hover:bg-[#d44300] text-white font-semibold py-3 px-6 rounded-lg shadow-lg animate-breathing disabled:opacity-50 disabled:animate-none font-sans"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
@@ -432,10 +431,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     Processing...
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center">
-                    <Shield className="h-5 w-5 mr-2" />
-                    Buy Your Warranty
-                  </div>
+                  "Buy Your Warranty"
                 )}
               </Button>
             </div>
