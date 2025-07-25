@@ -13,28 +13,49 @@ const ThankYou = () => {
   const plan = searchParams.get('plan');
   const paymentType = searchParams.get('payment');
   const sessionId = searchParams.get('session_id');
+  const source = searchParams.get('source');
   const [isProcessing, setIsProcessing] = useState(true);
   const [policyNumber, setPolicyNumber] = useState<string>('');
 
   useEffect(() => {
     const processPayment = async () => {
-      if (!sessionId || !plan || !paymentType) {
+      if (!plan || !paymentType) {
         toast.error('Missing payment information');
         setIsProcessing(false);
         return;
       }
 
       try {
-        console.log('Processing successful payment...', { sessionId, plan, paymentType });
+        let data, error;
         
-        // Create an edge function to retrieve session details from Stripe and process the payment
-        const { data, error } = await supabase.functions.invoke('process-stripe-success', {
-          body: {
-            sessionId,
-            planId: plan,
-            paymentType
-          }
-        });
+        // Check if this is a Bumper payment (has source=bumper in URL)
+        if (source === 'bumper') {
+          console.log('Processing Bumper payment...', { plan, paymentType });
+          
+          const result = await supabase.functions.invoke('process-bumper-success', {
+            body: {
+              planId: plan,
+              paymentType
+            }
+          });
+          data = result.data;
+          error = result.error;
+        } else if (sessionId) {
+          // Process Stripe payment
+          console.log('Processing Stripe payment...', { sessionId, plan, paymentType });
+          
+          const result = await supabase.functions.invoke('process-stripe-success', {
+            body: {
+              sessionId,
+              planId: plan,
+              paymentType
+            }
+          });
+          data = result.data;
+          error = result.error;
+        } else {
+          throw new Error('Missing payment session information');
+        }
 
         if (error) {
           console.error('Payment processing error:', error);
@@ -44,6 +65,7 @@ const ThankYou = () => {
           if (data?.policyNumber) {
             setPolicyNumber(data.policyNumber);
           }
+          toast.success('Your warranty policy has been created successfully!');
         }
       } catch (error) {
         console.error('Payment processing failed:', error);
@@ -95,7 +117,7 @@ const ThankYou = () => {
     }, 250);
 
     return () => clearInterval(interval);
-  }, [sessionId, plan, paymentType]);
+  }, [sessionId, plan, paymentType, source]);
 
   const handleReturnHome = () => {
     window.location.href = 'https://www.buyawarranty.co.uk';
