@@ -171,8 +171,8 @@ serve(async (req) => {
 
     // Extract address components (Bumper requires specific fields)
     const addressParts = (vehicleData?.address || '').split(' ');
-    const firstName = vehicleData?.fullName?.split(' ')[0] || 'Customer';
-    const lastName = vehicleData?.fullName?.split(' ').slice(1).join(' ') || '';
+    const firstName = vehicleData?.fullName?.split(' ')[0] || 'Test';
+    const lastName = vehicleData?.fullName?.split(' ').slice(1).join(' ') || 'Customer';
 
     // Build Bumper API payload exactly as their WordPress plugin does
     const bumperRequestData = {
