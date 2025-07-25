@@ -26,8 +26,12 @@ serve(async (req) => {
     logStep("Function started");
 
     const body = await req.json();
-    const { planId, planName, vehicleData } = body;
-    logStep("Request data", { planId, planName, vehicleData });
+    const { planId, planName, vehicleData, paymentType: originalPaymentType } = body;
+    logStep("Request data", { planId, planName, vehicleData, originalPaymentType });
+    
+    // CRITICAL: Bumper only accepts monthly payments, regardless of user selection
+    const paymentType = 'monthly'; // Force monthly for Bumper credit checks
+    logStep("Forcing monthly payment for Bumper", { originalSelection: originalPaymentType, forcedPaymentType: paymentType });
     
     // Use planName for pricing lookup (basic, gold, platinum)
     const planType = planName.toLowerCase();
@@ -55,6 +59,13 @@ serve(async (req) => {
 
     // Define pricing structure matching the frontend pricing table
     const pricingTable = {
+      monthly: {
+        0: { basic: { monthly: 31, total: 31 }, gold: { monthly: 34, total: 34 }, platinum: { monthly: 36, total: 36 } },
+        50: { basic: { monthly: 29, total: 29 }, gold: { monthly: 31, total: 31 }, platinum: { monthly: 32, total: 32 } },
+        100: { basic: { monthly: 25, total: 25 }, gold: { monthly: 27, total: 27 }, platinum: { monthly: 29, total: 29 } },
+        150: { basic: { monthly: 23, total: 23 }, gold: { monthly: 26, total: 26 }, platinum: { monthly: 27, total: 27 } },
+        200: { basic: { monthly: 20, total: 20 }, gold: { monthly: 23, total: 23 }, platinum: { monthly: 25, total: 25 } }
+      },
       yearly: {
         0: { basic: { monthly: 31, total: 372 }, gold: { monthly: 34, total: 408 }, platinum: { monthly: 36, total: 437 } },
         50: { basic: { monthly: 29, total: 348 }, gold: { monthly: 31, total: 372 }, platinum: { monthly: 32, total: 384 } },
@@ -78,11 +89,13 @@ serve(async (req) => {
       }
     };
 
-    // Extract payment details from request body
-    const { paymentType = 'yearly', voluntaryExcess = 0 } = body;
+    // Extract payment details - FORCE MONTHLY for Bumper regardless of user choice
+    const forcedPaymentType = 'monthly'; // Bumper only accepts monthly
+    const { voluntaryExcess = 0 } = body;
+    logStep("Payment configuration", { userSelected: originalPaymentType, forcedForBumper: forcedPaymentType, voluntaryExcess });
     
-    // Get pricing data
-    const periodData = pricingTable[paymentType as keyof typeof pricingTable] || pricingTable.yearly;
+    // Get pricing data - use monthly pricing for Bumper
+    const periodData = pricingTable['monthly'] || pricingTable.yearly; // Always use monthly for Bumper
     const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
     const planData = excessData[planType as keyof typeof excessData];
     
@@ -94,17 +107,29 @@ serve(async (req) => {
     const monthlyAmount = planData.monthly;
 
     const origin = req.headers.get("origin") || "https://buyawarranty.com";
-    logStep("Creating Bumper checkout - 30-day payment period for credit check", { monthlyAmount, customerEmail, origin, originalPaymentType: paymentType });
+    logStep("Creating Bumper checkout - ALWAYS MONTHLY for credit check", { 
+      monthlyAmount, 
+      customerEmail, 
+      origin, 
+      originalUserSelection: originalPaymentType,
+      forcedBumperPayment: 'monthly'
+    });
 
     // Prepare Bumper API request
     const bumperApiKey = Deno.env.get("BUMPER_API_KEY");
     const bumperSecretKey = Deno.env.get("BUMPER_SECRET_KEY");
     
     if (!bumperApiKey || !bumperSecretKey) {
-      logStep("Missing Bumper credentials, falling back to Stripe");
+      logStep("Missing Bumper credentials, falling back to Stripe", { 
+        hasApiKey: !!bumperApiKey, 
+        hasSecretKey: !!bumperSecretKey 
+      });
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
-        error: "Payment processing error, redirecting to alternative payment" 
+        fallbackReason: "missing_credentials",
+        originalPaymentType: originalPaymentType,
+        fallbackPaymentType: "yearly",
+        error: "Bumper credentials not configured, redirecting to alternative payment" 
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -159,10 +184,12 @@ serve(async (req) => {
       amount: monthlyAmount.toString(),
       currency: "GBP",
       success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
-      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${paymentType}`,
+      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${originalPaymentType}`,
       preferred_product_type: 'paylater', // PayLater for credit checks
       api_key: bumperApiKey
     };
+
+    logStep("Bumper payload prepared", { ...bumperRequestData, api_key: "***" });
 
     // Generate signature exactly like the WordPress plugin
     const signature = await generateSignature(bumperRequestData, bumperSecretKey);
