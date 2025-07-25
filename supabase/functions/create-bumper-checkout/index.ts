@@ -182,17 +182,13 @@ serve(async (req) => {
       api_key: bumperApiKey
     };
 
-    logStep("Bumper payload prepared", { ...bumperRequestData, api_key: "***" });
+    logStep("Bumper payload prepared", { ...bumperRequestData });
 
     // Generate signature exactly like the WordPress plugin
     const signature = await generateSignature(bumperRequestData, bumperSecretKey);
     bumperRequestData.signature = signature;
 
-    console.log("Making request to Bumper API:", {
-      url: "https://api.demo.bumper.co/v2/apply/",
-      method: "POST",
-      data: { ...bumperRequestData, signature: "***" }
-    });
+    logStep("Making Bumper API request", { url: "https://api.demo.bumper.co/v2/apply/", amount: monthlyAmount });
 
     const bumperResponse = await fetch("https://api.demo.bumper.co/v2/apply/", {
       method: "POST",
@@ -202,8 +198,11 @@ serve(async (req) => {
       body: JSON.stringify(bumperRequestData)
     });
 
-    console.log("Bumper API response status:", bumperResponse.status);
-    console.log("Bumper API response headers:", Object.fromEntries(bumperResponse.headers.entries()));
+    logStep("Bumper API response received", { 
+      status: bumperResponse.status, 
+      statusText: bumperResponse.statusText,
+      ok: bumperResponse.ok
+    });
 
     let bumperData;
     const responseText = await bumperResponse.text();
