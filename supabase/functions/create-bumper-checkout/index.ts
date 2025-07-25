@@ -320,7 +320,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       fallbackToStripe: true,
       fallbackReason: "credit_check_failed",
-      originalPaymentType: paymentType || "monthly",
+      originalPaymentType: originalPaymentType || "monthly",
       fallbackPaymentType: "yearly",
       error: "Credit check failed, redirecting to yearly payment option"
     }), {
