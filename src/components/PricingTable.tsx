@@ -229,14 +229,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
       };
 
       if (true) { // Try Bumper API first, fallback to Stripe if needed
-        console.log('Attempting Bumper checkout with data:', checkoutData);
+        console.log('=== ATTEMPTING BUMPER CHECKOUT ===');
+        console.log('Bumper checkout data:', checkoutData);
         const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
           body: checkoutData
         });
 
-        console.log('Bumper response:', { bumperData, bumperError });
+        console.log('=== BUMPER RESPONSE RECEIVED ===');
+        console.log('Bumper data:', bumperData);
+        console.log('Bumper error:', bumperError);
+        console.log('Should fallback to Stripe?', bumperError || bumperData?.fallbackToStripe);
+        
         if (bumperError || bumperData?.fallbackToStripe) {
-          console.log('Falling back to Stripe due to:', bumperError || 'Bumper fallback flag');
+          console.log('=== FALLING BACK TO STRIPE ===');
+          console.log('Fallback reason:', bumperError?.message || bumperData?.fallbackReason || 'Unknown');
           const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
             body: checkoutData
           });
@@ -244,6 +250,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
           if (stripeError) throw stripeError;
           if (stripeData?.url) window.open(stripeData.url, '_blank');
         } else if (bumperData?.url) {
+          console.log('=== REDIRECTING TO BUMPER ===');
+          console.log('Bumper URL:', bumperData.url);
           window.open(bumperData.url, '_blank');
         }
       } else {
