@@ -357,8 +357,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       </div>
 
       {/* Pricing Cards Container */}
-      <div className="max-w-6xl mx-auto px-4 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="max-w-6xl mx-auto px-4 pb-16 pt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
           {plans.map((plan) => {
             const basePrice = calculatePlanPrice(plan);
             const addOnPrice = calculateAddOnPrice(plan.id);
