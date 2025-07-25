@@ -36,9 +36,10 @@ interface PricingTableProps {
     vehicleType?: string;
   };
   onBack: () => void;
+  onPlanSelected?: (planId: string, paymentType: string) => void;
 }
 
-const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
+const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   console.log('PricingTable received vehicleData:', vehicleData);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'yearly' | 'two_yearly' | 'three_yearly'>('yearly');
@@ -208,65 +209,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack }) => {
     }));
   };
 
-  const handleSelectPlan = async (plan: Plan) => {
-    setLoading(prev => ({ ...prev, [plan.id]: true }));
-    
-    try {
-      const basePrice = calculatePlanPrice(plan);
-      const addOnPrice = calculateAddOnPrice(plan.id);
-      const totalPrice = basePrice + addOnPrice;
-
-      const checkoutData = {
-        planId: plan.id,
-        planName: plan.name,
-        paymentType,
-        basePrice,
-        addOnPrice,
-        totalPrice,
-        voluntaryExcess: voluntaryExcess,
-        selectedAddOns: selectedAddOns[plan.id] || {},
-        vehicleData
-      };
-
-      if (true) { // Try Bumper API first, fallback to Stripe if needed
-        console.log('=== ATTEMPTING BUMPER CHECKOUT ===');
-        console.log('Bumper checkout data:', checkoutData);
-        const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
-          body: checkoutData
-        });
-
-        console.log('=== BUMPER RESPONSE RECEIVED ===');
-        console.log('Bumper data:', bumperData);
-        console.log('Bumper error:', bumperError);
-        console.log('Should fallback to Stripe?', bumperError || bumperData?.fallbackToStripe);
-        
-        if (bumperError || bumperData?.fallbackToStripe) {
-          console.log('=== FALLING BACK TO STRIPE ===');
-          console.log('Fallback reason:', bumperError?.message || bumperData?.fallbackReason || 'Unknown');
-          const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
-            body: checkoutData
-          });
-
-          if (stripeError) throw stripeError;
-          if (stripeData?.url) window.open(stripeData.url, '_blank');
-        } else if (bumperData?.url) {
-          console.log('=== REDIRECTING TO BUMPER ===');
-          console.log('Bumper URL:', bumperData.url);
-          window.open(bumperData.url, '_blank');
-        }
-      } else {
-        const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: checkoutData
-        });
-
-        if (error) throw error;
-        if (data?.url) window.open(data.url, '_blank');
-      }
-    } catch (error) {
-      console.error('Error creating checkout:', error);
-      toast.error('Failed to create checkout session');
-    } finally {
-      setLoading(prev => ({ ...prev, [plan.id]: false }));
+  const handleSelectPlan = (plan: Plan) => {
+    if (onPlanSelected) {
+      onPlanSelected(plan.id, paymentType);
     }
   };
 

@@ -40,9 +40,10 @@ interface VehicleData {
 interface SpecialVehiclePricingProps {
   vehicleData: VehicleData;
   onBack: () => void;
+  onPlanSelected?: (planId: string, paymentType: string) => void;
 }
 
-const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleData, onBack }) => {
+const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   const [plan, setPlan] = useState<SpecialPlan | null>(null);
   const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
@@ -190,53 +191,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     return excessData.monthly;
   };
 
-  const handlePurchase = async () => {
+  const handlePurchase = () => {
     if (!plan) return;
     
-    setCheckoutLoading(true);
-    
-    try {
-      const totalPrice = calculatePlanPrice();
-
-      const checkoutData = {
-        planId: plan.id,
-        planName: plan.name,
-        paymentType,
-        totalPrice,
-        voluntaryExcess,
-        vehicleData,
-        isSpecialVehicle: true,
-        vehicleType: vehicleData.vehicleType
-      };
-
-      // Try Bumper first for all payments
-      console.log('SpecialVehiclePricing attempting Bumper checkout with data:', checkoutData);
-      const { data: bumperData, error: bumperError } = await supabase.functions.invoke('create-bumper-checkout', {
-        body: checkoutData
-      });
-
-      console.log('SpecialVehiclePricing Bumper response:', { bumperData, bumperError });
-      if (bumperError || bumperData?.fallbackToStripe) {
-        console.log('SpecialVehiclePricing falling back to Stripe due to:', bumperError || 'Bumper fallback flag');
-        // Fallback to Stripe
-        const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
-          body: checkoutData
-        });
-
-        if (stripeError) throw stripeError;
-        if (stripeData?.url) window.open(stripeData.url, '_blank');
-      } else if (bumperData?.url) {
-        window.open(bumperData.url, '_blank');
-      }
-    } catch (error) {
-      console.error('Error creating checkout:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create checkout session. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setCheckoutLoading(false);
+    if (onPlanSelected) {
+      onPlanSelected(plan.id, paymentType);
     }
   };
 

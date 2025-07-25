@@ -5,6 +5,7 @@ import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import ProgressIndicator from '@/components/ProgressIndicator';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
+import CustomerDetailsStep from '@/components/CustomerDetailsStep';
 
 
 interface VehicleData {
@@ -25,6 +26,7 @@ interface VehicleData {
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<{id: string, paymentType: string} | null>(null);
   const [formData, setFormData] = useState({
     regNumber: '',
     mileage: '',
@@ -40,7 +42,7 @@ const Index = () => {
     vehicleType: ''
   });
   
-  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan'];
+  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Final Details'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
     setVehicleData(data);
@@ -63,13 +65,23 @@ const Index = () => {
     setCurrentStep(3);
   };
 
+  const handlePlanSelected = (planId: string, paymentType: string) => {
+    setSelectedPlan({ id: planId, paymentType });
+    setCurrentStep(4);
+  };
+
+  const handleCustomerDetailsComplete = (customerData: any) => {
+    // This will be handled by the CustomerDetailsStep component itself
+    console.log('Customer details completed:', customerData);
+  };
+
   // Check if vehicle is a special type
   const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
 
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
       
-      <ProgressIndicator currentStep={currentStep} totalSteps={3} steps={steps} />
+      <ProgressIndicator currentStep={currentStep} totalSteps={4} steps={steps} />
       
       {currentStep === 1 && (
         <div className="w-full px-4 py-4 sm:py-8">
@@ -107,16 +119,28 @@ const Index = () => {
                 <SpecialVehiclePricing 
                   vehicleData={vehicleData as any}
                   onBack={() => handleBackToStep(2)} 
+                  onPlanSelected={handlePlanSelected}
                 />
               ) : (
                 <PricingTable 
                   vehicleData={vehicleData} 
                   onBack={() => handleBackToStep(2)} 
+                  onPlanSelected={handlePlanSelected}
                 />
               )}
             </>
           )}
         </div>
+      )}
+
+      {currentStep === 4 && vehicleData && selectedPlan && (
+        <CustomerDetailsStep
+          vehicleData={vehicleData}
+          planId={selectedPlan.id}
+          paymentType={selectedPlan.paymentType}
+          onNext={handleCustomerDetailsComplete}
+          onBack={() => handleBackToStep(3)}
+        />
       )}
       
     </div>

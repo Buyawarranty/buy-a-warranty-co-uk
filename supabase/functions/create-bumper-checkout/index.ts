@@ -169,17 +169,34 @@ serve(async (req) => {
 
     logStep("Sending request to Bumper API", { amount: monthlyAmount, customerEmail });
 
-    // Test with minimal customer data (as requested by Bumper docs)
+    // Use customer data from the new form step
+    const customerData = body.customerData;
+    
+    if (!customerData) {
+      logStep("No customer data provided, falling back to Stripe");
+      return new Response(JSON.stringify({ 
+        fallbackToStripe: true, 
+        fallbackReason: "No customer data provided for Bumper credit check"
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     const bumperRequestData = {
-      first_name: "Test",
-      last_name: "Customer", 
-      email: customerEmail,
-      mobile: "07000000000",
-      street: "123 Test Street",
-      town: "London",
-      county: "London", 
-      postcode: "SW1A 1AA",
-      country: "UK",
+      first_name: customerData.first_name,
+      last_name: customerData.last_name,
+      email: customerData.email,
+      mobile: customerData.mobile,
+      flat_number: customerData.flat_number || "",
+      building_name: customerData.building_name || "",
+      building_number: customerData.building_number || "",
+      street: customerData.street || "",
+      town: customerData.town,
+      county: customerData.county,
+      postcode: customerData.postcode,
+      country: customerData.country,
+      vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
       order_reference: `plan_${planId}`,
       customer_reference: `plan_${planId}`,
       invoice_number: `plan_${planId}`,
