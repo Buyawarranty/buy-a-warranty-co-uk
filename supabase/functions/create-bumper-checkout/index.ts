@@ -90,10 +90,11 @@ serve(async (req) => {
       throw new Error(`Invalid plan configuration: ${planType} for ${paymentType} with ${voluntaryExcess} excess`);
     }
 
+    // For Bumper: Always use monthly amount for 30-day payment periods (credit checks)
     const monthlyAmount = planData.monthly;
 
     const origin = req.headers.get("origin") || "https://buyawarranty.com";
-    logStep("Creating Bumper checkout", { monthlyAmount, customerEmail, origin });
+    logStep("Creating Bumper checkout - 30-day payment period for credit check", { monthlyAmount, customerEmail, origin, originalPaymentType: paymentType });
 
     // Prepare Bumper API request
     const bumperApiKey = Deno.env.get("BUMPER_API_KEY");
@@ -110,10 +111,11 @@ serve(async (req) => {
       });
     }
 
-    // Create Bumper checkout session
+    // Create Bumper checkout session - always 30-day payment period for credit checks
     const bumperPayload = {
       amount: monthlyAmount,
       currency: "GBP",
+      payment_period: "30_days", // Explicit 30-day period for Bumper credit checks
       customer: {
         email: customerEmail,
         name: vehicleData?.fullName || '',
@@ -122,14 +124,15 @@ serve(async (req) => {
       },
       metadata: {
         plan_type: planType,
-        payment_type: 'monthly',
+        payment_type: 'monthly', // Always monthly for Bumper credit check
+        original_payment_type: paymentType, // Store original user selection
         user_id: user?.id || 'guest',
         vehicle_reg: vehicleData?.regNumber || '',
         vehicle_mileage: vehicleData?.mileage || ''
       },
       success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
       cancel_url: `${origin}/`,
-      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}`
+      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${paymentType}`
     };
 
     logStep("Sending request to Bumper API", { payload: bumperPayload });
@@ -168,13 +171,16 @@ serve(async (req) => {
         console.log("Bumper API response data:", bumperData);
       } else {
         console.log("Empty response from Bumper API");
-        logStep("Bumper API returned empty response, falling back to Stripe", { 
+        logStep("Bumper API returned empty response - credit check likely failed", { 
           status: bumperResponse.status
         });
         
         return new Response(JSON.stringify({ 
           fallbackToStripe: true,
-          error: "Payment processing error, redirecting to alternative payment" 
+          fallbackReason: "credit_check_failed",
+          originalPaymentType: paymentType,
+          fallbackPaymentType: "yearly",
+          error: "Credit check failed, redirecting to yearly payment option" 
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
@@ -183,14 +189,17 @@ serve(async (req) => {
     } catch (parseError) {
       console.log("Failed to parse Bumper API response as JSON:", parseError);
       
-      logStep("Bumper API returned invalid JSON, falling back to Stripe", { 
+      logStep("Bumper API returned invalid JSON - credit check failed", { 
         status: bumperResponse.status,
         responseText: responseText.substring(0, 500) // Limit log size
       });
       
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
-        error: "Payment processing error, redirecting to alternative payment" 
+        fallbackReason: "credit_check_failed",
+        originalPaymentType: paymentType,
+        fallbackPaymentType: "yearly",
+        error: "Credit check failed, redirecting to yearly payment option" 
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -200,7 +209,7 @@ serve(async (req) => {
     logStep("Bumper API response", { status: bumperResponse.status, data: bumperData });
 
     if (!bumperResponse.ok) {
-      logStep("Bumper API rejected, falling back to Stripe", { 
+      logStep("Bumper API rejected - credit check failed", { 
         status: bumperResponse.status,
         error: bumperData,
         statusText: bumperResponse.statusText
@@ -209,7 +218,10 @@ serve(async (req) => {
       // Return fallback flag to trigger Stripe checkout on frontend
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
-        error: "Payment method not available, redirecting to alternative payment" 
+        fallbackReason: "credit_check_failed",
+        originalPaymentType: paymentType,
+        fallbackPaymentType: "yearly",
+        error: "Credit check failed, redirecting to yearly payment option" 
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -234,10 +246,13 @@ serve(async (req) => {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in create-bumper-checkout", { message: errorMessage });
     
-    // On any error, fallback to Stripe
+    // On any error, fallback to Stripe with yearly payment
     return new Response(JSON.stringify({ 
       fallbackToStripe: true,
-      error: "Payment processing error, redirecting to alternative payment"
+      fallbackReason: "credit_check_failed",
+      originalPaymentType: paymentType || "monthly",
+      fallbackPaymentType: "yearly",
+      error: "Credit check failed, redirecting to yearly payment option"
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
