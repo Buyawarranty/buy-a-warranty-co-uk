@@ -135,31 +135,39 @@ serve(async (req) => {
       failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${paymentType}`
     };
 
-    logStep("Sending request to Bumper API", { payload: bumperPayload });
+    logStep("Sending request to Bumper API", { amount: monthlyAmount, customerEmail });
 
-    // Bumper requires v2/apply endpoint with different structure
+    // Extract address components (Bumper requires specific fields)
+    const addressParts = (vehicleData?.address || '').split(' ');
+    const firstName = vehicleData?.fullName?.split(' ')[0] || 'Customer';
+    const lastName = vehicleData?.fullName?.split(' ').slice(1).join(' ') || '';
+
+    // Build Bumper API payload exactly as their WordPress plugin does
     const bumperRequestData = {
+      first_name: firstName,
+      last_name: lastName,
+      email: customerEmail,
+      mobile: vehicleData?.phone || '07000000000',
+      street: vehicleData?.address || 'Not provided',
+      town: 'London', // Default for UK
+      county: 'London',
+      postcode: 'SW1A 1AA', // Default UK postcode
+      country: 'UK',
+      order_reference: `plan_${planId}`,
+      customer_reference: `plan_${planId}`,
+      invoice_number: `plan_${planId}`,
       amount: monthlyAmount.toString(),
-      api_key: bumperApiKey,
       currency: "GBP",
       success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
       failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${paymentType}`,
-      order_reference: `plan_${planId}_${Date.now()}`,
-      first_name: vehicleData?.fullName?.split(' ')[0] || 'Customer',
-      last_name: vehicleData?.fullName?.split(' ').slice(1).join(' ') || '',
-      email: customerEmail,
-      mobile: vehicleData?.phone || '07000000000',
-      flat_number: '',
-      building_name: '',
-      building_number: vehicleData?.address?.split(' ')[0] || '1',
-      street: vehicleData?.address || 'Not provided',
-      town: 'London',
-      county: 'London',
-      postcode: 'SW1A 1AA',
-      signature: bumperSecretKey // Using secret key as signature for now
+      preferred_product_type: 'paylater', // PayLater for credit checks
+      api_key: bumperApiKey
     };
 
-    // Make request to Bumper API using correct endpoint
+    // Generate signature exactly like the WordPress plugin
+    const signature = await generateSignature(bumperRequestData, bumperSecretKey);
+    bumperRequestData.signature = signature;
+
     console.log("Making request to Bumper API:", {
       url: "https://api.demo.bumper.co/v2/apply/",
       method: "POST",
@@ -169,8 +177,7 @@ serve(async (req) => {
     const bumperResponse = await fetch("https://api.demo.bumper.co/v2/apply/", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(bumperRequestData)
     });
@@ -245,11 +252,11 @@ serve(async (req) => {
       });
     }
 
-    if (bumperData?.redirect_url) {
-      logStep("Bumper application created successfully", { redirect_url: bumperData.redirect_url, token: bumperData.token });
+    if (bumperData?.data?.redirect_url) {
+      logStep("Bumper application created successfully", { redirect_url: bumperData.data.redirect_url, token: bumperData.token });
       
       return new Response(JSON.stringify({ 
-        url: bumperData.redirect_url,
+        url: bumperData.data.redirect_url,
         token: bumperData.token,
         source: 'bumper'
       }), {
@@ -277,3 +284,51 @@ serve(async (req) => {
     });
   }
 });
+
+// Generate signature exactly like the WordPress plugin
+async function generateSignature(payload: any, secretKey: string): Promise<string> {
+  // Keys to exclude from signature (from WordPress plugin)
+  const excludedKeys = [
+    'api_key',
+    'signature', 
+    'product_description',
+    'preferred_product_type',
+    'additional_data'
+  ];
+
+  // Filter payload to exclude those keys
+  const filteredPayload: any = {};
+  for (const [key, value] of Object.entries(payload)) {
+    if (!excludedKeys.includes(key)) {
+      filteredPayload[key] = value;
+    }
+  }
+
+  // Sort keys alphabetically
+  const sortedKeys = Object.keys(filteredPayload).sort();
+
+  // Build signature string
+  let signatureString = '';
+  for (const key of sortedKeys) {
+    signatureString += key.toUpperCase() + '=' + filteredPayload[key] + '&';
+  }
+
+  // Generate HMAC SHA-256 signature
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secretKey);
+  const data = encoder.encode(signatureString);
+  
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  
+  const signature = await crypto.subtle.sign('HMAC', key, data);
+  
+  return Array.from(new Uint8Array(signature))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
