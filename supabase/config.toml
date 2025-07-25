@@ -36,6 +36,27 @@ verify_jwt = false
 [functions.handle-successful-payment]
 verify_jwt = false
 
+[functions.dvla-vehicle-lookup]
+verify_jwt = true
+
+[functions.create-bumper-checkout]
+verify_jwt = true
+
+[functions.create-test-customer]
+verify_jwt = true
+
+[functions.process-stripe-success]
+verify_jwt = false
+
+[functions.send-email]
+verify_jwt = false
+
+[functions.warranties-2000-registration]
+verify_jwt = false
+
+[functions.track-abandoned-cart]
+verify_jwt = false
+
 [db]
 port = 54322
 
