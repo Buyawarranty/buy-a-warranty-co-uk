@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Check } from 'lucide-react';
 
 interface ContactDetailsStepProps {
   onNext: (data: { email: string; phone: string; fullName: string; address: string }) => void;
@@ -92,21 +92,29 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
               >
                 ?
               </span>
+              {fullName.trim() && (
+                <Check className="w-5 h-5 text-green-500 ml-2" />
+              )}
             </div>
-            <input
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter your full name"
-              className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none transition-all duration-200"
-              onFocus={(e) => {
-                e.target.style.borderColor = '#224380';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#d1d5db';
-              }}
-              required
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter your full name"
+                className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[50px] focus:outline-none transition-all duration-200"
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#224380';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db';
+                }}
+                required
+              />
+              {fullName.trim() && (
+                <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+              )}
+            </div>
           </div>
 
           {/* Address Field */}
@@ -120,22 +128,30 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
               >
                 ?
               </span>
+              {address.trim() && (
+                <Check className="w-5 h-5 text-green-500 ml-2" />
+              )}
             </div>
-            <input
-              id="address-input"
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Start typing your address..."
-              className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none transition-all duration-200"
-              onFocus={(e) => {
-                e.target.style.borderColor = '#224380';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#d1d5db';
-              }}
-              required
-            />
+            <div className="relative">
+              <input
+                id="address-input"
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Start typing your address..."
+                className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[50px] focus:outline-none transition-all duration-200"
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#224380';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db';
+                }}
+                required
+              />
+              {address.trim() && (
+                <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+              )}
+            </div>
           </div>
 
           {/* Email Field */}
@@ -149,21 +165,29 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
               >
                 ?
               </span>
+              {email.trim() && email.includes('@') && (
+                <Check className="w-5 h-5 text-green-500 ml-2" />
+              )}
             </div>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your.email@example.com"
-              className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none transition-all duration-200"
-              onFocus={(e) => {
-                e.target.style.borderColor = '#224380';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#d1d5db';
-              }}
-              required
-            />
+            <div className="relative">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your.email@example.com"
+                className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[50px] focus:outline-none transition-all duration-200"
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#224380';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db';
+                }}
+                required
+              />
+              {email.trim() && email.includes('@') && (
+                <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+              )}
+            </div>
           </div>
 
           {/* Phone Field */}
@@ -177,21 +201,29 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
               >
                 ?
               </span>
+              {phone.trim() && phone.length >= 10 && (
+                <Check className="w-5 h-5 text-green-500 ml-2" />
+              )}
             </div>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="07123 456789"
-              className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none transition-all duration-200"
-              onFocus={(e) => {
-                e.target.style.borderColor = '#224380';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#d1d5db';
-              }}
-              required
-            />
+            <div className="relative">
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="07123 456789"
+                className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[50px] focus:outline-none transition-all duration-200"
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#224380';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db';
+                }}
+                required
+              />
+              {phone.trim() && phone.length >= 10 && (
+                <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+              )}
+            </div>
           </div>
 
           {/* Button Group */}

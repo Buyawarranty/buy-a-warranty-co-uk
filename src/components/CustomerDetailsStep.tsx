@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Shield } from 'lucide-react';
+import { ArrowLeft, Shield, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -264,59 +264,99 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">
-                    First Name *
-                  </Label>
-                  <Input
-                    id="first_name"
-                    value={formData.first_name}
-                    onChange={(e) => handleInputChange('first_name', e.target.value)}
-                    className="mt-1"
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">
+                      First Name *
+                    </Label>
+                    {formData.first_name.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="first_name"
+                      value={formData.first_name}
+                      onChange={(e) => handleInputChange('first_name', e.target.value)}
+                      className="mt-1 pr-10"
+                      required
+                    />
+                    {formData.first_name.trim() && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">
-                    Last Name *
-                  </Label>
-                  <Input
-                    id="last_name"
-                    value={formData.last_name}
-                    onChange={(e) => handleInputChange('last_name', e.target.value)}
-                    className="mt-1"
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">
+                      Last Name *
+                    </Label>
+                    {formData.last_name.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="last_name"
+                      value={formData.last_name}
+                      onChange={(e) => handleInputChange('last_name', e.target.value)}
+                      className="mt-1 pr-10"
+                      required
+                    />
+                    {formData.last_name.trim() && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                    Email Address *
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    className="mt-1"
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                      Email Address *
+                    </Label>
+                    {formData.email.trim() && formData.email.includes('@') && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className="mt-1 pr-10"
+                      required
+                    />
+                    {formData.email.trim() && formData.email.includes('@') && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">
-                    Mobile Number *
-                  </Label>
-                  <Input
-                    id="mobile"
-                    value={formData.mobile}
-                    onChange={(e) => handleInputChange('mobile', e.target.value)}
-                    placeholder="07000000000"
-                    className="mt-1"
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">
+                      Mobile Number *
+                    </Label>
+                    {formData.mobile.trim() && formData.mobile.length >= 10 && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="mobile"
+                      value={formData.mobile}
+                      onChange={(e) => handleInputChange('mobile', e.target.value)}
+                      placeholder="07000000000"
+                      className="mt-1 pr-10"
+                      required
+                    />
+                    {formData.mobile.trim() && formData.mobile.length >= 10 && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -364,46 +404,76 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {addressType === 'building_number' && (
                   <div>
-                    <Label htmlFor="building_number" className="text-sm font-medium text-gray-700">
-                      House/Building Number *
-                    </Label>
-                    <Input
-                      id="building_number"
-                      value={formData.building_number}
-                      onChange={(e) => handleInputChange('building_number', e.target.value)}
-                      className="mt-1"
-                      required
-                    />
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="building_number" className="text-sm font-medium text-gray-700">
+                        House/Building Number *
+                      </Label>
+                      {formData.building_number?.trim() && (
+                        <Check className="w-4 h-4 text-green-500" />
+                      )}
+                    </div>
+                    <div className="relative">
+                      <Input
+                        id="building_number"
+                        value={formData.building_number}
+                        onChange={(e) => handleInputChange('building_number', e.target.value)}
+                        className="mt-1 pr-10"
+                        required
+                      />
+                      {formData.building_number?.trim() && (
+                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      )}
+                    </div>
                   </div>
                 )}
 
                 {addressType === 'flat' && (
                   <div>
-                    <Label htmlFor="flat_number" className="text-sm font-medium text-gray-700">
-                      Flat Number *
-                    </Label>
-                    <Input
-                      id="flat_number"
-                      value={formData.flat_number}
-                      onChange={(e) => handleInputChange('flat_number', e.target.value)}
-                      className="mt-1"
-                      required
-                    />
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="flat_number" className="text-sm font-medium text-gray-700">
+                        Flat Number *
+                      </Label>
+                      {formData.flat_number?.trim() && (
+                        <Check className="w-4 h-4 text-green-500" />
+                      )}
+                    </div>
+                    <div className="relative">
+                      <Input
+                        id="flat_number"
+                        value={formData.flat_number}
+                        onChange={(e) => handleInputChange('flat_number', e.target.value)}
+                        className="mt-1 pr-10"
+                        required
+                      />
+                      {formData.flat_number?.trim() && (
+                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      )}
+                    </div>
                   </div>
                 )}
 
                 {addressType === 'building_name' && (
                   <div>
-                    <Label htmlFor="building_name" className="text-sm font-medium text-gray-700">
-                      Building Name *
-                    </Label>
-                    <Input
-                      id="building_name"
-                      value={formData.building_name}
-                      onChange={(e) => handleInputChange('building_name', e.target.value)}
-                      className="mt-1"
-                      required
-                    />
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="building_name" className="text-sm font-medium text-gray-700">
+                        Building Name *
+                      </Label>
+                      {formData.building_name?.trim() && (
+                        <Check className="w-4 h-4 text-green-500" />
+                      )}
+                    </div>
+                    <div className="relative">
+                      <Input
+                        id="building_name"
+                        value={formData.building_name}
+                        onChange={(e) => handleInputChange('building_name', e.target.value)}
+                        className="mt-1 pr-10"
+                        required
+                      />
+                      {formData.building_name?.trim() && (
+                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -422,57 +492,97 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="town" className="text-sm font-medium text-gray-700">
-                    Town *
-                  </Label>
-                  <Input
-                    id="town"
-                    value={formData.town}
-                    onChange={(e) => handleInputChange('town', e.target.value)}
-                    className="mt-1"
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="town" className="text-sm font-medium text-gray-700">
+                      Town *
+                    </Label>
+                    {formData.town.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="town"
+                      value={formData.town}
+                      onChange={(e) => handleInputChange('town', e.target.value)}
+                      className="mt-1 pr-10"
+                      required
+                    />
+                    {formData.town.trim() && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="county" className="text-sm font-medium text-gray-700">
-                    County *
-                  </Label>
-                  <Input
-                    id="county"
-                    value={formData.county}
-                    onChange={(e) => handleInputChange('county', e.target.value)}
-                    className="mt-1"
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="county" className="text-sm font-medium text-gray-700">
+                      County *
+                    </Label>
+                    {formData.county.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="county"
+                      value={formData.county}
+                      onChange={(e) => handleInputChange('county', e.target.value)}
+                      className="mt-1 pr-10"
+                      required
+                    />
+                    {formData.county.trim() && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">
-                    Postcode *
-                  </Label>
-                  <Input
-                    id="postcode"
-                    value={formData.postcode}
-                    onChange={(e) => handleInputChange('postcode', e.target.value)}
-                    className="mt-1"
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">
+                      Postcode *
+                    </Label>
+                    {formData.postcode.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="postcode"
+                      value={formData.postcode}
+                      onChange={(e) => handleInputChange('postcode', e.target.value)}
+                      className="mt-1 pr-10"
+                      required
+                    />
+                    {formData.postcode.trim() && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="country" className="text-sm font-medium text-gray-700">
-                    Country *
-                  </Label>
-                  <Input
-                    id="country"
-                    value={formData.country}
-                    onChange={(e) => handleInputChange('country', e.target.value)}
-                    className="mt-1"
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="country" className="text-sm font-medium text-gray-700">
+                      Country *
+                    </Label>
+                    {formData.country.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="country"
+                      value={formData.country}
+                      onChange={(e) => handleInputChange('country', e.target.value)}
+                      className="mt-1 pr-10"
+                      required
+                    />
+                    {formData.country.trim() && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

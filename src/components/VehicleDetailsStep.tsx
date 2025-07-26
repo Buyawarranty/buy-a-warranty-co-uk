@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface VehicleDetailsStepProps {
@@ -224,11 +225,16 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
         <div className="flex flex-col items-center">
           <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
-          <label htmlFor="reg" className="block font-semibold mb-2 text-gray-700 text-lg sm:text-xl">
-            Vehicle registration number
-          </label>
+          <div className="flex items-center gap-2 mb-2">
+            <label htmlFor="reg" className="block font-semibold text-gray-700 text-lg sm:text-xl">
+              Vehicle registration number
+            </label>
+            {regNumber.trim() && regNumber.length >= 4 && (
+              <Check className="w-5 h-5 text-green-500" />
+            )}
+          </div>
           <div 
-            className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-xl sm:text-[28px] px-[15px] sm:px-[25px] py-[12px] sm:py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black"
+            className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-xl sm:text-[28px] px-[15px] sm:px-[25px] py-[12px] sm:py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black relative"
             onClick={() => document.getElementById('regInput')?.focus()}
           >
             <img 
@@ -242,9 +248,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               value={regNumber}
               onChange={handleRegChange}
               placeholder="Your reg plate"
-              className="bg-transparent border-none outline-none text-xl sm:text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal tracking-normal"
+              className="bg-transparent border-none outline-none text-xl sm:text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal tracking-normal pr-[40px]"
               maxLength={8}
             />
+            {regNumber.trim() && regNumber.length >= 4 && (
+              <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 text-green-600" />
+            )}
           </div>
           
           {!showManualEntry && !vehicleFound && (
@@ -320,81 +329,131 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold mb-2 text-gray-700">Make</label>
-                  <input
-                    type="text"
-                    value={make}
-                    onChange={(e) => setMake(e.target.value)}
-                    placeholder="e.g. Audi"
-                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
-                    onFocus={(e) => e.target.style.borderColor = '#224380'}
-                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                    required
-                  />
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="block font-semibold text-gray-700">Make</label>
+                    {make.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={make}
+                      onChange={(e) => setMake(e.target.value)}
+                      placeholder="e.g. Audi"
+                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
+                      onFocus={(e) => e.target.style.borderColor = '#224380'}
+                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      required
+                    />
+                    {make.trim() && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
                 
                 <div>
-                  <label className="block font-semibold mb-2 text-gray-700">Model</label>
-                  <input
-                    type="text"
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    placeholder="e.g. A3"
-                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
-                    onFocus={(e) => e.target.style.borderColor = '#224380'}
-                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                    required
-                  />
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="block font-semibold text-gray-700">Model</label>
+                    {model.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                      placeholder="e.g. A3"
+                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
+                      onFocus={(e) => e.target.style.borderColor = '#224380'}
+                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      required
+                    />
+                    {model.trim() && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
                 
                 <div>
-                  <label className="block font-semibold mb-2 text-gray-700">Fuel Type</label>
-                  <select
-                    value={fuelType}
-                    onChange={(e) => setFuelType(e.target.value)}
-                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
-                    onFocus={(e) => e.target.style.borderColor = '#224380'}
-                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                    required
-                  >
-                    <option value="">Select fuel type</option>
-                    <option value="Petrol">Petrol</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="Electric">Electric</option>
-                  </select>
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="block font-semibold text-gray-700">Fuel Type</label>
+                    {fuelType && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={fuelType}
+                      onChange={(e) => setFuelType(e.target.value)}
+                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
+                      onFocus={(e) => e.target.style.borderColor = '#224380'}
+                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      required
+                    >
+                      <option value="">Select fuel type</option>
+                      <option value="Petrol">Petrol</option>
+                      <option value="Diesel">Diesel</option>
+                      <option value="Hybrid">Hybrid</option>
+                      <option value="Electric">Electric</option>
+                    </select>
+                    {fuelType && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
                 
                 <div>
-                  <label className="block font-semibold mb-2 text-gray-700">Transmission</label>
-                  <select
-                    value={transmission}
-                    onChange={(e) => setTransmission(e.target.value)}
-                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
-                    onFocus={(e) => e.target.style.borderColor = '#224380'}
-                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                    required
-                  >
-                    <option value="">Select transmission</option>
-                    <option value="Manual">Manual</option>
-                    <option value="Automatic">Automatic</option>
-                  </select>
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="block font-semibold text-gray-700">Transmission</label>
+                    {transmission && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={transmission}
+                      onChange={(e) => setTransmission(e.target.value)}
+                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
+                      onFocus={(e) => e.target.style.borderColor = '#224380'}
+                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      required
+                    >
+                      <option value="">Select transmission</option>
+                      <option value="Manual">Manual</option>
+                      <option value="Automatic">Automatic</option>
+                    </select>
+                    {transmission && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
                 
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold mb-2 text-gray-700">Year</label>
-                  <input
-                    type="number"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    placeholder="e.g. 2020"
-                    min="1990"
-                    max={new Date().getFullYear()}
-                    className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] focus:outline-none"
-                    onFocus={(e) => e.target.style.borderColor = '#224380'}
-                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                    required
-                  />
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="block font-semibold text-gray-700">Year</label>
+                    {year && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                      placeholder="e.g. 2020"
+                      min="1990"
+                      max={new Date().getFullYear()}
+                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
+                      onFocus={(e) => e.target.style.borderColor = '#224380'}
+                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      required
+                    />
+                    {year && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -402,29 +461,39 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
           {(vehicleFound || showManualEntry) && (
             <>
-              <label htmlFor="mileage" className="block font-semibold mb-2 text-gray-700 text-lg sm:text-xl">
-                What's your approximate mileage?
-              </label>
-              <input
-                type="text"
-                id="mileage"
-                value={mileage}
-                onChange={handleMileageChange}
-                placeholder="e.g. 32,000"
-                className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] mb-2 focus:outline-none ${
-                  mileageError ? 'border-red-500' : 'border-gray-300'
-                }`}
-                onFocus={(e) => {
-                  if (!mileageError) {
-                    e.target.style.borderColor = '#224380';
-                  }
-                }}
-                onBlur={(e) => {
-                  if (!mileageError) {
-                    e.target.style.borderColor = '#d1d5db';
-                  }
-                }}
-              />
+              <div className="flex items-center gap-2 mb-2">
+                <label htmlFor="mileage" className="block font-semibold text-gray-700 text-lg sm:text-xl">
+                  What's your approximate mileage?
+                </label>
+                {mileage.trim() && !mileageError && (
+                  <Check className="w-5 h-5 text-green-500" />
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="mileage"
+                  value={mileage}
+                  onChange={handleMileageChange}
+                  placeholder="e.g. 32,000"
+                  className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] pr-[50px] mb-2 focus:outline-none ${
+                    mileageError ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  onFocus={(e) => {
+                    if (!mileageError) {
+                      e.target.style.borderColor = '#224380';
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (!mileageError) {
+                      e.target.style.borderColor = '#d1d5db';
+                    }
+                  }}
+                />
+                {mileage.trim() && !mileageError && (
+                  <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                )}
+              </div>
               {mileageError && (
                 <div className="bg-red-50 border border-red-200 rounded-[4px] p-3 mb-2">
                   <p className="text-sm text-red-800 font-semibold">{mileageError}</p>
