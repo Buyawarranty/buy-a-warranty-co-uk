@@ -223,7 +223,7 @@ serve(async (req) => {
       order_reference: `Vehicle Warranty ${planData.name} - Monthly Payment (12 months)`,
       customer_reference: `VW-${planData.name.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || 'UNKNOWN'}`,
       invoice_number: `VW-${Date.now()}-${planId.slice(-8)}`,
-      amount: monthlyAmount.toString(),
+      amount: monthlyAmount,
       currency: "GBP",
       product_description: `Vehicle Warranty ${planData.name} Plan - £${monthlyAmount}/month for 12 months (Total: £${(monthlyAmount * 12).toFixed(2)})`,
       success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
