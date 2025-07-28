@@ -678,7 +678,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <RadioGroupItem value="bumper" id="bumper" />
                     <Label htmlFor="bumper" className="flex-1 cursor-pointer">
                       <div className="flex items-center space-x-3">
-                        <img src="/lovable-uploads/cacd3333-06fb-4bfb-b8f8-32505122c11d.png" alt="Bumper" className="h-8" />
+                        <img src="/lovable-uploads/cacd3333-06fb-4bfb-b8f8-32505122c11d.png" alt="Bumper" className="h-6 w-auto" />
                         <div>
                           <div className="font-semibold text-gray-900">Spread the cost with Bumper</div>
                           <div className="text-sm text-gray-600">Pay monthly over 12 months with 0% APR representative</div>
@@ -692,9 +692,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <RadioGroupItem value="stripe" id="stripe" />
                   <Label htmlFor="stripe" className="flex-1 cursor-pointer">
                     <div className="flex items-center space-x-3">
-                      <img src="/lovable-uploads/81af2dba-748e-43a9-b3af-839285969056.png" alt="Stripe" className="h-6" />
+                      <img src="/lovable-uploads/81af2dba-748e-43a9-b3af-839285969056.png" alt="Stripe" className="h-6 w-auto" />
                       <div>
-                        <div className="font-semibold text-gray-900">Pay By Card/Bank</div>
+                        <div className="font-semibold text-gray-900">Pay in Full By Card/Bank</div>
                         <div className="text-sm text-gray-600">Pay in full with debit/credit card with a secure Stripe Payment</div>
                       </div>
                     </div>
