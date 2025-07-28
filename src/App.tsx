@@ -32,6 +32,7 @@ const App = () => (
                 <Route path="/payment-fallback" element={<PaymentFallback />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/admin-test" element={<AdminTest />} />
                 <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                 <Route path="/reset-password" element={<PasswordReset />} />
