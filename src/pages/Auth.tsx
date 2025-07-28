@@ -18,28 +18,34 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        console.log("User already logged in, checking role for redirect");
+    // Set up auth state listener to handle sign-out
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_OUT') {
+          // User signed out, stay on auth page
+          return;
+        }
         
-        // Check if user is admin
-        const { data: roleData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single();
+        if (session) {
+          console.log("User logged in, checking role for redirect");
+          
+          // Check if user is admin
+          const { data: roleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .single();
 
-        if (roleData?.role === 'admin') {
-          navigate('/admin', { replace: true });
-        } else {
-          navigate('/customer-dashboard', { replace: true });
+          if (roleData?.role === 'admin') {
+            navigate('/admin', { replace: true });
+          } else {
+            navigate('/customer-dashboard', { replace: true });
+          }
         }
       }
-    };
-    
-    checkSession();
+    );
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
