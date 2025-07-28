@@ -678,13 +678,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <RadioGroupItem value="bumper" id="bumper" />
                     <Label htmlFor="bumper" className="flex-1 cursor-pointer">
                       <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-gray-900">Spread the cost with Bumper</div>
-                          <div className="text-sm text-gray-600">Pay monthly over 12 months with 0% APR representative</div>
+                        <div className="flex items-center space-x-3">
+                          <img src="/lovable-uploads/cacd3333-06fb-4bfb-b8f8-32505122c11d.png" alt="Bumper" className="h-8" />
+                          <div>
+                            <div className="font-semibold text-gray-900">Spread the cost with Bumper</div>
+                            <div className="text-sm text-gray-600">Pay monthly over 12 months with 0% APR representative</div>
+                          </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <img src="https://bumper.com/assets/images/visa-icon.svg" alt="Visa" className="h-6" />
-                          <img src="https://bumper.com/assets/images/mastercard-icon.svg" alt="Mastercard" className="h-6" />
+                          <img src="https://js.stripe.com/v3/fingerprinted/img/visa-365725566f9578a9589553aa9296bc74.svg" alt="Visa" className="h-6" />
+                          <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg" alt="Mastercard" className="h-6" />
                         </div>
                       </div>
                     </Label>
@@ -695,9 +698,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <RadioGroupItem value="stripe" id="stripe" />
                   <Label htmlFor="stripe" className="flex-1 cursor-pointer">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-semibold text-gray-900">Pay By Card/Bank</div>
-                        <div className="text-sm text-gray-600">Pay in full with debit/credit card or bank transfer</div>
+                      <div className="flex items-center space-x-3">
+                        <svg className="h-8 w-20" viewBox="0 0 240 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fillRule="evenodd" clipRule="evenodd" d="M240 40c0 22.091-17.909 40-40 40s-40-17.909-40-40 17.909-40 40-40 40 17.909 40 40z" fill="#635BFF"/>
+                          <path d="M207.5 48.25c0-1.5-1.2-2.7-2.7-2.7h-3.8v5.4h3.8c1.5 0 2.7-1.2 2.7-2.7z" fill="#fff"/>
+                          <text x="20" y="50" fill="#635BFF" fontSize="32" fontWeight="600" fontFamily="Arial, sans-serif">stripe</text>
+                        </svg>
+                        <div>
+                          <div className="font-semibold text-gray-900">Pay By Card/Bank</div>
+                          <div className="text-sm text-gray-600">Pay in full with debit/credit card with a secure Stripe Payment</div>
+                        </div>
                       </div>
                       <div className="flex items-center space-x-2">
                         <img src="https://js.stripe.com/v3/fingerprinted/img/visa-365725566f9578a9589553aa9296bc74.svg" alt="Visa" className="h-6" />
