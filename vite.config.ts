@@ -8,6 +8,10 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    watch: {
+      ignored: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
+      usePolling: false,
+    },
   },
   plugins: [
     react(),
@@ -18,5 +22,8 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  optimizeDeps: {
+    exclude: ['fsevents'],
   },
 }));
