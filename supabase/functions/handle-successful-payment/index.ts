@@ -33,9 +33,9 @@ serve(async (req) => {
       throw new Error("Missing required parameters");
     }
 
-    // Generate policy number
-    const policyNumber = await generatePolicyNumber();
-    logStep("Generated policy number", { policyNumber });
+    // Generate BAW warranty reference number for Warranties 2000
+    const warrantyReference = await generateWarrantyReference();
+    logStep("Generated warranty reference", { warrantyReference });
 
     // Send welcome email with login details
     const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email', {
@@ -43,7 +43,7 @@ serve(async (req) => {
         email: userEmail,
         planType: planId,
         paymentType: paymentType,
-        policyNumber: policyNumber
+        policyNumber: warrantyReference
       }
     });
 
@@ -85,7 +85,8 @@ serve(async (req) => {
           RegDate: vehicleData.year ? `${vehicleData.year}-01-01` : "2020-01-01",
           WarType: warrantyType,
           Month: warrantyDuration,
-          MaxClm: maxClaimAmount
+          MaxClm: maxClaimAmount,
+          WarrantyRef: warrantyReference
         };
 
         logStep("Registering warranty", { regNum: registrationData.RegNum, warrantyType });
@@ -110,7 +111,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       success: true, 
       message: "Payment processed successfully",
-      policyNumber: policyNumber
+      policyNumber: warrantyReference
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
@@ -125,15 +126,38 @@ serve(async (req) => {
   }
 });
 
-// Generate unique policy number
-async function generatePolicyNumber(): Promise<string> {
+// Generate BAW warranty reference number in format: BAW-[YYMM]-[SERIAL]
+async function generateWarrantyReference(): Promise<string> {
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } }
+  );
+
   const date = new Date();
-  const year = date.getFullYear();
+  const year = String(date.getFullYear()).slice(-2); // Last 2 digits of year
   const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-  
-  return `POL-${year}${month}${day}-${random}`;
+  const dateCode = `${year}${month}`;
+
+  try {
+    // Get the next serial number from the database
+    const { data, error } = await supabaseClient.rpc('get_next_warranty_serial');
+    
+    if (error) {
+      console.error('Error getting warranty serial:', error);
+      // Fallback to timestamp-based serial if database call fails
+      const fallbackSerial = 400000 + Date.now() % 100000;
+      return `BAW-${dateCode}-${fallbackSerial}`;
+    }
+
+    const serialNumber = data || 400001;
+    return `BAW-${dateCode}-${serialNumber}`;
+  } catch (error) {
+    console.error('Error in generateWarrantyReference:', error);
+    // Fallback to timestamp-based serial
+    const fallbackSerial = 400000 + Date.now() % 100000;
+    return `BAW-${dateCode}-${fallbackSerial}`;
+  }
 }
 
 // Helper functions for warranty registration
