@@ -6,6 +6,7 @@ import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
 import EmailManagementTab from '@/components/admin/EmailManagementTab';
+import AccountSettings from '@/components/admin/AccountSettings';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 
 const AdminDashboard = () => {
@@ -68,6 +69,8 @@ const AdminDashboard = () => {
         return <EmailManagementTab />;
       case 'analytics':
         return <AnalyticsTab />;
+      case 'account':
+        return <AccountSettings />;
       default:
         return <CustomersTab />;
     }
