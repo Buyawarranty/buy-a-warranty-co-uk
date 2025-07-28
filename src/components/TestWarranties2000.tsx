@@ -32,9 +32,9 @@ const TestWarranties2000 = () => {
       EngSize: "2.0",
       PurPrc: "381",
       RegDate: "2020-01-01",
-      WarType: "DRIVER CARE GOLD",
+      WarType: "GOLD",
       Month: "12",
-      MaxClm: "2500",
+      MaxClm: "5000",
       MOTExpiry: "2025-12-31",
       WarrantyRef: "BAW-2501-400001"
     };
