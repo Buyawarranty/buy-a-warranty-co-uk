@@ -8,6 +8,9 @@ import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
 import EmailManagementTab from '@/components/admin/EmailManagementTab';
 import AccountSettings from '@/components/admin/AccountSettings';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import CreateTestCustomer from '@/components/CreateTestCustomer';
+import TestWarranties2000 from '@/components/TestWarranties2000';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('customers');
@@ -69,6 +72,40 @@ const AdminDashboard = () => {
         return <EmailManagementTab />;
       case 'analytics':
         return <AnalyticsTab />;
+      case 'testing':
+        return (
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">Testing Tools</h1>
+              <p className="text-gray-600 mt-2">Tools for testing and development</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CreateTestCustomer />
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Test Credentials</CardTitle>
+                  <CardDescription>
+                    Use these credentials to test the customer login
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="font-medium">Email:</span> test@customer.com
+                    </div>
+                    <div>
+                      <span className="font-medium">Password:</span> password123
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <TestWarranties2000 />
+            </div>
+          </div>
+        );
       case 'account':
         return <AccountSettings />;
       default:
