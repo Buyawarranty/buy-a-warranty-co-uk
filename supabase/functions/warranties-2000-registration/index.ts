@@ -28,6 +28,7 @@ interface RegistrationData {
   Month: string;
   MaxClm: string;
   MOTExpiry: string; // MOT expiry date
+  WarrantyRef?: string; // BAW warranty reference number
 }
 
 serve(async (req) => {

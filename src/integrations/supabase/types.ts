@@ -528,6 +528,24 @@ export type Database = {
         }
         Relationships: []
       }
+      warranty_serials: {
+        Row: {
+          id: number
+          last_serial: number
+          updated_at: string | null
+        }
+        Insert: {
+          id?: number
+          last_serial?: number
+          updated_at?: string | null
+        }
+        Update: {
+          id?: number
+          last_serial?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       welcome_emails: {
         Row: {
           created_at: string
@@ -581,6 +599,10 @@ export type Database = {
       generate_policy_number: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_next_warranty_serial: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       is_admin: {
         Args: { _user_id: string }

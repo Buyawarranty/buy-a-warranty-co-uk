@@ -86,6 +86,7 @@ serve(async (req) => {
           WarType: warrantyType,
           Month: warrantyDuration,
           MaxClm: maxClaimAmount,
+          MOTExpiry: vehicleData.motExpiry || "2025-12-31", // Default if not provided
           WarrantyRef: warrantyReference
         };
 
