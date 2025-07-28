@@ -220,15 +220,18 @@ serve(async (req) => {
       postcode: customerData.postcode,
       country: customerData.country,
       vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
-      order_reference: `Vehicle Warranty ${planData.name} - Monthly Payment (12 months)`,
+      order_reference: `Vehicle Warranty ${planData.name} - 12 Monthly Payments of £${monthlyAmount}`,
       customer_reference: `VW-${planData.name.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || 'UNKNOWN'}`,
       invoice_number: `VW-${Date.now()}-${planId.slice(-8)}`,
       amount: monthlyAmount,
       currency: "GBP",
-      product_description: `Vehicle Warranty ${planData.name} Plan - £${monthlyAmount}/month for 12 months (Total: £${(monthlyAmount * 12).toFixed(2)})`,
+      product_description: `${planData.name} Vehicle Warranty - 12 monthly payments of £${monthlyAmount} each (Total cost: £${(monthlyAmount * 12).toFixed(2)})`,
       success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
       failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${originalPaymentType}`,
       preferred_product_type: 'paylater',
+      installments: 12,
+      total_amount: monthlyAmount * 12,
+      payment_frequency: "monthly",
       api_key: bumperApiKey
     };
 
