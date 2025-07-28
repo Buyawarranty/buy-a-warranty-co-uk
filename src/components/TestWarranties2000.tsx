@@ -32,9 +32,9 @@ const TestWarranties2000 = () => {
       EngSize: "2.0",
       PurPrc: "381",
       RegDate: "2020-01-01",
-      WarType: "GOLD",
-      Month: "12",
-      MaxClm: "5000",
+      WarType: "DRIVER CARE",
+      Month: "3",
+      MaxClm: "250",
       MOTExpiry: "2025-12-31",
       WarrantyRef: "BAW-2501-400001"
     };
@@ -56,7 +56,8 @@ const TestWarranties2000 = () => {
         if (data.success) {
           toast.success('API call successful!');
         } else {
-          toast.error('API returned error');
+          toast.error(`API returned error: ${data.error}`);
+          console.error('API error details:', data.details);
         }
       }
     } catch (err) {
