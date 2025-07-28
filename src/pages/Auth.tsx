@@ -37,7 +37,7 @@ const Auth = () => {
             .single();
 
           if (roleData?.role === 'admin') {
-            navigate('/admin', { replace: true });
+            navigate('/admin-dashboard', { replace: true });
           } else {
             navigate('/customer-dashboard', { replace: true });
           }
@@ -83,7 +83,7 @@ const Auth = () => {
 
         if (roleData?.role === 'admin') {
           console.log("Admin user detected, redirecting to admin dashboard");
-          navigate('/admin', { replace: true });
+          navigate('/admin-dashboard', { replace: true });
         } else {
           console.log("Regular user detected, redirecting to customer dashboard");
           navigate('/customer-dashboard', { replace: true });
