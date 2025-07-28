@@ -1,6 +1,7 @@
 
 import React from 'react';
 import CreateTestCustomer from '@/components/CreateTestCustomer';
+import TestWarranties2000 from '@/components/TestWarranties2000';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminTest = () => {
@@ -33,6 +34,8 @@ const AdminTest = () => {
               </div>
             </CardContent>
           </Card>
+          
+          <TestWarranties2000 />
         </div>
       </div>
     </div>
