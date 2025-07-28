@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ArrowLeft, Shield, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -71,7 +72,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [addressType, setAddressType] = useState<'flat' | 'building_name' | 'building_number'>('building_number');
+  const [paymentMethod, setPaymentMethod] = useState<'bumper' | 'stripe'>('bumper');
   const { toast } = useToast();
+
+  // Calculate total amount to determine if Bumper is available (£60+ threshold)
+  const calculateTotalAmount = () => {
+    // This is a simplified calculation - you may need to adjust based on your pricing logic
+    // For now, assuming amounts over £60 to enable Bumper
+    return 75; // Example amount in pounds
+  };
+
+  const totalAmount = calculateTotalAmount();
+  const isBumperAvailable = totalAmount >= 60;
 
   // Track abandoned cart on page unload or navigation away
   useEffect(() => {
@@ -187,20 +199,40 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     setIsLoading(true);
 
     try {
-      // Call Bumper checkout with customer details
-      const { data, error } = await supabase.functions.invoke('create-bumper-checkout', {
-        body: {
-          planId,
-          paymentType,
-          vehicleData,
-          customerData: formData
+      if (paymentMethod === 'bumper' && isBumperAvailable) {
+        // Call Bumper checkout with customer details
+        const { data, error } = await supabase.functions.invoke('create-bumper-checkout', {
+          body: {
+            planId,
+            paymentType,
+            vehicleData,
+            customerData: formData
+          }
+        });
+
+        if (error) throw error;
+
+        if (data.fallbackToStripe) {
+          // If Bumper fails, fall back to Stripe
+          const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
+            body: {
+              planId,
+              paymentType,
+              vehicleData
+            }
+          });
+
+          if (stripeError) throw stripeError;
+          
+          if (stripeData?.url) {
+            window.open(stripeData.url, '_blank');
+          }
+        } else if (data?.url) {
+          // Success with Bumper
+          window.open(data.url, '_blank');
         }
-      });
-
-      if (error) throw error;
-
-      if (data.fallbackToStripe) {
-        // If Bumper fails, call regular Stripe checkout
+      } else {
+        // Direct Stripe checkout
         const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
           body: {
             planId,
@@ -214,9 +246,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         if (stripeData?.url) {
           window.open(stripeData.url, '_blank');
         }
-      } else if (data?.url) {
-        // Success with Bumper
-        window.open(data.url, '_blank');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -604,6 +633,58 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   className="mt-1"
                 />
               </div>
+            </div>
+
+            {/* Payment Method Selection */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                Payment Method
+              </h3>
+              
+              <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)}>
+                {isBumperAvailable && (
+                  <div className="flex items-center space-x-3 p-4 border border-blue-200 rounded-lg bg-blue-50">
+                    <RadioGroupItem value="bumper" id="bumper" />
+                    <Label htmlFor="bumper" className="flex-1 cursor-pointer">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-semibold text-gray-900">Spread the cost with Bumper</div>
+                          <div className="text-sm text-gray-600">Pay monthly over 12 months with 0% APR representative</div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <img src="https://bumper.com/assets/images/visa-icon.svg" alt="Visa" className="h-6" />
+                          <img src="https://bumper.com/assets/images/mastercard-icon.svg" alt="Mastercard" className="h-6" />
+                        </div>
+                      </div>
+                    </Label>
+                  </div>
+                )}
+                
+                <div className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg">
+                  <RadioGroupItem value="stripe" id="stripe" />
+                  <Label htmlFor="stripe" className="flex-1 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-gray-900">Pay By Card/Bank</div>
+                        <div className="text-sm text-gray-600">Pay in full with debit/credit card or bank transfer</div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <img src="https://js.stripe.com/v3/fingerprinted/img/visa-365725566f9578a9589553aa9296bc74.svg" alt="Visa" className="h-6" />
+                        <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg" alt="Mastercard" className="h-6" />
+                      </div>
+                    </div>
+                  </Label>
+                </div>
+              </RadioGroup>
+
+              {!isBumperAvailable && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Note:</strong> The Bumper payment option is only available for orders over £60. 
+                    Your current order total is £{totalAmount}.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Action Buttons */}
