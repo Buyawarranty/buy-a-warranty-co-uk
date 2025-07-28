@@ -54,10 +54,20 @@ serve(async (req) => {
     const username = Deno.env.get('WARRANTIES_2000_USERNAME');
     const password = Deno.env.get('WARRANTIES_2000_PASSWORD');
     
+    console.log('Environment check:', {
+      hasUsername: !!username,
+      hasPassword: !!password,
+      usernameLength: username?.length || 0
+    });
+    
     if (!username || !password) {
       console.error('Missing WARRANTIES_2000 credentials');
       return new Response(
-        JSON.stringify({ error: 'API credentials not configured' }),
+        JSON.stringify({ 
+          success: false,
+          error: 'API credentials not configured',
+          details: 'Missing WARRANTIES_2000_USERNAME or WARRANTIES_2000_PASSWORD'
+        }),
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -66,12 +76,31 @@ serve(async (req) => {
     }
 
     // Parse request body
-    const registrationData: RegistrationData = await req.json();
-    console.log('Registration data received:', {
-      regNum: registrationData.RegNum,
-      make: registrationData.Make,
-      model: registrationData.Model
-    });
+    let registrationData: RegistrationData;
+    try {
+      registrationData = await req.json();
+      console.log('Registration data received successfully');
+      console.log('Registration summary:', {
+        regNum: registrationData.RegNum,
+        make: registrationData.Make,
+        model: registrationData.Model,
+        warType: registrationData.WarType,
+        maxClm: registrationData.MaxClm
+      });
+    } catch (parseError) {
+      console.error('Failed to parse request JSON:', parseError);
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: 'Invalid JSON in request body',
+          details: parseError.message
+        }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
 
     // Validate required fields
     const requiredFields = [
