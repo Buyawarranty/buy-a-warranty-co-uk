@@ -77,9 +77,40 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   // Calculate total amount to determine if Bumper is available (£60+ threshold)
   const calculateTotalAmount = () => {
-    // This is a simplified calculation - you may need to adjust based on your pricing logic
-    // For now, assuming amounts over £60 to enable Bumper
-    return 75; // Example amount in pounds
+    // Define pricing table - you may need to adjust these values based on your actual pricing
+    const pricingTable = {
+      monthly: {
+        "0": 9.99,    // £0 excess
+        "250": 7.99,  // £250 excess  
+        "500": 6.99   // £500 excess
+      },
+      yearly: {
+        "0": 99.99,   // £0 excess
+        "250": 79.99, // £250 excess
+        "500": 69.99  // £500 excess
+      },
+      twoYear: {
+        "0": 179.99,  // £0 excess
+        "250": 149.99, // £250 excess
+        "500": 129.99  // £500 excess
+      },
+      threeYear: {
+        "0": 249.99,  // £0 excess
+        "250": 199.99, // £250 excess
+        "500": 169.99  // £500 excess
+      }
+    };
+
+    // Get the price based on payment type and plan (assuming planId contains excess info)
+    const excess = planId.includes('250') ? '250' : planId.includes('500') ? '500' : '0';
+    const priceTable = pricingTable[paymentType as keyof typeof pricingTable];
+    
+    if (priceTable && priceTable[excess as keyof typeof priceTable]) {
+      return priceTable[excess as keyof typeof priceTable];
+    }
+    
+    // Default fallback
+    return 69.99;
   };
 
   const totalAmount = calculateTotalAmount();
