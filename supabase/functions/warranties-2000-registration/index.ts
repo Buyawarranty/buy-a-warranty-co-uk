@@ -110,12 +110,23 @@ serve(async (req) => {
     });
 
     console.log('Warranties 2000 API response status:', response.status);
+    console.log('Warranties 2000 API response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Warranties 2000 API error:', errorText);
+      console.error('Warranties 2000 API error response:', errorText);
+      console.error('Request data that was sent:', JSON.stringify(registrationData, null, 2));
       
       let errorMessage = 'Registration failed';
+      let parsedError = null;
+      
+      // Try to parse the error response
+      try {
+        parsedError = JSON.parse(errorText);
+        console.error('Parsed error data:', parsedError);
+      } catch (parseError) {
+        console.error('Could not parse error response as JSON');
+      }
       
       switch (response.status) {
         case 401:
@@ -126,11 +137,20 @@ serve(async (req) => {
           break;
         case 422:
           errorMessage = 'Invalid data: The registration data was invalid';
-          try {
-            const errorData = JSON.parse(errorText);
-            errorMessage = `Invalid data: ${errorData.Response || errorText}`;
-          } catch {
-            // Use default message if can't parse error
+          if (parsedError && parsedError.Response) {
+            errorMessage = `Invalid data: ${parsedError.Response}`;
+          }
+          if (parsedError) {
+            // Add specific field validation errors
+            const fieldErrors = [];
+            for (const [field, error] of Object.entries(parsedError)) {
+              if (field !== 'Response' && typeof error === 'string') {
+                fieldErrors.push(`${field}: ${error}`);
+              }
+            }
+            if (fieldErrors.length > 0) {
+              errorMessage += ` - ${fieldErrors.join(', ')}`;
+            }
           }
           break;
         default:
@@ -141,7 +161,8 @@ serve(async (req) => {
         JSON.stringify({ 
           success: false, 
           error: errorMessage,
-          details: errorText 
+          details: parsedError || errorText,
+          requestData: registrationData
         }),
         { 
           status: response.status, 
