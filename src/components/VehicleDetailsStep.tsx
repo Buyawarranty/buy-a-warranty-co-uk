@@ -211,7 +211,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         <div className="mb-4">
           <div className="relative">
             <div className="text-center">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Let's find your vehicle 🚗 🔍</h2>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Your quote is 30 seconds away 🚗 🔍</h2>
             </div>
             <div className="absolute top-0 right-0 hidden sm:block">
               <img 
@@ -227,7 +227,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
           <div className="flex items-center gap-2 mb-2">
             <label htmlFor="reg" className="block font-semibold text-gray-700 text-lg sm:text-xl">
-              Vehicle registration number
+              Let's find your vehicle
             </label>
           </div>
           <div 
