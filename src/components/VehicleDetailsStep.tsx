@@ -222,20 +222,20 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
          <div className="flex flex-col items-center">
            <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
-           <div className="flex items-center gap-2 mb-2">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                Your quote in 30 seconds
-                <Zap size={24} className="text-orange-500" />
+            <div className="flex items-center gap-2 mb-2">
+               <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                 Your quote in 30 seconds
+                 <Zap size={24} className="text-orange-500" />
+               </h1>
+            </div>
+            <div className="flex items-center gap-2 mb-2">
+              <h2 className="flex items-center justify-between font-semibold text-gray-700 text-xl sm:text-3xl">
+                <div className="flex items-center gap-1">
+                  Let's find your vehicle 
+                </div>
+                <Search size={20} className="text-orange-500" />
               </h2>
            </div>
-           <div className="flex items-center gap-2 mb-2">
-             <label htmlFor="reg" className="flex items-center justify-between font-semibold text-gray-700 text-xl sm:text-3xl">
-               <div className="flex items-center gap-1">
-                 Let's find your vehicle 
-               </div>
-               <Search size={20} className="text-orange-500" />
-             </label>
-          </div>
           <div 
             className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-xl sm:text-[28px] px-[15px] sm:px-[25px] py-[12px] sm:py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black relative"
             onClick={() => document.getElementById('regInput')?.focus()}
