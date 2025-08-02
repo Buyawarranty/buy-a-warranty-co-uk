@@ -59,7 +59,7 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
               type="text"
               value={registrationNumber}
               onChange={handleRegChange}
-              placeholder="YOUR REG"
+              placeholder="Enter reg plate"
               className="bg-transparent border-none text-lg font-bold text-gray-600 placeholder-gray-500 focus:ring-0 focus:outline-none p-0"
               maxLength={8}
             />
