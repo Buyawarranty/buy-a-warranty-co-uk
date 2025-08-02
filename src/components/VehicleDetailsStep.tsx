@@ -210,7 +210,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-6">
         <div className="mb-4">
           <div className="relative">
-            <div className="text-center">
+            <div className="text-left">
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Your quote in 30 seconds</h2>
             </div>
             <div className="absolute top-0 right-0 hidden sm:block">
