@@ -9,8 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface CustomerDetailsData {
-  first_name: string;
-  last_name: string;
+  full_name: string;
   email: string;
   mobile: string;
   flat_number?: string;
@@ -52,11 +51,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     return { firstName, lastName };
   };
 
-  const { firstName, lastName } = splitName(vehicleData?.fullName || '');
-
   const [formData, setFormData] = useState<CustomerDetailsData>({
-    first_name: initialData?.first_name || firstName,
-    last_name: initialData?.last_name || lastName,
+    full_name: initialData?.full_name || vehicleData?.fullName || '',
     email: initialData?.email || vehicleData?.email || '',
     mobile: initialData?.mobile || vehicleData?.phone || '',
     flat_number: initialData?.flat_number || '',
@@ -126,7 +122,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       try {
         await supabase.functions.invoke('track-abandoned-cart', {
           body: {
-            full_name: `${formData.first_name} ${formData.last_name}`.trim() || vehicleData?.fullName,
+            full_name: formData.full_name || vehicleData?.fullName,
             email: emailToUse,
             phone: formData.mobile || vehicleData?.phone,
             vehicle_reg: vehicleData?.regNumber,
@@ -150,7 +146,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       if (emailToUse) {
         // Use sendBeacon for more reliable tracking during page unload
         const payload = JSON.stringify({
-          full_name: `${formData.first_name} ${formData.last_name}`.trim() || vehicleData?.fullName,
+          full_name: formData.full_name || vehicleData?.fullName,
           email: emailToUse,
           phone: formData.mobile || vehicleData?.phone,
           vehicle_reg: vehicleData?.regNumber,
@@ -207,13 +203,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     const errors = { ...fieldErrors };
     
     switch (fieldName) {
-      case 'first_name':
-        if (!value.trim()) errors.first_name = 'First name is required';
-        else delete errors.first_name;
-        break;
-      case 'last_name':
-        if (!value.trim()) errors.last_name = 'Last name is required';
-        else delete errors.last_name;
+      case 'full_name':
+        if (!value.trim()) errors.full_name = 'Full name is required';
+        else delete errors.full_name;
         break;
       case 'email':
         if (!value.trim()) errors.email = 'Email is required';
@@ -262,8 +254,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const isFormValid = () => {
     const required = [
-      formData.first_name,
-      formData.last_name,
+      formData.full_name,
       formData.email,
       formData.mobile,
       formData.town,
@@ -280,7 +271,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const handlePurchase = async () => {
     // Validate all fields and show errors
-    const requiredFields = ['first_name', 'last_name', 'email', 'mobile', 'town', 'county', 'country', 'postcode'];
+    const requiredFields = ['full_name', 'email', 'mobile', 'town', 'county', 'country', 'postcode'];
     requiredFields.forEach(field => {
       validateField(field, formData[field as keyof CustomerDetailsData] || '');
     });
@@ -395,52 +386,28 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">
-                      First Name *
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="first_name"
-                        value={formData.first_name}
-                        onChange={(e) => handleInputChange('first_name', e.target.value)}
-                        className={`mt-1 pr-10 ${fieldErrors.first_name ? 'border-red-500' : ''}`}
-                        required
-                      />
-                      {formData.first_name.trim() && !fieldErrors.first_name && (
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white stroke-[3]" />
-                        </div>
-                      )}
-                    </div>
-                    {fieldErrors.first_name && (
-                      <p className="text-red-500 text-xs mt-1">{fieldErrors.first_name}</p>
+                <div>
+                  <Label htmlFor="full_name" className="text-sm font-medium text-gray-700">
+                    Full Name *
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="full_name"
+                      value={formData.full_name}
+                      onChange={(e) => handleInputChange('full_name', e.target.value)}
+                      className={`mt-1 pr-10 ${fieldErrors.full_name ? 'border-red-500' : ''}`}
+                      required
+                      placeholder="Enter your full name"
+                    />
+                    {formData.full_name.trim() && !fieldErrors.full_name && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">
-                      Last Name *
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="last_name"
-                        value={formData.last_name}
-                        onChange={(e) => handleInputChange('last_name', e.target.value)}
-                        className={`mt-1 pr-10 ${fieldErrors.last_name ? 'border-red-500' : ''}`}
-                        required
-                      />
-                      {formData.last_name.trim() && !fieldErrors.last_name && (
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white stroke-[3]" />
-                        </div>
-                      )}
-                    </div>
-                    {fieldErrors.last_name && (
-                      <p className="text-red-500 text-xs mt-1">{fieldErrors.last_name}</p>
-                    )}
-                  </div>
+                  {fieldErrors.full_name && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.full_name}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
