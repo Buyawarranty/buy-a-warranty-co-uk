@@ -350,7 +350,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900 font-sans mb-4">
-            Secure Your Warranty Protection Today
+            Final Step - Your Details
           </h1>
           {planName && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 max-w-md mx-auto">
