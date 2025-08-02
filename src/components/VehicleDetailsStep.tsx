@@ -229,7 +229,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               </h2>
            </div>
            <div className="flex items-center gap-2 mb-2">
-             <label htmlFor="reg" className="flex items-center justify-between font-semibold text-gray-700 text-lg sm:text-xl">
+             <label htmlFor="reg" className="flex items-center justify-between font-semibold text-gray-700 text-xl sm:text-3xl">
                <div className="flex items-center gap-1">
                  Let's find your vehicle 
                </div>
