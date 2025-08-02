@@ -250,7 +250,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
             className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3"
           >
             <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            Back to Contact Details
+            Back
           </Button>
           <TrustpilotHeader />
         </div>
