@@ -222,14 +222,14 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
          <div className="flex flex-col items-center">
            <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
-            <div className="flex items-center gap-2 mb-2">
-               <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-4">
+               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 flex items-center gap-2">
                  Your quote in 30 seconds
-                 <Zap size={24} className="text-orange-500" />
+                 <Zap size={28} className="text-orange-500" />
                </h1>
             </div>
             <div className="flex items-center gap-2 mb-2">
-              <h2 className="flex items-center justify-between font-semibold text-gray-700 text-xl sm:text-3xl">
+              <h2 className="flex items-center justify-between font-medium text-gray-600 text-lg sm:text-xl">
                 <div className="flex items-center gap-1">
                   Let's find your vehicle 
                 </div>
