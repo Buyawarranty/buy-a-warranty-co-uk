@@ -211,7 +211,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         <div className="mb-4">
           <div className="relative">
             <div className="text-center">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Your quote in 30 seconds 🚗 🔍</h2>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Your quote in 30 seconds</h2>
             </div>
             <div className="absolute top-0 right-0 hidden sm:block">
               <img 
