@@ -408,21 +408,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         required
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="country" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Country *
-                      </Label>
-                      <Select value={customerData.country} onValueChange={handleCountryChange}>
-                        <SelectTrigger className="w-full border-2">
-                          <SelectValue placeholder="Select country" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="United Kingdom">United Kingdom</SelectItem>
-                          <SelectItem value="Ireland">Ireland</SelectItem>
-                          <SelectItem value="Northern Ireland">Northern Ireland</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
                   </div>
 
                   <div>
