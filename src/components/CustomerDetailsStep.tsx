@@ -656,8 +656,59 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             </Card>
           </div>
 
-          {/* Right Column - Vehicle Information & Payment */}
+          {/* Right Column - Order Summary, Vehicle Information & Payment */}
           <div className="space-y-6">
+            {/* Order Summary */}
+            <Card className="shadow-lg border-0 bg-gradient-to-r from-blue-50 to-indigo-50">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
+                  <Shield className="h-5 w-5 text-blue-600 mr-2" />
+                  Your Order Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-white rounded-lg p-4 border border-blue-100">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-semibold text-gray-900">Plan:</span>
+                    <span className="text-blue-600 font-bold">{planName || 'Standard'}</span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-semibold text-gray-900">Duration:</span>
+                    <span className="text-gray-700">
+                      {paymentType === 'monthly' ? '1 Year' : 
+                       paymentType === 'yearly' ? '1 Year' :
+                       paymentType === 'twoYear' ? '2 Years' :
+                       paymentType === 'threeYear' ? '3 Years' : paymentType}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-semibold text-gray-900">Total Price:</span>
+                    <span className="text-2xl font-bold text-green-600">£{totalAmount}</span>
+                  </div>
+                  {paymentType !== 'monthly' && (
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="font-semibold text-gray-900">Monthly Equivalent:</span>
+                      <span className="text-gray-700">
+                        £{paymentType === 'yearly' ? (totalAmount / 12).toFixed(2) :
+                           paymentType === 'twoYear' ? (totalAmount / 24).toFixed(2) :
+                           paymentType === 'threeYear' ? (totalAmount / 36).toFixed(2) : 
+                           totalAmount}/month
+                      </span>
+                    </div>
+                  )}
+                  <div className="pt-3 border-t border-gray-200">
+                    <a 
+                      href="#" 
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium underline"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      📄 View Warranty Plan Details
+                    </a>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Vehicle Information */}
             <Card className="shadow-lg border-0">
               <CardHeader>
