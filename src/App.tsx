@@ -14,6 +14,7 @@ import CustomerDashboard from "./pages/CustomerDashboard";
 import AdminTest from "./pages/AdminTest";
 import PasswordReset from "./components/PasswordReset";
 import PaymentFallback from "./pages/PaymentFallback";
+import CarJourneyDemo from "./pages/CarJourneyDemo";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
                 <Route path="/admin-test" element={<AdminTest />} />
                 <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                 <Route path="/reset-password" element={<PasswordReset />} />
+                <Route path="/car-journey" element={<CarJourneyDemo />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
