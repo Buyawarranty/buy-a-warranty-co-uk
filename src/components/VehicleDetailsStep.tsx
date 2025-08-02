@@ -510,7 +510,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                     animation: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 'breathe 5s ease-in-out infinite' : 'none'
                   }}
                 >
-                  30 seconds to your quote →
+                  Get my quote →
                 </button>
               </div>
             </>
