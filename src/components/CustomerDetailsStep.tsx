@@ -508,7 +508,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-bold text-green-600">Payment:</span>
                       <span className="text-lg font-bold text-green-600">
-                        £{pricingData ? Math.round(pricingData.monthlyPrice || pricingData.totalPrice) : totalAmount}
+                        £{pricingData ? Math.round(pricingData.monthlyPrice || pricingData.totalPrice) : totalAmount} x 12
                       </span>
                     </div>
                     <div className="flex justify-between items-center mb-3">
