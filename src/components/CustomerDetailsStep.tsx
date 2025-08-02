@@ -536,7 +536,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <div className="flex justify-between items-center mb-3">
                       <span className="font-semibold text-gray-900">Total Price:</span>
                       <span className="text-gray-700">
-                        £{totalPrice} for entire duration
+                        £{totalPrice} for entire cover period
                       </span>
                     </div>
                     <div className="pt-3 border-t border-gray-200">
