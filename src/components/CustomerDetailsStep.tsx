@@ -329,7 +329,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       First Name *
                     </Label>
                     {formData.first_name.trim() && (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                   <div className="relative">
@@ -341,7 +343,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       required
                     />
                     {formData.first_name.trim() && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -352,7 +356,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       Last Name *
                     </Label>
                     {formData.last_name.trim() && (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                   <div className="relative">
@@ -364,7 +370,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       required
                     />
                     {formData.last_name.trim() && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -377,7 +385,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       Email Address *
                     </Label>
                     {formData.email.trim() && formData.email.includes('@') && (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                   <div className="relative">
@@ -390,7 +400,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       required
                     />
                     {formData.email.trim() && formData.email.includes('@') && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -401,7 +413,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       Mobile Number *
                     </Label>
                     {formData.mobile.trim() && formData.mobile.length >= 10 && (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                   <div className="relative">
@@ -414,7 +428,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       required
                     />
                     {formData.mobile.trim() && formData.mobile.length >= 10 && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -469,7 +485,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         House/Building Number *
                       </Label>
                       {formData.building_number?.trim() && (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white stroke-[3]" />
+                        </div>
                       )}
                     </div>
                     <div className="relative">
@@ -481,7 +499,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         required
                       />
                       {formData.building_number?.trim() && (
-                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white stroke-[3]" />
+                        </div>
                       )}
                     </div>
                   </div>
@@ -494,7 +514,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         Flat Number *
                       </Label>
                       {formData.flat_number?.trim() && (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white stroke-[3]" />
+                        </div>
                       )}
                     </div>
                     <div className="relative">
@@ -506,7 +528,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         required
                       />
                       {formData.flat_number?.trim() && (
-                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white stroke-[3]" />
+                        </div>
                       )}
                     </div>
                   </div>
@@ -519,7 +543,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         Building Name *
                       </Label>
                       {formData.building_name?.trim() && (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white stroke-[3]" />
+                        </div>
                       )}
                     </div>
                     <div className="relative">
@@ -531,7 +557,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         required
                       />
                       {formData.building_name?.trim() && (
-                        <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white stroke-[3]" />
+                        </div>
                       )}
                     </div>
                   </div>
@@ -557,7 +585,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       Town *
                     </Label>
                     {formData.town.trim() && (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                   <div className="relative">
@@ -569,7 +599,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       required
                     />
                     {formData.town.trim() && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -580,7 +612,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       County *
                     </Label>
                     {formData.county.trim() && (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                   <div className="relative">
@@ -592,7 +626,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       required
                     />
                     {formData.county.trim() && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -605,7 +641,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       Postcode *
                     </Label>
                     {formData.postcode.trim() && (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                   <div className="relative">
@@ -617,7 +655,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       required
                     />
                     {formData.postcode.trim() && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -628,7 +668,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       Country *
                     </Label>
                     {formData.country.trim() && (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                   <div className="relative">
@@ -640,7 +682,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       required
                     />
                     {formData.country.trim() && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
                 </div>
