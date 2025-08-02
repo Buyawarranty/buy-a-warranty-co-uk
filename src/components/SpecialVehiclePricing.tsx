@@ -40,7 +40,7 @@ interface VehicleData {
 interface SpecialVehiclePricingProps {
   vehicleData: VehicleData;
   onBack: () => void;
-  onPlanSelected?: (planId: string, paymentType: string, planName?: string) => void;
+  onPlanSelected?: (planId: string, paymentType: string, planName?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}}) => void;
 }
 
 const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleData, onBack, onPlanSelected }) => {
@@ -195,7 +195,14 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     if (!plan) return;
     
     if (onPlanSelected) {
-      onPlanSelected(plan.id, paymentType, plan.name);
+      const monthlyPrice = calculatePlanPrice();
+      const pricingData = {
+        totalPrice: monthlyPrice,
+        monthlyPrice: monthlyPrice,
+        voluntaryExcess,
+        selectedAddOns: {}
+      };
+      onPlanSelected(plan.id, paymentType, plan.name, pricingData);
     }
   };
 

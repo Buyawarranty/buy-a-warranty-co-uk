@@ -24,23 +24,25 @@ interface CustomerDetailsData {
 }
 
 interface CustomerDetailsStepProps {
-  onNext: (data: CustomerDetailsData) => void;
-  onBack: () => void;
-  initialData?: Partial<CustomerDetailsData>;
   vehicleData: any;
   planId: string;
   paymentType: string;
   planName?: string;
+  pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}};
+  onNext: (data: CustomerDetailsData) => void;
+  onBack: () => void;
+  initialData?: Partial<CustomerDetailsData>;
 }
 
 const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
-  onNext,
-  onBack,
-  initialData,
   vehicleData,
   planId,
   paymentType,
-  planName
+  planName,
+  pricingData,
+  onNext,
+  onBack,
+  initialData
 }) => {
   // Split full name into first and last name from step 2
   const splitName = (fullName: string) => {
@@ -75,8 +77,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   // Calculate total amount based on actual plan pricing
   const calculateTotalAmount = () => {
-    // For now, return a reasonable default that allows Bumper
-    // This should be replaced with actual plan pricing when available
+    if (pricingData && pricingData.totalPrice) {
+      return pricingData.totalPrice;
+    }
+    // Fallback for backward compatibility
     return 69.99;
   };
 
@@ -684,21 +688,24 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                        paymentType === 'threeYear' ? '3 Years' : paymentType}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-900">Total Price:</span>
-                    <span className="text-2xl font-bold text-green-600">£{totalAmount}</span>
-                  </div>
-                  {paymentType !== 'monthly' && (
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="font-semibold text-gray-900">Monthly Equivalent:</span>
-                      <span className="text-gray-700">
-                        £{paymentType === 'yearly' ? (totalAmount / 12).toFixed(2) :
-                           paymentType === 'twoYear' ? (totalAmount / 24).toFixed(2) :
-                           paymentType === 'threeYear' ? (totalAmount / 36).toFixed(2) : 
-                           totalAmount}/month
-                      </span>
+                  {pricingData && pricingData.voluntaryExcess !== undefined && (
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-gray-900">Voluntary Excess:</span>
+                      <span className="text-gray-700">£{pricingData.voluntaryExcess}</span>
                     </div>
                   )}
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-semibold text-gray-900">Total Price:</span>
+                    <span className="text-2xl font-bold text-green-600">
+                      £{pricingData ? Math.round(pricingData.totalPrice) : totalAmount}/month
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-semibold text-gray-900">Payment:</span>
+                    <span className="text-gray-700">
+                      £{pricingData ? Math.round(pricingData.totalPrice) : totalAmount} for 12 months
+                    </span>
+                  </div>
                   <div className="pt-3 border-t border-gray-200">
                     <a 
                       href="#" 
