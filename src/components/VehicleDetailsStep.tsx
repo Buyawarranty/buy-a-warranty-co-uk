@@ -208,24 +208,24 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   return (
     <section className="bg-[#e8f4fb] py-2 px-3 sm:px-0">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-6">
-        <div className="mb-4">
-          <div className="relative">
-            <div className="text-left">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Your quote in 30 seconds</h2>
-            </div>
-            <div className="absolute top-0 right-0 hidden sm:block">
-              <img 
-                src="/lovable-uploads/bed8e125-f5d3-4bf5-a0f8-df4df5ff8693.png" 
-                alt="Trustpilot" 
-                className="h-8 sm:h-10 w-auto opacity-90"
-              />
-            </div>
-          </div>
-        </div>
+         <div className="mb-4">
+           <div className="relative">
+             <div className="absolute top-0 right-0 hidden sm:block">
+               <img 
+                 src="/lovable-uploads/bed8e125-f5d3-4bf5-a0f8-df4df5ff8693.png" 
+                 alt="Trustpilot" 
+                 className="h-8 sm:h-10 w-auto opacity-90"
+               />
+             </div>
+           </div>
+         </div>
 
-        <div className="flex flex-col items-center">
-          <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
-          <div className="flex items-center gap-2 mb-2">
+         <div className="flex flex-col items-center">
+           <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
+           <div className="flex items-center gap-2 mb-2">
+             <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Your quote in 30 seconds</h2>
+           </div>
+           <div className="flex items-center gap-2 mb-2">
             <label htmlFor="reg" className="flex items-center justify-between font-semibold text-gray-700 text-lg sm:text-xl">
               <div className="flex items-center gap-1">
                 Let's find your vehicle <Car size={20} className="text-orange-500" />
