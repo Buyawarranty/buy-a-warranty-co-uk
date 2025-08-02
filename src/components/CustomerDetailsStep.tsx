@@ -52,10 +52,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     last_name: vehicleData.lastName || '',
     email: vehicleData.email || '',
     mobile: vehicleData.phone || '',
-    flat_number: '',
-    building_name: '',
-    building_number: '',
-    street: '',
+    address_line_1: '',
+    address_line_2: '',
     town: '',
     county: '',
     postcode: '',
@@ -100,7 +98,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const isFormValid = () => {
     // Check if all required fields are filled
-    const requiredFields = ['first_name', 'last_name', 'email', 'mobile', 'building_number', 'street', 'town', 'county', 'postcode', 'country', 'vehicle_reg'];
+    const requiredFields = ['first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'town', 'county', 'postcode', 'country', 'vehicle_reg'];
     return requiredFields.every(field => customerData[field as keyof typeof customerData] !== '');
   };
 
@@ -112,8 +110,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         { key: 'last_name', label: 'Last Name' },
         { key: 'email', label: 'Email Address' },
         { key: 'mobile', label: 'Phone Number' },
-        { key: 'building_number', label: 'Building Number' },
-        { key: 'street', label: 'Street' },
+        { key: 'address_line_1', label: 'Address Line 1' },
         { key: 'town', label: 'Town/City' },
         { key: 'county', label: 'County' },
         { key: 'postcode', label: 'Postcode' },
@@ -346,63 +343,35 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <CardTitle className="text-xl font-semibold">Address Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="flat_number" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Flat/Apartment Number
-                      </Label>
-                      <Input
-                        id="flat_number"
-                        name="flat_number"
-                        value={customerData.flat_number}
-                        onChange={handleInputChange}
-                        placeholder="Optional"
-                        className="w-full"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="building_name" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Building Name
-                      </Label>
-                      <Input
-                        id="building_name"
-                        name="building_name"
-                        value={customerData.building_name}
-                        onChange={handleInputChange}
-                        placeholder="Optional"
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-
                   <div>
-                    <Label htmlFor="building_number" className="text-sm font-medium text-gray-700 mb-1 block">
-                      Building Number *
+                    <Label htmlFor="address_line_1" className="text-sm font-medium text-gray-700 mb-1 block">
+                      Address Line 1 *
                     </Label>
                     <Input
-                      id="building_number"
-                      name="building_number"
-                      value={customerData.building_number}
+                      id="address_line_1"
+                      name="address_line_1"
+                      value={customerData.address_line_1}
                       onChange={handleInputChange}
-                      placeholder="Enter building number"
+                      placeholder="Street address and house/building number"
                       className="w-full"
                       required
                     />
+                    <p className="text-xs text-gray-500 mt-1">(Street address and house/building number)</p>
                   </div>
 
                   <div>
-                    <Label htmlFor="street" className="text-sm font-medium text-gray-700 mb-1 block">
-                      Street Name *
+                    <Label htmlFor="address_line_2" className="text-sm font-medium text-gray-700 mb-1 block">
+                      Address Line 2 (optional)
                     </Label>
                     <Input
-                      id="street"
-                      name="street"
-                      value={customerData.street}
+                      id="address_line_2"
+                      name="address_line_2"
+                      value={customerData.address_line_2}
                       onChange={handleInputChange}
-                      placeholder="Enter street name"
+                      placeholder="Apartment, flat, building name"
                       className="w-full"
-                      required
                     />
+                    <p className="text-xs text-gray-500 mt-1">(Apartment, flat, building name)</p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
