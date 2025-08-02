@@ -469,12 +469,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <span className="font-medium text-gray-700">Plan:</span>
                       <span className="text-gray-900">{planName}</span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-700">Payment Period:</span>
-                      <span className="text-gray-900 capitalize">
-                        {paymentType.replace('_', ' ')}
-                      </span>
-                    </div>
+                     <div className="flex justify-between items-center">
+                       <span className="font-medium text-gray-700">Payment Period:</span>
+                       <span className="text-gray-900 capitalize">
+                         {paymentType === 'yearly' ? '1 Year' : 
+                          paymentType === 'two_yearly' ? '2 Year' : 
+                          paymentType === 'three_yearly' ? '3 Year' : 
+                          paymentType.replace('_', ' ')}
+                       </span>
+                     </div>
                     {pricingData?.voluntaryExcess !== undefined && (
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-gray-700">Voluntary Excess:</span>
