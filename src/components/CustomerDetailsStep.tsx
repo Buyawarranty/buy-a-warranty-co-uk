@@ -344,7 +344,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       className="w-full"
                       required
                     />
-                    <p className="text-xs text-gray-500 mt-1">(Street address and house/building number)</p>
+                    
                   </div>
 
                   <div>
@@ -359,7 +359,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       placeholder="Apartment, flat, building name"
                       className="w-full"
                     />
-                    <p className="text-xs text-gray-500 mt-1">(Apartment, flat, building name)</p>
+                    
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
