@@ -334,14 +334,44 @@ const CustomerDashboard = () => {
                     </div>
                   </div>
 
+                  {/* Selected Plan Section */}
+                  <div className="pt-4 border-t">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                      <div className="flex items-center">
+                        <FileText className="mr-2 h-5 w-5 text-blue-600" />
+                        <span className="text-blue-800 font-medium">
+                          Selected Plan: {policy.plan_type.charAt(0).toUpperCase() + policy.plan_type.slice(1)} ({policy.payment_type === 'annual' ? 'Annual' : policy.payment_type === 'twoYear' ? '2 Year' : '3 Year'})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Warranty Plan Details Section */}
                   {getPolicyPdf() && (
                     <div className="pt-4 border-t">
-                      <Button asChild className="w-full">
-                        <a href={getPolicyPdf()} target="_blank" rel="noopener noreferrer">
-                          <FileText className="mr-2 h-4 w-4" />
-                          Download Policy Document
-                        </a>
-                      </Button>
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-center mb-2">
+                              <FileText className="mr-2 h-5 w-5 text-gray-600" />
+                              <h3 className="font-semibold text-gray-900">Warranty Plan Details</h3>
+                            </div>
+                            <p className="text-sm text-gray-600">*Full breakdown of coverage</p>
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                          <Button 
+                            variant="outline" 
+                            className="w-full" 
+                            asChild
+                          >
+                            <a href={getPolicyPdf()} target="_blank" rel="noopener noreferrer">
+                              <FileText className="mr-2 h-4 w-4" />
+                              View PDF
+                            </a>
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </CardContent>
