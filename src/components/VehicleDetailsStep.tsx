@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Check, Smartphone, Zap } from 'lucide-react';
+import { Check, Search, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface VehicleDetailsStepProps {
@@ -233,7 +233,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                <div className="flex items-center gap-1">
                  Let's find your vehicle
                </div>
-               <Smartphone size={20} className="text-orange-500" />
+               <Search size={20} className="text-orange-500" />
              </label>
           </div>
           <div 
