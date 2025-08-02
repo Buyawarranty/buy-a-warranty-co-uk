@@ -153,7 +153,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
               <button 
                 onClick={handleSkipClick}
-                className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg ${
+                className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative ${
                   areRequiredFieldsFilled ? '' : 'opacity-50'
                 }`}
                 style={{ backgroundColor: '#15803d' }}
