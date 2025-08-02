@@ -92,9 +92,6 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
               >
                 ?
               </span>
-              {fullName.trim() && (
-                <Check className="w-5 h-5 text-green-500 ml-2" />
-              )}
             </div>
             <div className="relative">
               <input
@@ -128,9 +125,6 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
               >
                 ?
               </span>
-              {address.trim() && (
-                <Check className="w-5 h-5 text-green-500 ml-2" />
-              )}
             </div>
             <div className="relative">
               <input
@@ -165,9 +159,6 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
               >
                 ?
               </span>
-              {email.trim() && email.includes('@') && (
-                <Check className="w-5 h-5 text-green-500 ml-2" />
-              )}
             </div>
             <div className="relative">
               <input
@@ -201,9 +192,6 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
               >
                 ?
               </span>
-              {phone.trim() && phone.length >= 10 && (
-                <Check className="w-5 h-5 text-green-500 ml-2" />
-              )}
             </div>
             <div className="relative">
               <input
