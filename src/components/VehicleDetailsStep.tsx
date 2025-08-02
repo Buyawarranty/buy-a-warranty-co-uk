@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Check, Car, Search, Smartphone, Zap } from 'lucide-react';
+import { Check, Smartphone, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface VehicleDetailsStepProps {
@@ -229,12 +229,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               </h2>
            </div>
            <div className="flex items-center gap-2 mb-2">
-            <label htmlFor="reg" className="flex items-center justify-between font-semibold text-gray-700 text-lg sm:text-xl">
-              <div className="flex items-center gap-1">
-                Let's find your vehicle <Car size={20} className="text-orange-500" />
-              </div>
-              <Search size={20} className="text-orange-500" />
-            </label>
+             <label htmlFor="reg" className="flex items-center justify-between font-semibold text-gray-700 text-lg sm:text-xl">
+               <div className="flex items-center gap-1">
+                 Let's find your vehicle
+               </div>
+               <Smartphone size={20} className="text-orange-500" />
+             </label>
           </div>
           <div 
             className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-xl sm:text-[28px] px-[15px] sm:px-[25px] py-[12px] sm:py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black relative"
