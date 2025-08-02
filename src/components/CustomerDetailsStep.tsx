@@ -186,6 +186,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       ...prev,
       [field]: value
     }));
+    // Validate field on change
+    validateField(field, value);
   };
 
   const handleAddressTypeChange = (type: 'flat' | 'building_name' | 'building_number') => {
@@ -197,6 +199,65 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       building_name: type === 'building_name' ? prev.building_name : '',
       building_number: type === 'building_number' ? prev.building_number : ''
     }));
+  };
+
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
+
+  const validateField = (fieldName: string, value: string) => {
+    const errors = { ...fieldErrors };
+    
+    switch (fieldName) {
+      case 'first_name':
+        if (!value.trim()) errors.first_name = 'First name is required';
+        else delete errors.first_name;
+        break;
+      case 'last_name':
+        if (!value.trim()) errors.last_name = 'Last name is required';
+        else delete errors.last_name;
+        break;
+      case 'email':
+        if (!value.trim()) errors.email = 'Email is required';
+        else if (!value.includes('@')) errors.email = 'Please enter a valid email';
+        else delete errors.email;
+        break;
+      case 'mobile':
+        if (!value.trim()) errors.mobile = 'Mobile number is required';
+        else if (value.length < 10) errors.mobile = 'Please enter a valid mobile number';
+        else delete errors.mobile;
+        break;
+      case 'town':
+        if (!value.trim()) errors.town = 'Town is required';
+        else delete errors.town;
+        break;
+      case 'county':
+        if (!value.trim()) errors.county = 'County is required';
+        else delete errors.county;
+        break;
+      case 'country':
+        if (!value.trim()) errors.country = 'Country is required';
+        else delete errors.country;
+        break;
+      case 'postcode':
+        if (!value.trim()) errors.postcode = 'Postcode is required';
+        else delete errors.postcode;
+        break;
+    }
+    
+    setFieldErrors(errors);
+  };
+
+  const validateAddressType = () => {
+    const errors = { ...fieldErrors };
+    const hasAddressType = formData.flat_number || formData.building_name || formData.building_number;
+    
+    if (!hasAddressType) {
+      errors.address_type = 'Please select and fill in your property type';
+    } else {
+      delete errors.address_type;
+    }
+    
+    setFieldErrors(errors);
+    return hasAddressType;
   };
 
   const isFormValid = () => {
@@ -214,14 +275,23 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     // Check that at least one address type is filled
     const hasAddressType = formData.flat_number || formData.building_name || formData.building_number;
 
-    return required.every(field => field.trim() !== '') && hasAddressType;
+    return required.every(field => field.trim() !== '') && hasAddressType && Object.keys(fieldErrors).length === 0;
   };
 
   const handlePurchase = async () => {
+    // Validate all fields and show errors
+    const requiredFields = ['first_name', 'last_name', 'email', 'mobile', 'town', 'county', 'country', 'postcode'];
+    requiredFields.forEach(field => {
+      validateField(field, formData[field as keyof CustomerDetailsData] || '');
+    });
+    
+    // Validate address type
+    validateAddressType();
+    
     if (!isFormValid()) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: "Please Complete All Required Fields",
+        description: "Check the form for missing information and try again.",
         variant: "destructive"
       });
       return;
@@ -335,15 +405,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         id="first_name"
                         value={formData.first_name}
                         onChange={(e) => handleInputChange('first_name', e.target.value)}
-                        className="mt-1 pr-10"
+                        className={`mt-1 pr-10 ${fieldErrors.first_name ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.first_name.trim() && (
+                      {formData.first_name.trim() && !fieldErrors.first_name && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
+                    {fieldErrors.first_name && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.first_name}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -355,15 +428,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         id="last_name"
                         value={formData.last_name}
                         onChange={(e) => handleInputChange('last_name', e.target.value)}
-                        className="mt-1 pr-10"
+                        className={`mt-1 pr-10 ${fieldErrors.last_name ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.last_name.trim() && (
+                      {formData.last_name.trim() && !fieldErrors.last_name && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
+                    {fieldErrors.last_name && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.last_name}</p>
+                    )}
                   </div>
                 </div>
 
@@ -378,15 +454,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
-                        className="mt-1 pr-10"
+                        className={`mt-1 pr-10 ${fieldErrors.email ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.email.trim() && formData.email.includes('@') && (
+                      {formData.email.trim() && formData.email.includes('@') && !fieldErrors.email && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
+                    {fieldErrors.email && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -399,15 +478,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         value={formData.mobile}
                         onChange={(e) => handleInputChange('mobile', e.target.value)}
                         placeholder="07000000000"
-                        className="mt-1 pr-10"
+                        className={`mt-1 pr-10 ${fieldErrors.mobile ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.mobile.trim() && formData.mobile.length >= 10 && (
+                      {formData.mobile.trim() && formData.mobile.length >= 10 && !fieldErrors.mobile && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
+                    {fieldErrors.mobile && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.mobile}</p>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -545,15 +627,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         id="town"
                         value={formData.town}
                         onChange={(e) => handleInputChange('town', e.target.value)}
-                        className="mt-1 pr-10"
+                        className={`mt-1 pr-10 ${fieldErrors.town ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.town.trim() && (
+                      {formData.town.trim() && !fieldErrors.town && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
+                    {fieldErrors.town && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.town}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -565,15 +650,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         id="county"
                         value={formData.county}
                         onChange={(e) => handleInputChange('county', e.target.value)}
-                        className="mt-1 pr-10"
+                        className={`mt-1 pr-10 ${fieldErrors.county ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.county.trim() && (
+                      {formData.county.trim() && !fieldErrors.county && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
+                    {fieldErrors.county && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.county}</p>
+                    )}
                   </div>
                 </div>
 
@@ -587,15 +675,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         id="postcode"
                         value={formData.postcode}
                         onChange={(e) => handleInputChange('postcode', e.target.value)}
-                        className="mt-1 pr-10"
+                        className={`mt-1 pr-10 ${fieldErrors.postcode ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.postcode.trim() && (
+                      {formData.postcode.trim() && !fieldErrors.postcode && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
+                    {fieldErrors.postcode && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.postcode}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -607,17 +698,25 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         id="country"
                         value={formData.country}
                         onChange={(e) => handleInputChange('country', e.target.value)}
-                        className="mt-1 pr-10"
+                        className={`mt-1 pr-10 ${fieldErrors.country ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.country.trim() && (
+                      {formData.country.trim() && !fieldErrors.country && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
+                    {fieldErrors.country && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.country}</p>
+                    )}
                   </div>
                 </div>
+                
+                {/* Address Type Error */}
+                {fieldErrors.address_type && (
+                  <div className="text-red-500 text-xs mt-1">{fieldErrors.address_type}</div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -708,8 +807,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   
                   <Button
                     onClick={handlePurchase}
-                    disabled={!isFormValid() || isLoading}
-                    className="w-full bg-[#eb4b00] hover:bg-[#d44300] text-white font-semibold py-3 px-6 rounded-lg shadow-lg animate-breathing disabled:opacity-50 disabled:animate-none font-sans"
+                    disabled={isLoading}
+                    className="w-full bg-[#eb4b00] hover:bg-[#d44300] text-white font-semibold py-3 px-6 rounded-lg shadow-lg animate-breathing font-sans"
                   >
                     {isLoading ? (
                       <div className="flex items-center justify-center">
@@ -717,7 +816,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         Processing...
                       </div>
                     ) : (
-                      "Buy Your Warranty"
+                      "Get Protected Now"
                     )}
                   </Button>
                 </div>
