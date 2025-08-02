@@ -27,7 +27,7 @@ interface VehicleData {
   mileage: string;
   email: string;
   phone: string;
-  fullName: string;
+  firstName: string;
   address: string;
   make?: string;
   model?: string;

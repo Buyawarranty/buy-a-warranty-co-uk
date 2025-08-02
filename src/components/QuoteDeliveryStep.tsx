@@ -13,23 +13,26 @@ interface QuoteDeliveryStepProps {
     transmission?: string;
     year?: string;
   };
-  onNext: (data: { email: string; phone: string; fullName: string }) => void;
+  onNext: (data: { email: string; phone: string; firstName: string; lastName: string }) => void;
   onBack: () => void;
   onSkip: () => void;
 }
 
 const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNext, onBack, onSkip }) => {
   const [showContactForm, setShowContactForm] = useState(false);
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [errors, setErrors] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: ''
   });
   const [touched, setTouched] = useState({
-    fullName: false,
+    firstName: false,
+    lastName: false,
     email: false,
     phone: false
   });
@@ -54,13 +57,18 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   const validateForm = () => {
     const newErrors = {
-      fullName: '',
+      firstName: '',
+      lastName: '',
       email: '',
       phone: ''
     };
 
-    if (!fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+    if (!firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+
+    if (!lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
     }
 
     if (!email.trim()) {
@@ -74,7 +82,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     }
 
     setErrors(newErrors);
-    return !newErrors.fullName && !newErrors.email && !newErrors.phone;
+    return !newErrors.firstName && !newErrors.lastName && !newErrors.email && !newErrors.phone;
   };
 
   const handleSubmitContactForm = async (e: React.FormEvent) => {
@@ -82,7 +90,8 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     
     // Mark all fields as touched
     setTouched({
-      fullName: true,
+      firstName: true,
+      lastName: true,
       email: true,
       phone: true
     });
@@ -92,7 +101,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       try {
         await supabase.functions.invoke('track-abandoned-cart', {
           body: {
-            full_name: fullName,
+            full_name: `${firstName} ${lastName}`.trim(),
             email: email,
             phone: phone || '',
             vehicle_reg: vehicleData?.regNumber,
@@ -116,18 +125,18 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       
       // Small delay to let confetti start before navigating
       setTimeout(() => {
-        onNext({ fullName, email, phone });
+        onNext({ firstName, lastName, email, phone });
       }, 300);
     }
   };
 
-  const handleFieldBlur = (field: 'fullName' | 'email' | 'phone') => {
+  const handleFieldBlur = (field: 'firstName' | 'lastName' | 'email' | 'phone') => {
     setTouched(prev => ({ ...prev, [field]: true }));
     validateForm();
   };
 
-  const isFormValid = fullName.trim() && email.trim() && !errors.fullName && !errors.email && !errors.phone;
-  const areRequiredFieldsFilled = fullName.trim() && email.trim();
+  const isFormValid = firstName.trim() && lastName.trim() && email.trim() && !errors.firstName && !errors.lastName && !errors.email && !errors.phone;
+  const areRequiredFieldsFilled = firstName.trim() && lastName.trim() && email.trim();
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
@@ -237,28 +246,54 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             </div>
 
             <form onSubmit={handleSubmitContactForm}>
-              <div className="mb-4 sm:mb-6">
-                <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Full Name</label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. John Smith"
-                  className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
-                    touched.fullName && errors.fullName ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = touched.fullName && errors.fullName ? '#ef4444' : '#224380';
-                  }}
-                  onBlur={(e) => {
-                    handleFieldBlur('fullName');
-                    e.target.style.borderColor = touched.fullName && errors.fullName ? '#ef4444' : '#d1d5db';
-                  }}
-                  required
-                />
-                {touched.fullName && errors.fullName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
-                )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 sm:mb-6">
+                <div>
+                  <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">First Name</label>
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="e.g. John"
+                    className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
+                      touched.firstName && errors.firstName ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = touched.firstName && errors.firstName ? '#ef4444' : '#224380';
+                    }}
+                    onBlur={(e) => {
+                      handleFieldBlur('firstName');
+                      e.target.style.borderColor = touched.firstName && errors.firstName ? '#ef4444' : '#d1d5db';
+                    }}
+                    required
+                  />
+                  {touched.firstName && errors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Last Name</label>
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="e.g. Smith"
+                    className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
+                      touched.lastName && errors.lastName ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = touched.lastName && errors.lastName ? '#ef4444' : '#224380';
+                    }}
+                    onBlur={(e) => {
+                      handleFieldBlur('lastName');
+                      e.target.style.borderColor = touched.lastName && errors.lastName ? '#ef4444' : '#d1d5db';
+                    }}
+                    required
+                  />
+                  {touched.lastName && errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                  )}
+                </div>
               </div>
 
               <div className="mb-4 sm:mb-6">

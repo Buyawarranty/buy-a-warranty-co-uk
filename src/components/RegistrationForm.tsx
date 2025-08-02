@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import VehicleDetailsStep from './VehicleDetailsStep';
 
 interface RegistrationFormProps {
-  onNext: (data: { regNumber: string; mileage: string; email: string; phone: string; fullName: string; address: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string }) => void;
+  onNext: (data: { regNumber: string; mileage: string; email: string; phone: string; firstName: string; lastName: string; address: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string }) => void;
   onBack?: (step: number) => void;
   onFormDataUpdate?: (data: any) => void;
   initialData?: {
@@ -11,7 +11,7 @@ interface RegistrationFormProps {
     mileage: string;
     email: string;
     phone: string;
-    fullName?: string;
+    firstName?: string;
     address?: string;
     make?: string;
     model?: string;
@@ -48,7 +48,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       ...data,
       email: '',
       phone: '',
-      fullName: '',
+      firstName: '',
+      lastName: '',
       address: ''
     });
   };

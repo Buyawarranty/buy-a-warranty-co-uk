@@ -3,14 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Check } from 'lucide-react';
 
 interface ContactDetailsStepProps {
-  onNext: (data: { email: string; phone: string; fullName: string; address: string }) => void;
+  onNext: (data: { email: string; phone: string; firstName: string; lastName: string; address: string }) => void;
   onBack: () => void;
   initialData?: {
     regNumber: string;
     mileage: string;
     email: string;
     phone: string;
-    fullName?: string;
+    firstName?: string;
+    lastName?: string;
     address?: string;
   };
 }
@@ -18,7 +19,8 @@ interface ContactDetailsStepProps {
 const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack, initialData }) => {
   const [email, setEmail] = useState(initialData?.email || '');
   const [phone, setPhone] = useState(initialData?.phone || '');
-  const [fullName, setFullName] = useState(initialData?.fullName || '');
+  const [firstName, setFirstName] = useState(initialData?.firstName || '');
+  const [lastName, setLastName] = useState(initialData?.lastName || '');
   const [address, setAddress] = useState(initialData?.address || '');
 
   useEffect(() => {
@@ -58,17 +60,18 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && phone && fullName && address) {
+    if (email && phone && firstName && lastName && address) {
       onNext({ 
         email, 
         phone,
-        fullName,
+        firstName,
+        lastName,
         address
       });
     }
   };
 
-  const isFormValid = email && phone && fullName && address;
+  const isFormValid = email && phone && firstName && lastName && address;
 
   return (
     <section className="bg-[#e8f4fb] py-10 min-h-screen">
@@ -81,36 +84,44 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Full Name Field */}
-          <div className="mb-6">
-            <div className="flex items-center mb-3">
-              <label className="block font-semibold mb-2 text-gray-700 text-xl">Full Name</label>
-              <span 
-                className="cursor-pointer text-sm ml-1" 
-                style={{ color: '#224380' }} 
-                title="Your full name as it appears on official documents"
-              >
-                ?
-              </span>
+          {/* First Name and Last Name Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="block font-semibold mb-3 text-gray-700 text-xl">First Name</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Enter your first name"
+                  className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[50px] focus:outline-none transition-all duration-200"
+                  onFocus={(e) => e.target.style.borderColor = '#224380'}
+                  onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                  required
+                />
+                {firstName.trim() && (
+                  <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                )}
+              </div>
             </div>
-            <div className="relative">
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Enter your full name"
-                className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[50px] focus:outline-none transition-all duration-200"
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#224380';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#d1d5db';
-                }}
-                required
-              />
-              {fullName.trim() && (
-                <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
-              )}
+            
+            <div>
+              <label className="block font-semibold mb-3 text-gray-700 text-xl">Last Name</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Enter your last name"
+                  className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[50px] focus:outline-none transition-all duration-200"
+                  onFocus={(e) => e.target.style.borderColor = '#224380'}
+                  onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                  required
+                />
+                {lastName.trim() && (
+                  <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                )}
+              </div>
             </div>
           </div>
 

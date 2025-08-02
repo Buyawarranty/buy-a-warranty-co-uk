@@ -13,7 +13,8 @@ interface VehicleData {
   mileage: string;
   email: string;
   phone: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   address: string;
   make?: string;
   model?: string;
@@ -32,7 +33,8 @@ const Index = () => {
     mileage: '',
     email: '',
     phone: '',
-    fullName: '',
+    firstName: '',
+    lastName: '',
     address: '',
     make: '',
     model: '',
@@ -58,7 +60,7 @@ const Index = () => {
     setFormData({ ...formData, ...data });
   };
 
-  const handleQuoteDeliveryComplete = (contactData: { email: string; phone: string; fullName: string }) => {
+  const handleQuoteDeliveryComplete = (contactData: { email: string; phone: string; firstName: string; lastName: string }) => {
     const updatedData = { ...vehicleData, ...contactData };
     setVehicleData(updatedData as VehicleData);
     setFormData({ ...formData, ...contactData });
