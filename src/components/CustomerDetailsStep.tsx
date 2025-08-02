@@ -470,7 +470,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <span className="text-gray-900">{planName}</span>
                     </div>
                      <div className="flex justify-between items-center">
-                       <span className="font-medium text-gray-700">Payment Period:</span>
+                       <span className="font-medium text-gray-700">Cover period:</span>
                        <span className="text-gray-900 capitalize">
                          {paymentType === 'yearly' ? '1 Year' : 
                           paymentType === 'two_yearly' ? '2 Year' : 
