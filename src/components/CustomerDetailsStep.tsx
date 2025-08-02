@@ -591,7 +591,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                               Pay Full Amount
                             </span>
                             <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                              Instant Coverage
+                              Save a further 5%
                             </Badge>
                           </div>
                           <p className="text-sm text-gray-600 mt-1">
