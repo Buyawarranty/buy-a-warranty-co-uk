@@ -271,7 +271,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         value={customerData.first_name}
                         onChange={handleInputChange}
                         placeholder="Enter first name"
-                        className="w-full"
+                         className="w-full border-2"
                         required
                       />
                     </div>
@@ -285,7 +285,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         value={customerData.last_name}
                         onChange={handleInputChange}
                         placeholder="Enter last name"
-                        className="w-full"
+                         className="w-full border-2"
                         required
                       />
                     </div>
@@ -302,7 +302,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       value={customerData.email}
                       onChange={handleInputChange}
                       placeholder="Enter email address"
-                      className="w-full"
+                       className="w-full border-2"
                       required
                     />
                   </div>
@@ -318,7 +318,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       value={customerData.mobile}
                       onChange={handleInputChange}
                       placeholder="Enter mobile number"
-                      className="w-full"
+                       className="w-full border-2"
                       required
                     />
                   </div>
@@ -341,7 +341,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       value={customerData.address_line_1}
                       onChange={handleInputChange}
                       placeholder="Street address and house/building number"
-                      className="w-full"
+                       className="w-full border-2"
                       required
                     />
                     
@@ -357,7 +357,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       value={customerData.address_line_2}
                       onChange={handleInputChange}
                       placeholder="Apartment, flat, building name"
-                      className="w-full"
+                       className="w-full border-2"
                     />
                     
                   </div>
@@ -373,7 +373,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         value={customerData.town}
                         onChange={handleInputChange}
                         placeholder="Enter town/city"
-                        className="w-full"
+                         className="w-full border-2"
                         required
                       />
                     </div>
@@ -387,7 +387,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         value={customerData.county}
                         onChange={handleInputChange}
                         placeholder="Enter county"
-                        className="w-full"
+                         className="w-full border-2"
                         required
                       />
                     </div>
@@ -404,7 +404,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         value={customerData.postcode}
                         onChange={handleInputChange}
                         placeholder="Enter postcode"
-                        className="w-full"
+                         className="w-full border-2"
                         required
                       />
                     </div>
@@ -413,7 +413,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         Country *
                       </Label>
                       <Select value={customerData.country} onValueChange={handleCountryChange}>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full border-2">
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
@@ -435,7 +435,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       value={customerData.vehicle_reg}
                       onChange={handleInputChange}
                       placeholder="Enter vehicle registration"
-                      className="w-full"
+                      className="w-full border-2"
                       required
                     />
                   </div>
