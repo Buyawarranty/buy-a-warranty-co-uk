@@ -226,11 +226,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         <div className="flex flex-col items-center">
           <form onSubmit={handleSubmit} className="w-full max-w-[520px]">
           <div className="flex items-center gap-2 mb-2">
-            <label htmlFor="reg" className="flex items-center gap-2 font-semibold text-gray-700 text-lg sm:text-xl">
-              <Smartphone size={20} className="text-gray-600" />
-              <Car size={20} className="text-gray-600" />
-              <Search size={20} className="text-gray-600" />
+            <label htmlFor="reg" className="flex items-center justify-between font-semibold text-gray-700 text-lg sm:text-xl">
               Let's find your vehicle
+              <div className="flex items-center gap-2">
+                <Car size={20} className="text-gray-600" />
+                <Search size={20} className="text-gray-600" />
+              </div>
             </label>
           </div>
           <div 
