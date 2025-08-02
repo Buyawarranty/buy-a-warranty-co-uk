@@ -12,7 +12,7 @@ interface CustomerDetailsData {
   first_name: string;
   last_name: string;
   email: string;
-  mobile: string;
+  phone: string;
   flat_number?: string;
   building_name?: string;
   building_number?: string;
@@ -57,7 +57,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     first_name: initialData?.first_name || firstName,
     last_name: initialData?.last_name || lastName,
     email: initialData?.email || vehicleData?.email || '',
-    mobile: initialData?.mobile || vehicleData?.phone || '',
+    phone: initialData?.phone || vehicleData?.phone || '',
     flat_number: initialData?.flat_number || '',
     building_name: initialData?.building_name || '',
     building_number: initialData?.building_number || '',
@@ -95,7 +95,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           body: {
             full_name: `${formData.first_name} ${formData.last_name}`.trim() || vehicleData?.fullName,
             email: emailToUse,
-            phone: formData.mobile || vehicleData?.phone,
+            phone: formData.phone || vehicleData?.phone,
             vehicle_reg: vehicleData?.regNumber,
             vehicle_make: vehicleData?.make,
             vehicle_model: vehicleData?.model,
@@ -119,7 +119,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         const payload = JSON.stringify({
           full_name: `${formData.first_name} ${formData.last_name}`.trim() || vehicleData?.fullName,
           email: emailToUse,
-          phone: formData.mobile || vehicleData?.phone,
+          phone: formData.phone || vehicleData?.phone,
           vehicle_reg: vehicleData?.regNumber,
           vehicle_make: vehicleData?.make,
           vehicle_model: vehicleData?.model,
@@ -187,10 +187,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         else if (!value.includes('@')) errors.email = 'Please enter a valid email';
         else delete errors.email;
         break;
-      case 'mobile':
-        if (!value.trim()) errors.mobile = 'Mobile number is required';
-        else if (value.length < 10) errors.mobile = 'Please enter a valid mobile number';
-        else delete errors.mobile;
+      case 'phone':
+        if (!value.trim()) errors.phone = 'Phone number is required';
+        else if (!/^(\+44|0)[0-9]{10}$/.test(value.replace(/\s/g, ''))) errors.phone = 'Please enter a valid UK phone number';
+        else delete errors.phone;
         break;
       case 'town':
         if (!value.trim()) errors.town = 'Town is required';
@@ -228,7 +228,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       formData.first_name,
       formData.last_name,
       formData.email,
-      formData.mobile,
+      formData.phone,
       formData.town,
       formData.county,
       formData.postcode
@@ -242,7 +242,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const handlePurchase = async () => {
     // Validate all fields and show errors
-    const requiredFields = ['first_name', 'last_name', 'email', 'mobile', 'town', 'county', 'postcode'];
+    const requiredFields = ['first_name', 'last_name', 'email', 'phone', 'town', 'county', 'postcode'];
     requiredFields.forEach(field => {
       validateField(field, formData[field as keyof CustomerDetailsData] || '');
     });
@@ -433,26 +433,25 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   </div>
                   
                   <div>
-                    <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">
-                      Mobile Number *
+                    <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
+                      Phone Number *
                     </Label>
                     <div className="relative">
                       <Input
-                        id="mobile"
-                        value={formData.mobile}
-                        onChange={(e) => handleInputChange('mobile', e.target.value)}
-                        placeholder="07000000000"
-                        className={`mt-1 pr-10 ${fieldErrors.mobile ? 'border-red-500' : ''}`}
+                        id="phone"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        className={`mt-1 pr-10 ${fieldErrors.phone ? 'border-red-500' : ''}`}
                         required
                       />
-                      {formData.mobile.trim() && formData.mobile.length >= 10 && !fieldErrors.mobile && (
+                      {formData.phone.trim() && /^(\+44|0)[0-9]{10}$/.test(formData.phone.replace(/\s/g, '')) && !fieldErrors.phone && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       )}
                     </div>
-                    {fieldErrors.mobile && (
-                      <p className="text-red-500 text-xs mt-1">{fieldErrors.mobile}</p>
+                    {fieldErrors.phone && (
+                      <p className="text-red-500 text-xs mt-1">{fieldErrors.phone}</p>
                     )}
                   </div>
                 </div>

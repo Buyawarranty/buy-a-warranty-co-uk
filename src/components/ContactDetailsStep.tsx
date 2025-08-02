@@ -209,7 +209,7 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="07123 456789"
+                
                 className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[50px] focus:outline-none transition-all duration-200"
                 onFocus={(e) => {
                   e.target.style.borderColor = '#224380';
@@ -219,7 +219,7 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
                 }}
                 required
               />
-              {phone.trim() && phone.length >= 10 && (
+              {phone.trim() && /^(\+44|0)[0-9]{10}$/.test(phone.replace(/\s/g, '')) && (
                 <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
               )}
             </div>
