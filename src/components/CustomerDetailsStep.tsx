@@ -137,22 +137,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
     try {
       if (selectedPaymentMethod === 'stripe') {
-        // Redirect to Stripe checkout
-        const res = await fetch('/api/create-stripe-checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        // Redirect to Stripe checkout using Supabase edge function
+        const { data, error } = await supabase.functions.invoke('create-checkout', {
+          body: {
             planId: planId,
             paymentType: paymentType,
             vehicleData: vehicleData,
             customerData: customerData
-          }),
+          }
         });
 
-        if (!res.ok) {
-          console.error('Failed to create Stripe checkout session:', res.status, res.statusText);
+        if (error) {
+          console.error('Failed to create Stripe checkout session:', error);
           toast({
             title: "Error",
             description: "Failed to initiate Stripe checkout. Please try again.",
@@ -162,9 +158,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           return;
         }
 
-        const data = await res.json();
-
-        if (data.url) {
+        if (data?.url) {
           window.location.href = data.url;
         } else {
           console.error('No URL received from Stripe checkout creation:', data);
