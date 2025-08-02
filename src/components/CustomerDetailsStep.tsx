@@ -106,9 +106,31 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const handleCheckout = async () => {
     if (!isFormValid()) {
+      // Find which specific fields are missing
+      const requiredFields = [
+        { key: 'first_name', label: 'First Name' },
+        { key: 'last_name', label: 'Last Name' },
+        { key: 'email', label: 'Email Address' },
+        { key: 'mobile', label: 'Phone Number' },
+        { key: 'building_number', label: 'Building Number' },
+        { key: 'street', label: 'Street' },
+        { key: 'town', label: 'Town/City' },
+        { key: 'county', label: 'County' },
+        { key: 'postcode', label: 'Postcode' },
+        { key: 'country', label: 'Country' },
+        { key: 'vehicle_reg', label: 'Vehicle Registration' }
+      ];
+      
+      const missingFields = requiredFields.filter(field => 
+        !customerData[field.key as keyof typeof customerData] || 
+        customerData[field.key as keyof typeof customerData] === ''
+      ).map(field => field.label);
+
       toast({
-        title: "Error",
-        description: "Please fill in all required fields.",
+        title: "Please Complete All Required Fields",
+        description: missingFields.length > 0 
+          ? `Missing: ${missingFields.join(', ')}`
+          : "Please fill in all required fields before proceeding with your purchase.",
         variant: "destructive",
       });
       return;
