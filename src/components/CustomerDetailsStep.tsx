@@ -18,7 +18,6 @@ interface CustomerDetailsData {
   street?: string;
   town: string;
   county: string;
-  country: string;
   postcode: string;
   vehicle_reg?: string;
 }
@@ -61,7 +60,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     street: initialData?.street || '',
     town: initialData?.town || '',
     county: initialData?.county || '',
-    country: initialData?.country || 'UK',
     postcode: initialData?.postcode || '',
     vehicle_reg: initialData?.vehicle_reg || vehicleData?.regNumber || ''
   });
@@ -225,10 +223,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         if (!value.trim()) errors.county = 'County is required';
         else delete errors.county;
         break;
-      case 'country':
-        if (!value.trim()) errors.country = 'Country is required';
-        else delete errors.country;
-        break;
       case 'postcode':
         if (!value.trim()) errors.postcode = 'Postcode is required';
         else delete errors.postcode;
@@ -259,7 +253,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       formData.mobile,
       formData.town,
       formData.county,
-      formData.country,
       formData.postcode
     ];
 
@@ -271,7 +264,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const handlePurchase = async () => {
     // Validate all fields and show errors
-    const requiredFields = ['full_name', 'email', 'mobile', 'town', 'county', 'country', 'postcode'];
+    const requiredFields = ['full_name', 'email', 'mobile', 'town', 'county', 'postcode'];
     requiredFields.forEach(field => {
       validateField(field, formData[field as keyof CustomerDetailsData] || '');
     });
@@ -632,52 +625,27 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">
-                      Postcode *
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="postcode"
-                        value={formData.postcode}
-                        onChange={(e) => handleInputChange('postcode', e.target.value)}
-                        className={`mt-1 pr-10 ${fieldErrors.postcode ? 'border-red-500' : ''}`}
-                        required
-                      />
-                      {formData.postcode.trim() && !fieldErrors.postcode && (
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white stroke-[3]" />
-                        </div>
-                      )}
-                    </div>
-                    {fieldErrors.postcode && (
-                      <p className="text-red-500 text-xs mt-1">{fieldErrors.postcode}</p>
+                <div>
+                  <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">
+                    Postcode *
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="postcode"
+                      value={formData.postcode}
+                      onChange={(e) => handleInputChange('postcode', e.target.value)}
+                      className={`mt-1 pr-10 ${fieldErrors.postcode ? 'border-red-500' : ''}`}
+                      required
+                    />
+                    {formData.postcode.trim() && !fieldErrors.postcode && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
                     )}
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="country" className="text-sm font-medium text-gray-700">
-                      Country *
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="country"
-                        value={formData.country}
-                        onChange={(e) => handleInputChange('country', e.target.value)}
-                        className={`mt-1 pr-10 ${fieldErrors.country ? 'border-red-500' : ''}`}
-                        required
-                      />
-                      {formData.country.trim() && !fieldErrors.country && (
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white stroke-[3]" />
-                        </div>
-                      )}
-                    </div>
-                    {fieldErrors.country && (
-                      <p className="text-red-500 text-xs mt-1">{fieldErrors.country}</p>
-                    )}
-                  </div>
+                  {fieldErrors.postcode && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.postcode}</p>
+                  )}
                 </div>
                 
                 {/* Address Type Error */}
