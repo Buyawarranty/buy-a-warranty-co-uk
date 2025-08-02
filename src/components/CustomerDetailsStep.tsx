@@ -708,9 +708,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   </div>
                   <div className="pt-3 border-t border-gray-200">
                     <a 
-                      href="#" 
+                      href={planName === 'Gold' ? '/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png' : 
+                            planName === 'Silver' ? '/lovable-uploads/420758e9-8543-4a26-9251-29ec4d62a7e7.png' : 
+                            '/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png'}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 text-sm font-medium underline"
-                      onClick={(e) => e.preventDefault()}
                     >
                       📄 View Warranty Plan Details
                     </a>
