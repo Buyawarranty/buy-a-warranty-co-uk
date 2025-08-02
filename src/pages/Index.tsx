@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
@@ -26,6 +26,10 @@ interface VehicleData {
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<{id: string, paymentType: string, name?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}}} | null>(null);
   const [formData, setFormData] = useState({
