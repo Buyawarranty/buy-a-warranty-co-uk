@@ -48,6 +48,7 @@ const CustomerDashboard = () => {
   });
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
 
   useEffect(() => {
     console.log("CustomerDashboard: useEffect triggered");
@@ -60,6 +61,16 @@ const CustomerDashboard = () => {
     }
     fetchPolicy();
   }, [user, navigate]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsFloatingBarVisible(scrollTop > 200);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const fetchPolicy = async () => {
     if (!user) {
@@ -518,6 +529,49 @@ const CustomerDashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Sticky Bottom Price Bar */}
+      {isFloatingBarVisible && policy && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50 animate-slide-up">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="flex-1">
+                <h4 className={`font-bold text-lg ${
+                  policy.plan_type === 'basic' ? 'text-blue-900' :
+                  policy.plan_type === 'gold' ? 'text-yellow-600' :
+                  'text-orange-600'
+                }`}>
+                  {policy.plan_type.charAt(0).toUpperCase() + policy.plan_type.slice(1)}
+                </h4>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-sm">Current Plan</span>
+                  <span className="text-sm text-gray-600">
+                    - {policy.payment_type === 'twoYear' ? '2 Year' : 
+                       policy.payment_type === 'threeYear' ? '3 Year' : 
+                       policy.payment_type.charAt(0).toUpperCase() + policy.payment_type.slice(1)}
+                  </span>
+                </div>
+              </div>
+              {getPolicyPdf() && (
+                <Button
+                  size="sm"
+                  className={`ml-4 px-6 py-2 font-semibold rounded-lg transition-colors duration-200 ${
+                    policy.plan_type === 'basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
+                    policy.plan_type === 'gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
+                    'bg-[#eb4b00] hover:bg-[#d44300] text-white'
+                  }`}
+                  asChild
+                >
+                  <a href={getPolicyPdf()} target="_blank" rel="noopener noreferrer">
+                    <FileText className="mr-2 h-4 w-4" />
+                    View PDF
+                  </a>
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
