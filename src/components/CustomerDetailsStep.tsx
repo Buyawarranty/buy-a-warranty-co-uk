@@ -176,22 +176,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           setCheckoutLoading(false);
         }
       } else if (selectedPaymentMethod === 'bumper') {
-        // Redirect to Bumper checkout
-        const res = await fetch('/api/create-bumper-checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        // Redirect to Bumper checkout using Supabase edge function
+        const { data, error } = await supabase.functions.invoke('create-bumper-checkout', {
+          body: {
             planId: planId,
             paymentType: paymentType,
             vehicleData: vehicleData,
             customerData: customerData
-          }),
+          }
         });
 
-        if (!res.ok) {
-          console.error('Failed to create Bumper checkout session:', res.status, res.statusText);
+        if (error) {
+          console.error('Failed to create Bumper checkout session:', error);
           toast({
             title: "Error",
             description: "Failed to initiate Bumper checkout. Please try again.",
@@ -201,9 +197,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           return;
         }
 
-        const data = await res.json();
-
-        if (data.fallbackToStripe) {
+        if (data?.fallbackToStripe) {
           // Fallback to Stripe due to Bumper failure
           toast({
             title: "Bumper Unavailable",
@@ -211,7 +205,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             variant: "destructive",
           });
           setSelectedPaymentMethod('stripe'); // Switch to Stripe
-        } else if (data.url) {
+        } else if (data?.url) {
           // Redirect to Bumper URL
           window.location.href = data.url;
         } else {
