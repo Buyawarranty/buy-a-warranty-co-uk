@@ -229,6 +229,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             <label htmlFor="reg" className="block font-semibold text-gray-700 text-lg sm:text-xl">
               Vehicle registration number
             </label>
+            {regNumber.trim() && regNumber.length >= 4 && (
+              <Check className="w-5 h-5 text-green-500" />
+            )}
           </div>
           <div 
             className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-xl sm:text-[28px] px-[15px] sm:px-[25px] py-[12px] sm:py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black relative"
@@ -328,6 +331,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <label className="block font-semibold text-gray-700">Make</label>
+                    {make.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
                   </div>
                   <div className="relative">
                     <input
@@ -349,6 +355,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <label className="block font-semibold text-gray-700">Model</label>
+                    {model.trim() && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
                   </div>
                   <div className="relative">
                     <input
@@ -370,6 +379,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <label className="block font-semibold text-gray-700">Fuel Type</label>
+                    {fuelType && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
                   </div>
                   <div className="relative">
                     <select
@@ -395,6 +407,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <label className="block font-semibold text-gray-700">Transmission</label>
+                    {transmission && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
                   </div>
                   <div className="relative">
                     <select
@@ -418,6 +433,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <div className="sm:col-span-2">
                   <div className="flex items-center gap-2 mb-2">
                     <label className="block font-semibold text-gray-700">Year</label>
+                    {year && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
                   </div>
                   <div className="relative">
                     <input
@@ -447,6 +465,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 <label htmlFor="mileage" className="block font-semibold text-gray-700 text-lg sm:text-xl">
                   What's your approximate mileage?
                 </label>
+                {mileage.trim() && !mileageError && (
+                  <Check className="w-5 h-5 text-green-500" />
+                )}
               </div>
               <div className="relative">
                 <input

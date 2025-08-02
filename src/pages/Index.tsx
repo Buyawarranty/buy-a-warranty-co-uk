@@ -1,11 +1,11 @@
 
 import React, { useState } from 'react';
 import RegistrationForm from '@/components/RegistrationForm';
-import CheckoutLayout from '@/components/CheckoutLayout';
+import PricingTable from '@/components/PricingTable';
+import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import ProgressIndicator from '@/components/ProgressIndicator';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import CustomerDetailsStep from '@/components/CustomerDetailsStep';
 
 
 interface VehicleData {
@@ -27,7 +27,6 @@ const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<{id: string, paymentType: string, name?: string} | null>(null);
-  const [plans, setPlans] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     regNumber: '',
     mileage: '',
@@ -43,7 +42,7 @@ const Index = () => {
     vehicleType: ''
   });
   
-  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Complete Purchase'];
+  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Final Details'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
     setVehicleData(data);
@@ -63,7 +62,6 @@ const Index = () => {
     const updatedData = { ...vehicleData, ...contactData };
     setVehicleData(updatedData as VehicleData);
     setFormData({ ...formData, ...contactData });
-    loadPlans(); // Load plans when moving to step 3
     setCurrentStep(3);
   };
 
@@ -72,28 +70,9 @@ const Index = () => {
     setCurrentStep(4);
   };
 
-  const handleCustomerDetailsComplete = async (checkoutData: any) => {
-    // Handle the final checkout process
-    console.log('Processing checkout:', checkoutData);
-    // Add checkout logic here (Stripe/Bumper integration)
-    toast.success('Purchase completed successfully!');
-  };
-
-  // Load plans when moving to checkout
-  const loadPlans = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('plans')
-        .select('*')
-        .eq('is_active', true)
-        .order('monthly_price', { ascending: true });
-
-      if (error) throw error;
-      setPlans(data || []);
-    } catch (error) {
-      console.error('Error loading plans:', error);
-      toast.error('Failed to load warranty plans');
-    }
+  const handleCustomerDetailsComplete = (customerData: any) => {
+    // This will be handled by the CustomerDetailsStep component itself
+    console.log('Customer details completed:', customerData);
   };
 
   // Check if vehicle is a special type
@@ -132,25 +111,36 @@ const Index = () => {
         </div>
       )}
 
-      {currentStep === 3 && vehicleData && (
-        <CheckoutLayout
-          vehicleData={vehicleData}
-          onBack={() => handleBackToStep(2)}
-          onComplete={handleCustomerDetailsComplete}
-          mode="plan-selection"
-          plans={plans}
-          onPlanSelected={handlePlanSelected}
-        />
+      {currentStep === 3 && (
+        <div className="w-full overflow-x-hidden">
+          {vehicleData && (
+            <>
+              {isSpecialVehicle ? (
+                <SpecialVehiclePricing 
+                  vehicleData={vehicleData as any}
+                  onBack={() => handleBackToStep(2)} 
+                  onPlanSelected={handlePlanSelected}
+                />
+              ) : (
+                <PricingTable 
+                  vehicleData={vehicleData} 
+                  onBack={() => handleBackToStep(2)} 
+                  onPlanSelected={handlePlanSelected}
+                />
+              )}
+            </>
+          )}
+        </div>
       )}
 
       {currentStep === 4 && vehicleData && selectedPlan && (
-        <CheckoutLayout
+        <CustomerDetailsStep
           vehicleData={vehicleData}
-          selectedPlan={selectedPlan}
+          planId={selectedPlan.id}
+          paymentType={selectedPlan.paymentType}
+          planName={selectedPlan.name}
+          onNext={handleCustomerDetailsComplete}
           onBack={() => handleBackToStep(3)}
-          onComplete={handleCustomerDetailsComplete}
-          mode="checkout"
-          plans={plans}
         />
       )}
       
