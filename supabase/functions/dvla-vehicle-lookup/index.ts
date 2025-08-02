@@ -83,9 +83,10 @@ serve(async (req) => {
     const data = await response.json();
     console.log('DVLA API response:', data);
 
-    // Determine vehicle type based on fuel type
+    // Determine vehicle type based on fuel type and engine capacity
     let vehicleType = 'standard';
     const fuelType = data.fuelType?.toLowerCase() || '';
+    const engineCapacity = data.engineCapacity || 0;
     
     if (fuelType.includes('electricity') || fuelType === 'electric') {
       vehicleType = 'EV';
@@ -93,7 +94,18 @@ serve(async (req) => {
       vehicleType = 'PHEV';
     } else if (data.vehicleClass?.toLowerCase().includes('motorcycle') || 
                data.typeApproval?.toLowerCase().includes('motorcycle') ||
-               data.wheelplan?.toLowerCase().includes('2 wheels')) {
+               data.wheelplan?.toLowerCase().includes('2 wheels') ||
+               // Detect motorcycles based on engine capacity (typically under 1500cc for bikes)
+               (engineCapacity > 0 && engineCapacity <= 1500 && 
+                (data.make?.toLowerCase() === 'suzuki' || 
+                 data.make?.toLowerCase() === 'honda' ||
+                 data.make?.toLowerCase() === 'yamaha' ||
+                 data.make?.toLowerCase() === 'kawasaki' ||
+                 data.make?.toLowerCase() === 'ducati' ||
+                 data.make?.toLowerCase() === 'bmw' ||
+                 data.make?.toLowerCase() === 'ktm' ||
+                 data.make?.toLowerCase() === 'triumph' ||
+                 data.make?.toLowerCase() === 'harley-davidson'))) {
       vehicleType = 'MOTORBIKE';
     }
 
