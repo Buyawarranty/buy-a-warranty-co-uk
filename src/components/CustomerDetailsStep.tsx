@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -64,8 +64,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   });
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'bumper'>('stripe');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const router = useRouter();
-  const supabase = createClientComponentClient();
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -147,7 +146,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         const data = await res.json();
 
         if (data.url) {
-          router.push(data.url);
+          window.location.href = data.url;
         } else {
           console.error('No URL received from Stripe checkout creation:', data);
           toast({
@@ -190,12 +189,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           toast({
             title: "Bumper Unavailable",
             description: "Falling back to Stripe payment.",
-            variant: "warning",
+            variant: "destructive",
           });
           setSelectedPaymentMethod('stripe'); // Switch to Stripe
         } else if (data.url) {
           // Redirect to Bumper URL
-          router.push(data.url);
+          window.location.href = data.url;
         } else {
           console.error('No URL received from Bumper checkout creation:', data);
           toast({
