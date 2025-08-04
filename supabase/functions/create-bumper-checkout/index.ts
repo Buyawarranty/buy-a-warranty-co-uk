@@ -9,8 +9,9 @@ const corsHeaders = {
 };
 
 const logStep = (step: string, details?: any) => {
+  const timestamp = new Date().toISOString();
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CREATE-BUMPER-CHECKOUT] ${step}${detailsStr}`);
+  console.log(`[CREATE-BUMPER-CHECKOUT] ${timestamp} ${step}${detailsStr}`);
 };
 
 serve(async (req) => {
@@ -282,15 +283,21 @@ serve(async (req) => {
       api_key: bumperApiKey
     };
 
-    logStep("Bumper payload prepared", { ...bumperRequestData });
+    // Remove sensitive data from logs
+    const loggableData = { ...bumperRequestData };
+    delete loggableData.api_key;
+    delete loggableData.signature;
+    logStep("Bumper payload prepared", loggableData);
 
     // Generate signature exactly like the WordPress plugin
     const signature = await generateSignature(bumperRequestData, bumperSecretKey);
     bumperRequestData.signature = signature;
 
-    logStep("Making Bumper API request", { url: "https://api.demo.bumper.co/v2/apply/", amount: monthlyAmount });
+    // CRITICAL FIX: Use PRODUCTION Bumper API, not demo
+    const bumperApiUrl = "https://api.bumper.co/v2/apply/";
+    logStep("Making Bumper API request to PRODUCTION", { url: bumperApiUrl, amount: monthlyAmount });
 
-    const bumperResponse = await fetch("https://api.demo.bumper.co/v2/apply/", {
+    const bumperResponse = await fetch(bumperApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

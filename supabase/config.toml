@@ -57,6 +57,9 @@ verify_jwt = false
 [functions.track-abandoned-cart]
 verify_jwt = false
 
+[functions.test-api-connectivity]
+verify_jwt = false
+
 [db]
 port = 54322
 

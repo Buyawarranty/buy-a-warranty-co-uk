@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Users, CreditCard, TrendingUp, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { ApiConnectivityTest } from './ApiConnectivityTest';
 
 interface Customer {
   id: string;
@@ -263,6 +264,11 @@ export const AnalyticsTab = () => {
           )}
         </CardContent>
       </Card>
+      
+      {/* API Connectivity Test Section */}
+      <div className="mt-8">
+        <ApiConnectivityTest />
+      </div>
     </div>
   );
 };

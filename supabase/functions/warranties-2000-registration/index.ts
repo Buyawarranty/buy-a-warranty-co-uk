@@ -31,6 +31,12 @@ interface RegistrationData {
   WarrantyRef?: string; // BAW warranty reference number
 }
 
+const logStep = (step: string, details?: any) => {
+  const timestamp = new Date().toISOString();
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[WARRANTIES-2000-REGISTRATION] ${timestamp} ${step}${detailsStr}`);
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -48,20 +54,21 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Starting Warranties 2000 registration process...');
+    logStep("Function started");
+    logStep('Starting Warranties 2000 registration process');
     
     // Get API credentials from environment
     const username = Deno.env.get('WARRANTIES_2000_USERNAME');
     const password = Deno.env.get('WARRANTIES_2000_PASSWORD');
     
-    console.log('Environment check:', {
+    logStep('Environment check', {
       hasUsername: !!username,
       hasPassword: !!password,
       usernameLength: username?.length || 0
     });
     
     if (!username || !password) {
-      console.error('Missing WARRANTIES_2000 credentials');
+      logStep('CRITICAL ERROR: Missing WARRANTIES_2000 credentials');
       return new Response(
         JSON.stringify({ 
           success: false,
@@ -79,8 +86,8 @@ serve(async (req) => {
     let registrationData: RegistrationData;
     try {
       registrationData = await req.json();
-      console.log('Registration data received successfully');
-      console.log('Registration summary:', {
+      logStep('Registration data received successfully');
+      logStep('Registration summary', {
         regNum: registrationData.RegNum,
         make: registrationData.Make,
         model: registrationData.Model,
@@ -126,7 +133,7 @@ serve(async (req) => {
     // Create basic auth header
     const credentials = btoa(`${username}:${password}`);
     
-    console.log('Sending registration to Warranties 2000 API...');
+    logStep('Sending registration to Warranties 2000 API', { url: 'https://warranties-epf.co.uk/api.php' });
     
     // Send registration to Warranties 2000 API
     const response = await fetch('https://warranties-epf.co.uk/api.php', {
@@ -138,8 +145,11 @@ serve(async (req) => {
       body: JSON.stringify(registrationData),
     });
 
-    console.log('Warranties 2000 API response status:', response.status);
-    console.log('Warranties 2000 API response headers:', Object.fromEntries(response.headers.entries()));
+    logStep('Warranties 2000 API response received', { 
+      status: response.status,
+      ok: response.ok,
+      statusText: response.statusText 
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
