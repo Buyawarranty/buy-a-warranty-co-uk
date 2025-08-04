@@ -11,6 +11,7 @@ import AccountSettings from '@/components/admin/AccountSettings';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import CreateTestCustomer from '@/components/CreateTestCustomer';
 import TestWarranties2000 from '@/components/TestWarranties2000';
+import TestBumper from '@/components/TestBumper';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -83,7 +84,7 @@ const AdminDashboard = () => {
               <p className="text-gray-600 mt-2">Tools for testing and development</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6">
               <CreateTestCustomer />
               
               <Card>
@@ -106,6 +107,8 @@ const AdminDashboard = () => {
               </Card>
               
               <TestWarranties2000 />
+              
+              <TestBumper />
             </div>
           </div>
         );
