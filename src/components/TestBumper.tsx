@@ -29,6 +29,21 @@ interface BumperTestData {
     year: string;
     mileage: string;
   };
+  customerData: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile: string;
+    flat_number?: string;
+    building_name?: string;
+    building_number?: string;
+    street: string;
+    town: string;
+    county: string;
+    postcode: string;
+    country: string;
+    vehicle_reg: string;
+  };
 }
 
 export default function TestBumper() {
@@ -50,6 +65,18 @@ export default function TestBumper() {
       model: 'Focus',
       year: '2020',
       mileage: '25000'
+    },
+    customerData: {
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'test@bumpertest.com',
+      mobile: '07123456789',
+      street: '123 Test Street',
+      town: 'London',
+      county: 'Greater London',
+      postcode: 'SW1A 1AA',
+      country: 'GB',
+      vehicle_reg: 'AB12CDE'
     }
   });
 
@@ -66,6 +93,18 @@ export default function TestBumper() {
         vehicleData: {
           ...prev.vehicleData,
           [vehicleField]: value
+        },
+        customerData: {
+          ...prev.customerData,
+          // Sync relevant fields between vehicleData and customerData
+          ...(vehicleField === 'firstName' && { first_name: value }),
+          ...(vehicleField === 'lastName' && { last_name: value }),
+          ...(vehicleField === 'phone' && { mobile: value }),
+          ...(vehicleField === 'email' && { email: value }),
+          ...(vehicleField === 'address' && { street: value }),
+          ...(vehicleField === 'city' && { town: value }),
+          ...(vehicleField === 'postcode' && { postcode: value }),
+          ...(vehicleField === 'registrationNumber' && { vehicle_reg: value }),
         }
       }));
     } else {
@@ -141,6 +180,18 @@ export default function TestBumper() {
         model: 'X3',
         year: '2021',
         mileage: '15000'
+      },
+      customerData: {
+        first_name: 'Jane',
+        last_name: 'Smith',
+        email: 'bumpertest@example.com',
+        mobile: '07987654321',
+        street: '456 Demo Road',
+        town: 'Manchester',
+        county: 'Greater Manchester',
+        postcode: 'M1 1AA',
+        country: 'GB',
+        vehicle_reg: 'XY21ABC'
       }
     });
   };
