@@ -301,17 +301,17 @@ export function DiscountCodesTab() {
                 <div className="space-y-2">
                   <Label htmlFor="value">Value</Label>
                   <div className="relative">
-                    <Input
-                      id="value"
-                      type="number"
-                      value={formData.value}
-                      onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) })}
-                      placeholder={formData.type === 'percentage' ? '25' : '50'}
-                      min="0"
-                      max={formData.type === 'percentage' ? '100' : undefined}
-                      step="0.01"
-                      required
-                    />
+                   <Input
+                     id="value"
+                     type="number"
+                     value={formData.value || ''}
+                     onChange={(e) => setFormData({ ...formData, value: e.target.value ? parseFloat(e.target.value) : 0 })}
+                     placeholder={formData.type === 'percentage' ? '25' : '50'}
+                     min="0"
+                     max={formData.type === 'percentage' ? '100' : undefined}
+                     step="0.01"
+                     required
+                   />
                     {formData.type === 'percentage' && (
                       <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">%</span>
                     )}
