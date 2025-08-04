@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube } from 'lucide-react';
+import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent } from 'lucide-react';
 
 interface AdminSidebarProps {
   activeTab: string;
@@ -28,6 +28,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
       label: 'Special Vehicle Plans',
       icon: Car,
       description: 'Manage EV, PHEV, and Motorbike plans'
+    },
+    {
+      id: 'discount-codes',
+      label: 'Discount Codes',
+      icon: Percent,
+      description: 'Manage discount codes and promotions'
     },
     {
       id: 'emails',

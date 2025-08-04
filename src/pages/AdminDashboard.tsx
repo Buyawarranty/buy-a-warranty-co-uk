@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { CustomersTab } from '@/components/admin/CustomersTab';
 import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
+import { DiscountCodesTab } from '@/components/admin/DiscountCodesTab';
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
 import EmailManagementTab from '@/components/admin/EmailManagementTab';
 import AccountSettings from '@/components/admin/AccountSettings';
@@ -68,6 +69,8 @@ const AdminDashboard = () => {
         return <PlansTab />;
       case 'special-plans':
         return <SpecialVehiclePlansTab />;
+      case 'discount-codes':
+        return <DiscountCodesTab />;
       case 'emails':
         return <EmailManagementTab />;
       case 'analytics':

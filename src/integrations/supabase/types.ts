@@ -235,6 +235,98 @@ export type Database = {
         }
         Relationships: []
       }
+      discount_code_usage: {
+        Row: {
+          customer_email: string
+          discount_amount: number
+          discount_code_id: string
+          id: string
+          order_amount: number
+          stripe_session_id: string | null
+          used_at: string
+        }
+        Insert: {
+          customer_email: string
+          discount_amount: number
+          discount_code_id: string
+          id?: string
+          order_amount: number
+          stripe_session_id?: string | null
+          used_at?: string
+        }
+        Update: {
+          customer_email?: string
+          discount_amount?: number
+          discount_code_id?: string
+          id?: string
+          order_amount?: number
+          stripe_session_id?: string | null
+          used_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discount_code_usage_discount_code_id_fkey"
+            columns: ["discount_code_id"]
+            isOneToOne: false
+            referencedRelation: "discount_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      discount_codes: {
+        Row: {
+          active: boolean
+          applicable_products: Json
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          stripe_coupon_id: string | null
+          stripe_promo_code_id: string | null
+          type: string
+          updated_at: string
+          usage_limit: number | null
+          used_count: number
+          valid_from: string
+          valid_to: string
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          applicable_products?: Json
+          code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          stripe_coupon_id?: string | null
+          stripe_promo_code_id?: string | null
+          type: string
+          updated_at?: string
+          usage_limit?: number | null
+          used_count?: number
+          valid_from?: string
+          valid_to: string
+          value: number
+        }
+        Update: {
+          active?: boolean
+          applicable_products?: Json
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          stripe_coupon_id?: string | null
+          stripe_promo_code_id?: string | null
+          type?: string
+          updated_at?: string
+          usage_limit?: number | null
+          used_count?: number
+          valid_from?: string
+          valid_to?: string
+          value?: number
+        }
+        Relationships: []
+      }
       email_logs: {
         Row: {
           created_at: string
