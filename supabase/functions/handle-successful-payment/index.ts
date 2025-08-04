@@ -183,10 +183,10 @@ function getMaxClaimAmount(planId: string): string {
 
 function getWarrantyType(planId: string): string {
   switch (planId.toLowerCase()) {
-    case 'basic': return 'DRIVER CARE BASIC';
-    case 'gold': return 'DRIVER CARE GOLD';
-    case 'platinum': return 'DRIVER CARE PLATINUM';
-    default: return 'DRIVER CARE';
+    case 'basic': return 'B-BASIC';
+    case 'gold': return 'B-GOLD';
+    case 'platinum': return 'B-PLATINUM';
+    default: return 'B-BASIC';
   }
 }
 
