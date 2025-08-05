@@ -79,6 +79,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const totalAmount = pricingData?.monthlyPrice || 0;
   const totalPrice = pricingData ? Math.round(pricingData.totalPrice * 12) : totalAmount * 12;
+  const stripeDiscountedPrice = Math.round(totalPrice * 0.95); // 5% discount for Stripe
+  const stripeSavings = totalPrice - stripeDiscountedPrice;
   const isBumperAvailable = totalPrice >= 60; // Use total price instead of monthly amount
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -481,7 +483,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <div className="flex justify-between items-center mb-3">
                       <span className="font-semibold text-gray-900">Total Price:</span>
                       <span className="text-gray-700">
-                        £{totalPrice} for entire cover period
+                        £{selectedPaymentMethod === 'stripe' ? stripeDiscountedPrice : totalPrice} for entire cover period
+                        {selectedPaymentMethod === 'stripe' && (
+                          <span className="text-green-600 text-sm ml-2">(5% discount applied: -£{stripeSavings})</span>
+                        )}
                       </span>
                     </div>
                     <div className="pt-3 border-t border-gray-200">
@@ -574,16 +579,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                         />
                         <div className="flex-1">
-                          <div className="flex items-center justify-between">
+                           <div className="flex items-center justify-between">
                             <span className="font-medium text-gray-900">
                               Pay Full Amount
                             </span>
                             <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                              Save a further 5%
+                              Save £{stripeSavings} (5% off)
                             </Badge>
                           </div>
                           <p className="text-sm text-gray-600 mt-1">
-                            Pay the full amount upfront via card
+                            Pay £{stripeDiscountedPrice} upfront via card (was £{totalPrice})
                           </p>
                         </div>
                       </div>

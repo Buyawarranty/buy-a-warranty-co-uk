@@ -54,12 +54,15 @@ serve(async (req) => {
     // Get pricing data
     const periodData = pricingTable[paymentType as keyof typeof pricingTable] || pricingTable.yearly;
     const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
-    const totalAmount = excessData[planType as keyof typeof excessData] || excessData.basic;
+    const baseAmount = excessData[planType as keyof typeof excessData] || excessData.basic;
+    
+    // Apply 5% discount for upfront Stripe payments
+    const totalAmount = Math.round(baseAmount * 0.95); // 5% discount
     
     // Convert to pence for Stripe
     const amount = totalAmount * 100;
 
-    logStep("Calculated amount", { totalAmount, amount, planType, paymentType, voluntaryExcess });
+    logStep("Calculated amount", { baseAmount, totalAmount, discountedPrice: totalAmount, amount, planType, paymentType, voluntaryExcess });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
       apiVersion: "2023-10-16" 
@@ -86,7 +89,7 @@ serve(async (req) => {
             currency: "gbp",
             product_data: { 
               name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Warranty Plan`,
-              description: `Vehicle warranty coverage - Full ${paymentType} payment`
+              description: `Vehicle warranty coverage - Full ${paymentType} payment (5% discount applied)`
             },
             unit_amount: amount,
           },
