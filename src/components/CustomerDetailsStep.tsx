@@ -77,9 +77,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [isValidatingDiscount, setIsValidatingDiscount] = useState(false);
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
 
-  // Calculate prices based on final total price from pricingData
-  const finalTotalPrice = pricingData.totalPrice;
-  const monthlyBumperPrice = finalTotalPrice; // Monthly interest free credit shows the total price
+  // Calculate prices based on pricing data
+  const finalTotalPrice = pricingData.totalPrice; // This is now the correct total price
+  const monthlyBumperPrice = pricingData.monthlyPrice; // This is the monthly payment amount
   const stripePrice = Math.round(finalTotalPrice * 0.95); // 5% discount for full payment
   
   // Apply discount if valid

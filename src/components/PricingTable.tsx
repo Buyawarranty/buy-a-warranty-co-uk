@@ -213,10 +213,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     if (onPlanSelected) {
       const basePrice = calculatePlanPrice(plan);
       const addOnPrice = calculateAddOnPrice(plan.id);
-      const totalPrice = basePrice + addOnPrice;
+      const monthlyTotal = basePrice + addOnPrice;
+      
+      // Calculate the actual total price based on payment period
+      let totalPrice = monthlyTotal;
+      if (paymentType === 'yearly') {
+        totalPrice = monthlyTotal * 12;
+      } else if (paymentType === 'two_yearly') {
+        totalPrice = monthlyTotal * 24;
+      } else if (paymentType === 'three_yearly') {
+        totalPrice = monthlyTotal * 36;
+      }
+      
       const pricingData = {
         totalPrice,
-        monthlyPrice: basePrice,
+        monthlyPrice: monthlyTotal,
         voluntaryExcess,
         selectedAddOns: selectedAddOns[plan.id] || {}
       };
