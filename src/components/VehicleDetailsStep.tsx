@@ -45,9 +45,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   // Manual entry fields
   const [make, setMake] = useState('');
   const [model, setModel] = useState('');
-  const [fuelType, setFuelType] = useState('');
-  const [transmission, setTransmission] = useState('');
   const [year, setYear] = useState('');
+  const [vehicleType, setVehicleType] = useState('');
+  const [yearError, setYearError] = useState('');
 
   // Set vehicleFound to true if we have initial data
   useEffect(() => {
@@ -154,6 +154,26 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     setVehicleFound(false);
   };
 
+  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const yearValue = e.target.value;
+    setYear(yearValue);
+    
+    // Check if vehicle is older than 15 years
+    if (yearValue) {
+      const currentYear = new Date().getFullYear();
+      const vehicleYear = parseInt(yearValue);
+      const vehicleAge = currentYear - vehicleYear;
+      
+      if (vehicleAge > 15) {
+        setYearError('We cannot offer warranties for vehicles over 15 years of age');
+      } else {
+        setYearError('');
+      }
+    } else {
+      setYearError('');
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const rawMileage = mileage.replace(/,/g, '');
@@ -167,21 +187,19 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     
     if (showManualEntry) {
       // Manual entry validation
-      if (regNumber && mileage && make && model && fuelType && transmission && year && numericMileage <= 150000) {
+      if (regNumber && mileage && make && model && year && vehicleType && numericMileage <= 150000 && mileageError === '' && yearError === '') {
         onNext({ 
           regNumber, 
           mileage: rawMileage,
           make,
           model,
-          fuelType,
-          transmission,
           year,
-          vehicleType: 'standard'
+          vehicleType
         });
       }
     } else {
       // Auto-detected car validation
-      if (regNumber && mileage && numericMileage <= 150000) {
+      if (regNumber && mileage && numericMileage <= 150000 && mileageError === '') {
         const submitData: any = { regNumber, mileage: rawMileage };
         
         // Include DVLA data if available
@@ -191,7 +209,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           submitData.fuelType = vehicleData.fuelType;
           submitData.transmission = vehicleData.transmission;
           submitData.year = vehicleData.yearOfManufacture;
-          submitData.vehicleType = vehicleData.vehicleType || 'standard';
+          submitData.vehicleType = vehicleData.vehicleType || 'Car or Van';
         }
         
         onNext(submitData);
@@ -202,7 +220,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   const rawMileage = mileage.replace(/,/g, '');
   const numericMileage = parseInt(rawMileage) || 0;
 
-  const isManualFormValid = regNumber && mileage && make && model && fuelType && transmission && year && numericMileage <= 150000 && mileageError === '';
+  const isManualFormValid = regNumber && mileage && make && model && year && vehicleType && numericMileage <= 150000 && mileageError === '' && yearError === '';
   const isAutoFormValid = regNumber && mileage && numericMileage <= 150000 && mileageError === '';
 
   return (
@@ -378,62 +396,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <label className="block font-semibold text-gray-700">Fuel Type</label>
-                    {fuelType && (
-                      <Check className="w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                  <div className="relative">
-                    <select
-                      value={fuelType}
-                      onChange={(e) => setFuelType(e.target.value)}
-                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
-                      onFocus={(e) => e.target.style.borderColor = '#224380'}
-                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                      required
-                    >
-                      <option value="">Select fuel type</option>
-                      <option value="Petrol">Petrol</option>
-                      <option value="Diesel">Diesel</option>
-                      <option value="Hybrid">Hybrid</option>
-                      <option value="Electric">Electric</option>
-                    </select>
-                    {fuelType && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <label className="block font-semibold text-gray-700">Transmission</label>
-                    {transmission && (
-                      <Check className="w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                  <div className="relative">
-                    <select
-                      value={transmission}
-                      onChange={(e) => setTransmission(e.target.value)}
-                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
-                      onFocus={(e) => e.target.style.borderColor = '#224380'}
-                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                      required
-                    >
-                      <option value="">Select transmission</option>
-                      <option value="Manual">Manual</option>
-                      <option value="Automatic">Automatic</option>
-                    </select>
-                    {transmission && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                </div>
-                
-                <div className="sm:col-span-2">
-                  <div className="flex items-center gap-2 mb-2">
                     <label className="block font-semibold text-gray-700">Year</label>
-                    {year && (
+                    {year && !yearError && (
                       <Check className="w-4 h-4 text-green-500" />
                     )}
                   </div>
@@ -441,16 +405,59 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                     <input
                       type="number"
                       value={year}
-                      onChange={(e) => setYear(e.target.value)}
+                      onChange={handleYearChange}
                       placeholder="e.g. 2020"
                       min="1990"
                       max={new Date().getFullYear()}
+                      className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none ${
+                        yearError ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      onFocus={(e) => {
+                        if (!yearError) {
+                          e.target.style.borderColor = '#224380';
+                        }
+                      }}
+                      onBlur={(e) => {
+                        if (!yearError) {
+                          e.target.style.borderColor = '#d1d5db';
+                        }
+                      }}
+                      required
+                    />
+                    {year && !yearError && (
+                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  {yearError && (
+                    <div className="bg-red-50 border border-red-200 rounded-[4px] p-3 mt-2">
+                      <p className="text-sm text-red-800 font-semibold">{yearError}</p>
+                    </div>
+                  )}
+                </div>
+                
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="block font-semibold text-gray-700">Vehicle Type</label>
+                    {vehicleType && (
+                      <Check className="w-4 h-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={vehicleType}
+                      onChange={(e) => setVehicleType(e.target.value)}
                       className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
                       onFocus={(e) => e.target.style.borderColor = '#224380'}
                       onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
                       required
-                    />
-                    {year && (
+                    >
+                      <option value="">Select vehicle type</option>
+                      <option value="Car or Van">Car or Van</option>
+                      <option value="Electric Vehicle EV Extended Warranty">Electric Vehicle EV Extended Warranty</option>
+                      <option value="Motorbike Extended Warranty">Motorbike Extended Warranty</option>
+                      <option value="PHEV Hybrid Extended Warranty">PHEV Hybrid Extended Warranty</option>
+                    </select>
+                    {vehicleType && (
                       <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
                     )}
                   </div>
