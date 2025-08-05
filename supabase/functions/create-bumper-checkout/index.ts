@@ -263,7 +263,7 @@ serve(async (req) => {
       currency: "GBP",
       order_reference: `VW-${planType.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || Date.now()}`,
       invoice_number: `INV-${Date.now()}`,
-      user_email: customerData.email,
+      user_email: "info@buyawarranty.co.uk", // Link applications back to Buy a Warranty
       first_name: customerData.first_name,
       last_name: customerData.last_name,
       email: customerData.email,
