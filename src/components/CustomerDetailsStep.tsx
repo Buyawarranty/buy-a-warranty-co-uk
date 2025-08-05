@@ -213,196 +213,160 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="bg-gray-50 min-h-screen">
       {/* Back Button */}
-      <Button variant="outline" onClick={onBack} className="mb-4">
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Plans
-      </Button>
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
+        <div className="max-w-6xl mx-auto">
+          <Button variant="outline" onClick={onBack} className="mb-0">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Plans
+          </Button>
+        </div>
+      </div>
 
-      {/* Selected Plan Summary */}
-      <Card className="border-2 border-blue-200 bg-blue-50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Badge variant="secondary">{planName} Plan</Badge>
-            <span className="text-lg">Selected</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span className="text-gray-600">Payment Period:</span>
-              <p className="font-semibold">
-                {paymentType === 'yearly' ? '1 Year' :
-                 paymentType === 'two_yearly' ? '2 Years' :
-                 paymentType === 'three_yearly' ? '3 Years' : '1 Year'}
-              </p>
-            </div>
-            <div>
-              <span className="text-gray-600">Monthly Price:</span>
-              <p className="font-semibold">£{pricingData.monthlyPrice}/mo</p>
-            </div>
-            <div>
-              <span className="text-gray-600">Voluntary Excess:</span>
-              <p className="font-semibold">£{pricingData.voluntaryExcess}</p>
-            </div>
-            <div>
-              <span className="text-gray-600">Final Total Price:</span>
-              <p className="font-bold text-lg text-blue-600">£{finalTotalPrice}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Customer Details Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Customer Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Personal Details */}
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Left Column - Personal Details Form */}
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Personal Details</h2>
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="first_name">First Name *</Label>
+                  <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">First Name *</Label>
                   <Input
                     id="first_name"
+                    placeholder="Enter first name"
                     value={customerData.first_name}
                     onChange={(e) => handleInputChange('first_name', e.target.value)}
                     required
+                    className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="last_name">Last Name *</Label>
+                  <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">Last Name *</Label>
                   <Input
                     id="last_name"
+                    placeholder="Enter last name"
                     value={customerData.last_name}
                     onChange={(e) => handleInputChange('last_name', e.target.value)}
                     required
+                    className="mt-1"
                   />
                 </div>
               </div>
 
+              {/* Email */}
               <div>
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address *</Label>
                 <Input
                   id="email"
                   type="email"
+                  placeholder="Enter email address"
                   value={customerData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   required
+                  className="mt-1"
                 />
               </div>
 
+              {/* Mobile */}
               <div>
-                <Label htmlFor="mobile">Mobile *</Label>
+                <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">Mobile Number *</Label>
                 <Input
                   id="mobile"
+                  placeholder="Enter mobile number"
                   value={customerData.mobile}
                   onChange={(e) => handleInputChange('mobile', e.target.value)}
                   required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="vehicle_reg">Vehicle Registration *</Label>
-                <Input
-                  id="vehicle_reg"
-                  value={customerData.vehicle_reg}
-                  onChange={(e) => handleInputChange('vehicle_reg', e.target.value)}
-                  required
+                  className="mt-1"
                 />
               </div>
 
               {/* Address Details */}
-              <div className="space-y-4 border-t pt-4">
-                <h4 className="font-semibold">Address Details</h4>
+              <div className="pt-4">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Address Details</h3>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div>
-                    <Label htmlFor="flat_number">Flat Number</Label>
+                    <Label htmlFor="street" className="text-sm font-medium text-gray-700">Address Line 1 *</Label>
                     <Input
-                      id="flat_number"
-                      value={customerData.flat_number}
-                      onChange={(e) => handleInputChange('flat_number', e.target.value)}
+                      id="street"
+                      placeholder="Street address and house/building number"
+                      value={customerData.street}
+                      onChange={(e) => handleInputChange('street', e.target.value)}
+                      required
+                      className="mt-1"
                     />
                   </div>
+
                   <div>
-                    <Label htmlFor="building_name">Building Name</Label>
+                    <Label htmlFor="building_name" className="text-sm font-medium text-gray-700">Address Line 2 (optional)</Label>
                     <Input
                       id="building_name"
+                      placeholder="Apartment, flat, building name"
                       value={customerData.building_name}
                       onChange={(e) => handleInputChange('building_name', e.target.value)}
+                      className="mt-1"
                     />
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="building_number">Building Number</Label>
-                  <Input
-                    id="building_number"
-                    value={customerData.building_number}
-                    onChange={(e) => handleInputChange('building_number', e.target.value)}
-                  />
-                </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="town" className="text-sm font-medium text-gray-700">Town/City *</Label>
+                      <Input
+                        id="town"
+                        placeholder="Enter town/city"
+                        value={customerData.town}
+                        onChange={(e) => handleInputChange('town', e.target.value)}
+                        required
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="county" className="text-sm font-medium text-gray-700">County *</Label>
+                      <Input
+                        id="county"
+                        placeholder="Enter county"
+                        value={customerData.county}
+                        onChange={(e) => handleInputChange('county', e.target.value)}
+                        required
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
 
-                <div>
-                  <Label htmlFor="street">Street *</Label>
-                  <Input
-                    id="street"
-                    value={customerData.street}
-                    onChange={(e) => handleInputChange('street', e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="town">Town *</Label>
+                    <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
                     <Input
-                      id="town"
-                      value={customerData.town}
-                      onChange={(e) => handleInputChange('town', e.target.value)}
+                      id="postcode"
+                      placeholder="Enter postcode"
+                      value={customerData.postcode}
+                      onChange={(e) => handleInputChange('postcode', e.target.value)}
                       required
+                      className="mt-1"
                     />
                   </div>
+
                   <div>
-                    <Label htmlFor="county">County *</Label>
+                    <Label htmlFor="vehicle_reg" className="text-sm font-medium text-gray-700">Vehicle Registration *</Label>
                     <Input
-                      id="county"
-                      value={customerData.county}
-                      onChange={(e) => handleInputChange('county', e.target.value)}
+                      id="vehicle_reg"
+                      placeholder="Vehicle registration"
+                      value={customerData.vehicle_reg}
+                      onChange={(e) => handleInputChange('vehicle_reg', e.target.value)}
                       required
+                      className="mt-1"
                     />
                   </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="postcode">Postcode *</Label>
-                  <Input
-                    id="postcode"
-                    value={customerData.postcode}
-                    onChange={(e) => handleInputChange('postcode', e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="country">Country *</Label>
-                  <Input
-                    id="country"
-                    value={customerData.country}
-                    onChange={(e) => handleInputChange('country', e.target.value)}
-                    required
-                  />
                 </div>
               </div>
 
               {/* Discount Code Section */}
-              <div className="space-y-4 border-t pt-4">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-semibold">Discount Code</h4>
+              <div className="pt-4 border-t border-gray-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <h4 className="text-sm font-medium text-gray-700">Discount Code</h4>
                   <Collapsible open={showDiscountInfo} onOpenChange={setShowDiscountInfo}>
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="sm" className="p-0 h-auto">
@@ -422,6 +386,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     placeholder="Enter discount code"
                     value={customerData.discount_code}
                     onChange={(e) => handleInputChange('discount_code', e.target.value)}
+                    className="flex-1"
                   />
                   <Button 
                     type="button" 
@@ -434,7 +399,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 </div>
                 
                 {discountValidation && (
-                  <div className={`text-sm p-3 rounded-md flex items-center gap-2 ${
+                  <div className={`text-sm p-3 rounded-md flex items-center gap-2 mt-2 ${
                     discountValidation.isValid 
                       ? 'bg-green-50 text-green-700' 
                       : 'bg-red-50 text-red-700'
@@ -449,96 +414,134 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 )}
               </div>
             </form>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Payment Method Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Payment Method</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)}>
-              {/* Monthly Interest Free Credit */}
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="bumper" id="bumper" />
-                  <Label htmlFor="bumper" className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        <span className="font-semibold">Monthly Interest Free Credit</span>
-                      </div>
-                      <Badge variant="secondary">12 Payments</Badge>
-                    </div>
-                  </Label>
+          {/* Right Column - Order Summary */}
+          <div className="space-y-6">
+            {/* Order Summary Card */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
+              
+              {/* Vehicle Registration Display */}
+              <div className="flex justify-center mb-6">
+                <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-lg px-4 py-3 rounded-[6px] shadow-sm leading-tight border-2 border-black">
+                  <img 
+                    src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
+                    alt="GB Flag" 
+                    className="w-[25px] h-[18px] mr-3 object-cover rounded-[2px]"
+                  />
+                  <div className="font-bold font-sans tracking-normal">
+                    {vehicleData.regNumber}
+                  </div>
                 </div>
-                <div className="ml-6 text-sm text-gray-600 space-y-1">
-                  <p>Pay in 12 monthly installments with 0% interest</p>
-                  <div className="flex items-center justify-between bg-blue-50 p-3 rounded-md">
-                    <span>Monthly Payment:</span>
-                    <span className="font-bold text-lg">
-                      £{discountedBumperPrice} 
+              </div>
+
+              {/* Plan Details */}
+              <div className="space-y-4 mb-6">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Plan:</span>
+                  <span className="font-semibold">{planName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Cover period:</span>
+                  <span className="font-semibold">
+                    {paymentType === 'yearly' ? '1 Year' :
+                     paymentType === 'two_yearly' ? '2 Years' :
+                     paymentType === 'three_yearly' ? '3 Years' : '1 Year'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Voluntary Excess:</span>
+                  <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
+                </div>
+              </div>
+
+              {/* Payment Summary */}
+              <div className="border-t border-gray-200 pt-4 mb-6">
+                <div className="text-green-600 font-semibold text-lg mb-2">
+                  Payment: £{Math.round(discountedBumperPrice / 12)} x 12
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">Total Price:</span>
+                  <div className="text-right">
+                    <div className="font-bold text-lg">
+                      £{discountValidation?.isValid ? discountValidation.finalAmount : finalTotalPrice} for entire cover period
                       {discountValidation?.isValid && (
-                        <span className="text-sm text-green-600 ml-2">
-                          (Was £{monthlyBumperPrice})
+                        <span className="text-green-600 text-sm ml-2">
+                          (5% discount applied: -£{Math.round(finalTotalPrice - discountValidation.finalAmount)})
                         </span>
                       )}
-                    </span>
+                    </div>
                   </div>
-                  <p className="text-xs">* Subject to credit approval</p>
+                </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  12 monthly payments of £{Math.round(discountedBumperPrice / 12)}
                 </div>
               </div>
+            </div>
 
-              {/* Pay Full Amount */}
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="stripe" id="stripe" />
-                  <Label htmlFor="stripe" className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4" />
-                        <span className="font-semibold">Pay Full Amount</span>
+            {/* Payment Method */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment Method</h2>
+              
+              <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)} className="space-y-4">
+                {/* Monthly Interest Free Credit */}
+                <div className={`border rounded-lg p-4 ${paymentMethod === 'bumper' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                  <div className="flex items-center space-x-3">
+                    <RadioGroupItem value="bumper" id="bumper" />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="bumper" className="font-semibold text-gray-900">Monthly Interest-Free Credit</Label>
+                        <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                          0% Interest
+                        </div>
                       </div>
-                      <Badge variant="default" className="bg-green-600">
-                        <Percent className="w-3 h-3 mr-1" />
-                        5% OFF
-                      </Badge>
+                      <p className="text-sm text-gray-600">Pay monthly with no interest charges</p>
                     </div>
-                  </Label>
+                  </div>
                 </div>
-                <div className="ml-6 text-sm text-gray-600 space-y-1">
-                  <p>Pay the full amount upfront and save 5%</p>
-                  <div className="flex items-center justify-between bg-green-50 p-3 rounded-md">
-                    <span>Total Payment:</span>
-                    <div className="text-right">
-                      <div className="font-bold text-lg">
-                        £{discountedStripePrice}
-                        {discountValidation?.isValid && (
-                          <span className="text-sm text-green-600 ml-2">
-                            (Was £{stripePrice})
-                          </span>
+
+                {/* Pay Full Amount */}
+                <div className={`border rounded-lg p-4 ${paymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                  <div className="flex items-center space-x-3">
+                    <RadioGroupItem value="stripe" id="stripe" />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
+                        <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                          Save £{Math.round(finalTotalPrice * 0.05)} (5% off)
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        Pay £{discountedStripePrice} upfront via card 
+                        {discountValidation?.isValid ? (
+                          <span> (was £{Math.round(discountValidation.finalAmount * 0.95)})</span>
+                        ) : (
+                          <span> (was £{finalTotalPrice})</span>
                         )}
-                      </div>
-                      <div className="text-xs text-gray-500 line-through">
-                        £{discountValidation?.isValid ? Math.round(discountValidation.finalAmount) : finalTotalPrice}
-                      </div>
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            </RadioGroup>
+              </RadioGroup>
 
-            <Button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="w-full mt-6"
-              size="lg"
-            >
-              {loading ? 'Processing...' : `Proceed to ${paymentMethod === 'bumper' ? 'Credit Application' : 'Payment'}`}
-            </Button>
-          </CardContent>
-        </Card>
+              {/* Complete Purchase Button */}
+              <Button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-4 text-lg rounded-lg"
+                size="lg"
+              >
+                {loading ? 'Processing...' : 'Complete Purchase'}
+              </Button>
+
+              <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
+                <div className="w-4 h-4 bg-gray-800 rounded"></div>
+                Secure checkout powered by Stripe
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
