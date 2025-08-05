@@ -113,31 +113,35 @@ serve(async (req) => {
       logStep("Warning: Failed to record welcome email", emailRecordError);
     }
 
-    // In a real implementation, you would send the actual email here using a service like Resend
-    // For now, we'll just log the email content
-    const emailContent = `
-      Welcome to BuyAWarranty!
-      
-      Your ${planType} warranty is now active.
-      Policy Number: ${policyNumber}
-      
-      Login Details:
-      Email: ${email}
-      Temporary Password: ${tempPassword}
-      
-      Please visit your customer dashboard to:
-      - View your policy details
-      - Download your policy document
-      - Update your password
-      - Manage your account
-      
-      Login at: ${req.headers.get("origin")}/auth
-      
-      Best regards,
-      The BuyAWarranty Team
-    `;
+    // Send actual welcome email using send-email function
+    try {
+      const emailVariables = {
+        customerName: email.split('@')[0], // Use email prefix as name fallback
+        planType: planType,
+        policyNumber: policyNumber,
+        loginEmail: email,
+        temporaryPassword: tempPassword,
+        loginUrl: `${req.headers.get("origin")}/auth`
+      };
 
-    logStep("Email content generated", { emailLength: emailContent.length });
+      const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-email', {
+        body: {
+          templateId: 'welcome-template', // You'll need to create this template
+          recipientEmail: email,
+          variables: emailVariables
+        }
+      });
+
+      if (emailError) {
+        logStep("Error sending welcome email", emailError);
+        // Don't fail the whole process if email fails
+      } else {
+        logStep("Welcome email sent successfully", emailResult);
+      }
+    } catch (error) {
+      logStep("Error invoking send-email function", error);
+      // Don't fail the whole process if email fails
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 
