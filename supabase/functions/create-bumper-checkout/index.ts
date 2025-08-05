@@ -284,9 +284,7 @@ serve(async (req) => {
       success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
       failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${originalPaymentType}`,
       preferred_product_type: 'paylater',
-      installments: "12",
-      total_amount: (monthlyAmount * 12).toString(),
-      payment_frequency: "monthly",
+      instalments: "12", // Fixed spelling: 'instalments' not 'installments'
       api_key: bumperApiKey
     };
 
