@@ -195,10 +195,21 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     if (!plan) return;
     
     if (onPlanSelected) {
-      const monthlyPrice = calculatePlanPrice();
+      const monthlyPrice = getMonthlyDisplayPrice();
+      
+      // Calculate total price based on payment period
+      let totalPrice = monthlyPrice;
+      if (paymentType === 'yearly') {
+        totalPrice = monthlyPrice * 12;
+      } else if (paymentType === 'two_yearly') {
+        totalPrice = monthlyPrice * 24;
+      } else if (paymentType === 'three_yearly') {
+        totalPrice = monthlyPrice * 36;
+      }
+      
       const pricingData = {
-        totalPrice: monthlyPrice,
-        monthlyPrice: monthlyPrice,
+        totalPrice,
+        monthlyPrice,
         voluntaryExcess,
         selectedAddOns: {}
       };
