@@ -259,22 +259,18 @@ serve(async (req) => {
       last_name: customerData.last_name,
       email: customerData.email,
       mobile: customerData.mobile,
-      address: {
-        flat_number: customerData.flat_number || "",
-        building_name: customerData.building_name || "",
-        building_number: customerData.building_number || "",
-        street: customerData.street || "",
-        town: customerData.town,
-        county: customerData.county,
-        postcode: customerData.postcode,
-        country: customerData.country
-      },
-      items: [{
-        name: `${planType} Vehicle Warranty`,
-        description: `${planType} Vehicle Warranty - 12 monthly payments of £${monthlyAmount} each`,
-        amount: monthlyAmount.toString(),
-        quantity: 1
-      }],
+      // Address fields directly (not nested in object)
+      flat_number: customerData.flat_number || "",
+      building_name: customerData.building_name || "",
+      building_number: customerData.building_number || "",
+      street: customerData.street || "",
+      town: customerData.town,
+      county: customerData.county,
+      postcode: customerData.postcode,
+      country: customerData.country,
+      // Changed from 'items' to 'product_description' as per Bumper documentation
+      product_description: `${planType} Vehicle Warranty - 12 monthly payments of £${monthlyAmount} each`,
+      amount: monthlyAmount.toString(),
       vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
       order_reference: `Vehicle Warranty ${planType} - 12 Monthly Payments of £${monthlyAmount}`,
       customer_reference: `VW-${planType.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || 'UNKNOWN'}`,
