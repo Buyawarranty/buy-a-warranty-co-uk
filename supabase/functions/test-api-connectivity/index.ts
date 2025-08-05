@@ -44,29 +44,27 @@ serve(async (req) => {
       if (bumperApiKey && bumperSecretKey) {
         logStep("Testing Bumper API connectivity");
         
-        // Test with minimal data structure
+        // Updated payload structure based on Bumper feedback - address fields flat, product_description instead of items
         const testPayload = {
           first_name: "Test",
           last_name: "Customer",
           email: "test@buyawarranty.co.uk",
           mobile: "07123456789",
+          // Address fields directly (not nested in object)
+          flat_number: "",
+          building_name: "",
+          building_number: "123",
+          street: "Test Street",
           town: "London",
           county: "Greater London",
           postcode: "SW1A 1AA",
           country: "GB",
+          // Use product_description as per Bumper documentation
+          product_description: "API Connectivity Test - Vehicle Warranty",
+          amount: "1", // As string to match their expectation
           vehicle_reg: "TEST123",
           order_reference: "API Connectivity Test",
           customer_reference: "TEST-API-001",
-          invoice_number: `TEST-${Date.now()}`,
-          amount: 1,
-          currency: "GBP",
-          product_description: "API Connectivity Test",
-          success_url: "https://buyawarranty.com/test-success",
-          failure_url: "https://buyawarranty.com/test-failure",
-          preferred_product_type: 'paylater',
-          installments: 12,
-          total_amount: 12,
-          payment_frequency: "monthly",
           api_key: bumperApiKey
         };
 
