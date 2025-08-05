@@ -268,8 +268,12 @@ serve(async (req) => {
       county: customerData.county,
       postcode: customerData.postcode,
       country: customerData.country,
-      // Changed from 'items' to 'product_description' as per Bumper documentation
-      product_description: `${planType} Vehicle Warranty - 12 monthly payments of £${monthlyAmount} each`,
+      // product_description should be an array of objects as per Bumper documentation
+      product_description: [{
+        item: `${planType} Vehicle Warranty`,
+        quantity: "1",
+        price: monthlyAmount.toString()
+      }],
       amount: monthlyAmount.toString(),
       vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
       order_reference: `Vehicle Warranty ${planType} - 12 Monthly Payments of £${monthlyAmount}`,

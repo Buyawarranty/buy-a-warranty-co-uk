@@ -44,7 +44,7 @@ serve(async (req) => {
       if (bumperApiKey && bumperSecretKey) {
         logStep("Testing Bumper API connectivity");
         
-        // Updated payload structure based on Bumper feedback - address fields flat, product_description instead of items
+        // Updated payload structure based on Bumper documentation - product_description as array
         const testPayload = {
           first_name: "Test",
           last_name: "Customer",
@@ -59,9 +59,13 @@ serve(async (req) => {
           county: "Greater London",
           postcode: "SW1A 1AA",
           country: "GB",
-          // Use product_description as per Bumper documentation
-          product_description: "API Connectivity Test - Vehicle Warranty",
-          amount: "1", // As string to match their expectation
+          // product_description should be an array of objects as per Bumper documentation
+          product_description: [{
+            item: "API Connectivity Test - Vehicle Warranty",
+            quantity: "1",
+            price: "1.00"
+          }],
+          amount: "1.00",
           vehicle_reg: "TEST123",
           order_reference: "API Connectivity Test",
           customer_reference: "TEST-API-001",
