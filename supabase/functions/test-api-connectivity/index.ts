@@ -77,10 +77,12 @@ serve(async (req) => {
             price: "1.00"
           }]
         };
-
+        
         // Generate signature
         const signature = await generateSignature(testPayload, bumperSecretKey);
         testPayload.signature = signature;
+
+        logStep("Bumper test payload being sent", testPayload);
 
         const bumperResponse = await fetch("https://api.bumper.co/v2/apply/", {
           method: "POST",
