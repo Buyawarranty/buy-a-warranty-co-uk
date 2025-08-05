@@ -62,6 +62,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   });
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'bumper'>('stripe');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [discountCode, setDiscountCode] = useState('');
+  const [discountData, setDiscountData] = useState<any>(null);
+  const [validatingDiscount, setValidatingDiscount] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -81,6 +84,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const totalPrice = pricingData ? Math.round(pricingData.totalPrice * 12) : totalAmount * 12;
   const stripeDiscountedPrice = Math.round(totalPrice * 0.95); // 5% discount for Stripe
   const stripeSavings = totalPrice - stripeDiscountedPrice;
+  const finalPrice = discountData ? (selectedPaymentMethod === 'stripe' ? discountData.finalAmount : totalPrice - discountData.discountAmount) : (selectedPaymentMethod === 'stripe' ? stripeDiscountedPrice : totalPrice);
   const isBumperAvailable = totalPrice >= 60; // Use total price instead of monthly amount
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +100,58 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       ...prevData,
       country: value
     }));
+  };
+
+  const validateDiscountCode = async () => {
+    if (!discountCode.trim()) {
+      setDiscountData(null);
+      return;
+    }
+
+    setValidatingDiscount(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-discount-code', {
+        body: {
+          code: discountCode,
+          customerEmail: customerData.email,
+          orderAmount: selectedPaymentMethod === 'stripe' ? stripeDiscountedPrice : totalPrice
+        }
+      });
+
+      if (error) {
+        console.error('Error validating discount code:', error);
+        toast({
+          title: "Error",
+          description: "Failed to validate discount code. Please try again.",
+          variant: "destructive",
+        });
+        setDiscountData(null);
+      } else if (data?.valid) {
+        setDiscountData(data);
+        toast({
+          title: "Discount Applied!",
+          description: `${data.discountCode.code} - £${data.discountAmount.toFixed(2)} discount applied`,
+          variant: "default",
+        });
+      } else {
+        setDiscountData(null);
+        toast({
+          title: "Invalid Discount Code",
+          description: data?.error || "The discount code you entered is not valid.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error validating discount code:', error);
+      setDiscountData(null);
+      toast({
+        title: "Error",
+        description: "Failed to validate discount code. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setValidatingDiscount(false);
+    }
   };
 
   const isFormValid = () => {
@@ -142,10 +198,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         // Redirect to Stripe checkout using Supabase edge function
         const { data, error } = await supabase.functions.invoke('create-checkout', {
           body: {
-            planId: planId,
+            planName: planId,
             paymentType: paymentType,
+            voluntaryExcess: pricingData?.voluntaryExcess || 0,
             vehicleData: vehicleData,
-            customerData: customerData
+            customerData: customerData,
+            discountCode: discountCode || null
           }
         });
 
@@ -177,8 +235,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           body: {
             planId: planId,
             paymentType: paymentType,
+            voluntaryExcess: pricingData?.voluntaryExcess || 0,
             vehicleData: vehicleData,
-            customerData: customerData
+            customerData: customerData,
+            discountCode: discountCode || null
           }
         });
 
@@ -480,20 +540,81 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         £{pricingData ? Math.round(pricingData.monthlyPrice || pricingData.totalPrice) : totalAmount} x 12
                       </span>
                     </div>
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="font-semibold text-gray-900">Total Price:</span>
-                      <span className="text-gray-700">
-                        £{selectedPaymentMethod === 'stripe' ? stripeDiscountedPrice : totalPrice} for entire cover period
-                        {selectedPaymentMethod === 'stripe' && (
-                          <span className="text-green-600 text-sm ml-2">(5% discount applied: -£{stripeSavings})</span>
+                     <div className="flex justify-between items-center mb-3">
+                       <span className="font-semibold text-gray-900">Subtotal:</span>
+                       <span className="text-gray-700">
+                         £{selectedPaymentMethod === 'stripe' ? stripeDiscountedPrice : totalPrice}
+                         {selectedPaymentMethod === 'stripe' && (
+                           <span className="text-green-600 text-sm ml-2">(5% discount applied: -£{stripeSavings})</span>
+                         )}
+                       </span>
+                     </div>
+                     {discountData && (
+                       <div className="flex justify-between items-center mb-3">
+                         <span className="font-semibold text-green-600">Discount ({discountData.discountCode.code}):</span>
+                         <span className="text-green-600">-£{discountData.discountAmount.toFixed(2)}</span>
+                       </div>
+                     )}
+                     <div className="flex justify-between items-center mb-3 text-lg font-bold">
+                       <span className="text-gray-900">Final Total:</span>
+                       <span className="text-gray-900">£{finalPrice.toFixed(2)}</span>
+                     </div>
+                     <div className="pt-3 border-t border-gray-200">
+                       <p className="text-sm text-gray-600">
+                         12 monthly payments of £{pricingData ? Math.round(pricingData.monthlyPrice || pricingData.totalPrice) : totalAmount}
+                       </p>
+                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Discount Code Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-semibold">Discount Code</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter discount code"
+                        value={discountCode}
+                        onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                        className="flex-1"
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            validateDiscountCode();
+                          }
+                        }}
+                      />
+                      <Button
+                        onClick={validateDiscountCode}
+                        disabled={validatingDiscount || !discountCode.trim()}
+                        variant="outline"
+                        className="px-4"
+                      >
+                        {validatingDiscount ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+                        ) : (
+                          'Apply'
                         )}
-                      </span>
+                      </Button>
                     </div>
-                    <div className="pt-3 border-t border-gray-200">
-                      <p className="text-sm text-gray-600">
-                        12 monthly payments of £{pricingData ? Math.round(pricingData.monthlyPrice || pricingData.totalPrice) : totalAmount}
-                      </p>
-                    </div>
+                    {discountData && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-green-800 font-medium">
+                            Discount Applied: {discountData.discountCode.code}
+                          </span>
+                        </div>
+                        <p className="text-green-700 text-sm mt-1">
+                          You save £{discountData.discountAmount.toFixed(2)}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

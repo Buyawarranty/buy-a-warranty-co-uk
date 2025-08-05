@@ -28,8 +28,8 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { planId, vehicleData, paymentType: originalPaymentType, voluntaryExcess = 0 } = body;
-    logStep("Request data", { planId, vehicleData, originalPaymentType, voluntaryExcess });
+    const { planId, vehicleData, paymentType: originalPaymentType, voluntaryExcess = 0, customerData, discountCode } = body;
+    logStep("Request data", { planId, vehicleData, originalPaymentType, voluntaryExcess, discountCode });
     
     // CRITICAL: Bumper only accepts monthly payments, regardless of user selection
     const paymentType = 'monthly'; // Force monthly for Bumper credit checks
@@ -64,7 +64,7 @@ serve(async (req) => {
 
     // Get authenticated user
     let user = null;
-    let customerEmail = vehicleData?.email || "guest@buyawarranty.com";
+    let customerEmail = "guest@buyawarranty.co.uk"; // Default fallback
     
     const authHeader = req.headers.get("Authorization");
     if (authHeader && authHeader !== "Bearer null") {
@@ -81,6 +81,12 @@ serve(async (req) => {
       }
     } else {
       logStep("No auth header, proceeding as guest checkout");
+    }
+
+    // Use customer email from request data if provided, otherwise use authenticated user email
+    if (vehicleData?.email) {
+      customerEmail = vehicleData.email;
+      logStep("Using customer email from vehicle data", { email: customerEmail });
     }
 
     // Define pricing structure matching the frontend pricing table
@@ -129,7 +135,33 @@ serve(async (req) => {
     }
 
     // For Bumper: Always use monthly amount for 30-day payment periods (credit checks)
-    const monthlyAmount = planPricing.monthly;
+    let monthlyAmount = planPricing.monthly;
+
+    // Handle discount code if provided (Bumper doesn't support built-in discounts, so we adjust the amount)
+    if (discountCode) {
+      logStep("Validating discount code for Bumper", { discountCode, customerEmail, monthlyAmount });
+      
+      const { data: validationResult, error: validationError } = await supabaseService.functions.invoke('validate-discount-code', {
+        body: {
+          code: discountCode,
+          customerEmail: customerEmail,
+          orderAmount: monthlyAmount
+        }
+      });
+
+      if (validationError) {
+        logStep("Discount code validation error", { error: validationError });
+      } else if (validationResult?.valid) {
+        monthlyAmount = validationResult.finalAmount;
+        logStep("Discount applied to Bumper amount", { 
+          originalAmount: planPricing.monthly, 
+          discountAmount: validationResult.discountAmount,
+          finalAmount: monthlyAmount 
+        });
+      } else {
+        logStep("Invalid discount code for Bumper", { code: discountCode, error: validationResult?.error });
+      }
+    }
 
     const origin = req.headers.get("origin") || "https://buyawarranty.com";
     logStep("Creating Bumper checkout - ALWAYS MONTHLY for credit check", { 
