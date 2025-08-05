@@ -255,10 +255,21 @@ serve(async (req) => {
     }
 
     const bumperRequestData = {
+      amount: monthlyAmount.toString(),
+      preferred_product_type: "paylater",
+      api_key: bumperApiKey,
+      success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
+      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerData.email)}&original_payment=${originalPaymentType}`,
+      currency: "GBP",
+      order_reference: `VW-${planType.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || Date.now()}`,
+      invoice_number: `INV-${Date.now()}`,
+      user_email: customerData.email,
       first_name: customerData.first_name,
       last_name: customerData.last_name,
       email: customerData.email,
       mobile: customerData.mobile,
+      vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
+      instalments: "12", // 12 monthly payments
       // Address fields directly (not nested in object)
       flat_number: customerData.flat_number || "",
       building_name: customerData.building_name || "",
@@ -273,19 +284,7 @@ serve(async (req) => {
         item: `${planType} Vehicle Warranty`,
         quantity: "1",
         price: monthlyAmount.toString()
-      }],
-      amount: monthlyAmount.toString(),
-      vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
-      order_reference: `Vehicle Warranty ${planType} - 12 Monthly Payments of £${monthlyAmount}`,
-      customer_reference: `VW-${planType.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || 'UNKNOWN'}`,
-      invoice_number: `VW-${Date.now()}-${planId.slice(-8)}`,
-      amount: monthlyAmount.toString(),
-      currency: "GBP",
-      success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
-      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${originalPaymentType}`,
-      preferred_product_type: 'paylater',
-      instalments: "12", // Fixed spelling: 'instalments' not 'installments'
-      api_key: bumperApiKey
+      }]
     };
 
     // Remove sensitive data from logs
