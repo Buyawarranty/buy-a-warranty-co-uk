@@ -515,7 +515,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <p className="text-sm text-gray-600">
                         Pay £{discountedStripePrice} upfront via card 
                         {discountValidation?.isValid ? (
-                          <span> (was £{Math.round(discountValidation.finalAmount * 0.95)})</span>
+                          <span> (was £{stripePrice})</span>
                         ) : (
                           <span> (was £{finalTotalPrice})</span>
                         )}
