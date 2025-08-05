@@ -459,7 +459,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               {/* Payment Summary */}
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="text-green-600 font-semibold text-lg mb-2">
-                  Payment: £{Math.round((discountValidation?.isValid ? discountValidation.finalAmount : finalTotalPrice) / 12)} x 12
+                  Payment: £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / 12 : pricingData.monthlyPrice)} x 12
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-semibold">Total Price:</span>
@@ -475,7 +475,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   </div>
                 </div>
                 <div className="text-sm text-gray-600 mt-1">
-                  12 monthly payments of £{Math.round((discountValidation?.isValid ? discountValidation.finalAmount : finalTotalPrice) / 12)}
+                  12 monthly payments of £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / 12 : pricingData.monthlyPrice)}
                 </div>
               </div>
             </div>
