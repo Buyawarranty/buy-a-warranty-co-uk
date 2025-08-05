@@ -180,7 +180,7 @@ html {
 
 /* Form Section Card */
 .form-section-card {
-  background-color: #fff;
+  background-color: hsl(var(--card));
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   padding: 30px;
@@ -195,15 +195,15 @@ html {
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: #224380;
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   border-radius: 50%;
   font-weight: bold;
   font-size: 18px;
 }
 
 .step-number {
-  color: white;
+  color: hsl(var(--primary-foreground));
   font-weight: bold;
 }
 
@@ -211,7 +211,7 @@ html {
 .step-title {
   font-size: 24px;
   font-weight: 700;
-  color: #333;
+  color: hsl(var(--foreground));
 }
 
 /* Registration Plate Container */
@@ -226,7 +226,7 @@ html {
   display: flex;
   align-items: center;
   background-color: #ffdb00;
-  border: 3px solid #000;
+  border: 3px solid hsl(var(--foreground));
   border-radius: 8px;
   height: 65px;
   min-width: 520px;
@@ -242,7 +242,7 @@ html {
   align-items: center;
   justify-content: center;
   background-color: #003399;
-  color: white;
+  color: hsl(var(--primary-foreground));
   width: 60px;
   height: 100%;
   border-radius: 5px 0 0 5px;
@@ -269,7 +269,7 @@ html {
   font-size: 36px;
   font-weight: bold;
   text-align: center;
-  color: #000;
+  color: hsl(var(--foreground));
   letter-spacing: 4px;
   outline: none;
   width: 100%;
@@ -278,16 +278,16 @@ html {
 }
 
 .reg-input::placeholder {
-  color: #333;
+  color: hsl(var(--muted-foreground));
   font-weight: bold;
 }
 
 /* Primary Button - Official Brand Blue */
 .btn-primary {
-  background-color: #224380;
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   font-weight: bold;
-  border: 2px solid #224380;
+  border: 2px solid hsl(var(--primary));
   border-radius: 6px;
   padding: 12px 25px;
   font-size: 16px;
@@ -296,8 +296,8 @@ html {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #1a3460;
-  border-color: #1a3460;
+  background-color: hsl(var(--primary) / 0.9);
+  border-color: hsl(var(--primary) / 0.9);
 }
 
 .btn-primary:disabled {
@@ -307,9 +307,9 @@ html {
 
 /* Secondary Button */
 .btn-secondary {
-  background: white;
-  border: 2px solid #224380;
-  color: #224380;
+  background: hsl(var(--secondary));
+  border: 2px solid hsl(var(--primary));
+  color: hsl(var(--primary));
   font-weight: bold;
   border-radius: 6px;
   padding: 12px 25px;
@@ -319,15 +319,15 @@ html {
 }
 
 .btn-secondary:hover {
-  background-color: #f0f8ff;
+  background-color: hsl(var(--secondary) / 0.8);
 }
 
 /* CTA Button - Official Brand Orange */
 .btn-cta {
-  background-color: #eb4b00;
-  color: white;
+  background-color: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
   font-weight: bold;
-  border: 2px solid #eb4b00;
+  border: 2px solid hsl(var(--destructive));
   border-radius: 6px;
   padding: 12px 25px;
   font-size: 16px;
@@ -339,8 +339,8 @@ html {
 }
 
 .btn-cta:hover:not(:disabled) {
-  background-color: #d43f00;
-  border-color: #d43f00;
+  background-color: hsl(var(--destructive) / 0.9);
+  border-color: hsl(var(--destructive) / 0.9);
 }
 
 .btn-cta:disabled {
@@ -354,14 +354,14 @@ html {
   margin-bottom: 6px;
   font-weight: 600;
   font-size: 15px;
-  color: #333;
+  color: hsl(var(--foreground));
 }
 
 /* Form Inputs */
 .form-input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #ccc;
+  border: 2px solid hsl(var(--border));
   border-radius: 6px;
   font-size: 15px;
   box-sizing: border-box;
@@ -369,7 +369,7 @@ html {
 }
 
 .form-input:focus {
-  border-color: #224380;
+  border-color: hsl(var(--primary));
   outline: none;
 }
 
@@ -378,12 +378,12 @@ html {
   display: inline-block;
   margin-left: 6px;
   cursor: pointer;
-  color: #224380;
+  color: hsl(var(--primary));
   font-size: 16px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1px solid #224380;
+  border: 1px solid hsl(var(--primary));
   text-align: center;
   line-height: 16px;
   font-weight: bold;
@@ -391,14 +391,14 @@ html {
 
 /* Vehicle Found Card */
 .vehicle-found-card {
-  background-color: #f0f8ff;
-  border: 1px solid #224380;
+  background-color: hsl(var(--secondary));
+  border: 1px solid hsl(var(--primary));
   border-radius: 6px;
   padding: 16px;
 }
 
 .vehicle-details {
-  color: #333;
+  color: hsl(var(--foreground));
   margin-bottom: 12px;
   font-size: 14px;
 }
@@ -406,7 +406,7 @@ html {
 /* Field Hint */
 .field-hint {
   font-size: 14px;
-  color: #666;
+  color: hsl(var(--muted-foreground));
   margin-top: 8px;
 }
 
@@ -414,26 +414,26 @@ html {
 .section-subtitle {
   font-size: 20px;
   font-weight: 500;
-  color: #333;
+  color: hsl(var(--foreground));
   margin-bottom: 8px;
 }
 
 /* Section Description */
 .section-description {
-  color: #666;
+  color: hsl(var(--muted-foreground));
   font-size: 14px;
 }
 
 /* Optional Label */
 .optional-label {
   font-size: 14px;
-  color: #666;
+  color: hsl(var(--muted-foreground));
   margin-left: 8px;
 }
 
 /* Skip Notice */
 .skip-notice {
-  background-color: #f8f9fa;
+  background-color: hsl(var(--muted));
   border-radius: 6px;
   padding: 16px;
   text-align: center;
@@ -441,7 +441,7 @@ html {
 
 .skip-notice p {
   font-size: 14px;
-  color: #666;
+  color: hsl(var(--muted-foreground));
   margin: 0;
 }
 
@@ -454,9 +454,9 @@ html {
 /* Progress Stepper - Swinton Style */
 .stepper-container {
   width: 100%;
-  background: white;
+  background: hsl(var(--card));
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .stepper {
@@ -473,25 +473,25 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #aaa;
+  color: hsl(var(--muted-foreground));
   position: relative;
 }
 
 .step.active {
-  color: #224380;
+  color: hsl(var(--primary));
   font-weight: bold;
 }
 
 .step.completed {
-  color: #28a745;
+  color: hsl(var(--accent-foreground));
   font-weight: bold;
 }
 
 .step .circle {
   width: 28px;
   height: 28px;
-  background: #e8f4fb;
-  border: 2px solid #224380;
+  background: hsl(var(--secondary));
+  border: 2px solid hsl(var(--primary));
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -502,14 +502,14 @@ html {
 }
 
 .step.active .circle {
-  background: #224380;
-  color: white;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }
 
 .step.completed .circle {
-  background: #28a745;
-  border-color: #28a745;
-  color: white;
+  background: hsl(var(--accent));
+  border-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
 }
 
 .step-label {
@@ -522,11 +522,11 @@ html {
   left: 50px;
   width: 40px;
   height: 2px;
-  background: #ccc;
+  background: hsl(var(--border));
 }
 
 .connector.completed {
-  background: #28a745;
+  background: hsl(var(--accent));
 }
 
 /* Responsive Adjustments */
