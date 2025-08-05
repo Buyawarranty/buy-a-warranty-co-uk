@@ -12,6 +12,7 @@ import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import CreateTestCustomer from '@/components/CreateTestCustomer';
 import TestWarranties2000 from '@/components/TestWarranties2000';
 import TestBumper from '@/components/TestBumper';
+import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -85,6 +86,8 @@ const AdminDashboard = () => {
             </div>
             
             <div className="grid grid-cols-1 gap-6">
+              <ApiConnectivityTest />
+              
               <CreateTestCustomer />
               
               <Card>
