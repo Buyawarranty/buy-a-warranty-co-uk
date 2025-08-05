@@ -86,8 +86,8 @@ serve(async (req) => {
           WarType: warrantyType,
           Month: warrantyDuration,
           MaxClm: maxClaimAmount,
-          MOTExpiry: vehicleData.motExpiry || "2025-12-31", // Default if not provided
-          WarrantyRef: warrantyReference
+          MOTDue: vehicleData.motExpiry || "2025-12-31", // Default if not provided
+          Ref: warrantyReference
         };
 
         logStep("Registering warranty", { regNum: registrationData.RegNum, warrantyType });

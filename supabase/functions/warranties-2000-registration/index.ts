@@ -27,8 +27,8 @@ interface RegistrationData {
   WarType: string;
   Month: string;
   MaxClm: string;
-  MOTExpiry: string; // MOT expiry date
-  WarrantyRef?: string; // BAW warranty reference number
+  MOTDue: string; // MOT due date
+  Ref?: string; // BAW warranty reference number
 }
 
 const logStep = (step: string, details?: any) => {

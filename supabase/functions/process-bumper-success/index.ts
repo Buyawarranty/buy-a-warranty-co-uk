@@ -177,8 +177,8 @@ serve(async (req) => {
           WarType: getWarrantyType(plan.name.toLowerCase()),
           Month: getWarrantyDuration('monthly'), // Bumper is always monthly
           MaxClm: getMaxClaimAmount(plan.name.toLowerCase()),
-          MOTExpiry: vehicleData?.motExpiry || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          WarrantyRef: warrantyRef
+          MOTDue: vehicleData?.motExpiry || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          Ref: warrantyRef
         };
 
         logStep("Sending Bumper customer data to Warranties 2000", { 

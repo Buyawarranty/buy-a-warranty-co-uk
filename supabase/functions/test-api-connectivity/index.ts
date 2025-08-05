@@ -150,8 +150,8 @@ serve(async (req) => {
           WarType: "B-BASIC",
           Month: "12",
           MaxClm: "500",
-          MOTExpiry: "2025-01-01",
-          WarrantyRef: "TEST-REF-001"
+          MOTDue: "2025-01-01",
+          Ref: "TEST-REF-001"
         };
 
         const credentials = btoa(`${warrantiesUser}:${warrantiesPass}`);
