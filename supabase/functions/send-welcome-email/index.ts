@@ -126,7 +126,7 @@ serve(async (req) => {
 
       const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-email', {
         body: {
-          templateId: 'welcome-template', // You'll need to create this template
+          templateId: 'Welcome Email - Portal Signup',
           recipientEmail: email,
           variables: emailVariables
         }
