@@ -4,7 +4,7 @@ import { Check, Search, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface VehicleDetailsStepProps {
-  onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string; vehicleType?: string }) => void;
+  onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string; vehicleType?: string; isManualEntry?: boolean }) => void;
   onBack?: () => void;
   onFormDataUpdate?: (data: any) => void;
   currentStep?: number;
@@ -194,7 +194,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           make,
           model,
           year,
-          vehicleType
+          vehicleType,
+          isManualEntry: true
         });
       }
     } else {

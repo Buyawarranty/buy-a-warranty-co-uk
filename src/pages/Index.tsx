@@ -22,6 +22,7 @@ interface VehicleData {
   transmission?: string;
   year?: string;
   vehicleType?: string;
+  isManualEntry?: boolean;
 }
 
 const Index = () => {
@@ -53,7 +54,8 @@ const Index = () => {
   const handleRegistrationComplete = (data: VehicleData) => {
     setVehicleData(data);
     setFormData({ ...formData, ...data });
-    setCurrentStep(2);
+    // If manual entry was used, skip step 2 and go directly to pricing
+    setCurrentStep(data.isManualEntry ? 3 : 2);
   };
 
   const handleBackToStep = (step: number) => {
