@@ -174,10 +174,10 @@ function getWarrantyDuration(paymentType: string): string {
 
 function getMaxClaimAmount(planId: string): string {
   switch (planId.toLowerCase()) {
-    case 'basic': return '1000';
-    case 'gold': return '2500';
-    case 'platinum': return '5000';
-    default: return '1000';
+    case 'basic': return '500';
+    case 'gold': return '1000';
+    case 'platinum': return '1200';
+    default: return '500';
   }
 }
 

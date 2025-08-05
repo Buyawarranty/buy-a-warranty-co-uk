@@ -147,9 +147,9 @@ serve(async (req) => {
           EngSize: "1.6",
           PurPrc: "300",
           RegDate: "2020-01-01",
-          WarType: "Basic",
+          WarType: "B-BASIC",
           Month: "12",
-          MaxClm: "3000",
+          MaxClm: "500",
           MOTExpiry: "2025-01-01",
           WarrantyRef: "TEST-REF-001"
         };
