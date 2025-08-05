@@ -27,10 +27,10 @@ interface CustomerDetailsStepProps {
     year?: string;
     vehicleType?: string;
   };
-  selectedPlan: {
-    id: string;
-    name: string;
-    paymentType: string;
+  planId: string;
+  paymentType: string;
+  planName: string;
+  pricingData: {
     totalPrice: number;
     monthlyPrice: number;
     voluntaryExcess: number;
@@ -42,7 +42,10 @@ interface CustomerDetailsStepProps {
 
 const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({ 
   vehicleData, 
-  selectedPlan, 
+  planId,
+  paymentType,
+  planName,
+  pricingData,
   onBack, 
   onNext 
 }) => {
@@ -74,8 +77,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [isValidatingDiscount, setIsValidatingDiscount] = useState(false);
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
 
-  // Calculate prices based on final total price from selected plan
-  const finalTotalPrice = selectedPlan.totalPrice;
+  // Calculate prices based on final total price from pricingData
+  const finalTotalPrice = pricingData.totalPrice;
   const monthlyBumperPrice = finalTotalPrice; // Monthly interest free credit shows the total price
   const stripePrice = Math.round(finalTotalPrice * 0.95); // 5% discount for full payment
   
@@ -160,10 +163,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         console.log('Creating Bumper checkout with final price:', discountedBumperPrice);
         const { data, error } = await supabase.functions.invoke('create-bumper-checkout', {
           body: {
-            planId: selectedPlan.name.toLowerCase(),
+            planId: planName.toLowerCase(),
             vehicleData,
-            paymentType: selectedPlan.paymentType,
-            voluntaryExcess: selectedPlan.voluntaryExcess,
+            paymentType: paymentType,
+            voluntaryExcess: pricingData.voluntaryExcess,
             customerData: customerData,
             discountCode: customerData.discount_code || null,
             finalAmount: discountedBumperPrice // Pass the final calculated amount
@@ -182,9 +185,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         console.log('Creating Stripe checkout with discounted price:', discountedStripePrice);
         const { data, error } = await supabase.functions.invoke('create-checkout', {
           body: {
-            planName: selectedPlan.name.toLowerCase(),
+            planName: planName.toLowerCase(),
             paymentType: 'yearly', // Always yearly for Stripe full payment
-            voluntaryExcess: selectedPlan.voluntaryExcess,
+            voluntaryExcess: pricingData.voluntaryExcess,
             vehicleData,
             customerData: customerData,
             discountCode: customerData.discount_code || null,
@@ -221,7 +224,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       <Card className="border-2 border-blue-200 bg-blue-50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Badge variant="secondary">{selectedPlan.name} Plan</Badge>
+            <Badge variant="secondary">{planName} Plan</Badge>
             <span className="text-lg">Selected</span>
           </CardTitle>
         </CardHeader>
@@ -230,18 +233,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             <div>
               <span className="text-gray-600">Payment Period:</span>
               <p className="font-semibold">
-                {selectedPlan.paymentType === 'yearly' ? '1 Year' :
-                 selectedPlan.paymentType === 'two_yearly' ? '2 Years' :
-                 selectedPlan.paymentType === 'three_yearly' ? '3 Years' : '1 Year'}
+                {paymentType === 'yearly' ? '1 Year' :
+                 paymentType === 'two_yearly' ? '2 Years' :
+                 paymentType === 'three_yearly' ? '3 Years' : '1 Year'}
               </p>
             </div>
             <div>
               <span className="text-gray-600">Monthly Price:</span>
-              <p className="font-semibold">£{selectedPlan.monthlyPrice}/mo</p>
+              <p className="font-semibold">£{pricingData.monthlyPrice}/mo</p>
             </div>
             <div>
               <span className="text-gray-600">Voluntary Excess:</span>
-              <p className="font-semibold">£{selectedPlan.voluntaryExcess}</p>
+              <p className="font-semibold">£{pricingData.voluntaryExcess}</p>
             </div>
             <div>
               <span className="text-gray-600">Final Total Price:</span>
