@@ -231,7 +231,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             <div className="flex items-center gap-2 mb-2">
               <h2 className="flex items-center justify-between font-medium text-gray-600 text-lg sm:text-xl">
                 <div className="flex items-center gap-1">
-                  Let's find your vehicle 
+                  Let's find your vehicle  
                 </div>
                 <Search size={20} className="text-orange-500" />
               </h2>
