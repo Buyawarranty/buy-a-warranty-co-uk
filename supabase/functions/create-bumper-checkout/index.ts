@@ -28,8 +28,8 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { planId, vehicleData, paymentType: originalPaymentType, voluntaryExcess = 0, customerData, discountCode } = body;
-    logStep("Request data", { planId, vehicleData, originalPaymentType, voluntaryExcess, discountCode });
+    const { planId, vehicleData, paymentType: originalPaymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount } = body;
+    logStep("Request data", { planId, vehicleData, originalPaymentType, voluntaryExcess, discountCode, finalAmount });
     
     // CRITICAL: Bumper only accepts monthly payments, regardless of user selection
     const paymentType = 'monthly'; // Force monthly for Bumper credit checks
@@ -64,7 +64,7 @@ serve(async (req) => {
 
     // Get authenticated user
     let user = null;
-    let customerEmail = "guest@buyawarranty.co.uk"; // Default fallback
+    let customerEmail = customerData?.email || vehicleData?.email || "guest@buyawarranty.co.uk";
     
     const authHeader = req.headers.get("Authorization");
     if (authHeader && authHeader !== "Bearer null") {
@@ -83,85 +83,28 @@ serve(async (req) => {
       logStep("No auth header, proceeding as guest checkout");
     }
 
-    // Use customer email from request data if provided, otherwise use authenticated user email
-    if (vehicleData?.email) {
-      customerEmail = vehicleData.email;
-      logStep("Using customer email from vehicle data", { email: customerEmail });
-    }
-
-    // Define pricing structure matching the frontend pricing table
-    const pricingTable = {
-      monthly: {
-        0: { basic: { monthly: 31, total: 31 }, gold: { monthly: 34, total: 34 }, platinum: { monthly: 36, total: 36 } },
-        50: { basic: { monthly: 29, total: 29 }, gold: { monthly: 31, total: 31 }, platinum: { monthly: 32, total: 32 } },
-        100: { basic: { monthly: 25, total: 25 }, gold: { monthly: 27, total: 27 }, platinum: { monthly: 29, total: 29 } },
-        150: { basic: { monthly: 23, total: 23 }, gold: { monthly: 26, total: 26 }, platinum: { monthly: 27, total: 27 } },
-        200: { basic: { monthly: 20, total: 20 }, gold: { monthly: 23, total: 23 }, platinum: { monthly: 25, total: 25 } }
-      },
-      yearly: {
-        0: { basic: { monthly: 31, total: 372 }, gold: { monthly: 34, total: 408 }, platinum: { monthly: 36, total: 437 } },
-        50: { basic: { monthly: 29, total: 348 }, gold: { monthly: 31, total: 372 }, platinum: { monthly: 32, total: 384 } },
-        100: { basic: { monthly: 25, total: 300 }, gold: { monthly: 27, total: 324 }, platinum: { monthly: 29, total: 348 } },
-        150: { basic: { monthly: 23, total: 276 }, gold: { monthly: 26, total: 312 }, platinum: { monthly: 27, total: 324 } },
-        200: { basic: { monthly: 20, total: 240 }, gold: { monthly: 23, total: 276 }, platinum: { monthly: 25, total: 300 } }
-      },
-      two_yearly: {
-        0: { basic: { monthly: 56, total: 670 }, gold: { monthly: 61, total: 734 }, platinum: { monthly: 65, total: 786 } },
-        50: { basic: { monthly: 52, total: 626 }, gold: { monthly: 56, total: 670 }, platinum: { monthly: 58, total: 691 } },
-        100: { basic: { monthly: 45, total: 540 }, gold: { monthly: 49, total: 583 }, platinum: { monthly: 52, total: 626 } },
-        150: { basic: { monthly: 41, total: 497 }, gold: { monthly: 47, total: 562 }, platinum: { monthly: 49, total: 583 } },
-        200: { basic: { monthly: 38, total: 456 }, gold: { monthly: 44, total: 528 }, platinum: { monthly: 46, total: 552 } }
-      },
-      three_yearly: {
-        0: { basic: { monthly: 82, total: 982 }, gold: { monthly: 90, total: 1077 }, platinum: { monthly: 96, total: 1153 } },
-        50: { basic: { monthly: 77, total: 919 }, gold: { monthly: 82, total: 982 }, platinum: { monthly: 84, total: 1014 } },
-        100: { basic: { monthly: 66, total: 792 }, gold: { monthly: 71, total: 855 }, platinum: { monthly: 77, total: 919 } },
-        150: { basic: { monthly: 61, total: 729 }, gold: { monthly: 69, total: 824 }, platinum: { monthly: 71, total: 855 } },
-        200: { basic: { monthly: 56, total: 672 }, gold: { monthly: 66, total: 792 }, platinum: { monthly: 69, total: 828 } }
-      }
-    };
-
-    // Extract payment details - FORCE MONTHLY for Bumper regardless of user choice
-    const forcedPaymentType = 'monthly'; // Bumper only accepts monthly
-    logStep("Payment configuration", { userSelected: originalPaymentType, forcedForBumper: forcedPaymentType, voluntaryExcess });
+    // Use final amount if provided, otherwise calculate from pricing table
+    let monthlyAmount = finalAmount;
     
-    // Get pricing data - use monthly pricing for Bumper
-    const periodData = pricingTable['monthly'] || pricingTable.yearly; // Always use monthly for Bumper
-    const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
-    const planPricing = excessData[planType as keyof typeof excessData];
-    
-    if (!planPricing) {
-      throw new Error(`Invalid plan configuration: ${planType} for ${paymentType} with ${voluntaryExcess} excess`);
-    }
-
-    // For Bumper: Always use monthly amount for 30-day payment periods (credit checks)
-    let monthlyAmount = planPricing.monthly;
-
-    // Handle discount code if provided (Bumper doesn't support built-in discounts, so we adjust the amount)
-    if (discountCode) {
-      logStep("Validating discount code for Bumper", { discountCode, customerEmail, monthlyAmount });
-      
-      const { data: validationResult, error: validationError } = await supabaseService.functions.invoke('validate-discount-code', {
-        body: {
-          code: discountCode,
-          customerEmail: customerEmail,
-          orderAmount: monthlyAmount
+    if (!monthlyAmount) {
+      // Fallback to pricing calculation if finalAmount not provided
+      const pricingTable = {
+        monthly: {
+          0: { basic: { monthly: 31, total: 31 }, gold: { monthly: 34, total: 34 }, platinum: { monthly: 36, total: 36 } },
+          50: { basic: { monthly: 29, total: 29 }, gold: { monthly: 31, total: 31 }, platinum: { monthly: 32, total: 32 } },
+          100: { basic: { monthly: 25, total: 25 }, gold: { monthly: 27, total: 27 }, platinum: { monthly: 29, total: 29 } },
+          150: { basic: { monthly: 23, total: 23 }, gold: { monthly: 26, total: 26 }, platinum: { monthly: 27, total: 27 } },
+          200: { basic: { monthly: 20, total: 20 }, gold: { monthly: 23, total: 23 }, platinum: { monthly: 25, total: 25 } }
         }
-      });
-
-      if (validationError) {
-        logStep("Discount code validation error", { error: validationError });
-      } else if (validationResult?.valid) {
-        monthlyAmount = validationResult.finalAmount;
-        logStep("Discount applied to Bumper amount", { 
-          originalAmount: planPricing.monthly, 
-          discountAmount: validationResult.discountAmount,
-          finalAmount: monthlyAmount 
-        });
-      } else {
-        logStep("Invalid discount code for Bumper", { code: discountCode, error: validationResult?.error });
-      }
+      };
+      
+      const periodData = pricingTable['monthly'];
+      const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
+      const planPricing = excessData[planType as keyof typeof excessData];
+      monthlyAmount = planPricing.monthly;
     }
+
+    logStep("Using monthly amount", { monthlyAmount, source: finalAmount ? 'provided' : 'calculated' });
 
     const origin = req.headers.get("origin") || "https://buyawarranty.com";
     logStep("Creating Bumper checkout - ALWAYS MONTHLY for credit check", { 
@@ -220,35 +163,6 @@ serve(async (req) => {
       });
     }
 
-    // Create Bumper checkout session - always 30-day payment period for credit checks
-    const bumperPayload = {
-      amount: monthlyAmount,
-      currency: "GBP",
-      payment_period: "30_days", // Explicit 30-day period for Bumper credit checks
-      customer: {
-        email: customerEmail,
-        name: vehicleData?.fullName || '',
-        phone: vehicleData?.phone || '',
-        address: vehicleData?.address || ''
-      },
-      metadata: {
-        plan_type: planType,
-        payment_type: 'monthly', // Always monthly for Bumper credit check
-        original_payment_type: paymentType, // Store original user selection
-        user_id: user?.id || 'guest',
-        vehicle_reg: vehicleData?.regNumber || '',
-        vehicle_mileage: vehicleData?.mileage || ''
-      },
-      success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
-      cancel_url: `${origin}/`,
-      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerEmail)}&original_payment=${paymentType}`
-    };
-
-    logStep("Sending request to Bumper API", { amount: monthlyAmount, customerEmail });
-
-    // Use customer data from the request
-    const customerData = body.customerData;
-    
     if (!customerData) {
       logStep("No customer data provided, creating Stripe fallback");
       

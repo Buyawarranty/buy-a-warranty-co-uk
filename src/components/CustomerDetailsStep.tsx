@@ -1,753 +1,543 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Info } from 'lucide-react';
+
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/hooks/use-toast"
-import { Badge } from "@/components/ui/badge"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import TrustpilotHeader from '@/components/TrustpilotHeader';
-
-interface VehicleData {
-  regNumber: string;
-  mileage: string;
-  email: string;
-  phone: string;
-  firstName: string;
-  lastName: string;
-  address: string;
-  make?: string;
-  model?: string;
-  fuelType?: string;
-  transmission?: string;
-  year?: string;
-  vehicleType?: string;
-}
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface CustomerDetailsStepProps {
-  vehicleData: VehicleData;
-  planId: string;
-  paymentType: string;
-  planName?: string;
-  pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}};
-  onNext: (customerData: any) => void;
+  vehicleData: {
+    regNumber: string;
+    mileage: string;
+    email?: string;
+    phone?: string;
+    firstName?: string;
+    address?: string;
+    make?: string;
+    model?: string;
+    fuelType?: string;
+    transmission?: string;
+    year?: string;
+    vehicleType?: string;
+  };
+  selectedPlan: {
+    id: string;
+    name: string;
+    paymentType: string;
+    totalPrice: number;
+    monthlyPrice: number;
+    voluntaryExcess: number;
+    selectedAddOns: {[addon: string]: boolean};
+  };
   onBack: () => void;
+  onNext: (customerData: any) => void;
 }
 
-const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
-  vehicleData,
-  planId,
-  paymentType,
-  planName = 'Unknown Plan',
-  pricingData,
-  onNext,
-  onBack
+const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({ 
+  vehicleData, 
+  selectedPlan, 
+  onBack, 
+  onNext 
 }) => {
   const [customerData, setCustomerData] = useState({
     first_name: vehicleData.firstName || '',
-    last_name: vehicleData.lastName || '',
+    last_name: '',
     email: vehicleData.email || '',
     mobile: vehicleData.phone || '',
-    address_line_1: '',
-    address_line_2: '',
+    flat_number: '',
+    building_name: '',
+    building_number: '',
+    street: '',
     town: '',
     county: '',
     postcode: '',
     country: 'United Kingdom',
-    vehicle_reg: vehicleData.regNumber || ''
+    vehicle_reg: vehicleData.regNumber || '',
+    discount_code: ''
   });
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'bumper'>('stripe');
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [discountCode, setDiscountCode] = useState('');
-  const [discountData, setDiscountData] = useState<any>(null);
-  const [validatingDiscount, setValidatingDiscount] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
 
-  useEffect(() => {
-    // Prefill customer data from vehicleData if available
-    setCustomerData(prevData => ({
-      ...prevData,
-      first_name: vehicleData.firstName || prevData.first_name,
-      last_name: vehicleData.lastName || prevData.last_name,
-      email: vehicleData.email || prevData.email,
-      mobile: vehicleData.phone || prevData.mobile,
-      vehicle_reg: vehicleData.regNumber || prevData.vehicle_reg
-    }));
-  }, [vehicleData]);
+  const [paymentMethod, setPaymentMethod] = useState<'bumper' | 'stripe'>('bumper');
+  const [loading, setLoading] = useState(false);
+  const [discountValidation, setDiscountValidation] = useState<{
+    isValid: boolean;
+    message: string;
+    discountAmount: number;
+    finalAmount: number;
+  } | null>(null);
+  const [isValidatingDiscount, setIsValidatingDiscount] = useState(false);
+  const [showDiscountInfo, setShowDiscountInfo] = useState(false);
 
-  const totalAmount = pricingData?.monthlyPrice || 0;
-  const totalPrice = pricingData ? Math.round(pricingData.totalPrice * 12) : totalAmount * 12;
-  const stripeDiscountedPrice = Math.round(totalPrice * 0.95); // 5% discount for Stripe
-  const stripeSavings = totalPrice - stripeDiscountedPrice;
-  const finalPrice = discountData ? (selectedPaymentMethod === 'stripe' ? discountData.finalAmount : totalPrice - discountData.discountAmount) : (selectedPaymentMethod === 'stripe' ? stripeDiscountedPrice : totalPrice);
-  const isBumperAvailable = totalPrice >= 60; // Use total price instead of monthly amount
+  // Calculate prices based on final total price from selected plan
+  const finalTotalPrice = selectedPlan.totalPrice;
+  const monthlyBumperPrice = finalTotalPrice; // Monthly interest free credit shows the total price
+  const stripePrice = Math.round(finalTotalPrice * 0.95); // 5% discount for full payment
+  
+  // Apply discount if valid
+  const discountedBumperPrice = discountValidation?.isValid 
+    ? discountValidation.finalAmount 
+    : monthlyBumperPrice;
+  
+  const discountedStripePrice = discountValidation?.isValid 
+    ? Math.round(discountValidation.finalAmount * 0.95)
+    : stripePrice;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCustomerData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
-
-  const handleCountryChange = (value: string) => {
-    setCustomerData(prevData => ({
-      ...prevData,
-      country: value
-    }));
+  const handleInputChange = (field: string, value: string) => {
+    setCustomerData(prev => ({ ...prev, [field]: value }));
   };
 
   const validateDiscountCode = async () => {
-    if (!discountCode.trim()) {
-      setDiscountData(null);
+    if (!customerData.discount_code.trim()) {
+      setDiscountValidation(null);
       return;
     }
 
-    setValidatingDiscount(true);
+    setIsValidatingDiscount(true);
     try {
       const { data, error } = await supabase.functions.invoke('validate-discount-code', {
         body: {
-          code: discountCode,
+          code: customerData.discount_code,
           customerEmail: customerData.email,
-          orderAmount: selectedPaymentMethod === 'stripe' ? stripeDiscountedPrice : totalPrice
+          orderAmount: finalTotalPrice
         }
       });
 
-      if (error) {
-        console.error('Error validating discount code:', error);
-        toast({
-          title: "Error",
-          description: "Failed to validate discount code. Please try again.",
-          variant: "destructive",
+      if (error) throw error;
+
+      if (data.valid) {
+        setDiscountValidation({
+          isValid: true,
+          message: `Discount applied: ${data.discountCode.type === 'percentage' ? data.discountCode.value + '%' : '£' + data.discountCode.value} off`,
+          discountAmount: data.discountAmount,
+          finalAmount: data.finalAmount
         });
-        setDiscountData(null);
-      } else if (data?.valid) {
-        setDiscountData(data);
-        toast({
-          title: "Discount Applied!",
-          description: `${data.discountCode.code} - £${data.discountAmount.toFixed(2)} discount applied`,
-          variant: "default",
-        });
+        toast.success('Discount code applied successfully!');
       } else {
-        setDiscountData(null);
-        toast({
-          title: "Invalid Discount Code",
-          description: data?.error || "The discount code you entered is not valid.",
-          variant: "destructive",
+        setDiscountValidation({
+          isValid: false,
+          message: data.error || 'Invalid discount code',
+          discountAmount: 0,
+          finalAmount: finalTotalPrice
         });
+        toast.error('Invalid discount code');
       }
     } catch (error) {
       console.error('Error validating discount code:', error);
-      setDiscountData(null);
-      toast({
-        title: "Error",
-        description: "Failed to validate discount code. Please try again.",
-        variant: "destructive",
+      setDiscountValidation({
+        isValid: false,
+        message: 'Error validating discount code',
+        discountAmount: 0,
+        finalAmount: finalTotalPrice
       });
+      toast.error('Error validating discount code');
     } finally {
-      setValidatingDiscount(false);
+      setIsValidatingDiscount(false);
     }
   };
 
-  const isFormValid = () => {
-    // Check if all required fields are filled
-    const requiredFields = ['first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'town', 'county', 'postcode', 'country', 'vehicle_reg'];
-    return requiredFields.every(field => customerData[field as keyof typeof customerData] !== '');
-  };
-
-  const handleCheckout = async () => {
-    if (!isFormValid()) {
-      // Find which specific fields are missing
-      const requiredFields = [
-        { key: 'first_name', label: 'First Name' },
-        { key: 'last_name', label: 'Last Name' },
-        { key: 'email', label: 'Email Address' },
-        { key: 'mobile', label: 'Phone Number' },
-        { key: 'address_line_1', label: 'Address Line 1' },
-        { key: 'town', label: 'Town/City' },
-        { key: 'county', label: 'County' },
-        { key: 'postcode', label: 'Postcode' },
-        { key: 'country', label: 'Country' },
-        { key: 'vehicle_reg', label: 'Vehicle Registration' }
-      ];
-      
-      const missingFields = requiredFields.filter(field => 
-        !customerData[field.key as keyof typeof customerData] || 
-        customerData[field.key as keyof typeof customerData] === ''
-      ).map(field => field.label);
-
-      toast({
-        title: "Please Complete All Required Fields",
-        description: missingFields.length > 0 
-          ? `Missing: ${missingFields.join(', ')}`
-          : "Please fill in all required fields before proceeding with your purchase.",
-        variant: "destructive",
-      });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!customerData.first_name || !customerData.last_name || !customerData.email || 
+        !customerData.mobile || !customerData.street || !customerData.town || 
+        !customerData.county || !customerData.postcode) {
+      toast.error('Please fill in all required fields');
       return;
     }
 
-    setCheckoutLoading(true);
-
+    setLoading(true);
+    
     try {
-      if (selectedPaymentMethod === 'stripe') {
-        // Redirect to Stripe checkout using Supabase edge function
-        const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: {
-            planName: planId,
-            paymentType: paymentType,
-            voluntaryExcess: pricingData?.voluntaryExcess || 0,
-            vehicleData: vehicleData,
-            customerData: customerData,
-            discountCode: discountCode || null
-          }
-        });
-
-        if (error) {
-          console.error('Failed to create Stripe checkout session:', error);
-          toast({
-            title: "Error",
-            description: "Failed to initiate Stripe checkout. Please try again.",
-            variant: "destructive",
-          });
-          setCheckoutLoading(false);
-          return;
-        }
-
-        if (data?.url) {
-          window.location.href = data.url;
-        } else {
-          console.error('No URL received from Stripe checkout creation:', data);
-          toast({
-            title: "Error",
-            description: "Could not redirect to checkout. Please try again.",
-            variant: "destructive",
-          });
-          setCheckoutLoading(false);
-        }
-      } else if (selectedPaymentMethod === 'bumper') {
-        // Redirect to Bumper checkout using Supabase edge function
+      let checkoutUrl = '';
+      
+      if (paymentMethod === 'bumper') {
+        console.log('Creating Bumper checkout with final price:', discountedBumperPrice);
         const { data, error } = await supabase.functions.invoke('create-bumper-checkout', {
           body: {
-            planId: planId,
-            paymentType: paymentType,
-            voluntaryExcess: pricingData?.voluntaryExcess || 0,
-            vehicleData: vehicleData,
+            planId: selectedPlan.name.toLowerCase(),
+            vehicleData,
+            paymentType: selectedPlan.paymentType,
+            voluntaryExcess: selectedPlan.voluntaryExcess,
             customerData: customerData,
-            discountCode: discountCode || null
+            discountCode: customerData.discount_code || null,
+            finalAmount: discountedBumperPrice // Pass the final calculated amount
           }
         });
 
-        if (error) {
-          console.error('Failed to create Bumper checkout session:', error);
-          toast({
-            title: "Error",
-            description: "Failed to initiate Bumper checkout. Please try again.",
-            variant: "destructive",
-          });
-          setCheckoutLoading(false);
-          return;
-        }
+        if (error) throw error;
 
-        if (data?.fallbackToStripe) {
-          // Fallback to Stripe due to Bumper failure
-          toast({
-            title: "Bumper Unavailable",
-            description: "Falling back to Stripe payment.",
-            variant: "destructive",
-          });
-          setSelectedPaymentMethod('stripe'); // Switch to Stripe
-        } else if (data?.url) {
-          // Redirect to Bumper URL
-          window.location.href = data.url;
+        if (data.fallbackToStripe) {
+          toast.error('Credit check failed. Redirecting to yearly payment option.');
+          checkoutUrl = data.stripeUrl;
         } else {
-          console.error('No URL received from Bumper checkout creation:', data);
-          toast({
-            title: "Error",
-            description: "Could not redirect to checkout. Please try again.",
-            variant: "destructive",
-          });
-          setCheckoutLoading(false);
+          checkoutUrl = data.url;
         }
+      } else {
+        console.log('Creating Stripe checkout with discounted price:', discountedStripePrice);
+        const { data, error } = await supabase.functions.invoke('create-checkout', {
+          body: {
+            planName: selectedPlan.name.toLowerCase(),
+            paymentType: 'yearly', // Always yearly for Stripe full payment
+            voluntaryExcess: selectedPlan.voluntaryExcess,
+            vehicleData,
+            customerData: customerData,
+            discountCode: customerData.discount_code || null,
+            finalAmount: discountedStripePrice // Pass the final calculated amount
+          }
+        });
+
+        if (error) throw error;
+        checkoutUrl = data.url;
+      }
+
+      if (checkoutUrl) {
+        window.open(checkoutUrl, '_blank');
+      } else {
+        toast.error('Failed to create checkout session');
       }
     } catch (error) {
-      console.error('Checkout process failed:', error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      console.error('Checkout error:', error);
+      toast.error('Failed to proceed to checkout');
     } finally {
-      setCheckoutLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <TooltipProvider>
-      <div className="bg-[#e8f4fb] min-h-screen">
-        {/* Back Button and Trustpilot Header */}
-        <div className="mb-4 sm:mb-8 px-4 sm:px-8 pt-4 sm:pt-8 flex justify-between items-center">
-          <Button 
-            variant="outline" 
-            onClick={onBack}
-            className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3"
-          >
-            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            Back
-          </Button>
-          <TrustpilotHeader />
-        </div>
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      {/* Back Button */}
+      <Button variant="outline" onClick={onBack} className="mb-4">
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Plans
+      </Button>
 
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          {/* Header Section */}
-          <div className="text-center mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              Complete Your Purchase
-            </h1>
-            <p className="text-gray-600 text-base sm:text-lg">
-              Just a few more details to secure your warranty
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Column - Customer Details Form */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold">Personal Details</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Customer Details Form */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="first_name" className="text-sm font-medium text-gray-700 mb-1 block">
-                        First Name *
-                      </Label>
-                      <Input
-                        id="first_name"
-                        name="first_name"
-                        value={customerData.first_name}
-                        onChange={handleInputChange}
-                        placeholder="Enter first name"
-                         className="w-full border-2"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="last_name" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Last Name *
-                      </Label>
-                      <Input
-                        id="last_name"
-                        name="last_name"
-                        value={customerData.last_name}
-                        onChange={handleInputChange}
-                        placeholder="Enter last name"
-                         className="w-full border-2"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1 block">
-                      Email Address *
-                    </Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={customerData.email}
-                      onChange={handleInputChange}
-                      placeholder="Enter email address"
-                       className="w-full border-2"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="mobile" className="text-sm font-medium text-gray-700 mb-1 block">
-                      Mobile Number *
-                    </Label>
-                    <Input
-                      id="mobile"
-                      name="mobile"
-                      type="tel"
-                      value={customerData.mobile}
-                      onChange={handleInputChange}
-                      placeholder="Enter mobile number"
-                       className="w-full border-2"
-                      required
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Address Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold">Address Details</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="address_line_1" className="text-sm font-medium text-gray-700 mb-1 block">
-                      Address Line 1 *
-                    </Label>
-                    <Input
-                      id="address_line_1"
-                      name="address_line_1"
-                      value={customerData.address_line_1}
-                      onChange={handleInputChange}
-                      placeholder="Street address and house/building number"
-                       className="w-full border-2"
-                      required
-                    />
-                    
-                  </div>
-
-                  <div>
-                    <Label htmlFor="address_line_2" className="text-sm font-medium text-gray-700 mb-1 block">
-                      Address Line 2 (optional)
-                    </Label>
-                    <Input
-                      id="address_line_2"
-                      name="address_line_2"
-                      value={customerData.address_line_2}
-                      onChange={handleInputChange}
-                      placeholder="Apartment, flat, building name"
-                       className="w-full border-2"
-                    />
-                    
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="town" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Town/City *
-                      </Label>
-                      <Input
-                        id="town"
-                        name="town"
-                        value={customerData.town}
-                        onChange={handleInputChange}
-                        placeholder="Enter town/city"
-                         className="w-full border-2"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="county" className="text-sm font-medium text-gray-700 mb-1 block">
-                        County *
-                      </Label>
-                      <Input
-                        id="county"
-                        name="county"
-                        value={customerData.county}
-                        onChange={handleInputChange}
-                        placeholder="Enter county"
-                         className="w-full border-2"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="postcode" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Postcode *
-                      </Label>
-                      <Input
-                        id="postcode"
-                        name="postcode"
-                        value={customerData.postcode}
-                        onChange={handleInputChange}
-                        placeholder="Enter postcode"
-                         className="w-full border-2"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="vehicle_reg" className="text-sm font-medium text-gray-700 mb-1 block">
-                      Vehicle Registration *
-                    </Label>
-                    <Input
-                      id="vehicle_reg"
-                      name="vehicle_reg"
-                      value={customerData.vehicle_reg}
-                      onChange={handleInputChange}
-                      placeholder="Enter vehicle registration"
-                      className="w-full border-2"
-                      required
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+      {/* Selected Plan Summary */}
+      <Card className="border-2 border-blue-200 bg-blue-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Badge variant="secondary">{selectedPlan.name} Plan</Badge>
+            <span className="text-lg">Selected</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>
+              <span className="text-gray-600">Payment Period:</span>
+              <p className="font-semibold">
+                {selectedPlan.paymentType === 'yearly' ? '1 Year' :
+                 selectedPlan.paymentType === 'two_yearly' ? '2 Years' :
+                 selectedPlan.paymentType === 'three_yearly' ? '3 Years' : '1 Year'}
+              </p>
             </div>
+            <div>
+              <span className="text-gray-600">Monthly Price:</span>
+              <p className="font-semibold">£{selectedPlan.monthlyPrice}/mo</p>
+            </div>
+            <div>
+              <span className="text-gray-600">Voluntary Excess:</span>
+              <p className="font-semibold">£{selectedPlan.voluntaryExcess}</p>
+            </div>
+            <div>
+              <span className="text-gray-600">Final Total Price:</span>
+              <p className="font-bold text-lg text-blue-600">£{finalTotalPrice}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-            {/* Right Column - Order Summary & Payment */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold">Order Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Vehicle Details */}
-                  <div className="flex justify-center mb-4">
-                    <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-lg px-4 py-3 rounded-[6px] shadow-sm leading-tight border-2 border-black">
-                      <img 
-                        src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
-                        alt="GB Flag" 
-                        className="w-[25px] h-[18px] mr-3 object-cover rounded-[2px]"
-                      />
-                      <div className="font-bold font-sans tracking-normal">
-                        {vehicleData.regNumber}
-                      </div>
-                    </div>
-                  </div>
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Customer Details Form */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Customer Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Personal Details */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="first_name">First Name *</Label>
+                  <Input
+                    id="first_name"
+                    value={customerData.first_name}
+                    onChange={(e) => handleInputChange('first_name', e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="last_name">Last Name *</Label>
+                  <Input
+                    id="last_name"
+                    value={customerData.last_name}
+                    onChange={(e) => handleInputChange('last_name', e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
 
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-700">Plan:</span>
-                      <span className="text-gray-900">{planName}</span>
-                    </div>
-                     <div className="flex justify-between items-center">
-                       <span className="font-medium text-gray-700">Cover period:</span>
-                       <span className="text-gray-900 capitalize">
-                         {paymentType === 'yearly' ? '1 Year' : 
-                          paymentType === 'two_yearly' ? '2 Year' : 
-                          paymentType === 'three_yearly' ? '3 Year' : 
-                          paymentType.replace('_', ' ')}
-                       </span>
-                     </div>
-                    {pricingData?.voluntaryExcess !== undefined && (
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium text-gray-700">Voluntary Excess:</span>
-                        <span className="text-gray-900">£{pricingData.voluntaryExcess}</span>
-                      </div>
-                    )}
-                  </div>
+              <div>
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={customerData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  required
+                />
+              </div>
 
-                  <div className="border-t border-gray-200 pt-4 space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-green-600">Payment:</span>
-                      <span className="text-lg font-bold text-green-600">
-                        £{pricingData ? Math.round(pricingData.monthlyPrice || pricingData.totalPrice) : totalAmount} x 12
-                      </span>
-                    </div>
-                     <div className="flex justify-between items-center mb-3">
-                       <span className="font-semibold text-gray-900">Subtotal:</span>
-                       <span className="text-gray-700">
-                         £{selectedPaymentMethod === 'stripe' ? stripeDiscountedPrice : totalPrice}
-                         {selectedPaymentMethod === 'stripe' && (
-                           <span className="text-green-600 text-sm ml-2">(5% discount applied: -£{stripeSavings})</span>
-                         )}
-                       </span>
-                     </div>
-                     {discountData && (
-                       <div className="flex justify-between items-center mb-3">
-                         <span className="font-semibold text-green-600">Discount ({discountData.discountCode.code}):</span>
-                         <span className="text-green-600">-£{discountData.discountAmount.toFixed(2)}</span>
-                       </div>
-                     )}
-                     <div className="flex justify-between items-center mb-3 text-lg font-bold">
-                       <span className="text-gray-900">Final Total:</span>
-                       <span className="text-gray-900">£{finalPrice.toFixed(2)}</span>
-                     </div>
-                     <div className="pt-3 border-t border-gray-200">
-                       <p className="text-sm text-gray-600">
-                         12 monthly payments of £{pricingData ? Math.round(pricingData.monthlyPrice || pricingData.totalPrice) : totalAmount}
-                       </p>
-                     </div>
+              <div>
+                <Label htmlFor="mobile">Mobile *</Label>
+                <Input
+                  id="mobile"
+                  value={customerData.mobile}
+                  onChange={(e) => handleInputChange('mobile', e.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="vehicle_reg">Vehicle Registration *</Label>
+                <Input
+                  id="vehicle_reg"
+                  value={customerData.vehicle_reg}
+                  onChange={(e) => handleInputChange('vehicle_reg', e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Address Details */}
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="font-semibold">Address Details</h4>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="flat_number">Flat Number</Label>
+                    <Input
+                      id="flat_number"
+                      value={customerData.flat_number}
+                      onChange={(e) => handleInputChange('flat_number', e.target.value)}
+                    />
                   </div>
-                </CardContent>
-              </Card>
+                  <div>
+                    <Label htmlFor="building_name">Building Name</Label>
+                    <Input
+                      id="building_name"
+                      value={customerData.building_name}
+                      onChange={(e) => handleInputChange('building_name', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="building_number">Building Number</Label>
+                  <Input
+                    id="building_number"
+                    value={customerData.building_number}
+                    onChange={(e) => handleInputChange('building_number', e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="street">Street *</Label>
+                  <Input
+                    id="street"
+                    value={customerData.street}
+                    onChange={(e) => handleInputChange('street', e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="town">Town *</Label>
+                    <Input
+                      id="town"
+                      value={customerData.town}
+                      onChange={(e) => handleInputChange('town', e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="county">County *</Label>
+                    <Input
+                      id="county"
+                      value={customerData.county}
+                      onChange={(e) => handleInputChange('county', e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="postcode">Postcode *</Label>
+                  <Input
+                    id="postcode"
+                    value={customerData.postcode}
+                    onChange={(e) => handleInputChange('postcode', e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="country">Country *</Label>
+                  <Input
+                    id="country"
+                    value={customerData.country}
+                    onChange={(e) => handleInputChange('country', e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
 
               {/* Discount Code Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold">Discount Code</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Enter discount code"
-                        value={discountCode}
-                        onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
-                        className="flex-1"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            validateDiscountCode();
-                          }
-                        }}
-                      />
-                      <Button
-                        onClick={validateDiscountCode}
-                        disabled={validatingDiscount || !discountCode.trim()}
-                        variant="outline"
-                        className="px-4"
-                      >
-                        {validatingDiscount ? (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-                        ) : (
-                          'Apply'
-                        )}
+              <div className="space-y-4 border-t pt-4">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold">Discount Code</h4>
+                  <Collapsible open={showDiscountInfo} onOpenChange={setShowDiscountInfo}>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm" className="p-0 h-auto">
+                        <Info className="h-4 w-4" />
                       </Button>
-                    </div>
-                    {discountData && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <div className="flex items-center gap-2">
-                          <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          <span className="text-green-800 font-medium">
-                            Discount Applied: {discountData.discountCode.code}
-                          </span>
-                        </div>
-                        <p className="text-green-700 text-sm mt-1">
-                          You save £{discountData.discountAmount.toFixed(2)}
-                        </p>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-2">
+                      <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-md">
+                        <p>Enter a valid discount code to get money off your warranty. The discount will be applied to your final total.</p>
                       </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter discount code"
+                    value={customerData.discount_code}
+                    onChange={(e) => handleInputChange('discount_code', e.target.value)}
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={validateDiscountCode}
+                    disabled={!customerData.discount_code.trim() || isValidatingDiscount}
+                  >
+                    {isValidatingDiscount ? 'Checking...' : 'Apply'}
+                  </Button>
+                </div>
+                
+                {discountValidation && (
+                  <div className={`text-sm p-3 rounded-md flex items-center gap-2 ${
+                    discountValidation.isValid 
+                      ? 'bg-green-50 text-green-700' 
+                      : 'bg-red-50 text-red-700'
+                  }`}>
+                    {discountValidation.isValid ? (
+                      <div className="text-green-600">✓</div>
+                    ) : (
+                      <AlertCircle className="h-4 w-4 text-red-600" />
                     )}
+                    {discountValidation.message}
                   </div>
-                </CardContent>
-              </Card>
+                )}
+              </div>
+            </form>
+          </CardContent>
+        </Card>
 
-              {/* Payment Method Selection */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold">Payment Method</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Bumper Option */}
-                    <div 
-                      className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${
-                        selectedPaymentMethod === 'bumper' && isBumperAvailable
-                          ? 'border-blue-500 bg-blue-50' 
-                          : isBumperAvailable 
-                            ? 'border-gray-200 hover:border-gray-300 bg-white'
-                            : 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
-                      }`}
-                      onClick={() => isBumperAvailable && setSelectedPaymentMethod('bumper')}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="bumper"
-                          checked={selectedPaymentMethod === 'bumper'}
-                          onChange={() => setSelectedPaymentMethod('bumper')}
-                          disabled={!isBumperAvailable}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 disabled:cursor-not-allowed"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className={`font-medium ${isBumperAvailable ? 'text-gray-900' : 'text-gray-500'}`}>
-                              Monthly Interest-Free Credit 
-                              {!isBumperAvailable && (
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <Info className="inline w-4 h-4 ml-1 text-gray-400" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Available for orders over £60</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              )}
-                            </span>
-                            {isBumperAvailable && (
-                              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                                0% Interest
-                              </Badge>
-                            )}
-                          </div>
-                          <p className={`text-sm mt-1 ${isBumperAvailable ? 'text-gray-600' : 'text-gray-400'}`}>
-                            Pay monthly with no interest charges
-                          </p>
-                          {!isBumperAvailable && (
-                            <p className="text-sm text-orange-600 mt-1">
-                              <strong>Note:</strong> The Bumper payment option is only available for orders over £60. 
-                              Your current order total is £{totalPrice}.
-                            </p>
-                          )}
-                        </div>
+        {/* Payment Method Selection */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Method</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)}>
+              {/* Monthly Interest Free Credit */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="bumper" id="bumper" />
+                  <Label htmlFor="bumper" className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        <span className="font-semibold">Monthly Interest Free Credit</span>
                       </div>
+                      <Badge variant="secondary">12 Payments</Badge>
                     </div>
-
-                    {/* Stripe Option */}
-                    <div 
-                      className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${
-                        selectedPaymentMethod === 'stripe'
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
-                      }`}
-                      onClick={() => setSelectedPaymentMethod('stripe')}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="stripe"
-                          checked={selectedPaymentMethod === 'stripe'}
-                          onChange={() => setSelectedPaymentMethod('stripe')}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                        />
-                        <div className="flex-1">
-                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-gray-900">
-                              Pay Full Amount
-                            </span>
-                            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                              Save £{stripeSavings} (5% off)
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-gray-600 mt-1">
-                            Pay £{stripeDiscountedPrice} upfront via card (was £{totalPrice})
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Checkout Button */}
-                  <div className="mt-6">
-                    <Button
-                      onClick={handleCheckout}
-                      disabled={checkoutLoading || !isFormValid()}
-                      className="w-full py-3 text-lg font-semibold bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded-xl transition-colors duration-200"
-                    >
-                      {checkoutLoading ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-                          Processing...
-                        </div>
-                      ) : (
-                        'Complete Purchase'
+                  </Label>
+                </div>
+                <div className="ml-6 text-sm text-gray-600 space-y-1">
+                  <p>Pay in 12 monthly installments with 0% interest</p>
+                  <div className="flex items-center justify-between bg-blue-50 p-3 rounded-md">
+                    <span>Monthly Payment:</span>
+                    <span className="font-bold text-lg">
+                      £{discountedBumperPrice} 
+                      {discountValidation?.isValid && (
+                        <span className="text-sm text-green-600 ml-2">
+                          (Was £{monthlyBumperPrice})
+                        </span>
                       )}
-                    </Button>
+                    </span>
                   </div>
+                  <p className="text-xs">* Subject to credit approval</p>
+                </div>
+              </div>
 
-                  {/* Security Badge */}
-                  <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
-                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-7-4z" />
-                    </svg>
-                    Secure checkout powered by Stripe
+              {/* Pay Full Amount */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="stripe" id="stripe" />
+                  <Label htmlFor="stripe" className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4" />
+                        <span className="font-semibold">Pay Full Amount</span>
+                      </div>
+                      <Badge variant="default" className="bg-green-600">
+                        <Percent className="w-3 h-3 mr-1" />
+                        5% OFF
+                      </Badge>
+                    </div>
+                  </Label>
+                </div>
+                <div className="ml-6 text-sm text-gray-600 space-y-1">
+                  <p>Pay the full amount upfront and save 5%</p>
+                  <div className="flex items-center justify-between bg-green-50 p-3 rounded-md">
+                    <span>Total Payment:</span>
+                    <div className="text-right">
+                      <div className="font-bold text-lg">
+                        £{discountedStripePrice}
+                        {discountValidation?.isValid && (
+                          <span className="text-sm text-green-600 ml-2">
+                            (Was £{stripePrice})
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-500 line-through">
+                        £{discountValidation?.isValid ? Math.round(discountValidation.finalAmount) : finalTotalPrice}
+                      </div>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
+                </div>
+              </div>
+            </RadioGroup>
+
+            <Button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full mt-6"
+              size="lg"
+            >
+              {loading ? 'Processing...' : `Proceed to ${paymentMethod === 'bumper' ? 'Credit Application' : 'Payment'}`}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
-    </TooltipProvider>
+    </div>
   );
 };
 
