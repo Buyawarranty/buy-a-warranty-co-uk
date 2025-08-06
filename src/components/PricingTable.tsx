@@ -594,7 +594,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </h4>
                        <div className="flex items-baseline gap-1">
                          <span className="text-sm">£</span><span className="text-2xl font-bold">{Math.round(totalPrice)}</span>
-                         <span className="text-sm text-gray-600">x 12</span>
+                         <span className="text-sm text-gray-600">x 12 easy payments</span>
                        </div>
                       {savings && paymentType !== 'yearly' && (
                         <div className="text-green-600 font-semibold text-sm">
