@@ -231,7 +231,7 @@ const handler = async (req: Request): Promise<Response> => {
             
             <!-- Friendly panda mascot -->
             <div style="text-align: center; margin: 30px 0;">
-              <img src="/lovable-uploads/11dcff3d-99db-4dba-84d8-254bf38a8051.png" alt="Buyawarranty Panda" style="height: 120px; width: auto; display: inline-block;" />
+              <img src="https://buyawarranty.co.uk/lovable-uploads/b715b53e-c61e-4def-a0a7-7e814253fac2.png" alt="Buyawarranty Panda" style="height: 120px; width: auto; display: inline-block;" />
             </div>
           </div>
           
