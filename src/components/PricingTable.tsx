@@ -573,7 +573,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {/* Floating Action Bar */}
       {isFloatingBarVisible && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50 animate-slide-up">
-          <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {plans.map((plan) => {
                 const basePrice = calculatePlanPrice(plan);
