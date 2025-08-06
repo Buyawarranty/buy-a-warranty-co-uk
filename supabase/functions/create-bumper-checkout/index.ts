@@ -31,9 +31,21 @@ serve(async (req) => {
     const { planId, vehicleData, paymentType: originalPaymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount } = body;
     logStep("Request data", { planId, vehicleData, originalPaymentType, voluntaryExcess, discountCode, finalAmount });
     
+    // Calculate number of instalments based on payment type
+    const getInstalmentCount = (paymentType: string) => {
+      switch (paymentType) {
+        case 'yearly': return "12";
+        case 'two_yearly': return "24";
+        case 'three_yearly': return "36";
+        default: return "12";
+      }
+    };
+    
+    const instalmentCount = getInstalmentCount(originalPaymentType);
+    
     // CRITICAL: Bumper only accepts monthly payments, regardless of user selection
     const paymentType = 'monthly'; // Force monthly for Bumper credit checks
-    logStep("Forcing monthly payment for Bumper", { originalSelection: originalPaymentType, forcedPaymentType: paymentType });
+    logStep("Forcing monthly payment for Bumper", { originalSelection: originalPaymentType, forcedPaymentType: paymentType, instalmentCount });
     
     // Get plan name from database using planId
     const supabaseService = createClient(
@@ -152,7 +164,7 @@ serve(async (req) => {
           quantity: 1,
         }],
         mode: "payment",
-        success_url: `${origin}/thank-you?plan=${planType}&payment=yearly&session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${origin}/thank-you?plan=${planType}&payment=${originalPaymentType}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/`,
       });
 
@@ -189,7 +201,7 @@ serve(async (req) => {
           quantity: 1,
         }],
         mode: "payment",
-        success_url: `${origin}/thank-you?plan=${planType}&payment=yearly&session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${origin}/thank-you?plan=${planType}&payment=${originalPaymentType}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/`,
       });
 
@@ -218,7 +230,7 @@ serve(async (req) => {
       email: customerData.email,
       mobile: customerData.mobile,
       vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
-      instalments: "12", // 12 monthly payments
+      instalments: instalmentCount, // Dynamic based on payment period
       // Address fields directly (not nested in object)
       flat_number: customerData.flat_number || "",
       building_name: customerData.building_name || "",
@@ -296,7 +308,7 @@ serve(async (req) => {
             quantity: 1,
           }],
           mode: "payment",
-          success_url: `${origin}/thank-you?plan=${planType}&payment=yearly&session_id={CHECKOUT_SESSION_ID}`,
+          success_url: `${origin}/thank-you?plan=${planType}&payment=${originalPaymentType}&session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${origin}/`,
         });
         
@@ -320,9 +332,9 @@ serve(async (req) => {
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
         fallbackReason: "credit_check_failed",
-        originalPaymentType: paymentType,
-        fallbackPaymentType: "yearly",
-        error: "Credit check failed, redirecting to yearly payment option" 
+        originalPaymentType: originalPaymentType,
+        fallbackPaymentType: originalPaymentType,
+        error: "Credit check failed, redirecting to payment option" 
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -342,9 +354,9 @@ serve(async (req) => {
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
         fallbackReason: "credit_check_failed",
-        originalPaymentType: paymentType,
-        fallbackPaymentType: "yearly",
-        error: "Credit check failed, redirecting to yearly payment option" 
+        originalPaymentType: originalPaymentType,
+        fallbackPaymentType: originalPaymentType,
+        error: "Credit check failed, redirecting to payment option" 
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -374,9 +386,9 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       fallbackToStripe: true,
       fallbackReason: "credit_check_failed",
-      originalPaymentType: originalPaymentType || "monthly",
-      fallbackPaymentType: "yearly",
-      error: "Credit check failed, redirecting to yearly payment option"
+      originalPaymentType: originalPaymentType || "yearly",
+      fallbackPaymentType: originalPaymentType || "yearly",
+      error: "Credit check failed, redirecting to payment option"
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
