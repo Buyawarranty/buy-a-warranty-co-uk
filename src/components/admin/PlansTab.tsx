@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Edit, Save, Plus, Trash2 } from 'lucide-react';
 import { Json } from '@/integrations/supabase/types';
 import DocumentUpload from './DocumentUpload';
+import TermsConditionsUpload from './TermsConditionsUpload';
 
 interface Plan {
   id: string;
@@ -316,6 +317,8 @@ export const PlansTab = () => {
       </div>
 
       <DocumentUpload />
+      
+      <TermsConditionsUpload />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {plans.map((plan) => {
