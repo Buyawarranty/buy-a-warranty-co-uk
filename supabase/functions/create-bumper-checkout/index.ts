@@ -33,12 +33,8 @@ serve(async (req) => {
     
     // Calculate number of instalments based on payment type
     const getInstalmentCount = (paymentType: string) => {
-      switch (paymentType) {
-        case 'yearly': return "12";
-        case 'two_yearly': return "24";
-        case 'three_yearly': return "36";
-        default: return "12";
-      }
+      // Bumper always uses 12 instalments regardless of plan duration
+      return "12";
     };
     
     const instalmentCount = getInstalmentCount(originalPaymentType);

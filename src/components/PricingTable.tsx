@@ -416,7 +416,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      <span className="text-2xl">£</span>{monthlyPrice}<span className="text-2xl">/mo</span>
                    </div>
                    <div className="text-gray-600 text-base mb-6">
-                     for {paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36'} months interest free
+                     for 12 months interest free
                    </div>
                    {savings && paymentType !== 'yearly' && (
                      <div className="text-green-600 font-bold text-lg mb-6">
@@ -594,7 +594,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </h4>
                        <div className="flex items-baseline gap-1">
                          <span className="text-sm">£</span><span className="text-2xl font-bold">{Math.round(monthlyPrice)}</span>
-                         <span className="text-sm text-gray-600">x {paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36'} easy payments</span>
+                         <span className="text-sm text-gray-600">x 12 easy payments</span>
                        </div>
                       {savings && paymentType !== 'yearly' && (
                         <div className="text-green-600 font-semibold text-sm">
