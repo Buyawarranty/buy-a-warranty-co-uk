@@ -139,32 +139,18 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const areRequiredFieldsFilled = firstName.trim() && lastName.trim() && email.trim();
 
   return (
-    <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0 relative">
-      {!showContactForm && (
-        /* Back button positioned at top left for initial view */
+    <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0">
+      {/* Back button above the content box for both views */}
+      <div className="max-w-4xl mx-auto mb-4">
         <button 
           type="button" 
           onClick={onBack}
-          className="absolute top-4 left-4 z-10 flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
+          className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
         </button>
-      )}
-      
-      {showContactForm && (
-        /* Back button above the content box for contact form */
-        <div className="max-w-4xl mx-auto mb-4">
-          <button 
-            type="button" 
-            onClick={onBack}
-            className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </button>
-        </div>
-      )}
+      </div>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {!showContactForm ? (
