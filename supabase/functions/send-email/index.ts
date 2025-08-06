@@ -63,7 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
     emailContent = emailContent
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #f97316; text-decoration: none;">$1</a>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #f97316; text-decoration: none; font-weight: 600;">$1</a>')
       .replace(/\\n\\n/g, '</p><p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">')
       .replace(/\\n/g, '<br>')
       .replace(/\n\n/g, '</p><p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">')
@@ -119,9 +119,10 @@ const handler = async (req: Request): Promise<Response> => {
     }
     
     .email-header {
-      background: linear-gradient(135deg, #f97316, #ea580c) !important;
+      background-color: #f1f5f9 !important;
       padding: 30px 40px !important;
       text-align: center !important;
+      border-bottom: 1px solid #e2e8f0;
     }
     
     .email-logo img {
@@ -132,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
     
     .email-logo {
-      color: #ffffff !important;
+      color: #1a1a1a !important;
       font-size: 24px !important;
       font-weight: bold !important;
       text-decoration: none !important;
@@ -217,7 +218,7 @@ const handler = async (req: Request): Promise<Response> => {
         <div class="email-container">
           <div class="email-header">
             <a href="https://buyawarranty.co.uk" class="email-logo">
-              <span style="color: #1e3a8a; font-weight: bold;">buya</span><span style="color: #f97316; font-weight: bold;">warranty</span><span style="color: #ffffff; font-weight: normal; font-size: 20px;">.co.uk</span>
+              <span style="color: #1e3a8a; font-weight: bold;">buya</span><span style="color: #f97316; font-weight: bold;">warranty</span><span style="color: #64748b; font-weight: normal; font-size: 20px;">.co.uk</span>
             </a>
           </div>
           
