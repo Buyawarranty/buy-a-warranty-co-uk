@@ -363,56 +363,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 </div>
               </div>
 
-              {/* Discount Code Section */}
-              <div className="pt-4 border-t border-gray-200">
-                <div className="flex items-center gap-2 mb-3">
-                  <h4 className="text-sm font-medium text-gray-700">Discount Code</h4>
-                  <Collapsible open={showDiscountInfo} onOpenChange={setShowDiscountInfo}>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="sm" className="p-0 h-auto">
-                        <Info className="h-4 w-4" />
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-2">
-                      <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-md">
-                        <p>Enter a valid discount code to get money off your warranty. The discount will be applied to your final total.</p>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-                
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Enter discount code"
-                    value={customerData.discount_code}
-                    onChange={(e) => handleInputChange('discount_code', e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={validateDiscountCode}
-                    disabled={!customerData.discount_code.trim() || isValidatingDiscount}
-                  >
-                    {isValidatingDiscount ? 'Checking...' : 'Apply'}
-                  </Button>
-                </div>
-                
-                {discountValidation && (
-                  <div className={`text-sm p-3 rounded-md flex items-center gap-2 mt-2 ${
-                    discountValidation.isValid 
-                      ? 'bg-green-50 text-green-700' 
-                      : 'bg-red-50 text-red-700'
-                  }`}>
-                    {discountValidation.isValid ? (
-                      <div className="text-green-600">✓</div>
-                    ) : (
-                      <AlertCircle className="h-4 w-4 text-red-600" />
-                    )}
-                    {discountValidation.message}
-                  </div>
-                )}
-              </div>
             </form>
           </div>
 
@@ -476,6 +426,57 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 </div>
                 <div className="text-sm text-gray-600 mt-1">
                   12 monthly payments of £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / 12 : pricingData.monthlyPrice)}
+                </div>
+
+                {/* Discount Code Section */}
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex items-center gap-2 mb-3">
+                    <h4 className="text-sm font-medium text-gray-700">Discount Code</h4>
+                    <Collapsible open={showDiscountInfo} onOpenChange={setShowDiscountInfo}>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="p-0 h-auto">
+                          <Info className="h-4 w-4" />
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-2">
+                        <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-md">
+                          <p>Enter a valid discount code to get money off your warranty. The discount will be applied to your final total.</p>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter discount code"
+                      value={customerData.discount_code}
+                      onChange={(e) => handleInputChange('discount_code', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={validateDiscountCode}
+                      disabled={!customerData.discount_code.trim() || isValidatingDiscount}
+                    >
+                      {isValidatingDiscount ? 'Checking...' : 'Apply'}
+                    </Button>
+                  </div>
+                  
+                  {discountValidation && (
+                    <div className={`text-sm p-3 rounded-md flex items-center gap-2 mt-2 ${
+                      discountValidation.isValid 
+                        ? 'bg-green-50 text-green-700' 
+                        : 'bg-red-50 text-red-700'
+                    }`}>
+                      {discountValidation.isValid ? (
+                        <div className="text-green-600">✓</div>
+                      ) : (
+                        <AlertCircle className="h-4 w-4 text-red-600" />
+                      )}
+                      {discountValidation.message}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
