@@ -82,10 +82,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const monthlyBumperPrice = pricingData.monthlyPrice; // This is the monthly payment amount
   const stripePrice = Math.round(finalTotalPrice * 0.95); // 5% discount for full payment
   
+  // Calculate Bumper total as monthly payment x 12 (always 12 payments with Bumper)
+  const bumperTotalPrice = Math.round(finalTotalPrice / 12) * 12; // Monthly amount x 12
+  
   // Apply discount if valid
   const discountedBumperPrice = discountValidation?.isValid 
     ? discountValidation.finalAmount 
-    : finalTotalPrice; // Use total price for Bumper (they handle the installment calculation)
+    : bumperTotalPrice; // Use Bumper total (monthly x 12)
   
   const discountedStripePrice = discountValidation?.isValid 
     ? Math.round(discountValidation.finalAmount * 0.95)
@@ -425,10 +428,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <span className="font-semibold">Total Price:</span>
                   <div className="text-right">
                     <div className="font-bold text-lg">
-                      £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : finalTotalPrice)} for entire cover period
+                      £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
                       {discountValidation?.isValid && (
                         <span className="text-green-600 text-sm ml-2">
-                          (5% discount applied: -£{Math.round(finalTotalPrice - discountValidation.finalAmount)})
+                          (5% discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
                         </span>
                       )}
                     </div>
