@@ -178,10 +178,10 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
               <button 
                 onClick={handleSkipClick}
-                className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative hover:bg-opacity-80 hover:shadow-lg hover:scale-[1.02] ${
+                className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative hover:bg-opacity-90 hover:shadow-lg hover:scale-[1.02] ${
                   areRequiredFieldsFilled ? '' : 'opacity-50'
                 }`}
-                style={{ backgroundColor: '#224380' }}
+                style={{ backgroundColor: '#1e3a8a' }}
               >
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
                 <div className="text-center px-8 sm:px-12">
