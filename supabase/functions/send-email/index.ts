@@ -51,6 +51,9 @@ const handler = async (req: Request): Promise<Response> => {
     let emailSubject = template.subject;
     let emailGreeting = template.content.greeting || '';
 
+    // Generate unsubscribe token (simple hash of email + timestamp)
+    const unsubscribeToken = btoa(`${recipientEmail}:${Date.now()}`).replace(/[+/=]/g, '');
+    
     // Replace variables in all text fields
     for (const [key, value] of Object.entries(variables)) {
       const placeholder = `{{${key}}}`;
@@ -75,7 +78,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Create HTML email with brand styling
-    const htmlContent = `
+    let htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -228,15 +231,19 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <div class="email-footer">
+            <div style="margin-bottom: 20px; text-align: center;">
+              <a href="https://buyawarranty.co.uk" style="text-decoration: none;">
+                <img src="https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/logo-email.png" alt="Buyawarranty.co.uk" style="height: 40px; width: auto; display: inline-block;" />
+              </a>
+            </div>
             <p class="email-footer-text">
-              <strong>Buyawarranty.co.uk</strong><br>
               Your trusted warranty partner<br>
               <a href="tel:0330229504">0330 229 5040</a> | 
               <a href="mailto:info@buyawarranty.co.uk">info@buyawarranty.co.uk</a>
             </p>
             <p class="email-unsubscribe">
               If you no longer wish to receive these emails, you can 
-              <a href="#">unsubscribe here</a>.
+              <a href="https://buyawarranty.co.uk/unsubscribe?email={{recipientEmail}}&token={{unsubscribeToken}}">unsubscribe here</a>.
             </p>
           </div>
         </div>
@@ -245,6 +252,11 @@ const handler = async (req: Request): Promise<Response> => {
   </table>
 </body>
 </html>`;
+
+    // Replace footer placeholders
+    htmlContent = htmlContent
+      .replace(/\{\{recipientEmail\}\}/g, encodeURIComponent(recipientEmail))
+      .replace(/\{\{unsubscribeToken\}\}/g, unsubscribeToken);
 
     // Create email log entry
     const { data: emailLog, error: logError } = await supabase
