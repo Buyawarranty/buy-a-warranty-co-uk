@@ -91,6 +91,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     ? Math.round(discountValidation.finalAmount * 0.95)
     : stripePrice;
 
+  // Helper function to get payment period months
+  const getPaymentPeriodMonths = () => {
+    switch (paymentType) {
+      case 'yearly': return 12;
+      case 'two_yearly': return 24;
+      case 'three_yearly': return 36;
+      default: return 12;
+    }
+  };
+
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
   };
@@ -409,7 +419,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               {/* Payment Summary */}
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="text-green-600 font-semibold text-lg mb-2">
-                  Payment: £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / 12 : pricingData.monthlyPrice)} x 12 easy payments
+                  Payment: £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / getPaymentPeriodMonths() : pricingData.monthlyPrice)} x {getPaymentPeriodMonths()} easy payments
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-semibold">Total Price:</span>

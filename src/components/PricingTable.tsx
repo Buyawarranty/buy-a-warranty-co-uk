@@ -382,7 +382,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           {plans.map((plan) => {
             const basePrice = calculatePlanPrice(plan);
             const addOnPrice = calculateAddOnPrice(plan.id);
-            const totalPrice = basePrice + addOnPrice;
+            const monthlyPrice = basePrice + addOnPrice;
             const isLoading = loading[plan.id];
             const isPopular = plan.name === 'Gold';
             const savings = getPlanSavings(plan);
@@ -413,7 +413,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      '1 Year warranty'}
                    </p>
                    <div className="text-4xl font-bold text-gray-900 mb-3">
-                     <span className="text-2xl">£</span>{totalPrice}<span className="text-2xl">/mo</span>
+                     <span className="text-2xl">£</span>{monthlyPrice}<span className="text-2xl">/mo</span>
                    </div>
                    <div className="text-gray-600 text-base mb-6">
                      for 12 months interest free
@@ -575,12 +575,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50 animate-slide-up">
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              {plans.map((plan) => {
-                const basePrice = calculatePlanPrice(plan);
-                const addOnPrice = calculateAddOnPrice(plan.id);
-                const totalPrice = basePrice + addOnPrice;
-                const isLoading = loading[plan.id];
-                const savings = getPlanSavings(plan);
+               {plans.map((plan) => {
+                 const basePrice = calculatePlanPrice(plan);
+                 const addOnPrice = calculateAddOnPrice(plan.id);
+                 const monthlyPrice = basePrice + addOnPrice;
+                 const isLoading = loading[plan.id];
+                 const savings = getPlanSavings(plan);
                 
                 return (
                   <div key={plan.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -593,8 +593,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         {plan.name}
                       </h4>
                        <div className="flex items-baseline gap-1">
-                         <span className="text-sm">£</span><span className="text-2xl font-bold">{Math.round(totalPrice)}</span>
-                         <span className="text-sm text-gray-600">x 12 easy payments</span>
+                         <span className="text-sm">£</span><span className="text-2xl font-bold">{Math.round(monthlyPrice)}</span>
+                         <span className="text-sm text-gray-600">x {paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36'} easy payments</span>
                        </div>
                       {savings && paymentType !== 'yearly' && (
                         <div className="text-green-600 font-semibold text-sm">

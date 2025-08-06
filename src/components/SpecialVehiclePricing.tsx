@@ -499,7 +499,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   <div className="flex items-baseline gap-1">
                     <span className="text-sm">£</span>
                     <span className="text-2xl font-bold">{Math.round(getMonthlyDisplayPrice())}</span>
-                    <span className="text-sm text-gray-600">x 12 easy payments</span>
+                    <span className="text-sm text-gray-600">x {paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36'} easy payments</span>
                   </div>
                 </div>
                 <Button
