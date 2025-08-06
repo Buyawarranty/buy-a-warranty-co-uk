@@ -334,10 +334,18 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           )}
 
           {vehicleData && !vehicleData.found && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-[4px] p-4 mb-4">
-              <p className="text-sm text-yellow-800 mb-2 font-semibold">Vehicle not found</p>
-              <p className="text-sm text-yellow-700">
-                Oops! We couldn't find that vehicle. Try entering a different or corrected plate.
+            <div className="bg-red-50 border border-red-200 rounded-[4px] p-4 mb-4">
+              <p className="text-sm text-red-800 mb-2">
+                ⚠️ Vehicle not found -
+              </p>
+              <p className="text-sm text-red-700 font-bold mb-2">
+                Please double-check your number plate and try again.
+              </p>
+              <p className="text-sm text-red-700 mb-2">
+                We couldn't verify this registration with the DVLA.
+              </p>
+              <p className="text-sm text-red-700">
+                If you'd still like to proceed, we may need to run some additional checks 🔍 before confirming your warranty.
               </p>
             </div>
           )}
