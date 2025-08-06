@@ -68,98 +68,162 @@ const handler = async (req: Request): Promise<Response> => {
     // Create HTML email with brand styling
     const htmlContent = `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>${emailSubject}</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
   <style>
+    /* Reset styles */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; }
+    
+    /* Remove default spacing */
+    body { margin: 0 !important; padding: 0 !important; }
+    
+    /* Base styles */
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f9fa;
+      background-color: #f8f9fa !important;
       color: #1a1a1a;
+      line-height: 1.6;
     }
-    .container { 
-      max-width: 600px; 
-      margin: 0 auto; 
-      background-color: #ffffff;
+    
+    .email-container { 
+      max-width: 600px !important; 
+      margin: 0 auto !important; 
+      background-color: #ffffff !important;
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .header {
-      background: linear-gradient(135deg, #f97316, #ea580c);
-      padding: 30px 40px;
-      text-align: center;
+    
+    .email-header {
+      background: linear-gradient(135deg, #f97316, #ea580c) !important;
+      padding: 30px 40px !important;
+      text-align: center !important;
     }
-    .logo {
-      color: #ffffff;
-      font-size: 24px;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .content { 
-      padding: 40px;
-      line-height: 1.6;
-    }
-    .greeting {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 20px;
-    }
-    .button {
-      display: inline-block;
-      padding: 12px 24px;
-      background: linear-gradient(135deg, #f97316, #ea580c);
+    
+    .email-logo {
       color: #ffffff !important;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 600;
-      margin: 20px 0;
+      font-size: 24px !important;
+      font-weight: bold !important;
+      text-decoration: none !important;
+      display: inline-block;
     }
-    .footer {
-      background-color: #f1f5f9;
-      padding: 30px 40px;
-      text-align: center;
-      color: #64748b;
-      font-size: 14px;
+    
+    .email-content { 
+      padding: 40px !important;
     }
-    .footer a {
-      color: #f97316;
-      text-decoration: none;
+    
+    .email-greeting {
+      font-size: 18px !important;
+      font-weight: 600 !important;
+      color: #1a1a1a !important;
+      margin-bottom: 20px !important;
+      margin-top: 0 !important;
     }
-    a {
-      color: #f97316;
+    
+    .email-text {
+      color: #1a1a1a !important;
+      font-size: 16px !important;
+      line-height: 1.6 !important;
+      margin: 16px 0 !important;
+    }
+    
+    .email-button {
+      display: inline-block !important;
+      padding: 12px 24px !important;
+      background: linear-gradient(135deg, #f97316, #ea580c) !important;
+      color: #ffffff !important;
+      text-decoration: none !important;
+      border-radius: 6px !important;
+      font-weight: 600 !important;
+      margin: 20px 0 !important;
+    }
+    
+    .email-footer {
+      background-color: #f1f5f9 !important;
+      padding: 30px 40px !important;
+      text-align: center !important;
+      color: #64748b !important;
+      font-size: 14px !important;
+    }
+    
+    .email-footer a {
+      color: #f97316 !important;
+      text-decoration: none !important;
+    }
+    
+    .email-footer-text {
+      margin: 0 0 10px 0 !important;
+      color: #64748b !important;
+    }
+    
+    .email-unsubscribe {
+      margin-top: 20px !important; 
+      font-size: 12px !important; 
+      color: #94a3b8 !important;
+    }
+    
+    .email-unsubscribe a {
+      color: #94a3b8 !important;
+    }
+    
+    /* Mobile responsive */
+    @media only screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+      }
+      .email-header, .email-content, .email-footer {
+        padding: 20px !important;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <a href="https://buyawarranty.co.uk" class="logo">Buyawarranty.co.uk</a>
-    </div>
-    
-    <div class="content">
-      <div class="greeting">${emailGreeting}</div>
-      <div>${emailContent}</div>
-    </div>
-    
-    <div class="footer">
-      <p>
-        <strong>Buyawarranty.co.uk</strong><br>
-        Your trusted warranty partner<br>
-        <a href="tel:0330229504">0330 229 5040</a> | 
-        <a href="mailto:info@buyawarranty.co.uk">info@buyawarranty.co.uk</a>
-      </p>
-      <p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">
-        If you no longer wish to receive these emails, you can 
-        <a href="#" style="color: #94a3b8;">unsubscribe here</a>.
-      </p>
-    </div>
-  </div>
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f8f9fa;">
+    <tr>
+      <td style="padding: 20px 0;">
+        <div class="email-container">
+          <div class="email-header">
+            <a href="https://buyawarranty.co.uk" class="email-logo">Buyawarranty.co.uk</a>
+          </div>
+          
+          <div class="email-content">
+            ${emailGreeting ? `<div class="email-greeting">${emailGreeting}</div>` : ''}
+            <div class="email-text">${emailContent}</div>
+          </div>
+          
+          <div class="email-footer">
+            <p class="email-footer-text">
+              <strong>Buyawarranty.co.uk</strong><br>
+              Your trusted warranty partner<br>
+              <a href="tel:0330229504">0330 229 5040</a> | 
+              <a href="mailto:info@buyawarranty.co.uk">info@buyawarranty.co.uk</a>
+            </p>
+            <p class="email-unsubscribe">
+              If you no longer wish to receive these emails, you can 
+              <a href="#">unsubscribe here</a>.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>`;
 
