@@ -83,32 +83,35 @@ serve(async (req) => {
       logStep("No auth header, proceeding as guest checkout");
     }
 
-    // Use final amount if provided, otherwise calculate from pricing table
-    let monthlyAmount = finalAmount;
+    // Use final amount if provided - this is the total amount for the entire period
+    let totalAmount = finalAmount;
+    let monthlyAmount = totalAmount;
     
-    if (!monthlyAmount) {
+    if (!totalAmount) {
       // Fallback to pricing calculation if finalAmount not provided
       const pricingTable = {
         monthly: {
-          0: { basic: { monthly: 31, total: 31 }, gold: { monthly: 34, total: 34 }, platinum: { monthly: 36, total: 36 } },
-          50: { basic: { monthly: 29, total: 29 }, gold: { monthly: 31, total: 31 }, platinum: { monthly: 32, total: 32 } },
-          100: { basic: { monthly: 25, total: 25 }, gold: { monthly: 27, total: 27 }, platinum: { monthly: 29, total: 29 } },
-          150: { basic: { monthly: 23, total: 23 }, gold: { monthly: 26, total: 26 }, platinum: { monthly: 27, total: 27 } },
-          200: { basic: { monthly: 20, total: 20 }, gold: { monthly: 23, total: 23 }, platinum: { monthly: 25, total: 25 } }
+          0: { basic: { monthly: 31, total: 372 }, gold: { monthly: 34, total: 408 }, platinum: { monthly: 36, total: 432 } },
+          50: { basic: { monthly: 29, total: 348 }, gold: { monthly: 31, total: 372 }, platinum: { monthly: 32, total: 384 } },
+          100: { basic: { monthly: 25, total: 300 }, gold: { monthly: 27, total: 324 }, platinum: { monthly: 29, total: 348 } },
+          150: { basic: { monthly: 23, total: 276 }, gold: { monthly: 26, total: 312 }, platinum: { monthly: 27, total: 324 } },
+          200: { basic: { monthly: 20, total: 240 }, gold: { monthly: 23, total: 276 }, platinum: { monthly: 25, total: 300 } }
         }
       };
       
       const periodData = pricingTable['monthly'];
       const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
       const planPricing = excessData[planType as keyof typeof excessData];
+      totalAmount = planPricing.total;
       monthlyAmount = planPricing.monthly;
     }
 
-    logStep("Using monthly amount", { monthlyAmount, source: finalAmount ? 'provided' : 'calculated' });
+    logStep("Using total amount for Bumper", { totalAmount, monthlyAmount, source: finalAmount ? 'provided' : 'calculated' });
 
     const origin = req.headers.get("origin") || "https://buyawarranty.com";
-    logStep("Creating Bumper checkout - ALWAYS MONTHLY for credit check", { 
-      monthlyAmount, 
+    logStep("Creating Bumper checkout - TOTAL AMOUNT for entire cover period", { 
+      totalAmount, 
+      monthlyAmount,
       customerEmail, 
       origin, 
       originalUserSelection: originalPaymentType,
@@ -144,7 +147,7 @@ serve(async (req) => {
             product_data: { 
               name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Warranty Plan`,
             },
-            unit_amount: Math.round(monthlyAmount * 100 * 12), // Convert to yearly amount in pence
+            unit_amount: Math.round(totalAmount * 100), // Convert total amount to pence
           },
           quantity: 1,
         }],
@@ -181,7 +184,7 @@ serve(async (req) => {
             product_data: { 
               name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Warranty Plan`,
             },
-            unit_amount: Math.round(monthlyAmount * 100 * 12), // Convert to yearly amount in pence
+            unit_amount: Math.round(totalAmount * 100), // Convert total amount to pence
           },
           quantity: 1,
         }],
@@ -201,7 +204,7 @@ serve(async (req) => {
     }
 
     const bumperRequestData = {
-      amount: monthlyAmount.toString(),
+      amount: totalAmount.toString(), // Send total amount to Bumper
       preferred_product_type: "paylater",
       api_key: bumperApiKey,
       success_url: `${origin}/thank-you?plan=${planId}&payment=monthly&source=bumper`,
@@ -229,7 +232,7 @@ serve(async (req) => {
       product_description: [{
         item: `${planType} Vehicle Warranty`,
         quantity: "1",
-        price: monthlyAmount.toString()
+        price: totalAmount.toString() // Use total amount in product description
       }]
     };
 
@@ -245,7 +248,7 @@ serve(async (req) => {
 
     // CRITICAL FIX: Use PRODUCTION Bumper API, not demo
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";
-    logStep("Making Bumper API request to PRODUCTION", { url: bumperApiUrl, amount: monthlyAmount });
+    logStep("Making Bumper API request to PRODUCTION", { url: bumperApiUrl, totalAmount, monthlyAmount });
 
     const bumperResponse = await fetch(bumperApiUrl, {
       method: "POST",
@@ -288,7 +291,7 @@ serve(async (req) => {
               product_data: { 
                 name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Warranty Plan`,
               },
-              unit_amount: Math.round(monthlyAmount * 100 * 12), // Convert to yearly amount in pence
+              unit_amount: Math.round(totalAmount * 100), // Convert total amount to pence
             },
             quantity: 1,
           }],

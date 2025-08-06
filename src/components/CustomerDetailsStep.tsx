@@ -85,7 +85,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // Apply discount if valid
   const discountedBumperPrice = discountValidation?.isValid 
     ? discountValidation.finalAmount 
-    : monthlyBumperPrice;
+    : finalTotalPrice; // Use total price for Bumper (they handle the installment calculation)
   
   const discountedStripePrice = discountValidation?.isValid 
     ? Math.round(discountValidation.finalAmount * 0.95)
