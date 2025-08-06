@@ -63,7 +63,16 @@ const handler = async (req: Request): Promise<Response> => {
     emailContent = emailContent
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #f97316; text-decoration: none;">$1</a>')
+      .replace(/\\n\\n/g, '</p><p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">')
+      .replace(/\\n/g, '<br>')
+      .replace(/\n\n/g, '</p><p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">')
       .replace(/\n/g, '<br>');
+
+    // Wrap content in paragraph tags if not already wrapped
+    if (!emailContent.startsWith('<p')) {
+      emailContent = `<p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">${emailContent}</p>`;
+    }
 
     // Create HTML email with brand styling
     const htmlContent = `
@@ -113,6 +122,13 @@ const handler = async (req: Request): Promise<Response> => {
       background: linear-gradient(135deg, #f97316, #ea580c) !important;
       padding: 30px 40px !important;
       text-align: center !important;
+    }
+    
+    .email-logo img {
+      height: 40px !important;
+      width: auto !important;
+      display: block !important;
+      margin: 0 auto !important;
     }
     
     .email-logo {
@@ -200,7 +216,9 @@ const handler = async (req: Request): Promise<Response> => {
       <td style="padding: 20px 0;">
         <div class="email-container">
           <div class="email-header">
-            <a href="https://buyawarranty.co.uk" class="email-logo">Buyawarranty.co.uk</a>
+            <a href="https://buyawarranty.co.uk" class="email-logo">
+              <span style="color: #1e3a8a; font-weight: bold;">buya</span><span style="color: #f97316; font-weight: bold;">warranty</span><span style="color: #ffffff; font-weight: normal; font-size: 20px;">.co.uk</span>
+            </a>
           </div>
           
           <div class="email-content">
