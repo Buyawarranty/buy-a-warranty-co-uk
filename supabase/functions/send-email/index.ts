@@ -221,22 +221,23 @@ const handler = async (req: Request): Promise<Response> => {
         <div class="email-container">
           <div class="email-header">
             <a href="https://buyawarranty.co.uk" class="email-logo">
-              <span style="color: #1e3a8a; font-weight: bold;">buya</span><span style="color: #f97316; font-weight: bold;">warranty</span><span style="color: #64748b; font-weight: normal; font-size: 20px;">.co.uk</span>
+              <span style="color: #1e3a8a; font-weight: bold;">buya</span><span style="color: #f97316; font-weight: bold;">warranty</span>
             </a>
           </div>
           
           <div class="email-content">
             ${emailGreeting ? `<div class="email-greeting">${emailGreeting}</div>` : ''}
             <div class="email-text">${emailContent}</div>
+            
+            <!-- Friendly panda mascot -->
+            <div style="text-align: center; margin: 30px 0;">
+              <img src="/lovable-uploads/11dcff3d-99db-4dba-84d8-254bf38a8051.png" alt="Buyawarranty Panda" style="height: 120px; width: auto; display: inline-block;" />
+            </div>
           </div>
           
           <div class="email-footer">
-            <div style="margin-bottom: 20px; text-align: center;">
-              <a href="https://buyawarranty.co.uk" style="text-decoration: none;">
-                <img src="https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/logo-email.png" alt="Buyawarranty.co.uk" style="height: 40px; width: auto; display: inline-block;" />
-              </a>
-            </div>
             <p class="email-footer-text">
+              <strong>buyawarranty.co.uk</strong><br>
               Your trusted warranty partner<br>
               <a href="tel:0330229504">0330 229 5040</a> | 
               <a href="mailto:info@buyawarranty.co.uk">info@buyawarranty.co.uk</a>
