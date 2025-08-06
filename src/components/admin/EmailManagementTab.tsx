@@ -348,6 +348,33 @@ const EmailManagementTab = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Email Management</h2>
         <div className="space-x-2">
+          <Button 
+            variant="outline"
+            onClick={async () => {
+              setIsLoading(true);
+              try {
+                const { error } = await supabase.functions.invoke('process-scheduled-emails');
+                if (error) throw error;
+                toast({
+                  title: "Success",
+                  description: "Scheduled emails processed successfully",
+                });
+                fetchEmailLogs();
+              } catch (error) {
+                toast({
+                  title: "Error",
+                  description: "Failed to process scheduled emails",
+                  variant: "destructive",
+                });
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+            disabled={isLoading}
+          >
+            <Calendar className="w-4 h-4 mr-2" />
+            Process Scheduled
+          </Button>
           <Dialog open={sendEmailOpen} onOpenChange={setSendEmailOpen}>
             <DialogTrigger asChild>
               <Button>

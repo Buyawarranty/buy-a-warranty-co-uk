@@ -143,6 +143,46 @@ serve(async (req) => {
       // Don't fail the whole process if email fails
     }
 
+    // Schedule feedback email for 3 days later
+    try {
+      const { data: feedbackTemplate, error: templateError } = await supabaseClient
+        .from('email_templates')
+        .select('id')
+        .eq('template_type', 'feedback')
+        .eq('is_active', true)
+        .single();
+
+      if (feedbackTemplate && !templateError) {
+        const feedbackDate = new Date();
+        feedbackDate.setDate(feedbackDate.getDate() + 3);
+        feedbackDate.setHours(10, 0, 0, 0); // Send at 10 AM
+
+        const { error: scheduleError } = await supabaseClient
+          .from('scheduled_emails')
+          .insert({
+            template_id: feedbackTemplate.id,
+            customer_id: authData?.user?.id || null,
+            recipient_email: email,
+            scheduled_for: feedbackDate.toISOString(),
+            metadata: {
+              customerFirstName: email.split('@')[0],
+              expiryDate: calculatePolicyEndDate(paymentType),
+              portalUrl: 'https://buyawarranty.co.uk/customer-dashboard',
+              referralLink: `https://buyawarranty.co.uk/refer/${authData?.user?.id || 'guest'}`
+            }
+          });
+
+        if (scheduleError) {
+          logStep('Failed to schedule feedback email', { error: scheduleError });
+        } else {
+          logStep('Feedback email scheduled successfully', { scheduledFor: feedbackDate });
+        }
+      }
+    } catch (error) {
+      logStep("Error scheduling feedback email", error);
+      // Don't fail the whole process if scheduling fails
+    }
+
     return new Response(JSON.stringify({ 
       success: true, 
       message: "Welcome email process completed",
