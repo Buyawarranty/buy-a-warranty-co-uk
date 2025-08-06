@@ -424,9 +424,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-600 mt-1">
-                  12 monthly payments of £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / 12 : pricingData.monthlyPrice)}
-                </div>
 
                 {/* Discount Code Section */}
                 <div className="pt-4 border-t border-gray-200">
