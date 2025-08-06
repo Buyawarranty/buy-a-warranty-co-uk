@@ -608,6 +608,7 @@ const EmailManagementTab = () => {
                     <SelectItem value="renewal">Renewal</SelectItem>
                     <SelectItem value="abandoned_cart">Abandoned Cart</SelectItem>
                     <SelectItem value="expiry">Expiry</SelectItem>
+                    <SelectItem value="feedback">Feedback</SelectItem>
                     <SelectItem value="sales">Sales</SelectItem>
                     <SelectItem value="marketing">Marketing</SelectItem>
                     <SelectItem value="claims">Claims</SelectItem>

@@ -272,13 +272,21 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('Error creating email log:', logError);
     }
 
-    // Send email with Resend
-    const emailResponse = await resend.emails.send({
+    // Prepare email options
+    const emailOptions: any = {
       from: template.from_email,
       to: [recipientEmail],
       subject: emailSubject,
       html: htmlContent,
-    });
+    };
+
+    // Add BCC for Trustpilot integration if this is a feedback template
+    if (template.template_type === 'feedback') {
+      emailOptions.bcc = ['buyawarranty.co.uk+8fc526946e@invite.trustpilot.com'];
+    }
+
+    // Send email with Resend
+    const emailResponse = await resend.emails.send(emailOptions);
 
     // Update email log with result
     if (emailLog) {
