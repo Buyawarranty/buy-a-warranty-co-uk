@@ -229,10 +229,9 @@ const handler = async (req: Request): Promise<Response> => {
             ${emailGreeting ? `<div class="email-greeting">${emailGreeting}</div>` : ''}
             <div class="email-text">${emailContent}</div>
             
-            <!-- Friendly message separator -->
-            <div style="text-align: center; margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
-              <div style="font-size: 48px; margin-bottom: 10px;">🐼</div>
-              <p style="margin: 0; color: #64748b; font-size: 14px; font-style: italic;">Your trusted warranty partner</p>
+            <!-- Friendly panda mascot -->
+            <div style="text-align: center; margin: 30px 0;">
+              <img src="/lovable-uploads/75734895-91e6-44a7-b1ac-c9797664a78a.png" alt="Buyawarranty Panda" style="height: 100px; width: auto; display: inline-block; object-fit: cover; object-position: top;" />
             </div>
           </div>
           
