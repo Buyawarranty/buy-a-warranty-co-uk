@@ -416,7 +416,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      <span className="text-2xl">£</span>{monthlyPrice}<span className="text-2xl">/mo</span>
                    </div>
                    <div className="text-gray-600 text-base mb-6">
-                     for 12 months interest free
+                     for {paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36'} months interest free
                    </div>
                    {savings && paymentType !== 'yearly' && (
                      <div className="text-green-600 font-bold text-lg mb-6">
