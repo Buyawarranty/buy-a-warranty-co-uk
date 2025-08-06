@@ -193,6 +193,7 @@ const DocumentUpload = () => {
                   <SelectItem value="electric">Electric Vehicle EV Extended Warranty</SelectItem>
                   <SelectItem value="motorbike">Motorbike Extended Warranty</SelectItem>
                   <SelectItem value="phev">PHEV Hybrid Extended Warranty</SelectItem>
+                  <SelectItem value="terms-and-conditions">Terms and conditions</SelectItem>
                 </SelectContent>
               </Select>
             </div>
