@@ -179,7 +179,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               >
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
                 <div className="text-center px-8 sm:px-12">
-                  <div className="text-xl sm:text-3xl leading-tight">
+                  <div className="text-base sm:text-xl leading-tight">
                     View my quote now
                   </div>
                 </div>
@@ -372,7 +372,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                     type="submit" 
                     disabled={!isFormValid}
                     title={!isFormValid ? "Please enter details" : ""}
-                    className="flex items-center justify-center gap-2 text-white text-xl sm:text-3xl font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                    className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                     style={{
                       backgroundColor: isFormValid ? '#0f1351' : '#0f1351',
                       borderColor: isFormValid ? '#0f1351' : '#0f1351'
