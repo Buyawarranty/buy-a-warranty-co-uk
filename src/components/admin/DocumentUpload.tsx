@@ -71,7 +71,14 @@ const DocumentUpload = () => {
   };
 
   const uploadDocument = async () => {
+    console.log('Upload document called with:', {
+      selectedFile: selectedFile?.name,
+      selectedPlan,
+      documentName
+    });
+
     if (!selectedFile || !selectedPlan || !documentName) {
+      console.log('Missing required fields');
       toast({
         title: "Missing information",
         description: "Please select a file, plan type, and enter a document name.",
@@ -86,29 +93,47 @@ const DocumentUpload = () => {
       const fileExt = selectedFile.name.split('.').pop();
       const filePath = `${selectedPlan}/${documentName}-${Date.now()}.${fileExt}`;
       
+      console.log('Attempting to upload to path:', filePath);
+      
       // Upload file to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('policy-documents')
         .upload(filePath, selectedFile);
 
-      if (uploadError) throw uploadError;
+      console.log('Storage upload result:', { uploadData, uploadError });
+
+      if (uploadError) {
+        console.error('Storage upload error:', uploadError);
+        throw uploadError;
+      }
 
       // Get the public URL
       const { data: { publicUrl } } = supabase.storage
         .from('policy-documents')
         .getPublicUrl(filePath);
       
+      console.log('Generated public URL:', publicUrl);
+      
       // Save document metadata to database
+      const insertData = {
+        plan_type: selectedPlan,
+        document_name: documentName,
+        file_url: publicUrl,
+        file_size: selectedFile.size,
+      };
+      
+      console.log('Inserting document metadata:', insertData);
+      
       const { error } = await supabase
         .from('customer_documents')
-        .insert({
-          plan_type: selectedPlan,
-          document_name: documentName,
-          file_url: publicUrl,
-          file_size: selectedFile.size,
-        });
+        .insert(insertData);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database insert error:', error);
+        throw error;
+      }
+
+      console.log('Document uploaded successfully');
 
       toast({
         title: "Document uploaded",
@@ -128,7 +153,7 @@ const DocumentUpload = () => {
       console.error('Error uploading document:', error);
       toast({
         title: "Upload failed",
-        description: "Failed to upload document. Please try again.",
+        description: `Failed to upload document: ${error.message || error}`,
         variant: "destructive",
       });
     } finally {
