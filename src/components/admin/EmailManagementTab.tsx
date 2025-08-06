@@ -50,6 +50,7 @@ const EmailManagementTab = () => {
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [emailLogs, setEmailLogs] = useState<EmailLog[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [scheduledEmails, setScheduledEmails] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -82,6 +83,7 @@ const EmailManagementTab = () => {
     fetchTemplates();
     fetchEmailLogs();
     fetchCustomers();
+    fetchScheduledEmails();
   }, []);
 
   const fetchTemplates = async () => {
@@ -143,6 +145,24 @@ const EmailManagementTab = () => {
       setCustomers(data || []);
     } catch (error) {
       console.error('Error fetching customers:', error);
+    }
+  };
+
+  const fetchScheduledEmails = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('scheduled_emails')
+        .select(`
+          *,
+          email_templates!scheduled_emails_template_id_fkey(name, template_type)
+        `)
+        .order('scheduled_for', { ascending: true })
+        .limit(50);
+
+      if (error) throw error;
+      setScheduledEmails(data || []);
+    } catch (error) {
+      console.error('Error fetching scheduled emails:', error);
     }
   };
 
@@ -360,6 +380,7 @@ const EmailManagementTab = () => {
                   description: "Scheduled emails processed successfully",
                 });
                 fetchEmailLogs();
+                fetchScheduledEmails();
               } catch (error) {
                 toast({
                   title: "Error",
@@ -470,6 +491,7 @@ const EmailManagementTab = () => {
       <Tabs defaultValue="templates" className="w-full">
         <TabsList>
           <TabsTrigger value="templates">Email Templates</TabsTrigger>
+          <TabsTrigger value="scheduled">Scheduled Emails</TabsTrigger>
           <TabsTrigger value="logs">Email Logs</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
@@ -520,6 +542,62 @@ const EmailManagementTab = () => {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="scheduled" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Scheduled Emails</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {scheduledEmails.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No scheduled emails found
+                  </div>
+                ) : (
+                  scheduledEmails.map((scheduled) => (
+                    <div key={scheduled.id} className="flex justify-between items-center p-3 border rounded-lg">
+                      <div className="space-y-1">
+                        <div className="font-medium">
+                          {scheduled.email_templates?.name || 'Unknown Template'}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          To: {scheduled.recipient_email}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Scheduled for: {new Date(scheduled.scheduled_for).toLocaleString()}
+                        </div>
+                        {scheduled.metadata?.customerFirstName && (
+                          <div className="text-xs text-muted-foreground">
+                            Customer: {scheduled.metadata.customerFirstName}
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-right space-y-1">
+                        <Badge 
+                          className={
+                            scheduled.status === 'scheduled' 
+                              ? 'bg-blue-100 text-blue-800' 
+                              : scheduled.status === 'sent'
+                              ? 'bg-green-100 text-green-800'
+                              : scheduled.status === 'failed'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }
+                        >
+                          {scheduled.status}
+                        </Badge>
+                        <div className="text-xs text-muted-foreground">
+                          {scheduled.email_templates?.template_type}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="logs" className="space-y-4">
