@@ -14,6 +14,11 @@ interface SendEmailRequest {
   recipientEmail: string;
   customerId?: string;
   variables?: Record<string, any>;
+  attachments?: Array<{
+    filename: string;
+    content: string;
+    type: string;
+  }>;
 }
 
 const supabase = createClient(
@@ -28,7 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { templateId, recipientEmail, customerId, variables = {} }: SendEmailRequest = await req.json();
+    const { templateId, recipientEmail, customerId, variables = {}, attachments = [] }: SendEmailRequest = await req.json();
 
     // Get email template
     const { data: template, error: templateError } = await supabase
@@ -279,6 +284,15 @@ const handler = async (req: Request): Promise<Response> => {
       subject: emailSubject,
       html: htmlContent,
     };
+
+    // Add attachments if provided
+    if (attachments && attachments.length > 0) {
+      emailOptions.attachments = attachments.map(attachment => ({
+        filename: attachment.filename,
+        content: attachment.content,
+        type: attachment.type
+      }));
+    }
 
     // Add BCC for Trustpilot integration if this is a feedback template
     if (template.template_type === 'feedback') {

@@ -113,8 +113,67 @@ serve(async (req) => {
       logStep("Warning: Failed to record welcome email", emailRecordError);
     }
 
-    // Fetch terms and conditions document to attach to welcome email
-    let termsAttachment = null;
+    // Fetch plan-specific and terms & conditions documents to attach to welcome email
+    const attachments = [];
+    
+    // Helper function to prepare document attachment
+    const prepareDocumentAttachment = async (doc: any, logPrefix: string) => {
+      try {
+        const response = await fetch(doc.file_url);
+        if (response.ok) {
+          const fileBuffer = await response.arrayBuffer();
+          const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+          
+          const attachment = {
+            filename: doc.document_name.endsWith('.pdf') ? doc.document_name : `${doc.document_name}.pdf`,
+            content: base64Content,
+            type: 'application/pdf'
+          };
+          logStep(`${logPrefix} document prepared for attachment`, { filename: attachment.filename });
+          return attachment;
+        }
+      } catch (error) {
+        logStep(`Error preparing ${logPrefix} document`, error);
+      }
+      return null;
+    };
+
+    // Map plan types to document plan types in the database
+    const planTypeMapping: Record<string, string> = {
+      'basic': 'basic',
+      'gold': 'gold', 
+      'platinum': 'platinum',
+      'electric': 'electric',
+      'phev': 'phev',
+      'motorbike': 'motorbike'
+    };
+
+    // Fetch plan-specific document
+    try {
+      const mappedPlanType = planTypeMapping[planType.toLowerCase()] || planType.toLowerCase();
+      logStep("Fetching plan-specific document", { planType: planType, mappedPlanType });
+      
+      const { data: planDoc, error: planError } = await supabaseClient
+        .from('customer_documents')
+        .select('document_name, file_url')
+        .eq('plan_type', mappedPlanType)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (planDoc && !planError) {
+        const planAttachment = await prepareDocumentAttachment(planDoc, "Plan-specific");
+        if (planAttachment) {
+          attachments.push(planAttachment);
+        }
+      } else {
+        logStep("No plan-specific document found", { planType: mappedPlanType, error: planError });
+      }
+    } catch (error) {
+      logStep("Error fetching plan-specific document", error);
+    }
+
+    // Fetch terms and conditions document
     try {
       const { data: termsDoc, error: termsError } = await supabaseClient
         .from('customer_documents')
@@ -125,25 +184,15 @@ serve(async (req) => {
         .maybeSingle();
 
       if (termsDoc && !termsError) {
-        // Fetch the file content from the storage URL
-        const response = await fetch(termsDoc.file_url);
-        if (response.ok) {
-          const fileBuffer = await response.arrayBuffer();
-          const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
-          
-          termsAttachment = {
-            filename: termsDoc.document_name.endsWith('.pdf') ? termsDoc.document_name : `${termsDoc.document_name}.pdf`,
-            content: base64Content,
-            type: 'application/pdf'
-          };
-          logStep("Terms document prepared for attachment", { filename: termsAttachment.filename });
+        const termsAttachment = await prepareDocumentAttachment(termsDoc, "Terms and conditions");
+        if (termsAttachment) {
+          attachments.push(termsAttachment);
         }
       } else {
-        logStep("No terms document found or error fetching", termsError);
+        logStep("No terms document found", termsError);
       }
     } catch (error) {
       logStep("Error fetching terms document", error);
-      // Continue without attachment if terms fetch fails
     }
 
     // Send actual welcome email using send-email function
@@ -163,9 +212,10 @@ serve(async (req) => {
         variables: emailVariables
       };
 
-      // Add attachment if terms document was successfully fetched
-      if (termsAttachment) {
-        emailPayload.attachments = [termsAttachment];
+      // Add attachments if any were successfully fetched
+      if (attachments.length > 0) {
+        emailPayload.attachments = attachments;
+        logStep("Attachments added to email", { count: attachments.length, filenames: attachments.map(a => a.filename) });
       }
 
       const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-email', {
