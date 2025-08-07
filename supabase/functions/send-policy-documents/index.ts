@@ -72,7 +72,10 @@ serve(async (req) => {
 
     if (planDoc && !planError) {
       try {
+        logStep("Attempting to fetch plan document", { url: planDoc.file_url });
         const response = await fetch(planDoc.file_url);
+        logStep("Fetch response status", { status: response.status, ok: response.ok });
+        
         if (response.ok) {
           const fileBuffer = await response.arrayBuffer();
           const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
@@ -82,10 +85,12 @@ serve(async (req) => {
             content: base64Content,
             type: 'application/pdf'
           });
-          logStep("Plan document prepared for attachment", { filename: planDoc.document_name });
+          logStep("Plan document prepared for attachment", { filename: planDoc.document_name, size: fileBuffer.byteLength });
+        } else {
+          logStep("Failed to fetch plan document", { status: response.status, statusText: response.statusText });
         }
       } catch (error) {
-        logStep("Error preparing plan document", error);
+        logStep("Error preparing plan document", { error: error.message, stack: error.stack });
       }
     } else {
       logStep("No plan-specific document found", { planType: mappedPlanType, error: planError });
@@ -102,7 +107,10 @@ serve(async (req) => {
 
     if (termsDoc && !termsError) {
       try {
+        logStep("Attempting to fetch terms document", { url: termsDoc.file_url });
         const response = await fetch(termsDoc.file_url);
+        logStep("Fetch response status for terms", { status: response.status, ok: response.ok });
+        
         if (response.ok) {
           const fileBuffer = await response.arrayBuffer();
           const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
@@ -112,10 +120,12 @@ serve(async (req) => {
             content: base64Content,
             type: 'application/pdf'
           });
-          logStep("Terms document prepared for attachment", { filename: termsDoc.document_name });
+          logStep("Terms document prepared for attachment", { filename: termsDoc.document_name, size: fileBuffer.byteLength });
+        } else {
+          logStep("Failed to fetch terms document", { status: response.status, statusText: response.statusText });
         }
       } catch (error) {
-        logStep("Error preparing terms document", error);
+        logStep("Error preparing terms document", { error: error.message, stack: error.stack });
       }
     }
 
