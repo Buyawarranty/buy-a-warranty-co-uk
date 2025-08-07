@@ -180,7 +180,7 @@ serve(async (req) => {
             voluntaryExcess: voluntaryExcess
           }
         }
-      }))))}`,
+      })))}`,
       metadata: {
         plan_type: planType,
         payment_type: paymentType,
