@@ -61,6 +61,7 @@ interface Customer {
 interface EmailStatus {
   welcome_email: boolean;
   policy_documents: boolean;
+  portal_signup: boolean;
 }
 
 interface AdminNote {
@@ -403,8 +404,12 @@ export const CustomersTab = () => {
         const customerEmails = emailLogs?.filter(log => log.recipient_email === customer.email) || [];
         statuses[customer.email] = {
           welcome_email: customerEmails.some(log => 
-            log.subject?.toLowerCase().includes('welcome') || 
-            log.subject?.toLowerCase().includes('account')
+            log.subject?.toLowerCase().includes('welcome') && 
+            !log.subject?.toLowerCase().includes('get you started')
+          ),
+          portal_signup: customerEmails.some(log => 
+            log.subject?.toLowerCase().includes('welcome to buyawarranty.co.uk') &&
+            log.subject?.toLowerCase().includes('get you started')
           ),
           policy_documents: customerEmails.some(log => 
             log.subject?.toLowerCase().includes('policy') || 
@@ -420,7 +425,7 @@ export const CustomersTab = () => {
     }
   };
 
-  const sendManualEmail = async (customerId: string, customerEmail: string, emailType: 'welcome' | 'policy_documents') => {
+  const sendManualEmail = async (customerId: string, customerEmail: string, emailType: 'welcome' | 'policy_documents' | 'portal_signup') => {
     const emailKey = `${customerId}_${emailType}`;
     setEmailSendingLoading(prev => ({
       ...prev,
@@ -428,23 +433,37 @@ export const CustomersTab = () => {
     }));
 
     try {
-      // Call the appropriate function based on email type
-      const functionName = emailType === 'welcome' ? 'send-welcome-email' : 'send-policy-documents';
       const customer = customers.find(c => c.id === customerId);
+      let functionName: string;
+      let payload: any;
       
-      const payload = emailType === 'welcome' 
-        ? {
-            email: customerEmail,
-            planType: customer?.plan_type || 'basic',
-            paymentType: customer?.payment_type || 'monthly',
-            policyNumber: customer?.policy_number || 'N/A'
+      if (emailType === 'welcome') {
+        functionName = 'send-welcome-email';
+        payload = {
+          email: customerEmail,
+          planType: customer?.plan_type || 'basic',
+          paymentType: customer?.payment_type || 'monthly',
+          policyNumber: customer?.policy_number || 'N/A'
+        };
+      } else if (emailType === 'portal_signup') {
+        functionName = 'send-email';
+        payload = {
+          templateId: 'welcome',
+          recipientEmail: customerEmail,
+          variables: {
+            customerName: customer?.name || customer?.first_name || 'Customer',
+            loginLink: 'https://buyawarranty.co.uk/auth'
           }
-        : {
-            email: customerEmail,
-            planType: customer?.plan_type || 'basic',
-            policyNumber: customer?.policy_number || 'N/A',
-            customerName: customer?.name || 'Customer'
-          };
+        };
+      } else {
+        functionName = 'send-policy-documents';
+        payload = {
+          email: customerEmail,
+          planType: customer?.plan_type || 'basic',
+          policyNumber: customer?.policy_number || 'N/A',
+          customerName: customer?.name || 'Customer'
+        };
+      }
 
       const { error } = await supabase.functions.invoke(functionName, {
         body: payload
@@ -452,14 +471,20 @@ export const CustomersTab = () => {
 
       if (error) throw error;
 
-      toast.success(`${emailType === 'welcome' ? 'Welcome' : 'Policy Documents'} email sent successfully`);
+      const emailTypeNames = {
+        welcome: 'Welcome',
+        portal_signup: 'Portal Signup',
+        policy_documents: 'Policy Documents'
+      };
+
+      toast.success(`${emailTypeNames[emailType]} email sent successfully`);
       
       // Update email status locally
       setEmailStatuses(prev => ({
         ...prev,
         [customerEmail]: {
           ...prev[customerEmail],
-          [emailType === 'welcome' ? 'welcome_email' : 'policy_documents']: true
+          [emailType]: true
         }
       }));
       
@@ -477,7 +502,7 @@ export const CustomersTab = () => {
   };
 
   const EmailStatusIndicator = ({ customer }: { customer: Customer }) => {
-    const status = emailStatuses[customer.email] || { welcome_email: false, policy_documents: false };
+    const status = emailStatuses[customer.email] || { welcome_email: false, policy_documents: false, portal_signup: false };
     
     return (
       <div className="flex flex-col space-y-1">
@@ -503,6 +528,28 @@ export const CustomersTab = () => {
               )}
             </Button>
           )}
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          {status.portal_signup ? (
+            <CheckCircle className="h-4 w-4 text-green-600" />
+          ) : (
+            <Clock className="h-4 w-4 text-red-500" />
+          )}
+          <span className="text-xs">Portal Signup</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            onClick={() => sendManualEmail(customer.id, customer.email, 'portal_signup')}
+            disabled={emailSendingLoading[customer.id]?.portal_signup}
+          >
+            {emailSendingLoading[customer.id]?.portal_signup ? (
+              <div className="animate-spin rounded-full h-3 w-3 border border-orange-600 border-t-transparent"></div>
+            ) : (
+              <Send className="h-3 w-3" />
+            )}
+          </Button>
         </div>
         
         <div className="flex items-center space-x-2">
