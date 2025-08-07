@@ -156,9 +156,11 @@ export const CustomersTab = () => {
       
       setDebugInfo(`User: ${user?.email || 'Master Admin'}, Master Admin: ${isMasterAdmin}`);
 
-      // Updated query to include policy data and filter out test/fake customers
+      // Query both customers and orphaned policies (policies without customer records)
       console.log('📊 Attempting query with policy data and real customers only...');
-      const { data: directData, error: directError, count: directCount } = await supabase
+      
+      // First get customers with their policies
+      const { data: customersData, error: customersError } = await supabase
         .from('customers')
         .select(`
           *,
@@ -168,12 +170,68 @@ export const CustomersTab = () => {
             policy_start_date,
             status
           )
-        `, { count: 'exact' })
+        `)
         .not('email', 'like', '%test%')
         .not('email', 'like', '%guest%')
         .not('name', 'like', '%test%')
         .not('name', 'like', '%Test%')
         .order('signup_date', { ascending: false });
+
+      // Then get orphaned policies (policies without customer records)
+      const { data: orphanedPolicies, error: orphanedError } = await supabase
+        .from('customer_policies')
+        .select('*')
+        .is('customer_id', null)
+        .order('created_at', { ascending: false });
+
+      let directData = customersData || [];
+      let directError = customersError;
+      
+      // Add orphaned policies as customer records
+      if (orphanedPolicies && orphanedPolicies.length > 0) {
+        const orphanedAsCustomers = orphanedPolicies.map(policy => ({
+          id: policy.id,
+          name: 'Unknown Customer',
+          email: policy.email,
+          phone: null,
+          first_name: null,
+          last_name: null,
+          flat_number: null,
+          building_name: null,
+          building_number: null,
+          street: null,
+          town: null,
+          county: null,
+          postcode: null,
+          country: 'United Kingdom',
+          plan_type: policy.plan_type,
+          signup_date: policy.created_at,
+          voluntary_excess: 0,
+          status: 'Incomplete Record',
+          registration_plate: 'Unknown',
+          vehicle_make: null,
+          vehicle_model: null,
+          vehicle_year: null,
+          vehicle_fuel_type: null,
+          vehicle_transmission: null,
+          mileage: null,
+          payment_type: policy.payment_type,
+          stripe_session_id: null,
+          bumper_order_id: policy.policy_number?.startsWith('BAW-') ? policy.policy_number : null,
+          discount_code: null,
+          discount_amount: 0,
+          original_amount: null,
+          final_amount: null,
+          customer_policies: [policy],
+          created_at: policy.created_at,
+          updated_at: policy.updated_at,
+          stripe_customer_id: null
+        }));
+        
+        directData = [...directData, ...orphanedAsCustomers];
+      }
+      
+      const directCount = directData.length;
 
       console.log('📊 Query result:', { data: directData, error: directError, count: directCount });
 
