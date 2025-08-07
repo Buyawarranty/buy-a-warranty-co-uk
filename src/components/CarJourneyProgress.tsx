@@ -39,7 +39,7 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-6 px-4">
+    <div className="w-full max-w-4xl mx-auto py-6 px-4">
       {/* Brand Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold">
@@ -60,31 +60,36 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
 
         {/* Moving Car */}
         <div 
-          className="absolute -top-4 transition-all duration-1000 ease-in-out transform"
+          className="absolute -top-6 transition-all duration-1000 ease-in-out transform animate-bounce"
           style={{ 
             left: getCarPosition(),
-            transform: 'translateX(-50%)'
+            transform: 'translateX(-50%)',
+            animationDuration: '1.5s'
           }}
         >
-          <svg width="32" height="20" viewBox="0 0 32 20" className="drop-shadow-sm">
+          <svg width="48" height="32" viewBox="0 0 48 32" className="drop-shadow-md">
             {/* Car Body */}
-            <rect x="2" y="8" width="28" height="8" rx="2" fill="#ea580c" />
-            <rect x="6" y="4" width="20" height="6" rx="2" fill="#fb923c" />
+            <rect x="3" y="12" width="42" height="12" rx="3" fill="#ea580c" />
+            <rect x="9" y="6" width="30" height="9" rx="3" fill="#fb923c" />
             
             {/* Windows */}
-            <rect x="8" y="5" width="6" height="4" rx="1" fill="#fef3c7" opacity="0.9" />
-            <rect x="18" y="5" width="6" height="4" rx="1" fill="#fef3c7" opacity="0.9" />
+            <rect x="12" y="7" width="9" height="6" rx="1.5" fill="#fef3c7" opacity="0.9" />
+            <rect x="27" y="7" width="9" height="6" rx="1.5" fill="#fef3c7" opacity="0.9" />
             
             {/* Wheels */}
-            <circle cx="8" cy="15" r="3" fill="#374151" />
-            <circle cx="24" cy="15" r="3" fill="#374151" />
-            <circle cx="8" cy="15" r="2" fill="#6b7280" />
-            <circle cx="24" cy="15" r="2" fill="#6b7280" />
+            <circle cx="12" cy="22" r="4.5" fill="#374151" />
+            <circle cx="36" cy="22" r="4.5" fill="#374151" />
+            <circle cx="12" cy="22" r="3" fill="#6b7280" />
+            <circle cx="36" cy="22" r="3" fill="#6b7280" />
+            
+            {/* Headlights */}
+            <circle cx="42" cy="16" r="2" fill="#fef3c7" opacity="0.9" />
+            <circle cx="42" cy="20" r="2" fill="#fef3c7" opacity="0.9" />
           </svg>
         </div>
 
         {/* Step Indicators */}
-        <div className="flex justify-between items-start mt-8">
+        <div className="flex justify-between items-start mt-4">
           {steps.map((step, index) => {
             const status = getStepStatus(step.id);
             const isCompleted = status === 'completed';
@@ -111,15 +116,14 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
                   )}
                 </div>
                 
-                {/* Step Content */}
+                {/* Step Title Only */}
                 <div className="mt-3 text-center max-w-32">
                   <h3 className={`
-                    font-medium text-sm mb-1 transition-colors duration-300
+                    font-medium text-sm transition-colors duration-300
                     ${isCurrent ? 'text-[#ea580c]' : isCompleted ? 'text-green-600' : 'text-gray-500'}
                   `}>
                     {step.title}
                   </h3>
-                  <p className="text-xs text-gray-500">{step.description}</p>
                 </div>
               </div>
             );
