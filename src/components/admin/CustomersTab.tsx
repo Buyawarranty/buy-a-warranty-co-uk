@@ -120,13 +120,13 @@ export const CustomersTab = () => {
       
       setDebugInfo(`User: ${user?.email || 'Master Admin'}, Master Admin: ${isMasterAdmin}`);
 
-      // Updated query to include warranty expiry date from customer_policies
+      // Updated query to include warranty expiry date from customer_policies using proper foreign key
       console.log('📊 Attempting query with warranty expiry data...');
       const { data: directData, error: directError, count: directCount } = await supabase
         .from('customers')
         .select(`
           *,
-          customer_policies!inner(
+          customer_policies!customer_id(
             policy_end_date
           )
         `, { count: 'exact' });
