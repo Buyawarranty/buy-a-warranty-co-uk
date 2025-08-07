@@ -53,7 +53,7 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
         {/* Progress Line */}
         <div className="relative h-2 bg-gray-200 rounded-full">
           <div 
-            className="h-full bg-green-500 rounded-full transition-all duration-1000 ease-in-out"
+            className="h-full bg-[#1e40af] rounded-full transition-all duration-1000 ease-in-out"
             style={{ width: `${Math.max(12.5 + (currentStep - 1) / 3 * 75, 12.5)}%` }}
           ></div>
         </div>
