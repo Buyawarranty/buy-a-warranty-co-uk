@@ -179,6 +179,7 @@ export type Database = {
         Row: {
           address: Json | null
           created_at: string
+          customer_id: string | null
           email: string
           id: string
           payment_type: string
@@ -197,6 +198,7 @@ export type Database = {
         Insert: {
           address?: Json | null
           created_at?: string
+          customer_id?: string | null
           email: string
           id?: string
           payment_type: string
@@ -215,6 +217,7 @@ export type Database = {
         Update: {
           address?: Json | null
           created_at?: string
+          customer_id?: string | null
           email?: string
           id?: string
           payment_type?: string
@@ -230,7 +233,15 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_customer_policies_customer_id"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       customers: {
         Row: {
