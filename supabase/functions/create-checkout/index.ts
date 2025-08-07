@@ -165,7 +165,7 @@ serve(async (req) => {
             voluntaryExcess: voluntaryExcess
           }
         }
-      }))))}`,
+      })))}`,
       automatic_tax: { enabled: false },
       billing_address_collection: 'required',
       customer_creation: customerId ? undefined : 'always',
