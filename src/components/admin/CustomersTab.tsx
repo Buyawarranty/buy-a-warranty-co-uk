@@ -451,8 +451,10 @@ export const CustomersTab = () => {
           templateId: 'Welcome Email - Portal Signup',
           recipientEmail: customerEmail,
           variables: {
+            customer_name: customer?.name || customer?.first_name || 'Customer',
             customerName: customer?.name || customer?.first_name || 'Customer',
-            loginLink: 'https://buyawarranty.co.uk/auth'
+            loginLink: 'https://buyawarranty.co.uk/customer-dashboard',
+            portalLink: 'https://buyawarranty.co.uk/customer-dashboard'
           }
         };
       } else {
