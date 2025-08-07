@@ -125,6 +125,7 @@ const Index = () => {
           vehicle_make: data.make,
           vehicle_model: data.model,
           vehicle_year: data.year,
+          vehicle_type: data.vehicleType, // Include vehicle type for special vehicles
           mileage: data.mileage,
           plan_name: planName,
           payment_type: paymentType,

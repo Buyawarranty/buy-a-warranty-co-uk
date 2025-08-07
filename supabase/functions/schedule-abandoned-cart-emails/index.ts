@@ -112,6 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
           vehicleReg: cart.vehicle_reg,
           vehicleMake: cart.vehicle_make,
           vehicleModel: cart.vehicle_model,
+          vehicleType: cart.vehicle_type, // Include vehicle type for special vehicles
           triggerType,
           planName: cart.plan_name,
           paymentType: cart.payment_type

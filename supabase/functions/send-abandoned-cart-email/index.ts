@@ -15,6 +15,7 @@ interface SendEmailRequest {
   vehicleReg?: string;
   vehicleMake?: string;
   vehicleModel?: string;
+  vehicleType?: string; // Added for special vehicles (EV, PHEV, MOTORBIKE)
   triggerType: 'pricing_page_view' | 'plan_selected';
   planName?: string;
   paymentType?: string;
@@ -76,7 +77,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Email template not found');
     }
 
-    // Generate URLs based on vehicle registration
+    // Generate URLs based on vehicle registration and type
     const baseUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co'; // Your project URL
     const encodedReg = encodeURIComponent(emailRequest.vehicleReg || '');
     
@@ -91,6 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
         firstName: emailRequest.firstName,
         vehicleMake: emailRequest.vehicleMake,
         vehicleModel: emailRequest.vehicleModel,
+        vehicleType: emailRequest.vehicleType, // Important for special vehicles
         step: emailRequest.triggerType === 'pricing_page_view' ? 3 : 4,
         planName: emailRequest.planName,
         paymentType: emailRequest.paymentType
