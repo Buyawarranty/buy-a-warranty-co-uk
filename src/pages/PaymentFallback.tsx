@@ -79,6 +79,15 @@ const PaymentFallback = () => {
       
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+          {/* Logo */}
+          <div className="mb-6">
+            <img 
+              src="/lovable-uploads/bb0fa2d5-1f65-4892-bf89-bacc1ee33384.png" 
+              alt="Buy a Warranty Logo" 
+              className="h-12 mx-auto mb-6"
+            />
+          </div>
+          
         <div className="mb-6">
           <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,11 +95,13 @@ const PaymentFallback = () => {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Alternative Payment Required
+            ⚠️ Oops! Payment Didn't Go Through
           </h1>
           <p className="text-gray-600 mb-6">
-            We're unable to process your monthly payment with our preferred method. 
-            Please continue with our secure alternative payment option.
+            We couldn't process your payment with the usual method. No worries — you can still continue safely using an alternative way to pay 😊
+          </p>
+          <p className="text-gray-700 mb-6 font-medium">
+            👉 Tap below to try a secure payment option
           </p>
         </div>
 
@@ -113,8 +124,8 @@ const PaymentFallback = () => {
         </div>
 
         <div className="mt-6 pt-4 border-t border-gray-200">
-          <p className="text-xs text-gray-500">
-            Your payment will be processed securely. All personal information is encrypted and protected.
+          <p className="text-sm text-gray-600">
+            🔒 Your payment will be safe and secure - we've got your back!
           </p>
         </div>
         </div>
