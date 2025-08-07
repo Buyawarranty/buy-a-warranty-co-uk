@@ -142,7 +142,7 @@ serve(async (req) => {
       ],
       mode: "payment",
       success_url: `${origin}/thank-you?plan=${planType}&payment=${paymentType}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/car-journey?step=4`,
+      cancel_url: `${origin}/?step=4`,
       automatic_tax: { enabled: false },
       billing_address_collection: 'required',
       customer_creation: customerId ? undefined : 'always',

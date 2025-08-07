@@ -40,23 +40,6 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto p-8 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl shadow-lg">
-      {/* Demo Controls */}
-      <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Car Journey Progress</h2>
-        <div className="flex justify-center gap-2 mb-6">
-          {steps.map((step) => (
-            <Button
-              key={step.id}
-              variant={currentStep === step.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => onStepChange?.(step.id)}
-              className="text-xs"
-            >
-              Step {step.id}
-            </Button>
-          ))}
-        </div>
-      </div>
 
       {/* Main Journey Container */}
       <div className="relative">

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
-import ProgressIndicator from '@/components/ProgressIndicator';
+import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,6 +37,7 @@ const Index = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const restoreParam = urlParams.get('restore');
+    const stepParam = urlParams.get('step');
     
     if (restoreParam) {
       try {
@@ -49,6 +50,13 @@ const Index = () => {
         window.history.replaceState({}, document.title, window.location.pathname);
       } catch (error) {
         console.error('Error restoring data from URL:', error);
+      }
+    } else if (stepParam) {
+      const step = parseInt(stepParam);
+      if (step >= 1 && step <= 4) {
+        setCurrentStep(step);
+        // Clear the URL parameter
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
   }, []);
@@ -144,7 +152,7 @@ const Index = () => {
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
       
-      <ProgressIndicator currentStep={currentStep} totalSteps={4} steps={steps} />
+      <CarJourneyProgress currentStep={currentStep} onStepChange={setCurrentStep} />
       
       {currentStep === 1 && (
         <div className="w-full px-4 py-4 sm:py-8">
