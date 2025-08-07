@@ -112,6 +112,22 @@ serve(async (req) => {
       logStep("Welcome email sent successfully", welcomeData);
     }
 
+    // Send policy documents email separately
+    const { data: policyEmailData, error: policyEmailError } = await supabaseClient.functions.invoke('send-policy-documents', {
+      body: {
+        email: userEmail,
+        planType: planId,
+        policyNumber: warrantyReference,
+        customerName: customerData?.fullName || vehicleData?.fullName || userEmail.split('@')[0]
+      }
+    });
+
+    if (policyEmailError) {
+      logStep("Warning: Policy documents email failed", policyEmailError);
+    } else {
+      logStep("Policy documents email sent successfully", policyEmailData);
+    }
+
     // Register warranty with Warranties 2000 if vehicle data is available
     if (vehicleData && vehicleData.regNumber) {
       logStep("Attempting warranty registration with Warranties 2000");

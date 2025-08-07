@@ -47,35 +47,45 @@ serve(async (req) => {
     const tempPassword = generateTempPassword();
     logStep("Generated temporary password");
 
-    // Create user in Supabase Auth
-    const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
-      email: email,
-      password: tempPassword,
-      email_confirm: true,
-      user_metadata: {
-        plan_type: planType,
-        policy_number: policyNumber
-      }
-    });
-
-    if (authError) {
-      // If user already exists, that's okay - we'll just send them login details
-      if (authError.message.includes('already registered')) {
-        logStep("User already exists, updating password", { email });
-        
-        // Update existing user's password
-        const { data: existingUser } = await supabaseClient.auth.admin.listUsers();
-        const user = existingUser.users.find(u => u.email === email);
-        
-        if (user) {
-          await supabaseClient.auth.admin.updateUserById(user.id, {
-            password: tempPassword
-          });
-          logStep("Updated existing user password");
+    // Check if user already exists first
+    let userId = null;
+    let userAlreadyExists = false;
+    
+    const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
+    const existingUser = existingUsers.users.find(u => u.email === email);
+    
+    if (existingUser) {
+      logStep("User already exists", { userId: existingUser.id });
+      userId = existingUser.id;
+      userAlreadyExists = true;
+      
+      // Update existing user's password
+      await supabaseClient.auth.admin.updateUserById(existingUser.id, {
+        password: tempPassword,
+        user_metadata: {
+          plan_type: planType,
+          policy_number: policyNumber
         }
-      } else {
+      });
+      logStep("Updated existing user password and metadata");
+    } else {
+      // Create new user in Supabase Auth
+      const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
+        email: email,
+        password: tempPassword,
+        email_confirm: true,
+        user_metadata: {
+          plan_type: planType,
+          policy_number: policyNumber
+        }
+      });
+
+      if (authError) {
         throw authError;
       }
+      
+      userId = authData.user.id;
+      logStep("Created new user", { userId });
     }
 
     // Create policy record
@@ -84,7 +94,7 @@ serve(async (req) => {
     const { data: policyData, error: policyError } = await supabaseClient
       .from('customer_policies')
       .insert({
-        user_id: authData?.user?.id || null,
+        user_id: userId,
         email: email,
         plan_type: planType.toLowerCase(),
         payment_type: paymentType,
@@ -102,7 +112,7 @@ serve(async (req) => {
     const { error: emailRecordError } = await supabaseClient
       .from('welcome_emails')
       .insert({
-        user_id: authData?.user?.id || null,
+        user_id: userId,
         email: email,
         policy_id: policyData.id,
         temporary_password: tempPassword,
@@ -251,14 +261,14 @@ serve(async (req) => {
           .from('scheduled_emails')
           .insert({
             template_id: feedbackTemplate.id,
-            customer_id: authData?.user?.id || null,
+            customer_id: userId,
             recipient_email: email,
             scheduled_for: feedbackDate.toISOString(),
             metadata: {
               customerFirstName: email.split('@')[0],
               expiryDate: calculatePolicyEndDate(paymentType),
               portalUrl: 'https://buyawarranty.co.uk/customer-dashboard',
-              referralLink: `https://buyawarranty.co.uk/refer/${authData?.user?.id || 'guest'}`
+              referralLink: `https://buyawarranty.co.uk/refer/${userId || 'guest'}`
             }
           });
 
