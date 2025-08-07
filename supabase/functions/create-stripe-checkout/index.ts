@@ -58,6 +58,7 @@ serve(async (req) => {
 
     // Get authenticated user
     let user = null;
+    // Prioritize email from customer form data over authenticated user email
     let customerEmail = customerData?.email || vehicleData?.email || "guest@buyawarranty.co.uk";
     
     const authHeader = req.headers.get("Authorization");
@@ -66,9 +67,10 @@ serve(async (req) => {
         const token = authHeader.replace("Bearer ", "");
         const { data } = await supabaseClient.auth.getUser(token);
         user = data.user;
-        if (user?.email) {
+        logStep("User authenticated", { userId: user.id, userEmail: user.email, formEmail: customerData?.email });
+        // Only use authenticated user email if no email provided in form
+        if (!customerData?.email && !vehicleData?.email && user?.email) {
           customerEmail = user.email;
-          logStep("User authenticated", { userId: user.id, email: user.email });
         }
       } catch (authError) {
         logStep("Auth failed, proceeding as guest", { error: authError });
@@ -76,6 +78,8 @@ serve(async (req) => {
     } else {
       logStep("No auth header, proceeding as guest checkout");
     }
+
+    logStep("Using customer email", { email: customerEmail, source: customerData?.email ? 'form' : (user?.email ? 'auth' : 'guest') });
 
     // Calculate pricing based on payment type and voluntary excess
     let totalAmount = finalAmount;
