@@ -215,7 +215,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const addOnPrice = calculateAddOnPrice(plan.id);
       const monthlyTotal = basePrice + addOnPrice;
       
-      // Calculate the actual total price based on payment period
+      // Calculate the actual total price based on payment period (warranty duration)
       let totalPrice = monthlyTotal;
       if (paymentType === 'yearly') {
         totalPrice = monthlyTotal * 12;
@@ -225,9 +225,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         totalPrice = monthlyTotal * 36;
       }
       
+      // For Bumper payment: always 12 monthly payments regardless of warranty duration
+      // Monthly payment = total warranty cost ÷ 12
+      const bumperMonthlyPrice = Math.round(totalPrice / 12);
+      
       const pricingData = {
         totalPrice,
-        monthlyPrice: monthlyTotal,
+        monthlyPrice: bumperMonthlyPrice, // This is what Bumper charges monthly
         voluntaryExcess,
         selectedAddOns: selectedAddOns[plan.id] || {}
       };

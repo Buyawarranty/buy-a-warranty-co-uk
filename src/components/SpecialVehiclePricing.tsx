@@ -197,12 +197,23 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     if (onPlanSelected) {
       const monthlyPrice = getMonthlyDisplayPrice();
       
-      // Calculate total price - always 12 monthly payments regardless of coverage period
-      const totalPrice = monthlyPrice * 12;
+      // Calculate total warranty cost based on coverage period
+      let totalWarrantyCost = monthlyPrice;
+      if (paymentType === 'yearly') {
+        totalWarrantyCost = monthlyPrice * 12;
+      } else if (paymentType === 'two_yearly') {
+        totalWarrantyCost = monthlyPrice * 24;
+      } else if (paymentType === 'three_yearly') {
+        totalWarrantyCost = monthlyPrice * 36;
+      }
+      
+      // For Bumper payment: always 12 monthly payments regardless of warranty duration
+      // Monthly payment = total warranty cost ÷ 12
+      const bumperMonthlyPrice = Math.round(totalWarrantyCost / 12);
       
       const pricingData = {
-        totalPrice,
-        monthlyPrice,
+        totalPrice: totalWarrantyCost,
+        monthlyPrice: bumperMonthlyPrice, // This is what Bumper charges monthly
         voluntaryExcess,
         selectedAddOns: {}
       };
