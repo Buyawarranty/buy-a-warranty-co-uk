@@ -428,20 +428,26 @@ export const CustomersTab = () => {
     }));
 
     try {
-      // Determine template ID and subject based on email type
-      const templateData = emailType === 'welcome' 
-        ? { templateId: 'welcome-template', subject: 'Welcome to Your Warranty Service' }
-        : { templateId: 'policy-documents-template', subject: 'Your Policy Documents' };
-
-      const { error } = await supabase.functions.invoke('send-email', {
-        body: {
-          templateId: templateData.templateId,
-          recipientEmail: customerEmail,
-          customerId: customerId,
-          variables: {
-            customerName: customers.find(c => c.id === customerId)?.name || 'Customer'
+      // Call the appropriate function based on email type
+      const functionName = emailType === 'welcome' ? 'send-welcome-email' : 'send-policy-documents';
+      const customer = customers.find(c => c.id === customerId);
+      
+      const payload = emailType === 'welcome' 
+        ? {
+            email: customerEmail,
+            planType: customer?.plan_type || 'basic',
+            paymentType: customer?.payment_type || 'monthly',
+            policyNumber: customer?.policy_number || 'N/A'
           }
-        }
+        : {
+            email: customerEmail,
+            planType: customer?.plan_type || 'basic',
+            policyNumber: customer?.policy_number || 'N/A',
+            customerName: customer?.name || 'Customer'
+          };
+
+      const { error } = await supabase.functions.invoke(functionName, {
+        body: payload
       });
 
       if (error) throw error;
@@ -453,7 +459,7 @@ export const CustomersTab = () => {
         ...prev,
         [customerEmail]: {
           ...prev[customerEmail],
-          [`${emailType}_email`]: true
+          [emailType === 'welcome' ? 'welcome_email' : 'policy_documents']: true
         }
       }));
       
