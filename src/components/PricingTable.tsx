@@ -226,8 +226,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       }
       
       // For Bumper payment: always 12 monthly payments regardless of warranty duration
-      // Monthly payment = total warranty cost ÷ 12
-      const bumperMonthlyPrice = Math.round(totalPrice / 12);
+      // Monthly payment = original monthly amount (not divided by 12)
+      const bumperMonthlyPrice = Math.round(monthlyTotal);
       
       const pricingData = {
         totalPrice,
