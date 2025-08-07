@@ -8,10 +8,10 @@ interface CarJourneyProgressProps {
 }
 
 const steps = [
-  { id: 1, title: 'Your Reg Plate', description: 'Enter your vehicle details' },
-  { id: 2, title: 'Receive Quote', description: 'Get your personalized quote' },
-  { id: 3, title: 'Choose Your Plan', description: 'Select your coverage options' },
-  { id: 4, title: 'Final Details', description: 'Complete your purchase' }
+  { id: 1, title: 'Enter reg plate', description: 'Enter your vehicle details' },
+  { id: 2, title: 'Receive quote', description: 'Get your personalized quote' },
+  { id: 3, title: 'Choose your plan', description: 'Select your coverage options' },
+  { id: 4, title: 'Final details', description: 'Complete your purchase' }
 ];
 
 const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({ 
