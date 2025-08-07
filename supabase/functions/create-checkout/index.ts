@@ -121,7 +121,7 @@ serve(async (req) => {
       logStep("Existing customer found", { customerId });
     }
 
-    const origin = req.headers.get("origin") || "https://buyawarranty.com";
+    const origin = req.headers.get("origin") || "https://pricing.buyawarranty.co.uk";
     
     // Prepare session creation options
     const sessionOptions: any = {
