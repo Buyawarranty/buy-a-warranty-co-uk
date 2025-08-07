@@ -78,8 +78,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
 
   // Calculate prices based on pricing data
-  const monthlyBumperPrice = pricingData.monthlyPrice; // This is the monthly payment amount for Bumper
-  const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper
+  const monthlyBumperPrice = pricingData.monthlyPrice; // This is the monthly payment amount for Bumper (already calculated correctly)
+  const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper, regardless of warranty duration
   const stripePrice = Math.round(pricingData.totalPrice * 0.95); // 5% discount for full payment on full warranty cost
   
   // Apply discount if valid
@@ -419,7 +419,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               {/* Payment Summary */}
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="text-green-600 font-semibold text-lg mb-2">
-                  Payment: £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / 12 : pricingData.monthlyPrice)} x 12 easy payments
+                  Payment: £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / 12 : monthlyBumperPrice)} x 12 easy payments
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-semibold">Total Price:</span>
