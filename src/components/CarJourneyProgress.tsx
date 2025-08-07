@@ -60,11 +60,11 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
 
         {/* Moving Car */}
         <div 
-          className="absolute -top-6 transition-all duration-1000 ease-in-out transform animate-bounce"
+          className="absolute -top-6 transition-all duration-1000 ease-in-out transform"
           style={{ 
             left: getCarPosition(),
             transform: 'translateX(-50%)',
-            animationDuration: '1.5s'
+            animation: 'gentle-bounce 4s ease-in-out infinite'
           }}
         >
           <svg width="48" height="32" viewBox="0 0 48 32" className="drop-shadow-md">
