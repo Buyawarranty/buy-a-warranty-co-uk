@@ -257,7 +257,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Replace footer placeholders
     htmlContent = htmlContent
       .replace(/\{\{recipientEmail\}\}/g, encodeURIComponent(recipientEmail))
-      .replace(/\{\{unsubscribeToken\}\}/g, unsubscribeToken);
+      .replace(/\{\{unsubscribeToken\}\}/g, unsubscribeToken)
+      .replace(/\{\{reinstate_link\}\}/g, 'https://buyawarranty.co.uk/')
+      .replace(/\{\{renewal_link\}\}/g, 'https://buyawarranty.co.uk/');
 
     // Create email log entry
     const { data: emailLog, error: logError } = await supabase
