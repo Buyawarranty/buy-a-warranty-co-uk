@@ -195,7 +195,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     if (!plan) return;
     
     if (onPlanSelected) {
-      const monthlyPrice = getMonthlyDisplayPrice();
+      const monthlyPrice = getMonthlyDisplayPrice(); // This is the monthly price shown on pricing page (e.g., £31)
       
       // Calculate total warranty cost based on coverage period
       let totalWarrantyCost = monthlyPrice;
@@ -207,13 +207,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         totalWarrantyCost = monthlyPrice * 36;
       }
       
-      // For Bumper payment: always 12 monthly payments regardless of warranty duration
-      // Monthly payment = total warranty cost ÷ 12
-      const bumperMonthlyPrice = Math.round(totalWarrantyCost / 12);
-      
+      // For special vehicles: preserve the original monthly price displayed on pricing page
+      // This ensures order summary shows the correct price like "£31 x 12 easy payments"
       const pricingData = {
         totalPrice: totalWarrantyCost,
-        monthlyPrice: bumperMonthlyPrice, // This is what Bumper charges monthly
+        monthlyPrice: monthlyPrice, // Keep the original monthly price (e.g., £31 for EV)
         voluntaryExcess,
         selectedAddOns: {}
       };
