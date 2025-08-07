@@ -29,6 +29,11 @@ interface VehicleData {
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
   
+  const handleStepChange = (step: number) => {
+    setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -152,7 +157,7 @@ const Index = () => {
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
       
-      <CarJourneyProgress currentStep={currentStep} onStepChange={setCurrentStep} />
+      <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
       
       {currentStep === 1 && (
         <div className="w-full px-4 py-4 sm:py-8">
