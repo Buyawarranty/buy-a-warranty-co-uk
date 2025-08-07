@@ -16,8 +16,10 @@ const CarJourneyDemo: React.FC = () => {
         setCurrentStep(prev => {
           if (prev >= 4) {
             setIsAutoPlaying(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             return 1;
           }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           return prev + 1;
         });
       }, 2000);
@@ -29,11 +31,13 @@ const CarJourneyDemo: React.FC = () => {
   const handlePrevious = () => {
     setCurrentStep(prev => Math.max(1, prev - 1));
     setIsAutoPlaying(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNext = () => {
     setCurrentStep(prev => Math.min(4, prev + 1));
     setIsAutoPlaying(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const toggleAutoPlay = () => {

@@ -93,11 +93,14 @@ const Index = () => {
     setVehicleData(data);
     setFormData({ ...formData, ...data });
     // If manual entry was used, skip step 2 and go directly to pricing
-    setCurrentStep(data.isManualEntry ? 3 : 2);
+    const nextStep = data.isManualEntry ? 3 : 2;
+    setCurrentStep(nextStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToStep = (step: number) => {
     setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleFormDataUpdate = (data: Partial<VehicleData>) => {
@@ -109,6 +112,7 @@ const Index = () => {
     setVehicleData(updatedData as VehicleData);
     setFormData({ ...formData, ...contactData });
     setCurrentStep(3);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Track pricing page view for abandoned cart emails
     trackAbandonedCart(updatedData as VehicleData, 3);
@@ -117,6 +121,7 @@ const Index = () => {
   const handlePlanSelected = (planId: string, paymentType: string, planName?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}}) => {
     setSelectedPlan({ id: planId, paymentType, name: planName, pricingData });
     setCurrentStep(4);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Track plan selection for abandoned cart emails
     if (vehicleData) {
