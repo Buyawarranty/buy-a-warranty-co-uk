@@ -32,11 +32,11 @@ serve(async (req) => {
       throw new Error("Plan ID is required");
     }
 
-    // Get plan details
+    // Get plan details - Bumper sends plan name, not UUID
     const { data: plan, error: planError } = await supabaseClient
       .from('plans')
       .select('*')
-      .eq('id', planId)
+      .eq('name', planId.charAt(0).toUpperCase() + planId.slice(1).toLowerCase()) // Convert "basic" to "Basic"
       .single();
 
     if (planError || !plan) {
@@ -101,6 +101,7 @@ serve(async (req) => {
     const { data: policy, error: policyError } = await supabaseClient
       .from('customer_policies')
       .insert({
+        customer_id: customer.id, // Link to the customer record
         user_id: null, // No user account for Bumper payments
         email: customerEmail,
         plan_type: plan.name,
