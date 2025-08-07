@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle } from 'lucide-react';
 import { ForwardToWarranties } from './ForwardToWarranties';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -52,6 +52,13 @@ interface Customer {
   final_amount?: number;
   warranty_expiry?: string; // New field for warranty expiry date
   customer_policies?: Array<{ policy_end_date: string }>; // Type for the joined data
+  welcome_email_status?: 'sent' | 'not_sent';
+  activation_email_status?: 'sent' | 'not_sent';
+}
+
+interface EmailStatus {
+  welcome_email: boolean;
+  activation_email: boolean;
 }
 
 interface AdminNote {
@@ -95,10 +102,13 @@ export const CustomersTab = () => {
   const [debugInfo, setDebugInfo] = useState<string>('');
   const [plans, setPlans] = useState<Plan[]>([]);
   const [passwordResetLoading, setPasswordResetLoading] = useState<{ [key: string]: boolean }>({});
+  const [emailStatuses, setEmailStatuses] = useState<{ [key: string]: EmailStatus }>({});
+  const [emailSendingLoading, setEmailSendingLoading] = useState<{ [key: string]: { [key: string]: boolean } }>({});
 
   useEffect(() => {
     fetchCustomers();
     fetchPlans();
+    fetchEmailStatuses();
   }, []);
 
   useEffect(() => {
@@ -211,6 +221,9 @@ export const CustomersTab = () => {
       
       setCustomers(processedData);
       setFilteredCustomers(processedData);
+      
+      // Fetch email statuses after customers are loaded
+      fetchEmailStatuses();
     } catch (error) {
       console.error('💥 Unexpected error fetching customers:', error);
       setDebugInfo(prev => prev + `\nUnexpected error: ${error}`);
@@ -356,6 +369,148 @@ export const CustomersTab = () => {
     setSelectedCustomer(customer);
     setEditingCustomer({ ...customer });
     fetchNotes(customer.id);
+  };
+
+  const fetchEmailStatuses = async () => {
+    try {
+      // Fetch welcome and activation email statuses for all customers
+      const { data: emailLogs, error } = await supabase
+        .from('email_logs')
+        .select('recipient_email, subject, status')
+        .in('status', ['sent', 'delivered']);
+
+      if (error) {
+        console.error('Error fetching email statuses:', error);
+        return;
+      }
+
+      // Process email logs to determine status for each customer
+      const statuses: { [key: string]: EmailStatus } = {};
+      
+      customers.forEach(customer => {
+        const customerEmails = emailLogs?.filter(log => log.recipient_email === customer.email) || [];
+        statuses[customer.email] = {
+          welcome_email: customerEmails.some(log => 
+            log.subject?.toLowerCase().includes('welcome') || 
+            log.subject?.toLowerCase().includes('account')
+          ),
+          activation_email: customerEmails.some(log => 
+            log.subject?.toLowerCase().includes('activation') || 
+            log.subject?.toLowerCase().includes('activate')
+          )
+        };
+      });
+
+      setEmailStatuses(statuses);
+    } catch (error) {
+      console.error('Error fetching email statuses:', error);
+    }
+  };
+
+  const sendManualEmail = async (customerId: string, customerEmail: string, emailType: 'welcome' | 'activation') => {
+    const emailKey = `${customerId}_${emailType}`;
+    setEmailSendingLoading(prev => ({
+      ...prev,
+      [customerId]: { ...prev[customerId], [emailType]: true }
+    }));
+
+    try {
+      // Determine template ID and subject based on email type
+      const templateData = emailType === 'welcome' 
+        ? { templateId: 'welcome-template', subject: 'Welcome to Your Warranty Service' }
+        : { templateId: 'activation-template', subject: 'Activate Your Warranty Account' };
+
+      const { error } = await supabase.functions.invoke('send-email', {
+        body: {
+          templateId: templateData.templateId,
+          recipientEmail: customerEmail,
+          customerId: customerId,
+          variables: {
+            customerName: customers.find(c => c.id === customerId)?.name || 'Customer'
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success(`${emailType === 'welcome' ? 'Welcome' : 'Activation'} email sent successfully`);
+      
+      // Update email status locally
+      setEmailStatuses(prev => ({
+        ...prev,
+        [customerEmail]: {
+          ...prev[customerEmail],
+          [`${emailType}_email`]: true
+        }
+      }));
+      
+      // Refresh email statuses from database
+      setTimeout(fetchEmailStatuses, 1000);
+    } catch (error) {
+      console.error(`Error sending ${emailType} email:`, error);
+      toast.error(`Failed to send ${emailType} email`);
+    } finally {
+      setEmailSendingLoading(prev => ({
+        ...prev,
+        [customerId]: { ...prev[customerId], [emailType]: false }
+      }));
+    }
+  };
+
+  const EmailStatusIndicator = ({ customer }: { customer: Customer }) => {
+    const status = emailStatuses[customer.email] || { welcome_email: false, activation_email: false };
+    
+    return (
+      <div className="flex flex-col space-y-1">
+        <div className="flex items-center space-x-2">
+          {status.welcome_email ? (
+            <CheckCircle className="h-4 w-4 text-green-600" />
+          ) : (
+            <Clock className="h-4 w-4 text-red-500" />
+          )}
+          <span className="text-xs">Welcome</span>
+          {!status.welcome_email && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0"
+              onClick={() => sendManualEmail(customer.id, customer.email, 'welcome')}
+              disabled={emailSendingLoading[customer.id]?.welcome}
+            >
+              {emailSendingLoading[customer.id]?.welcome ? (
+                <div className="animate-spin rounded-full h-3 w-3 border border-orange-600 border-t-transparent"></div>
+              ) : (
+                <Send className="h-3 w-3" />
+              )}
+            </Button>
+          )}
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          {status.activation_email ? (
+            <CheckCircle className="h-4 w-4 text-green-600" />
+          ) : (
+            <Clock className="h-4 w-4 text-red-500" />
+          )}
+          <span className="text-xs">Activation</span>
+          {!status.activation_email && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0"
+              onClick={() => sendManualEmail(customer.id, customer.email, 'activation')}
+              disabled={emailSendingLoading[customer.id]?.activation}
+            >
+              {emailSendingLoading[customer.id]?.activation ? (
+                <div className="animate-spin rounded-full h-3 w-3 border border-orange-600 border-t-transparent"></div>
+              ) : (
+                <Send className="h-3 w-3" />
+              )}
+            </Button>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const resetCustomerPassword = async (customerId: string, customerEmail: string) => {
@@ -511,6 +666,7 @@ export const CustomersTab = () => {
               <TableHead>Plan Type</TableHead>
               <TableHead>Payment Type</TableHead>
               <TableHead>Final Amount</TableHead>
+              <TableHead>Email Status</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -518,7 +674,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={11} className="text-center py-8">
+                <TableCell colSpan={12} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -563,6 +719,9 @@ export const CustomersTab = () => {
                   </TableCell>
                   <TableCell className="font-semibold">
                     {customer.final_amount ? `£${customer.final_amount}` : 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    <EmailStatusIndicator customer={customer} />
                   </TableCell>
                   <TableCell>
                     <Badge variant={customer.status === 'Active' ? 'default' : 'destructive'}>
