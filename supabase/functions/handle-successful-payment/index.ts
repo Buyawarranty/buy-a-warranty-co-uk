@@ -37,6 +37,65 @@ serve(async (req) => {
     const warrantyReference = await generateWarrantyReference();
     logStep("Generated warranty reference", { warrantyReference });
 
+    // Create or update customer record in database
+    const customerName = customerData?.fullName || vehicleData?.fullName || 'Unknown Customer';
+    const customerRecord = {
+      name: customerName,
+      email: userEmail,
+      phone: customerData?.phone || vehicleData?.phone || '',
+      first_name: extractFirstName(customerName),
+      last_name: extractSurname(customerName),
+      street: extractStreet(customerData?.address || vehicleData?.address || ''),
+      town: extractTown(customerData?.address || vehicleData?.address || ''),
+      postcode: extractPostcode(customerData?.address || vehicleData?.address || ''),
+      plan_type: planId,
+      payment_type: paymentType,
+      stripe_session_id: stripeSessionId,
+      registration_plate: vehicleData?.regNumber || 'Unknown',
+      vehicle_make: vehicleData?.make || 'Unknown',
+      vehicle_model: vehicleData?.model || 'Unknown',
+      vehicle_year: vehicleData?.year || '',
+      mileage: vehicleData?.mileage || '',
+      status: 'Active'
+    };
+
+    logStep("Creating customer record", customerRecord);
+
+    const { data: customerData2, error: customerError } = await supabaseClient
+      .from('customers')
+      .upsert(customerRecord, { onConflict: 'email' })
+      .select()
+      .single();
+
+    if (customerError) {
+      logStep("Warning: Customer record creation failed", customerError);
+    } else {
+      logStep("Customer record created successfully", { customerId: customerData2.id });
+      
+      // Create policy record
+      const policyRecord = {
+        customer_id: customerData2.id,
+        user_id: userId,
+        email: userEmail,
+        plan_type: planId,
+        payment_type: paymentType,
+        policy_number: warrantyReference,
+        policy_start_date: new Date().toISOString(),
+        policy_end_date: calculatePolicyEndDate(paymentType),
+        status: 'active'
+      };
+
+      const { error: policyError } = await supabaseClient
+        .from('customer_policies')
+        .insert(policyRecord);
+
+      if (policyError) {
+        logStep("Warning: Policy record creation failed", policyError);
+      } else {
+        logStep("Policy record created successfully");
+      }
+    }
+
     // Send welcome email with login details
     const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email', {
       body: {
@@ -256,4 +315,32 @@ function calculatePurchasePrice(planId: string, paymentType: string): number {
   };
 
   return pricingMap[planId]?.[paymentType] || 31;
+}
+
+// Helper function to extract street from address
+function extractStreet(address: string): string {
+  const parts = address.split(',');
+  return parts[0]?.trim() || address || 'Unknown';
+}
+
+// Helper function to calculate policy end date
+function calculatePolicyEndDate(paymentType: string): string {
+  const now = new Date();
+  switch (paymentType) {
+    case 'monthly':
+      now.setMonth(now.getMonth() + 1);
+      break;
+    case 'yearly':
+      now.setFullYear(now.getFullYear() + 1);
+      break;
+    case 'two_yearly':
+      now.setFullYear(now.getFullYear() + 2);
+      break;
+    case 'three_yearly':
+      now.setFullYear(now.getFullYear() + 3);
+      break;
+    default:
+      now.setMonth(now.getMonth() + 1);
+  }
+  return now.toISOString();
 }
