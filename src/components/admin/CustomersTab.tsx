@@ -169,7 +169,6 @@ export const CustomersTab = () => {
             status
           )
         `, { count: 'exact' })
-        .or('bumper_order_id.not.is.null,stripe_session_id.not.is.null')
         .not('email', 'like', '%test%')
         .not('email', 'like', '%guest%')
         .not('name', 'like', '%test%')
