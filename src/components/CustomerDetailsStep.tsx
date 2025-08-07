@@ -78,12 +78,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
 
   // Calculate prices based on pricing data
-  const finalTotalPrice = pricingData.totalPrice; // This is now the correct total price
-  const monthlyBumperPrice = pricingData.monthlyPrice; // This is the monthly payment amount
-  const stripePrice = Math.round(finalTotalPrice * 0.95); // 5% discount for full payment
-  
-  // Calculate Bumper total as monthly payment x 12 (always 12 payments with Bumper)
-  const bumperTotalPrice = Math.round(finalTotalPrice / 12) * 12; // Monthly amount x 12
+  const monthlyBumperPrice = pricingData.monthlyPrice; // This is the monthly payment amount for Bumper
+  const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper
+  const stripePrice = Math.round(pricingData.totalPrice * 0.95); // 5% discount for full payment on full warranty cost
   
   // Apply discount if valid
   const discountedBumperPrice = discountValidation?.isValid 
@@ -120,7 +117,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         body: {
           code: customerData.discount_code,
           customerEmail: customerData.email,
-          orderAmount: finalTotalPrice
+          orderAmount: bumperTotalPrice
         }
       });
 
@@ -139,18 +136,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           isValid: false,
           message: data.error || 'Invalid discount code',
           discountAmount: 0,
-          finalAmount: finalTotalPrice
+          finalAmount: bumperTotalPrice
         });
         toast.error('Invalid discount code');
       }
     } catch (error) {
       console.error('Error validating discount code:', error);
-      setDiscountValidation({
-        isValid: false,
-        message: 'Error validating discount code',
-        discountAmount: 0,
-        finalAmount: finalTotalPrice
-      });
+        setDiscountValidation({
+          isValid: false,
+          message: 'Error validating discount code',
+          discountAmount: 0,
+          finalAmount: bumperTotalPrice
+        });
       toast.error('Error validating discount code');
     } finally {
       setIsValidatingDiscount(false);
@@ -520,15 +517,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save a further £{Math.round(finalTotalPrice * 0.05)} (5% off)
+                          Save a further £{Math.round(pricingData.totalPrice * 0.05)} (5% off)
                         </div>
                       </div>
-                      <p className="text-sm text-gray-600">
+                       <p className="text-sm text-gray-600">
                         Pay £{discountedStripePrice} upfront via card 
                         {discountValidation?.isValid ? (
                           <span> (was £{stripePrice})</span>
                         ) : (
-                          <span> (was £{finalTotalPrice})</span>
+                          <span> (was £{pricingData.totalPrice})</span>
                         )}
                       </p>
                     </div>
