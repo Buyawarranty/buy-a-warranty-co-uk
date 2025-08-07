@@ -30,12 +30,39 @@ const ThankYou = () => {
         
         // Check if this is a Bumper payment (has source=bumper in URL)
         if (source === 'bumper') {
-          console.log('Processing Bumper payment...', { plan, paymentType });
+          console.log('Processing Bumper payment...', { plan, paymentType, sessionId });
+          
+          // Extract customer and vehicle data from URL parameters
+          const customerData = {
+            first_name: searchParams.get('first_name') || undefined,
+            last_name: searchParams.get('last_name') || undefined,
+            email: searchParams.get('email') || undefined,
+            mobile: searchParams.get('mobile') || undefined,
+            street: searchParams.get('street') || undefined,
+            town: searchParams.get('town') || undefined,
+            postcode: searchParams.get('postcode') || undefined,
+            vehicle_reg: searchParams.get('vehicle_reg') || undefined
+          };
+          
+          const vehicleData = {
+            regNumber: searchParams.get('vehicle_reg') || undefined,
+            make: searchParams.get('vehicle_make') || undefined,
+            model: searchParams.get('vehicle_model') || undefined,
+            year: searchParams.get('vehicle_year') || undefined,
+            mileage: searchParams.get('mileage') || undefined
+          };
           
           const result = await supabase.functions.invoke('process-bumper-success', {
             body: {
               planId: plan,
-              paymentType
+              paymentType,
+              customerData,
+              vehicleData,
+              sessionId: sessionId || `BUMPER_${Date.now()}`,
+              discountCode: searchParams.get('discount_code'),
+              discountAmount: searchParams.get('discount_amount') ? parseFloat(searchParams.get('discount_amount')!) : 0,
+              originalAmount: searchParams.get('original_amount') ? parseFloat(searchParams.get('original_amount')!) : null,
+              finalAmount: searchParams.get('final_amount') ? parseFloat(searchParams.get('final_amount')!) : null
             }
           });
           data = result.data;
@@ -164,8 +191,15 @@ const ThankYou = () => {
               </h3>
               {policyNumber && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
-                  <p className="text-sm text-green-800 font-semibold">Policy Number:</p>
+                  <p className="text-sm text-green-800 font-semibold">
+                    {source === 'bumper' ? 'BAW Policy Number:' : 'Policy Number:'}
+                  </p>
                   <p className="text-lg text-green-900 font-mono">{policyNumber}</p>
+                  {source === 'bumper' && (
+                    <p className="text-xs text-green-600 mt-2">
+                      Your policy has been registered with Warranties 2000
+                    </p>
+                  )}
                 </div>
               )}
             </div>

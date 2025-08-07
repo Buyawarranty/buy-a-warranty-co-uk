@@ -51,7 +51,9 @@ interface Customer {
   original_amount?: number;
   final_amount?: number;
   warranty_expiry?: string; // New field for warranty expiry date
-  customer_policies?: Array<{ policy_end_date: string }>; // Type for the joined data
+  policy_number?: string; // Policy number from customer_policies
+  policy_status?: string; // Policy status from customer_policies
+  customer_policies?: Array<{ policy_end_date: string; policy_number: string; status: string }>; // Type for the joined data
   welcome_email_status?: 'sent' | 'not_sent';
   activation_email_status?: 'sent' | 'not_sent';
 }
@@ -154,16 +156,25 @@ export const CustomersTab = () => {
       
       setDebugInfo(`User: ${user?.email || 'Master Admin'}, Master Admin: ${isMasterAdmin}`);
 
-      // Updated query to include warranty expiry date from customer_policies using proper foreign key
-      console.log('📊 Attempting query with warranty expiry data...');
+      // Updated query to include policy data and filter out test/fake customers
+      console.log('📊 Attempting query with policy data and real customers only...');
       const { data: directData, error: directError, count: directCount } = await supabase
         .from('customers')
         .select(`
           *,
           customer_policies!customer_id(
-            policy_end_date
+            policy_number,
+            policy_end_date,
+            policy_start_date,
+            status
           )
-        `, { count: 'exact' });
+        `, { count: 'exact' })
+        .or('bumper_order_id.not.is.null,stripe_session_id.not.is.null')
+        .not('email', 'like', '%test%')
+        .not('email', 'like', '%guest%')
+        .not('name', 'like', '%test%')
+        .not('name', 'like', '%Test%')
+        .order('signup_date', { ascending: false });
 
       console.log('📊 Query result:', { data: directData, error: directError, count: directCount });
 
@@ -216,7 +227,9 @@ export const CustomersTab = () => {
       // Process the data to flatten the customer_policies relationship
       const processedData = directData?.map((customer: any) => ({
         ...customer,
-        warranty_expiry: customer.customer_policies?.[0]?.policy_end_date || null
+        warranty_expiry: customer.customer_policies?.[0]?.policy_end_date || null,
+        policy_number: customer.customer_policies?.[0]?.policy_number || null,
+        policy_status: customer.customer_policies?.[0]?.status || null
       })) || [];
       
       setCustomers(processedData);
@@ -665,6 +678,7 @@ export const CustomersTab = () => {
               <TableHead>Vehicle Details</TableHead>
               <TableHead>Plan Type</TableHead>
               <TableHead>Payment Type</TableHead>
+              <TableHead>Policy Number</TableHead>
               <TableHead>Final Amount</TableHead>
               <TableHead>Email Status</TableHead>
               <TableHead>Status</TableHead>
@@ -674,7 +688,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={12} className="text-center py-8">
+                <TableCell colSpan={13} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -716,6 +730,15 @@ export const CustomersTab = () => {
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">{customer.payment_type || 'N/A'}</Badge>
+                  </TableCell>
+                  <TableCell className="font-mono text-sm">
+                    {customer.policy_number ? (
+                      <div className="bg-blue-50 px-2 py-1 rounded border">
+                        {customer.policy_number}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">No Policy</span>
+                    )}
                   </TableCell>
                   <TableCell className="font-semibold">
                     {customer.final_amount ? `£${customer.final_amount}` : 'N/A'}
