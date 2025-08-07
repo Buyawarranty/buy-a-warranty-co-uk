@@ -88,9 +88,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   };
 
   // Calculate prices based on pricing data
-  // For special vehicles: calculate proper Bumper monthly payment (total warranty cost ÷ 12)
-  // This ensures Bumper always shows 12 equal payments regardless of warranty duration
-  const monthlyBumperPrice = Math.round(pricingData.totalPrice / 12); // Total warranty cost divided by 12 payments
+  // For Bumper: always use the original monthly price shown on pricing page
+  // This ensures users pay the same monthly amount (e.g., £56) for 12 payments regardless of warranty duration
+  const monthlyBumperPrice = pricingData.monthlyPrice; // Use the original monthly price from pricing page
   const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper
   const stripePrice = Math.round(pricingData.totalPrice * 0.95); // 5% discount for full payment on full warranty cost
   
