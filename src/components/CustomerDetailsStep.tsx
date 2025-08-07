@@ -419,7 +419,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               {/* Payment Summary */}
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="text-green-600 font-semibold text-lg mb-2">
-                  Payment: £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount / 12 : monthlyBumperPrice)} x 12 easy payments
+                  Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-semibold">Total Price:</span>
