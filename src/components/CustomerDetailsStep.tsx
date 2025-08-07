@@ -77,8 +77,19 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [isValidatingDiscount, setIsValidatingDiscount] = useState(false);
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
 
+  // Helper function to get payment period months
+  const getPaymentPeriodMonths = () => {
+    switch (paymentType) {
+      case 'yearly': return 12;
+      case 'two_yearly': return 24;
+      case 'three_yearly': return 36;
+      default: return 12;
+    }
+  };
+
   // Calculate prices based on pricing data
-  const monthlyBumperPrice = pricingData.monthlyPrice; // This is the monthly payment amount for Bumper (already calculated correctly)
+  // For Bumper: always use the base monthly amount (not adjusted for warranty duration)
+  const monthlyBumperPrice = Math.round(pricingData.totalPrice / getPaymentPeriodMonths()); // Original monthly amount based on total warranty cost
   const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper, regardless of warranty duration
   const stripePrice = Math.round(pricingData.totalPrice * 0.95); // 5% discount for full payment on full warranty cost
   
@@ -90,16 +101,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const discountedStripePrice = discountValidation?.isValid 
     ? Math.round(discountValidation.finalAmount * 0.95)
     : stripePrice;
-
-  // Helper function to get payment period months
-  const getPaymentPeriodMonths = () => {
-    switch (paymentType) {
-      case 'yearly': return 12;
-      case 'two_yearly': return 24;
-      case 'three_yearly': return 36;
-      default: return 12;
-    }
-  };
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
