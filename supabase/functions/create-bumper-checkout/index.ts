@@ -140,34 +140,19 @@ serve(async (req) => {
     if (!bumperApiKey || !bumperSecretKey) {
       logStep("Missing Bumper credentials - creating Stripe fallback");
       
-      // Create Stripe fallback
-      const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
-        apiVersion: "2023-10-16" 
-      });
-
-      const origin = req.headers.get("origin") || "https://buyawarranty.com";
-      
-      const session = await stripe.checkout.sessions.create({
-        customer_email: customerEmail,
-        line_items: [{
-          price_data: {
-            currency: "gbp",
-            product_data: { 
-              name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Warranty Plan`,
-            },
-            unit_amount: Math.round(totalAmount * 100), // Convert total amount to pence
-          },
-          quantity: 1,
-        }],
-        mode: "payment",
-        success_url: `${origin}/thank-you?plan=${planType}&payment=${originalPaymentType}&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/`,
-      });
-
+      // Create Stripe fallback using dedicated function
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
-        stripeUrl: session.url,
-        fallbackReason: "missing_credentials"
+        fallbackReason: "missing_credentials",
+        fallbackData: {
+          planId: planType,
+          vehicleData,
+          paymentType: originalPaymentType,
+          voluntaryExcess,
+          customerData,
+          discountCode,
+          finalAmount: totalAmount
+        }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -177,34 +162,19 @@ serve(async (req) => {
     if (!customerData) {
       logStep("No customer data provided, creating Stripe fallback");
       
-      // Create Stripe fallback
-      const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
-        apiVersion: "2023-10-16" 
-      });
-
-      const origin = req.headers.get("origin") || "https://buyawarranty.com";
-      
-      const session = await stripe.checkout.sessions.create({
-        customer_email: customerEmail,
-        line_items: [{
-          price_data: {
-            currency: "gbp",
-            product_data: { 
-              name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Warranty Plan`,
-            },
-            unit_amount: Math.round(totalAmount * 100), // Convert total amount to pence
-          },
-          quantity: 1,
-        }],
-        mode: "payment",
-        success_url: `${origin}/thank-you?plan=${planType}&payment=${originalPaymentType}&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/`,
-      });
-
+      // Create Stripe fallback using dedicated function
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
-        stripeUrl: session.url,
-        fallbackReason: "no_customer_data"
+        fallbackReason: "no_customer_data",
+        fallbackData: {
+          planId: planType,
+          vehicleData,
+          paymentType: originalPaymentType,
+          voluntaryExcess,
+          customerData,
+          discountCode,
+          finalAmount: totalAmount
+        }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -284,34 +254,18 @@ serve(async (req) => {
         console.log("Empty response from Bumper API");
         logStep("Bumper API returned empty response - creating Stripe fallback");
         
-        // Create Stripe fallback
-        const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
-          apiVersion: "2023-10-16" 
-        });
-
-        const origin = req.headers.get("origin") || "https://buyawarranty.com";
-        
-        const session = await stripe.checkout.sessions.create({
-          customer_email: customerEmail,
-          line_items: [{
-            price_data: {
-              currency: "gbp",
-              product_data: { 
-                name: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Warranty Plan`,
-              },
-              unit_amount: Math.round(totalAmount * 100), // Convert total amount to pence
-            },
-            quantity: 1,
-          }],
-          mode: "payment",
-          success_url: `${origin}/thank-you?plan=${planType}&payment=${originalPaymentType}&session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${origin}/`,
-        });
-        
         return new Response(JSON.stringify({ 
           fallbackToStripe: true,
-          stripeUrl: session.url,
-          fallbackReason: "credit_check_failed"
+          fallbackReason: "credit_check_failed",
+          fallbackData: {
+            planId: planType,
+            vehicleData,
+            paymentType: originalPaymentType,
+            voluntaryExcess,
+            customerData,
+            discountCode,
+            finalAmount: totalAmount
+          }
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
@@ -328,9 +282,15 @@ serve(async (req) => {
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
         fallbackReason: "credit_check_failed",
-        originalPaymentType: originalPaymentType,
-        fallbackPaymentType: originalPaymentType,
-        error: "Credit check failed, redirecting to payment option" 
+        fallbackData: {
+          planId: planType,
+          vehicleData,
+          paymentType: originalPaymentType,
+          voluntaryExcess,
+          customerData,
+          discountCode,
+          finalAmount: totalAmount
+        }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -350,9 +310,15 @@ serve(async (req) => {
       return new Response(JSON.stringify({ 
         fallbackToStripe: true,
         fallbackReason: "credit_check_failed",
-        originalPaymentType: originalPaymentType,
-        fallbackPaymentType: originalPaymentType,
-        error: "Credit check failed, redirecting to payment option" 
+        fallbackData: {
+          planId: planType,
+          vehicleData,
+          paymentType: originalPaymentType,
+          voluntaryExcess,
+          customerData,
+          discountCode,
+          finalAmount: totalAmount
+        }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -378,13 +344,19 @@ serve(async (req) => {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in create-bumper-checkout", { message: errorMessage });
     
-    // On any error, fallback to Stripe with yearly payment
+    // On any error, fallback to Stripe with original payment type
     return new Response(JSON.stringify({ 
       fallbackToStripe: true,
-      fallbackReason: "credit_check_failed",
-      originalPaymentType: originalPaymentType || "yearly",
-      fallbackPaymentType: originalPaymentType || "yearly",
-      error: "Credit check failed, redirecting to payment option"
+      fallbackReason: "error",
+      fallbackData: {
+        planId: planId || "basic",
+        vehicleData: vehicleData || {},
+        paymentType: originalPaymentType || "yearly",
+        voluntaryExcess: voluntaryExcess || 0,
+        customerData: customerData || {},
+        discountCode: discountCode || null,
+        finalAmount: null
+      }
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

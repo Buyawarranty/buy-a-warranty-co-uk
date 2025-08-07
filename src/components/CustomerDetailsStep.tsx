@@ -188,8 +188,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         if (error) throw error;
 
         if (data.fallbackToStripe) {
-          toast.error('Credit check failed. Redirecting to yearly payment option.');
-          checkoutUrl = data.stripeUrl;
+          console.log('Bumper credit check failed, creating Stripe fallback checkout');
+          toast.error('Credit check failed. Redirecting to full payment option.');
+          
+          // Create Stripe checkout with the fallback data
+          const stripeResponse = await supabase.functions.invoke('create-stripe-checkout', {
+            body: data.fallbackData
+          });
+          
+          if (stripeResponse.error) throw stripeResponse.error;
+          checkoutUrl = stripeResponse.data.url;
         } else {
           checkoutUrl = data.url;
         }
