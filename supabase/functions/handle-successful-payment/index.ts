@@ -38,25 +38,38 @@ serve(async (req) => {
     logStep("Generated warranty reference", { warrantyReference });
 
     // Create or update customer record in database
-    const customerName = customerData?.fullName || vehicleData?.fullName || 'Unknown Customer';
+    const customerName = `${customerData?.first_name || ''} ${customerData?.last_name || ''}`.trim() || 
+                        customerData?.fullName || vehicleData?.fullName || 'Unknown Customer';
+    
     const customerRecord = {
       name: customerName,
       email: userEmail,
-      phone: customerData?.phone || vehicleData?.phone || '',
-      first_name: extractFirstName(customerName),
-      last_name: extractSurname(customerName),
-      street: extractStreet(customerData?.address || vehicleData?.address || ''),
-      town: extractTown(customerData?.address || vehicleData?.address || ''),
-      postcode: extractPostcode(customerData?.address || vehicleData?.address || ''),
+      phone: customerData?.mobile || customerData?.phone || vehicleData?.phone || '',
+      first_name: customerData?.first_name || extractFirstName(customerName),
+      last_name: customerData?.last_name || extractSurname(customerName),
+      flat_number: customerData?.flat_number || '',
+      building_name: customerData?.building_name || '',
+      building_number: customerData?.building_number || '',
+      street: customerData?.street || extractStreet(customerData?.address || vehicleData?.address || ''),
+      town: customerData?.town || extractTown(customerData?.address || vehicleData?.address || ''),
+      county: customerData?.county || '',
+      postcode: customerData?.postcode || extractPostcode(customerData?.address || vehicleData?.address || ''),
+      country: customerData?.country || 'United Kingdom',
       plan_type: planId,
       payment_type: paymentType,
       stripe_session_id: stripeSessionId,
-      registration_plate: vehicleData?.regNumber || 'Unknown',
+      registration_plate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
       vehicle_make: vehicleData?.make || 'Unknown',
       vehicle_model: vehicleData?.model || 'Unknown',
       vehicle_year: vehicleData?.year || '',
+      vehicle_fuel_type: vehicleData?.fuelType || '',
+      vehicle_transmission: vehicleData?.transmission || '',
       mileage: vehicleData?.mileage || '',
-      status: 'Active'
+      status: 'Active',
+      discount_code: customerData?.discount_code || null,
+      discount_amount: customerData?.discount_amount || 0,
+      original_amount: customerData?.original_amount || null,
+      final_amount: customerData?.final_amount || null
     };
 
     logStep("Creating customer record", customerRecord);
