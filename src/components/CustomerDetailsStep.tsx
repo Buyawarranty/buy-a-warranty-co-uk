@@ -524,7 +524,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save 5% (£{Math.round((discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice) * 0.05)})
+                          Save a further 5% (£{Math.round((discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice) * 0.05)})
                         </div>
                       </div>
                        <p className="text-sm text-gray-600">
