@@ -25,7 +25,7 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    const { planId, paymentType, customerData, vehicleData } = await req.json();
+    const { planId, paymentType, customerData, vehicleData, sessionId, discountCode, discountAmount, originalAmount, finalAmount } = await req.json();
     logStep("Processing Bumper payment", { planId, paymentType, hasCustomerData: !!customerData, hasVehicleData: !!vehicleData });
 
     if (!planId) {
@@ -56,15 +56,38 @@ serve(async (req) => {
     const customerEmail = customerData?.email || "guest@buyawarranty.com";
     const vehicleReg = vehicleData?.regNumber || customerData?.vehicle_reg || null;
     
-    // Create customer record
+    // Create customer record with all details
     const { data: customer, error: customerError } = await supabaseClient
       .from('customers')
       .insert({
         name: customerName,
         email: customerEmail,
+        phone: customerData?.mobile,
+        first_name: customerData?.first_name,
+        last_name: customerData?.last_name,
+        flat_number: customerData?.flat_number,
+        building_name: customerData?.building_name,
+        building_number: customerData?.building_number,
+        street: customerData?.street,
+        town: customerData?.town,
+        county: customerData?.county,
+        postcode: customerData?.postcode,
+        country: customerData?.country || 'United Kingdom',
         plan_type: plan.name,
         status: 'Active',
-        registration_plate: vehicleReg
+        registration_plate: vehicleReg,
+        vehicle_make: vehicleData?.make,
+        vehicle_model: vehicleData?.model,
+        vehicle_year: vehicleData?.year,
+        vehicle_fuel_type: vehicleData?.fuelType,
+        vehicle_transmission: vehicleData?.transmission,
+        mileage: vehicleData?.mileage,
+        payment_type: paymentType,
+        bumper_order_id: sessionId,
+        discount_code: discountCode,
+        discount_amount: discountAmount,
+        original_amount: originalAmount,
+        final_amount: finalAmount
       })
       .select()
       .single();

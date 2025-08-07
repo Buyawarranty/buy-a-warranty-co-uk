@@ -12,6 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
 import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key } from 'lucide-react';
+import { ForwardToWarranties } from './ForwardToWarranties';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -20,12 +21,35 @@ interface Customer {
   name: string;
   email: string;
   phone?: string;
+  first_name?: string;
+  last_name?: string;
+  flat_number?: string;
+  building_name?: string;
+  building_number?: string;
+  street?: string;
+  town?: string;
+  county?: string;
+  postcode?: string;
+  country?: string;
   address?: string;
   plan_type: string;
   signup_date: string;
   voluntary_excess: number;
   status: string;
   registration_plate: string;
+  vehicle_make?: string;
+  vehicle_model?: string;
+  vehicle_year?: string;
+  vehicle_fuel_type?: string;
+  vehicle_transmission?: string;
+  mileage?: string;
+  payment_type?: string;
+  stripe_session_id?: string;
+  bumper_order_id?: string;
+  discount_code?: string;
+  discount_amount?: number;
+  original_amount?: number;
+  final_amount?: number;
   warranty_expiry?: string; // New field for warranty expiry date
   customer_policies?: Array<{ policy_end_date: string }>; // Type for the joined data
 }
@@ -275,7 +299,12 @@ export const CustomersTab = () => {
           name: editingCustomer.name,
           email: editingCustomer.email,
           phone: editingCustomer.phone,
-          address: editingCustomer.address,
+          first_name: editingCustomer.first_name,
+          last_name: editingCustomer.last_name,
+          street: editingCustomer.street,
+          town: editingCustomer.town,
+          county: editingCustomer.county,
+          postcode: editingCustomer.postcode,
           plan_type: editingCustomer.plan_type,
           status: editingCustomer.status,
           voluntary_excess: editingCustomer.voluntary_excess
@@ -294,20 +323,23 @@ export const CustomersTab = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Name', 'Email', 'Phone', 'Address', 'Registration Plate', 'Plan Type', 'Signup Date', 'Warranty Expiry', 'Voluntary Excess', 'Status'];
+    const headers = ['Name', 'Email', 'Phone', 'Full Address', 'Registration Plate', 'Vehicle Details', 'Plan Type', 'Payment Type', 'Signup Date', 'Warranty Expiry', 'Voluntary Excess', 'Status', 'Final Amount'];
     const csvContent = [
       headers.join(','),
       ...filteredCustomers.map(customer => [
         customer.name,
         customer.email,
         customer.phone || '',
-        customer.address || '',
+        `${customer.street || ''} ${customer.town || ''} ${customer.county || ''} ${customer.postcode || ''}`.trim(),
         customer.registration_plate || '',
+        `${customer.vehicle_make || ''} ${customer.vehicle_model || ''} ${customer.vehicle_year || ''}`.trim(),
         customer.plan_type,
+        customer.payment_type || '',
         format(new Date(customer.signup_date), 'yyyy-MM-dd'),
         customer.warranty_expiry ? format(new Date(customer.warranty_expiry), 'yyyy-MM-dd') : 'N/A',
         customer.voluntary_excess || 0,
-        customer.status
+        customer.status,
+        customer.final_amount || ''
       ].join(','))
     ].join('\n');
 
@@ -472,11 +504,13 @@ export const CustomersTab = () => {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Address</TableHead>
               <TableHead>Registration Plate</TableHead>
+              <TableHead>Vehicle Details</TableHead>
               <TableHead>Plan Type</TableHead>
-              <TableHead>Signup Date</TableHead>
-              <TableHead>Warranty Expiry</TableHead>
-              <TableHead>Voluntary Excess</TableHead>
+              <TableHead>Payment Type</TableHead>
+              <TableHead>Final Amount</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -484,7 +518,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-8">
+                <TableCell colSpan={11} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -505,37 +539,31 @@ export const CustomersTab = () => {
                 <TableRow key={customer.id}>
                   <TableCell className="font-medium">{customer.name}</TableCell>
                   <TableCell>{customer.email}</TableCell>
+                  <TableCell>{customer.phone || 'N/A'}</TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {customer.street || customer.town || customer.postcode 
+                      ? `${customer.street || ''} ${customer.town || ''} ${customer.postcode || ''}`.trim()
+                      : 'N/A'
+                    }
+                  </TableCell>
                   <TableCell>
                     <NumberPlate plateNumber={customer.registration_plate} />
+                  </TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {customer.vehicle_make || customer.vehicle_model || customer.vehicle_year
+                      ? `${customer.vehicle_make || ''} ${customer.vehicle_model || ''} ${customer.vehicle_year || ''}`.trim()
+                      : 'N/A'
+                    }
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">{customer.plan_type}</Badge>
                   </TableCell>
-                  <TableCell>{format(new Date(customer.signup_date), 'MMM dd, yyyy')}</TableCell>
                   <TableCell>
-                    {customer.warranty_expiry ? (
-                      <div className="flex flex-col">
-                        <span>{format(new Date(customer.warranty_expiry), 'MMM dd, yyyy')}</span>
-                        <span className={`text-xs ${
-                          new Date(customer.warranty_expiry) < new Date() 
-                            ? 'text-red-600 font-semibold' 
-                            : new Date(customer.warranty_expiry) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-                            ? 'text-orange-600 font-semibold'
-                            : 'text-green-600'
-                        }`}>
-                          {new Date(customer.warranty_expiry) < new Date() 
-                            ? 'Expired' 
-                            : new Date(customer.warranty_expiry) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-                            ? 'Expires Soon'
-                            : 'Active'
-                          }
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="text-gray-400">N/A</span>
-                    )}
+                    <Badge variant="outline">{customer.payment_type || 'N/A'}</Badge>
                   </TableCell>
-                  <TableCell>£{customer.voluntary_excess || 0}</TableCell>
+                  <TableCell className="font-semibold">
+                    {customer.final_amount ? `£${customer.final_amount}` : 'N/A'}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={customer.status === 'Active' ? 'default' : 'destructive'}>
                       {customer.status}
@@ -767,6 +795,8 @@ export const CustomersTab = () => {
                           <Key className="h-4 w-4" />
                         )}
                       </Button>
+                      
+                      <ForwardToWarranties customer={customer} />
                     </div>
                   </TableCell>
                 </TableRow>

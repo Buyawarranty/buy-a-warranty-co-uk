@@ -248,42 +248,114 @@ export type Database = {
       }
       customers: {
         Row: {
+          building_name: string | null
+          building_number: string | null
+          bumper_order_id: string | null
+          country: string | null
+          county: string | null
           created_at: string
+          discount_amount: number | null
+          discount_code: string | null
           email: string
+          final_amount: number | null
+          first_name: string | null
+          flat_number: string | null
           id: string
+          last_name: string | null
+          mileage: string | null
           name: string
+          original_amount: number | null
+          payment_type: string | null
+          phone: string | null
           plan_type: string
+          postcode: string | null
           registration_plate: string | null
           signup_date: string
           status: string
+          street: string | null
           stripe_customer_id: string | null
+          stripe_session_id: string | null
+          town: string | null
           updated_at: string
+          vehicle_fuel_type: string | null
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_transmission: string | null
+          vehicle_year: string | null
           voluntary_excess: number | null
         }
         Insert: {
+          building_name?: string | null
+          building_number?: string | null
+          bumper_order_id?: string | null
+          country?: string | null
+          county?: string | null
           created_at?: string
+          discount_amount?: number | null
+          discount_code?: string | null
           email: string
+          final_amount?: number | null
+          first_name?: string | null
+          flat_number?: string | null
           id?: string
+          last_name?: string | null
+          mileage?: string | null
           name: string
+          original_amount?: number | null
+          payment_type?: string | null
+          phone?: string | null
           plan_type: string
+          postcode?: string | null
           registration_plate?: string | null
           signup_date?: string
           status?: string
+          street?: string | null
           stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          town?: string | null
           updated_at?: string
+          vehicle_fuel_type?: string | null
+          vehicle_make?: string | null
+          vehicle_model?: string | null
+          vehicle_transmission?: string | null
+          vehicle_year?: string | null
           voluntary_excess?: number | null
         }
         Update: {
+          building_name?: string | null
+          building_number?: string | null
+          bumper_order_id?: string | null
+          country?: string | null
+          county?: string | null
           created_at?: string
+          discount_amount?: number | null
+          discount_code?: string | null
           email?: string
+          final_amount?: number | null
+          first_name?: string | null
+          flat_number?: string | null
           id?: string
+          last_name?: string | null
+          mileage?: string | null
           name?: string
+          original_amount?: number | null
+          payment_type?: string | null
+          phone?: string | null
           plan_type?: string
+          postcode?: string | null
           registration_plate?: string | null
           signup_date?: string
           status?: string
+          street?: string | null
           stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          town?: string | null
           updated_at?: string
+          vehicle_fuel_type?: string | null
+          vehicle_make?: string | null
+          vehicle_model?: string | null
+          vehicle_transmission?: string | null
+          vehicle_year?: string | null
           voluntary_excess?: number | null
         }
         Relationships: []
