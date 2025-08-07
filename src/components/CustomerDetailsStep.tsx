@@ -505,7 +505,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                           0% Interest
                         </div>
                       </div>
-                      <p className="text-sm text-gray-600">Pay monthly with no interest charges</p>
+                      <p className="text-sm text-gray-600">
+                        Pay £{Math.round(monthlyBumperPrice)} x 12 monthly payments = £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} total
+                        {discountValidation?.isValid && (
+                          <span className="text-green-600"> (discount applied)</span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -518,15 +523,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save a further £{Math.round(pricingData.totalPrice * 0.05)} (5% off)
+                          Save 5% (£{Math.round((discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice) * 0.05)})
                         </div>
                       </div>
                        <p className="text-sm text-gray-600">
                         Pay £{discountedStripePrice} upfront via card 
                         {discountValidation?.isValid ? (
-                          <span> (was £{stripePrice})</span>
+                          <span> (was £{Math.round(discountValidation.finalAmount * 0.95)})</span>
                         ) : (
-                          <span> (was £{pricingData.totalPrice})</span>
+                          <span> (was £{Math.round(bumperTotalPrice)})</span>
                         )}
                       </p>
                     </div>
