@@ -49,6 +49,9 @@ const Index = () => {
         const restoredData = JSON.parse(atob(restoreParam));
         setVehicleData(restoredData);
         setFormData({ ...formData, ...restoredData });
+        if (restoredData.selectedPlan) {
+          setSelectedPlan(restoredData.selectedPlan);
+        }
         setCurrentStep(restoredData.step || 3);
         
         // Clear the URL parameter

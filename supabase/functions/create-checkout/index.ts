@@ -142,7 +142,30 @@ serve(async (req) => {
       ],
       mode: "payment",
       success_url: `${origin}/thank-you?plan=${planType}&payment=${paymentType}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/?step=4`,
+      cancel_url: `${origin}/?step=4&restore=${encodeURIComponent(btoa(JSON.stringify({
+        regNumber: vehicleData?.regNumber || customerData?.vehicle_reg || '',
+        email: customerData?.email || '',
+        phone: customerData?.phone || '',
+        firstName: customerData?.first_name || '',
+        lastName: customerData?.last_name || '',
+        address: customerData?.address || '',
+        make: vehicleData?.make || '',
+        model: vehicleData?.model || '',
+        year: vehicleData?.year || '',
+        vehicleType: vehicleData?.vehicleType || '',
+        mileage: vehicleData?.mileage || '',
+        step: 4,
+        selectedPlan: {
+          id: planType,
+          paymentType: paymentType,
+          name: planName,
+          pricingData: {
+            totalPrice: finalAmount,
+            monthlyPrice: paymentType === 'monthly' ? finalAmount : 0,
+            voluntaryExcess: voluntaryExcess
+          }
+        }
+      }))))}`,
       automatic_tax: { enabled: false },
       billing_address_collection: 'required',
       customer_creation: customerId ? undefined : 'always',
