@@ -41,6 +41,9 @@ serve(async (req) => {
     const customerName = `${customerData?.first_name || ''} ${customerData?.last_name || ''}`.trim() || 
                         customerData?.fullName || vehicleData?.fullName || 'Unknown Customer';
     
+    // Normalize plan type for customers table (needs capital case)
+    const normalizedPlanType = planId.charAt(0).toUpperCase() + planId.slice(1).toLowerCase();
+    
     const customerRecord = {
       name: customerName,
       email: userEmail,
@@ -55,7 +58,7 @@ serve(async (req) => {
       county: customerData?.county || '',
       postcode: customerData?.postcode || extractPostcode(customerData?.address || vehicleData?.address || ''),
       country: customerData?.country || 'United Kingdom',
-      plan_type: planId,
+      plan_type: normalizedPlanType,
       payment_type: paymentType,
       stripe_session_id: stripeSessionId,
       registration_plate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
@@ -90,7 +93,7 @@ serve(async (req) => {
         customer_id: customerData2.id,
         user_id: userId,
         email: userEmail,
-        plan_type: planId,
+        plan_type: planId.toLowerCase(), // customer_policies table expects lowercase
         payment_type: paymentType,
         policy_number: warrantyReference,
         policy_start_date: new Date().toISOString(),
