@@ -448,7 +448,7 @@ export const CustomersTab = () => {
       } else if (emailType === 'portal_signup') {
         functionName = 'send-email';
         payload = {
-          templateId: 'welcome',
+          templateId: 'Welcome Email - Portal Signup',
           recipientEmail: customerEmail,
           variables: {
             customerName: customer?.name || customer?.first_name || 'Customer',
