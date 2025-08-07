@@ -59,7 +59,6 @@ interface Customer {
 }
 
 interface EmailStatus {
-  welcome_email: boolean;
   policy_documents: boolean;
   portal_signup: boolean;
 }
@@ -403,10 +402,6 @@ export const CustomersTab = () => {
       customers.forEach(customer => {
         const customerEmails = emailLogs?.filter(log => log.recipient_email === customer.email) || [];
         statuses[customer.email] = {
-          welcome_email: customerEmails.some(log => 
-            log.subject?.toLowerCase().includes('welcome') && 
-            !log.subject?.toLowerCase().includes('get you started')
-          ),
           portal_signup: customerEmails.some(log => 
             log.subject?.toLowerCase().includes('welcome to buyawarranty.co.uk') &&
             log.subject?.toLowerCase().includes('get you started')
@@ -425,7 +420,7 @@ export const CustomersTab = () => {
     }
   };
 
-  const sendManualEmail = async (customerId: string, customerEmail: string, emailType: 'welcome' | 'policy_documents' | 'portal_signup') => {
+  const sendManualEmail = async (customerId: string, customerEmail: string, emailType: 'policy_documents' | 'portal_signup') => {
     const emailKey = `${customerId}_${emailType}`;
     setEmailSendingLoading(prev => ({
       ...prev,
@@ -437,15 +432,7 @@ export const CustomersTab = () => {
       let functionName: string;
       let payload: any;
       
-      if (emailType === 'welcome') {
-        functionName = 'send-welcome-email';
-        payload = {
-          email: customerEmail,
-          planType: customer?.plan_type || 'basic',
-          paymentType: customer?.payment_type || 'monthly',
-          policyNumber: customer?.policy_number || 'N/A'
-        };
-      } else if (emailType === 'portal_signup') {
+      if (emailType === 'portal_signup') {
         functionName = 'send-email';
         payload = {
           templateId: 'Welcome Email - Portal Signup',
@@ -460,10 +447,11 @@ export const CustomersTab = () => {
       } else {
         functionName = 'send-policy-documents';
         payload = {
-          email: customerEmail,
-          planType: customer?.plan_type || 'basic',
-          policyNumber: customer?.policy_number || 'N/A',
-          customerName: customer?.name || 'Customer'
+          recipientEmail: customerEmail,
+          variables: {
+            planType: customer?.plan_type || 'basic',
+            customerName: customer?.name || customer?.first_name || 'Customer'
+          }
         };
       }
 
@@ -474,7 +462,6 @@ export const CustomersTab = () => {
       if (error) throw error;
 
       const emailTypeNames = {
-        welcome: 'Welcome',
         portal_signup: 'Portal Signup',
         policy_documents: 'Policy Documents'
       };
@@ -504,34 +491,10 @@ export const CustomersTab = () => {
   };
 
   const EmailStatusIndicator = ({ customer }: { customer: Customer }) => {
-    const status = emailStatuses[customer.email] || { welcome_email: false, policy_documents: false, portal_signup: false };
+    const status = emailStatuses[customer.email] || { policy_documents: false, portal_signup: false };
     
     return (
       <div className="flex flex-col space-y-1">
-        <div className="flex items-center space-x-2">
-          {status.welcome_email ? (
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          ) : (
-            <Clock className="h-4 w-4 text-red-500" />
-          )}
-          <span className="text-xs">Welcome</span>
-          {!status.welcome_email && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 w-6 p-0"
-              onClick={() => sendManualEmail(customer.id, customer.email, 'welcome')}
-              disabled={emailSendingLoading[customer.id]?.welcome}
-            >
-              {emailSendingLoading[customer.id]?.welcome ? (
-                <div className="animate-spin rounded-full h-3 w-3 border border-orange-600 border-t-transparent"></div>
-              ) : (
-                <Send className="h-3 w-3" />
-              )}
-            </Button>
-          )}
-        </div>
-        
         <div className="flex items-center space-x-2">
           {status.portal_signup ? (
             <CheckCircle className="h-4 w-4 text-green-600" />

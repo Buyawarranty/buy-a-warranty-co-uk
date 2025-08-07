@@ -25,10 +25,11 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { email, planType, policyNumber, customerName } = await req.json();
-    logStep("Request data", { email, planType, policyNumber, customerName });
+    const { recipientEmail, variables } = await req.json();
+    const { planType, customerName } = variables || {};
+    logStep("Request data", { recipientEmail, planType, customerName });
 
-    if (!email || !planType || !policyNumber) {
+    if (!recipientEmail || !planType) {
       throw new Error("Missing required parameters");
     }
 
@@ -36,12 +37,12 @@ serve(async (req) => {
     const { data: template, error: templateError } = await supabaseClient
       .from('email_templates')
       .select('*')
-      .eq('template_type', 'policy_documents')
+      .eq('name', 'Policy Documents Email')
       .eq('is_active', true)
       .single();
 
     if (templateError || !template) {
-      throw new Error("Policy documents email template not found");
+      throw new Error("Policy Documents Email template not found");
     }
 
     logStep("Found policy documents template", { templateId: template.id });
@@ -131,14 +132,13 @@ serve(async (req) => {
 
     // Send policy documents email using the template
     const emailVariables = {
-      customerName: customerName || email.split('@')[0],
-      planType: planType,
-      policyNumber: policyNumber
+      customerName: customerName || recipientEmail.split('@')[0],
+      planType: planType
     };
 
     const emailPayload: any = {
       templateId: template.name,
-      recipientEmail: email,
+      recipientEmail: recipientEmail,
       variables: emailVariables
     };
 
@@ -163,12 +163,11 @@ serve(async (req) => {
       .from('email_logs')
       .insert({
         template_id: template.id,
-        recipient_email: email,
+        recipient_email: recipientEmail,
         subject: template.subject,
         status: 'sent',
         metadata: {
           plan_type: planType,
-          policy_number: policyNumber,
           attachments_count: attachments.length
         }
       });
