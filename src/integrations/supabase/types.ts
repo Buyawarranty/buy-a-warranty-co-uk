@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_cart_email_templates: {
+        Row: {
+          created_at: string | null
+          html_content: string
+          id: string
+          is_active: boolean | null
+          name: string
+          send_delay_minutes: number | null
+          subject: string
+          text_content: string | null
+          trigger_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          html_content: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          send_delay_minutes?: number | null
+          subject: string
+          text_content?: string | null
+          trigger_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          html_content?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          send_delay_minutes?: number | null
+          subject?: string
+          text_content?: string | null
+          trigger_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       abandoned_carts: {
         Row: {
           created_at: string
@@ -598,6 +637,47 @@ export type Database = {
           yearly_price?: number | null
         }
         Relationships: []
+      }
+      triggered_emails_log: {
+        Row: {
+          created_at: string | null
+          email: string
+          email_status: string | null
+          id: string
+          sent_at: string | null
+          template_id: string | null
+          trigger_type: string
+          vehicle_reg: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          email_status?: string | null
+          id?: string
+          sent_at?: string | null
+          template_id?: string | null
+          trigger_type: string
+          vehicle_reg?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          email_status?: string | null
+          id?: string
+          sent_at?: string | null
+          template_id?: string | null
+          trigger_type?: string
+          vehicle_reg?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "triggered_emails_log_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "abandoned_cart_email_templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
