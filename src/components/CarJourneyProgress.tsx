@@ -43,7 +43,7 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
       {/* Brand Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold">
-          <span className="text-[#2563eb]">buya</span>
+          <span className="text-[#1e40af]">buya</span>
           <span className="text-[#ea580c]">warranty</span>
         </h1>
       </div>
