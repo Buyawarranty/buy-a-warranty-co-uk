@@ -59,16 +59,34 @@ serve(async (req) => {
       mileage: session.metadata?.vehicle_mileage || '',
       make: session.metadata?.vehicle_make || '',
       model: session.metadata?.vehicle_model || '',
+      year: session.metadata?.vehicle_year || '',
+      fuelType: session.metadata?.vehicle_fuel_type || '',
+      transmission: session.metadata?.vehicle_transmission || '',
+      vehicleType: session.metadata?.vehicle_type || 'standard',
       fullName: session.metadata?.customer_name || '',
       phone: session.metadata?.customer_phone || '',
-      address: session.metadata?.customer_address || '',
-      email: session.customer_email || session.customer_details?.email || ''
+      address: `${session.metadata?.customer_street || ''} ${session.metadata?.customer_town || ''} ${session.metadata?.customer_county || ''} ${session.metadata?.customer_postcode || ''}`.trim(),
+      email: session.customer_email || session.customer_details?.email || session.metadata?.customer_email || ''
     };
 
     const customerData = {
+      first_name: session.metadata?.customer_first_name || '',
+      last_name: session.metadata?.customer_last_name || '',
+      mobile: session.metadata?.customer_phone || '',
+      street: session.metadata?.customer_street || '',
+      town: session.metadata?.customer_town || '',
+      county: session.metadata?.customer_county || '',
+      postcode: session.metadata?.customer_postcode || '',
+      country: session.metadata?.customer_country || 'United Kingdom',
+      building_name: session.metadata?.customer_building_name || '',
+      flat_number: session.metadata?.customer_flat_number || '',
+      building_number: session.metadata?.customer_building_number || '',
+      vehicle_reg: session.metadata?.vehicle_reg || '',
+      discount_code: session.metadata?.discount_code || '',
+      final_amount: parseFloat(session.metadata?.final_amount || '0'),
       fullName: session.metadata?.customer_name || '',
       phone: session.metadata?.customer_phone || '',
-      address: session.metadata?.customer_address || ''
+      address: `${session.metadata?.customer_street || ''}, ${session.metadata?.customer_town || ''}, ${session.metadata?.customer_county || ''}, ${session.metadata?.customer_postcode || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',').trim()
     };
 
     logStep("Extracted vehicle and customer data", { vehicleData, customerData });
@@ -76,8 +94,8 @@ serve(async (req) => {
     // Call handle-successful-payment with the extracted data
     const { data: paymentData, error: paymentError } = await supabaseClient.functions.invoke('handle-successful-payment', {
       body: {
-        planId: planId,
-        paymentType: paymentType,
+        planId: session.metadata?.plan_id || planId,
+        paymentType: session.metadata?.payment_type || paymentType,
         userEmail: vehicleData.email,
         userId: session.metadata?.user_id || null,
         stripeSessionId: sessionId,
