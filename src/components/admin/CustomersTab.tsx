@@ -60,7 +60,7 @@ interface Customer {
 
 interface EmailStatus {
   welcome_email: boolean;
-  activation_email: boolean;
+  policy_documents: boolean;
 }
 
 interface AdminNote {
@@ -406,9 +406,10 @@ export const CustomersTab = () => {
             log.subject?.toLowerCase().includes('welcome') || 
             log.subject?.toLowerCase().includes('account')
           ),
-          activation_email: customerEmails.some(log => 
-            log.subject?.toLowerCase().includes('activation') || 
-            log.subject?.toLowerCase().includes('activate')
+          policy_documents: customerEmails.some(log => 
+            log.subject?.toLowerCase().includes('policy') || 
+            log.subject?.toLowerCase().includes('warranty') ||
+            log.subject?.toLowerCase().includes('document')
           )
         };
       });
@@ -419,7 +420,7 @@ export const CustomersTab = () => {
     }
   };
 
-  const sendManualEmail = async (customerId: string, customerEmail: string, emailType: 'welcome' | 'activation') => {
+  const sendManualEmail = async (customerId: string, customerEmail: string, emailType: 'welcome' | 'policy_documents') => {
     const emailKey = `${customerId}_${emailType}`;
     setEmailSendingLoading(prev => ({
       ...prev,
@@ -430,7 +431,7 @@ export const CustomersTab = () => {
       // Determine template ID and subject based on email type
       const templateData = emailType === 'welcome' 
         ? { templateId: 'welcome-template', subject: 'Welcome to Your Warranty Service' }
-        : { templateId: 'activation-template', subject: 'Activate Your Warranty Account' };
+        : { templateId: 'policy-documents-template', subject: 'Your Policy Documents' };
 
       const { error } = await supabase.functions.invoke('send-email', {
         body: {
@@ -445,7 +446,7 @@ export const CustomersTab = () => {
 
       if (error) throw error;
 
-      toast.success(`${emailType === 'welcome' ? 'Welcome' : 'Activation'} email sent successfully`);
+      toast.success(`${emailType === 'welcome' ? 'Welcome' : 'Policy Documents'} email sent successfully`);
       
       // Update email status locally
       setEmailStatuses(prev => ({
@@ -470,7 +471,7 @@ export const CustomersTab = () => {
   };
 
   const EmailStatusIndicator = ({ customer }: { customer: Customer }) => {
-    const status = emailStatuses[customer.email] || { welcome_email: false, activation_email: false };
+    const status = emailStatuses[customer.email] || { welcome_email: false, policy_documents: false };
     
     return (
       <div className="flex flex-col space-y-1">
@@ -499,21 +500,21 @@ export const CustomersTab = () => {
         </div>
         
         <div className="flex items-center space-x-2">
-          {status.activation_email ? (
+          {status.policy_documents ? (
             <CheckCircle className="h-4 w-4 text-green-600" />
           ) : (
             <Clock className="h-4 w-4 text-red-500" />
           )}
-          <span className="text-xs">Activation</span>
-          {!status.activation_email && (
+          <span className="text-xs">Policy Documents</span>
+          {!status.policy_documents && (
             <Button
               variant="ghost"
               size="sm"
               className="h-6 w-6 p-0"
-              onClick={() => sendManualEmail(customer.id, customer.email, 'activation')}
-              disabled={emailSendingLoading[customer.id]?.activation}
+              onClick={() => sendManualEmail(customer.id, customer.email, 'policy_documents')}
+              disabled={emailSendingLoading[customer.id]?.policy_documents}
             >
-              {emailSendingLoading[customer.id]?.activation ? (
+              {emailSendingLoading[customer.id]?.policy_documents ? (
                 <div className="animate-spin rounded-full h-3 w-3 border border-orange-600 border-t-transparent"></div>
               ) : (
                 <Send className="h-3 w-3" />
