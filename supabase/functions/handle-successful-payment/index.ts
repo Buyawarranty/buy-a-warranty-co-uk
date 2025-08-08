@@ -72,7 +72,8 @@ serve(async (req) => {
       discount_code: customerData?.discount_code || null,
       discount_amount: customerData?.discount_amount || 0,
       original_amount: customerData?.original_amount || null,
-      final_amount: customerData?.final_amount || null
+      final_amount: customerData?.final_amount || null,
+      warranty_reference_number: warrantyReference
     };
 
     logStep("Creating customer record", customerRecord);
