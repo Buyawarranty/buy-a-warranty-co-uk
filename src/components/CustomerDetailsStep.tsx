@@ -59,12 +59,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     building_number: '',
     street: '',
     town: '',
-    county: '',
     postcode: '',
     country: 'United Kingdom',
     vehicle_reg: vehicleData.regNumber || '',
     discount_code: ''
   });
+
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
 
   const [paymentMethod, setPaymentMethod] = useState<'bumper' | 'stripe'>('bumper');
   const [loading, setLoading] = useState(false);
@@ -105,6 +106,28 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
+    // Clear field error when user starts typing
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const isFieldValid = (field: string) => {
+    return customerData[field as keyof typeof customerData]?.toString().trim() !== '';
+  };
+
+  const validateRequiredFields = () => {
+    const requiredFields = ['first_name', 'last_name', 'email', 'mobile', 'street', 'town', 'postcode'];
+    const errors: {[key: string]: string} = {};
+    
+    requiredFields.forEach(field => {
+      if (!customerData[field as keyof typeof customerData]?.toString().trim()) {
+        errors[field] = 'This field is required';
+      }
+    });
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const validateDiscountCode = async () => {
@@ -159,9 +182,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!customerData.first_name || !customerData.last_name || !customerData.email || 
-        !customerData.mobile || !customerData.street || !customerData.town || 
-        !customerData.county || !customerData.postcode) {
+    if (!validateRequiredFields()) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -253,55 +274,87 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">First Name *</Label>
-                  <Input
-                    id="first_name"
-                    placeholder="Enter first name"
-                    value={customerData.first_name}
-                    onChange={(e) => handleInputChange('first_name', e.target.value)}
-                    required
-                    className="mt-1"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="first_name"
+                      placeholder="Enter first name"
+                      value={customerData.first_name}
+                      onChange={(e) => handleInputChange('first_name', e.target.value)}
+                      required
+                      className={`mt-1 ${fieldErrors.first_name ? 'border-red-500' : ''}`}
+                    />
+                    {isFieldValid('first_name') && (
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                    )}
+                  </div>
+                  {fieldErrors.first_name && (
+                    <p className="text-red-500 text-sm mt-1">{fieldErrors.first_name}</p>
+                  )}
                 </div>
-                <div>
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">Last Name *</Label>
-                  <Input
-                    id="last_name"
-                    placeholder="Enter last name"
-                    value={customerData.last_name}
-                    onChange={(e) => handleInputChange('last_name', e.target.value)}
-                    required
-                    className="mt-1"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="last_name"
+                      placeholder="Enter last name"
+                      value={customerData.last_name}
+                      onChange={(e) => handleInputChange('last_name', e.target.value)}
+                      required
+                      className={`mt-1 ${fieldErrors.last_name ? 'border-red-500' : ''}`}
+                    />
+                    {isFieldValid('last_name') && (
+                      <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                    )}
+                  </div>
+                  {fieldErrors.last_name && (
+                    <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>
+                  )}
                 </div>
               </div>
 
               {/* Email */}
-              <div>
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter email address"
-                  value={customerData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  required
-                  className="mt-1"
-                />
+                <div className="relative">
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter email address"
+                    value={customerData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    required
+                    className={`mt-1 ${fieldErrors.email ? 'border-red-500' : ''}`}
+                  />
+                  {isFieldValid('email') && (
+                    <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                  )}
+                </div>
+                {fieldErrors.email && (
+                  <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
+                )}
               </div>
 
               {/* Mobile */}
-              <div>
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">Mobile Number *</Label>
-                <Input
-                  id="mobile"
-                  placeholder="Enter mobile number"
-                  value={customerData.mobile}
-                  onChange={(e) => handleInputChange('mobile', e.target.value)}
-                  required
-                  className="mt-1"
-                />
+                <div className="relative">
+                  <Input
+                    id="mobile"
+                    placeholder="Enter mobile number"
+                    value={customerData.mobile}
+                    onChange={(e) => handleInputChange('mobile', e.target.value)}
+                    required
+                    className={`mt-1 ${fieldErrors.mobile ? 'border-red-500' : ''}`}
+                  />
+                  {isFieldValid('mobile') && (
+                    <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                  )}
+                </div>
+                {fieldErrors.mobile && (
+                  <p className="text-red-500 text-sm mt-1">{fieldErrors.mobile}</p>
+                )}
               </div>
 
               {/* Address Details */}
@@ -309,16 +362,24 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Address Details</h3>
                 
                 <div className="space-y-4">
-                  <div>
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                     <Label htmlFor="street" className="text-sm font-medium text-gray-700">Address Line 1 *</Label>
-                    <Input
-                      id="street"
-                      placeholder="Street address and house/building number"
-                      value={customerData.street}
-                      onChange={(e) => handleInputChange('street', e.target.value)}
-                      required
-                      className="mt-1"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="street"
+                        placeholder="Street address and house/building number"
+                        value={customerData.street}
+                        onChange={(e) => handleInputChange('street', e.target.value)}
+                        required
+                        className={`mt-1 ${fieldErrors.street ? 'border-red-500' : ''}`}
+                      />
+                      {isFieldValid('street') && (
+                        <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                      )}
+                    </div>
+                    {fieldErrors.street && (
+                      <p className="text-red-500 text-sm mt-1">{fieldErrors.street}</p>
+                    )}
                   </div>
 
                   <div>
@@ -333,40 +394,44 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                       <Label htmlFor="town" className="text-sm font-medium text-gray-700">Town/City *</Label>
-                      <Input
-                        id="town"
-                        placeholder="Enter town/city"
-                        value={customerData.town}
-                        onChange={(e) => handleInputChange('town', e.target.value)}
-                        required
-                        className="mt-1"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="town"
+                          placeholder="Enter town/city"
+                          value={customerData.town}
+                          onChange={(e) => handleInputChange('town', e.target.value)}
+                          required
+                          className={`mt-1 ${fieldErrors.town ? 'border-red-500' : ''}`}
+                        />
+                        {isFieldValid('town') && (
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                        )}
+                      </div>
+                      {fieldErrors.town && (
+                        <p className="text-red-500 text-sm mt-1">{fieldErrors.town}</p>
+                      )}
                     </div>
-                    <div>
-                      <Label htmlFor="county" className="text-sm font-medium text-gray-700">County *</Label>
-                      <Input
-                        id="county"
-                        placeholder="Enter county"
-                        value={customerData.county}
-                        onChange={(e) => handleInputChange('county', e.target.value)}
-                        required
-                        className="mt-1"
-                      />
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                      <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
+                      <div className="relative">
+                        <Input
+                          id="postcode"
+                          placeholder="Enter postcode"
+                          value={customerData.postcode}
+                          onChange={(e) => handleInputChange('postcode', e.target.value)}
+                          required
+                          className={`mt-1 ${fieldErrors.postcode ? 'border-red-500' : ''}`}
+                        />
+                        {isFieldValid('postcode') && (
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                        )}
+                      </div>
+                      {fieldErrors.postcode && (
+                        <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
+                      )}
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
-                    <Input
-                      id="postcode"
-                      placeholder="Enter postcode"
-                      value={customerData.postcode}
-                      onChange={(e) => handleInputChange('postcode', e.target.value)}
-                      required
-                      className="mt-1"
-                    />
                   </div>
 
                   <div>
