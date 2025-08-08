@@ -179,27 +179,39 @@ serve(async (req) => {
       try {
         logStep("Attempting Warranties 2000 registration for Bumper customer");
         
+        // Build comprehensive address string from all available fields
+        const buildAddress = (customerData: any) => {
+          const addressParts = [];
+          
+          if (customerData?.flat_number) addressParts.push(customerData.flat_number);
+          if (customerData?.building_name) addressParts.push(customerData.building_name);
+          if (customerData?.building_number) addressParts.push(customerData.building_number);
+          if (customerData?.street) addressParts.push(customerData.street);
+          
+          return addressParts.join(' ').trim() || "123 Customer Street";
+        };
+
         const registrationData = {
-          Title: "Mr", // Default title for Bumper customers
-          First: customerData?.first_name || "Bumper",
-          Surname: customerData?.last_name || "Customer",
-          Addr1: customerData ? `${customerData.building_number || ''} ${customerData.street || ''}`.trim() : "123 Customer Street",
-          Addr2: customerData?.building_name || undefined,
+          Title: extractTitle(customerName) || "Mr",
+          First: customerData?.first_name || extractFirstName(customerName),
+          Surname: customerData?.last_name || extractSurname(customerName),
+          Addr1: buildAddress(customerData),
+          Addr2: customerData?.county || undefined,
           Town: customerData?.town || "London",
           PCode: customerData?.postcode || "SW1A 1AA",
           Tel: customerData?.mobile || '02012345678',
           Mobile: customerData?.mobile || '07123456789',
           EMail: customerEmail,
-          PurDate: new Date().toISOString().split('T')[0], // Today's date
+          PurDate: new Date().toISOString().split('T')[0],
           Make: vehicleData?.make || "Ford",
           Model: vehicleData?.model || "Focus",
           RegNum: vehicleReg || "BUMPER001",
           Mileage: vehicleData?.mileage || "50000",
           EngSize: vehicleData?.engineSize || "1.6",
-          PurPrc: calculatePurchasePrice(plan.name.toLowerCase(), 'monthly').toString(), // Bumper is always monthly
+          PurPrc: calculatePurchasePrice(plan.name.toLowerCase(), 'monthly').toString(),
           RegDate: vehicleData?.year ? `${vehicleData.year}-01-01` : '2020-01-01',
           WarType: getWarrantyType(plan.name.toLowerCase()),
-          Month: getWarrantyDuration('monthly'), // Bumper is always monthly
+          Month: getWarrantyDuration('monthly'),
           MaxClm: getMaxClaimAmount(plan.name.toLowerCase()),
           MOTDue: vehicleData?.motExpiry || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           Ref: warrantyRef
