@@ -440,9 +440,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold">Total Price:</span>
+                  <span className="font-semibold text-gray-900">Total Price:</span>
                   <div className="text-right">
-                    <div className="font-semibold">
+                    <div className="font-semibold text-gray-900">
                       £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
                       {discountValidation?.isValid && (
                         <span className="text-green-600 text-sm ml-2">
