@@ -392,6 +392,7 @@ export const CustomersTab = () => {
           building_number: editingCustomer.building_number,
           street: editingCustomer.street,
           town: editingCustomer.town,
+          county: editingCustomer.county,
           postcode: editingCustomer.postcode,
           country: editingCustomer.country,
           registration_plate: editingCustomer.registration_plate,
@@ -426,7 +427,7 @@ export const CustomersTab = () => {
         customer.name,
         customer.email,
         customer.phone || '',
-        `${customer.street || ''} ${customer.town || ''} ${customer.postcode || ''}`.trim(),
+        `${customer.street || ''} ${customer.town || ''} ${customer.county || ''} ${customer.postcode || ''}`.trim(),
         customer.registration_plate || '',
         `${customer.vehicle_make || ''} ${customer.vehicle_model || ''} ${customer.vehicle_year || ''}`.trim(),
         customer.plan_type,
@@ -1014,16 +1015,29 @@ export const CustomersTab = () => {
                                       />
                                     </div>
 
-                                    <div>
-                                      <Label htmlFor="town">Town/City</Label>
-                                      <Input
-                                        id="town"
-                                        value={editingCustomer.town || ''}
-                                        onChange={(e) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          town: e.target.value
-                                        })}
-                                      />
+                                    <div className="grid grid-cols-2 gap-3">
+                                      <div>
+                                        <Label htmlFor="town">Town/City</Label>
+                                        <Input
+                                          id="town"
+                                          value={editingCustomer.town || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            town: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="county">County</Label>
+                                        <Input
+                                          id="county"
+                                          value={editingCustomer.county || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            county: e.target.value
+                                          })}
+                                        />
+                                      </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-3">
