@@ -769,6 +769,7 @@ export const CustomersTab = () => {
               <TableHead>Plan Type</TableHead>
               <TableHead>Payment Type</TableHead>
               <TableHead>Policy Number</TableHead>
+              <TableHead>Warranty Reference</TableHead>
               <TableHead>Final Amount</TableHead>
               <TableHead>Email Status</TableHead>
               <TableHead>Status</TableHead>
@@ -828,6 +829,15 @@ export const CustomersTab = () => {
                       </div>
                     ) : (
                       <span className="text-gray-400">No Policy</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="font-mono text-sm">
+                    {customer.warranty_reference_number ? (
+                      <div className="bg-green-50 px-2 py-1 rounded border text-green-800">
+                        {customer.warranty_reference_number}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">No Reference</span>
                     )}
                   </TableCell>
                   <TableCell className="font-semibold">
