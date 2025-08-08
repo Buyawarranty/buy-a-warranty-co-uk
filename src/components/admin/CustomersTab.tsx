@@ -51,6 +51,7 @@ interface Customer {
   original_amount?: number;
   final_amount?: number;
   warranty_expiry?: string; // New field for warranty expiry date
+  warranty_reference_number?: string; // Warranty reference number
   policy_number?: string; // Policy number from customer_policies
   policy_status?: string; // Policy status from customer_policies
   customer_policies?: Array<{ policy_end_date: string; policy_number: string; status: string }>; // Type for the joined data
@@ -222,6 +223,7 @@ export const CustomersTab = () => {
           discount_amount: 0,
           original_amount: null,
           final_amount: null,
+          warranty_reference_number: null,
           customer_policies: [policy],
           created_at: policy.created_at,
           updated_at: policy.updated_at,
@@ -285,6 +287,7 @@ export const CustomersTab = () => {
       const processedData = directData?.map((customer: any) => ({
         ...customer,
         warranty_expiry: customer.customer_policies?.[0]?.policy_end_date || null,
+        warranty_reference_number: customer.warranty_reference_number || null,
         policy_number: customer.customer_policies?.[0]?.policy_number || null,
         policy_status: customer.customer_policies?.[0]?.status || null
       })) || [];

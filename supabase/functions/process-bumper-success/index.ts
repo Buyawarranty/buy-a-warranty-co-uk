@@ -107,7 +107,8 @@ serve(async (req) => {
           discount_code: discountCode,
           discount_amount: discountAmount,
           original_amount: originalAmount,
-          final_amount: finalAmount
+          final_amount: finalAmount,
+          warranty_reference_number: warrantyRef
         })
         .eq('id', existingCustomer.id)
         .select()
@@ -153,7 +154,8 @@ serve(async (req) => {
           discount_code: discountCode,
           discount_amount: discountAmount,
           original_amount: originalAmount,
-          final_amount: finalAmount
+          final_amount: finalAmount,
+          warranty_reference_number: warrantyRef
         })
         .select()
         .single();

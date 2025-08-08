@@ -283,6 +283,7 @@ export type Database = {
           vehicle_transmission: string | null
           vehicle_year: string | null
           voluntary_excess: number | null
+          warranty_reference_number: string | null
         }
         Insert: {
           building_name?: string | null
@@ -320,6 +321,7 @@ export type Database = {
           vehicle_transmission?: string | null
           vehicle_year?: string | null
           voluntary_excess?: number | null
+          warranty_reference_number?: string | null
         }
         Update: {
           building_name?: string | null
@@ -357,6 +359,7 @@ export type Database = {
           vehicle_transmission?: string | null
           vehicle_year?: string | null
           voluntary_excess?: number | null
+          warranty_reference_number?: string | null
         }
         Relationships: []
       }
