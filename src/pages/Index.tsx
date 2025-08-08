@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
@@ -164,6 +166,16 @@ const Index = () => {
 
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
+      {/* Customer Login Header */}
+      <div className="w-full bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-2 flex justify-end">
+          <Link to="/auth">
+            <Button variant="outline" size="sm">
+              Customer Login
+            </Button>
+          </Link>
+        </div>
+      </div>
       
       <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
       
