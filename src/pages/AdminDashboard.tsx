@@ -13,6 +13,7 @@ import CreateTestCustomer from '@/components/CreateTestCustomer';
 import TestWarranties2000 from '@/components/TestWarranties2000';
 import TestBumper from '@/components/TestBumper';
 import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
+import { UserPermissionsTab } from '@/components/admin/UserPermissionsTab';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -77,6 +78,8 @@ const AdminDashboard = () => {
         return <EmailManagementTab />;
       case 'analytics':
         return <AnalyticsTab />;
+      case 'user-permissions':
+        return <UserPermissionsTab />;
       case 'testing':
         return (
           <div className="max-w-4xl mx-auto">

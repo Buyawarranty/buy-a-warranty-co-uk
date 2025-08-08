@@ -972,9 +972,17 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      generate_random_password: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_next_warranty_serial: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      has_admin_permission: {
+        Args: { user_id: string; permission_key: string }
+        Returns: boolean
       }
       is_admin: {
         Args: { _user_id: string }
