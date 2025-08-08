@@ -110,6 +110,42 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invitation_token: string
+          invited_by: string
+          permissions: Json
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          invitation_token: string
+          invited_by: string
+          permissions?: Json
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invitation_token?: string
+          invited_by?: string
+          permissions?: Json
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
       admin_notes: {
         Row: {
           created_at: string
@@ -141,6 +177,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      admin_permissions: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          permission_key: string
+          permission_name: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          permission_key: string
+          permission_name: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          permission_key?: string
+          permission_name?: string
+        }
+        Relationships: []
+      }
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string | null
+          id: string
+          invited_at: string | null
+          invited_by: string | null
+          is_active: boolean
+          last_login: string | null
+          last_name: string | null
+          permissions: Json
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name?: string | null
+          id?: string
+          invited_at?: string | null
+          invited_by?: string | null
+          is_active?: boolean
+          last_login?: string | null
+          last_name?: string | null
+          permissions?: Json
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string | null
+          id?: string
+          invited_at?: string | null
+          invited_by?: string | null
+          is_active?: boolean
+          last_login?: string | null
+          last_name?: string | null
+          permissions?: Json
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       customer_documents: {
         Row: {
