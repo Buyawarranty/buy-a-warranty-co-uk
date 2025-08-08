@@ -308,7 +308,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                   {vehicleData.taxStatus && `Tax: ${vehicleData.taxStatus}`}
                 </p>
               )}
-              {vehicleData.vehicleType && vehicleData.vehicleType !== 'standard' && (
+              {vehicleData.vehicleType && !['car', 'van'].includes(vehicleData.vehicleType) && (
                 <p className="text-sm text-blue-600 font-semibold mt-1">
                   Special Vehicle Type: {vehicleData.vehicleType}
                 </p>

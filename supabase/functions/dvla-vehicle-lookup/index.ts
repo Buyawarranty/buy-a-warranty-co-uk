@@ -83,31 +83,69 @@ serve(async (req) => {
     const data = await response.json();
     console.log('DVLA API response:', data);
 
-    // Determine vehicle type based on fuel type and engine capacity
-    let vehicleType = 'standard';
+    // Determine vehicle type based on DVLA data
+    let vehicleType = 'car'; // Default to car
     const fuelType = data.fuelType?.toLowerCase() || '';
+    const typeApproval = data.typeApproval?.toLowerCase() || '';
+    const wheelplan = data.wheelplan?.toLowerCase() || '';
     const engineCapacity = data.engineCapacity || 0;
+    const revenueWeight = data.revenueWeight || 0;
     
-    if (fuelType.includes('electricity') || fuelType === 'electric') {
-      vehicleType = 'EV';
-    } else if (fuelType.includes('hybrid') || fuelType.includes('petrol/electric')) {
-      vehicleType = 'PHEV';
-    } else if (data.vehicleClass?.toLowerCase().includes('motorcycle') || 
-               data.typeApproval?.toLowerCase().includes('motorcycle') ||
-               data.wheelplan?.toLowerCase().includes('2 wheels') ||
-               // Detect motorcycles based on engine capacity (typically under 1500cc for bikes)
-               (engineCapacity > 0 && engineCapacity <= 1500 && 
-                (data.make?.toLowerCase() === 'suzuki' || 
-                 data.make?.toLowerCase() === 'honda' ||
-                 data.make?.toLowerCase() === 'yamaha' ||
-                 data.make?.toLowerCase() === 'kawasaki' ||
-                 data.make?.toLowerCase() === 'ducati' ||
-                 data.make?.toLowerCase() === 'bmw' ||
-                 data.make?.toLowerCase() === 'ktm' ||
-                 data.make?.toLowerCase() === 'triumph' ||
-                 data.make?.toLowerCase() === 'harley-davidson'))) {
-      vehicleType = 'MOTORBIKE';
+    console.log(`Vehicle classification data - Type Approval: ${typeApproval}, Wheelplan: ${wheelplan}, Fuel: ${fuelType}, Engine: ${engineCapacity}, Weight: ${revenueWeight}`);
+    
+    // First check for electric/hybrid vehicles (these can be cars, vans, or motorbikes)
+    const isElectric = fuelType.includes('electricity') || fuelType === 'electric';
+    const isHybrid = fuelType.includes('hybrid') || fuelType.includes('petrol/electric') || fuelType.includes('plug-in hybrid');
+    
+    // Motorcycle detection - L category type approval is the most reliable indicator
+    if (typeApproval.startsWith('l') || 
+        typeApproval.includes('motorcycle') ||
+        wheelplan.includes('2 wheels') ||
+        wheelplan.includes('motorcycle') ||
+        // Additional motorcycle indicators
+        (engineCapacity > 0 && engineCapacity <= 1500 && 
+         ['suzuki', 'honda', 'yamaha', 'kawasaki', 'ducati', 'bmw', 'ktm', 'triumph', 'harley-davidson', 'aprilia', 'husqvarna', 'mv agusta', 'piaggio'].includes(data.make?.toLowerCase()))) {
+      
+      if (isElectric) {
+        vehicleType = 'EV'; // Electric motorcycle
+      } else if (isHybrid) {
+        vehicleType = 'PHEV'; // Hybrid motorcycle (rare but possible)
+      } else {
+        vehicleType = 'MOTORBIKE';
+      }
     }
+    // Van detection - N1 category (light commercial vehicles) and weight indicators
+    else if (typeApproval.startsWith('n1') || 
+             typeApproval.includes('commercial') ||
+             wheelplan.includes('van') ||
+             wheelplan.includes('commercial') ||
+             // Weight-based detection for vans (typically heavier than cars)
+             (revenueWeight > 2000 && revenueWeight <= 3500) ||
+             // Make/model based detection for common van manufacturers
+             (['ford', 'mercedes', 'volkswagen', 'renault', 'peugeot', 'citroen', 'fiat', 'iveco', 'nissan'].includes(data.make?.toLowerCase()) &&
+              ['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'nv200', 'nv300', 'nv400'].some(model => 
+                (data.model?.toLowerCase() || '').includes(model)))) {
+      
+      if (isElectric) {
+        vehicleType = 'EV'; // Electric van
+      } else if (isHybrid) {
+        vehicleType = 'PHEV'; // Hybrid van
+      } else {
+        vehicleType = 'van';
+      }
+    }
+    // Car detection - M1 category (passenger cars) or default case
+    else {
+      if (isElectric) {
+        vehicleType = 'EV';
+      } else if (isHybrid) {
+        vehicleType = 'PHEV';
+      } else {
+        vehicleType = 'car';
+      }
+    }
+    
+    console.log(`Determined vehicle type: ${vehicleType}`);
 
     return new Response(JSON.stringify({
       found: true,
