@@ -29,16 +29,18 @@ const Auth = () => {
         if (session) {
           console.log("User logged in, checking role for redirect");
           
-          // Check if user is admin
-          const { data: roleData } = await supabase
+          // Check if user is admin (only admins have roles in user_roles table)
+          const { data: roleData, error } = await supabase
             .from('user_roles')
             .select('role')
             .eq('user_id', session.user.id)
-            .single();
+            .maybeSingle(); // Use maybeSingle instead of single to handle no results
 
-          if (roleData?.role === 'admin') {
+          // If there's an error (other than no results) or user is admin, redirect to admin
+          if (!error && roleData?.role === 'admin') {
             navigate('/admin-dashboard', { replace: true });
           } else {
+            // No role found means regular customer
             navigate('/customer-dashboard', { replace: true });
           }
         }
@@ -70,18 +72,19 @@ const Auth = () => {
       
       // Check user role and navigate
       if (data.session) {
-        const { data: roleData } = await supabase
+        const { data: roleData, error } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', data.session.user.id)
-          .single();
+          .maybeSingle(); // Use maybeSingle instead of single to handle no results
 
         toast({
           title: "Success",
           description: "You have been signed in successfully!",
         });
 
-        if (roleData?.role === 'admin') {
+        // If there's an error (other than no results) or user is admin, redirect to admin
+        if (!error && roleData?.role === 'admin') {
           console.log("Admin user detected, redirecting to admin dashboard");
           navigate('/admin-dashboard', { replace: true });
         } else {
