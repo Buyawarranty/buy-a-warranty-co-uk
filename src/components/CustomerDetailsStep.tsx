@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle } from 'lucide-react';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -391,6 +391,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             {/* Order Summary Card */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
+              
+              {/* Confidence Message */}
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <div className="flex items-center justify-center text-green-800 font-medium">
+                  <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                  Shop with confidence - cancel anytime within 14 days for a full refund 💸
+                </div>
+              </div>
               
               {/* Vehicle Registration Display */}
               <div className="flex justify-center mb-6">
