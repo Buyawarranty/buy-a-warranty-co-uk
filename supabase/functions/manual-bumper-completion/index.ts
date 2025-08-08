@@ -121,17 +121,23 @@ serve(async (req) => {
 
     // Send welcome email
     try {
-      await supabaseClient.functions.invoke('send-welcome-email', {
+      const welcomeEmailResponse = await supabaseClient.functions.invoke('send-welcome-email', {
         body: {
           email: customer.email,
           policyNumber: policy.policy_number,
           planType: policy.plan_type,
+          paymentType: policy.payment_type || 'yearly', // Required parameter
           customerName: customer.name
         }
       });
-      logStep("Welcome email sent");
+      
+      if (welcomeEmailResponse.error) {
+        logStep("Welcome email failed", { error: welcomeEmailResponse.error });
+      } else {
+        logStep("Welcome email sent successfully", welcomeEmailResponse.data);
+      }
     } catch (emailError) {
-      logStep("Welcome email failed", { error: emailError });
+      logStep("Welcome email failed", { error: emailError.message || emailError });
     }
 
     return new Response(JSON.stringify({
