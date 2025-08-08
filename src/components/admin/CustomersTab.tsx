@@ -384,10 +384,21 @@ export const CustomersTab = () => {
           phone: editingCustomer.phone,
           first_name: editingCustomer.first_name,
           last_name: editingCustomer.last_name,
+          flat_number: editingCustomer.flat_number,
+          building_name: editingCustomer.building_name,
+          building_number: editingCustomer.building_number,
           street: editingCustomer.street,
           town: editingCustomer.town,
           county: editingCustomer.county,
           postcode: editingCustomer.postcode,
+          country: editingCustomer.country,
+          registration_plate: editingCustomer.registration_plate,
+          vehicle_make: editingCustomer.vehicle_make,
+          vehicle_model: editingCustomer.vehicle_model,
+          vehicle_year: editingCustomer.vehicle_year,
+          vehicle_fuel_type: editingCustomer.vehicle_fuel_type,
+          vehicle_transmission: editingCustomer.vehicle_transmission,
+          mileage: editingCustomer.mileage,
           plan_type: editingCustomer.plan_type,
           status: editingCustomer.status,
           voluntary_excess: editingCustomer.voluntary_excess
@@ -876,8 +887,33 @@ export const CustomersTab = () => {
                                     />
                                   </div>
                                   
+                                  <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                      <Label htmlFor="first_name">First Name</Label>
+                                      <Input
+                                        id="first_name"
+                                        value={editingCustomer.first_name || ''}
+                                        onChange={(e) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          first_name: e.target.value
+                                        })}
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="last_name">Last Name</Label>
+                                      <Input
+                                        id="last_name"
+                                        value={editingCustomer.last_name || ''}
+                                        onChange={(e) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          last_name: e.target.value
+                                        })}
+                                      />
+                                    </div>
+                                  </div>
+                                  
                                   <div>
-                                    <Label htmlFor="phone">Phone</Label>
+                                    <Label htmlFor="phone">Mobile Number</Label>
                                     <Input
                                       id="phone"
                                       value={editingCustomer.phone || ''}
@@ -889,15 +925,199 @@ export const CustomersTab = () => {
                                   </div>
                                   
                                   <div>
-                                    <Label htmlFor="address">Address</Label>
-                                    <Textarea
-                                      id="address"
-                                      value={editingCustomer.address || ''}
+                                    <Label htmlFor="registration_plate">Vehicle Registration</Label>
+                                    <Input
+                                      id="registration_plate"
+                                      value={editingCustomer.registration_plate || ''}
                                       onChange={(e) => setEditingCustomer({
                                         ...editingCustomer,
-                                        address: e.target.value
+                                        registration_plate: e.target.value
                                       })}
                                     />
+                                  </div>
+
+                                  {/* Detailed Address Fields */}
+                                  <div className="space-y-3 border-t pt-4">
+                                    <h4 className="font-medium text-gray-900">Address Details</h4>
+                                    
+                                    <div>
+                                      <Label htmlFor="street">Address Line 1</Label>
+                                      <Input
+                                        id="street"
+                                        placeholder="Street address and house/building number"
+                                        value={editingCustomer.street || ''}
+                                        onChange={(e) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          street: e.target.value
+                                        })}
+                                      />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                      <div>
+                                        <Label htmlFor="flat_number">Flat Number</Label>
+                                        <Input
+                                          id="flat_number"
+                                          value={editingCustomer.flat_number || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            flat_number: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="building_number">Building Number</Label>
+                                        <Input
+                                          id="building_number"
+                                          value={editingCustomer.building_number || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            building_number: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <Label htmlFor="building_name">Building Name</Label>
+                                      <Input
+                                        id="building_name"
+                                        placeholder="Apartment, flat, building name"
+                                        value={editingCustomer.building_name || ''}
+                                        onChange={(e) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          building_name: e.target.value
+                                        })}
+                                      />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                      <div>
+                                        <Label htmlFor="town">Town/City</Label>
+                                        <Input
+                                          id="town"
+                                          value={editingCustomer.town || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            town: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="county">County</Label>
+                                        <Input
+                                          id="county"
+                                          value={editingCustomer.county || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            county: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                      <div>
+                                        <Label htmlFor="postcode">Postcode</Label>
+                                        <Input
+                                          id="postcode"
+                                          value={editingCustomer.postcode || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            postcode: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="country">Country</Label>
+                                        <Input
+                                          id="country"
+                                          value={editingCustomer.country || 'United Kingdom'}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            country: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Vehicle Details */}
+                                  <div className="space-y-3 border-t pt-4">
+                                    <h4 className="font-medium text-gray-900">Vehicle Details</h4>
+                                    
+                                    <div className="grid grid-cols-2 gap-3">
+                                      <div>
+                                        <Label htmlFor="vehicle_make">Vehicle Make</Label>
+                                        <Input
+                                          id="vehicle_make"
+                                          value={editingCustomer.vehicle_make || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            vehicle_make: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="vehicle_model">Vehicle Model</Label>
+                                        <Input
+                                          id="vehicle_model"
+                                          value={editingCustomer.vehicle_model || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            vehicle_model: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-3">
+                                      <div>
+                                        <Label htmlFor="vehicle_year">Vehicle Year</Label>
+                                        <Input
+                                          id="vehicle_year"
+                                          value={editingCustomer.vehicle_year || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            vehicle_year: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="vehicle_fuel_type">Fuel Type</Label>
+                                        <Input
+                                          id="vehicle_fuel_type"
+                                          value={editingCustomer.vehicle_fuel_type || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            vehicle_fuel_type: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="vehicle_transmission">Transmission</Label>
+                                        <Input
+                                          id="vehicle_transmission"
+                                          value={editingCustomer.vehicle_transmission || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            vehicle_transmission: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <Label htmlFor="mileage">Mileage</Label>
+                                      <Input
+                                        id="mileage"
+                                        value={editingCustomer.mileage || ''}
+                                        onChange={(e) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          mileage: e.target.value
+                                        })}
+                                      />
+                                    </div>
                                   </div>
                                   
                                   <div>
