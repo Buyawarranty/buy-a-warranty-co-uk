@@ -56,45 +56,114 @@ serve(async (req) => {
     const customerEmail = customerData?.email || "guest@buyawarranty.com";
     const vehicleReg = vehicleData?.regNumber || customerData?.vehicle_reg || null;
     
-    // Create customer record with all details
-    const { data: customer, error: customerError } = await supabaseClient
+    // Generate warranty reference first
+    let warrantyRef = null;
+    try {
+      warrantyRef = await generateWarrantyReference();
+      logStep("Generated warranty reference", { warrantyRef });
+    } catch (error) {
+      logStep("Failed to generate warranty reference", { error: error.message });
+    }
+
+    // Check if customer already exists
+    const { data: existingCustomer } = await supabaseClient
       .from('customers')
-      .insert({
-        name: customerName,
-        email: customerEmail,
-        phone: customerData?.mobile,
-        first_name: customerData?.first_name,
-        last_name: customerData?.last_name,
-        flat_number: customerData?.flat_number,
-        building_name: customerData?.building_name,
-        building_number: customerData?.building_number,
-        street: customerData?.street,
-        town: customerData?.town,
-        county: customerData?.county,
-        postcode: customerData?.postcode,
-        country: customerData?.country || 'United Kingdom',
-        plan_type: plan.name,
-        status: 'Active',
-        registration_plate: vehicleReg,
-        vehicle_make: vehicleData?.make,
-        vehicle_model: vehicleData?.model,
-        vehicle_year: vehicleData?.year,
-        vehicle_fuel_type: vehicleData?.fuelType,
-        vehicle_transmission: vehicleData?.transmission,
-        mileage: vehicleData?.mileage,
-        payment_type: paymentType,
-        bumper_order_id: sessionId,
-        discount_code: discountCode,
-        discount_amount: discountAmount,
-        original_amount: originalAmount,
-        final_amount: finalAmount
-      })
-      .select()
+      .select('*')
+      .eq('email', customerEmail)
       .single();
 
-    if (customerError) {
-      logStep("Error creating customer", { error: customerError });
-      throw new Error("Failed to create customer record");
+    let customer;
+    
+    if (existingCustomer) {
+      // Update existing customer with new order details
+      logStep("Updating existing customer", { customerId: existingCustomer.id });
+      
+      const { data: updatedCustomer, error: updateError } = await supabaseClient
+        .from('customers')
+        .update({
+          name: customerName,
+          phone: customerData?.mobile || existingCustomer.phone,
+          first_name: customerData?.first_name || existingCustomer.first_name,
+          last_name: customerData?.last_name || existingCustomer.last_name,
+          flat_number: customerData?.flat_number || existingCustomer.flat_number,
+          building_name: customerData?.building_name || existingCustomer.building_name,
+          building_number: customerData?.building_number || existingCustomer.building_number,
+          street: customerData?.street || existingCustomer.street,
+          town: customerData?.town || existingCustomer.town,
+          county: customerData?.county || existingCustomer.county,
+          postcode: customerData?.postcode || existingCustomer.postcode,
+          country: customerData?.country || existingCustomer.country || 'United Kingdom',
+          plan_type: plan.name,
+          status: 'Active',
+          registration_plate: vehicleReg || existingCustomer.registration_plate,
+          vehicle_make: vehicleData?.make || existingCustomer.vehicle_make,
+          vehicle_model: vehicleData?.model || existingCustomer.vehicle_model,
+          vehicle_year: vehicleData?.year || existingCustomer.vehicle_year,
+          vehicle_fuel_type: vehicleData?.fuelType || existingCustomer.vehicle_fuel_type,
+          vehicle_transmission: vehicleData?.transmission || existingCustomer.vehicle_transmission,
+          mileage: vehicleData?.mileage || existingCustomer.mileage,
+          payment_type: paymentType,
+          bumper_order_id: sessionId,
+          discount_code: discountCode,
+          discount_amount: discountAmount,
+          original_amount: originalAmount,
+          final_amount: finalAmount
+        })
+        .eq('id', existingCustomer.id)
+        .select()
+        .single();
+
+      if (updateError) {
+        logStep("Error updating customer", { error: updateError });
+        throw new Error("Failed to update customer record");
+      }
+      
+      customer = updatedCustomer;
+    } else {
+      // Create new customer record
+      logStep("Creating new customer");
+      
+      const { data: newCustomer, error: customerError } = await supabaseClient
+        .from('customers')
+        .insert({
+          name: customerName,
+          email: customerEmail,
+          phone: customerData?.mobile,
+          first_name: customerData?.first_name,
+          last_name: customerData?.last_name,
+          flat_number: customerData?.flat_number,
+          building_name: customerData?.building_name,
+          building_number: customerData?.building_number,
+          street: customerData?.street,
+          town: customerData?.town,
+          county: customerData?.county,
+          postcode: customerData?.postcode,
+          country: customerData?.country || 'United Kingdom',
+          plan_type: plan.name,
+          status: 'Active',
+          registration_plate: vehicleReg,
+          vehicle_make: vehicleData?.make,
+          vehicle_model: vehicleData?.model,
+          vehicle_year: vehicleData?.year,
+          vehicle_fuel_type: vehicleData?.fuelType,
+          vehicle_transmission: vehicleData?.transmission,
+          mileage: vehicleData?.mileage,
+          payment_type: paymentType,
+          bumper_order_id: sessionId,
+          discount_code: discountCode,
+          discount_amount: discountAmount,
+          original_amount: originalAmount,
+          final_amount: finalAmount
+        })
+        .select()
+        .single();
+
+      if (customerError) {
+        logStep("Error creating customer", { error: customerError });
+        throw new Error("Failed to create customer record");
+      }
+      
+      customer = newCustomer;
     }
 
     logStep("Customer created", { customerId: customer.id });
@@ -163,15 +232,6 @@ serve(async (req) => {
     }
 
     logStep("Payment record created");
-
-    // Generate warranty reference for all Bumper customers
-    let warrantyRef = null;
-    try {
-      warrantyRef = await generateWarrantyReference();
-      logStep("Generated warranty reference", { warrantyRef });
-    } catch (error) {
-      logStep("Failed to generate warranty reference", { error: error.message });
-    }
 
     // Register with Warranties 2000 for all Bumper customers
     // Use available data and reasonable defaults where needed
