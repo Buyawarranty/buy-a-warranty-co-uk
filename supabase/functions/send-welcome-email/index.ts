@@ -209,11 +209,14 @@ serve(async (req) => {
     try {
       const emailVariables = {
         customerName: email.split('@')[0], // Use email prefix as name fallback
+        customer_name: email.split('@')[0], // Additional variable for compatibility
         planType: planType,
         policyNumber: policyNumber,
         loginEmail: email,
         temporaryPassword: tempPassword,
-        loginUrl: `${req.headers.get("origin")}/auth`
+        loginUrl: 'https://buyawarranty.co.uk/auth',
+        portalLink: 'https://buyawarranty.co.uk/auth',
+        loginLink: 'https://buyawarranty.co.uk/auth'
       };
 
       const emailPayload: any = {
