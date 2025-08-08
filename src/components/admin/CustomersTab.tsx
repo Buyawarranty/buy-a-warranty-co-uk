@@ -949,6 +949,17 @@ export const CustomersTab = () => {
                                     />
                                   </div>
 
+                                  <div>
+                                    <Label htmlFor="warranty_reference">Warranty Reference Number</Label>
+                                    <Input
+                                      id="warranty_reference"
+                                      value={editingCustomer.warranty_reference_number || ''}
+                                      readOnly
+                                      className="bg-gray-50 text-gray-700"
+                                      placeholder="Generated automatically"
+                                    />
+                                  </div>
+
                                   {/* Detailed Address Fields */}
                                   <div className="space-y-3 border-t pt-4">
                                     <h4 className="font-medium text-gray-900">Address Details</h4>
