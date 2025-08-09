@@ -39,9 +39,9 @@ serve(async (req) => {
       errors: []
     };
 
-    // Get recent orders from our database (last 7 days)
+    // Get recent orders from our database (last 14 days to cast a wider net)
     const since = new Date();
-    since.setDate(since.getDate() - 7);
+    since.setDate(since.getDate() - 14);
 
     logStep("Fetching existing orders from database", { since: since.toISOString() });
 
@@ -73,7 +73,8 @@ serve(async (req) => {
       const stripeSessions = await stripe.checkout.sessions.list({
         created: { gte: Math.floor(since.getTime() / 1000) },
         status: 'complete',
-        limit: 100
+        limit: 100,
+        expand: ['data.customer', 'data.line_items']
       });
 
       logStep("Stripe sessions retrieved", { count: stripeSessions.data.length });
