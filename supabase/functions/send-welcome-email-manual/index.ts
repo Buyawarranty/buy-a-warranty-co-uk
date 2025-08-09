@@ -70,16 +70,6 @@ async function retryFetch(url: string, options: RequestInit, maxRetries = 2): Pr
   throw lastError || new Error('Max retries exceeded');
 }
 
-function renderWelcomeHTML(data: { name: string; warranty: string; link?: string }): string {
-  return `
-    <h1>Welcome ${data.name}!</h1>
-    <p>Thank you for purchasing your warranty. Your warranty number is: <strong>${data.warranty}</strong></p>
-    <p>Your warranty document is attached to this email.</p>
-    ${data.link ? `<p><a href="${data.link}">Download your warranty document</a></p>` : ''}
-    <p>If you have any questions, please contact us at info@buyawarranty.co.uk</p>
-  `;
-}
-
 const handler = async (req: Request): Promise<Response> => {
   const rid = crypto.randomUUID();
   const t0 = Date.now();
@@ -94,14 +84,12 @@ const handler = async (req: Request): Promise<Response> => {
     // Check environment variables at startup
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     const resendFrom = Deno.env.get('RESEND_FROM') || 'Buy A Warranty <info@buyawarranty.co.uk>';
-    const publicBaseUrl = Deno.env.get('PUBLIC_BASE_URL') || 'https://buyawarranty.co.uk';
     
     console.log(JSON.stringify({ 
       evt: "env.check", 
       rid,
       hasResendKey: !!resendApiKey,
-      hasFrom: !!resendFrom,
-      hasBaseUrl: !!publicBaseUrl
+      hasFrom: !!resendFrom
     }));
     
     if (!resendApiKey) {
@@ -197,7 +185,8 @@ const handler = async (req: Request): Promise<Response> => {
       rid, 
       policyId: policy.id, 
       email: customer.email,
-      warrantyNumber: policy.warranty_number 
+      warrantyNumber: policy.warranty_number,
+      planType: policy.plan_type
     }));
 
     // Check idempotency
@@ -236,37 +225,58 @@ const handler = async (req: Request): Promise<Response> => {
         .eq('id', policy.id);
     }
 
-    // Get PDF document
-    let pdfAttachment = null;
-    let pdfUrl = null;
+    // Get PDF documents - try multiple approaches
+    console.log(JSON.stringify({ evt: "pdf.lookup.start", rid, planType: policy.plan_type }));
     
+    let attachments = [];
+    
+    // 1. Try plan_document_mapping first
     const { data: documentMapping } = await supabase
       .from('plan_document_mapping')
       .select('document_path')
-      .eq('plan_name', policy.plan_type)
+      .eq('plan_name', policy.plan_type.toLowerCase())
       .eq('vehicle_type', 'standard')
       .maybeSingle();
 
+    console.log(JSON.stringify({ evt: "plan.mapping.result", rid, documentMapping }));
+
+    // 2. Build list of possible PDF paths to try
+    let pdfPaths = [];
     if (documentMapping?.document_path) {
+      pdfPaths.push(documentMapping.document_path);
+    }
+    
+    // Add common plan naming patterns
+    const planLower = policy.plan_type.toLowerCase().replace(/\s+/g, '-');
+    const possiblePaths = [
+      `${planLower}-warranty.pdf`,
+      `${planLower}.pdf`,
+      `plan-${planLower}.pdf`,
+      `${policy.plan_type}.pdf`,
+      `${policy.plan_type}-warranty.pdf`,
+      'terms-and-conditions.pdf'
+    ];
+    
+    pdfPaths.push(...possiblePaths);
+    
+    console.log(JSON.stringify({ evt: "pdf.paths.to.try", rid, paths: pdfPaths }));
+
+    // Try to download each PDF
+    for (const pdfPath of pdfPaths) {
       try {
+        console.log(JSON.stringify({ evt: "pdf.download.attempt", rid, path: pdfPath }));
+        
         const { data: fileData, error: downloadError } = await supabase.storage
           .from('policy-documents')
-          .download(documentMapping.document_path);
+          .download(pdfPath);
 
         if (!downloadError && fileData) {
           const fileSize = fileData.size;
-          console.log(JSON.stringify({ evt: "pdf.size", rid, bytes: fileSize }));
+          console.log(JSON.stringify({ evt: "pdf.found", rid, path: pdfPath, bytes: fileSize }));
           
           if (fileSize > 10 * 1024 * 1024) { // 10MB limit
-            return new Response(JSON.stringify({ 
-              ok: false, 
-              rid,
-              code: 'FILE_TOO_LARGE', 
-              error: 'PDF file is too large (>10MB)' 
-            }), {
-              status: 413,
-              headers: { "content-type": "application/json", ...corsHeaders },
-            });
+            console.log(JSON.stringify({ evt: "pdf.too.large", rid, path: pdfPath, bytes: fileSize }));
+            continue;
           }
 
           // Convert to base64 for attachment
@@ -274,59 +284,81 @@ const handler = async (req: Request): Promise<Response> => {
           const uint8Array = new Uint8Array(buffer);
           const base64Content = btoa(String.fromCharCode(...uint8Array));
           
-          pdfAttachment = {
-            filename: `warranty-${policy.warranty_number}.pdf`,
+          let filename;
+          if (pdfPath.includes('terms')) {
+            filename = 'Terms-and-Conditions.pdf';
+          } else {
+            filename = `${policy.plan_type}-Warranty-${policy.warranty_number}.pdf`;
+          }
+          
+          attachments.push({
+            filename,
             content: base64Content,
             content_type: 'application/pdf'
-          };
-
-          // Create signed URL for download link
-          const { data: signedUrl } = await supabase.storage
-            .from('policy-documents')
-            .createSignedUrl(documentMapping.document_path, 3600); // 1 hour
-          
-          if (signedUrl) {
-            pdfUrl = signedUrl.signedUrl;
-          }
+          });
           
           console.log(JSON.stringify({ 
             evt: "pdf.prepared", 
             rid, 
-            filename: pdfAttachment.filename,
+            path: pdfPath,
+            filename,
             base64Length: base64Content.length 
           }));
+          
+          // Only get first plan document, but continue looking for terms
+          if (!pdfPath.includes('terms') && attachments.length >= 1) {
+            break;
+          }
+        } else {
+          console.log(JSON.stringify({ evt: "pdf.not.found", rid, path: pdfPath, error: downloadError?.message }));
         }
       } catch (error) {
         console.log(JSON.stringify({ 
           evt: "pdf.error", 
           rid, 
+          path: pdfPath,
           error: error instanceof Error ? error.message : String(error) 
         }));
       }
     }
+    
+    console.log(JSON.stringify({ evt: "pdf.final.count", rid, attachmentCount: attachments.length }));
 
     // Send email via Resend REST API
     const customerName = customer.first_name && customer.last_name 
       ? `${customer.first_name} ${customer.last_name}` 
       : customer.name;
 
+    const attachmentText = attachments.length > 0 
+      ? `Your warranty documents are attached to this email (${attachments.length} document${attachments.length > 1 ? 's' : ''}).`
+      : 'Your warranty documents will be sent separately.';
+
     const emailPayload = {
       from: resendFrom,
       to: [customer.email],
       subject: `Welcome — Your Warranty ${policy.warranty_number}`,
-      html: renderWelcomeHTML({ 
-        name: customerName, 
-        warranty: policy.warranty_number, 
-        link: pdfUrl 
-      }),
-      ...(pdfAttachment && { attachments: [pdfAttachment] })
+      html: `
+        <h1>Welcome ${customerName}!</h1>
+        <p>Thank you for purchasing your ${policy.plan_type} warranty. Your warranty number is: <strong>${policy.warranty_number}</strong></p>
+        <p>Your policy details:</p>
+        <ul>
+          <li>Plan: ${policy.plan_type}</li>
+          <li>Payment Type: ${policy.payment_type}</li>
+          <li>Policy Start: ${new Date(policy.policy_start_date).toLocaleDateString()}</li>
+          <li>Policy End: ${new Date(policy.policy_end_date).toLocaleDateString()}</li>
+        </ul>
+        <p>${attachmentText}</p>
+        <p>If you have any questions, please contact us at info@buyawarranty.co.uk</p>
+      `,
+      ...(attachments.length > 0 && { attachments })
     };
 
     console.log(JSON.stringify({ 
       evt: "email.sending", 
       rid, 
       to: customer.email,
-      hasAttachment: !!pdfAttachment 
+      attachmentCount: attachments.length,
+      attachmentNames: attachments.map(a => a.filename)
     }));
 
     const emailResponse = await retryFetch('https://api.resend.com/emails', {
@@ -387,7 +419,8 @@ const handler = async (req: Request): Promise<Response> => {
         resend_id: responseData.id,
         email: customer.email,
         warranty_number: policy.warranty_number,
-        attachment_included: !!pdfAttachment
+        attachments_included: attachments.length,
+        attachment_names: attachments.map(a => a.filename)
       },
       p_created_by: 'admin'
     });
@@ -401,7 +434,8 @@ const handler = async (req: Request): Promise<Response> => {
       message: 'Welcome email sent successfully',
       policyId: policy.id,
       warrantyNumber: policy.warranty_number,
-      email: customer.email
+      email: customer.email,
+      attachmentsIncluded: attachments.length
     }), {
       status: 200,
       headers: { "content-type": "application/json", ...corsHeaders },
