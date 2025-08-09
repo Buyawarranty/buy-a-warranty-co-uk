@@ -83,10 +83,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
       if (error) {
         console.error('❌ Error fetching plans:', error);
+        console.error('Error details:', JSON.stringify(error, null, 2));
         throw error;
       }
 
       console.log('✅ Plans fetched successfully:', data);
+      console.log('📊 Raw data structure:', JSON.stringify(data, null, 2));
 
       if (data && data.length > 0) {
         setPlans(data.map(plan => ({
@@ -102,6 +104,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       }
     } catch (error) {
       console.error('💥 Error fetching plans:', error);
+      console.error('💥 Error stack:', error.stack);
+      console.error('💥 Error message:', error.message);
       setPlansError('Failed to load pricing plans. Please try again.');
       toast.error('Failed to load pricing plans');
     } finally {
