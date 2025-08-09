@@ -44,7 +44,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('customer_policies')
         .select('*')
         .eq('id', policyId)
-        .single();
+        .maybeSingle();
 
       console.log('Policy query result:', { policyData, policyError });
 
@@ -61,7 +61,7 @@ const handler = async (req: Request): Promise<Response> => {
           .from('customers')
           .select('*')
           .eq('id', policy.customer_id)
-          .single();
+          .maybeSingle();
 
         if (customerError || !customerData) {
           throw new Error(`Customer not found: ${customerError?.message || 'Unknown error'}`);
@@ -73,7 +73,7 @@ const handler = async (req: Request): Promise<Response> => {
           .from('customers')
           .select('*')
           .eq('email', policy.email)
-          .single();
+          .maybeSingle();
 
         if (customerError || !customerData) {
           // Create a minimal customer object from policy data
@@ -95,7 +95,7 @@ const handler = async (req: Request): Promise<Response> => {
           customer_policies!customer_id(*)
         `)
         .eq('id', customerId)
-        .single();
+        .maybeSingle();
 
       if (customerError || !customerData) {
         throw new Error(`Customer not found: ${customerError?.message || 'Unknown error'}`);
