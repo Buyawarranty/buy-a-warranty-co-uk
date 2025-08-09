@@ -14,6 +14,7 @@ import TestWarranties2000 from '@/components/TestWarranties2000';
 import TestBumper from '@/components/TestBumper';
 import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
 import { UserPermissionsTab } from '@/components/admin/UserPermissionsTab';
+import { DocumentMappingTab } from '@/components/admin/DocumentMappingTab';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -80,6 +81,8 @@ const AdminDashboard = () => {
         return <AnalyticsTab />;
       case 'user-permissions':
         return <UserPermissionsTab />;
+      case 'document-mapping':
+        return <DocumentMappingTab />;
       case 'testing':
         return (
           <div className="max-w-4xl mx-auto">

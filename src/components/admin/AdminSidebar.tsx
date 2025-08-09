@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent, Shield } from 'lucide-react';
+import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent, Shield, FolderOpen } from 'lucide-react';
 
 interface AdminSidebarProps {
   activeTab: string;
@@ -52,6 +52,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
       label: 'User Permissions',
       icon: Shield,
       description: 'Manage admin user access and permissions'
+    },
+    {
+      id: 'document-mapping',
+      label: 'Document Mapping',
+      icon: FolderOpen,
+      description: 'Manage plan to document mappings'
     },
     {
       id: 'testing',

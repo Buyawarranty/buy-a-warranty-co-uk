@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { toast } from 'sonner';
 import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle } from 'lucide-react';
 import { ForwardToWarranties } from './ForwardToWarranties';
+import { WarrantyActions } from './WarrantyActions';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -54,7 +55,15 @@ interface Customer {
   warranty_reference_number?: string; // Warranty reference number
   policy_number?: string; // Policy number from customer_policies
   policy_status?: string; // Policy status from customer_policies
-  customer_policies?: Array<{ policy_end_date: string; policy_number: string; status: string }>; // Type for the joined data
+  customer_policies?: Array<{ 
+    id?: string;
+    policy_end_date: string; 
+    policy_number: string; 
+    status: string; 
+    warranty_number?: string;
+    email_sent_status?: string;
+    warranties_2000_status?: string;
+  }>; // Type for the joined data
   welcome_email_status?: 'sent' | 'not_sent';
   activation_email_status?: 'sent' | 'not_sent';
 }
@@ -166,10 +175,14 @@ export const CustomersTab = () => {
         .select(`
           *,
           customer_policies!customer_id(
+            id,
             policy_number,
             policy_end_date,
             policy_start_date,
-            status
+            status,
+            warranty_number,
+            email_sent_status,
+            warranties_2000_status
           )
         `)
         .not('email', 'like', '%test%')
@@ -227,7 +240,8 @@ export const CustomersTab = () => {
           customer_policies: [policy],
           created_at: policy.created_at,
           updated_at: policy.updated_at,
-          stripe_customer_id: null
+          stripe_customer_id: null,
+          warranty_number: null
         }));
         
         directData = [...directData, ...orphanedAsCustomers];
@@ -769,9 +783,10 @@ export const CustomersTab = () => {
               <TableHead>Plan Type</TableHead>
               <TableHead>Payment Type</TableHead>
               <TableHead>Policy Number</TableHead>
-              <TableHead>Warranty Reference</TableHead>
+              <TableHead>Warranty #</TableHead>
               <TableHead>Final Amount</TableHead>
               <TableHead>Email Status</TableHead>
+              <TableHead>W2K Status</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -779,7 +794,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={13} className="text-center py-8">
+                <TableCell colSpan={12} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -831,20 +846,53 @@ export const CustomersTab = () => {
                       <span className="text-gray-400">No Policy</span>
                     )}
                   </TableCell>
-                  <TableCell className="font-mono text-sm">
-                    {customer.warranty_reference_number ? (
-                      <div className="bg-green-50 px-2 py-1 rounded border text-green-800">
-                        {customer.warranty_reference_number}
-                      </div>
-                    ) : (
-                      <span className="text-gray-400">No Reference</span>
-                    )}
-                  </TableCell>
                   <TableCell className="font-semibold">
                     {customer.final_amount ? `£${customer.final_amount}` : 'N/A'}
                   </TableCell>
+                  <TableCell className="font-mono text-sm">
+                    {customer.customer_policies?.[0]?.warranty_number ? (
+                      <div className="bg-purple-50 px-2 py-1 rounded border text-purple-800">
+                        {customer.customer_policies[0].warranty_number}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">No Warranty #</span>
+                    )}
+                  </TableCell>
                   <TableCell>
-                    <EmailStatusIndicator customer={customer} />
+                    {customer.customer_policies?.[0]?.email_sent_status === 'sent' ? (
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Sent
+                      </Badge>
+                    ) : customer.customer_policies?.[0]?.email_sent_status === 'failed' ? (
+                      <Badge variant="destructive" className="bg-red-100 text-red-800">
+                        <AlertCircle className="w-3 h-3 mr-1" />
+                        Failed
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="bg-gray-100 text-gray-800">
+                        <Clock className="w-3 h-3 mr-1" />
+                        Not Sent
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {customer.customer_policies?.[0]?.warranties_2000_status === 'sent' ? (
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Sent
+                      </Badge>
+                    ) : customer.customer_policies?.[0]?.warranties_2000_status === 'failed' ? (
+                      <Badge variant="destructive" className="bg-red-100 text-red-800">
+                        <AlertCircle className="w-3 h-3 mr-1" />
+                        Failed
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="bg-gray-100 text-gray-800">
+                        <Clock className="w-3 h-3 mr-1" />
+                        Not Sent
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Badge variant={customer.status === 'Active' ? 'default' : 'destructive'}>
@@ -1207,6 +1255,20 @@ export const CustomersTab = () => {
                                 </Button>
                               </div>
                               
+                              {/* Warranty Actions Section */}
+                              <div className="space-y-4">
+                                <h3 className="text-lg font-semibold">Warranty Actions</h3>
+                                <WarrantyActions
+                                  customerId={selectedCustomer.id}
+                                  policyId={selectedCustomer.customer_policies?.[0]?.id}
+                                  customerEmail={selectedCustomer.email}
+                                  warrantyNumber={selectedCustomer.customer_policies?.[0]?.warranty_number}
+                                  emailStatus={selectedCustomer.customer_policies?.[0]?.email_sent_status}
+                                  warranties2000Status={selectedCustomer.customer_policies?.[0]?.warranties_2000_status}
+                                  onActionComplete={fetchCustomers}
+                                />
+                              </div>
+
                               {/* Notes Section */}
                               <div className="space-y-4">
                                 <h3 className="text-lg font-semibold">Customer Notes</h3>
