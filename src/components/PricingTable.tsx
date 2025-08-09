@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
@@ -6,6 +6,18 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+
+type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
+
+const normalizeVehicleType = (raw?: string): VehicleType => {
+  const v = (raw ?? '').toLowerCase().trim();
+  if (['car','saloon','hatchback','estate','suv'].includes(v)) return 'car';
+  if (v.includes('motor') || v.includes('bike')) return 'motorbike';
+  if (v === 'phev') return 'phev';
+  if (v.includes('hybrid')) return 'hybrid';
+  if (['ev','electric'].includes(v)) return 'ev';
+  return 'car'; // safe default
+};
 
 interface Plan {
   id: string;
@@ -18,6 +30,7 @@ interface Plan {
   add_ons: string[];
   is_active: boolean;
   pricing_matrix?: any;
+  vehicle_type?: string;
 }
 
 interface PricingTableProps {
@@ -53,10 +66,37 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
 
+  // Normalize vehicle type once
+  const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
+
   useEffect(() => {
-    fetchPlans();
+    let alive = true;
+    setPlans([]); // clear immediately so no leakage
+    setPlansLoading(true);
+    setPlansError(null);
+    
+    (async () => {
+      try {
+        const rows = await fetchPlansFor(vt);
+        if (!alive) return;
+        console.log(`🔍 Fetched ${rows.length} plans for ${vt}:`, rows);
+        setPlans(rows);
+      } catch (e: any) {
+        if (!alive) return;
+        console.error('💥 Error fetching plans:', e);
+        setPlansError('Failed to load pricing plans. Please try again.');
+        toast.error('Failed to load pricing plans');
+      } finally {
+        if (alive) setPlansLoading(false);
+      }
+    })();
+    
+    return () => { alive = false; };
+  }, [vt]); // ONLY depends on normalized vt
+
+  useEffect(() => {
     fetchPdfUrls();
-  }, [vehicleData.vehicleType]); // Re-run when vehicleType changes
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,86 +109,50 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const fetchPlans = async () => {
-    try {
-      setPlansLoading(true);
-      setPlansError(null);
-      console.log('🔍 Fetching pricing plans...');
-      console.log('🚗 Vehicle type:', vehicleData.vehicleType);
-      
-      // Determine which plans to fetch based on vehicle type
-      const vehicleType = vehicleData.vehicleType?.toLowerCase();
-      
-      // For special vehicle types, fetch from special_vehicle_plans table
-      if (vehicleType && ['motorbike', 'phev', 'hybrid', 'electric', 'ev'].includes(vehicleType)) {
-        console.log('🛵 Fetching special vehicle plans for:', vehicleType);
-        const { data: specialPlans, error: specialError } = await supabase
-          .from('special_vehicle_plans')
-          .select('*')
-          .eq('is_active', true)
-          .eq('vehicle_type', vehicleType === 'ev' ? 'electric' : vehicleType)
-          .order('monthly_price');
-
-        if (specialError) {
-          console.error('❌ Error fetching special vehicle plans:', specialError);
-          throw specialError;
-        }
-
-        console.log('✅ Special vehicle plans fetched:', specialPlans);
-        if (specialPlans && specialPlans.length > 0) {
-          setPlans(specialPlans.map(plan => ({
-            ...plan,
-            coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
-            add_ons: [] // Special vehicle plans don't have add-ons
-          })));
-          console.log('📋 Special plans processed and set:', specialPlans.length, 'plans');
-        } else {
-          console.warn('⚠️ No special vehicle plans found for:', vehicleType);
-          setPlansError('No pricing plans available for this vehicle type.');
-          toast.error('No pricing plans available for this vehicle type');
-        }
-        return;
-      }
-
-      // For standard vehicles (cars, vans, or undefined/unknown types), fetch regular plans
-      console.log('🚗 Fetching standard vehicle plans for regular vehicles');
+  // Server-side filtering function
+  async function fetchPlansFor(vt: VehicleType): Promise<Plan[]> {
+    if (vt === 'car') {
+      console.log('🚗 Fetching standard car plans: Basic, Gold, Platinum');
       const { data, error } = await supabase
         .from('plans')
         .select('*')
         .eq('is_active', true)
+        .in('name', ['Basic', 'Gold', 'Platinum'])
         .order('monthly_price');
-
+      
       if (error) {
-        console.error('❌ Error fetching plans:', error);
-        console.error('Error details:', JSON.stringify(error, null, 2));
+        console.error('❌ Error fetching car plans:', error);
         throw error;
       }
-
-      console.log('✅ Standard plans fetched successfully:', data);
-      console.log('📊 Raw data structure:', JSON.stringify(data, null, 2));
-
-      if (data && data.length > 0) {
-        setPlans(data.map(plan => ({
-          ...plan,
-          coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
-          add_ons: Array.isArray(plan.add_ons) ? plan.add_ons.map(item => String(item)) : []
-        })));
-        console.log('📋 Standard plans processed and set:', data.length, 'plans');
-      } else {
-        console.warn('⚠️ No active standard plans found in database');
-        setPlansError('No pricing plans available at the moment.');
-        toast.error('No pricing plans available');
+      
+      console.log('✅ Car plans fetched:', data?.length || 0);
+      return (data || []).map(plan => ({
+        ...plan,
+        coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
+        add_ons: Array.isArray(plan.add_ons) ? plan.add_ons.map(item => String(item)) : []
+      }));
+    } else {
+      console.log(`🛵 Fetching special vehicle plans for: ${vt}`);
+      const { data, error } = await supabase
+        .from('special_vehicle_plans')
+        .select('*')
+        .eq('is_active', true)
+        .eq('vehicle_type', vt === 'ev' ? 'electric' : vt)
+        .order('monthly_price');
+      
+      if (error) {
+        console.error('❌ Error fetching special vehicle plans:', error);
+        throw error;
       }
-    } catch (error) {
-      console.error('💥 Error fetching plans:', error);
-      console.error('💥 Error stack:', error.stack);
-      console.error('💥 Error message:', error.message);
-      setPlansError('Failed to load pricing plans. Please try again.');
-      toast.error('Failed to load pricing plans');
-    } finally {
-      setPlansLoading(false);
+      
+      console.log('✅ Special vehicle plans fetched:', data?.length || 0);
+      return (data || []).map(plan => ({
+        ...plan,
+        coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
+        add_ons: [] // Special vehicle plans don't have add-ons
+      }));
     }
-  };
+  }
 
   const fetchPdfUrls = async () => {
     try {
@@ -313,6 +317,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
   };
 
+  // Hard client-side guard (belt & braces)
+  const ensureCarOnly = (rows: Plan[]) =>
+    rows.filter(p => ['Basic', 'Gold', 'Platinum'].includes((p.name ?? '').trim()));
+
+  const ensureSpecialOnly = (rows: Plan[], vt: VehicleType) =>
+    rows.filter(p => (p.vehicle_type ?? p.name?.toLowerCase()) === vt || (p.vehicle_type ?? p.name?.toLowerCase()) === (vt === 'ev' ? 'electric' : vt));
+
+  const displayPlans = vt === 'car' ? ensureCarOnly(plans) : ensureSpecialOnly(plans, vt);
+
   const getPaymentLabel = (price: number) => {
     return `£${price}/mo for 12 months`;
   };
@@ -472,7 +485,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Pricing</h3>
               <p className="text-red-600 mb-4">{plansError}</p>
               <Button 
-                onClick={fetchPlans} 
+                onClick={() => {
+                  let alive = true;
+                  setPlans([]);
+                  setPlansLoading(true);
+                  setPlansError(null);
+                  
+                  (async () => {
+                    try {
+                      const rows = await fetchPlansFor(vt);
+                      if (!alive) return;
+                      setPlans(rows);
+                    } catch (e: any) {
+                      if (!alive) return;
+                      setPlansError('Failed to load pricing plans. Please try again.');
+                      toast.error('Failed to load pricing plans');
+                    } finally {
+                      if (alive) setPlansLoading(false);
+                    }
+                  })();
+                }} 
                 variant="outline" 
                 className="border-red-300 text-red-700 hover:bg-red-50"
               >
@@ -484,10 +516,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       )}
 
       {/* Pricing Cards Container */}
-      {!plansLoading && !plansError && plans.length > 0 && (
+      {!plansLoading && !plansError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((plan) => {
+          {displayPlans.map((plan) => {
             const basePrice = calculatePlanPrice(plan);
             const addOnPrice = calculateAddOnPrice(plan.id);
             const monthlyPrice = basePrice + addOnPrice;
@@ -678,12 +710,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       )}
 
+      {/* No plans message */}
+      {!plansLoading && !plansError && displayPlans.length === 0 && (
+        <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
+          <div className="text-center py-16">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">No plans available</h3>
+            <p className="text-gray-600">No pricing plans found for this vehicle type.</p>
+          </div>
+        </div>
+      )}
+
       {/* Floating Action Bar */}
-      {isFloatingBarVisible && (
+      {isFloatingBarVisible && displayPlans.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50 animate-slide-up">
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-               {plans.map((plan) => {
+               {displayPlans.map((plan) => {
                  const basePrice = calculatePlanPrice(plan);
                  const addOnPrice = calculateAddOnPrice(plan.id);
                  const monthlyPrice = basePrice + addOnPrice;
