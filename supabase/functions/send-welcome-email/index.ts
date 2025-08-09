@@ -123,95 +123,29 @@ serve(async (req) => {
       logStep("Warning: Failed to record welcome email", emailRecordError);
     }
 
-    // Fetch plan-specific and terms & conditions documents to attach to welcome email
-    const attachments = [];
+    // Map plan types to document URLs
+    const planDocumentUrls: Record<string, string> = {
+      'basic': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf',
+      'Basic': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf',
+      'gold': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/gold/Gold-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464758473.pdf',
+      'Gold': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/gold/Gold-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464758473.pdf',
+      'platinum': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf',
+      'Platinum': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf',
+      'electric': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/electric/EV-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464859338.pdf',
+      'Electric vehicle ev extended warranty': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/electric/EV-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464859338.pdf',
+      'phev': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/phev/Hybrid-PHEV-Warranty-Plan%202.0-1754464878940.pdf',
+      'PHEV Hybrid Extended Warranty': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/phev/Hybrid-PHEV-Warranty-Plan%202.0-1754464878940.pdf',
+      'Phev hybrid extended warranty': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/phev/Hybrid-PHEV-Warranty-Plan%202.0-1754464878940.pdf',
+      'hybrid': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/phev/Hybrid-PHEV-Warranty-Plan%202.0-1754464878940.pdf',
+      'motorbike': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/motorbike/Motorbike-Extended-Warranty-Plan%202.0-1754464869722.pdf',
+      'Motorbike Extended Warranty': 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/motorbike/Motorbike-Extended-Warranty-Plan%202.0-1754464869722.pdf'
+    };
+
+    // Get the plan document URL
+    const planDocumentUrl = planDocumentUrls[planType] || planDocumentUrls[planType.toLowerCase()];
+    const termsAndConditionsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/terms-and-conditions/Terms%20and%20conditions-1754666518644.pdf';
     
-    // Helper function to prepare document attachment
-    const prepareDocumentAttachment = async (doc: any, logPrefix: string) => {
-      try {
-        const response = await fetch(doc.file_url);
-        if (response.ok) {
-          const fileBuffer = await response.arrayBuffer();
-          const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
-          
-          const attachment = {
-            filename: doc.document_name.endsWith('.pdf') ? doc.document_name : `${doc.document_name}.pdf`,
-            content: base64Content,
-            type: 'application/pdf'
-          };
-          logStep(`${logPrefix} document prepared for attachment`, { filename: attachment.filename });
-          return attachment;
-        }
-      } catch (error) {
-        logStep(`Error preparing ${logPrefix} document`, error);
-      }
-      return null;
-    };
-
-    // Map plan types to document plan types in the database
-    const planTypeMapping: Record<string, string> = {
-      'basic': 'basic',
-      'Basic': 'basic',
-      'gold': 'gold',
-      'Gold': 'gold', 
-      'platinum': 'platinum',
-      'Platinum': 'platinum',
-      'electric': 'electric',
-      'Electric vehicle ev extended warranty': 'electric',
-      'phev': 'phev',
-      'PHEV Hybrid Extended Warranty': 'phev',
-      'Phev hybrid extended warranty': 'phev',
-      'hybrid': 'phev',
-      'motorbike': 'motorbike',
-      'Motorbike Extended Warranty': 'motorbike'
-    };
-
-    // Fetch plan-specific document
-    try {
-      const mappedPlanType = planTypeMapping[planType] || planTypeMapping[planType.toLowerCase()] || planType.toLowerCase();
-      logStep("Fetching plan-specific document", { planType: planType, mappedPlanType });
-      
-      const { data: planDoc, error: planError } = await supabaseClient
-        .from('customer_documents')
-        .select('document_name, file_url')
-        .eq('plan_type', mappedPlanType)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (planDoc && !planError) {
-        const planAttachment = await prepareDocumentAttachment(planDoc, "Plan-specific");
-        if (planAttachment) {
-          attachments.push(planAttachment);
-        }
-      } else {
-        logStep("No plan-specific document found", { planType: mappedPlanType, error: planError });
-      }
-    } catch (error) {
-      logStep("Error fetching plan-specific document", error);
-    }
-
-    // Fetch terms and conditions document
-    try {
-      const { data: termsDoc, error: termsError } = await supabaseClient
-        .from('customer_documents')
-        .select('document_name, file_url')
-        .eq('plan_type', 'terms-and-conditions')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (termsDoc && !termsError) {
-        const termsAttachment = await prepareDocumentAttachment(termsDoc, "Terms and conditions");
-        if (termsAttachment) {
-          attachments.push(termsAttachment);
-        }
-      } else {
-        logStep("No terms document found", termsError);
-      }
-    } catch (error) {
-      logStep("Error fetching terms document", error);
-    }
+    logStep("Document URLs determined", { planType, planDocumentUrl, termsAndConditionsUrl });
 
     // Send actual welcome email using send-email function
     try {
@@ -226,7 +160,9 @@ serve(async (req) => {
         temporaryPassword: tempPassword,
         loginUrl: 'https://buyawarranty.co.uk/auth',
         portalLink: 'https://buyawarranty.co.uk/auth',
-        loginLink: 'https://buyawarranty.co.uk/auth'
+        loginLink: 'https://buyawarranty.co.uk/auth',
+        planDocumentUrl: planDocumentUrl,
+        termsAndConditionsUrl: termsAndConditionsUrl
       };
 
       const emailPayload: any = {
@@ -235,11 +171,7 @@ serve(async (req) => {
         variables: emailVariables
       };
 
-      // Add attachments if any were successfully fetched
-      if (attachments.length > 0) {
-        emailPayload.attachments = attachments;
-        logStep("Attachments added to email", { count: attachments.length, filenames: attachments.map(a => a.filename) });
-      }
+      logStep("Email payload prepared", { variables: emailVariables });
 
       const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-email', {
         body: emailPayload
