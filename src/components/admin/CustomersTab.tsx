@@ -475,7 +475,20 @@ export const CustomersTab = () => {
     }
 
     try {
-      // First, delete related customer policies
+      // Delete related records in the correct order (child tables first)
+      
+      // 1. Delete email logs
+      const { error: emailLogsError } = await supabase
+        .from('email_logs')
+        .delete()
+        .eq('customer_id', customerId);
+
+      if (emailLogsError) {
+        console.error('Error deleting email logs:', emailLogsError);
+        // Continue anyway - other deletions might still work
+      }
+
+      // 2. Delete customer policies
       const { error: policiesError } = await supabase
         .from('customer_policies')
         .delete()
@@ -483,10 +496,10 @@ export const CustomersTab = () => {
 
       if (policiesError) {
         console.error('Error deleting customer policies:', policiesError);
-        // Continue anyway - customer deletion might still work
+        // Continue anyway
       }
 
-      // Delete admin notes
+      // 3. Delete admin notes
       const { error: notesError } = await supabase
         .from('admin_notes')
         .delete()
@@ -497,7 +510,7 @@ export const CustomersTab = () => {
         // Continue anyway
       }
 
-      // Finally, delete the customer
+      // 4. Finally, delete the customer
       const { error: customerError } = await supabase
         .from('customers')
         .delete()
