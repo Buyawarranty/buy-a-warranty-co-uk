@@ -77,43 +77,46 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       console.log('🚗 Vehicle type:', vehicleData.vehicleType);
       
       // Determine which plans to fetch based on vehicle type
-      let query = supabase
-        .from('plans')
-        .select('*')
-        .eq('is_active', true);
-
-      // For special vehicle types, check the special_vehicle_plans table
       const vehicleType = vehicleData.vehicleType?.toLowerCase();
-      if (vehicleType === 'motorbike' || vehicleType === 'phev' || vehicleType === 'hybrid' || vehicleType === 'electric' || vehicleType === 'ev') {
+      
+      // For special vehicle types, fetch from special_vehicle_plans table
+      if (vehicleType && ['motorbike', 'phev', 'hybrid', 'electric', 'ev'].includes(vehicleType)) {
         console.log('🛵 Fetching special vehicle plans for:', vehicleType);
         const { data: specialPlans, error: specialError } = await supabase
           .from('special_vehicle_plans')
           .select('*')
           .eq('is_active', true)
-          .eq('vehicle_type', vehicleType === 'ev' ? 'electric' : vehicleType);
+          .eq('vehicle_type', vehicleType === 'ev' ? 'electric' : vehicleType)
+          .order('monthly_price');
 
         if (specialError) {
           console.error('❌ Error fetching special vehicle plans:', specialError);
           throw specialError;
         }
 
+        console.log('✅ Special vehicle plans fetched:', specialPlans);
         if (specialPlans && specialPlans.length > 0) {
-          console.log('✅ Special vehicle plans fetched:', specialPlans);
           setPlans(specialPlans.map(plan => ({
             ...plan,
             coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
             add_ons: [] // Special vehicle plans don't have add-ons
           })));
           console.log('📋 Special plans processed and set:', specialPlans.length, 'plans');
-          return;
         } else {
-          console.warn('⚠️ No special vehicle plans found, falling back to standard plans');
+          console.warn('⚠️ No special vehicle plans found for:', vehicleType);
+          setPlansError('No pricing plans available for this vehicle type.');
+          toast.error('No pricing plans available for this vehicle type');
         }
+        return;
       }
 
-      // For standard vehicles (cars), fetch regular plans
-      console.log('🚗 Fetching standard vehicle plans');
-      const { data, error } = await query.order('monthly_price');
+      // For standard vehicles (cars, vans, or undefined/unknown types), fetch regular plans
+      console.log('🚗 Fetching standard vehicle plans for regular vehicles');
+      const { data, error } = await supabase
+        .from('plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('monthly_price');
 
       if (error) {
         console.error('❌ Error fetching plans:', error);
@@ -121,7 +124,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         throw error;
       }
 
-      console.log('✅ Plans fetched successfully:', data);
+      console.log('✅ Standard plans fetched successfully:', data);
       console.log('📊 Raw data structure:', JSON.stringify(data, null, 2));
 
       if (data && data.length > 0) {
@@ -130,9 +133,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
           add_ons: Array.isArray(plan.add_ons) ? plan.add_ons.map(item => String(item)) : []
         })));
-        console.log('📋 Plans processed and set:', data.length, 'plans');
+        console.log('📋 Standard plans processed and set:', data.length, 'plans');
       } else {
-        console.warn('⚠️ No active plans found in database');
+        console.warn('⚠️ No active standard plans found in database');
         setPlansError('No pricing plans available at the moment.');
         toast.error('No pricing plans available');
       }
