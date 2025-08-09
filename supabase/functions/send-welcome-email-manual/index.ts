@@ -23,17 +23,22 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     console.log('=== Manual Welcome Email Send Started ===');
+    
     const { policyId, customerId }: ManualEmailRequest = await req.json();
+    console.log('Request body parsed:', { policyId, customerId });
     
     if (!policyId && !customerId) {
+      console.error('Missing required parameters');
       throw new Error('Either policyId or customerId is required');
     }
 
     // Get policy and customer data
+    console.log('Looking up policy and customer data...');
     let policy;
     let customer;
 
     if (policyId) {
+      console.log('Getting policy by ID:', policyId);
       // Get policy by ID
       const { data: policyData, error: policyError } = await supabase
         .from('customer_policies')
@@ -41,7 +46,10 @@ const handler = async (req: Request): Promise<Response> => {
         .eq('id', policyId)
         .single();
 
+      console.log('Policy query result:', { policyData, policyError });
+
       if (policyError || !policyData) {
+        console.error('Policy not found:', policyError);
         throw new Error(`Policy not found: ${policyError?.message || 'Unknown error'}`);
       }
 
@@ -104,12 +112,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Sending manual welcome email for policy:', policy.warranty_number);
 
+    console.log('Checking for idempotency...');
     // Check for idempotency - don't send if already sent recently (within 1 hour)
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
     if (policy.email_sent_status === 'sent' && 
         policy.email_sent_at && 
         new Date(policy.email_sent_at) > oneHourAgo) {
       
+      console.log('Email already sent within the last hour');
       return new Response(JSON.stringify({ 
         error: 'Email already sent within the last hour. Please wait before resending.' 
       }), {
@@ -118,15 +128,24 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    console.log('Getting welcome email template...');
     // Get the welcome email template
     const { data: template, error: templateError } = await supabase
       .from('email_templates')
       .select('*')
       .eq('template_type', 'welcome')
       .eq('is_active', true)
-      .single();
+      .maybeSingle(); // Use maybeSingle instead of single to avoid error if no template
 
-    if (templateError || !template) {
+    console.log('Template query result:', { template, templateError });
+
+    if (templateError) {
+      console.error('Template query error:', templateError);
+      throw new Error(`Template query failed: ${templateError.message}`);
+    }
+    
+    if (!template) {
+      console.error('No welcome email template found');
       throw new Error('Welcome email template not found');
     }
 
