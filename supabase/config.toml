@@ -58,10 +58,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.send-welcome-email-manual]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-to-warranties-2000]
-verify_jwt = false
+verify_jwt = true
 
 [functions.warranties-2000-registration]
 verify_jwt = false
