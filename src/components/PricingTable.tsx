@@ -74,12 +74,46 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       setPlansLoading(true);
       setPlansError(null);
       console.log('🔍 Fetching pricing plans...');
+      console.log('🚗 Vehicle type:', vehicleData.vehicleType);
       
-      const { data, error } = await supabase
+      // Determine which plans to fetch based on vehicle type
+      let query = supabase
         .from('plans')
         .select('*')
-        .eq('is_active', true)
-        .order('monthly_price');
+        .eq('is_active', true);
+
+      // For special vehicle types, check the special_vehicle_plans table
+      const vehicleType = vehicleData.vehicleType?.toLowerCase();
+      if (vehicleType === 'motorbike' || vehicleType === 'phev' || vehicleType === 'hybrid' || vehicleType === 'electric' || vehicleType === 'ev') {
+        console.log('🛵 Fetching special vehicle plans for:', vehicleType);
+        const { data: specialPlans, error: specialError } = await supabase
+          .from('special_vehicle_plans')
+          .select('*')
+          .eq('is_active', true)
+          .eq('vehicle_type', vehicleType === 'ev' ? 'electric' : vehicleType);
+
+        if (specialError) {
+          console.error('❌ Error fetching special vehicle plans:', specialError);
+          throw specialError;
+        }
+
+        if (specialPlans && specialPlans.length > 0) {
+          console.log('✅ Special vehicle plans fetched:', specialPlans);
+          setPlans(specialPlans.map(plan => ({
+            ...plan,
+            coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
+            add_ons: [] // Special vehicle plans don't have add-ons
+          })));
+          console.log('📋 Special plans processed and set:', specialPlans.length, 'plans');
+          return;
+        } else {
+          console.warn('⚠️ No special vehicle plans found, falling back to standard plans');
+        }
+      }
+
+      // For standard vehicles (cars), fetch regular plans
+      console.log('🚗 Fetching standard vehicle plans');
+      const { data, error } = await query.order('monthly_price');
 
       if (error) {
         console.error('❌ Error fetching plans:', error);
