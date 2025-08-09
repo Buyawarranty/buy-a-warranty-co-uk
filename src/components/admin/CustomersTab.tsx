@@ -10,8 +10,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2 } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail } from 'lucide-react';
 import { ForwardToWarranties } from './ForwardToWarranties';
 import { WarrantyActions } from './WarrantyActions';
 import { format } from 'date-fns';
@@ -48,24 +49,48 @@ interface Customer {
   stripe_session_id?: string;
   bumper_order_id?: string;
   discount_code?: string;
-  discount_amount?: number;
-  original_amount?: number;
-  final_amount?: number;
-  warranty_expiry?: string; // New field for warranty expiry date
-  warranty_reference_number?: string; // Warranty reference number
-  policy_number?: string; // Policy number from customer_policies
-  policy_status?: string; // Policy status from customer_policies
-  customer_policies?: Array<{ 
+  discount_amount: number;
+  original_amount: number;
+  final_amount: number;
+  warranty_reference_number: string;
+  warranty_number: string;
+  stripe_customer_id: string;
+  warranty_expiry?: string;
+  policy_number?: string;
+  policy_status?: string;
+  welcome_email_status?: 'sent' | 'not_sent';
+  activation_email_status?: 'sent' | 'not_sent';
+  customer_policies?: Array<{
     id?: string;
-    policy_end_date: string; 
-    policy_number: string; 
-    status: string; 
+    policy_end_date: string;
+    policy_number: string;
+    status: string;
     warranty_number?: string;
     email_sent_status?: string;
     warranties_2000_status?: string;
-  }>; // Type for the joined data
-  welcome_email_status?: 'sent' | 'not_sent';
-  activation_email_status?: 'sent' | 'not_sent';
+  }>;
+}
+
+interface IncompleteCustomer {
+  id: string;
+  email: string;
+  full_name?: string;
+  phone?: string;
+  vehicle_reg?: string;
+  vehicle_make?: string;
+  vehicle_model?: string;
+  vehicle_year?: string;
+  mileage?: string;
+  plan_name?: string;
+  payment_type?: string;
+  vehicle_type?: string;
+  step_abandoned: number;
+  created_at: string;
+  updated_at: string;
+  contact_status: string;
+  contact_notes?: string;
+  last_contacted_at?: string;
+  contacted_by?: string;
 }
 
 interface EmailStatus {
@@ -103,7 +128,10 @@ const NumberPlate = ({ plateNumber }: { plateNumber: string }) => {
 export const CustomersTab = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
+  const [incompleteCustomers, setIncompleteCustomers] = useState<IncompleteCustomer[]>([]);
+  const [filteredIncompleteCustomers, setFilteredIncompleteCustomers] = useState<IncompleteCustomer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [incompleteLoading, setIncompleteLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
@@ -119,6 +147,7 @@ export const CustomersTab = () => {
 
   useEffect(() => {
     fetchCustomers();
+    fetchIncompleteCustomers();
     fetchPlans();
     fetchEmailStatuses();
   }, []);
@@ -317,6 +346,58 @@ export const CustomersTab = () => {
       toast.error('Unexpected error occurred while fetching customers');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchIncompleteCustomers = async () => {
+    try {
+      setIncompleteLoading(true);
+      console.log('🔍 Fetching incomplete customers...');
+      
+      const { data, error } = await supabase
+        .from('abandoned_carts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching incomplete customers:', error);
+        throw error;
+      }
+
+      console.log('✅ Found incomplete customers:', data?.length || 0);
+      setIncompleteCustomers(data || []);
+      setFilteredIncompleteCustomers(data || []);
+    } catch (error) {
+      console.error('Error fetching incomplete customers:', error);
+      toast.error('Failed to load incomplete customers');
+    } finally {
+      setIncompleteLoading(false);
+    }
+  };
+
+  const updateContactStatus = async (
+    customerId: string, 
+    status: string, 
+    notes?: string
+  ) => {
+    try {
+      const { error } = await supabase
+        .from('abandoned_carts')
+        .update({
+          contact_status: status,
+          contact_notes: notes,
+          last_contacted_at: new Date().toISOString(),
+          contacted_by: (await supabase.auth.getUser()).data.user?.id
+        })
+        .eq('id', customerId);
+
+      if (error) throw error;
+
+      toast.success('Contact status updated successfully');
+      fetchIncompleteCustomers(); // Refresh the list
+    } catch (error) {
+      console.error('Error updating contact status:', error);
+      toast.error('Failed to update contact status');
     }
   };
 
@@ -863,6 +944,24 @@ export const CustomersTab = () => {
     );
   }
 
+  const getContactStatusColor = (status: string) => {
+    switch (status) {
+      case 'not_contacted': return 'bg-red-500';
+      case 'contacted': return 'bg-yellow-500'; 
+      case 'follow_up': return 'bg-green-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const getContactStatusText = (status: string) => {
+    switch (status) {
+      case 'not_contacted': return 'Not Contacted';
+      case 'contacted': return 'Contacted';
+      case 'follow_up': return 'Follow-up Done';
+      default: return 'Unknown';
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -894,11 +993,18 @@ export const CustomersTab = () => {
         </div>
       )}
 
-      <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="Search customers..."
+      <Tabs defaultValue="complete" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="complete">Complete Customers</TabsTrigger>
+          <TabsTrigger value="incomplete">Incomplete Customers</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="complete" className="space-y-4">
+          <div className="flex items-center space-x-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search customers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -1556,7 +1662,184 @@ export const CustomersTab = () => {
             )}
           </TableBody>
         </Table>
-      </div>
+        </div>
+        </TabsContent>
+
+        <TabsContent value="incomplete" className="space-y-4">
+          <div className="flex items-center space-x-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search incomplete customers..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  if (e.target.value) {
+                    const filtered = incompleteCustomers.filter(customer =>
+                      customer.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                      customer.full_name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                      customer.vehicle_reg?.toLowerCase().includes(e.target.value.toLowerCase())
+                    );
+                    setFilteredIncompleteCustomers(filtered);
+                  } else {
+                    setFilteredIncompleteCustomers(incompleteCustomers);
+                  }
+                }}
+                className="pl-10"
+              />
+            </div>
+            <Button 
+              onClick={fetchIncompleteCustomers} 
+              variant="outline"
+              className="flex items-center space-x-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              <span>Refresh</span>
+            </Button>
+          </div>
+
+          <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Contact Status</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Vehicle</TableHead>
+                  <TableHead>Plan</TableHead>
+                  <TableHead>Step Abandoned</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {incompleteLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center py-8">
+                      <div className="flex justify-center items-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600"></div>
+                        <span className="ml-2">Loading incomplete customers...</span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : filteredIncompleteCustomers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center py-8 text-gray-500">
+                      No incomplete customers found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredIncompleteCustomers.map((customer) => (
+                    <TableRow key={customer.id}>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <div 
+                            className={`w-3 h-3 rounded-full ${getContactStatusColor(customer.contact_status)}`}
+                            title={getContactStatusText(customer.contact_status)}
+                          />
+                          <span className="text-xs">
+                            {getContactStatusText(customer.contact_status)}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{customer.full_name || 'Unknown'}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{customer.email}</TableCell>
+                      <TableCell>{customer.phone || 'N/A'}</TableCell>
+                      <TableCell>
+                        <div>
+                          <div>{customer.vehicle_reg || 'N/A'}</div>
+                          <div className="text-xs text-gray-500">
+                            {customer.vehicle_make} {customer.vehicle_model} ({customer.vehicle_year})
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {customer.plan_name || 'N/A'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={customer.step_abandoned === 1 ? 'destructive' : 'secondary'}>
+                          Step {customer.step_abandoned}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          {format(new Date(customer.created_at), 'MMM dd, yyyy')}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {format(new Date(customer.created_at), 'HH:mm')}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="ghost" size="sm" title="Contact Customer">
+                                <Mail className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Update Contact Status</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <Label>Contact Status</Label>
+                                  <Select 
+                                    defaultValue={customer.contact_status}
+                                    onValueChange={(value) => {
+                                      const notes = document.getElementById(`notes-${customer.id}`) as HTMLTextAreaElement;
+                                      updateContactStatus(customer.id, value, notes?.value);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="not_contacted">Not Contacted</SelectItem>
+                                      <SelectItem value="contacted">Contacted</SelectItem>
+                                      <SelectItem value="follow_up">Follow-up Done</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div>
+                                  <Label>Contact Notes</Label>
+                                  <Textarea
+                                    id={`notes-${customer.id}`}
+                                    placeholder="Add notes about contact attempt..."
+                                    defaultValue={customer.contact_notes || ''}
+                                    rows={3}
+                                  />
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                          
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            title="Call Customer"
+                            onClick={() => window.open(`tel:${customer.phone}`)}
+                            disabled={!customer.phone}
+                          >
+                            <Phone className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

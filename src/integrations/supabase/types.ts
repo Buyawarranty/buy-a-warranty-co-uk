@@ -55,10 +55,14 @@ export type Database = {
       }
       abandoned_carts: {
         Row: {
+          contact_notes: string | null
+          contact_status: string | null
+          contacted_by: string | null
           created_at: string
           email: string
           full_name: string | null
           id: string
+          last_contacted_at: string | null
           mileage: string | null
           payment_type: string | null
           phone: string | null
@@ -73,10 +77,14 @@ export type Database = {
           vehicle_year: string | null
         }
         Insert: {
+          contact_notes?: string | null
+          contact_status?: string | null
+          contacted_by?: string | null
           created_at?: string
           email: string
           full_name?: string | null
           id?: string
+          last_contacted_at?: string | null
           mileage?: string | null
           payment_type?: string | null
           phone?: string | null
@@ -91,10 +99,14 @@ export type Database = {
           vehicle_year?: string | null
         }
         Update: {
+          contact_notes?: string | null
+          contact_status?: string | null
+          contacted_by?: string | null
           created_at?: string
           email?: string
           full_name?: string | null
           id?: string
+          last_contacted_at?: string | null
           mileage?: string | null
           payment_type?: string | null
           phone?: string | null
