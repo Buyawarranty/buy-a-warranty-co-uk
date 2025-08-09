@@ -30,34 +30,76 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Get policy and customer data
-    let query = supabase
-      .from('customer_policies')
-      .select(`
-        *,
-        customers!customer_id (
-          id,
-          name,
-          email
-        )
-      `);
+    let policy;
+    let customer;
 
     if (policyId) {
-      query = query.eq('id', policyId);
+      // Get policy by ID
+      const { data: policyData, error: policyError } = await supabase
+        .from('customer_policies')
+        .select('*')
+        .eq('id', policyId)
+        .single();
+
+      if (policyError || !policyData) {
+        throw new Error(`Policy not found: ${policyError?.message || 'Unknown error'}`);
+      }
+
+      policy = policyData;
+
+      // Get customer by customer_id or email
+      if (policy.customer_id) {
+        const { data: customerData, error: customerError } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('id', policy.customer_id)
+          .single();
+
+        if (customerError || !customerData) {
+          throw new Error(`Customer not found: ${customerError?.message || 'Unknown error'}`);
+        }
+        customer = customerData;
+      } else {
+        // Fallback: find customer by email
+        const { data: customerData, error: customerError } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('email', policy.email)
+          .single();
+
+        if (customerError || !customerData) {
+          // Create a minimal customer object from policy data
+          customer = {
+            id: policy.id, // Use policy ID as customer ID for this case
+            name: policy.customer_full_name || 'Customer',
+            email: policy.email
+          };
+        } else {
+          customer = customerData;
+        }
+      }
     } else {
-      query = query.eq('customer_id', customerId);
-    }
+      // Get customer by customerId and their policies
+      const { data: customerData, error: customerError } = await supabase
+        .from('customers')
+        .select(`
+          *,
+          customer_policies!customer_id(*)
+        `)
+        .eq('id', customerId)
+        .single();
 
-    const { data: policies, error: policyError } = await query;
+      if (customerError || !customerData) {
+        throw new Error(`Customer not found: ${customerError?.message || 'Unknown error'}`);
+      }
 
-    if (policyError || !policies || policies.length === 0) {
-      throw new Error('Policy not found');
-    }
+      customer = customerData;
+      
+      if (!customer.customer_policies || customer.customer_policies.length === 0) {
+        throw new Error('No policies found for this customer');
+      }
 
-    const policy = policies[0];
-    const customer = policy.customers;
-
-    if (!customer) {
-      throw new Error('Customer data not found');
+      policy = customer.customer_policies[0]; // Use the first policy
     }
 
     console.log('Sending manual welcome email for policy:', policy.warranty_number);
@@ -89,14 +131,30 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Validate mandatory fields
-    if (!policy.warranty_number) {
-      throw new Error('Missing warranty number - cannot send email');
-    }
     if (!customer.name) {
       throw new Error('Missing customer name - cannot send email');
     }
-    if (!policy.pdf_document_path) {
-      throw new Error('Missing PDF document path - cannot send email');
+
+    // Generate warranty number if missing
+    if (!policy.warranty_number) {
+      console.log('Warranty number missing, generating new one...');
+      const { data: newWarrantyNumber, error: warrantyError } = await supabase.rpc('generate_warranty_number');
+      
+      if (warrantyError) {
+        throw new Error('Failed to generate warranty number');
+      }
+      
+      // Update the policy with the new warranty number
+      const { error: updateError } = await supabase
+        .from('customer_policies')
+        .update({ warranty_number: newWarrantyNumber })
+        .eq('id', policy.id);
+        
+      if (updateError) {
+        console.warn('Failed to update warranty number:', updateError);
+      }
+      
+      policy.warranty_number = newWarrantyNumber;
     }
 
     // Prepare email variables
@@ -105,15 +163,19 @@ const handler = async (req: Request): Promise<Response> => {
       warranty_number: policy.warranty_number,
       policy_start_date: new Date(policy.policy_start_date).toLocaleDateString('en-GB'),
       policy_end_date: new Date(policy.policy_end_date).toLocaleDateString('en-GB'),
-      secure_download_link: `https://buyawarranty.co.uk/download-policy/${policy.id}`
+      secure_download_link: `https://buyawarranty.co.uk/download-policy/${policy.id}`,
+      plan_type: policy.plan_type || 'Basic'
     };
 
-    // Prepare PDF attachment (simplified - you'll need to implement actual PDF retrieval)
-    const attachments = [{
-      filename: `warranty-policy-${policy.warranty_number}.pdf`,
-      content: policy.pdf_document_path, // This should be the actual PDF content
-      type: 'application/pdf'
-    }];
+    // Prepare PDF attachment only if document path exists
+    const attachments = [];
+    if (policy.pdf_document_path) {
+      attachments.push({
+        filename: `warranty-policy-${policy.warranty_number}.pdf`,
+        content: policy.pdf_document_path,
+        type: 'application/pdf'
+      });
+    }
 
     // Send welcome email via send-email function
     const emailResponse = await supabase.functions.invoke('send-email', {
