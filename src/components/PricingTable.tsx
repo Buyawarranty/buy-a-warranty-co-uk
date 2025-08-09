@@ -56,7 +56,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   useEffect(() => {
     fetchPlans();
     fetchPdfUrls();
-  }, []);
+  }, [vehicleData.vehicleType]); // Re-run when vehicleType changes
 
   useEffect(() => {
     const handleScroll = () => {
