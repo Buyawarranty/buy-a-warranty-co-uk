@@ -41,8 +41,8 @@ serve(async (req) => {
     const customerName = `${customerData?.first_name || ''} ${customerData?.last_name || ''}`.trim() || 
                         customerData?.fullName || vehicleData?.fullName || 'Unknown Customer';
     
-    // Normalize plan type for customers table (needs capital case)
-    const normalizedPlanType = planId.charAt(0).toUpperCase() + planId.slice(1).toLowerCase();
+    // Keep plan type as provided (it comes from the plans table with correct casing)
+    const normalizedPlanType = planId;
     
     const customerRecord = {
       name: customerName,

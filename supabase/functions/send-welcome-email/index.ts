@@ -151,16 +151,24 @@ serve(async (req) => {
     // Map plan types to document plan types in the database
     const planTypeMapping: Record<string, string> = {
       'basic': 'basic',
-      'gold': 'gold', 
+      'Basic': 'basic',
+      'gold': 'gold',
+      'Gold': 'gold', 
       'platinum': 'platinum',
+      'Platinum': 'platinum',
       'electric': 'electric',
+      'Electric vehicle ev extended warranty': 'electric',
       'phev': 'phev',
-      'motorbike': 'motorbike'
+      'PHEV Hybrid Extended Warranty': 'phev',
+      'Phev hybrid extended warranty': 'phev',
+      'hybrid': 'phev',
+      'motorbike': 'motorbike',
+      'Motorbike Extended Warranty': 'motorbike'
     };
 
     // Fetch plan-specific document
     try {
-      const mappedPlanType = planTypeMapping[planType.toLowerCase()] || planType.toLowerCase();
+      const mappedPlanType = planTypeMapping[planType] || planTypeMapping[planType.toLowerCase()] || planType.toLowerCase();
       logStep("Fetching plan-specific document", { planType: planType, mappedPlanType });
       
       const { data: planDoc, error: planError } = await supabaseClient
