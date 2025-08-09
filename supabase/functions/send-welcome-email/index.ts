@@ -220,7 +220,7 @@ serve(async (req) => {
       };
 
       const emailPayload: any = {
-        templateId: 'Welcome Email - Portal Signup',
+        templateId: 'welcome',
         recipientEmail: email,
         variables: emailVariables
       };

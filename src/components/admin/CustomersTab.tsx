@@ -214,10 +214,10 @@ export const CustomersTab = () => {
             warranties_2000_status
           )
         `)
-        .not('email', 'like', '%test%')
-        .not('email', 'like', '%guest%')
-        .not('name', 'like', '%test%')
-        .not('name', 'like', '%Test%')
+        .not('email', 'ilike', '%test%')
+        .not('email', 'ilike', '%guest%')
+        .not('name', 'ilike', '%test customer%')
+        .not('name', 'ilike', '%guest customer%')
         .order('updated_at', { ascending: false });
 
       // Then get orphaned policies (policies without customer records)
