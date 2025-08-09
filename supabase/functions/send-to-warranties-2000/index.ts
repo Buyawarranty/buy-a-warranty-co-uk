@@ -23,10 +23,35 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     console.log('=== Send to Warranties 2000 Started ===');
+    
+    // Validate environment variables
+    const warranties2000Username = Deno.env.get('WARRANTIES_2000_USERNAME');
+    const warranties2000Password = Deno.env.get('WARRANTIES_2000_PASSWORD');
+
+    if (!warranties2000Username || !warranties2000Password) {
+      console.error('Warranties 2000 credentials not configured');
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        code: 'MISSING_CREDENTIALS', 
+        message: 'Warranties 2000 credentials not configured' 
+      }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     const { policyId, customerId }: Warranties2000Request = await req.json();
+    console.log('Request body parsed:', { policyId, customerId });
     
     if (!policyId && !customerId) {
-      throw new Error('Either policyId or customerId is required');
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        code: 'MISSING_PARAMS', 
+        message: 'Either policyId or customerId is required' 
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
     // Get policy and customer data
@@ -67,25 +92,57 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { data: policies, error: policyError } = await query;
 
-    if (policyError || !policies || policies.length === 0) {
-      throw new Error('Policy not found');
+    if (policyError) {
+      console.error('Error fetching policy:', policyError);
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        code: 'POLICY_FETCH_ERROR', 
+        message: policyError.message 
+      }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    if (!policies || policies.length === 0) {
+      console.error('Policy not found');
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        code: 'POLICY_NOT_FOUND', 
+        message: 'Policy not found' 
+      }), {
+        status: 404,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
     const policy = policies[0];
     const customer = policy.customers;
 
     if (!customer) {
-      throw new Error('Customer data not found');
+      console.error('Customer data not found');
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        code: 'CUSTOMER_NOT_FOUND', 
+        message: 'Customer data not found' 
+      }), {
+        status: 404,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
     console.log('Processing Warranties 2000 submission for policy:', policy.warranty_number);
 
     // Check for idempotency - don't send if already sent successfully
     if (policy.warranties_2000_status === 'sent') {
+      console.log('Already sent to Warranties 2000');
       return new Response(JSON.stringify({ 
-        error: 'Already sent to Warranties 2000. Check audit logs for previous response.' 
+        ok: true, 
+        already: true, 
+        message: 'Already sent to Warranties 2000. Check audit logs for previous response.',
+        policyId: policy.id 
       }), {
-        status: 400,
+        status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
@@ -132,31 +189,67 @@ const handler = async (req: Request): Promise<Response> => {
       }
     };
 
-    console.log('Warranties 2000 payload:', JSON.stringify(warranties2000Data, null, 2));
+    console.log('Warranties 2000 payload prepared');
 
-    // Send to Warranties 2000 API
-    const warranties2000Username = Deno.env.get('WARRANTIES_2000_USERNAME');
-    const warranties2000Password = Deno.env.get('WARRANTIES_2000_PASSWORD');
-
-    if (!warranties2000Username || !warranties2000Password) {
-      throw new Error('Warranties 2000 credentials not configured');
-    }
-
+    // Send to Warranties 2000 API with timeout and retry
     const basicAuth = btoa(`${warranties2000Username}:${warranties2000Password}`);
     
-    const warranties2000Response = await fetch('https://api.warranties2000.com/policies', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${basicAuth}`
-      },
-      body: JSON.stringify(warranties2000Data)
-    });
+    let warranties2000Response;
+    let responseData;
+    
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
-    const responseData = await warranties2000Response.json();
+      warranties2000Response = await fetch('https://api.warranties2000.com/policies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${basicAuth}`
+        },
+        body: JSON.stringify(warranties2000Data),
+        signal: controller.signal
+      });
 
-    console.log('Warranties 2000 response status:', warranties2000Response.status);
-    console.log('Warranties 2000 response data:', responseData);
+      clearTimeout(timeoutId);
+      
+      // Get response data
+      const responseText = await warranties2000Response.text();
+      try {
+        responseData = JSON.parse(responseText);
+      } catch {
+        responseData = { raw_response: responseText };
+      }
+
+      console.log('Warranties 2000 response status:', warranties2000Response.status);
+      console.log('Warranties 2000 response data:', responseData);
+
+    } catch (error: any) {
+      console.error('Warranties 2000 API request failed:', error);
+      
+      // Update policy with failure
+      await supabase
+        .from('customer_policies')
+        .update({
+          warranties_2000_status: 'failed',
+          warranties_2000_sent_at: new Date().toISOString(),
+          warranties_2000_response: {
+            error: error.message,
+            sent_at: new Date().toISOString()
+          }
+        })
+        .eq('id', policy.id);
+
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        code: 'API_REQUEST_FAILED', 
+        message: `Warranties 2000 API request failed: ${error.message}`,
+        details: error.message 
+      }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
 
     // Update policy with Warranties 2000 response
     const status = warranties2000Response.ok ? 'sent' : 'failed';
@@ -188,13 +281,26 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     if (!warranties2000Response.ok) {
-      throw new Error(`Warranties 2000 API error: ${responseData.message || 'Unknown error'}`);
+      console.error('Warranties 2000 API returned error status');
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        code: 'API_ERROR', 
+        message: `Warranties 2000 API error: ${responseData.message || 'Unknown error'}`,
+        details: {
+          status: warranties2000Response.status,
+          response: responseData
+        }
+      }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
     console.log('=== Send to Warranties 2000 Complete ===');
     
     return new Response(JSON.stringify({ 
-      success: true, 
+      ok: true, 
+      id: responseData.id || responseData.reference || 'unknown',
       message: 'Successfully sent to Warranties 2000',
       policyId: policy.id,
       warrantyNumber: policy.warranty_number,
@@ -205,39 +311,17 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
   } catch (error: any) {
-    console.error("Error sending to Warranties 2000:", error);
+    console.error("Unhandled error sending to Warranties 2000:", error);
     
-    // If we have policy info, log the failure
-    if (policyId || customerId) {
-      try {
-        // Update the policy to reflect the failure
-        let updateQuery = supabase
-          .from('customer_policies')
-          .update({
-            warranties_2000_status: 'failed',
-            warranties_2000_sent_at: new Date().toISOString(),
-            warranties_2000_response: {
-              error: error.message,
-              sent_at: new Date().toISOString()
-            }
-          });
-
-        if (policyId) {
-          updateQuery = updateQuery.eq('id', policyId);
-        } else {
-          updateQuery = updateQuery.eq('customer_id', customerId);
-        }
-
-        await updateQuery;
-      } catch (logError) {
-        console.error('Error logging failure:', logError);
-      }
-    }
-
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-    );
+    return new Response(JSON.stringify({ 
+      ok: false, 
+      code: 'UNHANDLED_ERROR', 
+      message: error.message || 'Unknown error occurred',
+      details: error.stack 
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 };
 

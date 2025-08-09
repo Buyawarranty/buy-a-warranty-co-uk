@@ -48,13 +48,24 @@ export const WarrantyActions: React.FC<WarrantyActionsProps> = ({
         }
       });
 
-      if (error) throw error;
-      
-      toast.success('Welcome email sent successfully!');
-      onActionComplete?.();
+      if (error) {
+        console.error('Welcome email function error:', error);
+        toast.error(`Failed to send email: ${error.message}`);
+      } else if (data?.ok) {
+        if (data.already) {
+          toast.success('Email was already sent for this policy');
+        } else {
+          toast.success('Welcome email sent successfully!');
+        }
+        onActionComplete?.();
+      } else {
+        const errorMsg = `${data?.code || 'Unknown error'}: ${data?.message || 'Failed to send email'}`;
+        console.error('Welcome email error:', data);
+        toast.error(errorMsg);
+      }
     } catch (error: any) {
-      console.error('Error sending welcome email:', error);
-      toast.error(`Failed to send email: ${error.message}`);
+      console.error('Unexpected error sending welcome email:', error);
+      toast.error(`Unexpected error: ${error.message}`);
     } finally {
       setIsLoading(prev => ({ ...prev, email: false }));
     }
@@ -71,13 +82,24 @@ export const WarrantyActions: React.FC<WarrantyActionsProps> = ({
         }
       });
 
-      if (error) throw error;
-      
-      toast.success('Successfully sent to Warranties 2000!');
-      onActionComplete?.();
+      if (error) {
+        console.error('Warranties 2000 function error:', error);
+        toast.error(`Failed to send to Warranties 2000: ${error.message}`);
+      } else if (data?.ok) {
+        if (data.already) {
+          toast.success('Already sent to Warranties 2000 previously');
+        } else {
+          toast.success('Successfully sent to Warranties 2000!');
+        }
+        onActionComplete?.();
+      } else {
+        const errorMsg = `${data?.code || 'Unknown error'}: ${data?.message || 'Failed to send to Warranties 2000'}`;
+        console.error('Warranties 2000 error:', data);
+        toast.error(errorMsg);
+      }
     } catch (error: any) {
-      console.error('Error sending to Warranties 2000:', error);
-      toast.error(`Failed to send to Warranties 2000: ${error.message}`);
+      console.error('Unexpected error sending to Warranties 2000:', error);
+      toast.error(`Unexpected error: ${error.message}`);
     } finally {
       setIsLoading(prev => ({ ...prev, warranties2000: false }));
     }
