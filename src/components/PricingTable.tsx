@@ -46,6 +46,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
+  const [plansLoading, setPlansLoading] = useState(true);
+  const [plansError, setPlansError] = useState<string | null>(null);
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -69,24 +71,41 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   const fetchPlans = async () => {
     try {
+      setPlansLoading(true);
+      setPlansError(null);
+      console.log('🔍 Fetching pricing plans...');
+      
       const { data, error } = await supabase
         .from('plans')
         .select('*')
         .eq('is_active', true)
         .order('monthly_price');
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error fetching plans:', error);
+        throw error;
+      }
 
-      if (data) {
+      console.log('✅ Plans fetched successfully:', data);
+
+      if (data && data.length > 0) {
         setPlans(data.map(plan => ({
           ...plan,
           coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
           add_ons: Array.isArray(plan.add_ons) ? plan.add_ons.map(item => String(item)) : []
         })));
+        console.log('📋 Plans processed and set:', data.length, 'plans');
+      } else {
+        console.warn('⚠️ No active plans found in database');
+        setPlansError('No pricing plans available at the moment.');
+        toast.error('No pricing plans available');
       }
     } catch (error) {
-      console.error('Error fetching plans:', error);
+      console.error('💥 Error fetching plans:', error);
+      setPlansError('Failed to load pricing plans. Please try again.');
       toast.error('Failed to load pricing plans');
+    } finally {
+      setPlansLoading(false);
     }
   };
 
@@ -380,9 +399,39 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       </div>
 
+      {/* Loading State */}
+      {plansLoading && (
+        <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
+          <div className="flex justify-center items-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <span className="ml-4 text-lg text-gray-600">Loading pricing plans...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {plansError && !plansLoading && (
+        <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
+          <div className="text-center py-16">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-8 max-w-md mx-auto">
+              <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Pricing</h3>
+              <p className="text-red-600 mb-4">{plansError}</p>
+              <Button 
+                onClick={fetchPlans} 
+                variant="outline" 
+                className="border-red-300 text-red-700 hover:bg-red-50"
+              >
+                Try Again
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Pricing Cards Container */}
-      <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {!plansLoading && !plansError && plans.length > 0 && (
+        <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {plans.map((plan) => {
             const basePrice = calculatePlanPrice(plan);
             const addOnPrice = calculateAddOnPrice(plan.id);
@@ -571,8 +620,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             );
           })}
         </div>
-
-      </div>
+        </div>
+      )}
 
       {/* Floating Action Bar */}
       {isFloatingBarVisible && (
