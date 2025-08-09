@@ -16,41 +16,111 @@ interface Warranties2000Request {
   customerId?: string;
 }
 
+// Timeout wrapper for fetch
+async function timedFetch(url: string, options: RequestInit, timeoutMs = 15000): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
+
+// Retry wrapper with exponential backoff
+async function retryFetch(url: string, options: RequestInit, maxRetries = 2): Promise<Response> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await timedFetch(url, options);
+      
+      // Only retry on 5xx or 429 status codes
+      if (response.ok || (response.status < 500 && response.status !== 429)) {
+        return response;
+      }
+      
+      if (attempt === maxRetries) {
+        return response; // Return the response even if not ok on final attempt
+      }
+      
+      // Exponential backoff: 1s, 2s, 4s
+      const delay = Math.pow(2, attempt) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+      
+    } catch (error) {
+      lastError = error as Error;
+      if (attempt === maxRetries) {
+        throw lastError;
+      }
+      
+      // Exponential backoff for network errors too
+      const delay = Math.pow(2, attempt) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError || new Error('Max retries exceeded');
+}
+
 const handler = async (req: Request): Promise<Response> => {
+  const rid = crypto.randomUUID();
+  const t0 = Date.now();
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('=== Send to Warranties 2000 Started ===');
+    console.log(JSON.stringify({ evt: "w2k.start", rid }));
     
-    // Validate environment variables
-    const warranties2000Username = Deno.env.get('WARRANTIES_2000_USERNAME');
-    const warranties2000Password = Deno.env.get('WARRANTIES_2000_PASSWORD');
-
-    if (!warranties2000Username || !warranties2000Password) {
-      console.error('Warranties 2000 credentials not configured');
+    // Check environment variables at startup
+    const w2kApiUrl = Deno.env.get('W2K_API_URL') || 'https://warranties-epf.co.uk/api.php';
+    const w2kUsername = Deno.env.get('WARRANTIES_2000_USERNAME');
+    const w2kPassword = Deno.env.get('WARRANTIES_2000_PASSWORD');
+    
+    console.log(JSON.stringify({ 
+      evt: "env.check", 
+      rid,
+      hasUrl: !!w2kApiUrl,
+      hasUsername: !!w2kUsername,
+      hasPassword: !!w2kPassword
+    }));
+    
+    if (!w2kUsername || !w2kPassword) {
       return new Response(JSON.stringify({ 
         ok: false, 
+        rid,
         code: 'MISSING_CREDENTIALS', 
-        message: 'Warranties 2000 credentials not configured' 
+        error: 'WARRANTIES_2000_USERNAME or WARRANTIES_2000_PASSWORD not configured' 
       }), {
         status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
-    const { policyId, customerId }: Warranties2000Request = await req.json();
-    console.log('Request body parsed:', { policyId, customerId });
+    // Parse request body
+    const body: Warranties2000Request = await req.json().catch(() => ({}));
+    const { policyId, customerId } = body;
+    
+    console.log(JSON.stringify({ evt: "request.parsed", rid, policyId, customerId }));
     
     if (!policyId && !customerId) {
       return new Response(JSON.stringify({ 
         ok: false, 
+        rid,
         code: 'MISSING_PARAMS', 
-        message: 'Either policyId or customerId is required' 
+        error: 'Either policyId or customerId is required' 
       }), {
-        status: 400,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        status: 422,
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
@@ -60,27 +130,11 @@ const handler = async (req: Request): Promise<Response> => {
       .select(`
         *,
         customers!customer_id (
-          id,
-          name,
-          email,
-          phone,
-          first_name,
-          last_name,
-          flat_number,
-          building_name,
-          building_number,
-          street,
-          town,
-          county,
-          postcode,
-          country,
-          vehicle_make,
-          vehicle_model,
-          vehicle_year,
-          vehicle_fuel_type,
-          vehicle_transmission,
-          registration_plate,
-          mileage
+          id, name, email, phone, first_name, last_name,
+          flat_number, building_name, building_number, street,
+          town, county, postcode, country, vehicle_make,
+          vehicle_model, vehicle_year, vehicle_fuel_type,
+          vehicle_transmission, registration_plate, mileage
         )
       `);
 
@@ -93,26 +147,27 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: policies, error: policyError } = await query;
 
     if (policyError) {
-      console.error('Error fetching policy:', policyError);
+      console.log(JSON.stringify({ evt: "db.error", rid, error: policyError.message }));
       return new Response(JSON.stringify({ 
         ok: false, 
+        rid,
         code: 'POLICY_FETCH_ERROR', 
-        message: policyError.message 
+        error: policyError.message 
       }), {
         status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
     if (!policies || policies.length === 0) {
-      console.error('Policy not found');
       return new Response(JSON.stringify({ 
         ok: false, 
+        rid,
         code: 'POLICY_NOT_FOUND', 
-        message: 'Policy not found' 
+        error: 'Policy not found' 
       }), {
         status: 404,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
@@ -120,139 +175,122 @@ const handler = async (req: Request): Promise<Response> => {
     const customer = policy.customers;
 
     if (!customer) {
-      console.error('Customer data not found');
       return new Response(JSON.stringify({ 
         ok: false, 
+        rid,
         code: 'CUSTOMER_NOT_FOUND', 
-        message: 'Customer data not found' 
+        error: 'Customer data not found' 
       }), {
         status: 404,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
-    console.log('Processing Warranties 2000 submission for policy:', policy.warranty_number);
+    console.log(JSON.stringify({ 
+      evt: "data.found", 
+      rid, 
+      policyId: policy.id, 
+      warrantyNumber: policy.warranty_number 
+    }));
 
-    // Check for idempotency - don't send if already sent successfully
+    // Check idempotency
     if (policy.warranties_2000_status === 'sent') {
-      console.log('Already sent to Warranties 2000');
+      console.log(JSON.stringify({ evt: "already.sent", rid, policyId: policy.id }));
       return new Response(JSON.stringify({ 
         ok: true, 
+        rid,
         already: true, 
-        message: 'Already sent to Warranties 2000. Check audit logs for previous response.',
-        policyId: policy.id 
+        message: 'Already sent to Warranties 2000' 
       }), {
         status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
+      });
+    }
+
+    // Validate required fields for W2K
+    const requiredFields = {
+      warranty_number: policy.warranty_number,
+      customer_email: customer.email,
+      customer_name: customer.name,
+      registration_plate: customer.registration_plate
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([_, value]) => !value)
+      .map(([key, _]) => key);
+
+    if (missingFields.length > 0) {
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        rid,
+        code: 'MISSING_REQUIRED_FIELDS', 
+        error: `Missing required fields: ${missingFields.join(', ')}` 
+      }), {
+        status: 422,
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
     // Prepare data for Warranties 2000 API
     const warranties2000Data = {
-      // Customer information
-      customer: {
-        title: 'Mr', // Default, could be enhanced
-        first_name: customer.first_name || customer.name.split(' ')[0] || '',
-        last_name: customer.last_name || customer.name.split(' ').slice(1).join(' ') || '',
-        email: customer.email,
-        phone: customer.phone || '',
-        address: {
-          flat_number: customer.flat_number || '',
-          building_name: customer.building_name || '',
-          building_number: customer.building_number || '',
-          street: customer.street || '',
-          town: customer.town || '',
-          county: customer.county || '',
-          postcode: customer.postcode || '',
-          country: customer.country || 'United Kingdom'
-        }
-      },
-      // Vehicle information
-      vehicle: {
-        registration_plate: customer.registration_plate || '',
-        make: customer.vehicle_make || '',
-        model: customer.vehicle_model || '',
-        year: customer.vehicle_year || '',
-        fuel_type: customer.vehicle_fuel_type || '',
-        transmission: customer.vehicle_transmission || '',
-        mileage: customer.mileage || ''
-      },
-      // Policy information
-      policy: {
-        warranty_number: policy.warranty_number,
-        plan_type: policy.plan_type,
-        payment_type: policy.payment_type,
-        policy_start_date: policy.policy_start_date,
-        policy_end_date: policy.policy_end_date,
-        payment_amount: policy.payment_amount,
-        payment_currency: policy.payment_currency || 'GBP'
-      }
+      Title: 'Mr', // Default, could be enhanced
+      First: customer.first_name || customer.name.split(' ')[0] || '',
+      Surname: customer.last_name || customer.name.split(' ').slice(1).join(' ') || '',
+      Addr1: `${customer.building_number || ''} ${customer.street || ''}`.trim(),
+      Addr2: customer.building_name || '',
+      Town: customer.town || '',
+      PCode: customer.postcode || '',
+      Tel: customer.phone || '',
+      Mobile: customer.phone || '',
+      EMail: customer.email,
+      PurDate: policy.policy_start_date ? new Date(policy.policy_start_date).toISOString().split('T')[0] : '',
+      Make: customer.vehicle_make || '',
+      Model: customer.vehicle_model || '',
+      RegNum: customer.registration_plate || '',
+      Mileage: customer.mileage || '',
+      EngSize: '', // Not available in our schema
+      PurPrc: String(policy.payment_amount || '0'),
+      RegDate: customer.vehicle_year ? `${customer.vehicle_year}-01-01` : '',
+      WarType: policy.plan_type || '',
+      Month: policy.payment_type === 'yearly' ? '12' : '1',
+      MaxClm: '3000', // Default claim limit
+      MOTDue: '', // Not available in our schema
+      Ref: policy.warranty_number
     };
 
-    console.log('Warranties 2000 payload prepared');
+    console.log(JSON.stringify({ evt: "w2k.payload.prepared", rid }));
 
-    // Send to Warranties 2000 API with timeout and retry
-    const basicAuth = btoa(`${warranties2000Username}:${warranties2000Password}`);
-    
-    let warranties2000Response;
+    // Send to Warranties 2000 API with basic auth
+    const basicAuth = btoa(`${w2kUsername}:${w2kPassword}`);
+    const idempotencyKey = policy.warranty_number || policy.id;
+
+    const w2kResponse = await retryFetch(w2kApiUrl, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'authorization': `Basic ${basicAuth}`,
+        'idempotency-key': idempotencyKey
+      },
+      body: JSON.stringify(warranties2000Data)
+    });
+
+    const responseText = await w2kResponse.text();
     let responseData;
-    
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
-
-      warranties2000Response = await fetch('https://api.warranties2000.com/policies', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${basicAuth}`
-        },
-        body: JSON.stringify(warranties2000Data),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeoutId);
-      
-      // Get response data
-      const responseText = await warranties2000Response.text();
-      try {
-        responseData = JSON.parse(responseText);
-      } catch {
-        responseData = { raw_response: responseText };
-      }
-
-      console.log('Warranties 2000 response status:', warranties2000Response.status);
-      console.log('Warranties 2000 response data:', responseData);
-
-    } catch (error: any) {
-      console.error('Warranties 2000 API request failed:', error);
-      
-      // Update policy with failure
-      await supabase
-        .from('customer_policies')
-        .update({
-          warranties_2000_status: 'failed',
-          warranties_2000_sent_at: new Date().toISOString(),
-          warranties_2000_response: {
-            error: error.message,
-            sent_at: new Date().toISOString()
-          }
-        })
-        .eq('id', policy.id);
-
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        code: 'API_REQUEST_FAILED', 
-        message: `Warranties 2000 API request failed: ${error.message}`,
-        details: error.message 
-      }), {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
+      responseData = JSON.parse(responseText);
+    } catch {
+      responseData = { raw_response: responseText.substring(0, 256) };
     }
 
-    // Update policy with Warranties 2000 response
-    const status = warranties2000Response.ok ? 'sent' : 'failed';
+    console.log(JSON.stringify({ 
+      evt: "w2k.response", 
+      rid, 
+      status: w2kResponse.status,
+      preview: responseText.substring(0, 256) 
+    }));
+
+    // Update policy with response
+    const status = w2kResponse.ok ? 'sent' : 'failed';
     
     await supabase
       .from('customer_policies')
@@ -260,7 +298,7 @@ const handler = async (req: Request): Promise<Response> => {
         warranties_2000_status: status,
         warranties_2000_sent_at: new Date().toISOString(),
         warranties_2000_response: {
-          status: warranties2000Response.status,
+          status: w2kResponse.status,
           response: responseData,
           sent_at: new Date().toISOString()
         }
@@ -273,33 +311,34 @@ const handler = async (req: Request): Promise<Response> => {
       p_customer_id: customer.id,
       p_event_type: status === 'sent' ? 'warranties_2000_sent' : 'warranties_2000_failed',
       p_event_data: {
-        status: warranties2000Response.status,
+        status: w2kResponse.status,
         response: responseData,
-        request_data: warranties2000Data
+        idempotency_key: idempotencyKey
       },
       p_created_by: 'admin'
     });
 
-    if (!warranties2000Response.ok) {
-      console.error('Warranties 2000 API returned error status');
+    if (!w2kResponse.ok) {
       return new Response(JSON.stringify({ 
         ok: false, 
-        code: 'API_ERROR', 
-        message: `Warranties 2000 API error: ${responseData.message || 'Unknown error'}`,
+        rid,
+        code: 'W2K_API_ERROR', 
+        error: `Warranties 2000 API error: ${responseData.message || responseData.Response || 'Unknown error'}`,
         details: {
-          status: warranties2000Response.status,
+          status: w2kResponse.status,
           response: responseData
         }
       }), {
         status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
-    console.log('=== Send to Warranties 2000 Complete ===');
+    console.log(JSON.stringify({ evt: "w2k.success", rid, referenceId: responseData.id || 'unknown' }));
     
     return new Response(JSON.stringify({ 
       ok: true, 
+      rid,
       id: responseData.id || responseData.reference || 'unknown',
       message: 'Successfully sent to Warranties 2000',
       policyId: policy.id,
@@ -307,21 +346,24 @@ const handler = async (req: Request): Promise<Response> => {
       warranties2000Response: responseData
     }), {
       status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+      headers: { "content-type": "application/json", ...corsHeaders },
     });
 
   } catch (error: any) {
-    console.error("Unhandled error sending to Warranties 2000:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.log(JSON.stringify({ evt: "error", rid, error: msg }));
     
     return new Response(JSON.stringify({ 
       ok: false, 
+      rid,
       code: 'UNHANDLED_ERROR', 
-      message: error.message || 'Unknown error occurred',
-      details: error.stack 
+      error: msg 
     }), {
       status: 500,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+      headers: { "content-type": "application/json", ...corsHeaders },
     });
+  } finally {
+    console.log(JSON.stringify({ evt: "edge.done", rid, ms: Date.now() - t0 }));
   }
 };
 

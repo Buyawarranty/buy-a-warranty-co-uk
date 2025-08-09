@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { Resend } from 'https://esm.sh/resend@2';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,324 +11,365 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
-const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-
-interface ManualEmailRequest {
+interface EmailRequest {
   policyId?: string;
   customerId?: string;
 }
 
+// Timeout wrapper for fetch
+async function timedFetch(url: string, options: RequestInit, timeoutMs = 15000): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
+
+// Retry wrapper with exponential backoff
+async function retryFetch(url: string, options: RequestInit, maxRetries = 2): Promise<Response> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await timedFetch(url, options);
+      
+      // Only retry on 5xx or 429 status codes
+      if (response.ok || (response.status < 500 && response.status !== 429)) {
+        return response;
+      }
+      
+      if (attempt === maxRetries) {
+        return response; // Return the response even if not ok on final attempt
+      }
+      
+      // Exponential backoff: 1s, 2s, 4s
+      const delay = Math.pow(2, attempt) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+      
+    } catch (error) {
+      lastError = error as Error;
+      if (attempt === maxRetries) {
+        throw lastError;
+      }
+      
+      // Exponential backoff for network errors too
+      const delay = Math.pow(2, attempt) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError || new Error('Max retries exceeded');
+}
+
+function renderWelcomeHTML(data: { name: string; warranty: string; link?: string }): string {
+  return `
+    <h1>Welcome ${data.name}!</h1>
+    <p>Thank you for purchasing your warranty. Your warranty number is: <strong>${data.warranty}</strong></p>
+    <p>Your warranty document is attached to this email.</p>
+    ${data.link ? `<p><a href="${data.link}">Download your warranty document</a></p>` : ''}
+    <p>If you have any questions, please contact us at info@buyawarranty.co.uk</p>
+  `;
+}
+
 const handler = async (req: Request): Promise<Response> => {
+  const rid = crypto.randomUUID();
+  const t0 = Date.now();
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('=== Manual Welcome Email Send Started ===');
+    console.log(JSON.stringify({ evt: "email.start", rid }));
     
-    // Validate environment variables
+    // Check environment variables at startup
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    const resendFrom = Deno.env.get('RESEND_FROM') || 'Buy A Warranty <info@buyawarranty.co.uk>';
+    const publicBaseUrl = Deno.env.get('PUBLIC_BASE_URL') || 'https://buyawarranty.co.uk';
+    
+    console.log(JSON.stringify({ 
+      evt: "env.check", 
+      rid,
+      hasResendKey: !!resendApiKey,
+      hasFrom: !!resendFrom,
+      hasBaseUrl: !!publicBaseUrl
+    }));
+    
     if (!resendApiKey) {
-      console.error('RESEND_API_KEY not configured');
       return new Response(JSON.stringify({ 
         ok: false, 
+        rid, 
         code: 'MISSING_ENV', 
-        message: 'RESEND_API_KEY not configured' 
+        error: 'RESEND_API_KEY not configured' 
       }), {
         status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
-    const { policyId, customerId }: ManualEmailRequest = await req.json();
-    console.log('Request body parsed:', { policyId, customerId });
+    // Parse request body
+    const body: EmailRequest = await req.json().catch(() => ({}));
+    const { policyId, customerId } = body;
+    
+    console.log(JSON.stringify({ evt: "request.parsed", rid, policyId, customerId }));
     
     if (!policyId && !customerId) {
-      console.error('Missing required parameters');
       return new Response(JSON.stringify({ 
         ok: false, 
+        rid,
         code: 'MISSING_PARAMS', 
-        message: 'Either policyId or customerId is required' 
+        error: 'Either policyId or customerId is required' 
       }), {
-        status: 400,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        status: 422,
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
     // Get policy and customer data
-    console.log('Looking up policy and customer data...');
-    let policy;
-    let customer;
+    let query = supabase
+      .from('customer_policies')
+      .select(`
+        *,
+        customers!customer_id (
+          id, name, email, first_name, last_name
+        )
+      `);
 
     if (policyId) {
-      console.log('Getting policy by ID:', policyId);
-      const { data: policyData, error: policyError } = await supabase
-        .from('customer_policies')
-        .select('*')
-        .eq('id', policyId)
-        .maybeSingle();
-
-      console.log('Policy query result:', { policyData, policyError });
-
-      if (policyError) {
-        console.error('Error fetching policy:', policyError);
-        return new Response(JSON.stringify({ 
-          ok: false, 
-          code: 'POLICY_FETCH_ERROR', 
-          message: policyError.message 
-        }), {
-          status: 500,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        });
-      }
-
-      if (!policyData) {
-        console.error('Policy not found');
-        return new Response(JSON.stringify({ 
-          ok: false, 
-          code: 'POLICY_NOT_FOUND', 
-          message: 'Policy not found' 
-        }), {
-          status: 404,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        });
-      }
-
-      policy = policyData;
-
-      // Get customer data
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('id', policy.customer_id)
-        .maybeSingle();
-
-      console.log('Customer query result:', { customerData, customerError });
-
-      if (customerError) {
-        console.error('Error fetching customer:', customerError);
-        return new Response(JSON.stringify({ 
-          ok: false, 
-          code: 'CUSTOMER_FETCH_ERROR', 
-          message: customerError.message 
-        }), {
-          status: 500,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        });
-      }
-
-      customer = customerData;
+      query = query.eq('id', policyId);
     } else {
-      console.log('Getting customer by ID:', customerId);
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select(`
-          *,
-          customer_policies!customer_id(*)
-        `)
-        .eq('id', customerId)
-        .maybeSingle();
-
-      console.log('Customer with policies result:', { customerData, customerError });
-
-      if (customerError) {
-        console.error('Error fetching customer:', customerError);
-        return new Response(JSON.stringify({ 
-          ok: false, 
-          code: 'CUSTOMER_FETCH_ERROR', 
-          message: customerError.message 
-        }), {
-          status: 500,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        });
-      }
-
-      if (!customerData) {
-        console.error('Customer not found');
-        return new Response(JSON.stringify({ 
-          ok: false, 
-          code: 'CUSTOMER_NOT_FOUND', 
-          message: 'Customer not found' 
-        }), {
-          status: 404,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        });
-      }
-
-      customer = customerData;
-      
-      if (!customer.customer_policies || customer.customer_policies.length === 0) {
-        console.error('No policies found for customer');
-        return new Response(JSON.stringify({ 
-          ok: false, 
-          code: 'NO_POLICIES', 
-          message: 'No policies found for this customer' 
-        }), {
-          status: 404,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        });
-      }
-
-      // Use the first policy
-      policy = customer.customer_policies[0];
+      query = query.eq('customer_id', customerId);
     }
 
-    console.log('Found policy and customer:', { 
-      policyId: policy.id, 
-      customerEmail: customer.email,
-      warrantyNumber: policy.warranty_number 
-    });
+    const { data: policies, error: policyError } = await query;
 
-    // Check for idempotency
+    if (policyError) {
+      console.log(JSON.stringify({ evt: "db.error", rid, error: policyError.message }));
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        rid,
+        code: 'POLICY_FETCH_ERROR', 
+        error: policyError.message 
+      }), {
+        status: 500,
+        headers: { "content-type": "application/json", ...corsHeaders },
+      });
+    }
+
+    if (!policies || policies.length === 0) {
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        rid,
+        code: 'POLICY_NOT_FOUND', 
+        error: 'Policy not found' 
+      }), {
+        status: 404,
+        headers: { "content-type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const policy = policies[0];
+    const customer = policy.customers;
+
+    if (!customer) {
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        rid,
+        code: 'CUSTOMER_NOT_FOUND', 
+        error: 'Customer data not found' 
+      }), {
+        status: 404,
+        headers: { "content-type": "application/json", ...corsHeaders },
+      });
+    }
+
+    console.log(JSON.stringify({ 
+      evt: "data.found", 
+      rid, 
+      policyId: policy.id, 
+      email: customer.email,
+      warrantyNumber: policy.warranty_number 
+    }));
+
+    // Check idempotency
     if (policy.email_sent_status === 'sent') {
-      console.log('Email already sent for this policy');
+      console.log(JSON.stringify({ evt: "already.sent", rid, policyId: policy.id }));
       return new Response(JSON.stringify({ 
         ok: true, 
+        rid,
         already: true, 
-        message: 'Email already sent for this policy',
-        policyId: policy.id 
+        message: 'Email already sent for this policy'
       }), {
         status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
     // Generate warranty number if missing
     if (!policy.warranty_number) {
-      console.log('Generating warranty number...');
-      try {
-        const warrantyNumber = await supabase.rpc('generate_warranty_number');
-        if (warrantyNumber.error) {
-          console.error('Error generating warranty number:', warrantyNumber.error);
-          return new Response(JSON.stringify({ 
-            ok: false, 
-            code: 'WARRANTY_NUMBER_ERROR', 
-            message: warrantyNumber.error.message 
-          }), {
-            status: 500,
-            headers: { "Content-Type": "application/json", ...corsHeaders },
-          });
-        }
-
-        policy.warranty_number = warrantyNumber.data;
-
-        // Update the policy with warranty number
-        await supabase
-          .from('customer_policies')
-          .update({ warranty_number: policy.warranty_number })
-          .eq('id', policy.id);
-
-        console.log('Generated and saved warranty number:', policy.warranty_number);
-      } catch (error) {
-        console.error('Failed to generate warranty number:', error);
+      const { data: warrantyNumber, error: warrantyError } = await supabase.rpc('generate_warranty_number');
+      if (warrantyError) {
         return new Response(JSON.stringify({ 
           ok: false, 
-          code: 'WARRANTY_NUMBER_GENERATION_FAILED', 
-          message: 'Failed to generate warranty number' 
+          rid,
+          code: 'WARRANTY_NUMBER_ERROR', 
+          error: warrantyError.message 
         }), {
           status: 500,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
+          headers: { "content-type": "application/json", ...corsHeaders },
         });
       }
+
+      policy.warranty_number = warrantyNumber;
+      await supabase
+        .from('customer_policies')
+        .update({ warranty_number: policy.warranty_number })
+        .eq('id', policy.id);
     }
 
-    // Get document path
-    console.log('Looking up document path...');
-    const { data: documentMapping, error: docError } = await supabase
+    // Get PDF document
+    let pdfAttachment = null;
+    let pdfUrl = null;
+    
+    const { data: documentMapping } = await supabase
       .from('plan_document_mapping')
       .select('document_path')
       .eq('plan_name', policy.plan_type)
       .eq('vehicle_type', 'standard')
       .maybeSingle();
 
-    console.log('Document mapping result:', { documentMapping, docError });
-
-    let attachmentData;
-    if (documentMapping && documentMapping.document_path) {
+    if (documentMapping?.document_path) {
       try {
-        console.log('Downloading PDF from:', documentMapping.document_path);
         const { data: fileData, error: downloadError } = await supabase.storage
           .from('policy-documents')
           .download(documentMapping.document_path);
 
-        if (downloadError) {
-          console.error('Error downloading PDF:', downloadError);
-        } else if (fileData) {
+        if (!downloadError && fileData) {
           const fileSize = fileData.size;
-          console.log('PDF file size:', fileSize);
+          console.log(JSON.stringify({ evt: "pdf.size", rid, bytes: fileSize }));
           
           if (fileSize > 10 * 1024 * 1024) { // 10MB limit
-            console.error('PDF file too large:', fileSize);
             return new Response(JSON.stringify({ 
               ok: false, 
+              rid,
               code: 'FILE_TOO_LARGE', 
-              message: 'PDF file is too large (>10MB)' 
+              error: 'PDF file is too large (>10MB)' 
             }), {
-              status: 422,
-              headers: { "Content-Type": "application/json", ...corsHeaders },
+              status: 413,
+              headers: { "content-type": "application/json", ...corsHeaders },
             });
           }
 
+          // Convert to base64 for attachment
           const buffer = await fileData.arrayBuffer();
-          const base64Content = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+          const uint8Array = new Uint8Array(buffer);
+          const base64Content = btoa(String.fromCharCode(...uint8Array));
           
-          attachmentData = {
+          pdfAttachment = {
             filename: `warranty-${policy.warranty_number}.pdf`,
             content: base64Content,
-            contentType: 'application/pdf'
+            content_type: 'application/pdf'
           };
-          console.log('PDF prepared for attachment, base64 length:', base64Content.length);
+
+          // Create signed URL for download link
+          const { data: signedUrl } = await supabase.storage
+            .from('policy-documents')
+            .createSignedUrl(documentMapping.document_path, 3600); // 1 hour
+          
+          if (signedUrl) {
+            pdfUrl = signedUrl.signedUrl;
+          }
+          
+          console.log(JSON.stringify({ 
+            evt: "pdf.prepared", 
+            rid, 
+            filename: pdfAttachment.filename,
+            base64Length: base64Content.length 
+          }));
         }
       } catch (error) {
-        console.error('Error processing PDF:', error);
+        console.log(JSON.stringify({ 
+          evt: "pdf.error", 
+          rid, 
+          error: error instanceof Error ? error.message : String(error) 
+        }));
       }
     }
 
-    // Send email via Resend
-    console.log('Sending email via Resend...');
+    // Send email via Resend REST API
+    const customerName = customer.first_name && customer.last_name 
+      ? `${customer.first_name} ${customer.last_name}` 
+      : customer.name;
+
     const emailPayload = {
-      from: 'Buy A Warranty <info@buyawarranty.co.uk>',
+      from: resendFrom,
       to: [customer.email],
       subject: `Welcome — Your Warranty ${policy.warranty_number}`,
-      html: `
-        <h1>Welcome ${customer.name}!</h1>
-        <p>Thank you for purchasing your warranty. Your warranty number is: <strong>${policy.warranty_number}</strong></p>
-        <p>Your policy details:</p>
-        <ul>
-          <li>Plan: ${policy.plan_type}</li>
-          <li>Payment Type: ${policy.payment_type}</li>
-          <li>Policy Start: ${new Date(policy.policy_start_date).toLocaleDateString()}</li>
-          <li>Policy End: ${new Date(policy.policy_end_date).toLocaleDateString()}</li>
-        </ul>
-        <p>Your warranty document is attached to this email.</p>
-        <p>If you have any questions, please contact us at info@buyawarranty.co.uk</p>
-      `,
-      attachments: attachmentData ? [attachmentData] : undefined
+      html: renderWelcomeHTML({ 
+        name: customerName, 
+        warranty: policy.warranty_number, 
+        link: pdfUrl 
+      }),
+      ...(pdfAttachment && { attachments: [pdfAttachment] })
     };
 
-    console.log('Email payload prepared (without attachment data):', {
-      ...emailPayload,
-      attachments: attachmentData ? '[PDF attachment included]' : 'none'
+    console.log(JSON.stringify({ 
+      evt: "email.sending", 
+      rid, 
+      to: customer.email,
+      hasAttachment: !!pdfAttachment 
+    }));
+
+    const emailResponse = await retryFetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'authorization': `Bearer ${resendApiKey}`,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(emailPayload)
     });
 
-    const emailResponse = await resend.emails.send(emailPayload);
-    console.log('Resend response:', emailResponse);
+    const responseText = await emailResponse.text();
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch {
+      responseData = { raw_response: responseText.substring(0, 256) };
+    }
 
-    if (emailResponse.error) {
-      console.error('Resend error:', emailResponse.error);
+    console.log(JSON.stringify({ 
+      evt: "resend.response", 
+      rid, 
+      status: emailResponse.status,
+      preview: responseText.substring(0, 256) 
+    }));
+
+    if (!emailResponse.ok) {
       return new Response(JSON.stringify({ 
         ok: false, 
+        rid,
         code: 'EMAIL_SEND_FAILED', 
-        message: emailResponse.error.message,
-        details: emailResponse.error 
+        error: responseData.message || 'Email send failed',
+        details: {
+          status: emailResponse.status,
+          response: responseData
+        }
       }), {
         status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "content-type": "application/json", ...corsHeaders },
       });
     }
 
     // Update policy status
-    console.log('Updating policy email status...');
     await supabase
       .from('customer_policies')
       .update({
@@ -339,46 +379,49 @@ const handler = async (req: Request): Promise<Response> => {
       .eq('id', policy.id);
 
     // Log the event
-    console.log('Logging audit event...');
     await supabase.rpc('log_warranty_event', {
       p_policy_id: policy.id,
       p_customer_id: customer.id,
       p_event_type: 'welcome_email_sent',
       p_event_data: {
-        resend_id: emailResponse.data?.id,
+        resend_id: responseData.id,
         email: customer.email,
         warranty_number: policy.warranty_number,
-        attachment_included: !!attachmentData
+        attachment_included: !!pdfAttachment
       },
       p_created_by: 'admin'
     });
 
-    console.log('=== Manual Welcome Email Send Complete ===');
+    console.log(JSON.stringify({ evt: "email.success", rid, resendId: responseData.id }));
     
     return new Response(JSON.stringify({ 
       ok: true, 
-      id: emailResponse.data?.id,
+      rid,
+      id: responseData.id,
       message: 'Welcome email sent successfully',
       policyId: policy.id,
       warrantyNumber: policy.warranty_number,
       email: customer.email
     }), {
       status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+      headers: { "content-type": "application/json", ...corsHeaders },
     });
 
   } catch (error: any) {
-    console.error("Unhandled error in manual welcome email send:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.log(JSON.stringify({ evt: "error", rid, error: msg }));
     
     return new Response(JSON.stringify({ 
       ok: false, 
-      code: 'UNHANDLED_ERROR', 
-      message: error.message || 'Unknown error occurred',
-      details: error.stack 
+      rid, 
+      code: 'UNHANDLED_ERROR',
+      error: msg 
     }), {
       status: 500,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+      headers: { "content-type": "application/json", ...corsHeaders },
     });
+  } finally {
+    console.log(JSON.stringify({ evt: "edge.done", rid, ms: Date.now() - t0 }));
   }
 };
 
