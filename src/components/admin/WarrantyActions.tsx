@@ -48,9 +48,21 @@ export const WarrantyActions: React.FC<WarrantyActionsProps> = ({
         }
       });
 
+      console.log('Welcome email response:', { data, error });
+
       if (error) {
         console.error('Welcome email function error:', error);
-        toast.error(`Failed to send email: ${error.message}`);
+        // Try to get more specific error info
+        let errorMessage = error.message || 'Unknown error occurred';
+        if (error.context && error.context.body) {
+          try {
+            const errorBody = JSON.parse(error.context.body);
+            errorMessage = `${errorBody.code || 'ERROR'}: ${errorBody.error || errorBody.message || errorMessage}`;
+          } catch (e) {
+            // Use original error message
+          }
+        }
+        toast.error(`Failed to send email: ${errorMessage}`);
       } else if (data?.ok) {
         if (data.already) {
           toast.success('Email was already sent for this policy');
@@ -59,7 +71,7 @@ export const WarrantyActions: React.FC<WarrantyActionsProps> = ({
         }
         onActionComplete?.();
       } else {
-        const errorMsg = `${data?.code || 'Unknown error'}: ${data?.message || 'Failed to send email'}`;
+        const errorMsg = `${data?.code || 'Unknown error'}: ${data?.error || data?.message || 'Failed to send email'}`;
         console.error('Welcome email error:', data);
         toast.error(errorMsg);
       }
@@ -82,9 +94,21 @@ export const WarrantyActions: React.FC<WarrantyActionsProps> = ({
         }
       });
 
+      console.log('Warranties 2000 response:', { data, error });
+
       if (error) {
         console.error('Warranties 2000 function error:', error);
-        toast.error(`Failed to send to Warranties 2000: ${error.message}`);
+        // Try to get more specific error info
+        let errorMessage = error.message || 'Unknown error occurred';
+        if (error.context && error.context.body) {
+          try {
+            const errorBody = JSON.parse(error.context.body);
+            errorMessage = `${errorBody.code || 'ERROR'}: ${errorBody.error || errorBody.message || errorMessage}`;
+          } catch (e) {
+            // Use original error message
+          }
+        }
+        toast.error(`Failed to send to Warranties 2000: ${errorMessage}`);
       } else if (data?.ok) {
         if (data.already) {
           toast.success('Already sent to Warranties 2000 previously');
@@ -93,7 +117,7 @@ export const WarrantyActions: React.FC<WarrantyActionsProps> = ({
         }
         onActionComplete?.();
       } else {
-        const errorMsg = `${data?.code || 'Unknown error'}: ${data?.message || 'Failed to send to Warranties 2000'}`;
+        const errorMsg = `${data?.code || 'Unknown error'}: ${data?.error || data?.message || 'Failed to send to Warranties 2000'}`;
         console.error('Warranties 2000 error:', data);
         toast.error(errorMsg);
       }
