@@ -246,7 +246,7 @@ serve(async (req) => {
       // Don't fail the whole process if email fails
     }
 
-    // Schedule feedback email for 3 days later
+    // Schedule feedback email for 1 hour later
     try {
       const { data: feedbackTemplate, error: templateError } = await supabaseClient
         .from('email_templates')
@@ -257,8 +257,7 @@ serve(async (req) => {
 
       if (feedbackTemplate && !templateError) {
         const feedbackDate = new Date();
-        feedbackDate.setDate(feedbackDate.getDate() + 3);
-        feedbackDate.setHours(10, 0, 0, 0); // Send at 10 AM
+        feedbackDate.setHours(feedbackDate.getHours() + 1); // Send 1 hour after purchase
 
         const { error: scheduleError } = await supabaseClient
           .from('scheduled_emails')
