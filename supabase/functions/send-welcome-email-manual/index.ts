@@ -329,28 +329,55 @@ const handler = async (req: Request): Promise<Response> => {
       ? `${customer.first_name} ${customer.last_name}` 
       : customer.name;
 
-    const attachmentText = attachments.length > 0 
-      ? `Your warranty documents are attached to this email (${attachments.length} document${attachments.length > 1 ? 's' : ''}).`
-      : 'Your warranty documents will be sent separately.';
+    // Generate policy document URL
+    const policyDocumentUrl = attachments.length > 0 
+      ? `https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/${attachments[0].filename.includes('basic') ? 'basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf' :
+          attachments[0].filename.includes('gold') ? 'gold/Gold-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464758473.pdf' :
+          attachments[0].filename.includes('platinum') ? 'platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf' :
+          attachments[0].filename.includes('electric') || attachments[0].filename.includes('EV') ? 'electric/EV-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464859338.pdf' :
+          attachments[0].filename.includes('motorbike') ? 'motorbike/Motorbike-Extended-Warranty-Plan%202.0-1754464869722.pdf' :
+          attachments[0].filename.includes('hybrid') || attachments[0].filename.includes('PHEV') ? 'phev/Hybrid-PHEV-Warranty-Plan%202.0-1754464878940.pdf' :
+          'basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf'}`
+      : 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf';
+
+    const termsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/terms-and-conditions/Terms%20and%20conditions-1754666518644.pdf';
 
     const emailPayload = {
       from: resendFrom,
       to: [customer.email],
       subject: `Welcome — Your Warranty ${policy.warranty_number}`,
       html: `
-        <h1>Welcome ${customerName}!</h1>
-        <p>Thank you for purchasing your ${policy.plan_type} warranty. Your warranty number is: <strong>${policy.warranty_number}</strong></p>
-        <p>Your policy details:</p>
-        <ul>
-          <li>Plan: ${policy.plan_type}</li>
-          <li>Payment Type: ${policy.payment_type}</li>
-          <li>Policy Start: ${new Date(policy.policy_start_date).toLocaleDateString()}</li>
-          <li>Policy End: ${new Date(policy.policy_end_date).toLocaleDateString()}</li>
-        </ul>
-        <p>${attachmentText}</p>
-        <p>If you have any questions, please contact us at info@buyawarranty.co.uk</p>
-      `,
-      ...(attachments.length > 0 && { attachments })
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #333; border-bottom: 3px solid #ff6b35; padding-bottom: 10px;">Welcome ${customerName}!</h1>
+          <p style="font-size: 16px; line-height: 1.6;">Thank you for purchasing your ${policy.plan_type} warranty. Your warranty number is: <strong style="color: #ff6b35;">${policy.warranty_number}</strong></p>
+          
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0;">Your Policy Details:</h3>
+            <ul style="list-style: none; padding: 0;">
+              <li style="padding: 5px 0;"><strong>Plan:</strong> ${policy.plan_type}</li>
+              <li style="padding: 5px 0;"><strong>Payment Type:</strong> ${policy.payment_type}</li>
+              <li style="padding: 5px 0;"><strong>Policy Start:</strong> ${new Date(policy.policy_start_date).toLocaleDateString()}</li>
+              <li style="padding: 5px 0;"><strong>Policy End:</strong> ${new Date(policy.policy_end_date).toLocaleDateString()}</li>
+            </ul>
+          </div>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${policyDocumentUrl}" 
+               style="display: inline-block; background-color: #ff6b35; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px;">
+              📄 View Your Policy
+            </a>
+            <br>
+            <a href="${termsUrl}" 
+               style="display: inline-block; background-color: #6c757d; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px;">
+              📋 Terms & Conditions
+            </a>
+          </div>
+
+          <p style="font-size: 14px; color: #666; border-top: 1px solid #ddd; padding-top: 20px; margin-top: 30px;">
+            If you have any questions, please contact us at <a href="mailto:info@buyawarranty.co.uk" style="color: #ff6b35;">info@buyawarranty.co.uk</a>
+          </p>
+        </div>
+      `
     };
 
     console.log(JSON.stringify({ 
