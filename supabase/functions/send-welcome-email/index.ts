@@ -36,8 +36,8 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { email, planType, paymentType, policyNumber } = await req.json();
-    logStep("Request data", { email, planType, paymentType, policyNumber });
+    const { email, planType, paymentType, policyNumber, registrationPlate, customerName } = await req.json();
+    logStep("Request data", { email, planType, paymentType, policyNumber, registrationPlate, customerName });
 
     if (!email || !planType || !paymentType || !policyNumber) {
       throw new Error("Missing required parameters");
@@ -208,10 +208,12 @@ serve(async (req) => {
     // Send actual welcome email using send-email function
     try {
       const emailVariables = {
-        customerName: email.split('@')[0], // Use email prefix as name fallback
-        customer_name: email.split('@')[0], // Additional variable for compatibility
+        customerName: customerName || email.split('@')[0], // Use provided name or email prefix as fallback
+        customer_name: customerName || email.split('@')[0], // Additional variable for compatibility
         planType: planType,
         policyNumber: policyNumber,
+        registrationPlate: registrationPlate || 'Not provided',
+        vehicle_registration: registrationPlate || 'Not provided',
         loginEmail: email,
         temporaryPassword: tempPassword,
         loginUrl: 'https://buyawarranty.co.uk/auth',

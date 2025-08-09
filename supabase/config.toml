@@ -75,6 +75,9 @@ verify_jwt = false
 [functions.process-scheduled-emails]
 verify_jwt = false
 
+[functions.resend-welcome-email]
+verify_jwt = true
+
 [functions.stripe-webhook]
 verify_jwt = false
 
