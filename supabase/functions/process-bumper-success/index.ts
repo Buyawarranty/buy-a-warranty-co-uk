@@ -302,17 +302,15 @@ serve(async (req) => {
       logStep("Skipping Warranties 2000 registration - no warranty reference generated");
     }
 
-    // Send welcome email
+    // Send welcome email using the new manual system
     try {
-      await supabaseClient.functions.invoke('send-welcome-email', {
+      await supabaseClient.functions.invoke('send-welcome-email-manual', {
         body: {
-          email: customerEmail,
-          policyNumber: policyNumber,
-          planType: plan.name,
-          customerName: customerName.includes('Customer') ? "Valued Customer" : customerName
+          customerId: customer.id,
+          policyId: policy.id
         }
       });
-      logStep("Welcome email sent");
+      logStep("Welcome email sent using manual system");
     } catch (emailError) {
       logStep("Welcome email failed", { error: emailError });
       // Don't throw as the main process succeeded
