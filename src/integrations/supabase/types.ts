@@ -292,12 +292,20 @@ export type Database = {
       customer_policies: {
         Row: {
           address: Json | null
+          bumper_order_id: string | null
           created_at: string
+          customer_full_name: string | null
           customer_id: string | null
+          document_type: string | null
           email: string
+          email_sent_at: string | null
+          email_sent_status: string | null
           id: string
+          payment_amount: number | null
+          payment_currency: string | null
           payment_type: string
           pdf_basic_url: string | null
+          pdf_document_path: string | null
           pdf_gold_url: string | null
           pdf_platinum_url: string | null
           plan_type: string
@@ -305,18 +313,31 @@ export type Database = {
           policy_number: string
           policy_start_date: string
           status: string
+          stripe_session_id: string | null
           stripe_subscription_id: string | null
           updated_at: string
           user_id: string | null
+          warranties_2000_response: Json | null
+          warranties_2000_sent_at: string | null
+          warranties_2000_status: string | null
+          warranty_number: string | null
         }
         Insert: {
           address?: Json | null
+          bumper_order_id?: string | null
           created_at?: string
+          customer_full_name?: string | null
           customer_id?: string | null
+          document_type?: string | null
           email: string
+          email_sent_at?: string | null
+          email_sent_status?: string | null
           id?: string
+          payment_amount?: number | null
+          payment_currency?: string | null
           payment_type: string
           pdf_basic_url?: string | null
+          pdf_document_path?: string | null
           pdf_gold_url?: string | null
           pdf_platinum_url?: string | null
           plan_type: string
@@ -324,18 +345,31 @@ export type Database = {
           policy_number: string
           policy_start_date?: string
           status?: string
+          stripe_session_id?: string | null
           stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string | null
+          warranties_2000_response?: Json | null
+          warranties_2000_sent_at?: string | null
+          warranties_2000_status?: string | null
+          warranty_number?: string | null
         }
         Update: {
           address?: Json | null
+          bumper_order_id?: string | null
           created_at?: string
+          customer_full_name?: string | null
           customer_id?: string | null
+          document_type?: string | null
           email?: string
+          email_sent_at?: string | null
+          email_sent_status?: string | null
           id?: string
+          payment_amount?: number | null
+          payment_currency?: string | null
           payment_type?: string
           pdf_basic_url?: string | null
+          pdf_document_path?: string | null
           pdf_gold_url?: string | null
           pdf_platinum_url?: string | null
           plan_type?: string
@@ -343,9 +377,14 @@ export type Database = {
           policy_number?: string
           policy_start_date?: string
           status?: string
+          stripe_session_id?: string | null
           stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string | null
+          warranties_2000_response?: Json | null
+          warranties_2000_sent_at?: string | null
+          warranties_2000_status?: string | null
+          warranty_number?: string | null
         }
         Relationships: [
           {
@@ -394,6 +433,7 @@ export type Database = {
           vehicle_transmission: string | null
           vehicle_year: string | null
           voluntary_excess: number | null
+          warranty_number: string | null
           warranty_reference_number: string | null
         }
         Insert: {
@@ -432,6 +472,7 @@ export type Database = {
           vehicle_transmission?: string | null
           vehicle_year?: string | null
           voluntary_excess?: number | null
+          warranty_number?: string | null
           warranty_reference_number?: string | null
         }
         Update: {
@@ -470,6 +511,7 @@ export type Database = {
           vehicle_transmission?: string | null
           vehicle_year?: string | null
           voluntary_excess?: number | null
+          warranty_number?: string | null
           warranty_reference_number?: string | null
         }
         Relationships: []
@@ -700,6 +742,33 @@ export type Database = {
           },
         ]
       }
+      plan_document_mapping: {
+        Row: {
+          created_at: string
+          document_path: string
+          id: string
+          plan_name: string
+          updated_at: string
+          vehicle_type: string
+        }
+        Insert: {
+          created_at?: string
+          document_path: string
+          id?: string
+          plan_name: string
+          updated_at?: string
+          vehicle_type: string
+        }
+        Update: {
+          created_at?: string
+          document_path?: string
+          id?: string
+          plan_name?: string
+          updated_at?: string
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
       plans: {
         Row: {
           add_ons: Json
@@ -900,6 +969,51 @@ export type Database = {
         }
         Relationships: []
       }
+      warranty_audit_log: {
+        Row: {
+          created_by: string | null
+          customer_id: string | null
+          event_data: Json | null
+          event_timestamp: string
+          event_type: string
+          id: string
+          policy_id: string | null
+        }
+        Insert: {
+          created_by?: string | null
+          customer_id?: string | null
+          event_data?: Json | null
+          event_timestamp?: string
+          event_type: string
+          id?: string
+          policy_id?: string | null
+        }
+        Update: {
+          created_by?: string | null
+          customer_id?: string | null
+          event_data?: Json | null
+          event_timestamp?: string
+          event_type?: string
+          id?: string
+          policy_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranty_audit_log_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranty_audit_log_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "customer_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       warranty_serials: {
         Row: {
           id: number
@@ -976,6 +1090,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      generate_warranty_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_next_warranty_serial: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -987,6 +1105,16 @@ export type Database = {
       is_admin: {
         Args: { _user_id: string }
         Returns: boolean
+      }
+      log_warranty_event: {
+        Args: {
+          p_policy_id: string
+          p_customer_id: string
+          p_event_type: string
+          p_event_data?: Json
+          p_created_by?: string
+        }
+        Returns: string
       }
       make_user_admin: {
         Args: { user_email: string }
