@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2 } from 'lucide-react';
 import { ForwardToWarranties } from './ForwardToWarranties';
 import { WarrantyActions } from './WarrantyActions';
 import { format } from 'date-fns';
@@ -467,6 +467,54 @@ export const CustomersTab = () => {
     setSelectedCustomer(customer);
     setEditingCustomer({ ...customer });
     fetchNotes(customer.id);
+  };
+
+  const deleteCustomer = async (customerId: string, customerName: string) => {
+    if (!confirm(`Are you sure you want to delete customer "${customerName}"? This action cannot be undone and will also delete all associated policies and data.`)) {
+      return;
+    }
+
+    try {
+      // First, delete related customer policies
+      const { error: policiesError } = await supabase
+        .from('customer_policies')
+        .delete()
+        .eq('customer_id', customerId);
+
+      if (policiesError) {
+        console.error('Error deleting customer policies:', policiesError);
+        // Continue anyway - customer deletion might still work
+      }
+
+      // Delete admin notes
+      const { error: notesError } = await supabase
+        .from('admin_notes')
+        .delete()
+        .eq('customer_id', customerId);
+
+      if (notesError) {
+        console.error('Error deleting admin notes:', notesError);
+        // Continue anyway
+      }
+
+      // Finally, delete the customer
+      const { error: customerError } = await supabase
+        .from('customers')
+        .delete()
+        .eq('id', customerId);
+
+      if (customerError) {
+        console.error('Error deleting customer:', customerError);
+        toast.error('Failed to delete customer: ' + customerError.message);
+        return;
+      }
+
+      toast.success(`Customer "${customerName}" has been deleted successfully`);
+      fetchCustomers(); // Refresh the customer list
+    } catch (error) {
+      console.error('Unexpected error deleting customer:', error);
+      toast.error('An unexpected error occurred while deleting the customer');
+    }
   };
 
   const fetchEmailStatuses = async () => {
@@ -995,18 +1043,29 @@ export const CustomersTab = () => {
                       {customer.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => openCustomerDialog(customer)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </DialogTrigger>
+                   <TableCell>
+                     <div className="flex space-x-2">
+                       <Dialog>
+                         <DialogTrigger asChild>
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={() => openCustomerDialog(customer)}
+                             title="Edit Customer"
+                           >
+                             <Edit className="h-4 w-4" />
+                           </Button>
+                         </DialogTrigger>
+                       
+                       <Button
+                         variant="ghost"
+                         size="sm"
+                         onClick={() => deleteCustomer(customer.id, customer.name)}
+                         className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                         title="Delete Customer"
+                       >
+                         <Trash2 className="h-4 w-4" />
+                       </Button>
                         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
                             <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
