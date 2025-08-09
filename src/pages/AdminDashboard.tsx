@@ -15,6 +15,7 @@ import TestBumper from '@/components/TestBumper';
 import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
 import { UserPermissionsTab } from '@/components/admin/UserPermissionsTab';
 import { DocumentMappingTab } from '@/components/admin/DocumentMappingTab';
+import OrderReconciliation from '@/components/admin/OrderReconciliation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -92,6 +93,8 @@ const AdminDashboard = () => {
             </div>
             
             <div className="grid grid-cols-1 gap-6">
+              <OrderReconciliation />
+              
               <ApiConnectivityTest />
               
               <CreateTestCustomer />
