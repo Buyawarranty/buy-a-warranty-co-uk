@@ -35,11 +35,11 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { templateId, recipientEmail, customerId, variables = {}, attachments = [] }: SendEmailRequest = await req.json();
 
-    // Get email template (templateId is actually the template name)
+    // Get email template by ID
     const { data: template, error: templateError } = await supabase
       .from('email_templates')
       .select('*')
-      .eq('name', templateId)
+      .eq('id', templateId)
       .eq('is_active', true)
       .single();
 
