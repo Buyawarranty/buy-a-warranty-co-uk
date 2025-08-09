@@ -30,7 +30,11 @@ const ThankYou = () => {
         
         // Check if this is a Bumper payment (has source=bumper in URL)
         if (source === 'bumper') {
-          console.log('Processing Bumper payment...', { plan, paymentType, sessionId });
+          console.log('🔄 Processing Bumper payment...', { plan, paymentType, sessionId });
+          console.log('📋 All URL params:', Object.fromEntries(searchParams.entries()));
+          
+          // Log all customer data being extracted
+          console.log('👤 Extracting customer data from URL...');
           
           // Extract customer and vehicle data from URL parameters
           const customerData = {
@@ -52,6 +56,18 @@ const ThankYou = () => {
             mileage: searchParams.get('mileage') || undefined
           };
           
+          console.log('📞 Calling process-bumper-success function with data:', {
+            planId: plan,
+            paymentType,
+            customerData,
+            vehicleData,
+            sessionId: sessionId || `BUMPER_${Date.now()}`,
+            discountCode: searchParams.get('discount_code'),
+            discountAmount: searchParams.get('discount_amount') ? parseFloat(searchParams.get('discount_amount')!) : 0,
+            originalAmount: searchParams.get('original_amount') ? parseFloat(searchParams.get('original_amount')!) : null,
+            finalAmount: searchParams.get('final_amount') ? parseFloat(searchParams.get('final_amount')!) : null
+          });
+          
           const result = await supabase.functions.invoke('process-bumper-success', {
             body: {
               planId: plan,
@@ -65,6 +81,7 @@ const ThankYou = () => {
               finalAmount: searchParams.get('final_amount') ? parseFloat(searchParams.get('final_amount')!) : null
             }
           });
+          console.log('📤 Function call result:', { data: result.data, error: result.error });
           data = result.data;
           error = result.error;
         } else if (sessionId) {
