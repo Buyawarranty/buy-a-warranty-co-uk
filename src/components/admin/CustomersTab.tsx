@@ -218,7 +218,7 @@ export const CustomersTab = () => {
         .not('email', 'like', '%guest%')
         .not('name', 'like', '%test%')
         .not('name', 'like', '%Test%')
-        .order('signup_date', { ascending: false });
+        .order('updated_at', { ascending: false });
 
       // Then get orphaned policies (policies without customer records)
       const { data: orphanedPolicies, error: orphanedError } = await supabase
