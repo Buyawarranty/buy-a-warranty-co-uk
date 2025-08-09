@@ -33,9 +33,24 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { templateId, recipientEmail, customerId, variables = {}, attachments = [] }: SendEmailRequest = await req.json();
-    console.log('Send email request received:', { templateId, recipientEmail, customerId });
+    console.log('=== Send Email Function Started ===');
+    const requestBody = await req.json();
+    console.log('Request body received:', JSON.stringify(requestBody, null, 2));
+    
+    const { templateId, recipientEmail, customerId, variables = {}, attachments = [] }: SendEmailRequest = requestBody;
+    console.log('Parsed request:', { templateId, recipientEmail, customerId, variablesCount: Object.keys(variables).length });
 
+    // Validate required fields
+    if (!templateId || !recipientEmail) {
+      console.error('Missing required fields:', { templateId: !!templateId, recipientEmail: !!recipientEmail });
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: templateId and recipientEmail are required' }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log('Attempting to fetch template with ID:', templateId);
+    
     // Get email template by ID
     const { data: template, error: templateError } = await supabase
       .from('email_templates')
@@ -43,6 +58,12 @@ const handler = async (req: Request): Promise<Response> => {
       .eq('id', templateId)
       .eq('is_active', true)
       .single();
+
+    console.log('Template query result:', { 
+      found: !!template, 
+      error: templateError ? JSON.stringify(templateError) : null,
+      templateName: template?.name 
+    });
 
     if (templateError || !template) {
       console.error('Template not found:', { templateError, templateId, foundTemplate: !!template });
