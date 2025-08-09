@@ -185,7 +185,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Fallback to hardcoded pricing
     const pricing = getPricingData(voluntaryExcess, paymentType);
     const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
-    return pricing[planType].monthly;
+    
+    // Safety check: ensure planType exists in pricing object
+    if (!pricing[planType]) {
+      console.warn(`Plan type "${planType}" not found in pricing data, defaulting to basic`);
+      return pricing.basic?.monthly || 0;
+    }
+    
+    return pricing[planType].monthly || 0;
   };
 
   const getPlanSavings = (plan: Plan) => {
@@ -203,7 +210,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Fallback to hardcoded pricing
     const pricing = getPricingData(voluntaryExcess, paymentType);
     const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
-    return pricing[planType].save;
+    
+    // Safety check: ensure planType exists in pricing object
+    if (!pricing[planType]) {
+      console.warn(`Plan type "${planType}" not found in pricing data for savings, defaulting to basic`);
+      return pricing.basic?.save || 0;
+    }
+    
+    return pricing[planType].save || 0;
   };
 
   const calculateAddOnPrice = (planId: string) => {
