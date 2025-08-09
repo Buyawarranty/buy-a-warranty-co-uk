@@ -108,7 +108,8 @@ serve(async (req) => {
           discount_amount: discountAmount,
           original_amount: originalAmount,
           final_amount: finalAmount,
-          warranty_reference_number: warrantyRef
+          warranty_reference_number: warrantyRef,
+          warranty_number: warrantyRef
         })
         .eq('id', existingCustomer.id)
         .select()
@@ -155,7 +156,8 @@ serve(async (req) => {
           discount_amount: discountAmount,
           original_amount: originalAmount,
           final_amount: finalAmount,
-          warranty_reference_number: warrantyRef
+          warranty_reference_number: warrantyRef,
+          warranty_number: warrantyRef
         })
         .select()
         .single();
@@ -201,6 +203,8 @@ serve(async (req) => {
         plan_type: plan.name,
         payment_type: paymentType,
         policy_number: policyNumber,
+        warranty_number: warrantyRef,
+        bumper_order_id: sessionId,
         policy_start_date: startDate.toISOString(),
         policy_end_date: endDate.toISOString(),
         status: 'active'
@@ -318,7 +322,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({
       success: true,
-      policyNumber: policyNumber,
+      policyNumber: warrantyRef || policyNumber, // Return warranty number for Bumper orders
       planType: plan.name,
       message: "Payment processed successfully"
     }), {
