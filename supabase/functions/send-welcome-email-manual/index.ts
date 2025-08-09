@@ -189,19 +189,8 @@ const handler = async (req: Request): Promise<Response> => {
       planType: policy.plan_type
     }));
 
-    // Check idempotency
-    if (policy.email_sent_status === 'sent') {
-      console.log(JSON.stringify({ evt: "already.sent", rid, policyId: policy.id }));
-      return new Response(JSON.stringify({ 
-        ok: true, 
-        rid,
-        already: true, 
-        message: 'Email already sent for this policy'
-      }), {
-        status: 200,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
-    }
+    // Skip idempotency check for manual resends - force send
+    console.log(JSON.stringify({ evt: "force.resend", rid, policyId: policy.id, previousStatus: policy.email_sent_status }));
 
     // Generate warranty number if missing
     if (!policy.warranty_number) {
@@ -329,16 +318,26 @@ const handler = async (req: Request): Promise<Response> => {
       ? `${customer.first_name} ${customer.last_name}` 
       : customer.name;
 
-    // Generate policy document URL
-    const policyDocumentUrl = attachments.length > 0 
-      ? `https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/${attachments[0].filename.includes('basic') ? 'basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf' :
-          attachments[0].filename.includes('gold') ? 'gold/Gold-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464758473.pdf' :
-          attachments[0].filename.includes('platinum') ? 'platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf' :
-          attachments[0].filename.includes('electric') || attachments[0].filename.includes('EV') ? 'electric/EV-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464859338.pdf' :
-          attachments[0].filename.includes('motorbike') ? 'motorbike/Motorbike-Extended-Warranty-Plan%202.0-1754464869722.pdf' :
-          attachments[0].filename.includes('hybrid') || attachments[0].filename.includes('PHEV') ? 'phev/Hybrid-PHEV-Warranty-Plan%202.0-1754464878940.pdf' :
-          'basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf'}`
-      : 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf';
+    // Generate policy document URL based on plan type
+    const planTypeLower = policy.plan_type.toLowerCase();
+    let policyDocumentUrl;
+    
+    if (planTypeLower.includes('basic')) {
+      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf';
+    } else if (planTypeLower.includes('gold')) {
+      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/gold/Gold-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464758473.pdf';
+    } else if (planTypeLower.includes('platinum')) {
+      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf';
+    } else if (planTypeLower.includes('electric') || planTypeLower.includes('ev')) {
+      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/electric/EV-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464859338.pdf';
+    } else if (planTypeLower.includes('motorbike') || planTypeLower.includes('motorcycle')) {
+      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/motorbike/Motorbike-Extended-Warranty-Plan%202.0-1754464869722.pdf';
+    } else if (planTypeLower.includes('hybrid') || planTypeLower.includes('phev')) {
+      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/phev/Hybrid-PHEV-Warranty-Plan%202.0-1754464878940.pdf';
+    } else {
+      // Default to basic if plan type doesn't match any specific type
+      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf';
+    }
 
     const termsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/terms-and-conditions/Terms%20and%20conditions-1754666518644.pdf';
 
