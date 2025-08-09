@@ -470,63 +470,83 @@ export const CustomersTab = () => {
   };
 
   const deleteCustomer = async (customerId: string, customerName: string) => {
-    if (!confirm(`Are you sure you want to delete customer "${customerName}"? This action cannot be undone and will also delete all associated policies and data.`)) {
+    if (!confirm(`Are you sure you want to delete "${customerName}"? This action cannot be undone and will also delete all associated data.`)) {
       return;
     }
 
     try {
-      // Delete related records in the correct order (child tables first)
+      // Check if this is an orphaned policy (fake customer record)
+      const isOrphanedPolicy = customerName === 'Unknown Customer';
       
-      // 1. Delete email logs
-      const { error: emailLogsError } = await supabase
-        .from('email_logs')
-        .delete()
-        .eq('customer_id', customerId);
+      if (isOrphanedPolicy) {
+        // This is an orphaned policy - delete the policy record directly
+        console.log('Deleting orphaned policy with ID:', customerId);
+        
+        const { error: policyError } = await supabase
+          .from('customer_policies')
+          .delete()
+          .eq('id', customerId);
 
-      if (emailLogsError) {
-        console.error('Error deleting email logs:', emailLogsError);
-        // Continue anyway - other deletions might still work
+        if (policyError) {
+          console.error('Error deleting orphaned policy:', policyError);
+          toast.error('Failed to delete policy record: ' + policyError.message);
+          return;
+        }
+
+        toast.success('Orphaned policy record has been deleted successfully');
+      } else {
+        // This is a real customer - delete related records first, then customer
+        console.log('Deleting real customer with ID:', customerId);
+        
+        // 1. Delete email logs
+        const { error: emailLogsError } = await supabase
+          .from('email_logs')
+          .delete()
+          .eq('customer_id', customerId);
+
+        if (emailLogsError) {
+          console.error('Error deleting email logs:', emailLogsError);
+        }
+
+        // 2. Delete customer policies
+        const { error: policiesError } = await supabase
+          .from('customer_policies')
+          .delete()
+          .eq('customer_id', customerId);
+
+        if (policiesError) {
+          console.error('Error deleting customer policies:', policiesError);
+        }
+
+        // 3. Delete admin notes
+        const { error: notesError } = await supabase
+          .from('admin_notes')
+          .delete()
+          .eq('customer_id', customerId);
+
+        if (notesError) {
+          console.error('Error deleting admin notes:', notesError);
+        }
+
+        // 4. Finally, delete the customer
+        const { error: customerError } = await supabase
+          .from('customers')
+          .delete()
+          .eq('id', customerId);
+
+        if (customerError) {
+          console.error('Error deleting customer:', customerError);
+          toast.error('Failed to delete customer: ' + customerError.message);
+          return;
+        }
+
+        toast.success(`Customer "${customerName}" has been deleted successfully`);
       }
-
-      // 2. Delete customer policies
-      const { error: policiesError } = await supabase
-        .from('customer_policies')
-        .delete()
-        .eq('customer_id', customerId);
-
-      if (policiesError) {
-        console.error('Error deleting customer policies:', policiesError);
-        // Continue anyway
-      }
-
-      // 3. Delete admin notes
-      const { error: notesError } = await supabase
-        .from('admin_notes')
-        .delete()
-        .eq('customer_id', customerId);
-
-      if (notesError) {
-        console.error('Error deleting admin notes:', notesError);
-        // Continue anyway
-      }
-
-      // 4. Finally, delete the customer
-      const { error: customerError } = await supabase
-        .from('customers')
-        .delete()
-        .eq('id', customerId);
-
-      if (customerError) {
-        console.error('Error deleting customer:', customerError);
-        toast.error('Failed to delete customer: ' + customerError.message);
-        return;
-      }
-
-      toast.success(`Customer "${customerName}" has been deleted successfully`);
+      
       fetchCustomers(); // Refresh the customer list
     } catch (error) {
-      console.error('Unexpected error deleting customer:', error);
-      toast.error('An unexpected error occurred while deleting the customer');
+      console.error('Unexpected error deleting record:', error);
+      toast.error('An unexpected error occurred while deleting the record');
     }
   };
 
