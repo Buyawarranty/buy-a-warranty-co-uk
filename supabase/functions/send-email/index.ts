@@ -34,6 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { templateId, recipientEmail, customerId, variables = {}, attachments = [] }: SendEmailRequest = await req.json();
+    console.log('Send email request received:', { templateId, recipientEmail, customerId });
 
     // Get email template by ID
     const { data: template, error: templateError } = await supabase
@@ -44,12 +45,14 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (templateError || !template) {
-      console.error('Template not found:', templateError);
+      console.error('Template not found:', { templateError, templateId, foundTemplate: !!template });
       return new Response(
-        JSON.stringify({ error: 'Template not found' }),
+        JSON.stringify({ error: 'Template not found', templateId, details: templateError }),
         { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    console.log('Template found:', { templateName: template.name, templateId: template.id });
 
     // Replace variables in content
     let emailContent = template.content.content || '';
