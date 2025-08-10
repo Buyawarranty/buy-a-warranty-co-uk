@@ -129,58 +129,55 @@ serve(async (req) => {
           planType: planId
         });
         
-        // Send emails in background to avoid timeouts
-        const sendEmailsInBackground = async () => {
-          try {
-            console.log(`[AUTOMATED-EMAIL-DEBUG] About to call send-welcome-email-manual with:`, {
-              customerId: customerData2.id,
-              policyId: policy.id,
-              userEmail,
-              planId,
-              customerData: customerData2
-            });
-            
-            const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
-              body: {
-                customerId: customerData2.id,
-                policyId: policy.id
-              }
-            });
+        // Send welcome email immediately using direct HTTP call to avoid function invoke issues
+        try {
+          console.log(`[AUTOMATED-EMAIL-DEBUG] Sending welcome email directly for policy:`, {
+            customerId: customerData2.id,
+            policyId: policy.id,
+            userEmail,
+            planId
+          });
 
-            console.log(`[AUTOMATED-EMAIL-DEBUG] Welcome email response:`, {
-              data: welcomeData,
-              error: welcomeError,
-              errorMessage: welcomeError?.message,
-              errorDetails: welcomeError?.details,
-              errorContext: welcomeError?.context
-            });
+          const emailPayload = {
+            customerId: customerData2.id,
+            policyId: policy.id
+          };
 
-            if (welcomeError) {
-              logStep("ERROR: Welcome email failed", { 
-                error: welcomeError, 
-                message: welcomeError.message,
-                details: welcomeError.details || welcomeError.context,
-                stack: welcomeError.stack
-              });
-            } else {
-              logStep("SUCCESS: Welcome email sent successfully (includes policy documents)", welcomeData);
-            }
+          // Direct HTTP call to the function endpoint
+          const functionUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-welcome-email-manual`;
+          const response = await fetch(functionUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(emailPayload)
+          });
 
-          } catch (emailError) {
-            logStep("Background email error", {
-              error: emailError,
-              message: emailError instanceof Error ? emailError.message : String(emailError),
-              stack: emailError instanceof Error ? emailError.stack : undefined
+          const emailResult = await response.json();
+          
+          console.log(`[AUTOMATED-EMAIL-DEBUG] Direct email call response:`, {
+            status: response.status,
+            data: emailResult,
+            ok: response.ok
+          });
+
+          if (response.ok) {
+            logStep("SUCCESS: Welcome email sent successfully via direct call", emailResult);
+          } else {
+            logStep("ERROR: Welcome email failed via direct call", { 
+              status: response.status,
+              error: emailResult
             });
           }
-        };
 
-        // Start email sending in background
-        sendEmailsInBackground().catch(err => {
-          logStep("Background email process failed", err);
-        });
-
-        logStep("Email sending started in background");
+        } catch (emailError) {
+          logStep("Direct email call error", {
+            error: emailError,
+            message: emailError instanceof Error ? emailError.message : String(emailError),
+            stack: emailError instanceof Error ? emailError.stack : undefined
+          });
+        }
       } else {
         logStep("WARNING: No policy found for welcome email", { customerId: customerData2.id });
       }

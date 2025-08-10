@@ -306,63 +306,46 @@ serve(async (req) => {
       logStep("Skipping Warranties 2000 registration - no warranty reference generated");
     }
 
-    // Send welcome email using the new manual system
+    // Send welcome email using direct HTTP call
     try {
-      console.log(`[BUMPER-EMAIL-DEBUG] About to call send-welcome-email-manual with:`, {
+      console.log(`[BUMPER-EMAIL-DEBUG] Sending welcome email directly for policy:`, {
         customerId: customer.id,
         policyId: policy.id,
         customerEmail: customer.email,
         planType: plan.name
       });
 
-      const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
-        body: {
-          customerId: customer.id,
-          policyId: policy.id
-        }
+      const emailPayload = {
+        customerId: customer.id,
+        policyId: policy.id
+      };
+
+      // Direct HTTP call to the function endpoint
+      const functionUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-welcome-email-manual`;
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(emailPayload)
       });
 
-      console.log(`[BUMPER-EMAIL-DEBUG] Welcome email response:`, {
-        data: welcomeData,
-        error: welcomeError,
-        errorMessage: welcomeError?.message,
-        errorDetails: welcomeError?.details,
-        errorContext: welcomeError?.context
-      });
-
-      if (welcomeError) {
-        logStep("ERROR: Welcome email failed", { 
-          error: welcomeError, 
-          message: welcomeError.message,
-          details: welcomeError.details || welcomeError.context,
-          stack: welcomeError.stack
-        });
-      } else {
-        logStep("Welcome email sent using manual system", welcomeData);
-      }
-
-      // Send policy documents with attachments
-      logStep("Sending policy documents with attachments");
+      const emailResult = await response.json();
       
-      const { data: policyDocsResult, error: policyDocsError } = await supabaseClient.functions.invoke('send-policy-documents', {
-        body: {
-          recipientEmail: customer.email,
-          variables: {
-            customerName: customer.name || customer.email.split('@')[0],
-            planType: plan.name
-          }
-        }
+      console.log(`[BUMPER-EMAIL-DEBUG] Direct email call response:`, {
+        status: response.status,
+        data: emailResult,
+        ok: response.ok
       });
 
-      console.log(`[BUMPER-EMAIL-DEBUG] Policy documents response:`, {
-        data: policyDocsResult,
-        error: policyDocsError
-      });
-
-      if (policyDocsError) {
-        logStep("Warning: Policy documents email failed", policyDocsError);
+      if (response.ok) {
+        logStep("SUCCESS: Welcome email sent successfully via direct call", emailResult);
       } else {
-        logStep("Policy documents email sent successfully", policyDocsResult);
+        logStep("ERROR: Welcome email failed via direct call", { 
+          status: response.status,
+          error: emailResult
+        });
       }
 
     } catch (emailError) {
