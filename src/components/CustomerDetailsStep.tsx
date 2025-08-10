@@ -161,7 +161,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     
     if (!customerData.first_name || !customerData.last_name || !customerData.email || 
         !customerData.mobile || !customerData.street || !customerData.town || 
-        !customerData.county || !customerData.postcode) {
+        !customerData.postcode) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -346,13 +346,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       />
                     </div>
                     <div>
-                      <Label htmlFor="county" className="text-sm font-medium text-gray-700">County *</Label>
+                      <Label htmlFor="county" className="text-sm font-medium text-gray-700">County</Label>
                       <Input
                         id="county"
                         placeholder="Enter county"
                         value={customerData.county}
                         onChange={(e) => handleInputChange('county', e.target.value)}
-                        required
                         className="mt-1"
                       />
                     </div>
