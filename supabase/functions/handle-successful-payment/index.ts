@@ -162,6 +162,30 @@ serve(async (req) => {
         } else {
           logStep("SUCCESS: Welcome email sent successfully", welcomeData);
         }
+
+        // Send policy documents with attachments
+        logStep("Sending policy documents with attachments");
+        
+        const { data: policyDocsResult, error: policyDocsError } = await supabaseClient.functions.invoke('send-policy-documents', {
+          body: {
+            recipientEmail: userEmail,
+            variables: {
+              customerName: customerData.name || userEmail.split('@')[0],
+              planType: planId
+            }
+          }
+        });
+
+        console.log(`[AUTOMATED-EMAIL-DEBUG] Policy documents response:`, {
+          data: policyDocsResult,
+          error: policyDocsError
+        });
+
+        if (policyDocsError) {
+          logStep("Warning: Policy documents email failed", policyDocsError);
+        } else {
+          logStep("Policy documents email sent successfully", policyDocsResult);
+        }
       } else {
         logStep("WARNING: No policy found for welcome email", { customerId: customerData2.id });
       }
