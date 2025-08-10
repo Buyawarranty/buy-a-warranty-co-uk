@@ -122,7 +122,20 @@ serve(async (req) => {
         .single();
         
       if (policy?.id) {
-        logStep("Attempting to send welcome email", { customerId: customerData2.id, policyId: policy.id });
+        logStep("Attempting to send welcome email", { 
+          customerId: customerData2.id, 
+          policyId: policy.id,
+          customerEmail: userEmail,
+          planType: planId
+        });
+        
+        console.log(`[AUTOMATED-EMAIL-DEBUG] About to call send-welcome-email-manual with:`, {
+          customerId: customerData2.id,
+          policyId: policy.id,
+          userEmail,
+          planId,
+          customerData: customerData2
+        });
         
         const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
           body: {
@@ -131,11 +144,20 @@ serve(async (req) => {
           }
         });
 
+        console.log(`[AUTOMATED-EMAIL-DEBUG] Welcome email response:`, {
+          data: welcomeData,
+          error: welcomeError,
+          errorMessage: welcomeError?.message,
+          errorDetails: welcomeError?.details,
+          errorContext: welcomeError?.context
+        });
+
         if (welcomeError) {
           logStep("ERROR: Welcome email failed", { 
             error: welcomeError, 
             message: welcomeError.message,
-            details: welcomeError.details || welcomeError.context
+            details: welcomeError.details || welcomeError.context,
+            stack: welcomeError.stack
           });
         } else {
           logStep("SUCCESS: Welcome email sent successfully", welcomeData);

@@ -308,15 +308,69 @@ serve(async (req) => {
 
     // Send welcome email using the new manual system
     try {
-      await supabaseClient.functions.invoke('send-welcome-email-manual', {
+      console.log(`[BUMPER-EMAIL-DEBUG] About to call send-welcome-email-manual with:`, {
+        customerId: customer.id,
+        policyId: policy.id,
+        customerEmail: customer.email,
+        planType: plan.name
+      });
+
+      const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
         body: {
           customerId: customer.id,
           policyId: policy.id
         }
       });
-      logStep("Welcome email sent using manual system");
+
+      console.log(`[BUMPER-EMAIL-DEBUG] Welcome email response:`, {
+        data: welcomeData,
+        error: welcomeError,
+        errorMessage: welcomeError?.message,
+        errorDetails: welcomeError?.details,
+        errorContext: welcomeError?.context
+      });
+
+      if (welcomeError) {
+        logStep("ERROR: Welcome email failed", { 
+          error: welcomeError, 
+          message: welcomeError.message,
+          details: welcomeError.details || welcomeError.context,
+          stack: welcomeError.stack
+        });
+      } else {
+        logStep("Welcome email sent using manual system", welcomeData);
+      }
+
+      // Send policy documents with attachments
+      logStep("Sending policy documents with attachments");
+      
+      const { data: policyDocsResult, error: policyDocsError } = await supabaseClient.functions.invoke('send-policy-documents', {
+        body: {
+          recipientEmail: customer.email,
+          variables: {
+            customerName: customer.name || customer.email.split('@')[0],
+            planType: plan.name
+          }
+        }
+      });
+
+      console.log(`[BUMPER-EMAIL-DEBUG] Policy documents response:`, {
+        data: policyDocsResult,
+        error: policyDocsError
+      });
+
+      if (policyDocsError) {
+        logStep("Warning: Policy documents email failed", policyDocsError);
+      } else {
+        logStep("Policy documents email sent successfully", policyDocsResult);
+      }
+
     } catch (emailError) {
-      logStep("Welcome email failed", { error: emailError });
+      logStep("Welcome email failed", { 
+        error: emailError,
+        message: emailError instanceof Error ? emailError.message : String(emailError),
+        stack: emailError instanceof Error ? emailError.stack : undefined
+      });
       // Don't throw as the main process succeeded
     }
 
