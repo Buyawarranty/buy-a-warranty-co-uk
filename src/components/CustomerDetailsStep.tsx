@@ -76,6 +76,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   } | null>(null);
   const [isValidatingDiscount, setIsValidatingDiscount] = useState(false);
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
+  const [showValidation, setShowValidation] = useState(false);
 
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
@@ -105,6 +107,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
+    // Clear field error when user starts typing
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: '' }));
+    }
   };
 
   const validateDiscountCode = async () => {
@@ -156,13 +162,30 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     }
   };
 
+  const validateFields = () => {
+    const errors: {[key: string]: string} = {};
+    
+    if (!customerData.first_name.trim()) errors.first_name = 'First name is required';
+    if (!customerData.last_name.trim()) errors.last_name = 'Last name is required';
+    if (!customerData.email.trim()) errors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(customerData.email)) errors.email = 'Email format is invalid';
+    if (!customerData.mobile.trim()) errors.mobile = 'Mobile number is required';
+    if (!customerData.street.trim()) errors.street = 'Address is required';
+    if (!customerData.town.trim()) errors.town = 'Town/City is required';
+    if (!customerData.postcode.trim()) errors.postcode = 'Postcode is required';
+    
+    return errors;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowValidation(true);
     
-    if (!customerData.first_name || !customerData.last_name || !customerData.email || 
-        !customerData.mobile || !customerData.street || !customerData.town || 
-        !customerData.postcode) {
-      toast.error('Please fill in all required fields');
+    const errors = validateFields();
+    setFieldErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
+      toast.error('Please complete all required fields correctly');
       return;
     }
 
@@ -262,8 +285,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     value={customerData.first_name}
                     onChange={(e) => handleInputChange('first_name', e.target.value)}
                     required
-                    className="mt-1"
+                    className={`mt-1 ${fieldErrors.first_name ? 'border-red-500 focus:border-red-500' : ''}`}
                   />
+                  {fieldErrors.first_name && (
+                    <p className="text-red-500 text-sm mt-1">{fieldErrors.first_name}</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">Last Name *</Label>
@@ -273,8 +299,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     value={customerData.last_name}
                     onChange={(e) => handleInputChange('last_name', e.target.value)}
                     required
-                    className="mt-1"
+                    className={`mt-1 ${fieldErrors.last_name ? 'border-red-500 focus:border-red-500' : ''}`}
                   />
+                  {fieldErrors.last_name && (
+                    <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>
+                  )}
                 </div>
               </div>
 
@@ -288,8 +317,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   value={customerData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   required
-                  className="mt-1"
+                  className={`mt-1 ${fieldErrors.email ? 'border-red-500 focus:border-red-500' : ''}`}
                 />
+                {fieldErrors.email && (
+                  <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
+                )}
               </div>
 
               {/* Mobile */}
@@ -301,8 +333,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   value={customerData.mobile}
                   onChange={(e) => handleInputChange('mobile', e.target.value)}
                   required
-                  className="mt-1"
+                  className={`mt-1 ${fieldErrors.mobile ? 'border-red-500 focus:border-red-500' : ''}`}
                 />
+                {fieldErrors.mobile && (
+                  <p className="text-red-500 text-sm mt-1">{fieldErrors.mobile}</p>
+                )}
               </div>
 
               {/* Address Details */}
@@ -318,8 +353,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       value={customerData.street}
                       onChange={(e) => handleInputChange('street', e.target.value)}
                       required
-                      className="mt-1"
+                      className={`mt-1 ${fieldErrors.street ? 'border-red-500 focus:border-red-500' : ''}`}
                     />
+                    {fieldErrors.street && (
+                      <p className="text-red-500 text-sm mt-1">{fieldErrors.street}</p>
+                    )}
                   </div>
 
                   <div>
@@ -342,8 +380,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         value={customerData.town}
                         onChange={(e) => handleInputChange('town', e.target.value)}
                         required
-                        className="mt-1"
+                        className={`mt-1 ${fieldErrors.town ? 'border-red-500 focus:border-red-500' : ''}`}
                       />
+                      {fieldErrors.town && (
+                        <p className="text-red-500 text-sm mt-1">{fieldErrors.town}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="county" className="text-sm font-medium text-gray-700">County</Label>
@@ -365,8 +406,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       value={customerData.postcode}
                       onChange={(e) => handleInputChange('postcode', e.target.value)}
                       required
-                      className="mt-1"
+                      className={`mt-1 ${fieldErrors.postcode ? 'border-red-500 focus:border-red-500' : ''}`}
                     />
+                    {fieldErrors.postcode && (
+                      <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
+                    )}
                   </div>
 
                   <div>
