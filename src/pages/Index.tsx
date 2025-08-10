@@ -8,7 +8,6 @@ import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
-import { TestEmailSender } from '@/components/TestEmailSender';
 import { supabase } from '@/integrations/supabase/client';
 
 
@@ -241,13 +240,6 @@ const Index = () => {
           onBack={() => handleBackToStep(3)}
         />
       )}
-      
-      {/* Temporary test email component */}
-      <div className="w-full px-4 py-8">
-        <div className="max-w-md mx-auto">
-          <TestEmailSender />
-        </div>
-      </div>
       
     </div>
   );
