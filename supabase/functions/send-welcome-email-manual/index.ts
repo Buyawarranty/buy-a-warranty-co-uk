@@ -460,7 +460,7 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 30px;">
             <h1 style="color: #333; margin-bottom: 10px;">Hi ${customer.first_name || customerName},</h1>
-            <h2 style="color: #28a745; margin-bottom: 20px;">Congratulations — your Buyawarranty.co.uk protection is now active!</h2>
+            <h2 style="color: #28a745; margin-bottom: 20px;">Congratulations on your new warranty! 🎉 We're excited to have you covered and ready to enjoy peace of mind.</h2>
           </div>
 
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745;">
