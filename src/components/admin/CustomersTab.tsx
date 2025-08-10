@@ -531,7 +531,7 @@ export const CustomersTab = () => {
         customer.warranty_expiry ? format(new Date(customer.warranty_expiry), 'yyyy-MM-dd') : 'N/A',
         customer.voluntary_excess || 0,
         customer.status,
-        customer.final_amount || ''
+        
       ].join(','))
     ].join('\n');
 
@@ -1028,8 +1028,6 @@ export const CustomersTab = () => {
               <TableHead>Plan Type</TableHead>
               <TableHead>Payment Type</TableHead>
               <TableHead>Policy Number</TableHead>
-              <TableHead>Warranty #</TableHead>
-              <TableHead>Final Amount</TableHead>
               <TableHead>Email Status</TableHead>
               <TableHead>W2K Status</TableHead>
               <TableHead>Status</TableHead>
@@ -1089,18 +1087,6 @@ export const CustomersTab = () => {
                       </div>
                     ) : (
                       <span className="text-gray-400">No Policy</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="font-semibold">
-                    {customer.final_amount ? `£${customer.final_amount}` : 'N/A'}
-                  </TableCell>
-                  <TableCell className="font-mono text-sm">
-                    {customer.customer_policies?.[0]?.warranty_number ? (
-                      <div className="bg-purple-50 px-2 py-1 rounded border text-purple-800">
-                        {customer.customer_policies[0].warranty_number}
-                      </div>
-                    ) : (
-                      <span className="text-gray-400">No Warranty #</span>
                     )}
                   </TableCell>
                    <TableCell>
