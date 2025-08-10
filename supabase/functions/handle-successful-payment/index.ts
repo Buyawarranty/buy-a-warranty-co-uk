@@ -113,7 +113,7 @@ serve(async (req) => {
       }
     }
 
-    // Send welcome email using the new manual system
+    // Send welcome email using the manual system
     if (customerData2?.id) {
       const { data: policy } = await supabaseClient
         .from('customer_policies')
@@ -122,6 +122,8 @@ serve(async (req) => {
         .single();
         
       if (policy?.id) {
+        logStep("Attempting to send welcome email", { customerId: customerData2.id, policyId: policy.id });
+        
         const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
           body: {
             customerId: customerData2.id,
@@ -130,11 +132,19 @@ serve(async (req) => {
         });
 
         if (welcomeError) {
-          logStep("Warning: Welcome email failed", welcomeError);
+          logStep("ERROR: Welcome email failed", { 
+            error: welcomeError, 
+            message: welcomeError.message,
+            details: welcomeError.details || welcomeError.context
+          });
         } else {
-          logStep("Welcome email sent successfully using manual system", welcomeData);
+          logStep("SUCCESS: Welcome email sent successfully", welcomeData);
         }
+      } else {
+        logStep("WARNING: No policy found for welcome email", { customerId: customerData2.id });
       }
+    } else {
+      logStep("WARNING: No customer ID available for welcome email");
     }
 
     // Register warranty with Warranties 2000 if vehicle data is available
