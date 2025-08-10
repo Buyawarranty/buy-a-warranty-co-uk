@@ -220,7 +220,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       }
 
       if (checkoutUrl) {
-        window.open(checkoutUrl, '_blank');
+        // Redirect in the same tab so we can properly return to thank you page
+        window.location.href = checkoutUrl;
       } else {
         toast.error('Failed to create checkout session');
       }
