@@ -129,63 +129,58 @@ serve(async (req) => {
           planType: planId
         });
         
-        console.log(`[AUTOMATED-EMAIL-DEBUG] About to call send-welcome-email-manual with:`, {
-          customerId: customerData2.id,
-          policyId: policy.id,
-          userEmail,
-          planId,
-          customerData: customerData2
-        });
-        
-        const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
-          body: {
-            customerId: customerData2.id,
-            policyId: policy.id
-          }
-        });
+        // Send emails in background to avoid timeouts
+        const sendEmailsInBackground = async () => {
+          try {
+            console.log(`[AUTOMATED-EMAIL-DEBUG] About to call send-welcome-email-manual with:`, {
+              customerId: customerData2.id,
+              policyId: policy.id,
+              userEmail,
+              planId,
+              customerData: customerData2
+            });
+            
+            const { data: welcomeData, error: welcomeError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
+              body: {
+                customerId: customerData2.id,
+                policyId: policy.id
+              }
+            });
 
-        console.log(`[AUTOMATED-EMAIL-DEBUG] Welcome email response:`, {
-          data: welcomeData,
-          error: welcomeError,
-          errorMessage: welcomeError?.message,
-          errorDetails: welcomeError?.details,
-          errorContext: welcomeError?.context
-        });
+            console.log(`[AUTOMATED-EMAIL-DEBUG] Welcome email response:`, {
+              data: welcomeData,
+              error: welcomeError,
+              errorMessage: welcomeError?.message,
+              errorDetails: welcomeError?.details,
+              errorContext: welcomeError?.context
+            });
 
-        if (welcomeError) {
-          logStep("ERROR: Welcome email failed", { 
-            error: welcomeError, 
-            message: welcomeError.message,
-            details: welcomeError.details || welcomeError.context,
-            stack: welcomeError.stack
-          });
-        } else {
-          logStep("SUCCESS: Welcome email sent successfully", welcomeData);
-        }
-
-        // Send policy documents with attachments
-        logStep("Sending policy documents with attachments");
-        
-        const { data: policyDocsResult, error: policyDocsError } = await supabaseClient.functions.invoke('send-policy-documents', {
-          body: {
-            recipientEmail: userEmail,
-            variables: {
-              customerName: customerData.name || userEmail.split('@')[0],
-              planType: planId
+            if (welcomeError) {
+              logStep("ERROR: Welcome email failed", { 
+                error: welcomeError, 
+                message: welcomeError.message,
+                details: welcomeError.details || welcomeError.context,
+                stack: welcomeError.stack
+              });
+            } else {
+              logStep("SUCCESS: Welcome email sent successfully (includes policy documents)", welcomeData);
             }
+
+          } catch (emailError) {
+            logStep("Background email error", {
+              error: emailError,
+              message: emailError instanceof Error ? emailError.message : String(emailError),
+              stack: emailError instanceof Error ? emailError.stack : undefined
+            });
           }
+        };
+
+        // Start email sending in background
+        sendEmailsInBackground().catch(err => {
+          logStep("Background email process failed", err);
         });
 
-        console.log(`[AUTOMATED-EMAIL-DEBUG] Policy documents response:`, {
-          data: policyDocsResult,
-          error: policyDocsError
-        });
-
-        if (policyDocsError) {
-          logStep("Warning: Policy documents email failed", policyDocsError);
-        } else {
-          logStep("Policy documents email sent successfully", policyDocsResult);
-        }
+        logStep("Email sending started in background");
       } else {
         logStep("WARNING: No policy found for welcome email", { customerId: customerData2.id });
       }
