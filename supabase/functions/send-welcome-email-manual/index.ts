@@ -313,10 +313,24 @@ const handler = async (req: Request): Promise<Response> => {
     
     console.log(JSON.stringify({ evt: "pdf.final.count", rid, attachmentCount: attachments.length }));
 
-    // Send email via Resend REST API
+    // Get customer data with vehicle info from the customers table
+    const { data: customerDetails } = await supabase
+      .from('customers')
+      .select('*')
+      .eq('id', policy.customer_id)
+      .single();
+
     const customerName = customer.first_name && customer.last_name 
       ? `${customer.first_name} ${customer.last_name}` 
       : customer.name;
+
+    // Determine payment method based on available data
+    let paymentMethod = 'Online Payment';
+    if (policy.stripe_session_id) {
+      paymentMethod = 'Stripe';
+    } else if (policy.bumper_order_id) {
+      paymentMethod = 'Bumper';
+    }
 
     // Generate policy document URL based on plan type
     const planTypeLower = policy.plan_type.toLowerCase();
@@ -341,42 +355,133 @@ const handler = async (req: Request): Promise<Response> => {
 
     const termsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/terms-and-conditions/Terms%20and%20conditions-1754666518644.pdf';
 
+    // Registration plate styling
+    const regPlate = customerDetails?.registration_plate || 'N/A';
+    const regPlateStyle = `
+      display: inline-block;
+      background: linear-gradient(to bottom, #ffeb3b 0%, #ffeb3b 30%, #fff 30%, #fff 70%, #ffeb3b 70%, #ffeb3b 100%);
+      color: #000;
+      font-family: 'Charles Wright', monospace;
+      font-weight: bold;
+      font-size: 18px;
+      padding: 8px 12px;
+      border: 2px solid #333;
+      border-radius: 4px;
+      letter-spacing: 2px;
+      text-align: center;
+      min-width: 120px;
+    `;
+
     const emailPayload = {
       from: resendFrom,
       to: [customer.email],
-      subject: `Welcome — Your Warranty ${policy.warranty_number}`,
+      subject: `Congratulations — Your Buyawarranty.co.uk Protection is Now Active!`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #333; border-bottom: 3px solid #ff6b35; padding-bottom: 10px;">Welcome ${customerName}!</h1>
-          <p style="font-size: 16px; line-height: 1.6;">Thank you for purchasing your ${policy.plan_type} warranty. Your warranty number is: <strong style="color: #ff6b35;">${policy.warranty_number}</strong></p>
-          
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #333; margin-top: 0;">Your Policy Details:</h3>
-            <ul style="list-style: none; padding: 0;">
-              <li style="padding: 5px 0;"><strong>Plan:</strong> ${policy.plan_type}</li>
-              <li style="padding: 5px 0;"><strong>Payment Type:</strong> ${policy.payment_type}</li>
-              <li style="padding: 5px 0;"><strong>Policy Start:</strong> ${new Date(policy.policy_start_date).toLocaleDateString()}</li>
-              <li style="padding: 5px 0;"><strong>Policy End:</strong> ${new Date(policy.policy_end_date).toLocaleDateString()}</li>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #333; margin-bottom: 10px;">Hi ${customer.first_name || customerName},</h1>
+            <h2 style="color: #28a745; margin-bottom: 20px;">Congratulations — your Buyawarranty.co.uk protection is now active!</h2>
+          </div>
+
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745;">
+            <p style="font-size: 16px; line-height: 1.6; margin: 0;">
+              Your policy documents are attached to this email for your records. Your policy number is: 
+              <strong style="color: #ff6b35; font-size: 18px;">${policy.warranty_number || policy.policy_number}</strong>
+            </p>
+          </div>
+
+          <div style="background-color: #ffffff; border: 1px solid #dee2e6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0; margin-bottom: 15px;">📋 What's included in your documents:</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="padding: 8px 0; border-bottom: 1px solid #f1f1f1;"><span style="color: #28a745;">✅</span> Full warranty terms and conditions</li>
+              <li style="padding: 8px 0; border-bottom: 1px solid #f1f1f1;"><span style="color: #28a745;">✅</span> Claims process information</li>
+              <li style="padding: 8px 0; border-bottom: 1px solid #f1f1f1;"><span style="color: #28a745;">✅</span> Coverage details and limitations</li>
+              <li style="padding: 8px 0;"><span style="color: #28a745;">✅</span> Contact information for claims</li>
             </ul>
+          </div>
+
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0; margin-bottom: 15px;">📄 Your Policy Details:</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 8px 0; font-weight: bold; width: 40%;">Vehicle Registration:</td>
+                <td style="padding: 8px 0;"><span style="${regPlateStyle}">${regPlate}</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 8px 0; font-weight: bold;">Plan Type:</td>
+                <td style="padding: 8px 0; text-transform: capitalize;">${policy.plan_type}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 8px 0; font-weight: bold;">Payment Method:</td>
+                <td style="padding: 8px 0;">${paymentMethod}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 8px 0; font-weight: bold;">Policy Start Date:</td>
+                <td style="padding: 8px 0;">${new Date(policy.policy_start_date).toLocaleDateString('en-GB')}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Policy End Date:</td>
+                <td style="padding: 8px 0;">${new Date(policy.policy_end_date).toLocaleDateString('en-GB')}</td>
+              </tr>
+            </table>
           </div>
 
           <div style="text-align: center; margin: 30px 0;">
             <a href="${policyDocumentUrl}" 
-               style="display: inline-block; background-color: #ff6b35; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px;">
+               style="display: inline-block; background-color: #ff6b35; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px; font-size: 16px;">
               📄 View Your Policy
             </a>
             <br>
             <a href="${termsUrl}" 
-               style="display: inline-block; background-color: #6c757d; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px;">
+               style="display: inline-block; background-color: #6c757d; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px; font-size: 16px;">
               📋 Terms & Conditions
             </a>
           </div>
 
-          <p style="font-size: 14px; color: #666; border-top: 1px solid #ddd; padding-top: 20px; margin-top: 30px;">
-            If you have any questions, please contact us at <a href="mailto:info@buyawarranty.co.uk" style="color: #ff6b35;">info@buyawarranty.co.uk</a>
-          </p>
+          <div style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="font-size: 16px; line-height: 1.6; margin: 0; text-align: center;">
+              You've made a smart choice to safeguard your vehicle and avoid unexpected repair bills. With your new warranty in place, you can drive with complete peace of mind knowing you're covered when it matters most.
+            </p>
+          </div>
+
+          <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #856404; margin-top: 0; margin-bottom: 15px;">📞 Need help?</h3>
+            <p style="margin: 0; line-height: 1.6;">
+              If you have any questions about your coverage or need to make a claim, please contact us on:<br>
+              <strong>Customer care:</strong> <a href="tel:0330 229 5040" style="color: #ff6b35; text-decoration: none;">0330 229 5040</a><br>
+              <strong>Claims line:</strong> <a href="tel:0330 229 5045" style="color: #ff6b35; text-decoration: none;">0330 229 5045</a>
+            </p>
+          </div>
+
+          <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #0c5460;">
+              <strong>💡 Tip:</strong> We recommend keeping these documents safe and accessible - that way you'll have everything you need right at your fingertips if you ever need to make a claim.
+            </p>
+          </div>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <p style="font-size: 18px; color: #28a745; font-weight: bold; margin: 0;">
+              Drive safe and enjoy the confidence your new warranty brings!
+            </p>
+          </div>
+
+          <div style="border-top: 2px solid #dee2e6; padding-top: 20px; margin-top: 30px; text-align: center;">
+            <p style="margin: 0; font-size: 16px; line-height: 1.6;">
+              <strong>Best regards,</strong><br>
+              The Customer Care Team<br>
+              <a href="https://buyawarranty.co.uk" style="color: #ff6b35; text-decoration: none; font-weight: bold;">Buyawarranty.co.uk</a>
+            </p>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <p style="font-size: 12px; color: #6c757d; margin: 0;">
+              If you have any questions, please contact us at 
+              <a href="mailto:info@buyawarranty.co.uk" style="color: #ff6b35;">info@buyawarranty.co.uk</a>
+            </p>
+          </div>
         </div>
-      `
+      `,
+      attachments: attachments
     };
 
     console.log(JSON.stringify({ 
