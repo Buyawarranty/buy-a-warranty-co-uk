@@ -55,7 +55,9 @@ serve(async (req) => {
       'gold': 'gold', 
       'platinum': 'platinum',
       'electric': 'electric',
+      'ev': 'electric',  // Map EV to electric
       'phev': 'phev',
+      'hybrid': 'phev',  // Map hybrid to phev
       'motorbike': 'motorbike',
       'motorbike extended warranty': 'motorbike'
     };

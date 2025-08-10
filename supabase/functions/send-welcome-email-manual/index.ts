@@ -235,14 +235,30 @@ const handler = async (req: Request): Promise<Response> => {
       pdfPaths.push(documentMapping.document_path);
     }
     
-    // Add common plan naming patterns
-    const planLower = policy.plan_type.toLowerCase().replace(/\s+/g, '-');
+    // Map plan types to match customer_documents table exactly
+    const planTypeMapping: Record<string, string> = {
+      'basic': 'basic',
+      'gold': 'gold', 
+      'platinum': 'platinum',
+      'electric': 'electric',
+      'ev': 'electric',  // Map EV to electric
+      'phev': 'phev',
+      'hybrid': 'phev',  // Map hybrid to phev
+      'motorbike': 'motorbike',
+      'motorbike extended warranty': 'motorbike'
+    };
+    
+    const normalizedPlanType = planTypeMapping[policy.plan_type.toLowerCase()] || policy.plan_type.toLowerCase();
+    console.log(JSON.stringify({ evt: "plan.mapping", rid, originalPlan: policy.plan_type, normalizedPlan: normalizedPlanType }));
+    
+    // Add common plan naming patterns using normalized plan type
+    const planLower = normalizedPlanType.replace(/\s+/g, '-');
     const possiblePaths = [
       `${planLower}-warranty.pdf`,
       `${planLower}.pdf`,
       `plan-${planLower}.pdf`,
-      `${policy.plan_type}.pdf`,
-      `${policy.plan_type}-warranty.pdf`,
+      `${normalizedPlanType}.pdf`,
+      `${normalizedPlanType}-warranty.pdf`,
       'terms-and-conditions.pdf'
     ];
     
@@ -308,6 +324,70 @@ const handler = async (req: Request): Promise<Response> => {
           path: pdfPath,
           error: error instanceof Error ? error.message : String(error) 
         }));
+      }
+    }
+    
+    // Also try customer_documents table with normalized plan type if no documents found yet
+    if (attachments.length === 0) {
+      console.log(JSON.stringify({ evt: "trying.customer.documents.table", rid, normalizedPlanType }));
+      
+      const { data: planDoc, error: planError } = await supabase
+        .from('customer_documents')
+        .select('document_name, file_url')
+        .eq('plan_type', normalizedPlanType)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (planDoc && !planError) {
+        try {
+          console.log(JSON.stringify({ evt: "customer.doc.found", rid, url: planDoc.file_url, name: planDoc.document_name }));
+          const response = await fetch(planDoc.file_url);
+          
+          if (response.ok) {
+            const fileBuffer = await response.arrayBuffer();
+            const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+            
+            attachments.push({
+              filename: planDoc.document_name.endsWith('.pdf') ? planDoc.document_name : `${planDoc.document_name}.pdf`,
+              content: base64Content,
+              content_type: 'application/pdf'
+            });
+            console.log(JSON.stringify({ evt: "customer.doc.attached", rid, filename: planDoc.document_name }));
+          }
+        } catch (error) {
+          console.log(JSON.stringify({ evt: "customer.doc.error", rid, error: error.message }));
+        }
+      }
+      
+      // Also try to get terms and conditions
+      const { data: termsDoc, error: termsError } = await supabase
+        .from('customer_documents')
+        .select('document_name, file_url')
+        .eq('plan_type', 'terms-and-conditions')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (termsDoc && !termsError) {
+        try {
+          console.log(JSON.stringify({ evt: "terms.doc.found", rid, url: termsDoc.file_url }));
+          const response = await fetch(termsDoc.file_url);
+          
+          if (response.ok) {
+            const fileBuffer = await response.arrayBuffer();
+            const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+            
+            attachments.push({
+              filename: termsDoc.document_name.endsWith('.pdf') ? termsDoc.document_name : `${termsDoc.document_name}.pdf`,
+              content: base64Content,
+              content_type: 'application/pdf'
+            });
+            console.log(JSON.stringify({ evt: "terms.doc.attached", rid, filename: termsDoc.document_name }));
+          }
+        } catch (error) {
+          console.log(JSON.stringify({ evt: "terms.doc.error", rid, error: error.message }));
+        }
       }
     }
     
