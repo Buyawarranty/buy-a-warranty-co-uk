@@ -57,6 +57,9 @@ verify_jwt = false
 [functions.send-email]
 verify_jwt = false
 
+[functions.send-policy-documents]
+verify_jwt = false
+
 [functions.send-welcome-email-manual]
 verify_jwt = true
 
