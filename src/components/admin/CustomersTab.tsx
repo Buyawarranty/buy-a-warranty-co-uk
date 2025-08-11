@@ -1345,12 +1345,12 @@ export const CustomersTab = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="font-mono text-sm">
-                    {customer.policy_number ? (
-                      <div className="bg-blue-50 px-2 py-1 rounded border">
-                        {customer.policy_number}
+                    {customer.warranty_reference_number || customer.warranty_number ? (
+                      <div className="bg-green-50 px-2 py-1 rounded border">
+                        {customer.warranty_reference_number || customer.warranty_number}
                       </div>
                     ) : (
-                      <span className="text-gray-400">No Policy</span>
+                      <span className="text-gray-400">No Reference</span>
                     )}
                   </TableCell>
                    <TableCell>
