@@ -13,7 +13,7 @@ const TestWarranties2000 = () => {
     setLoading(true);
     setResponse('');
 
-    // Test data matching the exact API specification
+    // Test data fixing the specific validation errors
     const testData = {
       Title: "Mr",
       First: "John",
@@ -27,23 +27,24 @@ const TestWarranties2000 = () => {
       EMail: "john.test@example.com",
       PurDate: new Date().toISOString().split('T')[0],
       Make: "Ford",
-      Model: "Focus",
+      Model: "Focus", // Make sure Model has a value
       RegNum: "AB12 CDE",
-      Mileage: "50000", // Whole number as string
-      EngSize: "", // Pass empty string instead of value
-      PurPrc: "15000", // Purchase price
+      Mileage: "50000",
+      EngSize: "1.6", // API requires this field
+      PurPrc: "15000",
       RegDate: "2020-01-01",
-      WarType: "BBASIC", // Must match predefined values in their system
-      Month: "12", // Duration in months
-      MaxClm: "500", // Maximum claim amount - full amount as string (£500)
+      WarType: "BASIC", // Try without the 'B' prefix
+      Month: "12",
+      MaxClm: "500",
       Notes: "Test registration",
       Ref: "BAW-2501-400001",
       MOTDue: "2025-12-31"
     };
     
-    console.log('=== TESTING WITH EMPTY ENGSIZE ===');
-    console.log('EngSize value:', testData.EngSize);
-    console.log('MaxClm value:', testData.MaxClm);
+    console.log('=== FIXING VALIDATION ERRORS ===');
+    console.log('Model:', testData.Model);
+    console.log('EngSize:', testData.EngSize);
+    console.log('WarType:', testData.WarType);
 
     try {
       console.log('Testing Warranties 2000 API with data:', testData);
