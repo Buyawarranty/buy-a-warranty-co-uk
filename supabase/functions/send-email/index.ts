@@ -2,7 +2,12 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.2';
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const resendApiKey = Deno.env.get("RESEND_API_KEY");
+if (!resendApiKey) {
+  console.error("RESEND_API_KEY not found in environment variables");
+}
+console.log("Resend API key available:", !!resendApiKey);
+const resend = new Resend(resendApiKey);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -329,8 +334,21 @@ const handler = async (req: Request): Promise<Response> => {
       emailOptions.bcc = ['buyawarranty.co.uk+8fc526946e@invite.trustpilot.com'];
     }
 
+    console.log('Attempting to send email with Resend...', { 
+      from: emailOptions.from, 
+      to: emailOptions.to[0],
+      subject: emailOptions.subject.substring(0, 50) + '...',
+      hasResendKey: !!resendApiKey
+    });
+    
     // Send email with Resend
     const emailResponse = await resend.emails.send(emailOptions);
+    
+    console.log('Resend response received:', { 
+      hasData: !!emailResponse.data, 
+      hasError: !!emailResponse.error,
+      errorMessage: emailResponse.error?.message 
+    });
 
     // Update email log with result
     if (emailLog) {

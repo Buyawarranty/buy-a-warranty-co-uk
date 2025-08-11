@@ -237,9 +237,29 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in send-welcome-email", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    let errorMessage = 'Unknown error';
+    let errorDetails = null;
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      errorDetails = {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      };
+    } else {
+      errorMessage = String(error);
+      errorDetails = error;
+    }
+    
+    logStep("ERROR in send-welcome-email", errorDetails);
+    console.error("Full error object:", JSON.stringify(errorDetails, null, 2));
+    
+    return new Response(JSON.stringify({ 
+      success: false,
+      error: errorMessage,
+      details: errorDetails
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
