@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
@@ -29,48 +29,10 @@ interface VehicleData {
 }
 
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   
-  const handleStepChange = (step: number) => {
-    setCurrentStep(step);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-  
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-  
-  // Check for restore parameter on page load
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const restoreParam = urlParams.get('restore');
-    const stepParam = urlParams.get('step');
-    
-    if (restoreParam) {
-      try {
-        const restoredData = JSON.parse(atob(restoreParam));
-        setVehicleData(restoredData);
-        setFormData({ ...formData, ...restoredData });
-        if (restoredData.selectedPlan) {
-          setSelectedPlan(restoredData.selectedPlan);
-        }
-        setCurrentStep(restoredData.step || 3);
-        
-        // Clear the URL parameter
-        window.history.replaceState({}, document.title, window.location.pathname);
-      } catch (error) {
-        console.error('Error restoring data from URL:', error);
-      }
-    } else if (stepParam) {
-      const step = parseInt(stepParam);
-      if (step >= 1 && step <= 4) {
-        setCurrentStep(step);
-        // Clear the URL parameter
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    }
-  }, []);
-  
+  // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<{id: string, paymentType: string, name?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}}} | null>(null);
   const [formData, setFormData] = useState({
@@ -89,6 +51,109 @@ const Index = () => {
     vehicleType: ''
   });
   
+  // Get current step from URL or default to 1
+  const getStepFromUrl = () => {
+    const stepParam = searchParams.get('step');
+    if (stepParam) {
+      const step = parseInt(stepParam);
+      return step >= 1 && step <= 4 ? step : 1;
+    }
+    return 1;
+  };
+  
+  const [currentStep, setCurrentStep] = useState(getStepFromUrl());
+  
+  // Save state to localStorage
+  const saveStateToLocalStorage = (step?: number) => {
+    const state = {
+      step: step || currentStep,
+      vehicleData,
+      selectedPlan,
+      formData
+    };
+    localStorage.setItem('warrantyJourneyState', JSON.stringify(state));
+  };
+  
+  // Load state from localStorage
+  const loadStateFromLocalStorage = () => {
+    try {
+      const savedState = localStorage.getItem('warrantyJourneyState');
+      if (savedState) {
+        return JSON.parse(savedState);
+      }
+    } catch (error) {
+      console.error('Error loading state from localStorage:', error);
+    }
+    return null;
+  };
+  
+  // Update URL when step changes
+  const updateStepInUrl = (step: number) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('step', step.toString());
+    setSearchParams(newSearchParams, { replace: true });
+  };
+  
+  const handleStepChange = (step: number) => {
+    setCurrentStep(step);
+    updateStepInUrl(step);
+    // Store current state in localStorage for persistence
+    saveStateToLocalStorage(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    
+    // Handle browser back/forward navigation
+    const handlePopState = () => {
+      const stepFromUrl = getStepFromUrl();
+      setCurrentStep(stepFromUrl);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    
+    // Load saved state on initial load
+    const savedState = loadStateFromLocalStorage();
+    const stepFromUrl = getStepFromUrl();
+    
+    // Check for restore parameter from email links
+    const restoreParam = searchParams.get('restore');
+    
+    if (restoreParam) {
+      try {
+        const restoredData = JSON.parse(atob(restoreParam));
+        setVehicleData(restoredData);
+        setFormData(prev => ({ ...prev, ...restoredData }));
+        if (restoredData.selectedPlan) {
+          setSelectedPlan(restoredData.selectedPlan);
+        }
+        const restoredStep = restoredData.step || 3;
+        setCurrentStep(restoredStep);
+        updateStepInUrl(restoredStep);
+        
+        // Clear the restore parameter but keep step
+        const newSearchParams = new URLSearchParams();
+        newSearchParams.set('step', restoredStep.toString());
+        setSearchParams(newSearchParams, { replace: true });
+      } catch (error) {
+        console.error('Error restoring data from URL:', error);
+      }
+    } else if (savedState && stepFromUrl > 1) {
+      // Restore from localStorage if we're not on step 1
+      setVehicleData(savedState.vehicleData);
+      setSelectedPlan(savedState.selectedPlan);
+      setFormData(prev => savedState.formData || prev);
+    } else if (stepFromUrl === 1) {
+      // Clear localStorage if we're starting fresh
+      localStorage.removeItem('warrantyJourneyState');
+    }
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+  
   const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Final Details'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
@@ -97,11 +162,15 @@ const Index = () => {
     // If manual entry was used, skip step 2 and go directly to pricing
     const nextStep = data.isManualEntry ? 3 : 2;
     setCurrentStep(nextStep);
+    updateStepInUrl(nextStep);
+    saveStateToLocalStorage(nextStep);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToStep = (step: number) => {
     setCurrentStep(step);
+    updateStepInUrl(step);
+    saveStateToLocalStorage(step);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -114,6 +183,8 @@ const Index = () => {
     setVehicleData(updatedData as VehicleData);
     setFormData({ ...formData, ...contactData });
     setCurrentStep(3);
+    updateStepInUrl(3);
+    saveStateToLocalStorage(3);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Track pricing page view for abandoned cart emails
@@ -123,6 +194,8 @@ const Index = () => {
   const handlePlanSelected = (planId: string, paymentType: string, planName?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}}) => {
     setSelectedPlan({ id: planId, paymentType, name: planName, pricingData });
     setCurrentStep(4);
+    updateStepInUrl(4);
+    saveStateToLocalStorage(4);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Track plan selection for abandoned cart emails
@@ -188,7 +261,7 @@ const Index = () => {
               onFormDataUpdate={handleFormDataUpdate}
               initialData={formData}
               currentStep={currentStep}
-              onStepChange={setCurrentStep}
+              onStepChange={handleStepChange}
             />
           </div>
         </div>
@@ -201,7 +274,7 @@ const Index = () => {
               vehicleData={vehicleData}
               onNext={handleQuoteDeliveryComplete}
               onBack={() => handleBackToStep(1)}
-              onSkip={() => setCurrentStep(3)}
+              onSkip={() => handleStepChange(3)}
             />
           </div>
         </div>
