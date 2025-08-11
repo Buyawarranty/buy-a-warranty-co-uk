@@ -455,7 +455,7 @@ function getWarrantyType(planId: string): string {
   } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
     return 'B-EV';
   } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
-    return 'B-MOTORCYCLE';
+    return 'B-MOTORBIKE';
   }
   
   // Handle standard plan types
