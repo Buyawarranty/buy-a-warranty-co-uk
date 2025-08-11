@@ -204,60 +204,44 @@ serve(async (req) => {
       logStep("WARNING: No customer ID available for welcome email");
     }
 
-    // Register warranty with Warranties 2000 if vehicle data is available
-    if (vehicleData && vehicleData.regNumber) {
+    // Register warranty with Warranties 2000 if vehicle data is available and customer/policy created
+    if (vehicleData && vehicleData.regNumber && customerData2?.id) {
       logStep("Attempting warranty registration with Warranties 2000");
       
       try {
-        // Map payment type to warranty duration
-        const warrantyDuration = getWarrantyDuration(paymentType);
-        const maxClaimAmount = getMaxClaimAmount(planId);
-        const warrantyType = getWarrantyType(planId);
-        
-        // Prepare registration data for Warranties 2000
-        const registrationData = {
-          Title: extractTitle(customerData?.fullName || vehicleData.fullName || ""),
-          First: extractFirstName(customerData?.fullName || vehicleData.fullName || ""),
-          Surname: extractSurname(customerData?.fullName || vehicleData.fullName || ""),
-          Addr1: customerData?.address || vehicleData.address || "Not provided",
-          Addr2: "", // Optional field
-          Town: extractTown(customerData?.address || vehicleData.address || ""),
-          PCode: extractPostcode(customerData?.address || vehicleData.address || ""),
-          Tel: customerData?.phone || vehicleData.phone || "0000000000",
-          Mobile: customerData?.phone || vehicleData.phone || "0000000000",
-          EMail: userEmail,
-          PurDate: new Date().toISOString().split('T')[0], // Today's date as purchase date
-          Make: vehicleData.make || "Unknown",
-          Model: vehicleData.model || "Unknown",
-          RegNum: vehicleData.regNumber,
-          Mileage: vehicleData.mileage || "0",
-          EngSize: "2.0", // Default engine size, should be collected in form
-          PurPrc: calculatePurchasePrice(planId, paymentType).toString(),
-          RegDate: vehicleData.year ? `${vehicleData.year}-01-01` : "2020-01-01",
-          WarType: warrantyType,
-          Month: warrantyDuration,
-          MaxClm: maxClaimAmount,
-          MOTDue: vehicleData.motExpiry || "2025-12-31", // Default if not provided
-          Ref: warrantyReference
-        };
+        // Get the policy ID that was just created
+        const { data: policyData } = await supabaseClient
+          .from('customer_policies')
+          .select('id')
+          .eq('customer_id', customerData2.id)
+          .eq('policy_number', warrantyReference)
+          .single();
+          
+        if (policyData?.id) {
+          logStep("Found policy for warranty registration", { policyId: policyData.id });
 
-        logStep("Registering warranty", { regNum: registrationData.RegNum, warrantyType });
+          const { data: warrantyData, error: warrantyError } = await supabaseClient.functions.invoke('send-to-warranties-2000', {
+            body: { policyId: policyData.id, customerId: customerData2.id }
+          });
 
-        const { data: warrantyData, error: warrantyError } = await supabaseClient.functions.invoke('send-to-warranties-2000', {
-          body: { policyId: policy.id }
-        });
-
-        if (warrantyError) {
-          logStep("Warning: Warranty registration failed", warrantyError);
+          if (warrantyError) {
+            logStep("Warning: Warranty registration failed", warrantyError);
+          } else {
+            logStep("Warranty registration successful", warrantyData);
+          }
         } else {
-          logStep("Warranty registration successful", warrantyData);
+          logStep("Warning: Could not find policy ID for warranty registration");
         }
       } catch (warrantyRegError) {
         logStep("Warning: Warranty registration error", { error: warrantyRegError });
         // Don't fail the payment process if warranty registration fails
       }
     } else {
-      logStep("Skipping warranty registration - insufficient vehicle data");
+      logStep("Skipping warranty registration", { 
+        hasVehicleData: !!vehicleData,
+        hasRegNumber: !!vehicleData?.regNumber,
+        hasCustomerId: !!customerData2?.id
+      });
     }
 
     return new Response(JSON.stringify({ 

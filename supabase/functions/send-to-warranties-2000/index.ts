@@ -209,78 +209,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Test data blocking removed - all paying customers are legitimate
 
-    // Check for duplicate registration with DIFFERENT vehicle data (prevent data corruption)
-    // Allow renewals for the same vehicle (same make/model)
-    const { data: duplicateRegistrations, error: dupError } = await supabase
-      .from('customer_policies')
-      .select(`
-        id, warranty_number, warranties_2000_status, 
-        customers!customer_id(registration_plate, email, name, vehicle_make, vehicle_model)
-      `)
-      .neq('id', policy.id)
-      .eq('warranties_2000_status', 'sent');
-
-    if (duplicateRegistrations && !dupError) {
-      const conflictingReg = duplicateRegistrations.find(p => {
-        const sameReg = p.customers?.registration_plate?.toLowerCase() === customer.registration_plate?.toLowerCase();
-        const differentMake = p.customers?.vehicle_make?.toLowerCase() !== customer.vehicle_make?.toLowerCase();
-        const differentModel = p.customers?.vehicle_model?.toLowerCase() !== customer.vehicle_model?.toLowerCase();
-        
-        // Block only if same registration but different vehicle data
-        return sameReg && (differentMake || differentModel);
-      });
-      
-      if (conflictingReg) {
-        console.log(JSON.stringify({ 
-          evt: "w2k.vehicle_data_conflict_blocked", 
-          rid, 
-          duplicate_warranty: conflictingReg.warranty_number,
-          original_customer: conflictingReg.customers?.email,
-          current_customer: customer.email,
-          conflict: {
-            registration: customer.registration_plate,
-            existing_make_model: `${conflictingReg.customers?.vehicle_make} ${conflictingReg.customers?.vehicle_model}`,
-            current_make_model: `${customer.vehicle_make} ${customer.vehicle_model}`
-          }
-        }));
-        
-        return new Response(JSON.stringify({ 
-          ok: false, 
-          rid,
-          code: 'VEHICLE_DATA_CONFLICT', 
-          error: `Registration ${customer.registration_plate} already exists with different vehicle data`,
-          details: {
-            existing_warranty: conflictingReg.warranty_number,
-            original_customer: conflictingReg.customers?.email,
-            existing_vehicle: `${conflictingReg.customers?.vehicle_make} ${conflictingReg.customers?.vehicle_model}`,
-            current_vehicle: `${customer.vehicle_make} ${customer.vehicle_model}`,
-            note: "Renewals for the same vehicle are allowed, but vehicle data must match"
-          }
-        }), {
-          status: 400,
-          headers: { "content-type": "application/json", ...corsHeaders },
-        });
-      }
-      
-      // Log if this is a valid renewal (same vehicle data)
-      const validRenewal = duplicateRegistrations.find(p => {
-        const sameReg = p.customers?.registration_plate?.toLowerCase() === customer.registration_plate?.toLowerCase();
-        const sameMake = p.customers?.vehicle_make?.toLowerCase() === customer.vehicle_make?.toLowerCase();
-        const sameModel = p.customers?.vehicle_model?.toLowerCase() === customer.vehicle_model?.toLowerCase();
-        
-        return sameReg && sameMake && sameModel;
-      });
-      
-      if (validRenewal) {
-        console.log(JSON.stringify({ 
-          evt: "w2k.warranty_renewal_detected", 
-          rid, 
-          previous_warranty: validRenewal.warranty_number,
-          vehicle: `${customer.vehicle_make} ${customer.vehicle_model}`,
-          registration: customer.registration_plate
-        }));
-      }
-    }
+    // Allow all legitimate customer orders - no duplicate blocking for same customer
+    // Each policy purchase creates a new order, even from the same customer/email
+    console.log(JSON.stringify({ 
+      evt: "w2k.processing_order", 
+      rid, 
+      customer: customer.email,
+      registration: customer.registration_plate,
+      policy_id: policy.id,
+      note: "Processing as new order - duplicate customers allowed"
+    }));
 
     // Validate required fields for W2K
     const requiredFields = {
