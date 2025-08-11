@@ -207,6 +207,96 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    // Prevent test data from being sent to live API
+    const testIndicators = [
+      'test', 'slack', 'qureshi', 'guest', 'demo', 'unknown', 'tand band',
+      'ab12', 'test123', 'monshot', 'limited', 'qureshitest', 'threeyear'
+    ];
+    
+    const isTestData = testIndicators.some(indicator => 
+      customer.name?.toLowerCase().includes(indicator) ||
+      customer.email?.toLowerCase().includes(indicator) ||
+      customer.registration_plate?.toLowerCase().includes(indicator) ||
+      customer.vehicle_make?.toLowerCase().includes(indicator) ||
+      customer.vehicle_model?.toLowerCase().includes(indicator)
+    );
+
+    if (isTestData) {
+      console.log(JSON.stringify({ 
+        evt: "w2k.test_data_blocked", 
+        rid, 
+        customer: customer.email,
+        registration: customer.registration_plate 
+      }));
+      
+      // Update policy status to indicate it was blocked
+      await supabase
+        .from('customer_policies')
+        .update({
+          warranties_2000_status: 'blocked_test_data',
+          warranties_2000_response: {
+            status: 'blocked',
+            reason: 'Test data blocked from live API',
+            blocked_at: new Date().toISOString()
+          }
+        })
+        .eq('id', policy.id);
+      
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        rid,
+        code: 'TEST_DATA_BLOCKED', 
+        error: 'Test data blocked from being sent to live Warranties 2000 API',
+        details: {
+          customer: customer.email,
+          registration: customer.registration_plate
+        }
+      }), {
+        status: 400,
+        headers: { "content-type": "application/json", ...corsHeaders },
+      });
+    }
+
+    // Check for duplicate registration across all customers to prevent same vehicle being sent twice
+    const { data: duplicateRegistrations, error: dupError } = await supabase
+      .from('customer_policies')
+      .select(`
+        id, warranty_number, warranties_2000_status, 
+        customers!customer_id(registration_plate, email, name)
+      `)
+      .neq('id', policy.id)
+      .eq('warranties_2000_status', 'sent');
+
+    if (duplicateRegistrations && !dupError) {
+      const duplicateReg = duplicateRegistrations.find(p => 
+        p.customers?.registration_plate?.toLowerCase() === customer.registration_plate?.toLowerCase()
+      );
+      
+      if (duplicateReg) {
+        console.log(JSON.stringify({ 
+          evt: "w2k.duplicate_registration_blocked", 
+          rid, 
+          duplicate_warranty: duplicateReg.warranty_number,
+          original_customer: duplicateReg.customers?.email,
+          current_customer: customer.email
+        }));
+        
+        return new Response(JSON.stringify({ 
+          ok: false, 
+          rid,
+          code: 'DUPLICATE_REGISTRATION', 
+          error: `Registration ${customer.registration_plate} already sent to Warranties 2000`,
+          details: {
+            existing_warranty: duplicateReg.warranty_number,
+            original_customer: duplicateReg.customers?.email
+          }
+        }), {
+          status: 400,
+          headers: { "content-type": "application/json", ...corsHeaders },
+        });
+      }
+    }
+
     // Validate required fields for W2K
     const requiredFields = {
       warranty_number: policy.warranty_number,
