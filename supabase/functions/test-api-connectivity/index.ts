@@ -149,9 +149,9 @@ serve(async (req) => {
           PurPrc: "381",
           RegDate: "2020-01-01",
           WarType: "B-BASIC",
-          Month: "12", // Fixed: Use 12 instead of variable values
-          MaxClm: "3000", // Fixed: Use the corrected claim amount
-          MOTExpiry: "2025-12-31", // Fixed: Use MOTExpiry instead of MOTDue
+          Month: "12",
+          MaxClm: "3000",
+          MOTExpiry: "2025-12-31",
           WarrantyRef: "BAW-2501-400001"
         };
 

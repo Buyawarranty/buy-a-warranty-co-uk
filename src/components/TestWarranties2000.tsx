@@ -33,9 +33,9 @@ const TestWarranties2000 = () => {
       EngSize: "1.6", // API requires this field
       PurPrc: "15000",
       RegDate: "2020-01-01",
-      WarType: "BASIC", // Try without the 'B' prefix
+      WarType: "B-BASIC", // Use correct warranty type
       Month: "12",
-      MaxClm: "500",
+      MaxClm: "3000", // Use valid claim amount
       Notes: "Test registration",
       Ref: "BAW-2501-400001",
       MOTDue: "2025-12-31"
