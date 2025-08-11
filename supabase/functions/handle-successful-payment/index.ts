@@ -139,11 +139,16 @@ serve(async (req) => {
           });
 
           // Send policy documents email using send-policy-documents function
+          const paymentTypeDisplay = getPaymentTypeDisplay(paymentType);
+          
           const emailPayload = {
             recipientEmail: userEmail,
             variables: {
               customerName: customerName,
-              planType: planId
+              planType: planId,
+              policyNumber: warrantyReference,
+              registrationPlate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
+              paymentType: paymentTypeDisplay
             }
           };
 
@@ -429,4 +434,15 @@ function calculatePolicyEndDate(paymentType: string): string {
       now.setMonth(now.getMonth() + 1);
   }
   return now.toISOString();
+}
+
+// Helper function to convert payment type to user-friendly display format
+function getPaymentTypeDisplay(paymentType: string): string {
+  switch (paymentType) {
+    case 'monthly': return 'Monthly';
+    case 'yearly': return '12 months';
+    case 'two_yearly': return '24 months';
+    case 'three_yearly': return '36 months';
+    default: return paymentType;
+  }
 }
