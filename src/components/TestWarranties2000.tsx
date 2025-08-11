@@ -33,15 +33,10 @@ const TestWarranties2000 = () => {
       RegDate: "2020-01-01",
       WarType: "BBASIC",
       Month: "12",
-      MaxClm: "500", // Try with full amount instead of code
+      MaxClm: "050", // Correct code for BBASIC (£500)
       MOTDue: "2025-12-31",
       Ref: "BAW-2501-400001"
     };
-    
-    console.log('=== TESTING WITH UPDATED DATA ===');
-    console.log('MaxClm value:', testData.MaxClm);
-    console.log('WarType value:', testData.WarType);
-    console.log('Month value:', testData.Month);
 
     try {
       console.log('Testing Warranties 2000 API with data:', testData);
