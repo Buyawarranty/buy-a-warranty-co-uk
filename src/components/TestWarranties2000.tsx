@@ -29,14 +29,13 @@ const TestWarranties2000 = () => {
       Model: "Focus",
       RegNum: "AB12 CDE",
       Mileage: "50000",
-      EngSize: "2.0",
       PurPrc: "381",
       RegDate: "2020-01-01",
-      WarType: "B-BASIC",
-      Month: "3",
-      MaxClm: "250",
-      MOTExpiry: "2025-12-31",
-      WarrantyRef: "BAW-2501-400001"
+      WarType: "BBASIC",
+      Month: "12",
+      MaxClm: "050",
+      MOTDue: "2025-12-31",
+      Ref: "BAW-2501-400001"
     };
 
     try {
