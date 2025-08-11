@@ -54,7 +54,7 @@ serve(async (req) => {
   }
 
   try {
-    logStep("Function started");
+    logStep("Function started - checking credentials");
     logStep('Starting Warranties 2000 registration process');
     
     // Get API credentials from environment
@@ -153,7 +153,11 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Warranties 2000 API error response:', errorText);
+      logStep('Warranties 2000 API error response', { 
+        status: response.status, 
+        statusText: response.statusText,
+        errorText: errorText.substring(0, 500)
+      });
       console.error('Request data that was sent:', JSON.stringify(registrationData, null, 2));
       
       let errorMessage = 'Registration failed';
@@ -162,9 +166,9 @@ serve(async (req) => {
       // Try to parse the error response
       try {
         parsedError = JSON.parse(errorText);
-        console.error('Parsed error data:', parsedError);
+        logStep('Parsed error data', parsedError);
       } catch (parseError) {
-        console.error('Could not parse error response as JSON');
+        logStep('Could not parse error response as JSON', { rawText: errorText.substring(0, 200) });
       }
       
       switch (response.status) {

@@ -45,23 +45,26 @@ const TestWarranties2000 = () => {
         body: testData
       });
 
+      console.log('Function response - data:', data);
+      console.log('Function response - error:', error);
+
       if (error) {
         console.error('Error calling Warranties 2000 API:', error);
         setResponse(`Error: ${JSON.stringify(error, null, 2)}`);
-        toast.error('API call failed');
+        toast.error(`API call failed: ${error.message || 'Unknown error'}`);
       } else {
         console.log('Warranties 2000 API response:', data);
         setResponse(JSON.stringify(data, null, 2));
-        if (data.success) {
+        if (data?.success) {
           toast.success('API call successful!');
         } else {
-          toast.error(`API returned error: ${data.error}`);
-          console.error('API error details:', data.details);
+          toast.error(`API returned error: ${data?.error || 'Unknown error'}`);
+          console.error('API error details:', data?.details);
         }
       }
     } catch (err) {
       console.error('Exception calling Warranties 2000 API:', err);
-      setResponse(`Exception: ${err}`);
+      setResponse(`Exception: ${err instanceof Error ? err.message : String(err)}`);
       toast.error('API call failed with exception');
     } finally {
       setLoading(false);
