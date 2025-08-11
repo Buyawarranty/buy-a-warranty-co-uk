@@ -16,7 +16,7 @@ const TestWarranties2000 = () => {
     const testData = {
       Title: "Mr",
       First: "John",
-      Surname: "Test",
+      Surname: "Test", 
       Addr1: "123 Test Street",
       Addr2: "",
       Town: "London",
@@ -33,10 +33,15 @@ const TestWarranties2000 = () => {
       RegDate: "2020-01-01",
       WarType: "BBASIC",
       Month: "12",
-      MaxClm: "050",
+      MaxClm: "500", // Try with full amount instead of code
       MOTDue: "2025-12-31",
       Ref: "BAW-2501-400001"
     };
+    
+    console.log('=== TESTING WITH UPDATED DATA ===');
+    console.log('MaxClm value:', testData.MaxClm);
+    console.log('WarType value:', testData.WarType);
+    console.log('Month value:', testData.Month);
 
     try {
       console.log('Testing Warranties 2000 API with data:', testData);
