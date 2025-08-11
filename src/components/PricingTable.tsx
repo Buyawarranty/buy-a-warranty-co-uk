@@ -410,7 +410,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
-            1 year
+            12 months
           </button>
           <div className="relative">
             <button
@@ -421,7 +421,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              2 year
+              24 months
             </button>
             <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
               10% OFF
@@ -436,7 +436,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              3 year
+              36 months
             </button>
             <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
               20% OFF

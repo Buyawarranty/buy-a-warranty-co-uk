@@ -467,9 +467,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 <div className="flex justify-between">
                   <span className="text-gray-600">Cover period:</span>
                   <span className="font-semibold">
-                    {paymentType === 'yearly' ? '1 Year' :
-                     paymentType === 'two_yearly' ? '2 Years' :
-                     paymentType === 'three_yearly' ? '3 Years' : '1 Year'}
+                    {paymentType === 'yearly' ? '12 months' :
+                     paymentType === 'two_yearly' ? '24 months' :
+                     paymentType === 'three_yearly' ? '36 months' : '12 months'}
                   </span>
                 </div>
                 <div className="flex justify-between">
