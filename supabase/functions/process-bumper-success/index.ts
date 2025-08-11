@@ -306,9 +306,9 @@ serve(async (req) => {
       logStep("Skipping Warranties 2000 registration - no warranty reference generated");
     }
 
-    // Send welcome email using direct HTTP call
+    // Send welcome email using Supabase client
     try {
-      console.log(`[BUMPER-EMAIL-DEBUG] Sending welcome email directly for policy:`, {
+      console.log(`[BUMPER-EMAIL-DEBUG] Sending welcome email for policy:`, {
         customerId: customer.id,
         policyId: policy.id,
         customerEmail: customer.email,
@@ -320,31 +320,22 @@ serve(async (req) => {
         policyId: policy.id
       };
 
-      // Direct HTTP call to the function endpoint
-      const functionUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-welcome-email-manual`;
-      const response = await fetch(functionUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(emailPayload)
+      // Use Supabase client to invoke the function
+      const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
+        body: emailPayload
       });
-
-      const emailResult = await response.json();
       
-      console.log(`[BUMPER-EMAIL-DEBUG] Direct email call response:`, {
-        status: response.status,
+      console.log(`[BUMPER-EMAIL-DEBUG] Email function response:`, {
         data: emailResult,
-        ok: response.ok
+        error: emailError
       });
 
-      if (response.ok) {
-        logStep("SUCCESS: Welcome email sent successfully via direct call", emailResult);
+      if (!emailError && emailResult) {
+        logStep("SUCCESS: Welcome email sent successfully", emailResult);
       } else {
-        logStep("ERROR: Welcome email failed via direct call", { 
-          status: response.status,
-          error: emailResult
+        logStep("ERROR: Welcome email failed", { 
+          error: emailError || 'Unknown error',
+          result: emailResult
         });
       }
 
