@@ -314,7 +314,7 @@ async function generateWarrantyReference(): Promise<string> {
 // Helper functions for warranty registration
 function getWarrantyDuration(paymentType: string): string {
   switch (paymentType) {
-    case 'monthly': return '1';
+    case 'monthly': return '12'; // Changed from 1 to 12 - API expects 12 months minimum
     case 'yearly': return '12';
     case 'two_yearly': return '24';
     case 'three_yearly': return '36';
@@ -323,12 +323,21 @@ function getWarrantyDuration(paymentType: string): string {
 }
 
 function getMaxClaimAmount(planId: string): string {
-  switch (planId.toLowerCase()) {
-    case 'basic': return '500';
-    case 'gold': return '1000';
-    case 'platinum': return '1200';
-    default: return '500';
+  // Map plan types to expected API values
+  const normalizedPlan = planId.toLowerCase();
+  
+  // Handle different plan name formats
+  if (normalizedPlan.includes('basic') || normalizedPlan === 'b-basic') {
+    return '3000'; // Updated to match API expectations
+  } else if (normalizedPlan.includes('gold') || normalizedPlan === 'g-gold') {
+    return '5000'; // Updated to match API expectations  
+  } else if (normalizedPlan.includes('platinum') || normalizedPlan === 'p-platinum') {
+    return '7500'; // Updated to match API expectations
+  } else if (normalizedPlan.includes('extended') || normalizedPlan.includes('motorbike') || normalizedPlan.includes('hybrid')) {
+    return '3000'; // Default for extended/special warranties
   }
+  
+  return '3000'; // Default fallback
 }
 
 function getWarrantyType(planId: string): string {
