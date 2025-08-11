@@ -64,16 +64,24 @@ serve(async (req) => {
     logStep('Environment check', {
       hasUsername: !!username,
       hasPassword: !!password,
-      usernameLength: username?.length || 0
+      usernameLength: username?.length || 0,
+      passwordLength: password?.length || 0
     });
     
     if (!username || !password) {
-      logStep('CRITICAL ERROR: Missing WARRANTIES_2000 credentials');
+      logStep('CRITICAL ERROR: Missing WARRANTIES_2000 credentials', {
+        username: username ? 'SET' : 'MISSING',
+        password: password ? 'SET' : 'MISSING'
+      });
       return new Response(
         JSON.stringify({ 
           success: false,
           error: 'API credentials not configured',
-          details: 'Missing WARRANTIES_2000_USERNAME or WARRANTIES_2000_PASSWORD'
+          details: {
+            message: 'Missing WARRANTIES_2000_USERNAME or WARRANTIES_2000_PASSWORD',
+            username_status: username ? 'SET' : 'MISSING',
+            password_status: password ? 'SET' : 'MISSING'
+          }
         }),
         { 
           status: 500, 
