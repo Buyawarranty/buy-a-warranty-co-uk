@@ -134,6 +134,9 @@ export const CustomersTab = () => {
   const [loading, setLoading] = useState(true);
   const [incompleteLoading, setIncompleteLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('newest'); // Default to newest first
+  const [filterByPlan, setFilterByPlan] = useState('all');
+  const [filterByStatus, setFilterByStatus] = useState('all');
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState<AdminNote[]>([]);
@@ -154,17 +157,59 @@ export const CustomersTab = () => {
   }, []);
 
   useEffect(() => {
+    applyFiltersAndSort();
+  }, [searchTerm, customers, sortBy, filterByPlan, filterByStatus]);
+
+  const applyFiltersAndSort = () => {
+    let filtered = [...customers];
+
+    // Apply search filter
     if (searchTerm) {
-      const filtered = customers.filter(customer =>
+      filtered = filtered.filter(customer =>
         customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.registration_plate?.toLowerCase().includes(searchTerm.toLowerCase())
+        customer.registration_plate?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.warranty_reference_number?.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredCustomers(filtered);
-    } else {
-      setFilteredCustomers(customers);
     }
-  }, [searchTerm, customers]);
+
+    // Apply plan filter
+    if (filterByPlan !== 'all') {
+      filtered = filtered.filter(customer =>
+        customer.plan_type?.toLowerCase() === filterByPlan.toLowerCase()
+      );
+    }
+
+    // Apply status filter
+    if (filterByStatus !== 'all') {
+      filtered = filtered.filter(customer =>
+        customer.status?.toLowerCase() === filterByStatus.toLowerCase()
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      const dateA = new Date(a.signup_date).getTime();
+      const dateB = new Date(b.signup_date).getTime();
+      
+      switch (sortBy) {
+        case 'newest':
+          return dateB - dateA; // Newest first (default)
+        case 'oldest':
+          return dateA - dateB; // Oldest first
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'email':
+          return a.email.localeCompare(b.email);
+        case 'plan':
+          return (a.plan_type || '').localeCompare(b.plan_type || '');
+        default:
+          return dateB - dateA; // Default to newest first
+      }
+    });
+
+    setFilteredCustomers(filtered);
+  };
 
   const fetchPlans = async () => {
     try {
@@ -1002,20 +1047,101 @@ export const CustomersTab = () => {
         </TabsList>
 
         <TabsContent value="complete" className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search customers..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <div className="text-sm text-gray-600">
-          Showing {filteredCustomers.length} customers
-        </div>
-      </div>
+          {/* Enhanced Search and Filter Controls */}
+          <div className="bg-white p-4 rounded-lg border space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Search */}
+              <div className="space-y-1">
+                <Label htmlFor="search" className="text-sm font-medium">Search</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="search"
+                    placeholder="Search by name, email, or registration..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              {/* Sort By */}
+              <div className="space-y-1">
+                <Label htmlFor="sortBy" className="text-sm font-medium">Sort By</Label>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest First</SelectItem>
+                    <SelectItem value="oldest">Oldest First</SelectItem>
+                    <SelectItem value="name">Name (A-Z)</SelectItem>
+                    <SelectItem value="email">Email (A-Z)</SelectItem>
+                    <SelectItem value="plan">Plan Type</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Filter by Plan */}
+              <div className="space-y-1">
+                <Label htmlFor="planFilter" className="text-sm font-medium">Plan Type</Label>
+                <Select value={filterByPlan} onValueChange={setFilterByPlan}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Plans</SelectItem>
+                    <SelectItem value="basic">Basic</SelectItem>
+                    <SelectItem value="gold">Gold</SelectItem>
+                    <SelectItem value="platinum">Platinum</SelectItem>
+                    <SelectItem value="electric">Electric</SelectItem>
+                    <SelectItem value="phev">PHEV</SelectItem>
+                    <SelectItem value="motorbike">Motorbike</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Filter by Status */}
+              <div className="space-y-1">
+                <Label htmlFor="statusFilter" className="text-sm font-medium">Status</Label>
+                <Select value={filterByStatus} onValueChange={setFilterByStatus}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Results Summary */}
+            <div className="flex items-center justify-between text-sm text-gray-600 pt-2 border-t">
+              <span>
+                Showing {filteredCustomers.length} of {customers.length} customers
+                {searchTerm && ` for "${searchTerm}"`}
+                {filterByPlan !== 'all' && ` • ${filterByPlan} plan`}
+                {filterByStatus !== 'all' && ` • ${filterByStatus} status`}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSearchTerm('');
+                  setSortBy('newest');
+                  setFilterByPlan('all');
+                  setFilterByStatus('all');
+                }}
+                className="text-xs"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          </div>
 
       <div className="bg-white rounded-lg shadow">
         <Table>
