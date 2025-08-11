@@ -626,7 +626,17 @@ export const CustomersTab = () => {
         // This is a real customer - delete related records first, then customer
         console.log('Deleting real customer with ID:', customerId);
         
-        // 1. Delete email logs
+        // 1. Delete warranty audit logs first (they reference both customer and policies)
+        const { error: auditLogsError } = await supabase
+          .from('warranty_audit_log')
+          .delete()
+          .eq('customer_id', customerId);
+
+        if (auditLogsError) {
+          console.error('Error deleting warranty audit logs:', auditLogsError);
+        }
+
+        // 2. Delete email logs
         const { error: emailLogsError } = await supabase
           .from('email_logs')
           .delete()
@@ -636,7 +646,7 @@ export const CustomersTab = () => {
           console.error('Error deleting email logs:', emailLogsError);
         }
 
-        // 2. Delete customer policies
+        // 3. Delete customer policies
         const { error: policiesError } = await supabase
           .from('customer_policies')
           .delete()
@@ -646,7 +656,7 @@ export const CustomersTab = () => {
           console.error('Error deleting customer policies:', policiesError);
         }
 
-        // 3. Delete admin notes
+        // 4. Delete admin notes
         const { error: notesError } = await supabase
           .from('admin_notes')
           .delete()
@@ -656,7 +666,17 @@ export const CustomersTab = () => {
           console.error('Error deleting admin notes:', notesError);
         }
 
-        // 4. Finally, delete the customer
+        // 5. Delete payments
+        const { error: paymentsError } = await supabase
+          .from('payments')
+          .delete()
+          .eq('customer_id', customerId);
+
+        if (paymentsError) {
+          console.error('Error deleting payments:', paymentsError);
+        }
+
+        // 6. Finally, delete the customer
         const { error: customerError } = await supabase
           .from('customers')
           .delete()
