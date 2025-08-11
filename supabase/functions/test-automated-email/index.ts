@@ -219,22 +219,35 @@ serve(async (req) => {
 
     let emailResult, emailError;
     try {
+      logStep("Invoking send-welcome-email-manual function", emailPayload);
+      
       const response = await supabaseClient.functions.invoke('send-welcome-email-manual', {
         body: emailPayload
       });
+      
       emailResult = response.data;
       emailError = response.error;
       
-      logStep("Email function response", { 
-        data: emailResult, 
-        error: emailError,
-        success: !emailError 
+      logStep("Email function response received", { 
+        hasData: !!emailResult, 
+        hasError: !!emailError,
+        errorType: emailError?.name || 'none',
+        errorMessage: emailError?.message || 'none',
+        resultSuccess: emailResult?.success,
+        statusCode: emailError?.status || 'unknown'
       });
+      
+      // Log the full error details for debugging
+      if (emailError) {
+        console.log('[TEST-AUTOMATED-EMAIL] Full error object:', JSON.stringify(emailError, null, 2));
+      }
+      
     } catch (invokeError) {
       logStep("Email function invoke failed", invokeError);
       emailError = {
         message: invokeError instanceof Error ? invokeError.message : String(invokeError),
-        type: 'invoke_error'
+        type: 'invoke_error',
+        stack: invokeError instanceof Error ? invokeError.stack : undefined
       };
     }
 
