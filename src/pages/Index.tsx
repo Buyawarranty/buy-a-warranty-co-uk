@@ -8,6 +8,7 @@ import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
+import { TestDeleteUser } from '@/components/TestDeleteUser';
 import { supabase } from '@/integrations/supabase/client';
 
 
@@ -313,6 +314,11 @@ const Index = () => {
           onBack={() => handleBackToStep(3)}
         />
       )}
+      
+      {/* Temporary delete test user button for admin */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <TestDeleteUser />
+      </div>
       
     </div>
   );
