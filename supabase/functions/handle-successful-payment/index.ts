@@ -129,9 +129,9 @@ serve(async (req) => {
           planType: planId
         });
         
-        // Send welcome email immediately using direct HTTP call to avoid function invoke issues
+        // Send welcome email using proper Supabase function invocation
         try {
-          console.log(`[AUTOMATED-EMAIL-DEBUG] Sending welcome email directly for policy:`, {
+          console.log(`[AUTOMATED-EMAIL-DEBUG] Sending welcome email for policy:`, {
             customerId: customerData2.id,
             policyId: policy.id,
             userEmail,
@@ -143,40 +143,49 @@ serve(async (req) => {
             policyId: policy.id
           };
 
-          // Direct HTTP call to the function endpoint
-          const functionUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-welcome-email-manual`;
-          const response = await fetch(functionUrl, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(emailPayload)
+          // Use Supabase client to invoke the function properly
+          const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
+            body: emailPayload
           });
-
-          const emailResult = await response.json();
           
-          console.log(`[AUTOMATED-EMAIL-DEBUG] Direct email call response:`, {
-            status: response.status,
+          console.log(`[AUTOMATED-EMAIL-DEBUG] Function invoke response:`, {
             data: emailResult,
-            ok: response.ok
+            error: emailError
           });
 
-          if (response.ok) {
-            logStep("SUCCESS: Welcome email sent successfully via direct call", emailResult);
+          if (emailError) {
+            logStep("ERROR: Welcome email failed via function invoke", emailError);
+            
+            // Update policy status to reflect email failure
+            await supabaseClient
+              .from('customer_policies')
+              .update({ email_sent_status: 'failed' })
+              .eq('id', policy.id);
           } else {
-            logStep("ERROR: Welcome email failed via direct call", { 
-              status: response.status,
-              error: emailResult
-            });
+            logStep("SUCCESS: Welcome email sent successfully via function invoke", emailResult);
+            
+            // Update policy status to reflect email success
+            await supabaseClient
+              .from('customer_policies')
+              .update({ 
+                email_sent_status: 'sent',
+                email_sent_at: new Date().toISOString()
+              })
+              .eq('id', policy.id);
           }
 
         } catch (emailError) {
-          logStep("Direct email call error", {
+          logStep("Function invoke error", {
             error: emailError,
             message: emailError instanceof Error ? emailError.message : String(emailError),
             stack: emailError instanceof Error ? emailError.stack : undefined
           });
+          
+          // Update policy status to reflect email failure
+          await supabaseClient
+            .from('customer_policies')
+            .update({ email_sent_status: 'failed' })
+            .eq('id', policy.id);
         }
       } else {
         logStep("WARNING: No policy found for welcome email", { customerId: customerData2.id });
