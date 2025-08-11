@@ -20,6 +20,7 @@ import { ResendWelcomeEmail } from '@/components/admin/ResendWelcomeEmail';
 import { TestAutomatedEmail } from '@/components/admin/TestAutomatedEmail';
 import { SimpleEmailTest } from '@/components/admin/SimpleEmailTest';
 import { TestEmailFunctionDirect } from '@/components/admin/TestEmailFunctionDirect';
+import { EmailFunctionDiagnostics } from '@/components/admin/EmailFunctionDiagnostics';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -100,6 +101,8 @@ const AdminDashboard = () => {
               <OrderReconciliation />
               
               <ApiConnectivityTest />
+              
+              <EmailFunctionDiagnostics />
               
               <SimpleEmailTest />
               
