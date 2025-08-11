@@ -88,12 +88,12 @@ serve(async (req) => {
       logStep("Created new user", { userId });
     }
 
-    // Create policy record
+    // Create or update policy record
     const policyEndDate = calculatePolicyEndDate(paymentType);
     
     const { data: policyData, error: policyError } = await supabaseClient
       .from('customer_policies')
-      .insert({
+      .upsert({
         user_id: userId,
         email: email,
         plan_type: planType.toLowerCase(),
@@ -101,6 +101,8 @@ serve(async (req) => {
         policy_number: policyNumber,
         policy_end_date: policyEndDate,
         status: 'active'
+      }, {
+        onConflict: 'policy_number'
       })
       .select()
       .single();
