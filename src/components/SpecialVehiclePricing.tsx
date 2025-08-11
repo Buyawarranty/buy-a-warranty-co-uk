@@ -321,9 +321,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   ? 'bg-[#1a365d] text-white shadow-md' 
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
-            >
-              1 Year
-            </button>
+             >
+               12 Months
+             </button>
             <div className="relative">
               <button
                 onClick={() => setPaymentType('two_yearly')}
@@ -332,9 +332,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                     ? 'bg-[#1a365d] text-white shadow-md' 
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
-              >
-                2 Years
-              </button>
+               >
+                 24 Months
+               </button>
               <div className="absolute -top-2 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-1">
                 10% OFF
               </div>
@@ -347,9 +347,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                     ? 'bg-[#1a365d] text-white shadow-md' 
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
-              >
-                3 Years
-              </button>
+               >
+                 36 Months
+               </button>
               <div className="absolute -top-2 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-1">
                 20% OFF
               </div>
@@ -389,12 +389,12 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   <h3 className="text-4xl font-bold mb-4 text-yellow-600">
                     {plan.name}
                   </h3>
-                  <p className="text-gray-900 text-xl font-bold mb-6">
-                    {paymentType === 'yearly' ? '1 Year warranty' :
-                     paymentType === 'two_yearly' ? '2 Year warranty' :
-                     paymentType === 'three_yearly' ? '3 Year warranty' :
-                     '1 Year warranty'}
-                  </p>
+                   <p className="text-gray-900 text-xl font-bold mb-6">
+                     {paymentType === 'yearly' ? '12 Months warranty' :
+                      paymentType === 'two_yearly' ? '24 Months warranty' :
+                      paymentType === 'three_yearly' ? '36 Months warranty' :
+                      '12 Months warranty'}
+                   </p>
                   <div className="text-4xl font-bold text-gray-900 mb-3">
                     <span className="text-2xl">£</span>{Math.round(getMonthlyDisplayPrice())}<span className="text-2xl">/mo</span>
                   </div>
