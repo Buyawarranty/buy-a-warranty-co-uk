@@ -522,15 +522,15 @@ function getMaxClaimAmount(planType: string): string {
 }
 
 function getWarrantyType(planType: string): string {
-  // WarType must be one of: B-BASIC, B-GOLD, B-PLATINUM, B-EV, B-PHEV or B-MOTORCYCLE
+  // WarType must be one of: B-BASIC, B-GOLD, B-PLATINUM, B-EV, B-PHEV or B-MOTORBIKE
   switch (planType.toLowerCase()) {
     case 'basic': return 'B-BASIC';
     case 'gold': return 'B-GOLD';
     case 'platinum': return 'B-PLATINUM';
     case 'phev': return 'B-PHEV';
     case 'ev': return 'B-EV';
-    case 'motorbike': return 'B-MOTORCYCLE';
-    case 'motorcycle': return 'B-MOTORCYCLE';
+    case 'motorbike': return 'B-MOTORBIKE';
+    case 'motorcycle': return 'B-MOTORBIKE';
     default: return 'B-BASIC';
   }
 }
