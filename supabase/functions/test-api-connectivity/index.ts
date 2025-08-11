@@ -131,27 +131,28 @@ serve(async (req) => {
         
         const testRegistration = {
           Title: "Mr",
-          First: "Test",
-          Surname: "Customer",
+          First: "John",
+          Surname: "Test",
           Addr1: "123 Test Street",
+          Addr2: "",
           Town: "London",
           PCode: "SW1A 1AA",
-          Tel: "02012345678",
-          Mobile: "07123456789",
-          EMail: "test@buyawarranty.co.uk",
-          PurDate: "2024-08-04",
+          Tel: "02071234567",
+          Mobile: "07700123456",
+          EMail: "john.test@example.com",
+          PurDate: "2025-08-11",
           Make: "Ford",
           Model: "Focus",
-          RegNum: "TEST123",
+          RegNum: "AB12 CDE",
           Mileage: "50000",
-          EngSize: "1.6",
-          PurPrc: "300",
+          EngSize: "2.0",
+          PurPrc: "381",
           RegDate: "2020-01-01",
           WarType: "B-BASIC",
-          Month: "12",
-          MaxClm: "500",
-          MOTDue: "2025-01-01",
-          Ref: "TEST-REF-001"
+          Month: "12", // Fixed: Use 12 instead of variable values
+          MaxClm: "3000", // Fixed: Use the corrected claim amount
+          MOTExpiry: "2025-12-31", // Fixed: Use MOTExpiry instead of MOTDue
+          WarrantyRef: "BAW-2501-400001"
         };
 
         const credentials = btoa(`${warrantiesUser}:${warrantiesPass}`);
