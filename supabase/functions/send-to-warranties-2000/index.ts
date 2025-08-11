@@ -371,7 +371,7 @@ const handler = async (req: Request): Promise<Response> => {
       Model: customer.vehicle_model || '',
       RegNum: customer.registration_plate || '',
       Mileage: String(Math.floor(parseFloat(customer.mileage || '50000'))), // Whole number as string
-      EngSize: estimateEngineSize(customer.vehicle_make, customer.vehicle_model),
+      EngSize: "", // Pass empty string as requested
       PurPrc: String(Math.floor(policy.payment_amount || 0)),
       RegDate: customer.vehicle_year ? `${customer.vehicle_year}-01-01` : '2020-01-01',
       WarType: getWarrantyType(policy.plan_type || ''),

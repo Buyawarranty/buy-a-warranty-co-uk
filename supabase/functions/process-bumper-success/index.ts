@@ -273,7 +273,7 @@ serve(async (req) => {
           Model: vehicleData?.model || "Focus",
           RegNum: vehicleReg || "BUMPER001",
           Mileage: String(Math.floor(parseFloat(vehicleData?.mileage || '50000'))), // Whole number as string
-          EngSize: vehicleData?.engineSize || estimateEngineSize(vehicleData?.make),
+          EngSize: "", // Pass empty string as requested
           PurPrc: calculatePurchasePrice(plan.name.toLowerCase(), 'monthly').toString(),
           RegDate: vehicleData?.year ? `${vehicleData.year}-01-01` : '2020-01-01',
           WarType: getWarrantyType(plan.name.toLowerCase()),

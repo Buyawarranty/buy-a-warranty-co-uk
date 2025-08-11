@@ -30,7 +30,7 @@ const TestWarranties2000 = () => {
       Model: "Focus",
       RegNum: "AB12 CDE",
       Mileage: "50000", // Whole number as string
-      EngSize: "1.6", // Required field - engine size in litres
+      EngSize: "", // Pass empty string instead of value
       PurPrc: "15000", // Purchase price
       RegDate: "2020-01-01",
       WarType: "BBASIC", // Must match predefined values in their system
@@ -40,6 +40,10 @@ const TestWarranties2000 = () => {
       Ref: "BAW-2501-400001",
       MOTDue: "2025-12-31"
     };
+    
+    console.log('=== TESTING WITH EMPTY ENGSIZE ===');
+    console.log('EngSize value:', testData.EngSize);
+    console.log('MaxClm value:', testData.MaxClm);
 
     try {
       console.log('Testing Warranties 2000 API with data:', testData);

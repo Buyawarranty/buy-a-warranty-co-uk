@@ -99,7 +99,7 @@ const handler = async (req: Request): Promise<Response> => {
       Model: 'Focus',
       RegNum: registrationPlate,
       Mileage: '50000', // Whole number as string
-      EngSize: '1.6', // Required field
+      EngSize: '', // Pass empty string as requested
       PurPrc: '15000',
       RegDate: '2020-01-01',
       WarType: 'BBASIC', // Must be from predefined list
