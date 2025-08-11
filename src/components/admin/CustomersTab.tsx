@@ -1206,7 +1206,10 @@ export const CustomersTab = () => {
                     <Badge variant="secondary">{customer.plan_type}</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{customer.payment_type || 'N/A'}</Badge>
+                    <Badge variant="outline">
+                      {customer.stripe_session_id ? 'Stripe' : 
+                       customer.bumper_order_id ? 'Bumper' : 'N/A'}
+                    </Badge>
                   </TableCell>
                   <TableCell className="font-mono text-sm">
                     {customer.policy_number ? (
