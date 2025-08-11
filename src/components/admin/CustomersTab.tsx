@@ -148,6 +148,7 @@ export const CustomersTab = () => {
   const [passwordResetLoading, setPasswordResetLoading] = useState<{ [key: string]: boolean }>({});
   const [emailStatuses, setEmailStatuses] = useState<{ [key: string]: EmailStatus }>({});
   const [emailSendingLoading, setEmailSendingLoading] = useState<{ [key: string]: { [key: string]: boolean } }>({});
+  const [dvlaLookupLoading, setDvlaLookupLoading] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     fetchCustomers();
@@ -896,6 +897,68 @@ export const CustomersTab = () => {
     }
   };
 
+  const refreshVehicleDataFromDVLA = async (customerId: string, registrationPlate: string) => {
+    if (!registrationPlate) {
+      toast.error('Registration plate is required for DVLA lookup');
+      return;
+    }
+
+    setDvlaLookupLoading(prev => ({ ...prev, [customerId]: true }));
+    
+    try {
+      console.log(`Starting DVLA lookup for registration: ${registrationPlate}`);
+      
+      const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
+        body: { registrationNumber: registrationPlate }
+      });
+
+      if (error) {
+        console.error('DVLA lookup error:', error);
+        throw error;
+      }
+
+      console.log('DVLA lookup response:', data);
+
+      if (!data.found) {
+        toast.error(`Vehicle not found in DVLA database: ${data.error || 'Unknown error'}`);
+        return;
+      }
+
+      // Update customer record with DVLA data
+      const updateData = {
+        vehicle_make: data.make || null,
+        vehicle_model: data.model || null,
+        vehicle_year: data.yearOfManufacture ? data.yearOfManufacture.toString() : null,
+        vehicle_fuel_type: data.fuelType || null,
+        vehicle_transmission: data.transmission || null,
+        updated_at: new Date().toISOString()
+      };
+
+      console.log('Updating customer with DVLA data:', updateData);
+
+      const { error: updateError } = await supabase
+        .from('customers')
+        .update(updateData)
+        .eq('id', customerId);
+
+      if (updateError) {
+        console.error('Error updating customer with DVLA data:', updateError);
+        throw updateError;
+      }
+
+      toast.success(`Vehicle data updated from DVLA: ${data.make} ${data.model || ''}`);
+      
+      // Refresh customers list to show updated data
+      fetchCustomers();
+      
+    } catch (error: any) {
+      console.error('Error in DVLA vehicle lookup:', error);
+      toast.error(`DVLA lookup failed: ${error.message || 'Unknown error'}`);
+    } finally {
+      setDvlaLookupLoading(prev => ({ ...prev, [customerId]: false }));
+    }
+  };
+
   const resetCustomerPassword = async (customerId: string, customerEmail: string) => {
     setPasswordResetLoading(prev => ({ ...prev, [customerId]: true }));
     
@@ -1150,9 +1213,11 @@ export const CustomersTab = () => {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Address</TableHead>
               <TableHead>Registration Plate</TableHead>
-              <TableHead>Vehicle Details</TableHead>
+              <TableHead>Vehicle Make</TableHead>
+              <TableHead>Vehicle Model</TableHead>
+              <TableHead>Vehicle Year</TableHead>
+              <TableHead>Address</TableHead>
               <TableHead>Plan Type</TableHead>
               <TableHead>Payment Type</TableHead>
               <TableHead>Policy Number</TableHead>
@@ -1165,7 +1230,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={12} className="text-center py-8">
+                <TableCell colSpan={15} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -1187,18 +1252,51 @@ export const CustomersTab = () => {
                   <TableCell className="font-medium">{customer.name}</TableCell>
                   <TableCell>{customer.email}</TableCell>
                   <TableCell>{customer.phone || 'N/A'}</TableCell>
-                  <TableCell className="max-w-xs truncate">
-                    {customer.street || customer.town || customer.postcode 
-                      ? `${customer.street || ''} ${customer.town || ''} ${customer.postcode || ''}`.trim()
-                      : 'N/A'
-                    }
-                  </TableCell>
                   <TableCell>
                     <NumberPlate plateNumber={customer.registration_plate} />
                   </TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center space-x-2">
+                      <span className={customer.vehicle_make ? 'text-gray-900' : 'text-gray-400'}>
+                        {customer.vehicle_make || 'N/A'}
+                      </span>
+                      {!customer.vehicle_make && (
+                        <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200">
+                          Missing
+                        </Badge>
+                      )}
+                      {customer.vehicle_make && (
+                        <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                          DVLA
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center space-x-2">
+                      <span className={customer.vehicle_model ? 'text-gray-900' : 'text-gray-400'}>
+                        {customer.vehicle_model || 'N/A'}
+                      </span>
+                      {!customer.vehicle_model && (
+                        <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200">
+                          Missing
+                        </Badge>
+                      )}
+                      {customer.vehicle_model && (
+                        <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                          DVLA
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <span className={customer.vehicle_year ? 'text-gray-900' : 'text-gray-400'}>
+                      {customer.vehicle_year || 'N/A'}
+                    </span>
+                  </TableCell>
                   <TableCell className="max-w-xs truncate">
-                    {customer.vehicle_make || customer.vehicle_model || customer.vehicle_year
-                      ? `${customer.vehicle_make || ''} ${customer.vehicle_model || ''} ${customer.vehicle_year || ''}`.trim()
+                    {customer.street || customer.town || customer.postcode 
+                      ? `${customer.street || ''} ${customer.town || ''} ${customer.postcode || ''}`.trim()
                       : 'N/A'
                     }
                   </TableCell>
@@ -1301,17 +1399,33 @@ export const CustomersTab = () => {
                   </TableCell>
                    <TableCell>
                      <div className="flex space-x-2">
-                       <Dialog>
-                         <DialogTrigger asChild>
-                           <Button
-                             variant="ghost"
-                             size="sm"
-                             onClick={() => openCustomerDialog(customer)}
-                             title="Edit Customer"
-                           >
-                             <Edit className="h-4 w-4" />
-                           </Button>
-                         </DialogTrigger>
+                        {/* DVLA Vehicle Data Refresh */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => refreshVehicleDataFromDVLA(customer.id, customer.registration_plate)}
+                          disabled={dvlaLookupLoading[customer.id] || !customer.registration_plate}
+                          title="Refresh Vehicle Data from DVLA"
+                          className="hover:bg-green-50 hover:text-green-600"
+                        >
+                          {dvlaLookupLoading[customer.id] ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
+                          ) : (
+                            <RefreshCw className="h-4 w-4" />
+                          )}
+                        </Button>
+
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openCustomerDialog(customer)}
+                              title="Edit Customer"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
                        
                        <Button
                          variant="ghost"
