@@ -122,10 +122,29 @@ serve(async (req) => {
       .from('customers')
       .upsert(testCustomer, { onConflict: 'email' })
       .select()
-      .single();
+      .maybeSingle();
 
     if (customerError) {
-      throw new Error(`Failed to create test customer: ${customerError.message}`);
+      logStep("Customer upsert error", customerError);
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: `Failed to create test customer: ${customerError.message}`,
+        details: customerError 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
+
+    if (!customerData) {
+      logStep("No customer data returned from upsert");
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: "Customer upsert succeeded but no data returned" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
     }
 
     logStep("Test customer created", { customerId: customerData.id });
@@ -150,10 +169,29 @@ serve(async (req) => {
       .from('customer_policies')
       .upsert(testPolicy, { onConflict: 'policy_number' })
       .select()
-      .single();
+      .maybeSingle();
 
     if (policyError) {
-      throw new Error(`Failed to create test policy: ${policyError.message}`);
+      logStep("Policy upsert error", policyError);
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: `Failed to create test policy: ${policyError.message}`,
+        details: policyError 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
+
+    if (!policyData) {
+      logStep("No policy data returned from upsert");
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: "Policy upsert succeeded but no data returned" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
     }
 
     logStep("Test policy created", { policyId: policyData.id });
@@ -172,9 +210,26 @@ serve(async (req) => {
       policyId: policyData.id
     };
 
-    const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
-      body: emailPayload
-    });
+    let emailResult, emailError;
+    try {
+      const response = await supabaseClient.functions.invoke('send-welcome-email-manual', {
+        body: emailPayload
+      });
+      emailResult = response.data;
+      emailError = response.error;
+      
+      logStep("Email function response", { 
+        data: emailResult, 
+        error: emailError,
+        success: !emailError 
+      });
+    } catch (invokeError) {
+      logStep("Email function invoke failed", invokeError);
+      emailError = {
+        message: invokeError instanceof Error ? invokeError.message : String(invokeError),
+        type: 'invoke_error'
+      };
+    }
 
     if (emailError) {
       logStep("Email test failed", emailError);
@@ -190,10 +245,12 @@ serve(async (req) => {
         error: "Email test failed",
         details: emailError,
         customerId: customerData.id,
-        policyId: policyData.id
+        policyId: policyData.id,
+        testEmail: testEmail,
+        warrantyNumber: testWarrantyRef
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
+        status: 200,  // Return 200 but with success: false for failed email
       });
     }
 
@@ -225,10 +282,19 @@ serve(async (req) => {
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in test-automated-email", { message: errorMessage });
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    logStep("CRITICAL ERROR in test-automated-email", { 
+      message: errorMessage, 
+      stack: errorStack,
+      error: error 
+    });
+    
     return new Response(JSON.stringify({ 
       success: false, 
-      error: errorMessage 
+      error: errorMessage,
+      stack: errorStack,
+      type: 'critical_error'
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
