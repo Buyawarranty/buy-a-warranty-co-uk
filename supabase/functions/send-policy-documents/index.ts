@@ -31,8 +31,8 @@ serve(async (req) => {
     logStep("Function started");
 
     const { recipientEmail, variables } = await req.json();
-    const { planType, customerName } = variables || {};
-    logStep("Request data", { recipientEmail, planType, customerName });
+    const { planType, customerName, paymentType, policyNumber, registrationPlate } = variables || {};
+    logStep("Request data", { recipientEmail, planType, customerName, paymentType, policyNumber });
 
     if (!recipientEmail || !planType) {
       throw new Error("Missing required parameters");
@@ -200,10 +200,47 @@ serve(async (req) => {
       }
     }
 
+    // Calculate coverage period and dates
+    const calculatePeriodInMonths = (paymentType: string): number => {
+      switch (paymentType) {
+        case 'monthly': return 1;
+        case 'yearly': return 12;
+        case 'two_yearly': return 24;
+        case 'three_yearly': return 36;
+        default: return 12;
+      }
+    };
+
+    const calculateExpiryDate = (startDate: Date, paymentType: string): Date => {
+      const expiry = new Date(startDate);
+      const months = calculatePeriodInMonths(paymentType);
+      expiry.setMonth(expiry.getMonth() + months);
+      return expiry;
+    };
+
+    const startDate = new Date();
+    const expiryDate = calculateExpiryDate(startDate, paymentType || 'yearly');
+    const periodInMonths = calculatePeriodInMonths(paymentType || 'yearly');
+
     // Send policy documents email using the template
     const emailVariables = {
       customerName: customerName || recipientEmail.split('@')[0],
-      planType: planType
+      planType: planType,
+      policyNumber: policyNumber,
+      registrationPlate: registrationPlate,
+      paymentType: paymentType,
+      periodInMonths: periodInMonths,
+      coveragePeriod: `${periodInMonths} month${periodInMonths === 1 ? '' : 's'}`,
+      policyStartDate: startDate.toLocaleDateString('en-GB', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric' 
+      }),
+      policyExpiryDate: expiryDate.toLocaleDateString('en-GB', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric' 
+      })
     };
 
     const emailPayload: any = {
