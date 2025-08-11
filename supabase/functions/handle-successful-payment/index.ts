@@ -138,13 +138,17 @@ serve(async (req) => {
             planId
           });
 
+          // Send policy documents email using send-policy-documents function
           const emailPayload = {
-            customerId: customerData2.id,
-            policyId: policy.id
+            recipientEmail: userEmail,
+            variables: {
+              customerName: customerName,
+              planType: planId
+            }
           };
 
-          // Use Supabase client to invoke the function properly
-          const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
+          // Use Supabase client to invoke the policy documents function
+          const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-policy-documents', {
             body: emailPayload
           });
           
