@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail } from 'lucide-react';
 import { ForwardToWarranties } from './ForwardToWarranties';
 import { WarrantyActions } from './WarrantyActions';
+import { ManualOrderEntry } from './ManualOrderEntry';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -967,6 +968,7 @@ export const CustomersTab = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Customer Management</h2>
         <div className="flex space-x-2">
+          <ManualOrderEntry />
           <Button 
             onClick={fetchCustomers} 
             variant="outline"
