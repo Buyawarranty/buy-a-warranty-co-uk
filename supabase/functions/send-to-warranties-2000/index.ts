@@ -213,7 +213,14 @@ const handler = async (req: Request): Promise<Response> => {
       'ab12', 'test123', 'monshot', 'limited', 'qureshitest', 'threeyear'
     ];
     
-    const isTestData = testIndicators.some(indicator => 
+    // Allow specific legitimate customers that might otherwise be flagged
+    const allowedCustomers = [
+      'xcelstudio2001@gmail.com'
+    ];
+    
+    const isAllowedCustomer = allowedCustomers.includes(customer.email?.toLowerCase());
+    
+    const isTestData = !isAllowedCustomer && testIndicators.some(indicator => 
       customer.name?.toLowerCase().includes(indicator) ||
       customer.email?.toLowerCase().includes(indicator) ||
       customer.registration_plate?.toLowerCase().includes(indicator) ||
