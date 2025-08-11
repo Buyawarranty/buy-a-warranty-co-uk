@@ -65,7 +65,9 @@ const handler = async (req: Request): Promise<Response> => {
       .select('*')
       .eq(isUUID ? 'id' : 'template_type', templateId)
       .eq('is_active', true)
-      .single();
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     console.log('Template query result:', { 
       found: !!template, 
