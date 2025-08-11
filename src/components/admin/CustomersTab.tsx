@@ -19,6 +19,21 @@ import { ManualOrderEntry } from './ManualOrderEntry';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
+// Helper function to map plan types to Warranties 2000 warranty types
+function getWarrantyType(planType: string): string {
+  // WarType must be one of: B-BASIC, B-GOLD, B-PLATINUM, B-EV, B-PHEV or B-MOTORCYCLE
+  switch (planType?.toLowerCase()) {
+    case 'basic': return 'B-BASIC';
+    case 'gold': return 'B-GOLD';
+    case 'platinum': return 'B-PLATINUM';
+    case 'phev': return 'B-PHEV';
+    case 'ev': return 'B-EV';
+    case 'motorbike': 
+    case 'motorcycle': return 'B-MOTORCYCLE';
+    default: return 'B-BASIC';
+  }
+}
+
 interface Customer {
   id: string;
   name: string;
@@ -1321,7 +1336,7 @@ export const CustomersTab = () => {
                     }
                   </TableCell>
                   <TableCell>
-                    <Badge variant="secondary">{customer.plan_type}</Badge>
+                    <Badge variant="secondary">{getWarrantyType(customer.plan_type)}</Badge>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
