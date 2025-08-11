@@ -7,28 +7,71 @@ const corsHeaders = {
 };
 
 const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[TEST-AUTOMATED-EMAIL] ${step}${detailsStr}`);
+  try {
+    const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+    console.log(`[TEST-AUTOMATED-EMAIL] ${step}${detailsStr}`);
+  } catch (e) {
+    console.log(`[TEST-AUTOMATED-EMAIL] ${step} - [JSON stringify failed]`);
+  }
 };
 
 serve(async (req) => {
+  // Add immediate logging
+  console.log(`[TEST-AUTOMATED-EMAIL] Function invoked - method: ${req.method}`);
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    { auth: { persistSession: false } }
-  );
+  let supabaseClient;
+  try {
+    console.log(`[TEST-AUTOMATED-EMAIL] Creating Supabase client...`);
+    supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+    console.log(`[TEST-AUTOMATED-EMAIL] Supabase client created successfully`);
+  } catch (clientError) {
+    console.error(`[TEST-AUTOMATED-EMAIL] Failed to create Supabase client:`, clientError);
+    return new Response(JSON.stringify({ 
+      success: false, 
+      error: "Failed to initialize Supabase client",
+      details: clientError instanceof Error ? clientError.message : String(clientError)
+    }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    });
+  }
 
   try {
     logStep("Test automated email function started");
 
-    const { testEmail, planType = "basic", paymentType = "monthly" } = await req.json();
+    let requestBody;
+    try {
+      requestBody = await req.json();
+      logStep("Request body parsed", { body: requestBody });
+    } catch (parseError) {
+      console.error(`[TEST-AUTOMATED-EMAIL] Failed to parse request body:`, parseError);
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: "Invalid JSON in request body" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+
+    const { testEmail, planType = "basic", paymentType = "monthly" } = requestBody;
     
     if (!testEmail) {
-      throw new Error("testEmail is required");
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: "testEmail is required" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     // Ensure test email is safe (contains "test" or uses a test domain)
@@ -36,7 +79,14 @@ serve(async (req) => {
     const isSafeEmail = safeTestPatterns.some(pattern => testEmail.toLowerCase().includes(pattern));
     
     if (!isSafeEmail) {
-      throw new Error("For safety, test email must contain 'test' or use a known test domain");
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: "For safety, test email must contain 'test' or use a known test domain",
+        allowedPatterns: safeTestPatterns 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     logStep("Using test email", { testEmail, planType, paymentType });
