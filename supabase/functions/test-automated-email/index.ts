@@ -6,20 +6,27 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Immediate logging to verify function is loading
+console.log("[TEST-AUTOMATED-EMAIL] Function loaded and starting...");
+
 const logStep = (step: string, details?: any) => {
   try {
+    const timestamp = new Date().toISOString();
     const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-    console.log(`[TEST-AUTOMATED-EMAIL] ${step}${detailsStr}`);
+    console.log(`[${timestamp}] [TEST-AUTOMATED-EMAIL] ${step}${detailsStr}`);
   } catch (e) {
-    console.log(`[TEST-AUTOMATED-EMAIL] ${step} - [JSON stringify failed]`);
+    console.log(`[${new Date().toISOString()}] [TEST-AUTOMATED-EMAIL] ${step} - [JSON stringify failed]`);
   }
 };
 
 serve(async (req) => {
-  // Add immediate logging
-  console.log(`[TEST-AUTOMATED-EMAIL] Function invoked - method: ${req.method}`);
+  // Immediate request logging
+  console.log(`[${new Date().toISOString()}] [TEST-AUTOMATED-EMAIL] === REQUEST RECEIVED ===`);
+  console.log(`[${new Date().toISOString()}] [TEST-AUTOMATED-EMAIL] Method: ${req.method}`);
+  console.log(`[${new Date().toISOString()}] [TEST-AUTOMATED-EMAIL] URL: ${req.url}`);
   
   if (req.method === "OPTIONS") {
+    console.log(`[${new Date().toISOString()}] [TEST-AUTOMATED-EMAIL] Handling CORS preflight`);
     return new Response(null, { headers: corsHeaders });
   }
 

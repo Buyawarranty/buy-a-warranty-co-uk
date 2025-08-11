@@ -18,6 +18,7 @@ import { DocumentMappingTab } from '@/components/admin/DocumentMappingTab';
 import OrderReconciliation from '@/components/admin/OrderReconciliation';
 import { ResendWelcomeEmail } from '@/components/admin/ResendWelcomeEmail';
 import { TestAutomatedEmail } from '@/components/admin/TestAutomatedEmail';
+import { SimpleEmailTest } from '@/components/admin/SimpleEmailTest';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -98,6 +99,8 @@ const AdminDashboard = () => {
               <OrderReconciliation />
               
               <ApiConnectivityTest />
+              
+              <SimpleEmailTest />
               
               <TestAutomatedEmail />
               
