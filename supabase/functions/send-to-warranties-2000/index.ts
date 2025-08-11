@@ -209,7 +209,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Prevent test data from being sent to live API
     const testIndicators = [
-      'test', 'slack', 'qureshi', 'guest', 'demo', 'unknown', 'tand band',
+      'test', 'slack', 'guest', 'demo', 'unknown', 'tand band',
       'ab12', 'test123', 'monshot', 'limited', 'qureshitest', 'threeyear'
     ];
     
