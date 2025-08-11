@@ -49,26 +49,30 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log('Attempting to fetch template with ID:', templateId);
+    console.log('Attempting to fetch template with ID/type:', templateId);
     
-    // Get email template by ID
+    // Get email template by ID or template_type
+    // If templateId looks like a UUID, search by id, otherwise search by template_type
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(templateId);
+    
     const { data: template, error: templateError } = await supabase
       .from('email_templates')
       .select('*')
-      .eq('id', templateId)
+      .eq(isUUID ? 'id' : 'template_type', templateId)
       .eq('is_active', true)
       .single();
 
     console.log('Template query result:', { 
       found: !!template, 
       error: templateError ? JSON.stringify(templateError) : null,
-      templateName: template?.name 
+      templateName: template?.name,
+      searchType: isUUID ? 'id' : 'template_type'
     });
 
     if (templateError || !template) {
-      console.error('Template not found:', { templateError, templateId, foundTemplate: !!template });
+      console.error('Template not found:', { templateError, templateId, foundTemplate: !!template, searchType: isUUID ? 'id' : 'template_type' });
       return new Response(
-        JSON.stringify({ error: 'Template not found', templateId, details: templateError }),
+        JSON.stringify({ error: 'Template not found', templateId, details: templateError, searchType: isUUID ? 'id' : 'template_type' }),
         { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
