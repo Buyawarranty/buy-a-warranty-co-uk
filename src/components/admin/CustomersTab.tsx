@@ -1233,16 +1233,16 @@ export const CustomersTab = () => {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Registration Plate</TableHead>
-              <TableHead>Vehicle Make</TableHead>
-              <TableHead>Vehicle Model</TableHead>
-              <TableHead>Vehicle Year</TableHead>
+              <TableHead>RegNum</TableHead>
+              <TableHead>Make</TableHead>
+              <TableHead>Model</TableHead>
+              <TableHead>RegDate</TableHead>
               <TableHead>Address</TableHead>
-              <TableHead>Plan Type</TableHead>
-              <TableHead>Payment Type</TableHead>
-              <TableHead>Policy Number</TableHead>
+              <TableHead>WarType</TableHead>
+              <TableHead>Payment Method</TableHead>
+              <TableHead>Ref</TableHead>
               <TableHead>Email Status</TableHead>
-              <TableHead>W2K Status</TableHead>
+              <TableHead>Warranties2000</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
