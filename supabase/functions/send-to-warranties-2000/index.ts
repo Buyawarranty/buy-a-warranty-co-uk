@@ -207,62 +207,7 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Prevent test data from being sent to live API
-    const testIndicators = [
-      'test', 'slack', 'guest', 'demo', 'unknown', 'tand band',
-      'ab12', 'test123', 'monshot', 'limited', 'qureshitest', 'threeyear'
-    ];
-    
-    // Allow specific legitimate customers that might otherwise be flagged
-    const allowedCustomers = [
-      'xcelstudio2001@gmail.com'
-    ];
-    
-    const isAllowedCustomer = allowedCustomers.includes(customer.email?.toLowerCase());
-    
-    const isTestData = !isAllowedCustomer && testIndicators.some(indicator => 
-      customer.name?.toLowerCase().includes(indicator) ||
-      customer.email?.toLowerCase().includes(indicator) ||
-      customer.registration_plate?.toLowerCase().includes(indicator) ||
-      customer.vehicle_make?.toLowerCase().includes(indicator) ||
-      customer.vehicle_model?.toLowerCase().includes(indicator)
-    );
-
-    if (isTestData) {
-      console.log(JSON.stringify({ 
-        evt: "w2k.test_data_blocked", 
-        rid, 
-        customer: customer.email,
-        registration: customer.registration_plate 
-      }));
-      
-      // Update policy status to indicate it was blocked
-      await supabase
-        .from('customer_policies')
-        .update({
-          warranties_2000_status: 'blocked_test_data',
-          warranties_2000_response: {
-            status: 'blocked',
-            reason: 'Test data blocked from live API',
-            blocked_at: new Date().toISOString()
-          }
-        })
-        .eq('id', policy.id);
-      
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        rid,
-        code: 'TEST_DATA_BLOCKED', 
-        error: 'Test data blocked from being sent to live Warranties 2000 API',
-        details: {
-          customer: customer.email,
-          registration: customer.registration_plate
-        }
-      }), {
-        status: 400,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
-    }
+    // Test data blocking removed - all paying customers are legitimate
 
     // Check for duplicate registration with DIFFERENT vehicle data (prevent data corruption)
     // Allow renewals for the same vehicle (same make/model)
