@@ -219,10 +219,17 @@ serve(async (req) => {
 
     let emailResult, emailError;
     try {
-      logStep("Invoking send-welcome-email-manual function", emailPayload);
+      logStep("Invoking send-welcome-email function", emailPayload);
       
-      const response = await supabaseClient.functions.invoke('send-welcome-email-manual', {
-        body: emailPayload
+      const response = await supabaseClient.functions.invoke('send-welcome-email', {
+        body: {
+          email: testEmail,
+          planType: planType,
+          paymentType: paymentType,
+          policyNumber: testWarrantyRef,
+          registrationPlate: "TEST123",
+          customerName: "Test Customer"
+        }
       });
       
       emailResult = response.data;
