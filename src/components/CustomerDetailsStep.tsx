@@ -78,6 +78,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [showValidation, setShowValidation] = useState(false);
+  const [quoteSent, setQuoteSent] = useState(false);
 
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
@@ -255,6 +256,32 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       setLoading(false);
     }
   };
+
+  // Send quote email when component mounts (step 4 reached)
+  React.useEffect(() => {
+    const sendQuoteEmail = async () => {
+      if (!quoteSent && customerData.email) {
+        try {
+          await supabase.functions.invoke('send-quote-email', {
+            body: {
+              email: customerData.email,
+              vehicleData,
+              planName,
+              paymentType,
+              pricingData,
+              planId
+            }
+          });
+          setQuoteSent(true);
+          toast.success('Quote sent to your email!');
+        } catch (error) {
+          console.error('Error sending quote email:', error);
+        }
+      }
+    };
+
+    sendQuoteEmail();
+  }, [customerData.email, vehicleData, planName, paymentType, pricingData, planId, quoteSent]);
 
   return (
     <div className="bg-gray-50 min-h-screen">
