@@ -20,15 +20,16 @@ interface RegistrationData {
   Make: string;
   Model: string;
   RegNum: string;
-  Mileage: string;
-  
+  Mileage: string; // Whole number as string
+  EngSize: string; // Required field
   PurPrc: string;
   RegDate: string; // yyyy-mm-dd
-  WarType: string;
-  Month: string;
-  MaxClm: string;
-  MOTDue: string; // MOT due date
-  Ref?: string; // BAW warranty reference number
+  WarType: string; // Must be from predefined list
+  Month: string; // Must be from predefined list
+  MaxClm: string; // Must be from predefined list (full amounts)
+  Notes?: string;
+  Ref?: string; // Your reference
+  MOTDue?: string; // yyyy-mm-dd
 }
 
 const logStep = (step: string, details?: any) => {
@@ -117,11 +118,11 @@ serve(async (req) => {
       );
     }
 
-    // Validate required fields
+    // Validate required fields per API specification
     const requiredFields = [
       'Title', 'First', 'Surname', 'Addr1', 'Town', 'PCode', 
       'Tel', 'Mobile', 'EMail', 'PurDate', 'Make', 'Model', 
-      'RegNum', 'Mileage', 'PurPrc', 'RegDate', 
+      'RegNum', 'Mileage', 'EngSize', 'PurPrc', 'RegDate', 
       'WarType', 'Month', 'MaxClm'
     ];
 

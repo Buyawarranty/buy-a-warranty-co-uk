@@ -82,7 +82,7 @@ const handler = async (req: Request): Promise<Response> => {
       registrationPlate 
     }));
 
-    // Prepare minimal test data for Warranties 2000 API
+    // Test data matching exact API specification
     const testData = {
       Title: 'Mr',
       First: customerName.split(' ')[0] || 'Test',
@@ -95,18 +95,19 @@ const handler = async (req: Request): Promise<Response> => {
       Mobile: '07123456789',
       EMail: customerEmail,
       PurDate: new Date().toISOString().split('T')[0],
-      Make: 'TEST',
-      Model: 'Test Model',
+      Make: 'Ford',
+      Model: 'Focus',
       RegNum: registrationPlate,
-      Mileage: '50000',
-      
+      Mileage: '50000', // Whole number as string
+      EngSize: '1.6', // Required field
       PurPrc: '15000',
       RegDate: '2020-01-01',
-      WarType: 'BBASIC',
-      Month: '12',
-      MaxClm: '050',
-      MOTDue: '2025-12-31',
-      Ref: warrantyNumber
+      WarType: 'BBASIC', // Must be from predefined list
+      Month: '12', // Duration in months
+      MaxClm: '500', // Full amount as string (£500)
+      Notes: 'Test registration via dev-test-w2k',
+      Ref: warrantyNumber,
+      MOTDue: '2025-12-31'
     };
 
     console.log(JSON.stringify({ evt: "w2k.payload.prepared", rid }));

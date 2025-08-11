@@ -272,13 +272,14 @@ serve(async (req) => {
           Make: vehicleData?.make || "Ford",
           Model: vehicleData?.model || "Focus",
           RegNum: vehicleReg || "BUMPER001",
-          Mileage: vehicleData?.mileage || "50000",
-          
+          Mileage: String(Math.floor(parseFloat(vehicleData?.mileage || '50000'))), // Whole number as string
+          EngSize: vehicleData?.engineSize || estimateEngineSize(vehicleData?.make),
           PurPrc: calculatePurchasePrice(plan.name.toLowerCase(), 'monthly').toString(),
           RegDate: vehicleData?.year ? `${vehicleData.year}-01-01` : '2020-01-01',
           WarType: getWarrantyType(plan.name.toLowerCase()),
           Month: getWarrantyDuration('monthly'),
           MaxClm: getMaxClaimAmount(plan.name.toLowerCase()),
+          Notes: "Bumper customer registration",
           MOTDue: vehicleData?.motExpiry || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           Ref: warrantyRef
         };
@@ -420,20 +421,20 @@ function getWarrantyDuration(paymentType: string): string {
 }
 
 function getMaxClaimAmount(planId: string): string {
-  // Map plan types to correct claim amount codes
+  // MaxClm expects full amounts as strings per API specification
   switch (planId.toLowerCase()) {
-    case 'basic': return '050'; // £500
-    case 'gold': return '100'; // £1000
-    case 'platinum': return '120'; // £1200
-    case 'phev': return '100'; // £1000
-    case 'ev': return '100'; // £1000
-    case 'motorbike': return '100'; // £1000
-    default: return '050'; // £500 default
+    case 'basic': return '500'; // £500
+    case 'gold': return '1000'; // £1000
+    case 'platinum': return '1200'; // £1200
+    case 'phev': return '1000'; // £1000
+    case 'ev': return '1000'; // £1000
+    case 'motorbike': return '1000'; // £1000
+    default: return '500'; // £500 default
   }
 }
 
 function getWarrantyType(planId: string): string {
-  // Map plan types to warranty types (capital letters with space, no dash)
+  // WarType must be from predefined values in their system
   switch (planId.toLowerCase()) {
     case 'basic': return 'BBASIC';
     case 'gold': return 'BGOLD';
@@ -443,6 +444,17 @@ function getWarrantyType(planId: string): string {
     case 'motorbike': return 'BMOTORBIKE';
     default: return 'BBASIC';
   }
+}
+
+function estimateEngineSize(make?: string): string {
+  if (!make) return '1.6';
+  
+  const makeLower = make.toLowerCase();
+  if (makeLower.includes('mini') || makeLower.includes('smart')) return '1.0';
+  if (makeLower.includes('bmw') || makeLower.includes('audi')) return '2.0';
+  if (makeLower.includes('ford') || makeLower.includes('vauxhall')) return '1.6';
+  
+  return '1.6'; // Default
 }
 
 function extractTitle(fullName: string): string {
