@@ -49,27 +49,31 @@ const TestWarranties2000 = () => {
         body: testData
       });
 
-      console.log('Function response - data:', data);
-      console.log('Function response - error:', error);
+      console.log('Full function response - data:', data);
+      console.log('Full function response - error:', error);
 
       if (error) {
-        console.error('Error calling Warranties 2000 API:', error);
-        setResponse(`Error: ${JSON.stringify(error, null, 2)}`);
-        toast.error(`API call failed: ${error.message || 'Unknown error'}`);
-      } else {
-        console.log('Warranties 2000 API response:', data);
-        setResponse(JSON.stringify(data, null, 2));
-        if (data?.success) {
+        console.error('Supabase function error:', error);
+        setResponse(`Supabase Function Error:\n${JSON.stringify(error, null, 2)}\n\nThis means the edge function itself failed, not the API call.`);
+        toast.error(`Function failed: ${error.message || 'Unknown error'}`);
+      } else if (data) {
+        console.log('Function executed successfully, API response:', data);
+        setResponse(`Function Response:\n${JSON.stringify(data, null, 2)}`);
+        
+        if (data.success) {
           toast.success('API call successful!');
         } else {
-          toast.error(`API returned error: ${data?.error || 'Unknown error'}`);
-          console.error('API error details:', data?.details);
+          toast.error(`API validation failed: ${data.error || 'Unknown error'}`);
+          console.error('API validation details:', data.details);
         }
+      } else {
+        setResponse('No response data received from function');
+        toast.error('No response received');
       }
     } catch (err) {
-      console.error('Exception calling Warranties 2000 API:', err);
+      console.error('Exception calling function:', err);
       setResponse(`Exception: ${err instanceof Error ? err.message : String(err)}`);
-      toast.error('API call failed with exception');
+      toast.error('Function call failed with exception');
     } finally {
       setLoading(false);
     }
