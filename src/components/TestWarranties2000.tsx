@@ -33,7 +33,7 @@ const TestWarranties2000 = () => {
       RegDate: "2020-01-01",
       WarType: "BBASIC",
       Month: "12",
-      MaxClm: "500", // £5000 claim limit
+      MaxClm: "5000", // Full amount instead of code
       MOTDue: "2025-12-31",
       Ref: "BAW-2501-400001"
     };
