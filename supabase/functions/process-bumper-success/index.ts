@@ -290,8 +290,8 @@ serve(async (req) => {
           email: registrationData.EMail
         });
 
-        const warrantiesResponse = await supabaseClient.functions.invoke('warranties-2000-registration', {
-          body: registrationData
+        const warrantiesResponse = await supabaseClient.functions.invoke('send-to-warranties-2000', {
+          body: { customerId: customer.id }
         });
 
         if (warrantiesResponse.error) {
