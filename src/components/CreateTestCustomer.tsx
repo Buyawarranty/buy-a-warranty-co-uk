@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const CreateTestCustomer = () => {
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const { toast } = useToast();
 
   const createTestCustomer = async () => {
@@ -38,6 +39,32 @@ const CreateTestCustomer = () => {
     }
   };
 
+  const deleteTestUser = async () => {
+    setDeleteLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-test-user', {
+        body: { email: 'prajwalchauhan26@gmail.com' }
+      });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Test user deleted!",
+        description: "prajwalchauhan26@gmail.com has been removed from the system",
+      });
+      
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete test user",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
@@ -50,9 +77,17 @@ const CreateTestCustomer = () => {
         <Button 
           onClick={createTestCustomer} 
           disabled={loading}
-          className="w-full"
+          className="w-full mb-2"
         >
           {loading ? 'Creating...' : 'Create Test Customer'}
+        </Button>
+        <Button 
+          onClick={deleteTestUser} 
+          disabled={deleteLoading}
+          variant="destructive"
+          className="w-full"
+        >
+          {deleteLoading ? 'Deleting...' : 'Delete Test User'}
         </Button>
       </CardContent>
     </Card>
