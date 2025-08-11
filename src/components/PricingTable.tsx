@@ -40,6 +40,7 @@ interface PricingTableProps {
     email?: string;
     phone?: string;
     firstName?: string;
+    lastName?: string;
     address?: string;
     make?: string;
     model?: string;
@@ -287,8 +288,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }));
   };
 
-  const handleSelectPlan = (plan: Plan) => {
-    if (onPlanSelected) {
+  const handleSelectPlan = async (plan: Plan) => {
+    // Set loading state for this plan
+    setLoading(prev => ({ ...prev, [plan.id]: true }));
+    
+    try {
       const basePrice = calculatePlanPrice(plan);
       const addOnPrice = calculateAddOnPrice(plan.id);
       const monthlyTotal = basePrice + addOnPrice;
@@ -313,7 +317,61 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         voluntaryExcess,
         selectedAddOns: selectedAddOns[plan.id] || {}
       };
-      onPlanSelected(plan.id, paymentType, plan.name, pricingData);
+
+      // Send quote email if we have customer email
+      if (vehicleData.email && vehicleData.firstName) {
+        try {
+          console.log('Sending quote email for plan:', plan.name);
+          
+          const quoteEmailData = {
+            email: vehicleData.email,
+            firstName: vehicleData.firstName,
+            lastName: vehicleData.lastName || '', // Use empty string if no last name
+            vehicleData: {
+              regNumber: vehicleData.regNumber,
+              make: vehicleData.make,
+              model: vehicleData.model,
+              year: vehicleData.year,
+              mileage: vehicleData.mileage,
+              vehicleType: vehicleData.vehicleType
+            },
+            planData: {
+              planName: plan.name,
+              totalPrice,
+              monthlyPrice: bumperMonthlyPrice,
+              voluntaryExcess,
+              paymentType,
+              selectedAddOns: selectedAddOns[plan.id] || {}
+            },
+            quoteId: `QUO-${Date.now()}-${plan.id.substr(0, 6).toUpperCase()}`
+          };
+
+          const { error: emailError } = await supabase.functions.invoke('send-quote-email', {
+            body: quoteEmailData
+          });
+
+          if (emailError) {
+            console.error('Error sending quote email:', emailError);
+            toast.error('Failed to send quote email, but proceeding with purchase');
+          } else {
+            toast.success('Quote sent to your email! Check your inbox.');
+          }
+        } catch (emailErr) {
+          console.error('Quote email error:', emailErr);
+          toast.error('Failed to send quote email, but proceeding with purchase');
+        }
+      }
+
+      // Proceed with the original plan selection logic
+      if (onPlanSelected) {
+        onPlanSelected(plan.id, paymentType, plan.name, pricingData);
+      }
+    } catch (error) {
+      console.error('Error in plan selection:', error);
+      toast.error('An error occurred while processing your selection');
+    } finally {
+      // Clear loading state
+      setLoading(prev => ({ ...prev, [plan.id]: false }));
     }
   };
 

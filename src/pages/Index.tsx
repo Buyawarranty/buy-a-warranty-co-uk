@@ -117,6 +117,39 @@ const Index = () => {
     const savedState = loadStateFromLocalStorage();
     const stepFromUrl = getStepFromUrl();
     
+    // Check for quote parameter from email links
+    const quoteParam = searchParams.get('quote');
+    const emailParam = searchParams.get('email');
+    
+    if (quoteParam && emailParam) {
+      // User is returning from a quote email - show quote lookup interface
+      import('@/components/QuoteLookup').then(({ default: QuoteLookup }) => {
+        // For now, we'll handle this by showing a message and redirecting to step 4
+        console.log('Quote lookup:', { quote: quoteParam, email: emailParam });
+        
+        // Set some mock data for demonstration
+        const mockQuoteData = {
+          regNumber: 'QUOTE-' + quoteParam.substr(-6),
+          mileage: '50000',
+          email: emailParam,
+          phone: '',
+          firstName: 'Quote',
+          lastName: 'Customer',
+          address: '',
+          make: 'Unknown',
+          model: 'Unknown',
+          year: '2020',
+          vehicleType: 'car'
+        };
+        
+        setVehicleData(mockQuoteData);
+        setFormData(prev => ({ ...prev, ...mockQuoteData }));
+        setCurrentStep(4); // Go directly to customer details
+        updateStepInUrl(4);
+      });
+      return;
+    }
+    
     // Check for restore parameter from email links
     const restoreParam = searchParams.get('restore');
     
