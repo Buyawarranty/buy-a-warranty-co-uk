@@ -107,8 +107,8 @@ export const TestAutomatedEmail = () => {
               <SelectContent>
                 <SelectItem value="monthly">Monthly</SelectItem>
                 <SelectItem value="yearly">Yearly</SelectItem>
-                <SelectItem value="two_yearly">Two Year</SelectItem>
-                <SelectItem value="three_yearly">Three Year</SelectItem>
+                <SelectItem value="twoYear">Two Year</SelectItem>
+                <SelectItem value="threeYear">Three Year</SelectItem>
               </SelectContent>
             </Select>
           </div>

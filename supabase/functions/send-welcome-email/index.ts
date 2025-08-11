@@ -280,9 +280,11 @@ function calculatePolicyEndDate(paymentType: string): string {
       startDate.setFullYear(startDate.getFullYear() + 1);
       break;
     case 'twoYear':
+    case 'two_yearly': // Handle both formats for compatibility
       startDate.setFullYear(startDate.getFullYear() + 2);
       break;
     case 'threeYear':
+    case 'three_yearly': // Handle both formats for compatibility
       startDate.setFullYear(startDate.getFullYear() + 3);
       break;
     default:
