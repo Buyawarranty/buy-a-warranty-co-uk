@@ -27,7 +27,6 @@ const TestWarranties2000 = () => {
       EMail: "john.test@example.com",
       PurDate: new Date().toISOString().split('T')[0],
       Make: "Ford",
-      Model: "Focus", // Make sure Model has a value
       RegNum: "AB12 CDE",
       Mileage: "50000",
       EngSize: "1.6", // API requires this field
@@ -35,16 +34,16 @@ const TestWarranties2000 = () => {
       RegDate: "2020-01-01",
       WarType: "B-BASIC", // Use correct warranty type
       Month: "12",
-      MaxClm: "3000", // Use valid claim amount
+      MaxClm: "500", // Use valid claim amount
       Notes: "Test registration",
       Ref: "BAW-2501-400001",
       MOTDue: "2025-12-31"
     };
     
     console.log('=== FIXING VALIDATION ERRORS ===');
-    console.log('Model:', testData.Model);
     console.log('EngSize:', testData.EngSize);
     console.log('WarType:', testData.WarType);
+    console.log('MaxClm:', testData.MaxClm);
 
     try {
       console.log('Testing Warranties 2000 API with data:', testData);

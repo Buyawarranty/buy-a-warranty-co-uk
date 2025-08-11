@@ -121,7 +121,7 @@ serve(async (req) => {
     // Validate required fields per API specification
     const requiredFields = [
       'Title', 'First', 'Surname', 'Addr1', 'Town', 'PCode', 
-      'Tel', 'Mobile', 'EMail', 'PurDate', 'Make', 'Model', 
+      'Tel', 'Mobile', 'EMail', 'PurDate', 'Make', 
       'RegNum', 'Mileage', 'PurPrc', 'RegDate', 
       'WarType', 'Month', 'MaxClm'
     ];

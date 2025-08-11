@@ -368,7 +368,6 @@ const handler = async (req: Request): Promise<Response> => {
       EMail: customer.email,
       PurDate: policy.policy_start_date ? new Date(policy.policy_start_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       Make: customer.vehicle_make || '',
-      Model: customer.vehicle_model || '',
       RegNum: customer.registration_plate || '',
       Mileage: String(Math.floor(parseFloat(customer.mileage || '50000'))), // Whole number as string
       EngSize: "", // Pass empty string as requested
@@ -494,22 +493,27 @@ const handler = async (req: Request): Promise<Response> => {
 // Helper functions for Warranties 2000 API mapping per specification
 
 function getWarrantyDuration(paymentType: string): string {
-  // Duration must be from predefined list - using standard monthly values
+  // Duration must be one of: 12, 24, 36, 48 or 60 months
   switch (paymentType.toLowerCase()) {
     case 'monthly': return '12';
     case 'yearly': return '12'; 
     case 'twoyear': return '24';
     case 'threeyear': return '36';
+    case 'fouryear': return '48';
+    case 'fiveyear': return '60';
     default: return '12';
   }
 }
 
 function getMaxClaimAmount(planType: string): string {
-  // MaxClm expects full amounts as strings per API specification
+  // Claim limit must be one of: 500, 1000, 1200, 2000, 3000 or 5000
   switch (planType.toLowerCase()) {
     case 'basic': return '500'; // £500
     case 'gold': return '1000'; // £1000
     case 'platinum': return '1200'; // £1200
+    case 'premium': return '2000'; // £2000
+    case 'ultimate': return '3000'; // £3000
+    case 'elite': return '5000'; // £5000
     case 'phev': return '1000'; // £1000
     case 'ev': return '1000'; // £1000
     case 'motorbike': return '1000'; // £1000
@@ -518,15 +522,16 @@ function getMaxClaimAmount(planType: string): string {
 }
 
 function getWarrantyType(planType: string): string {
-  // WarType must be from predefined values in their system
+  // WarType must be one of: B-BASIC, B-GOLD, B-PLATINUM, B-EV, B-PHEV or B-MOTORCYCLE
   switch (planType.toLowerCase()) {
-    case 'basic': return 'BBASIC';
-    case 'gold': return 'BGOLD';
-    case 'platinum': return 'BPLATINUM';
-    case 'phev': return 'BPHEV';
-    case 'ev': return 'BEV';
-    case 'motorbike': return 'BMOTORBIKE';
-    default: return 'BBASIC';
+    case 'basic': return 'B-BASIC';
+    case 'gold': return 'B-GOLD';
+    case 'platinum': return 'B-PLATINUM';
+    case 'phev': return 'B-PHEV';
+    case 'ev': return 'B-EV';
+    case 'motorbike': return 'B-MOTORCYCLE';
+    case 'motorcycle': return 'B-MOTORCYCLE';
+    default: return 'B-BASIC';
   }
 }
 
