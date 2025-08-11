@@ -212,11 +212,6 @@ const ThankYou = () => {
                     {source === 'bumper' ? 'BAW Policy Number:' : 'Policy Number:'}
                   </p>
                   <p className="text-lg text-green-900 font-mono">{policyNumber}</p>
-                  {source === 'bumper' && (
-                    <p className="text-xs text-green-600 mt-2">
-                      Your policy has been registered with Warranties 2000
-                    </p>
-                  )}
                 </div>
               )}
             </div>
