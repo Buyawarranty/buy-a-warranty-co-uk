@@ -99,12 +99,12 @@ const handler = async (req: Request): Promise<Response> => {
       Model: 'Test Model',
       RegNum: registrationPlate,
       Mileage: '50000',
-      EngSize: '1600',
+      
       PurPrc: '15000',
       RegDate: '2020-01-01',
-      WarType: 'Basic',
+      WarType: 'BBASIC',
       Month: '12',
-      MaxClm: '3000',
+      MaxClm: '050',
       MOTDue: '2025-12-31',
       Ref: warrantyNumber
     };

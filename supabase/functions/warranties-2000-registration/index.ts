@@ -21,7 +21,7 @@ interface RegistrationData {
   Model: string;
   RegNum: string;
   Mileage: string;
-  EngSize: string;
+  
   PurPrc: string;
   RegDate: string; // yyyy-mm-dd
   WarType: string;
@@ -113,7 +113,7 @@ serve(async (req) => {
     const requiredFields = [
       'Title', 'First', 'Surname', 'Addr1', 'Town', 'PCode', 
       'Tel', 'Mobile', 'EMail', 'PurDate', 'Make', 'Model', 
-      'RegNum', 'Mileage', 'EngSize', 'PurPrc', 'RegDate', 
+      'RegNum', 'Mileage', 'PurPrc', 'RegDate', 
       'WarType', 'Month', 'MaxClm'
     ];
 

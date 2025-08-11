@@ -371,12 +371,12 @@ const handler = async (req: Request): Promise<Response> => {
       Model: customer.vehicle_model || '',
       RegNum: customer.registration_plate || '',
       Mileage: customer.mileage || '',
-      EngSize: '', // Not available in our schema
+      
       PurPrc: String(policy.payment_amount || '0'),
       RegDate: customer.vehicle_year ? `${customer.vehicle_year}-01-01` : '',
-      WarType: policy.plan_type || '',
-      Month: policy.payment_type === 'yearly' ? '12' : '1',
-      MaxClm: '3000', // Default claim limit
+      WarType: getWarrantyType(policy.plan_type || ''),
+      Month: getWarrantyDuration(policy.payment_type || ''),
+      MaxClm: getMaxClaimAmount(policy.plan_type || ''),
       MOTDue: '', // Not available in our schema
       Ref: policy.warranty_number
     };
@@ -489,5 +489,39 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(JSON.stringify({ evt: "edge.done", rid, ms: Date.now() - t0 }));
   }
 };
+
+// Helper functions for Warranties 2000 mapping
+function getWarrantyDuration(paymentType: string): string {
+  switch (paymentType.toLowerCase()) {
+    case 'monthly': return '12';
+    case 'yearly': return '12';
+    case 'twoyear': return '24';
+    case 'threeyear': return '36';
+    default: return '12';
+  }
+}
+
+function getMaxClaimAmount(planType: string): string {
+  // Map plan types to claim amounts with correct codes
+  switch (planType.toLowerCase()) {
+    case 'basic': return '050'; // £500
+    case 'gold': return '100'; // £1000
+    case 'platinum': return '200'; // £2000
+    default: return '050'; // £500 default
+  }
+}
+
+function getWarrantyType(planType: string): string {
+  // Map plan types to warranty types (capital letters with space, no dash)
+  switch (planType.toLowerCase()) {
+    case 'basic': return 'BBASIC';
+    case 'gold': return 'BGOLD';
+    case 'platinum': return 'BPLATINUM';
+    case 'phev': return 'BPHEV';
+    case 'ev': return 'BEV';
+    case 'motorbike': return 'BMOTORBIKE';
+    default: return 'BBASIC';
+  }
+}
 
 serve(handler);

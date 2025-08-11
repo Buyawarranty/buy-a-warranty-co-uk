@@ -273,7 +273,7 @@ serve(async (req) => {
           Model: vehicleData?.model || "Focus",
           RegNum: vehicleReg || "BUMPER001",
           Mileage: vehicleData?.mileage || "50000",
-          EngSize: vehicleData?.engineSize || "1.6",
+          
           PurPrc: calculatePurchasePrice(plan.name.toLowerCase(), 'monthly').toString(),
           RegDate: vehicleData?.year ? `${vehicleData.year}-01-01` : '2020-01-01',
           WarType: getWarrantyType(plan.name.toLowerCase()),
@@ -410,30 +410,35 @@ async function generateWarrantyReference(): Promise<string> {
 }
 
 function getWarrantyDuration(paymentType: string): string {
-  switch (paymentType) {
-    case 'monthly': return '1';
+  switch (paymentType.toLowerCase()) {
+    case 'monthly': return '12';
     case 'yearly': return '12';
-    case 'two_yearly': return '24';
-    case 'three_yearly': return '36';
+    case 'twoyear': return '24';
+    case 'threeyear': return '36';
     default: return '12';
   }
 }
 
 function getMaxClaimAmount(planId: string): string {
+  // Map plan types to claim amounts with correct codes
   switch (planId.toLowerCase()) {
-    case 'basic': return '500';
-    case 'gold': return '1000';
-    case 'platinum': return '1200';
-    default: return '500';
+    case 'basic': return '050'; // £500
+    case 'gold': return '100'; // £1000
+    case 'platinum': return '200'; // £2000
+    default: return '050'; // £500 default
   }
 }
 
 function getWarrantyType(planId: string): string {
+  // Map plan types to warranty types (capital letters with space, no dash)
   switch (planId.toLowerCase()) {
-    case 'basic': return 'B-BASIC';
-    case 'gold': return 'B-GOLD';
-    case 'platinum': return 'B-PLATINUM';
-    default: return 'B-BASIC';
+    case 'basic': return 'BBASIC';
+    case 'gold': return 'BGOLD';
+    case 'platinum': return 'BPLATINUM';
+    case 'phev': return 'BPHEV';
+    case 'ev': return 'BEV';
+    case 'motorbike': return 'BMOTORBIKE';
+    default: return 'BBASIC';
   }
 }
 
