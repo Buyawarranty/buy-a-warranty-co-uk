@@ -80,7 +80,7 @@ serve(async (req) => {
 
     const { data: customerData2, error: customerError } = await supabaseClient
       .from('customers')
-      .upsert(customerRecord, { onConflict: 'email' })
+      .insert(customerRecord)
       .select()
       .single();
 
