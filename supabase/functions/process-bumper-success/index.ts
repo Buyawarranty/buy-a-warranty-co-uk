@@ -32,12 +32,44 @@ serve(async (req) => {
       throw new Error("Plan ID is required");
     }
 
-    // Get plan details - Bumper sends plan name, not UUID
-    const { data: plan, error: planError } = await supabaseClient
+    // Get plan details - For special vehicles, Bumper might send the full plan name
+    let plan;
+    let planError;
+    
+    // First try exact match
+    const { data: exactPlan, error: exactError } = await supabaseClient
       .from('plans')
       .select('*')
-      .eq('name', planId.charAt(0).toUpperCase() + planId.slice(1).toLowerCase()) // Convert "basic" to "Basic"
+      .eq('name', planId)
       .single();
+    
+    if (exactPlan) {
+      plan = exactPlan;
+    } else {
+      // Try converting case for standard plans: "basic" to "Basic"
+      const { data: casePlan, error: caseError } = await supabaseClient
+        .from('plans')
+        .select('*')
+        .eq('name', planId.charAt(0).toUpperCase() + planId.slice(1).toLowerCase())
+        .single();
+      
+      if (casePlan) {
+        plan = casePlan;
+      } else {
+        // Try special vehicle plans table for PHEV, EV, MOTORBIKE
+        const { data: specialPlan, error: specialError } = await supabaseClient
+          .from('special_vehicle_plans')
+          .select('*')
+          .ilike('name', `%${planId}%`)
+          .single();
+          
+        if (specialPlan) {
+          plan = specialPlan;
+        } else {
+          planError = exactError || caseError || specialError;
+        }
+      }
+    }
 
     if (planError || !plan) {
       logStep("Plan not found", { planId, error: planError });
@@ -65,110 +97,52 @@ serve(async (req) => {
       logStep("Failed to generate warranty reference", { error: error.message });
     }
 
-    // Check if customer already exists
-    const { data: existingCustomer } = await supabaseClient
+    // Create new customer record (always create new for each order, even for same email)
+    logStep("Creating new customer record");
+    
+    const { data: newCustomer, error: customerError } = await supabaseClient
       .from('customers')
-      .select('*')
-      .eq('email', customerEmail)
+      .insert({
+        name: customerName,
+        email: customerEmail,
+        phone: customerData?.mobile,
+        first_name: customerData?.first_name,
+        last_name: customerData?.last_name,
+        flat_number: customerData?.flat_number,
+        building_name: customerData?.building_name,
+        building_number: customerData?.building_number,
+        street: customerData?.street,
+        town: customerData?.town,
+        county: customerData?.county,
+        postcode: customerData?.postcode,
+        country: customerData?.country || 'United Kingdom',
+        plan_type: plan.name,
+        status: 'Active',
+        registration_plate: vehicleReg,
+        vehicle_make: vehicleData?.make,
+        vehicle_model: vehicleData?.model,
+        vehicle_year: vehicleData?.year,
+        vehicle_fuel_type: vehicleData?.fuelType,
+        vehicle_transmission: vehicleData?.transmission,
+        mileage: vehicleData?.mileage,
+        payment_type: paymentType,
+        bumper_order_id: sessionId,
+        discount_code: discountCode,
+        discount_amount: discountAmount,
+        original_amount: originalAmount,
+        final_amount: finalAmount,
+        warranty_reference_number: warrantyRef,
+        warranty_number: warrantyRef
+      })
+      .select()
       .single();
 
-    let customer;
-    
-    if (existingCustomer) {
-      // Update existing customer with new order details
-      logStep("Updating existing customer", { customerId: existingCustomer.id });
-      
-      const { data: updatedCustomer, error: updateError } = await supabaseClient
-        .from('customers')
-        .update({
-          name: customerName,
-          phone: customerData?.mobile || existingCustomer.phone,
-          first_name: customerData?.first_name || existingCustomer.first_name,
-          last_name: customerData?.last_name || existingCustomer.last_name,
-          flat_number: customerData?.flat_number || existingCustomer.flat_number,
-          building_name: customerData?.building_name || existingCustomer.building_name,
-          building_number: customerData?.building_number || existingCustomer.building_number,
-          street: customerData?.street || existingCustomer.street,
-          town: customerData?.town || existingCustomer.town,
-          county: customerData?.county || existingCustomer.county,
-          postcode: customerData?.postcode || existingCustomer.postcode,
-          country: customerData?.country || existingCustomer.country || 'United Kingdom',
-          plan_type: plan.name,
-          status: 'Active',
-          registration_plate: vehicleReg || existingCustomer.registration_plate,
-          vehicle_make: vehicleData?.make || existingCustomer.vehicle_make,
-          vehicle_model: vehicleData?.model || existingCustomer.vehicle_model,
-          vehicle_year: vehicleData?.year || existingCustomer.vehicle_year,
-          vehicle_fuel_type: vehicleData?.fuelType || existingCustomer.vehicle_fuel_type,
-          vehicle_transmission: vehicleData?.transmission || existingCustomer.vehicle_transmission,
-          mileage: vehicleData?.mileage || existingCustomer.mileage,
-          payment_type: paymentType,
-          bumper_order_id: sessionId,
-          discount_code: discountCode,
-          discount_amount: discountAmount,
-          original_amount: originalAmount,
-          final_amount: finalAmount,
-          warranty_reference_number: warrantyRef,
-          warranty_number: warrantyRef
-        })
-        .eq('id', existingCustomer.id)
-        .select()
-        .single();
-
-      if (updateError) {
-        logStep("Error updating customer", { error: updateError });
-        throw new Error("Failed to update customer record");
-      }
-      
-      customer = updatedCustomer;
-    } else {
-      // Create new customer record
-      logStep("Creating new customer");
-      
-      const { data: newCustomer, error: customerError } = await supabaseClient
-        .from('customers')
-        .insert({
-          name: customerName,
-          email: customerEmail,
-          phone: customerData?.mobile,
-          first_name: customerData?.first_name,
-          last_name: customerData?.last_name,
-          flat_number: customerData?.flat_number,
-          building_name: customerData?.building_name,
-          building_number: customerData?.building_number,
-          street: customerData?.street,
-          town: customerData?.town,
-          county: customerData?.county,
-          postcode: customerData?.postcode,
-          country: customerData?.country || 'United Kingdom',
-          plan_type: plan.name,
-          status: 'Active',
-          registration_plate: vehicleReg,
-          vehicle_make: vehicleData?.make,
-          vehicle_model: vehicleData?.model,
-          vehicle_year: vehicleData?.year,
-          vehicle_fuel_type: vehicleData?.fuelType,
-          vehicle_transmission: vehicleData?.transmission,
-          mileage: vehicleData?.mileage,
-          payment_type: paymentType,
-          bumper_order_id: sessionId,
-          discount_code: discountCode,
-          discount_amount: discountAmount,
-          original_amount: originalAmount,
-          final_amount: finalAmount,
-          warranty_reference_number: warrantyRef,
-          warranty_number: warrantyRef
-        })
-        .select()
-        .single();
-
-      if (customerError) {
-        logStep("Error creating customer", { error: customerError });
-        throw new Error("Failed to create customer record");
-      }
-      
-      customer = newCustomer;
+    if (customerError) {
+      logStep("Error creating customer", { error: customerError });
+      throw new Error("Failed to create customer record");
     }
+    
+    const customer = newCustomer;
 
     logStep("Customer created", { customerId: customer.id });
 
@@ -449,33 +423,51 @@ function getWarrantyDuration(paymentType: string): string {
 }
 
 function getMaxClaimAmount(planId: string): string {
-  // Claim limit must be one of: 500, 1000, 1200, 2000, 3000 or 5000
-  switch (planId.toLowerCase()) {
-    case 'basic': return '500'; // £500
-    case 'gold': return '1000'; // £1000
-    case 'platinum': return '1200'; // £1200
-    case 'premium': return '2000'; // £2000
-    case 'ultimate': return '3000'; // £3000
-    case 'elite': return '5000'; // £5000
-    case 'phev': return '1000'; // £1000
-    case 'ev': return '1000'; // £1000
-    case 'motorbike': return '1000'; // £1000
-    default: return '500'; // £500 default
+  const normalizedPlan = planId.toLowerCase();
+  
+  // Handle special vehicle types
+  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
+    return '1000';
+  } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
+    return '1000';
+  } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
+    return '1000';
   }
+  
+  // Handle standard plan types
+  if (normalizedPlan.includes('basic')) {
+    return '500';
+  } else if (normalizedPlan.includes('gold')) {
+    return '1000';
+  } else if (normalizedPlan.includes('platinum')) {
+    return '1200';
+  }
+  
+  return '500'; // Default fallback
 }
 
 function getWarrantyType(planId: string): string {
-  // WarType must be one of: B-BASIC, B-GOLD, B-PLATINUM, B-EV, B-PHEV or B-MOTORCYCLE
-  switch (planId.toLowerCase()) {
-    case 'basic': return 'B-BASIC';
-    case 'gold': return 'B-GOLD';
-    case 'platinum': return 'B-PLATINUM';
-    case 'phev': return 'B-PHEV';
-    case 'ev': return 'B-EV';
-    case 'motorbike': return 'B-MOTORCYCLE';
-    case 'motorcycle': return 'B-MOTORCYCLE';
-    default: return 'B-BASIC';
+  const normalizedPlan = planId.toLowerCase();
+  
+  // Handle special vehicle types - check if plan name contains these terms
+  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
+    return 'B-PHEV';
+  } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
+    return 'B-EV';
+  } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
+    return 'B-MOTORCYCLE';
   }
+  
+  // Handle standard plan types
+  if (normalizedPlan.includes('basic')) {
+    return 'B-BASIC';
+  } else if (normalizedPlan.includes('gold')) {
+    return 'B-GOLD';
+  } else if (normalizedPlan.includes('platinum')) {
+    return 'B-PLATINUM';
+  }
+  
+  return 'B-BASIC'; // Default fallback
 }
 
 function estimateEngineSize(make?: string): string {

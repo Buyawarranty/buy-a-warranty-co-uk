@@ -308,30 +308,51 @@ function getWarrantyDuration(paymentType: string): string {
 }
 
 function getMaxClaimAmount(planId: string): string {
-  // Map plan types to expected API values
   const normalizedPlan = planId.toLowerCase();
   
-  // Handle different plan name formats
-  if (normalizedPlan.includes('basic') || normalizedPlan === 'b-basic') {
-    return '3000'; // Updated to match API expectations
-  } else if (normalizedPlan.includes('gold') || normalizedPlan === 'g-gold') {
-    return '5000'; // Updated to match API expectations  
-  } else if (normalizedPlan.includes('platinum') || normalizedPlan === 'p-platinum') {
-    return '7500'; // Updated to match API expectations
-  } else if (normalizedPlan.includes('extended') || normalizedPlan.includes('motorbike') || normalizedPlan.includes('hybrid')) {
-    return '3000'; // Default for extended/special warranties
+  // Handle special vehicle types
+  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
+    return '1000';
+  } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
+    return '1000';
+  } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
+    return '1000';
+  }
+  
+  // Handle standard plan types
+  if (normalizedPlan.includes('basic')) {
+    return '3000';
+  } else if (normalizedPlan.includes('gold')) {
+    return '5000';
+  } else if (normalizedPlan.includes('platinum')) {
+    return '7500';
   }
   
   return '3000'; // Default fallback
 }
 
 function getWarrantyType(planId: string): string {
-  switch (planId.toLowerCase()) {
-    case 'basic': return 'B-BASIC';
-    case 'gold': return 'B-GOLD';
-    case 'platinum': return 'B-PLATINUM';
-    default: return 'B-BASIC';
+  const normalizedPlan = planId.toLowerCase();
+  
+  // Handle special vehicle types
+  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
+    return 'B-PHEV';
+  } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
+    return 'B-EV';
+  } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
+    return 'B-MOTORBIKE';
   }
+  
+  // Handle standard plan types
+  if (normalizedPlan.includes('basic')) {
+    return 'B-BASIC';
+  } else if (normalizedPlan.includes('gold')) {
+    return 'B-GOLD';
+  } else if (normalizedPlan.includes('platinum')) {
+    return 'B-PLATINUM';
+  }
+  
+  return 'B-BASIC'; // Default fallback
 }
 
 function extractTitle(fullName: string): string {
