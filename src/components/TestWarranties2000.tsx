@@ -13,12 +13,12 @@ const TestWarranties2000 = () => {
     setLoading(true);
     setResponse('');
 
+    // Try minimal test data to isolate the MaxClm issue
     const testData = {
       Title: "Mr",
       First: "John",
       Surname: "Test", 
       Addr1: "123 Test Street",
-      Addr2: "",
       Town: "London",
       PCode: "SW1A 1AA",
       Tel: "02071234567",
@@ -33,10 +33,14 @@ const TestWarranties2000 = () => {
       RegDate: "2020-01-01",
       WarType: "BBASIC",
       Month: "12",
-      MaxClm: "5000", // Full amount instead of code
+      MaxClm: "3000", // Try a middle value
       MOTDue: "2025-12-31",
       Ref: "BAW-2501-400001"
     };
+    
+    console.log('=== TESTING MaxClm FORMAT ===');
+    console.log('MaxClm type:', typeof testData.MaxClm);
+    console.log('MaxClm value:', testData.MaxClm);
 
     try {
       console.log('Testing Warranties 2000 API with data:', testData);
