@@ -244,7 +244,7 @@ serve(async (req) => {
         logStep("Registering warranty", { regNum: registrationData.RegNum, warrantyType });
 
         const { data: warrantyData, error: warrantyError } = await supabaseClient.functions.invoke('send-to-warranties-2000', {
-          body: { customerId: customerData2.id }
+          body: { policyId: policy.id }
         });
 
         if (warrantyError) {
