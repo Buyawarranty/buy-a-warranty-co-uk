@@ -244,7 +244,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       }
 
       if (checkoutUrl) {
-        // Redirect in the same tab so we can properly return to thank you page
+        // Ensure current step 4 is saved in browser history before navigating to Bumper
+        // This way, the back button from Bumper payment page returns to step 4
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('step', '4');
+        window.history.pushState({ step: 4 }, '', currentUrl.toString());
+        
+        // Redirect to Bumper payment page
         window.location.href = checkoutUrl;
       } else {
         toast.error('Failed to create checkout session');
