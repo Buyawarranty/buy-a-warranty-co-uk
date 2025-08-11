@@ -148,7 +148,8 @@ serve(async (req) => {
               planType: planId,
               policyNumber: warrantyReference,
               registrationPlate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
-              paymentType: paymentTypeDisplay
+              paymentType: paymentTypeDisplay,
+              vehicleType: vehicleData?.vehicleType || 'standard'
             }
           };
 

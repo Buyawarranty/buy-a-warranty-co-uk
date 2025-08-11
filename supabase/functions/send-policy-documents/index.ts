@@ -47,56 +47,119 @@ serve(async (req) => {
 
     logStep("Found policy documents template", { templateId: template.id });
 
-    // Fetch plan-specific document
+    // Determine vehicle type based on plan type for correct document mapping
+    const isSpecialVehicle = ['motorcycle', 'van', 'motorhome', 'caravan', 'motorbike'].some(type => 
+      planType.toLowerCase().includes(type)
+    );
+    const vehicleType = isSpecialVehicle ? 'special_vehicle' : 'standard';
+    
+    // Fetch plan-specific document using correct vehicle type
     const attachments = [];
     
-    const planTypeMapping: Record<string, string> = {
-      'basic': 'basic',
-      'gold': 'gold', 
-      'platinum': 'platinum',
-      'electric': 'electric',
-      'ev': 'electric',  // Map EV to electric
-      'phev': 'phev',
-      'hybrid': 'phev',  // Map hybrid to phev
-      'motorbike': 'motorbike',
-      'motorbike extended warranty': 'motorbike'
-    };
+    logStep("Determining vehicle type and document mapping", { 
+      planType, 
+      vehicleType, 
+      isSpecialVehicle 
+    });
 
-    const mappedPlanType = planTypeMapping[planType.toLowerCase()] || planType.toLowerCase();
-    logStep("Fetching plan-specific document", { planType, mappedPlanType });
-    
-    const { data: planDoc, error: planError } = await supabaseClient
-      .from('customer_documents')
-      .select('document_name, file_url')
-      .eq('plan_type', mappedPlanType)
-      .order('created_at', { ascending: false })
-      .limit(1)
+    // Try plan_document_mapping first with correct vehicle type
+    const { data: documentMapping } = await supabaseClient
+      .from('plan_document_mapping')
+      .select('document_path')
+      .eq('plan_name', planType)
+      .eq('vehicle_type', vehicleType)
       .maybeSingle();
 
-    if (planDoc && !planError) {
+    logStep("Plan document mapping result", { documentMapping, planType, vehicleType });
+
+    if (documentMapping?.document_path) {
       try {
-        logStep("Attempting to fetch plan document", { url: planDoc.file_url });
-        const response = await fetch(planDoc.file_url);
-        logStep("Fetch response status", { status: response.status, ok: response.ok });
+        logStep("Attempting to fetch document from mapping", { path: documentMapping.document_path });
         
-        if (response.ok) {
-          const fileBuffer = await response.arrayBuffer();
+        const { data: fileData, error: downloadError } = await supabaseClient.storage
+          .from('policy-documents')
+          .download(documentMapping.document_path);
+
+        if (!downloadError && fileData) {
+          const fileBuffer = await fileData.arrayBuffer();
           const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
           
           attachments.push({
-            filename: planDoc.document_name.endsWith('.pdf') ? planDoc.document_name : `${planDoc.document_name}.pdf`,
+            filename: `${planType}-Warranty-Policy.pdf`,
             content: base64Content,
             type: 'application/pdf'
           });
-          logStep("Plan document prepared for attachment", { filename: planDoc.document_name, size: fileBuffer.byteLength });
+          logStep("Document from mapping attached successfully", { 
+            filename: `${planType}-Warranty-Policy.pdf`, 
+            size: fileBuffer.byteLength 
+          });
         } else {
-          logStep("Failed to fetch plan document", { status: response.status, statusText: response.statusText });
+          logStep("Failed to download document from mapping", { 
+            path: documentMapping.document_path, 
+            error: downloadError?.message 
+          });
         }
       } catch (error) {
-        logStep("Error preparing plan document", { error: error.message, stack: error.stack });
+        logStep("Error downloading document from mapping", { 
+          error: error.message, 
+          path: documentMapping.document_path 
+        });
       }
-    } else {
-      logStep("No plan-specific document found", { planType: mappedPlanType, error: planError });
+    }
+
+    // Fallback to customer_documents table if no document found from mapping
+
+    if (attachments.length === 0) {
+      // Fallback to customer_documents table if no document found from plan mapping
+      const planTypeMapping: Record<string, string> = {
+        'basic': 'basic',
+        'gold': 'gold', 
+        'platinum': 'platinum',
+        'electric': 'electric',
+        'ev': 'electric',  // Map EV to electric
+        'phev': 'phev',
+        'hybrid': 'phev',  // Map hybrid to phev
+        'motorbike': 'motorbike',
+        'motorcycle': 'motorbike',  // Map motorcycle to motorbike
+        'motorbike extended warranty': 'motorbike'
+      };
+
+      const mappedPlanType = planTypeMapping[planType.toLowerCase()] || planType.toLowerCase();
+      logStep("Falling back to customer_documents table", { planType, mappedPlanType });
+      
+      const { data: planDoc, error: planError } = await supabaseClient
+        .from('customer_documents')
+        .select('document_name, file_url')
+        .eq('plan_type', mappedPlanType)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (planDoc && !planError) {
+        try {
+          logStep("Attempting to fetch plan document from customer_documents", { url: planDoc.file_url });
+          const response = await fetch(planDoc.file_url);
+          logStep("Fetch response status", { status: response.status, ok: response.ok });
+          
+          if (response.ok) {
+            const fileBuffer = await response.arrayBuffer();
+            const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+            
+            attachments.push({
+              filename: planDoc.document_name.endsWith('.pdf') ? planDoc.document_name : `${planDoc.document_name}.pdf`,
+              content: base64Content,
+              type: 'application/pdf'
+            });
+            logStep("Plan document prepared for attachment", { filename: planDoc.document_name, size: fileBuffer.byteLength });
+          } else {
+            logStep("Failed to fetch plan document", { status: response.status, statusText: response.statusText });
+          }
+        } catch (error) {
+          logStep("Error preparing plan document", { error: error.message, stack: error.stack });
+        }
+      } else {
+        logStep("No plan-specific document found in customer_documents", { planType: mappedPlanType, error: planError });
+      }
     }
 
     // Fetch terms and conditions document

@@ -219,15 +219,27 @@ const handler = async (req: Request): Promise<Response> => {
     
     let attachments = [];
     
-    // 1. Try plan_document_mapping first
+    // Determine vehicle type based on plan and customer data
+    const isSpecialVehicle = ['motorcycle', 'van', 'motorhome', 'caravan', 'motorbike'].some(type => 
+      policy.plan_type.toLowerCase().includes(type)
+    );
+    const vehicleType = isSpecialVehicle ? 'special_vehicle' : 'standard';
+
+    // 1. Try plan_document_mapping first with correct vehicle type
     const { data: documentMapping } = await supabase
       .from('plan_document_mapping')
       .select('document_path')
-      .eq('plan_name', policy.plan_type.toLowerCase())
-      .eq('vehicle_type', 'standard')
+      .eq('plan_name', policy.plan_type)
+      .eq('vehicle_type', vehicleType)
       .maybeSingle();
 
-    console.log(JSON.stringify({ evt: "plan.mapping.result", rid, documentMapping }));
+    console.log(JSON.stringify({ 
+      evt: "plan.mapping.result", 
+      rid, 
+      documentMapping, 
+      planType: policy.plan_type,
+      vehicleType
+    }));
 
     // 2. Build list of possible PDF paths to try
     let pdfPaths = [];

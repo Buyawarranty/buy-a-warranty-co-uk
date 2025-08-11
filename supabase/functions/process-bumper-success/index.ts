@@ -306,7 +306,7 @@ serve(async (req) => {
       logStep("Skipping Warranties 2000 registration - no warranty reference generated");
     }
 
-    // Send welcome email using Supabase client
+    // Send welcome email automatically for Bumper customers
     try {
       console.log(`[BUMPER-EMAIL-DEBUG] Sending welcome email for policy:`, {
         customerId: customer.id,
@@ -330,22 +330,48 @@ serve(async (req) => {
         error: emailError
       });
 
-      if (!emailError && emailResult) {
-        logStep("SUCCESS: Welcome email sent successfully", emailResult);
-      } else {
+      if (emailError) {
         logStep("ERROR: Welcome email failed", { 
-          error: emailError || 'Unknown error',
-          result: emailResult
+          error: emailError,
+          policyId: policy.id
         });
+        
+        // Update policy status to reflect email failure
+        await supabaseClient
+          .from('customer_policies')
+          .update({ 
+            email_sent_status: 'failed',
+            email_sent_at: new Date().toISOString()
+          })
+          .eq('id', policy.id);
+      } else {
+        logStep("SUCCESS: Welcome email sent successfully", emailResult);
+        
+        // Update policy status to reflect email success
+        await supabaseClient
+          .from('customer_policies')
+          .update({ 
+            email_sent_status: 'sent',
+            email_sent_at: new Date().toISOString()
+          })
+          .eq('id', policy.id);
       }
 
     } catch (emailError) {
       logStep("Welcome email failed", { 
         error: emailError,
         message: emailError instanceof Error ? emailError.message : String(emailError),
-        stack: emailError instanceof Error ? emailError.stack : undefined
+        policyId: policy.id
       });
-      // Don't throw as the main process succeeded
+      
+      // Update policy status to reflect email failure
+      await supabaseClient
+        .from('customer_policies')
+        .update({ 
+          email_sent_status: 'failed',
+          email_sent_at: new Date().toISOString()
+        })
+        .eq('id', policy.id);
     }
 
     return new Response(JSON.stringify({
