@@ -122,15 +122,20 @@ serve(async (req) => {
     const requiredFields = [
       'Title', 'First', 'Surname', 'Addr1', 'Town', 'PCode', 
       'Tel', 'Mobile', 'EMail', 'PurDate', 'Make', 'Model', 
-      'RegNum', 'Mileage', 'EngSize', 'PurPrc', 'RegDate', 
+      'RegNum', 'Mileage', 'PurPrc', 'RegDate', 
       'WarType', 'Month', 'MaxClm'
     ];
 
     for (const field of requiredFields) {
-      if (!registrationData[field as keyof RegistrationData]) {
-        console.error(`Missing required field: ${field}`);
+      const value = registrationData[field as keyof RegistrationData];
+      if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
+        console.error(`Missing or empty required field: ${field}`);
         return new Response(
-          JSON.stringify({ error: `Missing required field: ${field}` }),
+          JSON.stringify({ 
+            success: false,
+            error: `Missing or empty required field: ${field}`,
+            details: `Field '${field}' is required and cannot be empty`
+          }),
           { 
             status: 400, 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
