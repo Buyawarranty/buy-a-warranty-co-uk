@@ -42,7 +42,7 @@ serve(async (req) => {
     const { data: template, error: templateError } = await supabaseClient
       .from('email_templates')
       .select('*')
-      .eq('name', 'Policy Documents Email')
+      .eq('template_type', 'policy_documents')
       .eq('is_active', true)
       .single();
 
@@ -248,7 +248,7 @@ serve(async (req) => {
     };
 
     const emailPayload: any = {
-      templateId: template.name,
+      templateId: template.template_type,
       recipientEmail: recipientEmail,
       variables: emailVariables
     };
