@@ -303,7 +303,7 @@ serve(async (req) => {
     formData.append('Username', warrantiesUsername);
     formData.append('Password', warrantiesPassword);
 
-    const apiUrl = 'https://www.warranties-2000.co.uk/api/warranty-registration';
+    const apiUrl = Deno.env.get('W2K_API_URL') || 'https://warranties-epf.co.uk/api.php';
 
     console.log(`[WARRANTIES-2000] Making API call to: ${apiUrl}`);
 
