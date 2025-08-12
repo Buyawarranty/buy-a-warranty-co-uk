@@ -216,8 +216,8 @@ serve(async (req) => {
       'ev': 'B-EV',
       'phev': 'B-PHEV',
       'hybrid': 'B-PHEV',
-      'motorbike': 'B-MOTORCYCLE',
-      'motorcycle': 'B-MOTORCYCLE'
+      'motorbike': 'B-MOTORBIKE',
+      'motorcycle': 'B-MOTORBIKE'
     };
 
     // Use policy data if available, otherwise fall back to customer data
