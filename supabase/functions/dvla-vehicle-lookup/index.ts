@@ -83,31 +83,6 @@ serve(async (req) => {
     const data = await response.json();
     console.log('DVLA API response:', data);
 
-    // Check if vehicle is eligible for warranty coverage
-    const make = data.make?.toLowerCase() || '';
-    const model = data.model?.toLowerCase() || '';
-    
-    console.log(`Checking eligibility for: ${make} ${model} (Engine: ${data.engineCapacity}cc, Year: ${data.yearOfManufacture})`);
-    
-    // Special handling for vehicles where DVLA doesn't return model but we can identify from engine specs
-    let identifiedModel = model;
-    if (!model && make === 'nissan' && data.engineCapacity === 3799) {
-      identifiedModel = 'gt-r';
-      console.log('Identified as Nissan GT-R based on engine capacity');
-    }
-    
-    if (isVehicleExcluded(make, identifiedModel)) {
-      console.log(`Vehicle excluded: ${data.make} ${identifiedModel}`);
-      return new Response(JSON.stringify({
-        found: true,
-        eligible: false,
-        error: "We're sorry - this vehicle isn't eligible for our warranty cover. Unfortunately, we're unable to provide warranty cover for certain high-performance, modified, or specialist vehicles, and your vehicle falls into this category. If you believe this is incorrect, please contact our Customer Service team on 0330 229 5040 or email info@buyawarranty.co.uk and we'll be happy to review your enquiry."
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
-    }
-
     // Determine vehicle type based on DVLA data
     let vehicleType = 'car'; // Default to car
     const fuelType = data.fuelType?.toLowerCase() || '';
@@ -174,7 +149,6 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({
       found: true,
-      eligible: true,
       make: data.make,
       model: data.model || null, // Model might not be available from DVLA
       fuelType: data.fuelType,
@@ -202,101 +176,3 @@ serve(async (req) => {
     });
   }
 });
-
-// Function to check if a vehicle is excluded from warranty coverage
-function isVehicleExcluded(make: string, model: string): boolean {
-  const excludedVehicles = [
-    // Supercars & Hypercars
-    { make: 'aston martin', models: ['db11 amr', 'vantage f1 edition', 'dbs superleggera', 'valkyrie'] },
-    { make: 'audi', models: ['r8'] },
-    { make: 'bugatti', models: ['veyron', 'chiron', 'divo', 'bolide'] },
-    { make: 'ferrari', models: ['296 gtb', '812 superfast', 'f8 tributo', 'sf90 stradale', 'purosangue'] },
-    { make: 'lamborghini', models: ['huracán', 'huracan', 'aventador', 'revuelto', 'sian'] },
-    { make: 'mclaren', models: ['540c', '570s', '600lt', '650s', '675lt', '720s', '765lt', 'artura', 'p1', 'speedtail', 'elva'] },
-    { make: 'porsche', models: ['911 gt3', '911 gt3 rs', '911 gt2 rs', '911 turbo', '911 turbo s', '911 carrera gts', '918 spyder', 'cayman gt4 rs'] },
-    { make: 'lotus', models: ['emira first edition', 'evija hypercar'] },
-    { make: 'maserati', models: ['mc20'] },
-    
-    // Performance Coupés & Grand Tourers
-    { make: 'alfa romeo', models: ['giulia quadrifoglio', 'stelvio quadrifoglio'] },
-    { make: 'aston martin', models: ['rapide s'] },
-    { make: 'audi', models: ['rs5', 'rs7 sportback'] },
-    { make: 'bentley', models: ['continental gt speed', 'flying spur speed'] },
-    { make: 'bmw', models: ['m2 competition', 'm3 competition', 'm4 gts', 'm5 cs', 'm8 competition'] },
-    { make: 'jaguar', models: ['f-type r', 'f-type svr', 'xe sv project 8', 'xkr-s'] },
-    { make: 'lexus', models: ['lc500', 'rc f track edition'] },
-    { make: 'mercedes-amg', models: ['c63 s', 'e63 s', 'gt r', 'gt black series', 'sl63 amg'] },
-    { make: 'mercedes', models: ['c63 s', 'e63 s', 'gt r', 'gt black series', 'sl63 amg'] },
-    { make: 'nissan', models: ['gt-r'] },
-    { make: 'toyota', models: ['gr supra 3.0', 'gr yaris circuit pack'] },
-    { make: 'tesla', models: ['model s plaid', 'model x plaid'] },
-    
-    // Hot Hatches & Smaller Performance Cars
-    { make: 'abarth', models: ['695 biposto'] },
-    { make: 'audi', models: ['s3', 'rs3'] },
-    { make: 'ford', models: ['fiesta st', 'focus st', 'focus rs'] },
-    { make: 'honda', models: ['civic type r fk2', 'civic type r fk8', 'civic type r fl5', 'civic type r'] },
-    { make: 'hyundai', models: ['i20 n', 'i30 n'] },
-    { make: 'mini', models: ['john cooper works gp'] },
-    { make: 'peugeot', models: ['308 gti by peugeot sport'] },
-    { make: 'renault', models: ['megane r.s. trophy-r', 'clio r.s. 220 trophy'] },
-    { make: 'volkswagen', models: ['golf gti clubsport', 'golf r'] },
-    
-    // Performance SUVs
-    { make: 'aston martin', models: ['dbx707'] },
-    { make: 'audi', models: ['sq7', 'sq8', 'rs q3', 'rs q8'] },
-    { make: 'bentley', models: ['bentayga speed'] },
-    { make: 'bmw', models: ['x3 m competition', 'x5 m', 'x6 m'] },
-    { make: 'jaguar', models: ['f-pace svr'] },
-    { make: 'lamborghini', models: ['urus performante'] },
-    { make: 'maserati', models: ['levante trofeo'] },
-    { make: 'mercedes-amg', models: ['glc 63 s', 'gle 63 s', 'gls 63'] },
-    { make: 'mercedes', models: ['glc 63 s', 'gle 63 s', 'gls 63'] },
-    { make: 'porsche', models: ['macan gts', 'cayenne turbo', 'cayenne turbo gt', 'cayenne coupé turbo gt'] },
-    { make: 'land rover', models: ['range rover sport svr', 'range rover svautobiography dynamic'] },
-    
-    // Limited-Edition or Track-Focused Cars
-    { make: 'ariel', models: ['atom 4', 'nomad'] },
-    { make: 'caterham', models: ['420r', 'seven 620r'] },
-    { make: 'ktm', models: ['x-bow'] },
-    { make: 'radical', models: ['sr3 xxr', 'sr10'] },
-    { make: 'lotus', models: ['exige cup 430', 'elise cup 250'] },
-    { make: 'bmw', models: ['m4 csl', 'm2 cs'] },
-    { make: 'mercedes-amg', models: ['one hypercar'] },
-    { make: 'mercedes', models: ['one hypercar'] },
-    { make: 'porsche', models: ['cayman gt4 rs clubsport'] }
-  ];
-
-  // Normalize the input for comparison
-  const normalizedMake = make.toLowerCase().trim();
-  const normalizedModel = model.toLowerCase().trim();
-
-  // Find the make in excluded vehicles
-  for (const excludedVehicle of excludedVehicles) {
-    if (excludedVehicle.make === normalizedMake) {
-      // Check for exact model matches only
-      return excludedVehicle.models.some(excludedModel => {
-        const normalizedExcludedModel = excludedModel.toLowerCase().trim();
-        
-        // Exact match
-        if (normalizedModel === normalizedExcludedModel) {
-          return true;
-        }
-        
-        // Special case for Honda Civic Type R variants - any Type R should be excluded
-        if (excludedModel.includes('civic type r') && normalizedModel.includes('civic type r')) {
-          return true;
-        }
-        
-        // Special case for Porsche 911 variants - check if the model contains the specific variant
-        if (excludedModel.startsWith('911 ') && normalizedModel.includes(excludedModel.replace('911 ', ''))) {
-          return true;
-        }
-        
-        return false;
-      });
-    }
-  }
-  
-  return false;
-}
