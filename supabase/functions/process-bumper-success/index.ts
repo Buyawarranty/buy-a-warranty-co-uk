@@ -150,7 +150,25 @@ serve(async (req) => {
     const startDate = new Date();
     let endDate = new Date();
     
-    switch (paymentType) {
+    // For Bumper orders, determine the actual policy duration based on the plan and amount
+    // Since Bumper can process monthly payments for longer-term plans
+    let actualPaymentType = paymentType;
+    
+    // If it's monthly payment, check if the amounts suggest a longer term
+    if (paymentType === 'monthly' && finalAmount && originalAmount) {
+      const monthlyExpected = plan.monthly_price;
+      const yearlyExpected = plan.yearly_price;
+      const twoYearExpected = plan.two_yearly_price;
+      
+      // Check if the total amount suggests a longer-term plan
+      if (twoYearExpected && Math.abs(finalAmount - twoYearExpected) < 10) {
+        actualPaymentType = 'twoYear';
+      } else if (yearlyExpected && Math.abs(finalAmount - yearlyExpected) < 10) {
+        actualPaymentType = 'yearly';
+      }
+    }
+    
+    switch (actualPaymentType) {
       case 'monthly':
         endDate.setMonth(endDate.getMonth() + 1);
         break;
