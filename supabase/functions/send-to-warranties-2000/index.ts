@@ -16,6 +16,33 @@ interface Warranties2000Request {
   customerId?: string;
 }
 
+interface Warranties2000Registration {
+  Title: string;
+  First: string; 
+  Surname: string;
+  Addr1: string;
+  Addr2?: string;
+  Town: string;
+  PCode: string;
+  Tel: string;
+  Mobile: string;
+  EMail: string;
+  PurDate: string; // yyyy-mm-dd
+  Make: string;
+  Model: string;
+  RegNum: string;
+  Mileage: string;
+  EngSize: string;
+  PurPrc: string;
+  RegDate: string; // yyyy-mm-dd
+  WarType: string; // Must be from predefined list
+  Month: string; // Coverage period in months
+  MaxClm: string; // Must be from predefined list (full amounts)
+  Notes?: string;
+  Ref?: string; // Your reference
+  MOTDue?: string; // yyyy-mm-dd
+}
+
 // Timeout wrapper for fetch
 async function timedFetch(url: string, options: RequestInit, timeoutMs = 15000): Promise<Response> {
   const controller = new AbortController();
@@ -70,443 +97,314 @@ async function retryFetch(url: string, options: RequestInit, maxRetries = 2): Pr
   throw lastError || new Error('Max retries exceeded');
 }
 
-const handler = async (req: Request): Promise<Response> => {
-  const rid = crypto.randomUUID();
-  const t0 = Date.now();
-  
-  if (req.method === "OPTIONS") {
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const body: Warranties2000Request = await req.json();
+  const { policyId, customerId } = body;
+  
+  console.log(`[WARRANTIES-2000] Function started with:`, { 
+    policyId, 
+    customerId,
+    hasPolicyId: !!policyId,
+    hasCustomerId: !!customerId
+  });
+  
   try {
-    console.log(JSON.stringify({ evt: "w2k.start", rid }));
-    
-    // Check environment variables at startup
-    const w2kApiUrl = Deno.env.get('W2K_API_URL') || 'https://warranties-epf.co.uk/api.php';
-    const w2kUsername = Deno.env.get('WARRANTIES_2000_USERNAME');
-    const w2kPassword = Deno.env.get('WARRANTIES_2000_PASSWORD');
-    
-    console.log(JSON.stringify({ 
-      evt: "env.check", 
-      rid,
-      hasUrl: !!w2kApiUrl,
-      hasUsername: !!w2kUsername,
-      hasPassword: !!w2kPassword
-    }));
-    
-    if (!w2kUsername || !w2kPassword) {
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        rid,
-        code: 'MISSING_CREDENTIALS', 
-        error: 'WARRANTIES_2000_USERNAME or WARRANTIES_2000_PASSWORD not configured' 
-      }), {
-        status: 500,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
-    }
+    let policy = null;
+    let customer = null;
 
-    // Parse request body
-    const body: Warranties2000Request = await req.json().catch(() => ({}));
-    const { policyId, customerId } = body;
-    
-    console.log(JSON.stringify({ evt: "request.parsed", rid, policyId, customerId }));
-    
-    if (!policyId && !customerId) {
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        rid,
-        code: 'MISSING_PARAMS', 
-        error: 'Either policyId or customerId is required' 
-      }), {
-        status: 422,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
-    }
-
-    // Get policy and customer data
-    let query = supabase
-      .from('customer_policies')
-      .select(`
-        *,
-        customers!customer_id (
-          id, name, email, phone, first_name, last_name,
-          flat_number, building_name, building_number, street,
-          town, county, postcode, country, vehicle_make,
-          vehicle_model, vehicle_year, vehicle_fuel_type,
-          vehicle_transmission, registration_plate, mileage
-        )
-      `);
-
+    // Enhanced data fetching with better error handling (using same pattern as working manual function)
     if (policyId) {
-      query = query.eq('id', policyId);
+      console.log(`[WARRANTIES-2000] Fetching policy by ID: ${policyId}`);
+      const { data: policyData, error: policyError } = await supabase
+        .from('customer_policies')
+        .select(`
+          *,
+          customers!customer_id (
+            id, name, email, first_name, last_name, phone,
+            registration_plate, vehicle_make, vehicle_model, vehicle_year,
+            mileage, flat_number, building_name, building_number,
+            street, town, county, postcode, country, plan_type, payment_type,
+            final_amount, warranty_reference_number
+          )
+        `)
+        .eq('id', policyId)
+        .single();
+
+      if (policyError) {
+        console.error(`[WARRANTIES-2000] Policy fetch error:`, policyError);
+        throw new Error(`Failed to fetch policy: ${policyError.message}`);
+      }
+
+      policy = policyData;
+      customer = policyData.customers;
+      console.log(`[WARRANTIES-2000] Found policy:`, { 
+        policyNumber: policy?.policy_number,
+        customerEmail: customer?.email,
+        planType: policy?.plan_type
+      });
+    } else if (customerId) {
+      console.log(`[WARRANTIES-2000] Fetching customer by ID: ${customerId}`);
+      
+      // Get customer first
+      const { data: customerData, error: customerError } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('id', customerId)
+        .single();
+
+      if (customerError) {
+        console.error(`[WARRANTIES-2000] Customer fetch error:`, customerError);
+        throw new Error(`Failed to fetch customer: ${customerError.message}`);
+      }
+
+      customer = customerData;
+
+      // Then get their most recent policy
+      const { data: policyData, error: policyError } = await supabase
+        .from('customer_policies')
+        .select('*')
+        .eq('customer_id', customerId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (policyError) {
+        console.log(`[WARRANTIES-2000] No policy found for customer, using customer data only:`, policyError);
+        // Continue without policy data - use customer data only
+      } else {
+        policy = policyData;
+      }
+      
+      console.log(`[WARRANTIES-2000] Found customer:`, { 
+        customerEmail: customer?.email,
+        policyNumber: policy?.policy_number || 'No policy',
+        planType: policy?.plan_type || customer?.plan_type
+      });
     } else {
-      query = query.eq('customer_id', customerId);
+      throw new Error('Either policyId or customerId must be provided');
     }
-
-    const { data: policies, error: policyError } = await query;
-
-    if (policyError) {
-      console.log(JSON.stringify({ evt: "db.error", rid, error: policyError.message }));
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        rid,
-        code: 'POLICY_FETCH_ERROR', 
-        error: policyError.message 
-      }), {
-        status: 500,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
-    }
-
-    if (!policies || policies.length === 0) {
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        rid,
-        code: 'POLICY_NOT_FOUND', 
-        error: 'Policy not found' 
-      }), {
-        status: 404,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
-    }
-
-    const policy = policies[0];
-    const customer = policy.customers;
 
     if (!customer) {
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        rid,
-        code: 'CUSTOMER_NOT_FOUND', 
-        error: 'Customer data not found' 
-      }), {
-        status: 404,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
+      throw new Error('Customer data not found');
     }
 
-    console.log(JSON.stringify({ 
-      evt: "data.found", 
-      rid, 
-      policyId: policy.id, 
-      warrantyNumber: policy.warranty_number 
-    }));
+    console.log(`[WARRANTIES-2000] Data validation passed:`, {
+      hasPolicy: !!policy,
+      hasCustomer: !!customer,
+      customerName: customer.name || customer.first_name || 'Unknown',
+      registrationPlate: customer.registration_plate || 'N/A'
+    });
 
-    // Check idempotency
-    if (policy.warranties_2000_status === 'sent') {
-      console.log(JSON.stringify({ evt: "already.sent", rid, policyId: policy.id }));
-      return new Response(JSON.stringify({ 
-        ok: true, 
-        rid,
-        already: true, 
-        message: 'Already sent to Warranties 2000' 
-      }), {
-        status: 200,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
+    // Get environment variables
+    const warrantiesUsername = Deno.env.get('WARRANTIES_2000_USERNAME');
+    const warrantiesPassword = Deno.env.get('WARRANTIES_2000_PASSWORD');
+
+    if (!warrantiesUsername || !warrantiesPassword) {
+      throw new Error('Warranties 2000 credentials not configured');
     }
 
-    // Test data blocking removed - all paying customers are legitimate
-
-    // Allow all legitimate customer orders - no duplicate blocking for same customer
-    // Each policy purchase creates a new order, even from the same customer/email
-    console.log(JSON.stringify({ 
-      evt: "w2k.processing_order", 
-      rid, 
-      customer: customer.email,
-      registration: customer.registration_plate,
-      policy_id: policy.id,
-      note: "Processing as new order - duplicate customers allowed"
-    }));
-
-    // Validate required fields for W2K
-    const requiredFields = {
-      warranty_number: policy.warranty_number,
-      customer_email: customer.email,
-      customer_name: customer.name,
-      registration_plate: customer.registration_plate
+    // Map plan types to warranty types (using same logic as manual function)
+    const warrantyTypeMapping: Record<string, string> = {
+      'basic': 'B-BASIC',
+      'gold': 'G-GOLD', 
+      'platinum': 'P-PLATINUM',
+      'electric': 'E-ELECTRIC',
+      'phev': 'H-HYBRID',
+      'hybrid': 'H-HYBRID',
+      'motorbike': 'M-MOTORBIKE',
+      'motorcycle': 'M-MOTORBIKE'
     };
 
-    const missingFields = Object.entries(requiredFields)
-      .filter(([_, value]) => !value)
-      .map(([key, _]) => key);
+    // Use policy data if available, otherwise fall back to customer data
+    const planType = (policy?.plan_type || customer.plan_type || 'basic').toLowerCase();
+    const warrantyType = warrantyTypeMapping[planType] || 'B-BASIC';
 
-    if (missingFields.length > 0) {
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        rid,
-        code: 'MISSING_REQUIRED_FIELDS', 
-        error: `Missing required fields: ${missingFields.join(', ')}` 
-      }), {
-        status: 422,
-        headers: { "content-type": "application/json", ...corsHeaders },
-      });
+    // Calculate coverage months based on payment type
+    let coverageMonths = '12'; // Default to 1 year
+    const paymentType = (policy?.payment_type || customer.payment_type || 'yearly').toLowerCase();
+    
+    if (paymentType === 'monthly') {
+      coverageMonths = '1';
+    } else if (paymentType === 'yearly') {
+      coverageMonths = '12';
+    } else if (paymentType?.includes('two') || paymentType?.includes('2')) {
+      coverageMonths = '24';
+    } else if (paymentType?.includes('three') || paymentType?.includes('3')) {
+      coverageMonths = '36';
     }
 
-    // Prepare data for Warranties 2000 API per specification
-    const warranties2000Data = {
-      Title: extractTitle(customer.name) || 'Mr',
-      First: customer.first_name || extractFirstName(customer.name) || '',
-      Surname: customer.last_name || extractSurname(customer.name) || '',
-      Addr1: buildAddressLine1(customer),
-      Addr2: customer.building_name || customer.county || '',
-      Town: customer.town || '',
-      PCode: customer.postcode || '',
-      Tel: customer.phone || '',
-      Mobile: customer.phone || '',
+    // Calculate max claim amount based on plan type
+    const maxClaimMapping: Record<string, string> = {
+      'basic': '500',
+      'gold': '1000',
+      'platinum': '2000',
+      'electric': '1500',
+      'phev': '1500',
+      'hybrid': '1500',
+      'motorbike': '750',
+      'motorcycle': '750'
+    };
+
+    const maxClaimAmount = maxClaimMapping[planType] || '500';
+
+    // Build the registration data with validation (using same format as working manual function)
+    const registrationData: Warranties2000Registration = {
+      Title: "Mr",
+      First: customer.first_name || customer.name?.split(' ')[0] || "Customer",
+      Surname: customer.last_name || customer.name?.split(' ').slice(1).join(' ') || "Name",
+      Addr1: customer.building_number && customer.street 
+        ? `${customer.building_number} ${customer.street}` 
+        : customer.street || "Address Line 1",
+      Addr2: customer.building_name || customer.flat_number || "",
+      Town: customer.town || "Town",
+      PCode: customer.postcode || "UNKNOWN",
+      Tel: customer.phone || "N/A",
+      Mobile: customer.phone || "N/A",
       EMail: customer.email,
-      PurDate: policy.policy_start_date ? new Date(policy.policy_start_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      Make: customer.vehicle_make || '',
-      RegNum: customer.registration_plate || '',
-      Mileage: String(Math.floor(parseFloat(customer.mileage || '50000'))), // Whole number as string
-      EngSize: "", // Pass empty string as requested
-      PurPrc: String(Math.floor(policy.payment_amount || 0)),
-      RegDate: customer.vehicle_year ? `${customer.vehicle_year}-01-01` : '2020-01-01',
-      WarType: getWarrantyType(policy.plan_type || ''),
-      Month: getWarrantyDuration(policy.payment_type || ''),
-      MaxClm: getMaxClaimAmount(policy.plan_type || ''),
-      Notes: `Policy: ${policy.policy_number || ''} | Customer: ${customer.name}`,
-      Ref: policy.warranty_number || policy.id,
-      MOTDue: estimateMOTDue(customer.vehicle_year)
+      PurDate: new Date().toISOString().split('T')[0], // Today's date
+      Make: customer.vehicle_make || "UNKNOWN",
+      Model: customer.vehicle_model || "UNKNOWN",
+      RegNum: customer.registration_plate || "UNKNOWN",
+      Mileage: customer.mileage || "50000",
+      EngSize: "1968", // Default engine size
+      PurPrc: (policy?.payment_amount || customer.final_amount || 276).toString(),
+      RegDate: customer.vehicle_year ? `${customer.vehicle_year}-01-01` : "2020-01-01",
+      WarType: warrantyType,
+      Month: coverageMonths,
+      MaxClm: maxClaimAmount,
+      MOTDue: (() => {
+        const nextYear = new Date();
+        nextYear.setFullYear(nextYear.getFullYear() + 1);
+        return nextYear.toISOString().split('T')[0];
+      })(),
+      Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`
     };
 
-    console.log(JSON.stringify({ evt: "w2k.payload.prepared", rid }));
+    console.log(`[WARRANTIES-2000] Sending registration data:`, {
+      regNum: registrationData.RegNum,
+      warType: registrationData.WarType,
+      customerEmail: registrationData.EMail,
+      ref: registrationData.Ref
+    });
 
-    // Send to Warranties 2000 API with basic auth
-    const basicAuth = btoa(`${w2kUsername}:${w2kPassword}`);
-    const idempotencyKey = policy.warranty_number || policy.id;
+    // Create form data for API submission
+    const formData = new FormData();
+    Object.entries(registrationData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
 
-    const w2kResponse = await retryFetch(w2kApiUrl, {
+    // Add authentication
+    formData.append('Username', warrantiesUsername);
+    formData.append('Password', warrantiesPassword);
+
+    const apiUrl = 'https://www.warranties-2000.co.uk/api/warranty-registration';
+
+    console.log(`[WARRANTIES-2000] Making API call to: ${apiUrl}`);
+
+    const response = await retryFetch(apiUrl, {
       method: 'POST',
       headers: {
-        'content-type': 'application/json',
-        'authorization': `Basic ${basicAuth}`,
-        'idempotency-key': idempotencyKey
+        'User-Agent': 'BuyAWarranty-Integration/1.0',
+        'Accept': 'application/json, text/plain, */*',
       },
-      body: JSON.stringify(warranties2000Data)
+      body: formData,
     });
 
-    const responseText = await w2kResponse.text();
-    let responseData;
-    try {
-      responseData = JSON.parse(responseText);
-    } catch {
-      responseData = { raw_response: responseText.substring(0, 256) };
+    const responseText = await response.text();
+    console.log(`[WARRANTIES-2000] API Response:`, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers),
+      body: responseText
+    });
+
+    // Update the customer_policies table with warranty registration status
+    if (policy?.id) {
+      const updateData = {
+        warranties_2000_sent_at: new Date().toISOString(),
+        warranties_2000_status: response.ok ? 'sent' : 'failed',
+        warranties_2000_response: {
+          status: response.status,
+          response: responseText,
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      const { error: updateError } = await supabase
+        .from('customer_policies')
+        .update(updateData)
+        .eq('id', policy.id);
+
+      if (updateError) {
+        console.error(`[WARRANTIES-2000] Failed to update policy status:`, updateError);
+      } else {
+        console.log(`[WARRANTIES-2000] Updated policy status successfully`);
+      }
     }
 
-    console.log(JSON.stringify({ 
-      evt: "w2k.response", 
-      rid, 
-      status: w2kResponse.status,
-      preview: responseText.substring(0, 256) 
-    }));
-
-    // Update policy with response
-    const status = w2kResponse.ok ? 'sent' : 'failed';
-    
-    await supabase
-      .from('customer_policies')
-      .update({
-        warranties_2000_status: status,
-        warranties_2000_sent_at: new Date().toISOString(),
-        warranties_2000_response: {
-          status: w2kResponse.status,
-          response: responseData,
-          sent_at: new Date().toISOString()
-        }
-      })
-      .eq('id', policy.id);
-
-    // Log the event
-    await supabase.rpc('log_warranty_event', {
-      p_policy_id: policy.id,
-      p_customer_id: customer.id,
-      p_event_type: status === 'sent' ? 'warranties_2000_sent' : 'warranties_2000_failed',
-      p_event_data: {
-        status: w2kResponse.status,
-        response: responseData,
-        idempotency_key: idempotencyKey
-      },
-      p_created_by: 'admin'
-    });
-
-    if (!w2kResponse.ok) {
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        rid,
-        code: 'W2K_API_ERROR', 
-        error: `Warranties 2000 API error: ${responseData.message || responseData.Response || 'Unknown error'}`,
-        details: {
-          status: w2kResponse.status,
-          response: responseData
-        }
+    if (!response.ok) {
+      console.error(`[WARRANTIES-2000] API call failed:`, {
+        status: response.status,
+        response: responseText
+      });
+      
+      return new Response(JSON.stringify({
+        success: false,
+        error: `Warranties 2000 API error: ${response.status} ${response.statusText}`,
+        response: responseText,
+        registrationData: registrationData
       }), {
-        status: 500,
-        headers: { "content-type": "application/json", ...corsHeaders },
+        status: response.status,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    console.log(JSON.stringify({ evt: "w2k.success", rid, referenceId: responseData.id || 'unknown' }));
-    
-    return new Response(JSON.stringify({ 
-      ok: true, 
-      rid,
-      id: responseData.id || responseData.reference || 'unknown',
-      message: 'Successfully sent to Warranties 2000',
-      policyId: policy.id,
-      warrantyNumber: policy.warranty_number,
-      warranties2000Response: responseData
+    console.log(`[WARRANTIES-2000] Registration successful`);
+
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Warranty registered successfully with Warranties 2000',
+      registrationData: registrationData,
+      response: responseText
     }), {
-      status: 200,
-      headers: { "content-type": "application/json", ...corsHeaders },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
 
-  } catch (error: any) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.log(JSON.stringify({ evt: "error", rid, error: msg }));
+  } catch (error) {
+    console.error(`[WARRANTIES-2000] Error:`, error);
     
-    return new Response(JSON.stringify({ 
-      ok: false, 
-      rid,
-      code: 'UNHANDLED_ERROR', 
-      error: msg 
+    // Update policy status on error if we have a policy ID
+    if (body.policyId) {
+      try {
+        await supabase
+          .from('customer_policies')
+          .update({
+            warranties_2000_sent_at: new Date().toISOString(),
+            warranties_2000_status: 'failed',
+            warranties_2000_response: {
+              error: error.message,
+              timestamp: new Date().toISOString()
+            }
+          })
+          .eq('id', body.policyId);
+      } catch (updateError) {
+        console.error(`[WARRANTIES-2000] Failed to update error status:`, updateError);
+      }
+    }
+    
+    return new Response(JSON.stringify({
+      success: false,
+      error: error.message || 'Unknown error occurred',
+      details: error
     }), {
       status: 500,
-      headers: { "content-type": "application/json", ...corsHeaders },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
-  } finally {
-    console.log(JSON.stringify({ evt: "edge.done", rid, ms: Date.now() - t0 }));
   }
-};
-
-// Helper functions for Warranties 2000 API mapping per specification
-
-function getWarrantyDuration(paymentType: string): string {
-  // Duration must be one of: 12, 24, 36, 48 or 60 months
-  switch (paymentType.toLowerCase()) {
-    case 'monthly': return '12';
-    case 'yearly': return '12'; 
-    case 'twoyear': return '24';
-    case 'threeyear': return '36';
-    case 'fouryear': return '48';
-    case 'fiveyear': return '60';
-    default: return '12';
-  }
-}
-
-function getMaxClaimAmount(planType: string): string {
-  // Claim limit must be one of: 500, 1000, 1200, 2000, 3000 or 5000
-  switch (planType.toLowerCase()) {
-    case 'basic': return '500'; // £500
-    case 'gold': return '1000'; // £1000
-    case 'platinum': return '1200'; // £1200
-    case 'premium': return '2000'; // £2000
-    case 'ultimate': return '3000'; // £3000
-    case 'elite': return '5000'; // £5000
-    case 'phev': return '1000'; // £1000
-    case 'ev': return '1000'; // £1000
-    case 'motorbike': return '1000'; // £1000
-    default: return '500'; // £500 default
-  }
-}
-
-function getWarrantyType(planType: string): string {
-  const normalizedPlan = planType.toLowerCase();
-  
-  // Handle special vehicle types - check if plan name contains these terms
-  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
-    return 'B-PHEV';
-  } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
-    return 'B-EV';
-  } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
-    return 'B-MOTORBIKE';
-  }
-  
-  // Handle standard plan types
-  if (normalizedPlan.includes('basic')) {
-    return 'B-BASIC';
-  } else if (normalizedPlan.includes('gold')) {
-    return 'B-GOLD';
-  } else if (normalizedPlan.includes('platinum')) {
-    return 'B-PLATINUM';
-  }
-  
-  return 'B-BASIC'; // Default fallback
-}
-
-function extractTitle(fullName: string): string {
-  const name = fullName.toLowerCase();
-  if (name.includes('mr.') || name.includes('mr ')) return 'Mr';
-  if (name.includes('mrs.') || name.includes('mrs ')) return 'Mrs';
-  if (name.includes('ms.') || name.includes('ms ')) return 'Ms';
-  if (name.includes('miss')) return 'Miss';
-  if (name.includes('dr.') || name.includes('dr ')) return 'Dr';
-  return 'Mr'; // Default
-}
-
-function extractFirstName(fullName: string): string {
-  const parts = fullName.trim().split(' ');
-  if (parts.length >= 2) {
-    const firstPart = parts[0].toLowerCase();
-    if (['mr', 'mrs', 'ms', 'miss', 'dr', 'mr.', 'mrs.', 'ms.', 'dr.'].includes(firstPart)) {
-      return parts[1] || 'Unknown';
-    }
-    return parts[0] || 'Unknown';
-  }
-  return fullName || 'Unknown';
-}
-
-function extractSurname(fullName: string): string {
-  const parts = fullName.trim().split(' ');
-  if (parts.length >= 2) {
-    const firstPart = parts[0].toLowerCase();
-    if (['mr', 'mrs', 'ms', 'miss', 'dr', 'mr.', 'mrs.', 'ms.', 'dr.'].includes(firstPart)) {
-      return parts.slice(2).join(' ') || parts[1] || 'Unknown';
-    }
-    return parts.slice(1).join(' ') || 'Unknown';
-  }
-  return 'Unknown';
-}
-
-function buildAddressLine1(customer: any): string {
-  const addressParts = [];
-  if (customer.flat_number) addressParts.push(customer.flat_number);
-  if (customer.building_number) addressParts.push(customer.building_number);
-  if (customer.street) addressParts.push(customer.street);
-  return addressParts.join(' ').trim() || '123 Unknown Street';
-}
-
-function estimateEngineSize(make?: string, model?: string): string {
-  // Provide reasonable engine size estimates based on common vehicles
-  if (!make || !model) return '1.6';
-  
-  const makeModel = `${make} ${model}`.toLowerCase();
-  
-  // Common engine sizes for popular makes/models
-  if (makeModel.includes('mini') || makeModel.includes('smart')) return '1.0';
-  if (makeModel.includes('fiesta') || makeModel.includes('polo') || makeModel.includes('corsa')) return '1.2';
-  if (makeModel.includes('focus') || makeModel.includes('golf') || makeModel.includes('astra')) return '1.6';
-  if (makeModel.includes('bmw') || makeModel.includes('audi') || makeModel.includes('mercedes')) return '2.0';
-  if (makeModel.includes('range rover') || makeModel.includes('x5') || makeModel.includes('q7')) return '3.0';
-  
-  return '1.6'; // Default
-}
-
-function estimateMOTDue(vehicleYear?: string): string {
-  if (!vehicleYear) return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  
-  const year = parseInt(vehicleYear);
-  const currentYear = new Date().getFullYear();
-  
-  // MOT due is typically annual after the vehicle is 3 years old
-  if (currentYear - year > 3) {
-    return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  }
-  
-  // For newer vehicles, MOT due would be when they turn 3
-  const motDueYear = year + 3;
-  return `${motDueYear}-01-01`;
-}
-
-serve(handler);
+});
