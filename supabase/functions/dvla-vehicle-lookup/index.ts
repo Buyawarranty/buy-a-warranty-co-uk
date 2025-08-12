@@ -87,8 +87,17 @@ serve(async (req) => {
     const make = data.make?.toLowerCase() || '';
     const model = data.model?.toLowerCase() || '';
     
-    if (isVehicleExcluded(make, model)) {
-      console.log(`Vehicle excluded: ${data.make} ${data.model}`);
+    console.log(`Checking eligibility for: ${make} ${model} (Engine: ${data.engineCapacity}cc, Year: ${data.yearOfManufacture})`);
+    
+    // Special handling for vehicles where DVLA doesn't return model but we can identify from engine specs
+    let identifiedModel = model;
+    if (!model && make === 'nissan' && data.engineCapacity === 3799) {
+      identifiedModel = 'gt-r';
+      console.log('Identified as Nissan GT-R based on engine capacity');
+    }
+    
+    if (isVehicleExcluded(make, identifiedModel)) {
+      console.log(`Vehicle excluded: ${data.make} ${identifiedModel}`);
       return new Response(JSON.stringify({
         found: true,
         eligible: false,
