@@ -6,10 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { TrendingUp, Target, Users, DollarSign, Calendar, Award } from 'lucide-react';
+import { TrendingUp, Users, DollarSign, Award } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AdminUser {
@@ -32,16 +31,6 @@ interface Customer {
   status: string;
 }
 
-interface SalesTarget {
-  id: string;
-  admin_user_id: string;
-  target_amount: number;
-  target_period: string;
-  start_date: string;
-  end_date: string;
-  achieved_amount: number;
-}
-
 interface SalesStats {
   totalSales: number;
   totalCustomers: number;
@@ -52,7 +41,6 @@ interface SalesStats {
 export const SalesTrackingTab: React.FC = () => {
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [salesTargets, setSalesTargets] = useState<SalesTarget[]>([]);
   const [salesStats, setSalesStats] = useState<SalesStats>({
     totalSales: 0,
     totalCustomers: 0,
@@ -60,10 +48,7 @@ export const SalesTrackingTab: React.FC = () => {
     monthlyGrowth: 0
   });
   const [loading, setLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState<string>('');
-  const [targetDialogOpen, setTargetDialogOpen] = useState(false);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState<string>('');
 
   useEffect(() => {
     fetchData();
@@ -75,7 +60,6 @@ export const SalesTrackingTab: React.FC = () => {
       await Promise.all([
         fetchAdminUsers(),
         fetchCustomers(),
-        fetchSalesTargets(),
         fetchSalesStats()
       ]);
     } catch (error) {
@@ -104,16 +88,6 @@ export const SalesTrackingTab: React.FC = () => {
     
     if (error) throw error;
     setCustomers(data || []);
-  };
-
-  const fetchSalesTargets = async () => {
-    const { data, error } = await supabase
-      .from('sales_targets')
-      .select('*')
-      .order('start_date', { ascending: false });
-    
-    if (error) throw error;
-    setSalesTargets(data || []);
   };
 
   const fetchSalesStats = async () => {
@@ -155,47 +129,25 @@ export const SalesTrackingTab: React.FC = () => {
   };
 
   const assignCustomerToUser = async (customerId: string, adminUserId: string) => {
-    const { error } = await supabase
-      .from('customers')
-      .update({ assigned_to: adminUserId })
-      .eq('id', customerId);
-    
-    if (error) {
+    try {
+      const { error } = await supabase
+        .from('customers')
+        .update({ assigned_to: adminUserId || null } as any)
+        .eq('id', customerId);
+      
+      if (error) {
+        console.error('Assignment error:', error);
+        toast.error('Failed to assign customer');
+        return;
+      }
+      
+      toast.success('Customer assigned successfully');
+      fetchCustomers();
+      setAssignDialogOpen(false);
+    } catch (error) {
+      console.error('Assignment error:', error);
       toast.error('Failed to assign customer');
-      return;
     }
-    
-    toast.success('Customer assigned successfully');
-    fetchCustomers();
-    setAssignDialogOpen(false);
-  };
-
-  const createSalesTarget = async (data: {
-    adminUserId: string;
-    targetAmount: number;
-    targetPeriod: string;
-    startDate: string;
-    endDate: string;
-  }) => {
-    const { error } = await supabase
-      .from('sales_targets')
-      .insert({
-        admin_user_id: data.adminUserId,
-        target_amount: data.targetAmount,
-        target_period: data.targetPeriod,
-        start_date: data.startDate,
-        end_date: data.endDate,
-        achieved_amount: 0
-      });
-    
-    if (error) {
-      toast.error('Failed to create sales target');
-      return;
-    }
-    
-    toast.success('Sales target created successfully');
-    fetchSalesTargets();
-    setTargetDialogOpen(false);
   };
 
   const getUserName = (userId: string) => {
@@ -216,25 +168,9 @@ export const SalesTrackingTab: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Sales Tracking</h1>
-          <p className="text-muted-foreground">Monitor sales performance and manage team targets</p>
+          <p className="text-muted-foreground">Monitor sales performance and manage team assignments</p>
         </div>
         <div className="flex gap-2">
-          <Dialog open={targetDialogOpen} onOpenChange={setTargetDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <Target className="h-4 w-4 mr-2" />
-                Set Target
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create Sales Target</DialogTitle>
-                <DialogDescription>Set a new sales target for a team member</DialogDescription>
-              </DialogHeader>
-              <SalesTargetForm onSubmit={createSalesTarget} adminUsers={adminUsers} />
-            </DialogContent>
-          </Dialog>
-          
           <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
             <DialogTrigger asChild>
               <Button>
@@ -302,24 +238,11 @@ export const SalesTrackingTab: React.FC = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="targets" className="space-y-4">
+      <Tabs defaultValue="assignments" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="targets">Sales Targets</TabsTrigger>
           <TabsTrigger value="assignments">Customer Assignments</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="targets">
-          <Card>
-            <CardHeader>
-              <CardTitle>Sales Targets</CardTitle>
-              <CardDescription>Monitor progress towards sales targets</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <SalesTargetsTable targets={salesTargets} adminUsers={adminUsers} />
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="assignments">
           <Card>
@@ -347,7 +270,6 @@ export const SalesTrackingTab: React.FC = () => {
               <SalesPerformanceTable 
                 adminUsers={adminUsers} 
                 customers={customers}
-                targets={salesTargets}
               />
             </CardContent>
           </Card>
@@ -358,90 +280,6 @@ export const SalesTrackingTab: React.FC = () => {
 };
 
 // Helper Components
-const SalesTargetForm: React.FC<{
-  onSubmit: (data: any) => void;
-  adminUsers: AdminUser[];
-}> = ({ onSubmit, adminUsers }) => {
-  const [formData, setFormData] = useState({
-    adminUserId: '',
-    targetAmount: '',
-    targetPeriod: 'monthly',
-    startDate: '',
-    endDate: ''
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({
-      ...formData,
-      targetAmount: parseFloat(formData.targetAmount)
-    });
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="adminUser">Sales Team Member</Label>
-        <Select value={formData.adminUserId} onValueChange={(value) => setFormData({...formData, adminUserId: value})}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select team member" />
-          </SelectTrigger>
-          <SelectContent>
-            {adminUsers.map(user => (
-              <SelectItem key={user.id} value={user.id}>
-                {user.first_name} {user.last_name} ({user.email})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div>
-        <Label htmlFor="targetAmount">Target Amount (£)</Label>
-        <Input
-          type="number"
-          value={formData.targetAmount}
-          onChange={(e) => setFormData({...formData, targetAmount: e.target.value})}
-          placeholder="10000"
-        />
-      </div>
-      <div>
-        <Label htmlFor="targetPeriod">Period</Label>
-        <Select value={formData.targetPeriod} onValueChange={(value) => setFormData({...formData, targetPeriod: value})}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="monthly">Monthly</SelectItem>
-            <SelectItem value="quarterly">Quarterly</SelectItem>
-            <SelectItem value="yearly">Yearly</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="startDate">Start Date</Label>
-          <Input
-            type="date"
-            value={formData.startDate}
-            onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-          />
-        </div>
-        <div>
-          <Label htmlFor="endDate">End Date</Label>
-          <Input
-            type="date"
-            value={formData.endDate}
-            onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-          />
-        </div>
-      </div>
-      <DialogFooter>
-        <Button type="submit">Create Target</Button>
-      </DialogFooter>
-    </form>
-  );
-};
-
 const CustomerAssignForm: React.FC<{
   customers: Customer[];
   adminUsers: AdminUser[];
@@ -493,58 +331,6 @@ const CustomerAssignForm: React.FC<{
         <Button type="submit">Assign Customer</Button>
       </DialogFooter>
     </form>
-  );
-};
-
-const SalesTargetsTable: React.FC<{
-  targets: SalesTarget[];
-  adminUsers: AdminUser[];
-}> = ({ targets, adminUsers }) => {
-  const getUserName = (userId: string) => {
-    const user = adminUsers.find(u => u.id === userId);
-    return user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email : 'Unknown';
-  };
-
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Sales Person</TableHead>
-          <TableHead>Target Amount</TableHead>
-          <TableHead>Achieved</TableHead>
-          <TableHead>Progress</TableHead>
-          <TableHead>Period</TableHead>
-          <TableHead>End Date</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {targets.map(target => {
-          const progress = target.target_amount > 0 ? (target.achieved_amount / target.target_amount) * 100 : 0;
-          return (
-            <TableRow key={target.id}>
-              <TableCell>{getUserName(target.admin_user_id)}</TableCell>
-              <TableCell>£{target.target_amount.toLocaleString()}</TableCell>
-              <TableCell>£{target.achieved_amount.toLocaleString()}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 h-2 bg-muted rounded-full">
-                    <div 
-                      className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${Math.min(progress, 100)}%` }}
-                    />
-                  </div>
-                  <span className="text-sm">{progress.toFixed(1)}%</span>
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">{target.target_period}</Badge>
-              </TableCell>
-              <TableCell>{new Date(target.end_date).toLocaleDateString()}</TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
   );
 };
 
@@ -608,23 +394,17 @@ const CustomerAssignmentsTable: React.FC<{
 const SalesPerformanceTable: React.FC<{
   adminUsers: AdminUser[];
   customers: Customer[];
-  targets: SalesTarget[];
-}> = ({ adminUsers, customers, targets }) => {
+}> = ({ adminUsers, customers }) => {
   const getPerformanceData = (userId: string) => {
     const userCustomers = customers.filter(c => c.assigned_to === userId);
     const totalSales = userCustomers.reduce((sum, c) => sum + (c.final_amount || 0), 0);
     const customerCount = userCustomers.length;
     const avgOrderValue = customerCount > 0 ? totalSales / customerCount : 0;
     
-    const currentTarget = targets.find(t => t.admin_user_id === userId);
-    const targetProgress = currentTarget ? (totalSales / currentTarget.target_amount) * 100 : 0;
-    
     return {
       totalSales,
       customerCount,
-      avgOrderValue,
-      targetProgress,
-      currentTarget: currentTarget?.target_amount || 0
+      avgOrderValue
     };
   };
 
@@ -636,7 +416,6 @@ const SalesPerformanceTable: React.FC<{
           <TableHead>Customers</TableHead>
           <TableHead>Total Sales</TableHead>
           <TableHead>Avg Order Value</TableHead>
-          <TableHead>Target Progress</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -651,17 +430,6 @@ const SalesPerformanceTable: React.FC<{
               <TableCell>{performance.customerCount}</TableCell>
               <TableCell>£{performance.totalSales.toLocaleString()}</TableCell>
               <TableCell>£{performance.avgOrderValue.toFixed(2)}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 h-2 bg-muted rounded-full">
-                    <div 
-                      className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${Math.min(performance.targetProgress, 100)}%` }}
-                    />
-                  </div>
-                  <span className="text-sm">{performance.targetProgress.toFixed(1)}%</span>
-                </div>
-              </TableCell>
             </TableRow>
           );
         })}
