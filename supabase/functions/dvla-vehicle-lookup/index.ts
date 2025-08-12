@@ -258,17 +258,36 @@ function isVehicleExcluded(make: string, model: string): boolean {
     { make: 'porsche', models: ['cayman gt4 rs clubsport'] }
   ];
 
-  // Check if the vehicle make and model combination is excluded
-  const vehicleMake = excludedVehicles.find(v => v.make === make);
-  if (!vehicleMake) return false;
+  // Normalize the input for comparison
+  const normalizedMake = make.toLowerCase().trim();
+  const normalizedModel = model.toLowerCase().trim();
 
-  // Check if the model matches any of the excluded models for this make
-  return vehicleMake.models.some(excludedModel => {
-    // Handle partial matches and variations
-    return model.includes(excludedModel) || excludedModel.includes(model) ||
-           // Handle common abbreviations and variations
-           (excludedModel.includes('type r') && model.includes('type r')) ||
-           (excludedModel.includes('gt3') && model.includes('gt3')) ||
-           (excludedModel.includes('amg') && model.includes('amg'));
-  });
+  // Find the make in excluded vehicles
+  for (const excludedVehicle of excludedVehicles) {
+    if (excludedVehicle.make === normalizedMake) {
+      // Check for exact model matches only
+      return excludedVehicle.models.some(excludedModel => {
+        const normalizedExcludedModel = excludedModel.toLowerCase().trim();
+        
+        // Exact match
+        if (normalizedModel === normalizedExcludedModel) {
+          return true;
+        }
+        
+        // Special case for Honda Civic Type R variants - any Type R should be excluded
+        if (excludedModel.includes('civic type r') && normalizedModel.includes('civic type r')) {
+          return true;
+        }
+        
+        // Special case for Porsche 911 variants - check if the model contains the specific variant
+        if (excludedModel.startsWith('911 ') && normalizedModel.includes(excludedModel.replace('911 ', ''))) {
+          return true;
+        }
+        
+        return false;
+      });
+    }
+  }
+  
+  return false;
 }
