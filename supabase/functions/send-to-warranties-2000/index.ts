@@ -291,17 +291,8 @@ serve(async (req) => {
       ref: registrationData.Ref
     });
 
-    // Create form data for API submission
-    const formData = new FormData();
-    Object.entries(registrationData).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        formData.append(key, value.toString());
-      }
-    });
-
-    // Add authentication
-    formData.append('Username', warrantiesUsername);
-    formData.append('Password', warrantiesPassword);
+    // Create basic auth header (same as working warranties-2000-registration function)
+    const credentials = btoa(`${warrantiesUsername}:${warrantiesPassword}`);
 
     const apiUrl = Deno.env.get('W2K_API_URL') || 'https://warranties-epf.co.uk/api.php';
 
@@ -310,10 +301,12 @@ serve(async (req) => {
     const response = await retryFetch(apiUrl, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${credentials}`,
         'User-Agent': 'BuyAWarranty-Integration/1.0',
         'Accept': 'application/json, text/plain, */*',
       },
-      body: formData,
+      body: JSON.stringify(registrationData),
     });
 
     const responseText = await response.text();
