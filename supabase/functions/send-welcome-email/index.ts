@@ -183,6 +183,21 @@ serve(async (req) => {
 
     const finalCustomerName = customerName || email.split('@')[0];
 
+    // Calculate coverage period in months and dates
+    const coverageMonths = getCoverageInMonths(paymentType);
+    const startDate = new Date();
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + coverageMonths);
+
+    // Format dates
+    const formatDate = (date: Date) => {
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    };
+
     // Send welcome email directly using Resend
     const emailPayload = {
       from: resendFrom,
@@ -196,11 +211,13 @@ serve(async (req) => {
           </div>
 
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745;">
-            <h3 style="color: #333; margin-top: 0;">Your Protection Details</h3>
+            <h3 style="color: #333; margin-top: 0;">Your Policy Details</h3>
+            <p><strong>Vehicle Registration:</strong> <span style="${regPlateStyle}">${regPlate}</span></p>
             <p><strong>Plan Type:</strong> ${planType}</p>
             <p><strong>Policy Number:</strong> ${policyNumber}</p>
-            <p><strong>Vehicle Registration:</strong> <span style="${regPlateStyle}">${regPlate}</span></p>
-            <p><strong>Coverage Period:</strong> ${paymentType.replace('_', ' ').charAt(0).toUpperCase() + paymentType.slice(1)}</p>
+            <p><strong>Policy Start Date:</strong> ${formatDate(startDate)}</p>
+            <p><strong>Policy End Date:</strong> ${formatDate(endDate)}</p>
+            <p><strong>Cover Period:</strong> ${coverageMonths} months</p>
           </div>
 
           <div style="background-color: #e7f3ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #007bff;">
@@ -358,6 +375,24 @@ serve(async (req) => {
     });
   }
 });
+
+// Helper function to get coverage period in months
+function getCoverageInMonths(paymentType: string): number {
+  switch (paymentType) {
+    case 'monthly':
+      return 1;
+    case 'yearly':
+      return 12;
+    case 'twoYear':
+    case 'two_yearly': // Handle both formats for compatibility
+      return 24;
+    case 'threeYear':
+    case 'three_yearly': // Handle both formats for compatibility
+      return 36;
+    default:
+      return 1;
+  }
+}
 
 // Helper function to calculate policy end date
 function calculatePolicyEndDate(paymentType: string): string {
