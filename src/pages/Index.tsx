@@ -335,16 +335,43 @@ const Index = () => {
         </div>
       )}
 
-      {currentStep === 4 && vehicleData && selectedPlan && (
-        <CustomerDetailsStep
-          vehicleData={vehicleData}
-          planId={selectedPlan.id}
-          paymentType={selectedPlan.paymentType}
-          planName={selectedPlan.name}
-          pricingData={selectedPlan.pricingData}
-          onNext={handleCustomerDetailsComplete}
-          onBack={() => handleBackToStep(3)}
-        />
+      {currentStep === 4 && (
+        <>
+          {vehicleData && selectedPlan ? (
+            <CustomerDetailsStep
+              vehicleData={vehicleData}
+              planId={selectedPlan.id}
+              paymentType={selectedPlan.paymentType}
+              planName={selectedPlan.name}
+              pricingData={selectedPlan.pricingData}
+              onNext={handleCustomerDetailsComplete}
+              onBack={() => handleBackToStep(3)}
+            />
+          ) : (
+            <div className="w-full px-4 py-8">
+              <div className="max-w-4xl mx-auto text-center space-y-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Oops! We've lost your order details
+                </h2>
+                <p className="text-gray-600">
+                  It looks like your session has expired or you've navigated back from a payment page. 
+                  Please start your warranty journey again to continue.
+                </p>
+                <div className="space-y-4">
+                  <Button 
+                    onClick={() => handleStepChange(1)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                  >
+                    Start Over
+                  </Button>
+                  <p className="text-sm text-gray-500">
+                    If you've already completed a payment, please check your email for confirmation.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
       
     </div>
