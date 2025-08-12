@@ -25,7 +25,45 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    const { planId, paymentType, customerData, vehicleData, sessionId, discountCode, discountAmount, originalAmount, finalAmount } = await req.json();
+    // Parse URL parameters from Bumper redirect
+    const url = new URL(req.url);
+    const planId = url.searchParams.get('plan');
+    const paymentType = url.searchParams.get('payment') || 'monthly';
+    const redirectUrl = url.searchParams.get('redirect');
+    
+    // Extract customer data from URL parameters
+    const customerData = {
+      first_name: url.searchParams.get('first_name'),
+      last_name: url.searchParams.get('last_name'),
+      email: url.searchParams.get('email'),
+      mobile: url.searchParams.get('mobile'),
+      street: url.searchParams.get('street'),
+      town: url.searchParams.get('town'),
+      county: url.searchParams.get('county'),
+      postcode: url.searchParams.get('postcode'),
+      country: url.searchParams.get('country'),
+      building_name: url.searchParams.get('building_name'),
+      flat_number: url.searchParams.get('flat_number'),
+      building_number: url.searchParams.get('building_number'),
+      vehicle_reg: url.searchParams.get('vehicle_reg')
+    };
+    
+    // Extract vehicle data from URL parameters
+    const vehicleData = {
+      regNumber: url.searchParams.get('vehicle_reg'),
+      make: url.searchParams.get('vehicle_make'),
+      model: url.searchParams.get('vehicle_model'),
+      year: url.searchParams.get('vehicle_year'),
+      fuelType: url.searchParams.get('vehicle_fuel_type'),
+      transmission: url.searchParams.get('vehicle_transmission'),
+      mileage: url.searchParams.get('mileage'),
+      vehicleType: url.searchParams.get('vehicle_type')
+    };
+    
+    const discountCode = url.searchParams.get('discount_code');
+    const finalAmount = parseFloat(url.searchParams.get('final_amount') || '0');
+    const originalPaymentType = url.searchParams.get('original_payment_type');
+    const sessionId = `bumper_${Date.now()}`; // Generate session ID for Bumper orders
     logStep("Processing Bumper payment", { planId, paymentType, hasCustomerData: !!customerData, hasVehicleData: !!vehicleData });
 
     if (!planId) {
@@ -128,8 +166,8 @@ serve(async (req) => {
         payment_type: paymentType,
         bumper_order_id: sessionId,
         discount_code: discountCode,
-        discount_amount: discountAmount,
-        original_amount: originalAmount,
+        discount_amount: 0,
+        original_amount: finalAmount,
         final_amount: finalAmount,
         warranty_reference_number: warrantyRef,
         warranty_number: warrantyRef
@@ -155,7 +193,7 @@ serve(async (req) => {
     let actualPaymentType = paymentType;
     
     // If it's monthly payment, check if the amounts suggest a longer term
-    if (paymentType === 'monthly' && finalAmount && originalAmount) {
+    if (paymentType === 'monthly' && finalAmount) {
       const monthlyExpected = plan.monthly_price;
       const yearlyExpected = plan.yearly_price;
       const twoYearExpected = plan.two_yearly_price;
@@ -366,6 +404,17 @@ serve(async (req) => {
         .eq('id', policy.id);
     }
 
+    // Redirect to thank you page if redirectUrl is provided
+    if (redirectUrl) {
+      return new Response(null, {
+        headers: { 
+          ...corsHeaders,
+          'Location': redirectUrl
+        },
+        status: 302,
+      });
+    }
+    
     return new Response(JSON.stringify({
       success: true,
       policyNumber: warrantyRef || policyNumber, // Return warranty number for Bumper orders
