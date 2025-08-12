@@ -410,6 +410,7 @@ export type Database = {
       }
       customers: {
         Row: {
+          assigned_to: string | null
           building_name: string | null
           building_number: string | null
           bumper_order_id: string | null
@@ -449,6 +450,7 @@ export type Database = {
           warranty_reference_number: string | null
         }
         Insert: {
+          assigned_to?: string | null
           building_name?: string | null
           building_number?: string | null
           bumper_order_id?: string | null
@@ -488,6 +490,7 @@ export type Database = {
           warranty_reference_number?: string | null
         }
         Update: {
+          assigned_to?: string | null
           building_name?: string | null
           building_number?: string | null
           bumper_order_id?: string | null
@@ -526,7 +529,15 @@ export type Database = {
           warranty_number?: string | null
           warranty_reference_number?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "customers_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       discount_code_usage: {
         Row: {
@@ -825,6 +836,50 @@ export type Database = {
           yearly_price?: number | null
         }
         Relationships: []
+      }
+      sales_targets: {
+        Row: {
+          achieved_amount: number
+          admin_user_id: string
+          created_at: string
+          end_date: string
+          id: string
+          start_date: string
+          target_amount: number
+          target_period: string
+          updated_at: string
+        }
+        Insert: {
+          achieved_amount?: number
+          admin_user_id: string
+          created_at?: string
+          end_date: string
+          id?: string
+          start_date: string
+          target_amount: number
+          target_period: string
+          updated_at?: string
+        }
+        Update: {
+          achieved_amount?: number
+          admin_user_id?: string
+          created_at?: string
+          end_date?: string
+          id?: string
+          start_date?: string
+          target_amount?: number
+          target_period?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_targets_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scheduled_emails: {
         Row: {
