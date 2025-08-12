@@ -207,21 +207,21 @@ serve(async (req) => {
       throw new Error('Warranties 2000 credentials not configured');
     }
 
-    // Map plan types to warranty types (using same logic as manual function)
+    // Map plan types to warranty types (corrected for API validation)
     const warrantyTypeMapping: Record<string, string> = {
-      'basic': 'B-BASIC',
-      'gold': 'G-GOLD', 
-      'platinum': 'P-PLATINUM',
-      'electric': 'E-ELECTRIC',
-      'phev': 'H-HYBRID',
-      'hybrid': 'H-HYBRID',
-      'motorbike': 'M-MOTORBIKE',
-      'motorcycle': 'M-MOTORBIKE'
+      'basic': 'BASIC',
+      'gold': 'GOLD', 
+      'platinum': 'PLATINUM',
+      'electric': 'ELECTRIC',
+      'phev': 'HYBRID',
+      'hybrid': 'HYBRID',
+      'motorbike': 'MOTORBIKE',
+      'motorcycle': 'MOTORBIKE'
     };
 
     // Use policy data if available, otherwise fall back to customer data
     const planType = (policy?.plan_type || customer.plan_type || 'basic').toLowerCase();
-    const warrantyType = warrantyTypeMapping[planType] || 'B-BASIC';
+    const warrantyType = warrantyTypeMapping[planType] || 'BASIC';
 
     // Calculate coverage months based on payment type
     let coverageMonths = '12'; // Default to 1 year

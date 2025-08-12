@@ -327,6 +327,7 @@ export const CustomersTab = () => {
           discount_amount: 0,
           original_amount: null,
           final_amount: null,
+          assigned_to: null,
           warranty_reference_number: null,
           customer_policies: [policy],
           created_at: policy.created_at,

@@ -32,7 +32,7 @@ const TestWarranties2000 = () => {
       EngSize: "1.6", // API requires this field
       PurPrc: "15000",
       RegDate: "2020-01-01",
-      WarType: "B-BASIC", // Use correct warranty type
+      WarType: "BASIC", // Use correct warranty type
       Month: "12",
       MaxClm: "500", // Use valid claim amount
       Notes: "Test registration",

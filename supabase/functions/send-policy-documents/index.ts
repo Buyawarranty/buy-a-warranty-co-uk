@@ -240,7 +240,11 @@ serve(async (req) => {
         day: '2-digit', 
         month: '2-digit', 
         year: 'numeric' 
-      })
+      }),
+      // Add missing template variables to prevent template rendering errors
+      loginUrl: "https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com/customer-dashboard",
+      loginEmail: recipientEmail,
+      temporaryPassword: "Please check your welcome email for login details"
     };
 
     const emailPayload: any = {
