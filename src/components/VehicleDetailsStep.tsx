@@ -19,6 +19,7 @@ interface VehicleDetailsStepProps {
 
 interface DVLAVehicleData {
   found: boolean;
+  eligible?: boolean;
   make?: string;
   model?: string;
   fuelType?: string;
@@ -135,7 +136,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       setVehicleData(data);
       
       if (data.found) {
-        setVehicleFound(true);
+        if (data.eligible === false) {
+          // Vehicle found but not eligible - don't set vehicleFound to prevent progression
+          setVehicleFound(false);
+        } else {
+          setVehicleFound(true);
+        }
       } else {
         // If vehicle not found, show manual entry
         setShowManualEntry(true);
@@ -330,6 +336,17 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               >
                 This is not my vehicle
               </button>
+            </div>
+          )}
+
+          {vehicleData?.found && vehicleData?.eligible === false && (
+            <div className="bg-red-50 border border-red-200 rounded-[4px] p-4 mb-4">
+              <p className="text-sm text-red-800 font-semibold mb-2">
+                ⚠️ Vehicle Not Eligible for Warranty Cover
+              </p>
+              <p className="text-sm text-red-700 mb-3">
+                {vehicleData.error}
+              </p>
             </div>
           )}
 
