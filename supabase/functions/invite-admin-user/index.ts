@@ -135,7 +135,7 @@ serve(async (req: Request) => {
             <p><strong>Temporary Password:</strong> ${tempPassword}</p>
           </div>
           
-          <p><a href="https://mzlpuxzwyrcyrgrongeb.supabase.co/auth/v1/verify?token=${invitationToken}&type=invite" 
+          <p><a href="https://buyawarranty.co.uk/auth?token=${invitationToken}&type=invite" 
              style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
              Accept Invitation
           </a></p>
