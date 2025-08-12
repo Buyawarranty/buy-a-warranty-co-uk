@@ -5,17 +5,83 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isInviteFlow, setIsInviteFlow] = useState(false);
+
+  // Handle invitation flow
+  const handleInvitation = async (token: string) => {
+    try {
+      // Verify invitation token and get email
+      const { data: invitation, error } = await supabase
+        .from('admin_invitations')
+        .select('email, expires_at')
+        .eq('invitation_token', token)
+        .eq('accepted_at', null)
+        .single();
+
+      if (error || !invitation) {
+        toast({
+          title: "Invalid Invitation",
+          description: "This invitation link is invalid or has already been used.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check if invitation is expired
+      if (new Date(invitation.expires_at) < new Date()) {
+        toast({
+          title: "Expired Invitation",
+          description: "This invitation link has expired.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Pre-fill email and show success message
+      setEmail(invitation.email);
+      toast({
+        title: "Invitation Accepted",
+        description: "Please sign in with your credentials from the invitation email.",
+      });
+
+      // Mark invitation as accepted
+      await supabase
+        .from('admin_invitations')
+        .update({ accepted_at: new Date().toISOString() })
+        .eq('invitation_token', token);
+
+    } catch (error: any) {
+      console.error('Error processing invitation:', error);
+      toast({
+        title: "Error",
+        description: "There was an error processing your invitation.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Check for invitation parameters
+  useEffect(() => {
+    const token = searchParams.get('token');
+    const type = searchParams.get('type');
+    
+    if (token && type === 'invite') {
+      setIsInviteFlow(true);
+      handleInvitation(token);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     // Set up auth state listener to handle sign-out
