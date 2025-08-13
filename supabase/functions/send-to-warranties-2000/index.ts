@@ -225,11 +225,12 @@ serve(async (req) => {
     const warrantyType = warrantyTypeMapping[planType] || 'B-BASIC';
 
     // Calculate coverage months based on payment type
+    // Note: Warranties 2000 requires minimum 12 months coverage
     let coverageMonths = '12'; // Default to 1 year
     const paymentType = (policy?.payment_type || customer.payment_type || 'yearly').toLowerCase();
     
     if (paymentType === 'monthly') {
-      coverageMonths = '1';
+      coverageMonths = '12'; // Monthly payments still get 12 months coverage
     } else if (paymentType === 'yearly') {
       coverageMonths = '12';
     } else if (paymentType?.includes('two') || paymentType?.includes('2')) {
