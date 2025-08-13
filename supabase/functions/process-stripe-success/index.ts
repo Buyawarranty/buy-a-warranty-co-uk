@@ -122,7 +122,7 @@ serve(async (req) => {
 
     logStep("Payment processed successfully", paymentData);
 
-    // Send welcome email for Stripe customer using send-welcome-email function
+    // Send welcome email for Stripe customer (same as Bumper flow)
     if (paymentData?.customerId && paymentData?.policyId) {
       logStep("Sending welcome email for Stripe customer", { 
         customerId: paymentData.customerId, 
@@ -131,14 +131,10 @@ serve(async (req) => {
         planType: session.metadata?.plan_id || planId
       });
 
-      const { data: emailData, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email', {
+      const { data: emailData, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
         body: {
-          email: vehicleData.email,
-          planType: session.metadata?.plan_id || planId,
-          paymentType: session.metadata?.payment_type || paymentType,
-          customerName: vehicleData.fullName,
-          policyNumber: paymentData?.policyNumber,
-          registrationPlate: vehicleData.regNumber
+          policyId: paymentData.policyId,
+          customerId: paymentData.customerId
         }
       });
 
