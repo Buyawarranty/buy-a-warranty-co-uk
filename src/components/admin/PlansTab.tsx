@@ -52,8 +52,7 @@ const defaultPlanFeatures = {
     'Overdrive',
     'Differential',
     'Electrics',
-    'Casings',
-    'Recovery'
+    'Casings'
   ],
   gold: [
     'Labour up to £75 p/hr',
@@ -67,7 +66,7 @@ const defaultPlanFeatures = {
     'Differential',
     'Electrics',
     'Casings',
-    'Recovery',
+    'Claim recovery costs',
     'Basic plan plus:',
     'Clutch',
     'Cooling System',
@@ -103,7 +102,7 @@ const defaultPlanFeatures = {
     'Seals',
     'Casings',
     'Vehicle Hire',
-    'Vehicle Recovery',
+    'Claim recovery costs',
     'European Cover'
   ]
 };
