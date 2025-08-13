@@ -34,6 +34,42 @@ function getWarrantyType(planType: string): string {
   }
 }
 
+// Helper function to calculate duration in months based on payment type
+function getWarrantyDuration(paymentType: string): number {
+  switch (paymentType?.toLowerCase()) {
+    case 'monthly':
+    case '12months':
+    case 'yearly':
+      return 12;
+    case '24months':
+    case 'two_yearly':
+    case 'twoyear':
+      return 24;
+    case '36months':
+    case 'three_yearly':
+    case 'threeyear':
+      return 36;
+    case '48months':
+    case 'four_yearly':
+    case 'fouryear':
+      return 48;
+    case '60months':
+    case 'five_yearly':
+    case 'fiveyear':
+      return 60;
+    default:
+      return 12; // Default to 12 months
+  }
+}
+
+// Helper function to calculate expiry date based on start date and duration
+function calculateExpiryDate(startDate: string, durationMonths: number): Date {
+  const start = new Date(startDate);
+  const expiry = new Date(start);
+  expiry.setMonth(expiry.getMonth() + durationMonths);
+  return expiry;
+}
+
 interface Customer {
   id: string;
   name: string;
@@ -79,6 +115,7 @@ interface Customer {
   customer_policies?: Array<{
     id?: string;
     policy_end_date: string;
+    policy_start_date?: string;
     policy_number: string;
     status: string;
     warranty_number?: string;
@@ -1255,6 +1292,8 @@ export const CustomersTab = () => {
               <TableHead>RegDate</TableHead>
               <TableHead>Address</TableHead>
               <TableHead>WarType</TableHead>
+              <TableHead>Dur.</TableHead>
+              <TableHead>Expiry Date</TableHead>
               <TableHead>Payment Method</TableHead>
               <TableHead>Ref</TableHead>
               <TableHead>Email Status</TableHead>
@@ -1266,7 +1305,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={15} className="text-center py-8">
+                <TableCell colSpan={17} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -1336,15 +1375,35 @@ export const CustomersTab = () => {
                       : 'N/A'
                     }
                   </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{getWarrantyType(customer.plan_type)}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">
-                      {customer.stripe_session_id ? 'Stripe' : 
-                       customer.bumper_order_id ? 'Bumper' : 'N/A'}
-                    </Badge>
-                  </TableCell>
+                   <TableCell>
+                     <Badge variant="secondary">{getWarrantyType(customer.plan_type)}</Badge>
+                   </TableCell>
+                   <TableCell className="text-center">
+                     <Badge variant="outline" className="font-mono">
+                       {getWarrantyDuration(customer.payment_type || '')} months
+                     </Badge>
+                   </TableCell>
+                   <TableCell className="text-center">
+                     {customer.customer_policies?.[0]?.policy_start_date || customer.signup_date ? (
+                       <div className="text-sm">
+                         {format(
+                           calculateExpiryDate(
+                             customer.customer_policies?.[0]?.policy_start_date || customer.signup_date,
+                             getWarrantyDuration(customer.payment_type || '')
+                           ), 
+                           'dd/MM/yyyy'
+                         )}
+                       </div>
+                     ) : (
+                       <span className="text-gray-400">N/A</span>
+                     )}
+                   </TableCell>
+                   <TableCell>
+                     <Badge variant="outline">
+                       {customer.stripe_session_id ? 'Stripe' : 
+                        customer.bumper_order_id ? 'Bumper' : 'N/A'}
+                     </Badge>
+                   </TableCell>
                   <TableCell className="font-mono text-sm">
                     {customer.warranty_reference_number || customer.warranty_number ? (
                       <div className="bg-green-50 px-2 py-1 rounded border">
