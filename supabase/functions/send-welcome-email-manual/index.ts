@@ -526,7 +526,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailPayload = {
       from: resendFrom,
       to: [customer.email],
-      subject: `Congratulations — Your Buyawarranty.co.uk Protection is Now Active!`,
+      subject: `🎉 Congratulations — Your Buyawarranty.co.uk Protection is Now Registered! ✅`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 30px;">
