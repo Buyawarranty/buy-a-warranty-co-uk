@@ -306,7 +306,7 @@ serve(async (req) => {
           PurPrc: calculatePurchasePrice(plan.name.toLowerCase(), 'monthly').toString(),
           RegDate: vehicleData?.year ? `${vehicleData.year}-01-01` : '2020-01-01',
           WarType: getWarrantyType(plan.name.toLowerCase()),
-          Month: getWarrantyDuration('monthly'),
+          Month: getWarrantyDuration(url.searchParams.get('original_payment_type') || 'yearly'),
           MaxClm: getMaxClaimAmount(plan.name.toLowerCase()),
           Notes: "Bumper customer registration",
           MOTDue: vehicleData?.motExpiry || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -478,14 +478,49 @@ async function generateWarrantyReference(): Promise<string> {
 
 function getWarrantyDuration(paymentType: string): string {
   // Duration must be one of: 12, 24, 36, 48 or 60 months
-  switch (paymentType.toLowerCase()) {
-    case 'monthly': return '12';
-    case 'yearly': return '12';
-    case 'twoyear': return '24';
-    case 'threeyear': return '36';
-    case 'fouryear': return '48';
-    case 'fiveyear': return '60';
-    default: return '12';
+  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '');
+  
+  switch (normalizedPaymentType) {
+    case 'monthly':
+    case '1month':
+    case 'month':
+      return '12';
+    case 'yearly':
+    case 'annual':
+    case '12months':
+    case '12month':
+    case 'year':
+      return '12';
+    case 'twoyearly':
+    case '2yearly':
+    case '24months':
+    case '24month':
+    case '2years':
+    case '2year':
+      return '24';
+    case 'threeyearly':
+    case '3yearly':
+    case '36months':
+    case '36month':
+    case '3years':
+    case '3year':
+      return '36';
+    case 'fouryearly':
+    case '4yearly':
+    case '48months':
+    case '48month':
+    case '4years':
+    case '4year':
+      return '48';
+    case 'fiveyearly':
+    case '5yearly':
+    case '60months':
+    case '60month':
+    case '5years':
+    case '5year':
+      return '60';
+    default:
+      return '12';
   }
 }
 

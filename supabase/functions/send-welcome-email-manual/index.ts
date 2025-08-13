@@ -416,6 +416,64 @@ const handler = async (req: Request): Promise<Response> => {
       ? `${customer.first_name} ${customer.last_name}` 
       : customer.name;
 
+    // Calculate coverage period based on payment type
+    const calculatePeriodInMonths = (paymentType: string): number => {
+      const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '');
+      
+      switch (normalizedPaymentType) {
+        case 'monthly':
+        case '1month':
+        case 'month':
+          return 1;
+        case 'yearly':
+        case 'annual':
+        case '12months':
+        case '12month':
+        case 'year':
+          return 12;
+        case 'twoyearly':
+        case '2yearly':
+        case '24months':
+        case '24month':
+        case '2years':
+        case '2year':
+          return 24;
+        case 'threeyearly':
+        case '3yearly':
+        case '36months':
+        case '36month':
+        case '3years':
+        case '3year':
+          return 36;
+        default:
+          return 12;
+      }
+    };
+
+    // Normalize plan type for consistent display
+    const getDisplayPlanType = (planType: string): string => {
+      const planLower = planType.toLowerCase();
+      
+      if (planLower.includes('basic') || planLower.includes('blue')) {
+        return 'Basic';
+      } else if (planLower.includes('gold')) {
+        return 'Gold';
+      } else if (planLower.includes('platinum')) {
+        return 'Platinum';
+      } else if (planLower.includes('phev') || planLower.includes('hybrid')) {
+        return 'PHEV';
+      } else if (planLower.includes('ev') || planLower.includes('electric')) {
+        return 'EV';
+      } else if (planLower.includes('motorbike') || planLower.includes('motorcycle')) {
+        return 'Motorbike';
+      }
+      
+      return planType.charAt(0).toUpperCase() + planType.slice(1).toLowerCase();
+    };
+
+    const periodInMonths = calculatePeriodInMonths(policy.payment_type);
+    const coveragePeriod = `${periodInMonths} month${periodInMonths === 1 ? '' : 's'}`;
+
     // Determine payment method based on available data
     let paymentMethod = 'Online Payment';
     if (policy.stripe_session_id) {
@@ -501,15 +559,16 @@ const handler = async (req: Request): Promise<Response> => {
               </tr>
               <tr style="border-bottom: 1px solid #dee2e6;">
                 <td style="padding: 8px 0; font-weight: bold;">Plan Type:</td>
-                <td style="padding: 8px 0; text-transform: capitalize;">${policy.plan_type}</td>
+                <td style="padding: 8px 0; text-transform: capitalize;">${getDisplayPlanType(policy.plan_type)}</td>
               </tr>
               <tr style="border-bottom: 1px solid #dee2e6;">
                 <td style="padding: 8px 0; font-weight: bold;">Payment Method:</td>
                 <td style="padding: 8px 0;">${paymentMethod}</td>
               </tr>
               <tr style="border-bottom: 1px solid #dee2e6;">
-                <td style="padding: 8px 0; font-weight: bold;">Policy Start Date:</td>
-                <td style="padding: 8px 0;">${new Date(policy.policy_start_date).toLocaleDateString('en-GB')}</td>
+                <td style="padding: 8px 0; font-weight: bold;">Coverage Period:</td>
+                <td style="padding: 8px 0; font-weight: bold; color: #ff6b35;">${coveragePeriod}</td>
+              </tr>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Policy End Date:</td>

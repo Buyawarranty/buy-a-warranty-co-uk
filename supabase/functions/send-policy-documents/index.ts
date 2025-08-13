@@ -202,12 +202,37 @@ serve(async (req) => {
 
     // Calculate coverage period and dates
     const calculatePeriodInMonths = (paymentType: string): number => {
-      switch (paymentType) {
-        case 'monthly': return 1;
-        case 'yearly': return 12;
-        case 'two_yearly': return 24;
-        case 'three_yearly': return 36;
-        default: return 12;
+      // Normalize payment type to handle all variations
+      const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '');
+      
+      switch (normalizedPaymentType) {
+        case 'monthly':
+        case '1month':
+        case 'month':
+          return 1;
+        case 'yearly':
+        case 'annual':
+        case '12months':
+        case '12month':
+        case 'year':
+          return 12;
+        case 'twoyearly':
+        case '2yearly':
+        case '24months':
+        case '24month':
+        case '2years':
+        case '2year':
+          return 24;
+        case 'threeyearly':
+        case '3yearly':
+        case '36months':
+        case '36month':
+        case '3years':
+        case '3year':
+          return 36;
+        default:
+          // Default to 12 months for any unrecognized payment type
+          return 12;
       }
     };
 
@@ -222,12 +247,35 @@ serve(async (req) => {
     const expiryDate = calculateExpiryDate(startDate, paymentType || 'yearly');
     const periodInMonths = calculatePeriodInMonths(paymentType || 'yearly');
 
+    // Normalize plan type for consistent display
+    const getDisplayPlanType = (planType: string): string => {
+      const planLower = planType.toLowerCase();
+      
+      // Map various plan type formats to standardized display names
+      if (planLower.includes('basic') || planLower.includes('blue')) {
+        return 'Basic';
+      } else if (planLower.includes('gold')) {
+        return 'Gold';
+      } else if (planLower.includes('platinum')) {
+        return 'Platinum';
+      } else if (planLower.includes('phev') || planLower.includes('hybrid')) {
+        return 'PHEV';
+      } else if (planLower.includes('ev') || planLower.includes('electric')) {
+        return 'EV';
+      } else if (planLower.includes('motorbike') || planLower.includes('motorcycle')) {
+        return 'Motorbike';
+      }
+      
+      // Return capitalized version of original if no match
+      return planType.charAt(0).toUpperCase() + planType.slice(1).toLowerCase();
+    };
+
     // Send policy documents email using the template
     const emailVariables = {
       customerName: customerName || recipientEmail.split('@')[0],
-      planType: planType,
+      planType: getDisplayPlanType(planType),
       policyNumber: policyNumber,
-      registrationPlate: registrationPlate,
+      registrationPlate: registrationPlate || 'N/A',
       paymentType: paymentType,
       periodInMonths: periodInMonths,
       coveragePeriod: `${periodInMonths} month${periodInMonths === 1 ? '' : 's'}`,
