@@ -26,8 +26,8 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { planId, paymentType, userEmail, userId, stripeSessionId, vehicleData, customerData } = await req.json();
-    logStep("Request data", { planId, paymentType, userEmail, userId, stripeSessionId });
+    const { planId, paymentType, userEmail, userId, stripeSessionId, vehicleData, customerData, skipEmail } = await req.json();
+    logStep("Request data", { planId, paymentType, userEmail, userId, stripeSessionId, skipEmail });
 
     if (!planId || !paymentType || !userEmail) {
       throw new Error("Missing required parameters");
@@ -113,8 +113,8 @@ serve(async (req) => {
       }
     }
 
-    // Send welcome email using the manual system
-    if (customerData2?.id) {
+    // Send welcome email using the manual system (unless skipEmail is true)
+    if (customerData2?.id && !skipEmail) {
       const { data: policy } = await supabaseClient
         .from('customer_policies')
         .select('id')
@@ -200,6 +200,8 @@ serve(async (req) => {
       } else {
         logStep("WARNING: No policy found for welcome email", { customerId: customerData2.id });
       }
+    } else if (skipEmail) {
+      logStep("Skipping email sending as requested", { skipEmail: true });
     } else {
       logStep("WARNING: No customer ID available for welcome email");
     }

@@ -102,7 +102,7 @@ serve(async (req) => {
 
     logStep("Extracted vehicle and customer data", { vehicleData, customerData });
 
-    // Call handle-successful-payment with the extracted data
+    // Call handle-successful-payment with the extracted data (but WITHOUT email sending)
     const { data: paymentData, error: paymentError } = await supabaseClient.functions.invoke('handle-successful-payment', {
       body: {
         planId: session.metadata?.plan_id || planId,
@@ -111,7 +111,8 @@ serve(async (req) => {
         userId: session.metadata?.user_id || null,
         stripeSessionId: sessionId,
         vehicleData: vehicleData,
-        customerData: customerData
+        customerData: customerData,
+        skipEmail: true // Skip email in handle-successful-payment since we'll send it here
       }
     });
 
@@ -122,26 +123,46 @@ serve(async (req) => {
 
     logStep("Payment processed successfully", paymentData);
 
-    // Send welcome email for Stripe customer (same as Bumper flow)
+    // Send welcome email for Stripe customer using EXACT same logic as Bumper
     if (paymentData?.customerId && paymentData?.policyId) {
-      logStep("Sending welcome email for Stripe customer", { 
-        customerId: paymentData.customerId, 
-        policyId: paymentData.policyId,
-        customerEmail: vehicleData.email,
-        planType: session.metadata?.plan_id || planId
-      });
-
-      const { data: emailData, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
-        body: {
+      try {
+        logStep("Sending welcome email for Stripe customer (using Bumper pattern)", { 
+          customerId: paymentData.customerId, 
           policyId: paymentData.policyId,
-          customerId: paymentData.customerId
-        }
-      });
+          customerEmail: vehicleData.email,
+          planType: session.metadata?.plan_id || planId
+        });
 
-      if (emailError) {
-        logStep("Warning: Email sending failed", emailError);
-      } else {
-        logStep("SUCCESS: Welcome email sent successfully", emailData);
+        const emailPayload = {
+          customerId: paymentData.customerId,
+          policyId: paymentData.policyId
+        };
+
+        // Use EXACT same email function as Bumper
+        const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
+          body: emailPayload
+        });
+        
+        logStep("Email function response", {
+          data: emailResult,
+          error: emailError
+        });
+
+        if (emailError) {
+          logStep("ERROR: Welcome email failed", { 
+            error: emailError,
+            policyId: paymentData.policyId
+          });
+        } else {
+          logStep("SUCCESS: Welcome email sent successfully", emailResult);
+        }
+
+      } catch (emailError) {
+        logStep("Welcome email failed", { 
+          error: emailError,
+          message: emailError instanceof Error ? emailError.message : String(emailError),
+          policyId: paymentData.policyId
+        });
       }
     }
 
