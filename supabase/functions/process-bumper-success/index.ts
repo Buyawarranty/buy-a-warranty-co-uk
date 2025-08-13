@@ -269,71 +269,75 @@ serve(async (req) => {
 
     logStep("Payment record created");
 
-    // Register with Warranties 2000 for all Bumper customers
-    // Use available data and reasonable defaults where needed
-    if (warrantyRef) {
+    // Register with Warranties 2000 for all Bumper customers AFTER policy is created
+    if (warrantyRef && policy?.id) {
       try {
-        logStep("Attempting Warranties 2000 registration for Bumper customer");
-        
-        // Build comprehensive address string from all available fields
-        const buildAddress = (customerData: any) => {
-          const addressParts = [];
-          
-          if (customerData?.flat_number) addressParts.push(customerData.flat_number);
-          if (customerData?.building_name) addressParts.push(customerData.building_name);
-          if (customerData?.building_number) addressParts.push(customerData.building_number);
-          if (customerData?.street) addressParts.push(customerData.street);
-          
-          return addressParts.join(' ').trim() || "123 Customer Street";
-        };
-
-        const registrationData = {
-          Title: extractTitle(customerName) || "Mr",
-          First: customerData?.first_name || extractFirstName(customerName),
-          Surname: customerData?.last_name || extractSurname(customerName),
-          Addr1: buildAddress(customerData),
-          Addr2: customerData?.county || undefined,
-          Town: customerData?.town || "London",
-          PCode: customerData?.postcode || "SW1A 1AA",
-          Tel: customerData?.mobile || '02012345678',
-          Mobile: customerData?.mobile || '07123456789',
-          EMail: customerEmail,
-          PurDate: new Date().toISOString().split('T')[0],
-          Make: vehicleData?.make || "Ford",
-          RegNum: vehicleReg || "BUMPER001",
-          Mileage: String(Math.floor(parseFloat(vehicleData?.mileage || '50000'))), // Whole number as string
-          EngSize: "", // Pass empty string as requested
-          PurPrc: calculatePurchasePrice(plan.name.toLowerCase(), 'monthly').toString(),
-          RegDate: vehicleData?.year ? `${vehicleData.year}-01-01` : '2020-01-01',
-          WarType: getWarrantyType(plan.name.toLowerCase()),
-          Month: getWarrantyDuration(url.searchParams.get('original_payment_type') || 'yearly'),
-          MaxClm: getMaxClaimAmount(plan.name.toLowerCase()),
-          Notes: "Bumper customer registration",
-          MOTDue: vehicleData?.motExpiry || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          Ref: warrantyRef
-        };
-
-        logStep("Sending Bumper customer data to Warranties 2000", { 
-          regNum: registrationData.RegNum, 
-          warType: registrationData.WarType,
-          name: `${registrationData.First} ${registrationData.Surname}`,
-          email: registrationData.EMail
+        logStep("Attempting Warranties 2000 registration for Bumper customer", { 
+          policyId: policy.id,
+          customerId: customer.id,
+          warrantyRef: warrantyRef 
         });
 
         const warrantiesResponse = await supabaseClient.functions.invoke('send-to-warranties-2000', {
-          body: { customerId: customer.id }
+          body: { 
+            policyId: policy.id,
+            customerId: customer.id 
+          }
         });
 
         if (warrantiesResponse.error) {
           logStep("Warranties 2000 registration failed", { error: warrantiesResponse.error });
+          
+          // Update policy status to reflect warranty registration failure
+          await supabaseClient
+            .from('customer_policies')
+            .update({ 
+              warranties_2000_status: 'failed',
+              warranties_2000_sent_at: new Date().toISOString(),
+              warranties_2000_response: {
+                error: warrantiesResponse.error,
+                timestamp: new Date().toISOString()
+              }
+            })
+            .eq('id', policy.id);
         } else {
           logStep("Warranties 2000 registration successful for Bumper customer", { response: warrantiesResponse.data });
+          
+          // Update policy status to reflect warranty registration success
+          await supabaseClient
+            .from('customer_policies')
+            .update({ 
+              warranties_2000_status: 'sent',
+              warranties_2000_sent_at: new Date().toISOString(),
+              warranties_2000_response: {
+                response: warrantiesResponse.data,
+                timestamp: new Date().toISOString()
+              }
+            })
+            .eq('id', policy.id);
         }
       } catch (warrantiesError) {
         logStep("Error during Warranties 2000 registration for Bumper customer", { error: warrantiesError.message });
+        
+        // Update policy status to reflect warranty registration error
+        await supabaseClient
+          .from('customer_policies')
+          .update({ 
+            warranties_2000_status: 'failed',
+            warranties_2000_sent_at: new Date().toISOString(),
+            warranties_2000_response: {
+              error: warrantiesError instanceof Error ? warrantiesError.message : String(warrantiesError),
+              timestamp: new Date().toISOString()
+            }
+          })
+          .eq('id', policy.id);
       }
     } else {
-      logStep("Skipping Warranties 2000 registration - no warranty reference generated");
+      logStep("Skipping Warranties 2000 registration", { 
+        hasWarrantyRef: !!warrantyRef,
+        hasPolicyId: !!policy?.id,
+        reason: !warrantyRef ? "No warranty reference generated" : "No policy ID available"
+      });
     }
 
     // Send welcome email automatically for Bumper customers
