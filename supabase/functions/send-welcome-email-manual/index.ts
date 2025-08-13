@@ -417,6 +417,7 @@ const handler = async (req: Request): Promise<Response> => {
       : customer.name;
 
     // Calculate coverage period based on payment type
+    // Note: All warranties provide minimum 12 months coverage regardless of payment frequency
     const calculatePeriodInMonths = (paymentType: string): number => {
       const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '');
       
@@ -424,7 +425,7 @@ const handler = async (req: Request): Promise<Response> => {
         case 'monthly':
         case '1month':
         case 'month':
-          return 1;
+          return 12; // Monthly payments still get 12 months coverage
         case 'yearly':
         case 'annual':
         case '12months':
