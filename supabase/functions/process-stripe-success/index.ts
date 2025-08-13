@@ -17,17 +17,28 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    { auth: { persistSession: false } }
-  );
-
   try {
-    logStep("Function started");
+    logStep("Function started - method: " + req.method);
 
-    const { sessionId, planId, paymentType } = await req.json();
-    logStep("Request data", { sessionId, planId, paymentType });
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    let requestBody;
+    try {
+      const bodyText = await req.text();
+      logStep("Raw request body", { bodyText });
+      requestBody = JSON.parse(bodyText);
+      logStep("Parsed request body", requestBody);
+    } catch (parseError) {
+      logStep("Error parsing request body", { error: parseError.message });
+      throw new Error(`Invalid JSON in request body: ${parseError.message}`);
+    }
+
+    const { sessionId, planId, paymentType } = requestBody;
+    logStep("Extracted parameters", { sessionId, planId, paymentType });
 
     if (!sessionId || !planId || !paymentType) {
       throw new Error("Missing required parameters");
@@ -110,6 +121,29 @@ serve(async (req) => {
     }
 
     logStep("Payment processed successfully", paymentData);
+
+    // Send welcome email for Stripe customer (same as Bumper flow)
+    if (paymentData?.customerId && paymentData?.policyId) {
+      logStep("Sending welcome email for Stripe customer", { 
+        customerId: paymentData.customerId, 
+        policyId: paymentData.policyId,
+        customerEmail: vehicleData.email,
+        planType: session.metadata?.plan_id || planId
+      });
+
+      const { data: emailData, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
+        body: {
+          policyId: paymentData.policyId,
+          customerId: paymentData.customerId
+        }
+      });
+
+      if (emailError) {
+        logStep("Warning: Email sending failed", emailError);
+      } else {
+        logStep("SUCCESS: Welcome email sent successfully", emailData);
+      }
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 
