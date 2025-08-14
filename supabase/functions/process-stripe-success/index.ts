@@ -102,7 +102,7 @@ serve(async (req) => {
 
     logStep("Extracted vehicle and customer data", { vehicleData, customerData });
 
-    // Call handle-successful-payment with the extracted data (but WITHOUT email sending)
+    // Call handle-successful-payment with the extracted data (WITH email sending)
     const { data: paymentData, error: paymentError } = await supabaseClient.functions.invoke('handle-successful-payment', {
       body: {
         planId: session.metadata?.plan_id || planId,
@@ -111,8 +111,8 @@ serve(async (req) => {
         userId: session.metadata?.user_id || null,
         stripeSessionId: sessionId,
         vehicleData: vehicleData,
-        customerData: customerData,
-        skipEmail: true // Skip email in handle-successful-payment since we'll send it here
+        customerData: customerData
+        // Removed skipEmail: true to allow emails to be sent
       }
     });
 
