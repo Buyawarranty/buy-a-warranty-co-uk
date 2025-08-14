@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, FileText, User, Mail, Lock, MapPin, CreditCard } from 'lucide-react';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import { getWarrantyDurationDisplay, getPaymentTypeDisplay } from '@/lib/warrantyUtils';
 
 interface CustomerPolicy {
   id: string;
@@ -312,11 +313,9 @@ const CustomerDashboard = () => {
                       <p className="font-semibold capitalize text-sm sm:text-base">{policy.plan_type}</p>
                     </div>
                     <div>
-                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Payment Type</Label>
+                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Warranty Duration</Label>
                       <p className="font-semibold text-sm sm:text-base">
-                        {policy.payment_type === 'twoYear' ? '2 Year' : 
-                         policy.payment_type === 'threeYear' ? '3 Year' : 
-                         policy.payment_type.charAt(0).toUpperCase() + policy.payment_type.slice(1)}
+                        {getWarrantyDurationDisplay(policy.payment_type)}
                       </p>
                     </div>
                     <div>
@@ -351,7 +350,7 @@ const CustomerDashboard = () => {
                       <div className="flex items-center">
                         <FileText className="mr-2 h-5 w-5 text-blue-600" />
                         <span className="text-blue-800 font-medium">
-                          Selected Plan: {policy.plan_type.charAt(0).toUpperCase() + policy.plan_type.slice(1)} ({policy.payment_type === 'annual' ? 'Annual' : policy.payment_type === 'twoYear' ? '2 Year' : '3 Year'})
+                          Selected Plan: {policy.plan_type.charAt(0).toUpperCase() + policy.plan_type.slice(1)} ({getPaymentTypeDisplay(policy.payment_type)})
                         </span>
                       </div>
                     </div>
