@@ -112,6 +112,14 @@ interface Customer {
   policy_status?: string;
   welcome_email_status?: 'sent' | 'not_sent';
   activation_email_status?: 'sent' | 'not_sent';
+  assigned_to?: string;
+  assigned_admin_name?: string;
+  admin_users?: {
+    id: string;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+  } | null;
   customer_policies?: Array<{
     id?: string;
     policy_end_date: string;
@@ -156,10 +164,24 @@ interface AdminNote {
   note: string;
   created_at: string;
   created_by: string;
+  admin_name?: string;
+  admin_users?: {
+    email: string;
+    first_name?: string;
+    last_name?: string;
+  } | null;
 }
 
 interface Plan {
   name: string;
+}
+
+interface AdminUser {
+  id: string;
+  user_id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 // Number plate component
@@ -201,12 +223,17 @@ export const CustomersTab = () => {
   const [emailStatuses, setEmailStatuses] = useState<{ [key: string]: EmailStatus }>({});
   const [emailSendingLoading, setEmailSendingLoading] = useState<{ [key: string]: { [key: string]: boolean } }>({});
   const [dvlaLookupLoading, setDvlaLookupLoading] = useState<{ [key: string]: boolean }>({});
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
+  const [currentUser, setCurrentUser] = useState<{ id: string; email: string; } | null>(null);
+  const [assignmentLoading, setAssignmentLoading] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     fetchCustomers();
     fetchIncompleteCustomers();
     fetchPlans();
     fetchEmailStatuses();
+    fetchAdminUsers();
+    getCurrentUser();
   }, []);
 
   useEffect(() => {
@@ -262,6 +289,32 @@ export const CustomersTab = () => {
     });
 
     setFilteredCustomers(filtered);
+  };
+
+  const getCurrentUser = async () => {
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      if (user) {
+        setCurrentUser({ id: user.id, email: user.email || '' });
+      }
+    } catch (error) {
+      console.error('Error getting current user:', error);
+    }
+  };
+
+  const fetchAdminUsers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('id, user_id, email, first_name, last_name')
+        .eq('is_active', true);
+      
+      if (error) throw error;
+      setAdminUsers(data || []);
+    } catch (error) {
+      console.error('Error fetching admin users:', error);
+    }
   };
 
   const fetchPlans = async () => {
@@ -370,7 +423,8 @@ export const CustomersTab = () => {
           created_at: policy.created_at,
           updated_at: policy.updated_at,
           stripe_customer_id: null,
-          warranty_number: null
+          warranty_number: null,
+          admin_users: null
         }));
         
         directData = [...directData, ...orphanedAsCustomers];
@@ -521,6 +575,53 @@ export const CustomersTab = () => {
       toast.error('Failed to load notes');
     } finally {
       setNotesLoading(false);
+    }
+  };
+
+  const assignCustomerToMe = async (customerId: string) => {
+    if (!currentUser) {
+      toast.error('Unable to assign customer - user not found');
+      return;
+    }
+
+    setAssignmentLoading(prev => ({ ...prev, [customerId]: true }));
+
+    try {
+      const { error } = await supabase
+        .from('customers')
+        .update({ assigned_to: currentUser.id })
+        .eq('id', customerId);
+
+      if (error) throw error;
+
+      toast.success('Customer assigned to you successfully');
+      fetchCustomers(); // Refresh the list
+    } catch (error) {
+      console.error('Error assigning customer:', error);
+      toast.error('Failed to assign customer');
+    } finally {
+      setAssignmentLoading(prev => ({ ...prev, [customerId]: false }));
+    }
+  };
+
+  const unassignCustomer = async (customerId: string) => {
+    setAssignmentLoading(prev => ({ ...prev, [customerId]: true }));
+
+    try {
+      const { error } = await supabase
+        .from('customers')
+        .update({ assigned_to: null })
+        .eq('id', customerId);
+
+      if (error) throw error;
+
+      toast.success('Customer unassigned successfully');
+      fetchCustomers(); // Refresh the list
+    } catch (error) {
+      console.error('Error unassigning customer:', error);
+      toast.error('Failed to unassign customer');
+    } finally {
+      setAssignmentLoading(prev => ({ ...prev, [customerId]: false }));
     }
   };
 
@@ -1299,13 +1400,14 @@ export const CustomersTab = () => {
               <TableHead>Email Status</TableHead>
               <TableHead>Warranties2000</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Assigned To</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={17} className="text-center py-8">
+                <TableCell colSpan={18} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -1491,8 +1593,45 @@ export const CustomersTab = () => {
                     <Badge variant={customer.status === 'Active' ? 'default' : 'destructive'}>
                       {customer.status}
                     </Badge>
-                  </TableCell>
+                   </TableCell>
                    <TableCell>
+                     <div className="flex flex-col space-y-1">
+                       {customer.assigned_to ? (
+                         <div className="flex items-center justify-between">
+                           <span className="text-sm text-gray-600">
+                             Assigned
+                           </span>
+                           {currentUser?.id === customer.assigned_to && (
+                             <Button
+                               variant="ghost"
+                               size="sm"
+                               onClick={() => unassignCustomer(customer.id)}
+                               disabled={assignmentLoading[customer.id]}
+                               className="p-1 h-6 w-6 text-gray-400 hover:text-red-600"
+                               title="Unassign from me"
+                             >
+                               <UserX className="h-3 w-3" />
+                             </Button>
+                           )}
+                         </div>
+                       ) : (
+                         <Button
+                           variant="outline"
+                           size="sm"
+                           onClick={() => assignCustomerToMe(customer.id)}
+                           disabled={assignmentLoading[customer.id]}
+                           className="text-xs py-1 h-6"
+                         >
+                           {assignmentLoading[customer.id] ? (
+                             <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-400"></div>
+                           ) : (
+                             'Assign to me'
+                           )}
+                         </Button>
+                       )}
+                     </div>
+                   </TableCell>
+                    <TableCell>
                      <div className="flex space-x-2">
                         {/* DVLA Vehicle Data Refresh */}
                         <Button
@@ -1950,12 +2089,17 @@ export const CustomersTab = () => {
                                     <div className="text-center py-4 text-gray-500">No notes yet</div>
                                   ) : (
                                     notes.map((note) => (
-                                      <div key={note.id} className="bg-white p-3 rounded-lg border">
-                                        <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
-                                        <p className="text-xs text-gray-500 mt-2">
-                                          {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
-                                        </p>
-                                      </div>
+                                       <div key={note.id} className="bg-white p-3 rounded-lg border">
+                                         <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
+                                         <div className="flex justify-between items-center mt-2">
+                                           <p className="text-xs text-gray-500">
+                                             {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
+                                           </p>
+                                           <p className="text-xs text-blue-600 font-medium">
+                                             Sales Staff
+                                           </p>
+                                         </div>
+                                       </div>
                                     ))
                                   )}
                                 </div>
