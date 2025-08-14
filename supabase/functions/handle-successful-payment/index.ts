@@ -249,7 +249,9 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       success: true, 
       message: "Payment processed successfully",
-      policyNumber: warrantyReference
+      policyNumber: warrantyReference,
+      customerId: customerData2?.id,
+      policyId: policyData?.id
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
