@@ -8,7 +8,10 @@ import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
+import WarrantyCart from '@/components/WarrantyCart';
+import MultiWarrantyCheckout from '@/components/MultiWarrantyCheckout';
 import { supabase } from '@/integrations/supabase/client';
+import { useCart, CartItem } from '@/contexts/CartContext';
 
 
 interface VehicleData {
@@ -31,6 +34,7 @@ interface VehicleData {
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { items: cartItems } = useCart();
   
   // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
@@ -54,6 +58,10 @@ const Index = () => {
   // Get current step from URL or default to 1
   const getStepFromUrl = () => {
     const stepParam = searchParams.get('step');
+    if (stepParam === 'cart') {
+      setShowCart(true);
+      return 1; // Default step when showing cart
+    }
     if (stepParam) {
       const step = parseInt(stepParam);
       return step >= 1 && step <= 4 ? step : 1;
@@ -62,6 +70,8 @@ const Index = () => {
   };
   
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
+  const [showCart, setShowCart] = useState(false);
+  const [showCartCheckout, setShowCartCheckout] = useState(false);
   
   // Save state to localStorage
   const saveStateToLocalStorage = (step?: number) => {
@@ -117,6 +127,13 @@ const Index = () => {
     const savedState = loadStateFromLocalStorage();
     const stepFromUrl = getStepFromUrl();
     
+    // Check for cart parameter
+    const stepParam = searchParams.get('step');
+    if (stepParam === 'cart') {
+      setShowCart(true);
+      return;
+    }
+
     // Check for quote parameter from email links
     const quoteParam = searchParams.get('quote');
     const emailParam = searchParams.get('email');
@@ -269,6 +286,41 @@ const Index = () => {
 
   // Check if vehicle is a special type
   const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
+
+  // Cart handlers
+  const handleAddMoreToCart = () => {
+    setShowCart(false);
+    setCurrentStep(1);
+    updateStepInUrl(1);
+  };
+
+  const handleProceedToCheckout = (items: CartItem[]) => {
+    setShowCartCheckout(true);
+  };
+
+  const handleBackToCart = () => {
+    setShowCartCheckout(false);
+  };
+
+  // Show cart interface
+  if (showCart && !showCartCheckout) {
+    return (
+      <WarrantyCart 
+        onAddMore={handleAddMoreToCart}
+        onProceedToCheckout={handleProceedToCheckout}
+      />
+    );
+  }
+
+  // Show cart checkout
+  if (showCartCheckout) {
+    return (
+      <MultiWarrantyCheckout 
+        items={cartItems}
+        onBack={handleBackToCart}
+      />
+    );
+  }
 
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">

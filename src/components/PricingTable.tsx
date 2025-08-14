@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, ShoppingCart, Plus } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import { useCart } from '@/contexts/CartContext';
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
 
@@ -55,6 +56,7 @@ interface PricingTableProps {
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   console.log('PricingTable received vehicleData:', vehicleData);
+  const { addToCart, getItemCount } = useCart();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'yearly' | 'two_yearly' | 'three_yearly'>('yearly');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
@@ -332,6 +334,49 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
   };
 
+  const handleAddToCart = async (plan: Plan) => {
+    setLoading(prev => ({ ...prev, [plan.id]: true }));
+    
+    try {
+      const basePrice = calculatePlanPrice(plan);
+      const addOnPrice = calculateAddOnPrice(plan.id);
+      const monthlyTotal = basePrice + addOnPrice;
+      
+      let totalPrice = monthlyTotal;
+      if (paymentType === 'yearly') {
+        totalPrice = monthlyTotal * 12;
+      } else if (paymentType === 'two_yearly') {
+        totalPrice = monthlyTotal * 24;
+      } else if (paymentType === 'three_yearly') {
+        totalPrice = monthlyTotal * 36;
+      }
+      
+      const bumperMonthlyPrice = Math.round(monthlyTotal);
+      
+      const pricingData = {
+        totalPrice,
+        monthlyPrice: bumperMonthlyPrice,
+        voluntaryExcess,
+        selectedAddOns: selectedAddOns[plan.id] || {}
+      };
+
+      addToCart({
+        vehicleData,
+        planId: plan.id,
+        planName: plan.name,
+        paymentType,
+        pricingData
+      });
+
+      toast.success(`${plan.name} warranty added to cart!`);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add to cart');
+    } finally {
+      setLoading(prev => ({ ...prev, [plan.id]: false }));
+    }
+  };
+
   // Hard client-side guard (belt & braces)
   const ensureCarOnly = (rows: Plan[]) =>
     rows.filter(p => ['Basic', 'Gold', 'Platinum'].includes((p.name ?? '').trim()));
@@ -347,16 +392,32 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   return (
     <div className="bg-[#e8f4fb] w-full min-h-screen">
-      {/* Back Button */}
-      <div className="absolute top-4 left-4 z-10">
-        <Button 
-          variant="outline" 
-          onClick={onBack}
-          className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3"
-        >
-          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-          Back
-        </Button>
+      {/* Header with Back Button and Cart */}
+      <div className="absolute top-4 left-0 right-0 z-10 px-4">
+        <div className="flex justify-between items-center">
+          <Button 
+            variant="outline" 
+            onClick={onBack}
+            className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3"
+          >
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            Back
+          </Button>
+          
+          {getItemCount() > 0 && (
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                // Navigate to cart page
+                window.location.href = '/?step=cart';
+              }}
+              className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3 bg-blue-50 border-blue-200"
+            >
+              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+              Cart ({getItemCount()})
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Trustpilot Header */}
@@ -580,17 +641,29 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    )}
                    
                    {/* Buy Now Button */}
-                   <Button
-                     onClick={() => handleSelectPlan(plan)}
-                     disabled={isLoading}
-                     className={`w-full py-4 font-bold text-lg rounded-xl transition-colors duration-200 ${
-                       plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
-                       plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
-                       'bg-orange-500 hover:bg-orange-600 text-white'
-                     }`}
-                   >
-                     {isLoading ? 'Processing...' : 'Buy Now'}
-                   </Button>
+                   <div className="space-y-3">
+                     <Button
+                       onClick={() => handleSelectPlan(plan)}
+                       disabled={isLoading}
+                       className={`w-full py-4 font-bold text-lg rounded-xl transition-colors duration-200 ${
+                         plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
+                         plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
+                         'bg-orange-500 hover:bg-orange-600 text-white'
+                       }`}
+                     >
+                       {isLoading ? 'Processing...' : 'Buy Now'}
+                     </Button>
+                     
+                     <Button
+                       onClick={() => handleAddToCart(plan)}
+                       disabled={isLoading}
+                       variant="outline"
+                       className="w-full py-4 font-bold text-lg rounded-xl border-2 border-gray-300 hover:bg-gray-50"
+                     >
+                       <Plus className="w-5 h-5 mr-2" />
+                       Add to Cart
+                     </Button>
+                   </div>
                  </div>
 
                  {/* What's Covered */}

@@ -15,6 +15,7 @@ import CustomerDashboard from "./pages/CustomerDashboard";
 import AdminTest from "./pages/AdminTest";
 import PasswordReset from "./components/PasswordReset";
 import PaymentFallback from "./pages/PaymentFallback";
+import Cart from "./pages/Cart";
 import CarJourneyDemo from "./pages/CarJourneyDemo";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/thank-you" element={<ThankYou />} />
                 <Route path="/payment-fallback" element={<PaymentFallback />} />
+                <Route path="/cart" element={<Cart />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
