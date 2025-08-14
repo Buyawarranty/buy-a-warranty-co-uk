@@ -9,7 +9,6 @@ import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
 
 
 interface VehicleData {
@@ -32,8 +31,6 @@ interface VehicleData {
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [isAdmin, setIsAdmin] = useState(false);
   
   // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
@@ -105,23 +102,6 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
-  // Check if user is admin
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (user) {
-        const { data } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .single();
-        
-        setIsAdmin(data?.role === 'admin');
-      }
-    };
-    
-    checkAdminStatus();
-  }, [user]);
-
   useEffect(() => {
     window.scrollTo(0, 0);
     
@@ -294,14 +274,7 @@ const Index = () => {
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
       {/* Customer Login Header */}
       <div className="w-full bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-2 flex justify-end space-x-2">
-          {isAdmin && (
-            <Link to="/admin-dashboard">
-              <Button variant="default" size="sm">
-                Admin Dashboard
-              </Button>
-            </Link>
-          )}
+        <div className="max-w-4xl mx-auto px-4 py-2 flex justify-end">
           <Link to="/auth">
             <Button variant="outline" size="sm">
               Customer Login

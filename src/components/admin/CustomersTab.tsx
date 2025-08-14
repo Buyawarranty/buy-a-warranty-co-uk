@@ -104,7 +104,6 @@ interface Customer {
   discount_amount: number;
   original_amount: number;
   final_amount: number;
-  assigned_to?: string;
   warranty_reference_number: string;
   warranty_number: string;
   stripe_customer_id: string;
@@ -123,13 +122,6 @@ interface Customer {
     email_sent_status?: string;
     warranties_2000_status?: string;
   }>;
-}
-
-interface AdminUser {
-  id: string;
-  first_name?: string;
-  last_name?: string;
-  email: string;
 }
 
 interface IncompleteCustomer {
@@ -209,14 +201,12 @@ export const CustomersTab = () => {
   const [emailStatuses, setEmailStatuses] = useState<{ [key: string]: EmailStatus }>({});
   const [emailSendingLoading, setEmailSendingLoading] = useState<{ [key: string]: { [key: string]: boolean } }>({});
   const [dvlaLookupLoading, setDvlaLookupLoading] = useState<{ [key: string]: boolean }>({});
-  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
 
   useEffect(() => {
     fetchCustomers();
     fetchIncompleteCustomers();
     fetchPlans();
     fetchEmailStatuses();
-    fetchAdminUsers();
   }, []);
 
   useEffect(() => {
@@ -286,44 +276,6 @@ export const CustomersTab = () => {
     } catch (error) {
       console.error('Error fetching plans:', error);
     }
-  };
-
-  const fetchAdminUsers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('id, first_name, last_name, email')
-        .eq('is_active', true);
-      
-      if (error) throw error;
-      setAdminUsers(data || []);
-    } catch (error) {
-      console.error('Error fetching admin users:', error);
-    }
-  };
-
-  const assignCustomerToSalesPerson = async (customerId: string, salesPersonId: string | null) => {
-    try {
-      const { error } = await supabase
-        .from('customers')
-        .update({ assigned_to: salesPersonId })
-        .eq('id', customerId);
-
-      if (error) throw error;
-      
-      toast.success('Sales assignment updated successfully');
-      fetchCustomers(); // Refresh the list
-    } catch (error) {
-      console.error('Error assigning customer:', error);
-      toast.error('Failed to assign customer to sales person');
-    }
-  };
-
-  const getSalesPersonName = (salesPersonId?: string) => {
-    if (!salesPersonId) return 'Unassigned';
-    const salesPerson = adminUsers.find(user => user.id === salesPersonId);
-    if (!salesPerson) return 'Unknown';
-    return `${salesPerson.first_name || ''} ${salesPerson.last_name || ''}`.trim() || salesPerson.email;
   };
 
   const fetchCustomers = async () => {
@@ -1344,7 +1296,6 @@ export const CustomersTab = () => {
               <TableHead>Expiry Date</TableHead>
               <TableHead>Payment Method</TableHead>
               <TableHead>Ref</TableHead>
-              <TableHead>Sales Person</TableHead>
               <TableHead>Email Status</TableHead>
               <TableHead>Warranties2000</TableHead>
               <TableHead>Status</TableHead>
@@ -1354,7 +1305,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={18} className="text-center py-8">
+                <TableCell colSpan={17} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -1453,36 +1404,16 @@ export const CustomersTab = () => {
                         customer.bumper_order_id ? 'Bumper' : 'N/A'}
                      </Badge>
                    </TableCell>
-                   <TableCell className="font-mono text-sm">
-                     {customer.warranty_reference_number || customer.warranty_number ? (
-                       <div className="bg-green-50 px-2 py-1 rounded border">
-                         {customer.warranty_reference_number || customer.warranty_number}
-                       </div>
-                     ) : (
-                       <span className="text-gray-400">No Reference</span>
-                     )}
-                   </TableCell>
+                  <TableCell className="font-mono text-sm">
+                    {customer.warranty_reference_number || customer.warranty_number ? (
+                      <div className="bg-green-50 px-2 py-1 rounded border">
+                        {customer.warranty_reference_number || customer.warranty_number}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">No Reference</span>
+                    )}
+                  </TableCell>
                    <TableCell>
-                     <Select
-                       value={customer.assigned_to || ''}
-                       onValueChange={(value) => assignCustomerToSalesPerson(customer.id, value || null)}
-                     >
-                       <SelectTrigger className="w-36">
-                         <SelectValue placeholder="Assign">
-                           {getSalesPersonName(customer.assigned_to)}
-                         </SelectValue>
-                       </SelectTrigger>
-                       <SelectContent>
-                         <SelectItem value="">Unassigned</SelectItem>
-                         {adminUsers.map((user) => (
-                           <SelectItem key={user.id} value={user.id}>
-                             {`${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email}
-                           </SelectItem>
-                         ))}
-                       </SelectContent>
-                     </Select>
-                   </TableCell>
-                    <TableCell>
                      <div className="flex items-center gap-2">
                        {customer.customer_policies?.[0]?.email_sent_status === 'sent' ? (
                          <Badge variant="secondary" className="bg-green-100 text-green-800">
@@ -2047,8 +1978,10 @@ export const CustomersTab = () => {
                         ) : (
                           <Key className="h-4 w-4" />
                         )}
-                       </Button>
-                     </div>
+                      </Button>
+                      
+                      <ForwardToWarranties customer={customer} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
