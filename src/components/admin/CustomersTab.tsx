@@ -2047,10 +2047,8 @@ export const CustomersTab = () => {
                         ) : (
                           <Key className="h-4 w-4" />
                         )}
-                      </Button>
-                      
-                      <ForwardToWarranties customer={customer} />
-                    </div>
+                       </Button>
+                     </div>
                   </TableCell>
                 </TableRow>
               ))
