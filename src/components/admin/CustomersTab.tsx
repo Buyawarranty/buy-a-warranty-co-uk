@@ -13,7 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail } from 'lucide-react';
-import { ForwardToWarranties } from './ForwardToWarranties';
+
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { format } from 'date-fns';
@@ -1980,7 +1980,7 @@ export const CustomersTab = () => {
                         )}
                       </Button>
                       
-                      <ForwardToWarranties customer={customer} />
+                      
                     </div>
                   </TableCell>
                 </TableRow>
