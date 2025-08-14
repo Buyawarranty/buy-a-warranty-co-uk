@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { CustomersTab } from '@/components/admin/CustomersTab';
 import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
@@ -25,42 +26,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('customers');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  const checkAdminAccess = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session?.user) {
+    const checkAdminAccess = async () => {
+      if (!loading && !user) {
         navigate('/auth');
         return;
       }
 
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .single();
+      if (user) {
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
 
-      if (error || data?.role !== 'admin') {
-        console.error('Access denied - not an admin', error);
-        navigate('/');
-        return;
+        if (error || data?.role !== 'admin') {
+          console.error('Access denied - not an admin', error);
+          navigate('/');
+          return;
+        }
+
+        setIsAdmin(true);
       }
+    };
 
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error checking admin access:', error);
-      navigate('/');
-    }
-  };
+    checkAdminAccess();
+  }, [user, loading, navigate]);
 
-  if (isLoading) {
+  if (loading || !isAdmin) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
