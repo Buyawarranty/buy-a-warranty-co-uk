@@ -304,12 +304,50 @@ async function generateWarrantyReference(): Promise<string> {
 
 // Helper functions for warranty registration
 function getWarrantyDuration(paymentType: string): string {
-  switch (paymentType) {
-    case 'monthly': return '12'; // Changed from 1 to 12 - API expects 12 months minimum
-    case 'yearly': return '12';
-    case 'two_yearly': return '24';
-    case 'three_yearly': return '36';
-    default: return '12';
+  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
+  
+  switch (normalizedPaymentType) {
+    case 'monthly':
+    case '1month':
+    case 'month':
+      return '12'; // Monthly payments still provide 12 months minimum coverage
+    case 'yearly':
+    case 'annual':
+    case '12months':
+    case '12month':
+    case 'year':
+      return '12';
+    case 'twoyearly':
+    case '2yearly':
+    case '24months':
+    case '24month':
+    case '2years':
+    case '2year':
+      return '24';
+    case 'threeyearly':
+    case '3yearly':
+    case '36months':
+    case '36month':
+    case '3years':
+    case '3year':
+      return '36';
+    case 'fouryearly':
+    case '4yearly':
+    case '48months':
+    case '48month':
+    case '4years':
+    case '4year':
+      return '48';
+    case 'fiveyearly':
+    case '5yearly':
+    case '60months':
+    case '60month':
+    case '5years':
+    case '5year':
+      return '60';
+    default:
+      console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+      return '12';
   }
 }
 
@@ -437,33 +475,62 @@ function extractStreet(address: string): string {
 
 // Helper function to calculate policy end date
 function calculatePolicyEndDate(paymentType: string): string {
+  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
   const now = new Date();
-  switch (paymentType) {
+  
+  let months = 12; // Default
+  switch (normalizedPaymentType) {
     case 'monthly':
-      now.setMonth(now.getMonth() + 1);
-      break;
     case 'yearly':
-      now.setFullYear(now.getFullYear() + 1);
+    case 'annual':
+      months = 12;
       break;
+    case 'twoyearly':
+    case '2yearly':
     case 'two_yearly':
-      now.setFullYear(now.getFullYear() + 2);
+      months = 24;
       break;
+    case 'threeyearly':
+    case '3yearly':
     case 'three_yearly':
-      now.setFullYear(now.getFullYear() + 3);
+      months = 36;
       break;
-    default:
-      now.setMonth(now.getMonth() + 1);
+    case 'fouryearly':
+    case '4yearly':
+    case 'four_yearly':
+      months = 48;
+      break;
+    case 'fiveyearly':
+    case '5yearly':
+    case 'five_yearly':
+      months = 60;
+      break;
   }
+  
+  now.setMonth(now.getMonth() + months);
   return now.toISOString();
 }
 
 // Helper function to convert payment type to user-friendly display format
 function getPaymentTypeDisplay(paymentType: string): string {
-  switch (paymentType) {
+  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
+  
+  switch (normalizedPaymentType) {
     case 'monthly': return 'Monthly';
-    case 'yearly': return '12 months';
+    case 'yearly':
+    case 'annual': return '12 months';
+    case 'twoyearly':
+    case '2yearly':
     case 'two_yearly': return '24 months';
+    case 'threeyearly':
+    case '3yearly':
     case 'three_yearly': return '36 months';
-    default: return paymentType;
+    case 'fouryearly':
+    case '4yearly':
+    case 'four_yearly': return '48 months';
+    case 'fiveyearly':
+    case '5yearly':
+    case 'five_yearly': return '60 months';
+    default: return paymentType || 'Unknown';
   }
 }

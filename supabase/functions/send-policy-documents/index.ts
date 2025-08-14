@@ -200,16 +200,15 @@ serve(async (req) => {
       }
     }
 
-    // Calculate coverage period and dates
-    const calculatePeriodInMonths = (paymentType: string): number => {
-      // Normalize payment type to handle all variations
+    // Calculate warranty duration based on payment type (corrected logic)
+    const getWarrantyDuration = (paymentType: string): number => {
       const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '');
       
       switch (normalizedPaymentType) {
         case 'monthly':
         case '1month':
         case 'month':
-          return 1;
+          return 12; // Monthly payments still get 12 months coverage minimum
         case 'yearly':
         case 'annual':
         case '12months':
@@ -231,21 +230,20 @@ serve(async (req) => {
         case '3year':
           return 36;
         default:
-          // Default to 12 months for any unrecognized payment type
           return 12;
       }
     };
 
     const calculateExpiryDate = (startDate: Date, paymentType: string): Date => {
       const expiry = new Date(startDate);
-      const months = calculatePeriodInMonths(paymentType);
+      const months = getWarrantyDuration(paymentType);
       expiry.setMonth(expiry.getMonth() + months);
       return expiry;
     };
 
     const startDate = new Date();
     const expiryDate = calculateExpiryDate(startDate, paymentType || 'yearly');
-    const periodInMonths = calculatePeriodInMonths(paymentType || 'yearly');
+    const periodInMonths = getWarrantyDuration(paymentType || 'yearly');
 
     // Normalize plan type for consistent display
     const getDisplayPlanType = (planType: string): string => {
