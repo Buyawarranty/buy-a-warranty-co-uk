@@ -18,33 +18,53 @@ const PasswordReset = () => {
   const [isValidSession, setIsValidSession] = useState(false);
   
   useEffect(() => {
-    // Check if we have access and refresh tokens in the URL
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
-    const type = searchParams.get('type');
-    
-    if (type === 'recovery' && accessToken && refreshToken) {
-      // Set the session using the tokens from the URL
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken
-      }).then(({ data, error }) => {
-        if (error) {
-          console.error('Error setting session:', error);
+    const initializePasswordReset = async () => {
+      // First, handle hash-based URL parameters (from the URL you provided)
+      const hash = window.location.hash.substring(1);
+      const hashParams = new URLSearchParams(hash);
+      
+      // Then check regular URL parameters
+      const accessToken = hashParams.get('access_token') || searchParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
+      const type = hashParams.get('type') || searchParams.get('type');
+      
+      console.log('Password reset tokens:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
+      
+      if (type === 'recovery' && accessToken && refreshToken) {
+        try {
+          // Set the session using the tokens from the URL
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
+          if (error) {
+            console.error('Error setting session:', error);
+            toast({
+              title: "Invalid reset link",
+              description: "This password reset link is invalid or has expired. Please request a new one.",
+              variant: "destructive",
+            });
+            navigate('/auth');
+          } else if (data.session) {
+            console.log('Session set successfully for password reset');
+            setIsValidSession(true);
+            
+            // Clean up the URL by removing the hash parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        } catch (error) {
+          console.error('Error in password reset initialization:', error);
           toast({
-            title: "Invalid reset link",
-            description: "This password reset link is invalid or has expired. Please request a new one.",
+            title: "Error",
+            description: "Failed to initialize password reset. Please try the link again.",
             variant: "destructive",
           });
           navigate('/auth');
-        } else if (data.session) {
-          console.log('Session set successfully:', data.session);
-          setIsValidSession(true);
         }
-      });
-    } else {
-      // Check if user is already authenticated
-      supabase.auth.getSession().then(({ data: { session } }) => {
+      } else {
+        // Check if user is already authenticated
+        const { data: { session } } = await supabase.auth.getSession();
         if (session) {
           setIsValidSession(true);
         } else {
@@ -55,8 +75,10 @@ const PasswordReset = () => {
           });
           navigate('/auth');
         }
-      });
-    }
+      }
+    };
+
+    initializePasswordReset();
   }, [searchParams, navigate, toast]);
 
   const handlePasswordReset = async () => {
@@ -101,8 +123,23 @@ const PasswordReset = () => {
         description: "Your password has been successfully updated. You can now access your dashboard.",
       });
 
-      // Clear the URL parameters and redirect to dashboard
-      navigate('/customer-dashboard', { replace: true });
+      // Check user role and redirect to appropriate dashboard
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        if (roleData?.role === 'admin') {
+          navigate('/admin-dashboard', { replace: true });
+        } else {
+          navigate('/customer-dashboard', { replace: true });
+        }
+      } else {
+        navigate('/auth', { replace: true });
+      }
     } catch (error) {
       console.error('Error updating password:', error);
       toast({
