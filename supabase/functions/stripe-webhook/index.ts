@@ -73,17 +73,69 @@ serve(async (req) => {
         const paymentType = session.metadata?.payment_type;
         
         if (planId && paymentType) {
-          // Call the existing process-stripe-success function
-          const { data: processData, error: processError } = await supabaseClient.functions.invoke('process-stripe-success', {
+          // Retrieve the checkout session to get customer data
+          const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
+            apiVersion: "2023-10-16" 
+          });
+          
+          const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+            expand: ['customer']
+          });
+          
+          // Extract customer and vehicle data from session metadata
+          const vehicleData = {
+            regNumber: fullSession.metadata?.vehicle_reg || '',
+            mileage: fullSession.metadata?.vehicle_mileage || '',
+            make: fullSession.metadata?.vehicle_make || '',
+            model: fullSession.metadata?.vehicle_model || '',
+            year: fullSession.metadata?.vehicle_year || '',
+            fuelType: fullSession.metadata?.vehicle_fuel_type || '',
+            transmission: fullSession.metadata?.vehicle_transmission || '',
+            vehicleType: fullSession.metadata?.vehicle_type || 'standard',
+            fullName: fullSession.metadata?.customer_name || '',
+            phone: fullSession.metadata?.customer_phone || '',
+            address: `${fullSession.metadata?.customer_street || ''} ${fullSession.metadata?.customer_town || ''} ${fullSession.metadata?.customer_county || ''} ${fullSession.metadata?.customer_postcode || ''}`.trim(),
+            email: fullSession.customer_email || fullSession.customer_details?.email || fullSession.metadata?.customer_email || ''
+          };
+
+          const customerData = {
+            first_name: fullSession.metadata?.customer_first_name || '',
+            last_name: fullSession.metadata?.customer_last_name || '',
+            mobile: fullSession.metadata?.customer_phone || '',
+            street: fullSession.metadata?.customer_street || '',
+            town: fullSession.metadata?.customer_town || '',
+            county: fullSession.metadata?.customer_county || '',
+            postcode: fullSession.metadata?.customer_postcode || '',
+            country: fullSession.metadata?.customer_country || 'United Kingdom',
+            building_name: fullSession.metadata?.customer_building_name || '',
+            flat_number: fullSession.metadata?.customer_flat_number || '',
+            building_number: fullSession.metadata?.customer_building_number || '',
+            vehicle_reg: fullSession.metadata?.vehicle_reg || '',
+            discount_code: fullSession.metadata?.discount_code || '',
+            final_amount: parseFloat(fullSession.metadata?.final_amount || '0'),
+            fullName: fullSession.metadata?.customer_name || '',
+            phone: fullSession.metadata?.customer_phone || '',
+            address: `${fullSession.metadata?.customer_street || ''}, ${fullSession.metadata?.customer_town || ''}, ${fullSession.metadata?.customer_county || ''}, ${fullSession.metadata?.customer_postcode || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',').trim()
+          };
+
+          logStep("Extracted customer and vehicle data from webhook", { vehicleData, customerData });
+
+          // Call handle-successful-payment directly
+          const { data: processData, error: processError } = await supabaseClient.functions.invoke('handle-successful-payment', {
             body: {
-              sessionId: session.id,
-              planId: planId,
-              paymentType: paymentType
+              planId: fullSession.metadata?.plan_id || planId,
+              paymentType: fullSession.metadata?.payment_type || paymentType,
+              userEmail: vehicleData.email,
+              userId: fullSession.metadata?.user_id || null,
+              stripeSessionId: session.id,
+              vehicleData: vehicleData,
+              customerData: customerData,
+              skipEmail: false // Allow email sending
             }
           });
 
           if (processError) {
-            logStep("Error processing payment via process-stripe-success", processError);
+            logStep("Error processing payment via handle-successful-payment", processError);
             throw new Error(`Payment processing failed: ${processError.message}`);
           }
 
