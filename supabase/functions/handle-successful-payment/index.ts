@@ -113,13 +113,15 @@ serve(async (req) => {
       }
     }
 
-    // Send welcome email using the manual system (unless skipEmail is true)
-    if (customerData2?.id && !skipEmail) {
-      const { data: policy } = await supabaseClient
-        .from('customer_policies')
-        .select('id')
-        .eq('customer_id', customerData2.id)
-        .single();
+  // Send welcome email using the manual system (unless skipEmail is true)
+  let policy = null;
+  if (customerData2?.id && !skipEmail) {
+    const { data: policyData } = await supabaseClient
+      .from('customer_policies')
+      .select('id')
+      .eq('customer_id', customerData2.id)
+      .single();
+    policy = policyData;
         
       if (policy?.id) {
         logStep("Attempting to send welcome email", { 
@@ -251,7 +253,7 @@ serve(async (req) => {
       message: "Payment processed successfully",
       policyNumber: warrantyReference,
       customerId: customerData2?.id,
-      policyId: policyData?.id
+      policyId: policy?.id
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
