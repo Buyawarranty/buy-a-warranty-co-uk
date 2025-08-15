@@ -332,6 +332,8 @@ function getWarrantyDuration(paymentType: string): string {
     case '3years':
     case '3year':
     case 'three_yearly':
+    case 'threemonthly':
+    case '3monthly':
       return '36';
     case 'fouryearly':
     case '4yearly':
@@ -491,12 +493,22 @@ function calculatePolicyEndDate(paymentType: string): string {
       break;
     case 'twoyearly':
     case '2yearly':
+    case '24months':
+    case '24month':
     case 'two_yearly':
+    case 'twomonthly':
+    case '2monthly':
       months = 24;
       break;
     case 'threeyearly':
     case '3yearly':
+    case '36months':
+    case '36month':
+    case '3years':
+    case '3year':
     case 'three_yearly':
+    case 'threemonthly':
+    case '3monthly':
       months = 36;
       break;
     case 'fouryearly':
@@ -525,10 +537,18 @@ function getPaymentTypeDisplay(paymentType: string): string {
     case 'annual': return '12 months';
     case 'twoyearly':
     case '2yearly':
-    case 'two_yearly': return '24 months';
+    case '24months':
+    case '24month':
+    case 'two_yearly':
+    case 'twomonthly':
+    case '2monthly': return '24 months';
     case 'threeyearly':
     case '3yearly':
-    case 'three_yearly': return '36 months';
+    case '36months':
+    case '36month':
+    case 'three_yearly':
+    case 'threemonthly':
+    case '3monthly': return '36 months';
     case 'fouryearly':
     case '4yearly':
     case 'four_yearly': return '48 months';
