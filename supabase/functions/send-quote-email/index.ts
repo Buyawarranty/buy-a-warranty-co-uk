@@ -54,7 +54,7 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
   const baseUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com';
   const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(data.email)}`;
   
-  const addOnsList = Object.entries(selectedAddOns)
+  const addOnsList = Object.entries(selectedAddOns || {})
     .filter(([_, selected]) => selected)
     .map(([addon]) => `<li style="margin: 5px 0;">✓ ${addon}</li>`)
     .join('');
@@ -200,17 +200,45 @@ const handler = async (req: Request): Promise<Response> => {
       quoteId
     });
 
-    // Send email using Resend with better spam prevention
+    // Send email using Resend with enhanced anti-spam measures
     const emailResponse = await resend.emails.send({
-      from: "Buy A Warranty <info@buyawarranty.co.uk>",
+      from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
+      reply_to: "support@buyawarranty.co.uk", 
       to: [emailRequest.email],
       subject: `🚗 Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote – Lock In Your Price Today`,
       html: emailHtml,
+      text: `Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote
+
+Hello Valued Customer,
+
+Your ${emailRequest.vehicleData.make || 'vehicle'} is just one step away from being fully protected against unexpected repair bills.
+
+Vehicle Details:
+- Registration: ${emailRequest.vehicleData.regNumber}
+- Make: ${emailRequest.vehicleData.make || 'N/A'}
+- Year: ${emailRequest.vehicleData.year || 'N/A'} 
+- Mileage: ${emailRequest.vehicleData.mileage}
+
+Complete your quote: ${purchaseUrl}
+
+Or call us on 0330 229 5040
+
+Kind regards,
+Buy A Warranty Customer Service Team`,
       headers: {
         'X-Entity-Ref-ID': quoteId,
         'List-Unsubscribe': '<mailto:unsubscribe@buyawarranty.co.uk>',
-        'X-Mailer': 'BuyAWarranty Quote System',
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        'X-Mailer': 'BuyAWarranty Quote System v1.0',
+        'X-Priority': '3',
+        'X-MSMail-Priority': 'Normal',
+        'Importance': 'Normal',
+        'Auto-Submitted': 'auto-generated',
       },
+      tags: [
+        { name: 'category', value: 'quote-email' },
+        { name: 'vehicle-make', value: emailRequest.vehicleData.make || 'unknown' }
+      ]
     });
 
     console.log('Quote email sent successfully:', emailResponse);
