@@ -371,14 +371,14 @@ function getMaxClaimAmount(planId: string): string {
   
   // Handle standard plan types
   if (normalizedPlan.includes('basic')) {
-    return '3000';
+    return '500';
   } else if (normalizedPlan.includes('gold')) {
-    return '5000';
+    return '1000';
   } else if (normalizedPlan.includes('platinum')) {
-    return '7500';
+    return '1200';
   }
   
-  return '3000'; // Default fallback
+  return '500'; // Default fallback
 }
 
 function getWarrantyType(planId: string): string {
