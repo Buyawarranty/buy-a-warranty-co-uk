@@ -18,6 +18,7 @@ import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 
 // Helper function to map plan types to Warranties 2000 warranty types
 function getWarrantyType(planType: string): string {
@@ -34,39 +35,12 @@ function getWarrantyType(planType: string): string {
   }
 }
 
-// Helper function to calculate duration in months based on payment type
-function getWarrantyDuration(paymentType: string): number {
-  switch (paymentType?.toLowerCase()) {
-    case 'monthly':
-    case '12months':
-    case 'yearly':
-      return 12;
-    case '24months':
-    case 'two_yearly':
-    case 'twoyear':
-      return 24;
-    case '36months':
-    case 'three_yearly':
-    case 'threeyear':
-      return 36;
-    case '48months':
-    case 'four_yearly':
-    case 'fouryear':
-      return 48;
-    case '60months':
-    case 'five_yearly':
-    case 'fiveyear':
-      return 60;
-    default:
-      return 12; // Default to 12 months
-  }
-}
-
-// Helper function to calculate expiry date based on start date and duration
-function calculateExpiryDate(startDate: string, durationMonths: number): Date {
+// Helper function to calculate expiry date based on start date and payment type
+function calculateExpiryDate(startDate: string, paymentType: string): Date {
   const start = new Date(startDate);
+  const months = getWarrantyDurationInMonths(paymentType);
   const expiry = new Date(start);
-  expiry.setMonth(expiry.getMonth() + durationMonths);
+  expiry.setMonth(expiry.getMonth() + months);
   return expiry;
 }
 
@@ -1480,18 +1454,18 @@ export const CustomersTab = () => {
                    <TableCell>
                      <Badge variant="secondary">{getWarrantyType(customer.plan_type)}</Badge>
                    </TableCell>
-                   <TableCell className="text-center">
-                     <Badge variant="outline" className="font-mono">
-                       {getWarrantyDuration(customer.payment_type || '')} months
-                     </Badge>
-                   </TableCell>
-                   <TableCell className="text-center">
-                     {customer.customer_policies?.[0]?.policy_start_date || customer.signup_date ? (
-                       <div className="text-sm">
-                         {format(
-                           calculateExpiryDate(
-                             customer.customer_policies?.[0]?.policy_start_date || customer.signup_date,
-                             getWarrantyDuration(customer.payment_type || '')
+                    <TableCell className="text-center">
+                      <Badge variant="outline" className="font-mono">
+                        {getWarrantyDurationInMonths(customer.payment_type || '')} months
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {customer.customer_policies?.[0]?.policy_start_date || customer.signup_date ? (
+                        <div className="text-sm">
+                          {format(
+                            calculateExpiryDate(
+                              customer.customer_policies?.[0]?.policy_start_date || customer.signup_date,
+                              customer.payment_type || ''
                            ), 
                            'dd/MM/yyyy'
                          )}

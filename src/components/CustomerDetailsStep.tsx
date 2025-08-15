@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { getWarrantyDurationDisplay } from '@/lib/warrantyDurationUtils';
 
 interface CustomerDetailsStepProps {
   vehicleData: {
@@ -500,9 +501,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 <div className="flex justify-between">
                   <span className="text-gray-600">Cover period:</span>
                   <span className="font-semibold">
-                    {paymentType === 'yearly' ? '12 months' :
-                     paymentType === 'two_yearly' ? '24 months' :
-                     paymentType === 'three_yearly' ? '36 months' : '12 months'}
+                    {getWarrantyDurationDisplay(paymentType)}
                   </span>
                 </div>
                 <div className="flex justify-between">
