@@ -230,8 +230,6 @@ serve(async (req) => {
         case '3years':
         case '3year':
         case 'three_yearly':
-        case 'threemonthly':
-        case '3monthly':
           return 36;
         case 'fouryearly':
         case '4yearly':

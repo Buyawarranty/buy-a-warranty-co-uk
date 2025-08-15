@@ -376,12 +376,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       });
 
       toast.success(`${plan.name} warranty added to cart!`);
-      
-      // Navigate to cart after adding item with a small delay
-      setTimeout(() => {
-        window.location.href = '/?step=cart';
-      }, 1000);
-      
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add to cart');
