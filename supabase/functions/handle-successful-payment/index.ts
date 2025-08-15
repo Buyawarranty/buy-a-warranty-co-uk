@@ -479,64 +479,56 @@ function extractStreet(address: string): string {
   return parts[0]?.trim() || address || 'Unknown';
 }
 
-// Helper function to calculate policy end date
-function calculatePolicyEndDate(paymentType: string): string {
+// Use centralized warranty duration utilities for consistency
+function getWarrantyDurationInMonths(paymentType: string): number {
   const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
-  const now = new Date();
   
-  let months = 12; // Default
   switch (normalizedPaymentType) {
     case 'monthly':
+    case '1month':
+    case 'month':
+    case '12months':
+    case '12month':
     case 'yearly':
-    case 'annual':
-      months = 12;
-      break;
+      return 12;
+    case '24months':
+    case '24month':
+    case 'twomonthly':
+    case '2monthly':
     case 'twoyearly':
-    case '2yearly':
-    case 'two_yearly':
-      months = 24;
-      break;
+      return 24;
+    case '36months':
+    case '36month':
+    case 'threemonthly':
+    case '3monthly':
     case 'threeyearly':
-    case '3yearly':
-    case 'three_yearly':
-      months = 36;
-      break;
-    case 'fouryearly':
-    case '4yearly':
-    case 'four_yearly':
-      months = 48;
-      break;
-    case 'fiveyearly':
-    case '5yearly':
-    case 'five_yearly':
-      months = 60;
-      break;
+      return 36;
+    case '48months':
+    case '48month':
+    case 'fourmonthly':
+    case '4monthly':
+      return 48;
+    case '60months':
+    case '60month':
+    case 'fivemonthly':
+    case '5monthly':
+      return 60;
+    default:
+      console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+      return 12;
   }
-  
+}
+
+// Helper function to calculate policy end date using centralized logic
+function calculatePolicyEndDate(paymentType: string): string {
+  const months = getWarrantyDurationInMonths(paymentType);
+  const now = new Date();
   now.setMonth(now.getMonth() + months);
   return now.toISOString();
 }
 
 // Helper function to convert payment type to user-friendly display format
 function getPaymentTypeDisplay(paymentType: string): string {
-  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
-  
-  switch (normalizedPaymentType) {
-    case 'monthly': return 'Monthly';
-    case 'yearly':
-    case 'annual': return '12 months';
-    case 'twoyearly':
-    case '2yearly':
-    case 'two_yearly': return '24 months';
-    case 'threeyearly':
-    case '3yearly':
-    case 'three_yearly': return '36 months';
-    case 'fouryearly':
-    case '4yearly':
-    case 'four_yearly': return '48 months';
-    case 'fiveyearly':
-    case '5yearly':
-    case 'five_yearly': return '60 months';
-    default: return paymentType || 'Unknown';
-  }
+  const months = getWarrantyDurationInMonths(paymentType);
+  return `${months} months`;
 }
