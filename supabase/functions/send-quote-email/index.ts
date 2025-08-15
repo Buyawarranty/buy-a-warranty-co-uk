@@ -50,8 +50,8 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
   const { regNumber, make, model, year, mileage } = vehicleData;
   const { planName, totalPrice, monthlyPrice, voluntaryExcess, paymentType, selectedAddOns } = planData;
   
-  // Generate purchase URL with quote ID - use the app's domain
-  const baseUrl = Deno.env.get('SUPABASE_URL')?.replace('https://', 'https://').replace('.supabase.co', '.lovable.app') || 'https://buyawarranty.lovable.app';
+  // Generate purchase URL with quote ID - use the correct domain
+  const baseUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com';
   const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(data.email)}`;
   
   const addOnsList = Object.entries(selectedAddOns)
@@ -296,12 +296,17 @@ const handler = async (req: Request): Promise<Response> => {
       quoteId
     });
 
-    // Send email using Resend
+    // Send email using Resend with better spam prevention
     const emailResponse = await resend.emails.send({
       from: "Buy A Warranty <info@buyawarranty.co.uk>",
       to: [emailRequest.email],
-      subject: `Your Vehicle Warranty Quote - ${emailRequest.planData.planName} Plan`,
+      subject: emailRequest.isInitialQuote ? `Your Vehicle Warranty Quote - Continue Selection` : `Your Vehicle Warranty Quote - ${emailRequest.planData.planName} Plan`,
       html: emailHtml,
+      headers: {
+        'X-Entity-Ref-ID': quoteId,
+        'List-Unsubscribe': '<mailto:unsubscribe@buyawarranty.co.uk>',
+        'X-Mailer': 'BuyAWarranty Quote System',
+      },
     });
 
     console.log('Quote email sent successfully:', emailResponse);
