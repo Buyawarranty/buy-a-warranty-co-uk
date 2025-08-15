@@ -30,7 +30,7 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { recipientEmail, variables } = await req.json();
+    const { recipientEmail, variables, forceResend } = await req.json();
     const { 
       planType, 
       customerName, 
@@ -60,6 +60,38 @@ serve(async (req) => {
     }
 
     logStep("Found policy documents template", { templateId: template.id });
+
+    // Check if we should skip sending duplicate emails (unless forced)
+    if (!forceResend) {
+      // Check if an email was already sent for this plan/customer combination recently
+      const { data: recentEmail } = await supabaseClient
+        .from('email_logs')
+        .select('id, created_at')
+        .eq('recipient_email', recipientEmail)
+        .eq('template_id', template.id)
+        .eq('status', 'sent')
+        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (recentEmail) {
+        logStep("Email already sent recently, skipping duplicate", { 
+          lastSentAt: recentEmail.created_at,
+          emailLogId: recentEmail.id 
+        });
+        
+        return new Response(JSON.stringify({ 
+          success: true, 
+          message: "Email already sent recently, duplicate prevented",
+          skipped: true,
+          lastSentAt: recentEmail.created_at
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
+    }
 
     // Determine vehicle type based on plan type for correct document mapping
     const isSpecialVehicle = ['motorcycle', 'van', 'motorhome', 'caravan', 'motorbike'].some(type => 
@@ -96,7 +128,16 @@ serve(async (req) => {
 
         if (!downloadError && fileData) {
           const fileBuffer = await fileData.arrayBuffer();
-          const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+          
+          // Use Uint8Array.from() to avoid potential stack overflow issues
+          const bytes = new Uint8Array(fileBuffer);
+          let base64Content = '';
+          const chunkSize = 8192;
+          
+          for (let i = 0; i < bytes.length; i += chunkSize) {
+            const chunk = bytes.slice(i, i + chunkSize);
+            base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+          }
           
           attachments.push({
             filename: `${planType}-Warranty-Policy.pdf`,
@@ -149,7 +190,7 @@ serve(async (req) => {
         .limit(1)
         .maybeSingle();
 
-      if (planDoc && !planError) {
+        if (planDoc && !planError) {
         try {
           logStep("Attempting to fetch plan document from customer_documents", { url: planDoc.file_url });
           const response = await fetch(planDoc.file_url);
@@ -157,7 +198,16 @@ serve(async (req) => {
           
           if (response.ok) {
             const fileBuffer = await response.arrayBuffer();
-            const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+            
+            // Use Uint8Array.from() to avoid potential stack overflow issues
+            const bytes = new Uint8Array(fileBuffer);
+            let base64Content = '';
+            const chunkSize = 8192;
+            
+            for (let i = 0; i < bytes.length; i += chunkSize) {
+              const chunk = bytes.slice(i, i + chunkSize);
+              base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+            }
             
             attachments.push({
               filename: planDoc.document_name.endsWith('.pdf') ? planDoc.document_name : `${planDoc.document_name}.pdf`,
@@ -169,7 +219,7 @@ serve(async (req) => {
             logStep("Failed to fetch plan document", { status: response.status, statusText: response.statusText });
           }
         } catch (error) {
-          logStep("Error preparing plan document", { error: error.message, stack: error.stack });
+          logStep("Error preparing plan document", { error: error.message });
         }
       } else {
         logStep("No plan-specific document found in customer_documents", { planType: mappedPlanType, error: planError });
@@ -193,7 +243,16 @@ serve(async (req) => {
         
         if (response.ok) {
           const fileBuffer = await response.arrayBuffer();
-          const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+          
+          // Use Uint8Array.from() to avoid potential stack overflow issues
+          const bytes = new Uint8Array(fileBuffer);
+          let base64Content = '';
+          const chunkSize = 8192;
+          
+          for (let i = 0; i < bytes.length; i += chunkSize) {
+            const chunk = bytes.slice(i, i + chunkSize);
+            base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+          }
           
           attachments.push({
             filename: termsDoc.document_name.endsWith('.pdf') ? termsDoc.document_name : `${termsDoc.document_name}.pdf`,
@@ -205,7 +264,7 @@ serve(async (req) => {
           logStep("Failed to fetch terms document", { status: response.status, statusText: response.statusText });
         }
       } catch (error) {
-        logStep("Error preparing terms document", { error: error.message, stack: error.stack });
+        logStep("Error preparing terms document", { error: error.message });
       }
     }
 

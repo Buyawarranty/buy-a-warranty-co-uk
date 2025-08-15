@@ -296,10 +296,16 @@ const handler = async (req: Request): Promise<Response> => {
             continue;
           }
 
-          // Convert to base64 for attachment
+          // Convert to base64 for attachment using chunked approach to avoid stack overflow
           const buffer = await fileData.arrayBuffer();
           const uint8Array = new Uint8Array(buffer);
-          const base64Content = btoa(String.fromCharCode(...uint8Array));
+          let base64Content = '';
+          const chunkSize = 8192;
+          
+          for (let i = 0; i < uint8Array.length; i += chunkSize) {
+            const chunk = uint8Array.slice(i, i + chunkSize);
+            base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+          }
           
           let filename;
           if (pdfPath.includes('terms')) {
@@ -358,7 +364,15 @@ const handler = async (req: Request): Promise<Response> => {
           
           if (response.ok) {
             const fileBuffer = await response.arrayBuffer();
-            const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+            // Use chunked approach to avoid stack overflow
+            const bytes = new Uint8Array(fileBuffer);
+            let base64Content = '';
+            const chunkSize = 8192;
+            
+            for (let i = 0; i < bytes.length; i += chunkSize) {
+              const chunk = bytes.slice(i, i + chunkSize);
+              base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+            }
             
             attachments.push({
               filename: planDoc.document_name.endsWith('.pdf') ? planDoc.document_name : `${planDoc.document_name}.pdf`,
@@ -388,7 +402,15 @@ const handler = async (req: Request): Promise<Response> => {
           
           if (response.ok) {
             const fileBuffer = await response.arrayBuffer();
-            const base64Content = btoa(String.fromCharCode(...new Uint8Array(fileBuffer)));
+            // Use chunked approach to avoid stack overflow
+            const bytes = new Uint8Array(fileBuffer);
+            let base64Content = '';
+            const chunkSize = 8192;
+            
+            for (let i = 0; i < bytes.length; i += chunkSize) {
+              const chunk = bytes.slice(i, i + chunkSize);
+              base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+            }
             
             attachments.push({
               filename: termsDoc.document_name.endsWith('.pdf') ? termsDoc.document_name : `${termsDoc.document_name}.pdf`,
