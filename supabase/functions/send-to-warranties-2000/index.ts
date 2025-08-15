@@ -242,8 +242,8 @@ serve(async (req) => {
     // Calculate max claim amount based on plan type
     const maxClaimMapping: Record<string, string> = {
       'basic': '500',
-      'gold': '1000',
-      'platinum': '2000',
+      'gold': '1000', 
+      'platinum': '1200',
       'electric': '1500',
       'phev': '1500',
       'hybrid': '1500',

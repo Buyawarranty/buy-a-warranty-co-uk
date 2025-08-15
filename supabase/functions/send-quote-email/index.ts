@@ -50,9 +50,9 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
   const { regNumber, make, model, year, mileage } = vehicleData;
   const { planName, totalPrice, monthlyPrice, voluntaryExcess, paymentType, selectedAddOns } = planData;
   
-  // Generate purchase URL with quote ID - use the correct domain
-  const baseUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com';
-  const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(data.email)}`;
+    // Generate purchase URL with quote ID - use the correct domain
+    const baseUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com';
+    const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(data.email)}`;
   
   const addOnsList = Object.entries(selectedAddOns || {})
     .filter(([_, selected]) => selected)
@@ -231,7 +231,7 @@ Vehicle Details:
 - Year: ${emailRequest.vehicleData.year || 'N/A'} 
 - Mileage: ${emailRequest.vehicleData.mileage}
 
-Complete your quote: ${purchaseUrl}
+Complete your quote: ${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}
 
 Or call us on 0330 229 5040
 
