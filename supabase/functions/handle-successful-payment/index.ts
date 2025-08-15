@@ -151,7 +151,9 @@ serve(async (req) => {
               policyNumber: warrantyReference,
               registrationPlate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
               paymentType: paymentTypeDisplay,
-              vehicleType: vehicleData?.vehicleType || 'standard'
+              vehicleType: vehicleData?.vehicleType || 'standard',
+              stripeSessionId: stripeSessionId,
+              paymentSource: 'stripe' // This function handles Stripe payments
             }
           };
 
