@@ -13,7 +13,7 @@ interface QuoteDeliveryStepProps {
     transmission?: string;
     year?: string;
   };
-  onNext: (data: { email: string; phone: string; firstName: string; lastName: string }) => void;
+  onNext: (data: { email: string; phone: string; firstName: string; lastName: string; sendQuoteEmail?: boolean }) => void;
   onBack: () => void;
   onSkip: () => void;
 }
@@ -36,6 +36,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     email: false,
     phone: false
   });
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   const handleSkipClick = () => {
     // Trigger confetti
@@ -97,8 +98,44 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     });
 
     if (validateForm()) {
-      // Track abandoned cart for email quote users
+      setSendingEmail(true);
+      
       try {
+        // Send initial quote email (without specific plan details yet)
+        console.log('Sending initial quote email with data:', {
+          email,
+          firstName,
+          lastName,
+          vehicleData
+        });
+        
+        const quoteResponse = await supabase.functions.invoke('send-quote-email', {
+          body: {
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            vehicleData: vehicleData,
+            planData: {
+              planName: "Vehicle Protection Plans",
+              totalPrice: 0, // Will be updated when plan is selected
+              monthlyPrice: 19.99, // Starting from price
+              voluntaryExcess: 50,
+              paymentType: "12months",
+              selectedAddOns: {}
+            },
+            quoteId: `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+            isInitialQuote: true // Flag to indicate this is a pre-plan-selection quote
+          }
+        });
+
+        if (quoteResponse.error) {
+          console.error('Failed to send quote email:', quoteResponse.error);
+          throw new Error('Failed to send quote email');
+        }
+
+        console.log('Quote email sent successfully:', quoteResponse.data);
+
+        // Track abandoned cart for email quote users
         await supabase.functions.invoke('track-abandoned-cart', {
           body: {
             full_name: `${firstName} ${lastName}`.trim(),
@@ -112,21 +149,25 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             step_abandoned: 2
           }
         });
-      } catch (error) {
-        console.error('Failed to track abandoned cart for email quote:', error);
-      }
 
-      // Trigger confetti
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      
-      // Small delay to let confetti start before navigating
-      setTimeout(() => {
-        onNext({ firstName, lastName, email, phone });
-      }, 300);
+        // Trigger confetti
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+        
+        // Small delay to let confetti start before navigating
+        setTimeout(() => {
+          onNext({ firstName, lastName, email, phone, sendQuoteEmail: true });
+        }, 300);
+        
+      } catch (error) {
+        console.error('Error sending quote email:', error);
+        alert('There was an error sending your quote email. Please try again.');
+      } finally {
+        setSendingEmail(false);
+      }
     }
   };
 
@@ -362,26 +403,26 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   
                   <button 
                     type="submit" 
-                    disabled={!isFormValid}
-                    title={!isFormValid ? "Please enter details" : ""}
+                    disabled={!isFormValid || sendingEmail}
+                    title={!isFormValid ? "Please enter details" : sendingEmail ? "Sending email..." : ""}
                     className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                     style={{
-                      backgroundColor: isFormValid ? '#0f1351' : '#0f1351',
-                      borderColor: isFormValid ? '#0f1351' : '#0f1351'
+                      backgroundColor: isFormValid && !sendingEmail ? '#0f1351' : '#0f1351',
+                      borderColor: isFormValid && !sendingEmail ? '#0f1351' : '#0f1351'
                     }}
                     onMouseEnter={(e) => {
-                      if (isFormValid) {
+                      if (isFormValid && !sendingEmail) {
                         e.currentTarget.style.backgroundColor = '#0a0d3a';
                       }
                     }}
                     onMouseLeave={(e) => {
-                      if (isFormValid) {
+                      if (isFormValid && !sendingEmail) {
                         e.currentTarget.style.backgroundColor = '#0f1351';
                       }
                     }}
                   >
-                    View my quote now
-                    <ArrowRight className="w-4 h-4" />
+                    {sendingEmail ? 'Sending email...' : 'Email me my quote'}
+                    {!sendingEmail && <ArrowRight className="w-4 h-4" />}
                   </button>
                 </div>
               </div>

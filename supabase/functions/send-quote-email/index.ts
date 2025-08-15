@@ -30,19 +30,23 @@ interface QuoteEmailRequest {
     selectedAddOns: { [addon: string]: boolean };
   };
   quoteId: string;
+  isInitialQuote?: boolean; // Flag for pre-plan-selection emails
 }
 
 const formatPaymentType = (paymentType: string): string => {
   switch (paymentType) {
-    case 'yearly': return '12 months';
-    case 'two_yearly': return '24 months';
-    case 'three_yearly': return '36 months';
+    case '12months': return '12 months';
+    case '24months': return '24 months';
+    case '36months': return '36 months';
+    case 'yearly': return '12 months'; // Legacy compatibility
+    case 'two_yearly': return '24 months'; // Legacy compatibility
+    case 'three_yearly': return '36 months'; // Legacy compatibility
     default: return paymentType;
   }
 };
 
 const generateQuoteEmail = (data: QuoteEmailRequest): string => {
-  const { firstName, lastName, vehicleData, planData, quoteId } = data;
+  const { firstName, lastName, vehicleData, planData, quoteId, isInitialQuote } = data;
   const { regNumber, make, model, year, mileage } = vehicleData;
   const { planName, totalPrice, monthlyPrice, voluntaryExcess, paymentType, selectedAddOns } = planData;
   
@@ -55,7 +59,114 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
     .map(([addon]) => `<li style="margin: 5px 0;">✓ ${addon}</li>`)
     .join('');
   
-  return `
+  // Different email content based on whether this is an initial quote or plan-specific quote
+  if (isInitialQuote) {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Vehicle Warranty Quote - Continue Selection</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 0;">
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 30px 20px; text-align: center;">
+            <h1 style="margin: 0; font-size: 28px; font-weight: bold;">Your Vehicle Warranty Quote</h1>
+            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Quote ID: ${quoteId}</p>
+        </div>
+
+        <!-- Personal Details -->
+        <div style="padding: 30px 20px;">
+            <h2 style="color: #1e40af; margin: 0 0 20px 0; font-size: 22px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">Hello ${firstName} ${lastName}!</h2>
+            <p style="margin: 0 0 20px 0; font-size: 16px;">Thank you for requesting a warranty quote for your vehicle. We've saved your details and are ready to provide you with personalized protection options.</p>
+        </div>
+
+        <!-- Vehicle Details -->
+        <div style="padding: 0 20px 20px 20px;">
+            <div style="background-color: #f8fafc; border-left: 4px solid #1e40af; padding: 20px; margin-bottom: 20px;">
+                <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 18px;">Your Vehicle</h3>
+                <div style="display: grid; gap: 8px;">
+                    <div><strong>Registration:</strong> ${regNumber}</div>
+                    ${make ? `<div><strong>Make:</strong> ${make}</div>` : ''}
+                    ${model ? `<div><strong>Model:</strong> ${model}</div>` : ''}
+                    ${year ? `<div><strong>Year:</strong> ${year}</div>` : ''}
+                    <div><strong>Mileage:</strong> ${mileage}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan Selection CTA -->
+        <div style="padding: 0 20px 20px 20px;">
+            <div style="background-color: #f0f9ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;">
+                <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 20px;">Complete Your Quote Selection</h3>
+                
+                <p style="margin: 0 0 20px 0; font-size: 16px; color: #374151;">
+                    We have multiple protection plans available starting from <strong>£19.99/month</strong>. 
+                    Complete your selection to see personalized pricing for your vehicle.
+                </p>
+
+                <div style="margin: 20px 0;">
+                    <div style="background-color: #fff; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid #e5e7eb;">
+                        <div style="font-weight: bold; color: #1e40af; margin-bottom: 5px;">✓ Basic Coverage</div>
+                        <div style="font-size: 14px; color: #6b7280;">Essential mechanical breakdown protection</div>
+                    </div>
+                    <div style="background-color: #fff; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid #e5e7eb;">
+                        <div style="font-weight: bold; color: #1e40af; margin-bottom: 5px;">✓ Comprehensive Coverage</div>
+                        <div style="font-size: 14px; color: #6b7280;">Extended protection including electrical systems</div>
+                    </div>
+                    <div style="background-color: #fff; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid #e5e7eb;">
+                        <div style="font-weight: bold; color: #1e40af; margin-bottom: 5px;">✓ Premium Coverage</div>
+                        <div style="font-size: 14px; color: #6b7280;">Maximum protection with additional benefits</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div style="padding: 0 20px 30px 20px; text-align: center;">
+            <a href="${purchaseUrl}" style="display: inline-block; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-size: 18px; font-weight: bold; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);">
+                Continue & See Your Options
+            </a>
+            <p style="margin: 15px 0 0 0; font-size: 14px; color: #6b7280;">
+                Complete your quote selection to see personalized pricing and coverage details.
+            </p>
+        </div>
+
+        <!-- Important Info -->
+        <div style="background-color: #fef3c7; border: 1px solid #fbbf24; padding: 20px; margin: 0 20px 20px 20px; border-radius: 6px;">
+            <h4 style="color: #92400e; margin: 0 0 10px 0; font-size: 16px;">Why Choose Our Warranty Protection?</h4>
+            <ul style="margin: 0; padding-left: 20px; color: #92400e; font-size: 14px;">
+                <li>UK's leading warranty provider with 5-star Trustpilot rating</li>
+                <li>24/7 breakdown assistance nationwide</li>
+                <li>Flexible payment options to suit your budget</li>
+                <li>Fast, hassle-free claims process</li>
+            </ul>
+        </div>
+
+        <!-- Support -->
+        <div style="padding: 20px; text-align: center; background-color: #f8fafc; color: #6b7280; font-size: 14px;">
+            <p style="margin: 0 0 10px 0;">Questions about your quote? Our team is here to help:</p>
+            <p style="margin: 0;">
+                Email: <a href="mailto:info@buyawarranty.co.uk" style="color: #1e40af;">info@buyawarranty.co.uk</a> |
+                Phone: <a href="tel:+442045713400" style="color: #1e40af;">+44 204 571 3400</a>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="padding: 20px; text-align: center; background-color: #1f2937; color: #d1d5db; font-size: 12px;">
+            <p style="margin: 0;">© 2024 Buy A Warranty. All rights reserved.</p>
+            <p style="margin: 5px 0 0 0;">
+                You received this email because you requested a warranty quote on our website.
+            </p>
+        </div>
+    </div>
+</body>
+</html>`;
+  } else {
+    // Original detailed quote email for when plan is selected
+    return `
 <!DOCTYPE html>
 <html>
 <head>
