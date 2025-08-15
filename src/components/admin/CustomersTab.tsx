@@ -23,7 +23,30 @@ import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 // Helper function to map plan types to Warranties 2000 warranty types
 function getWarrantyType(planType: string): string {
   // WarType must be one of: B-BASIC, B-GOLD, B-PLATINUM, B-EV, B-PHEV or B-MOTORCYCLE
-  switch (planType?.toLowerCase()) {
+  const lowerPlanType = planType?.toLowerCase() || '';
+  
+  // Handle full plan type names first
+  if (lowerPlanType.includes('electric vehicle') || lowerPlanType.includes('ev extended warranty')) {
+    return 'B-EV';
+  }
+  if (lowerPlanType.includes('phev') || lowerPlanType.includes('hybrid extended warranty')) {
+    return 'B-PHEV';
+  }
+  if (lowerPlanType.includes('motorbike') || lowerPlanType.includes('motorcycle')) {
+    return 'B-MOTORCYCLE';
+  }
+  if (lowerPlanType.includes('platinum')) {
+    return 'B-PLATINUM';
+  }
+  if (lowerPlanType.includes('gold')) {
+    return 'B-GOLD';
+  }
+  if (lowerPlanType.includes('basic')) {
+    return 'B-BASIC';
+  }
+  
+  // Fallback for simple cases
+  switch (lowerPlanType) {
     case 'basic': return 'B-BASIC';
     case 'gold': return 'B-GOLD';
     case 'platinum': return 'B-PLATINUM';
