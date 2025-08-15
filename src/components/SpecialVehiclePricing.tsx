@@ -45,7 +45,7 @@ interface SpecialVehiclePricingProps {
 
 const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   const [plan, setPlan] = useState<SpecialPlan | null>(null);
-  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('monthly');
+  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('yearly');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -322,7 +322,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
              >
-               12 Months
+                12 Months
              </button>
             <div className="relative">
               <button
