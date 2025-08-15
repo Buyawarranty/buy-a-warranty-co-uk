@@ -231,7 +231,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         const { data, error } = await supabase.functions.invoke('create-checkout', {
           body: {
             planName: planName.toLowerCase(),
-            paymentType: 'yearly', // Always yearly for Stripe full payment
+            paymentType: paymentType, // Use the actual selected payment type
             voluntaryExcess: pricingData.voluntaryExcess,
             vehicleData,
             customerData: customerData,
