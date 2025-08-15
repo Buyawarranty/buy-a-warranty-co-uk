@@ -18,44 +18,28 @@ export function getWarrantyDurationInMonths(paymentType: string): number {
     case 'monthly':
     case '1month':
     case 'month':
-      return 12; // Monthly payments still provide 12 months minimum coverage
-    case 'yearly':
-    case 'annual':
     case '12months':
     case '12month':
-    case 'year':
       return 12;
-    case 'twoyearly':
-    case '2yearly':
     case '24months':
     case '24month':
-    case '2years':
-    case '2year':
-    case 'two_yearly':
+    case 'twomonthly':
+    case '2monthly':
       return 24;
-    case 'threeyearly':
-    case '3yearly':
     case '36months':
     case '36month':
-    case '3years':
-    case '3year':
-    case 'three_yearly':
+    case 'threemonthly':
+    case '3monthly':
       return 36;
-    case 'fouryearly':
-    case '4yearly':
     case '48months':
     case '48month':
-    case '4years':
-    case '4year':
-    case 'four_yearly':
+    case 'fourmonthly':
+    case '4monthly':
       return 48;
-    case 'fiveyearly':
-    case '5yearly':
     case '60months':
     case '60month':
-    case '5years':
-    case '5year':
-    case 'five_yearly':
+    case 'fivemonthly':
+    case '5monthly':
       return 60;
     default:
       console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
@@ -86,44 +70,28 @@ export function getPaymentTypeDisplay(paymentType: string): string {
     case 'monthly':
     case '1month':
     case 'month':
-      return 'Monthly';
-    case 'yearly':
-    case 'annual':
     case '12months':
     case '12month':
-    case 'year':
       return '12 months';
-    case 'twoyearly':
-    case '2yearly':
     case '24months':
     case '24month':
-    case '2years':
-    case '2year':
-    case 'two_yearly':
+    case 'twomonthly':
+    case '2monthly':
       return '24 months';
-    case 'threeyearly':
-    case '3yearly':
     case '36months':
     case '36month':
-    case '3years':
-    case '3year':
-    case 'three_yearly':
+    case 'threemonthly':
+    case '3monthly':
       return '36 months';
-    case 'fouryearly':
-    case '4yearly':
     case '48months':
     case '48month':
-    case '4years':
-    case '4year':
-    case 'four_yearly':
+    case 'fourmonthly':
+    case '4monthly':
       return '48 months';
-    case 'fiveyearly':
-    case '5yearly':
     case '60months':
     case '60month':
-    case '5years':
-    case '5year':
-    case 'five_yearly':
+    case 'fivemonthly':
+    case '5monthly':
       return '60 months';
     default:
       return paymentType || 'Unknown';

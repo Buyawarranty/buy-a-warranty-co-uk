@@ -24,9 +24,9 @@ interface Plan {
   id: string;
   name: string;
   monthly_price: number;
-  yearly_price: number | null;
-  two_yearly_price: number | null;
-  three_yearly_price: number | null;
+  monthly_price: number;
+  two_monthly_price: number | null;
+  three_monthly_price: number | null;
   coverage: string[];
   add_ons: string[];
   is_active: boolean;
@@ -58,7 +58,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   console.log('PricingTable received vehicleData:', vehicleData);
   const { addToCart, getItemCount } = useCart();
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [paymentType, setPaymentType] = useState<'yearly' | 'two_yearly' | 'three_yearly'>('yearly');
+  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('12months');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
