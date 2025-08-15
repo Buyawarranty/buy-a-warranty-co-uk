@@ -376,46 +376,62 @@ serve(async (req) => {
   }
 });
 
-// Helper function to get coverage period in months
-function getCoverageInMonths(paymentType: string): number {
-  switch (paymentType) {
+// Centralized warranty duration utilities to ensure consistency across all systems
+// This should be the single source of truth for warranty duration calculations
+
+/**
+ * Get warranty duration in months based on payment type
+ * This is the MASTER function for warranty duration calculation
+ */
+function getWarrantyDurationInMonths(paymentType: string): number {
+  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
+  
+  switch (normalizedPaymentType) {
     case 'monthly':
-      return 1;
-    case 'yearly':
+    case '1month':
+    case 'month':
+    case '12months':
+    case '12month':
       return 12;
-    case 'twoYear':
-    case 'two_yearly': // Handle both formats for compatibility
+    case '24months':
+    case '24month':
+    case 'twomonthly':
+    case '2monthly':
+    case 'twoyear':
+    case 'yearly': // Legacy compatibility
       return 24;
-    case 'threeYear':
-    case 'three_yearly': // Handle both formats for compatibility
+    case '36months':
+    case '36month':
+    case 'threemonthly':
+    case '3monthly':
+    case 'threeyear':
       return 36;
+    case '48months':
+    case '48month':
+    case 'fourmonthly':
+    case '4monthly':
+      return 48;
+    case '60months':
+    case '60month':
+    case 'fivemonthly':
+    case '5monthly':
+      return 60;
     default:
-      return 1;
+      console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+      return 12;
   }
 }
 
-// Helper function to calculate policy end date
+// Helper function to get coverage period in months - updated to use centralized logic
+function getCoverageInMonths(paymentType: string): number {
+  return getWarrantyDurationInMonths(paymentType);
+}
+
+// Helper function to calculate policy end date - updated to use centralized logic
 function calculatePolicyEndDate(paymentType: string): string {
   const startDate = new Date();
-  
-  switch (paymentType) {
-    case 'monthly':
-      startDate.setMonth(startDate.getMonth() + 1);
-      break;
-    case 'yearly':
-      startDate.setFullYear(startDate.getFullYear() + 1);
-      break;
-    case 'twoYear':
-    case 'two_yearly': // Handle both formats for compatibility
-      startDate.setFullYear(startDate.getFullYear() + 2);
-      break;
-    case 'threeYear':
-    case 'three_yearly': // Handle both formats for compatibility
-      startDate.setFullYear(startDate.getFullYear() + 3);
-      break;
-    default:
-      startDate.setMonth(startDate.getMonth() + 1);
-  }
-  
-  return startDate.toISOString();
+  const months = getWarrantyDurationInMonths(paymentType);
+  const endDate = new Date(startDate);
+  endDate.setMonth(endDate.getMonth() + months);
+  return endDate.toISOString();
 }

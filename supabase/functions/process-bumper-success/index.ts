@@ -165,6 +165,34 @@ serve(async (req) => {
       logStep("Failed to generate warranty reference", { error: error.message });
     }
 
+    // Calculate policy dates and determine actual payment type first
+    const startDate = new Date();
+    let endDate = new Date();
+    
+    // For Bumper orders, determine the actual policy duration based on the plan and amount
+    // Since Bumper can process monthly payments for longer-term plans
+    let actualPaymentType = paymentType;
+    
+    // If it's monthly payment, check if the amounts suggest a longer term
+    if (paymentType === 'monthly' && finalAmount) {
+      const monthlyExpected = plan.monthly_price;
+      const twoMonthlyExpected = plan.two_monthly_price || plan.two_yearly_price;
+      const threeMonthlyExpected = plan.three_monthly_price || plan.three_yearly_price;
+      
+      // Check if the total amount suggests a longer-term plan
+      if (threeMonthlyExpected && Math.abs(finalAmount - threeMonthlyExpected) < 10) {
+        actualPaymentType = '36months';
+      } else if (twoMonthlyExpected && Math.abs(finalAmount - twoMonthlyExpected) < 10) {
+        actualPaymentType = '24months';
+      } else {
+        actualPaymentType = '12months';
+      }
+    }
+    
+    // Use centralized warranty duration calculation
+    const durationMonths = getWarrantyDurationInMonths(actualPaymentType);
+    endDate.setMonth(endDate.getMonth() + durationMonths);
+
     // Create new customer record (always create new for each order, even for same email)
     logStep("Creating new customer record");
     
@@ -193,7 +221,7 @@ serve(async (req) => {
         vehicle_fuel_type: vehicleData?.fuelType,
         vehicle_transmission: vehicleData?.transmission,
         mileage: vehicleData?.mileage,
-        payment_type: paymentType,
+        payment_type: actualPaymentType, // Store the actual duration, not the original payment type
         bumper_order_id: sessionId,
         discount_code: discountCode,
         discount_amount: 0,
@@ -214,45 +242,6 @@ serve(async (req) => {
 
     logStep("Customer created", { customerId: customer.id });
 
-    // Calculate policy dates
-    const startDate = new Date();
-    let endDate = new Date();
-    
-    // For Bumper orders, determine the actual policy duration based on the plan and amount
-    // Since Bumper can process monthly payments for longer-term plans
-    let actualPaymentType = paymentType;
-    
-    // If it's monthly payment, check if the amounts suggest a longer term
-    if (paymentType === 'monthly' && finalAmount) {
-      const monthlyExpected = plan.monthly_price;
-      const yearlyExpected = plan.yearly_price;
-      const twoYearExpected = plan.two_yearly_price;
-      
-      // Check if the total amount suggests a longer-term plan
-      if (twoYearExpected && Math.abs(finalAmount - twoYearExpected) < 10) {
-        actualPaymentType = 'twoYear';
-      } else if (yearlyExpected && Math.abs(finalAmount - yearlyExpected) < 10) {
-        actualPaymentType = 'yearly';
-      }
-    }
-    
-    switch (actualPaymentType) {
-      case 'monthly':
-        endDate.setMonth(endDate.getMonth() + 1);
-        break;
-      case 'yearly':
-        endDate.setFullYear(endDate.getFullYear() + 1);
-        break;
-      case 'twoYear':
-        endDate.setFullYear(endDate.getFullYear() + 2);
-        break;
-      case 'threeYear':
-        endDate.setFullYear(endDate.getFullYear() + 3);
-        break;
-      default:
-        endDate.setMonth(endDate.getMonth() + 1);
-    }
-
     // Create policy record
     const { data: policy, error: policyError } = await supabaseClient
       .from('customer_policies')
@@ -261,7 +250,7 @@ serve(async (req) => {
         user_id: null, // No user account for Bumper payments
         email: customerEmail,
         plan_type: plan.name,
-        payment_type: paymentType,
+        payment_type: actualPaymentType, // Store the actual duration, not the original payment type
         policy_number: policyNumber,
         warranty_number: warrantyRef,
         bumper_order_id: sessionId,
@@ -667,4 +656,44 @@ function calculatePurchasePrice(planId: string, paymentType: string): number {
   };
 
   return pricingMap[planId]?.[paymentType] || 31;
+}
+
+// Centralized warranty duration utilities to ensure consistency
+function getWarrantyDurationInMonths(paymentType: string): number {
+  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
+  
+  switch (normalizedPaymentType) {
+    case 'monthly':
+    case '1month':
+    case 'month':
+    case '12months':
+    case '12month':
+      return 12;
+    case '24months':
+    case '24month':
+    case 'twomonthly':
+    case '2monthly':
+    case 'twoyear':
+    case 'yearly': // Legacy compatibility
+      return 24;
+    case '36months':
+    case '36month':
+    case 'threemonthly':
+    case '3monthly':
+    case 'threeyear':
+      return 36;
+    case '48months':
+    case '48month':
+    case 'fourmonthly':
+    case '4monthly':
+      return 48;
+    case '60months':
+    case '60month':
+    case 'fivemonthly':
+    case '5monthly':
+      return 60;
+    default:
+      console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+      return 12;
+  }
 }
