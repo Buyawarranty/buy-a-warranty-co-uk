@@ -90,12 +90,14 @@ serve(async (req: Request) => {
       });
     }
 
-    // Add user role
+    // Add user role with upsert
     const { error: roleError } = await supabase
       .from('user_roles')
-      .insert({
+      .upsert({
         user_id: newUser.user.id,
         role
+      }, {
+        onConflict: 'user_id,role'
       });
 
     if (roleError) {
