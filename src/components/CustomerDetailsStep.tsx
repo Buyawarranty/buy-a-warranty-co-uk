@@ -197,7 +197,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       let checkoutUrl = '';
       
       if (paymentMethod === 'bumper') {
-        console.log('Creating Bumper checkout with final price:', discountedBumperPrice);
+        console.log('Creating Bumper checkout - paymentType:', paymentType, 'final price:', discountedBumperPrice);
         const { data, error } = await supabase.functions.invoke('create-bumper-checkout', {
           body: {
             planId: planName.toLowerCase(),
@@ -227,11 +227,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           checkoutUrl = data.url;
         }
       } else {
-        console.log('Creating Stripe checkout with discounted price:', discountedStripePrice);
+        console.log('Creating Stripe checkout - paymentType:', paymentType, 'discounted price:', discountedStripePrice);
         const { data, error } = await supabase.functions.invoke('create-checkout', {
           body: {
             planName: planName.toLowerCase(),
-            paymentType: '12months', // Always 12 months for Stripe full payment
+            paymentType: paymentType, // Use the actual selected payment type from step 3
             voluntaryExcess: pricingData.voluntaryExcess,
             vehicleData,
             customerData: customerData,
