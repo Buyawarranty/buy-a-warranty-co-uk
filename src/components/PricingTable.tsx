@@ -24,7 +24,6 @@ interface Plan {
   id: string;
   name: string;
   monthly_price: number;
-  monthly_price: number;
   two_monthly_price: number | null;
   three_monthly_price: number | null;
   coverage: string[];
@@ -132,7 +131,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       return (data || []).map(plan => ({
         ...plan,
         coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
-        add_ons: Array.isArray(plan.add_ons) ? plan.add_ons.map(item => String(item)) : []
+        add_ons: Array.isArray(plan.add_ons) ? plan.add_ons.map(item => String(item)) : [],
+        two_monthly_price: plan.two_yearly_price || null,
+        three_monthly_price: plan.three_yearly_price || null
       }));
     } else {
       console.log(`🛵 Fetching special vehicle plans for: ${vt}`);
@@ -152,7 +153,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       return (data || []).map(plan => ({
         ...plan,
         coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
-        add_ons: [] // Special vehicle plans don't have add-ons
+        add_ons: [], // Special vehicle plans don't have add-ons
+        two_monthly_price: plan.two_yearly_price || null,
+        three_monthly_price: plan.three_yearly_price || null
       }));
     }
   }
@@ -240,7 +243,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   };
 
   const getPlanSavings = (plan: Plan) => {
-    if (paymentType === 'yearly') return null;
+    if (paymentType === '12months') return null;
     
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
@@ -301,11 +304,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       
       // Calculate the actual total price based on payment period (warranty duration)
       let totalPrice = monthlyTotal;
-      if (paymentType === 'yearly') {
+      if (paymentType === '12months') {
         totalPrice = monthlyTotal * 12;
-      } else if (paymentType === 'two_yearly') {
+      } else if (paymentType === '24months') {
         totalPrice = monthlyTotal * 24;
-      } else if (paymentType === 'three_yearly') {
+      } else if (paymentType === '36months') {
         totalPrice = monthlyTotal * 36;
       }
       
@@ -347,11 +350,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const monthlyTotal = basePrice + addOnPrice;
       
       let totalPrice = monthlyTotal;
-      if (paymentType === 'yearly') {
+      if (paymentType === '12months') {
         totalPrice = monthlyTotal * 12;
-      } else if (paymentType === 'two_yearly') {
+      } else if (paymentType === '24months') {
         totalPrice = monthlyTotal * 24;
-      } else if (paymentType === 'three_yearly') {
+      } else if (paymentType === '36months') {
         totalPrice = monthlyTotal * 36;
       }
       
@@ -488,9 +491,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       <div className="flex justify-center mb-8 px-4">
         <div className="bg-white rounded-2xl p-1 shadow-lg border border-gray-200 inline-flex">
           <button
-            onClick={() => setPaymentType('yearly')}
+            onClick={() => setPaymentType('12months')}
             className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-              paymentType === 'yearly' 
+              paymentType === '12months'
                 ? 'bg-[#1a365d] text-white shadow-md' 
                 : 'text-gray-600 hover:bg-gray-50'
             }`}
@@ -499,9 +502,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </button>
           <div className="relative">
             <button
-              onClick={() => setPaymentType('two_yearly')}
+              onClick={() => setPaymentType('24months')}
               className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-                paymentType === 'two_yearly' 
+                paymentType === '24months'
                   ? 'bg-[#1a365d] text-white shadow-md' 
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
@@ -514,9 +517,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
           <div className="relative">
             <button
-              onClick={() => setPaymentType('three_yearly')}
+              onClick={() => setPaymentType('36months')}
               className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-                paymentType === 'three_yearly' 
+                paymentType === '36months'
                   ? 'bg-[#1a365d] text-white shadow-md' 
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
@@ -632,10 +635,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     {plan.name}
                   </h3>
                   <p className="text-gray-900 text-xl font-bold mb-6">
-                    {paymentType === 'yearly' ? '1 Year warranty' :
-                     paymentType === 'two_yearly' ? '2 Year warranty' :
-                     paymentType === 'three_yearly' ? '3 Year warranty' :
-                     '1 Year warranty'}
+                    {paymentType === '12months' ? '12 month warranty' :
+                     paymentType === '24months' ? '24 month warranty' :
+                     paymentType === '36months' ? '36 month warranty' :
+                     '12 month warranty'}
                    </p>
                    <div className="text-4xl font-bold text-gray-900 mb-3">
                      <span className="text-2xl">£</span>{monthlyPrice}<span className="text-2xl">/mo</span>
@@ -643,7 +646,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    <div className="text-gray-600 text-base mb-6">
                      for 12 months interest free
                    </div>
-                   {savings && paymentType !== 'yearly' && (
+                   {savings && paymentType !== '12months' && (
                      <div className="text-green-600 font-bold text-lg mb-6">
                        You Save £{savings}
                      </div>
@@ -843,7 +846,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          <span className="text-sm">£</span><span className="text-2xl font-bold">{Math.round(monthlyPrice)}</span>
                          <span className="text-sm text-gray-600">x 12 easy payments</span>
                        </div>
-                      {savings && paymentType !== 'yearly' && (
+                      {savings && paymentType !== '12months' && (
                         <div className="text-green-600 font-semibold text-sm">
                           Save £{savings}
                         </div>
