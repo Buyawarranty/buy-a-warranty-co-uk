@@ -199,6 +199,7 @@ export const CustomersTab = () => {
   const [dvlaLookupLoading, setDvlaLookupLoading] = useState<{ [key: string]: boolean }>({});
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [currentUser, setCurrentUser] = useState<{ id: string; email: string; } | null>(null);
+  const [currentAdminUser, setCurrentAdminUser] = useState<AdminUser | null>(null);
   const [assignmentLoading, setAssignmentLoading] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
@@ -271,6 +272,18 @@ export const CustomersTab = () => {
       if (error) throw error;
       if (user) {
         setCurrentUser({ id: user.id, email: user.email || '' });
+        
+        // Find the corresponding admin user
+        const { data: adminUserData, error: adminError } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .single();
+          
+        if (!adminError && adminUserData) {
+          setCurrentAdminUser(adminUserData);
+        }
       }
     } catch (error) {
       console.error('Error getting current user:', error);
@@ -286,6 +299,14 @@ export const CustomersTab = () => {
       
       if (error) throw error;
       setAdminUsers(data || []);
+      
+      // Update current admin user if currentUser exists
+      if (currentUser) {
+        const currentAdmin = data?.find(admin => admin.user_id === currentUser.id);
+        if (currentAdmin) {
+          setCurrentAdminUser(currentAdmin);
+        }
+      }
     } catch (error) {
       console.error('Error fetching admin users:', error);
     }
@@ -553,20 +574,25 @@ export const CustomersTab = () => {
   };
 
   const assignCustomerToMe = async (customerId: string) => {
-    if (!currentUser) {
-      toast.error('Unable to assign customer - user not found');
+    if (!currentAdminUser) {
+      toast.error('Unable to assign customer - admin user not found');
       return;
     }
 
     setAssignmentLoading(prev => ({ ...prev, [customerId]: true }));
 
     try {
+      console.log('Assigning customer', customerId, 'to admin user', currentAdminUser.id);
+      
       const { error } = await supabase
         .from('customers')
-        .update({ assigned_to: currentUser.id })
+        .update({ assigned_to: currentAdminUser.id })
         .eq('id', customerId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Assignment error:', error);
+        throw error;
+      }
 
       toast.success('Customer assigned to you successfully');
       fetchCustomers(); // Refresh the list
@@ -1575,7 +1601,7 @@ export const CustomersTab = () => {
                            <span className="text-sm text-gray-600">
                              Assigned
                            </span>
-                           {currentUser?.id === customer.assigned_to && (
+                           {currentAdminUser?.id === customer.assigned_to && (
                              <Button
                                variant="ghost"
                                size="sm"
