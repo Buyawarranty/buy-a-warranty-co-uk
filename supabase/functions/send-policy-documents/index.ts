@@ -213,6 +213,7 @@ serve(async (req) => {
     const getWarrantyDurationInMonths = (paymentType: string): number => {
       const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
       
+      // Handle different formats that might come from different sources
       switch (normalizedPaymentType) {
         case 'monthly':
         case '1month':
@@ -220,30 +221,42 @@ serve(async (req) => {
         case '12months':
         case '12month':
         case 'yearly':
+        case '12 months':
           return 12;
         case '24months':
         case '24month':
         case 'twomonthly':
         case '2monthly':
         case 'twoyearly':
+        case '24 months':
           return 24;
         case '36months':
         case '36month':
         case 'threemonthly':
         case '3monthly':
         case 'threeyearly':
+        case '36 months':
           return 36;
         case '48months':
         case '48month':
         case 'fourmonthly':
         case '4monthly':
+        case '48 months':
           return 48;
         case '60months':
         case '60month':
         case 'fivemonthly':
         case '5monthly':
+        case '60 months':
           return 60;
         default:
+          // If it's already in "X months" format, try to extract the number
+          const monthsMatch = paymentType?.match(/(\d+)\s*months?/i);
+          if (monthsMatch) {
+            const months = parseInt(monthsMatch[1], 10);
+            console.log(`Extracted ${months} months from payment type: ${paymentType}`);
+            return months;
+          }
           console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
           return 12;
       }
