@@ -84,9 +84,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
     switch (paymentType) {
-      case '12months': return 12;
-      case '24months': return 24;
-      case '36months': return 36;
+      case 'yearly': return 12;
+      case 'two_yearly': return 24;
+      case 'three_yearly': return 36;
       default: return 12;
     }
   };
@@ -197,7 +197,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       let checkoutUrl = '';
       
       if (paymentMethod === 'bumper') {
-        console.log('Creating Bumper checkout - paymentType:', paymentType, 'final price:', discountedBumperPrice);
+        console.log('Creating Bumper checkout with final price:', discountedBumperPrice);
         const { data, error } = await supabase.functions.invoke('create-bumper-checkout', {
           body: {
             planId: planName.toLowerCase(),
@@ -227,11 +227,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           checkoutUrl = data.url;
         }
       } else {
-        console.log('Creating Stripe checkout - paymentType:', paymentType, 'discounted price:', discountedStripePrice);
+        console.log('Creating Stripe checkout with discounted price:', discountedStripePrice);
         const { data, error } = await supabase.functions.invoke('create-checkout', {
           body: {
             planName: planName.toLowerCase(),
-            paymentType: paymentType, // Use the actual selected payment type from step 3
+            paymentType: 'yearly', // Always yearly for Stripe full payment
             voluntaryExcess: pricingData.voluntaryExcess,
             vehicleData,
             customerData: customerData,

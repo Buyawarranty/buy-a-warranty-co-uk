@@ -483,9 +483,9 @@ export const ManualOrderEntry = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="12months">12 Months</SelectItem>
-                    <SelectItem value="24months">24 Months</SelectItem>
-                    <SelectItem value="36months">36 Months</SelectItem>
+                    <SelectItem value="yearly">Yearly</SelectItem>
+                    <SelectItem value="two_yearly">Two Year</SelectItem>
+                    <SelectItem value="three_yearly">Three Year</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

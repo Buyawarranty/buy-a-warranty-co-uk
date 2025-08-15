@@ -30,9 +30,9 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
 
   const formatPaymentType = (paymentType: string) => {
     switch (paymentType) {
-      case '12months': return '12 months';
-      case '24months': return '24 months';
-      case '36months': return '36 months';
+      case 'yearly': return '12 months';
+      case 'two_yearly': return '24 months';
+      case 'three_yearly': return '36 months';
       default: return paymentType;
     }
   };
