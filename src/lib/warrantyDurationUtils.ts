@@ -20,16 +20,19 @@ export function getWarrantyDurationInMonths(paymentType: string): number {
     case 'month':
     case '12months':
     case '12month':
+    case 'yearly':
       return 12;
     case '24months':
     case '24month':
     case 'twomonthly':
     case '2monthly':
+    case 'twoyearly':
       return 24;
     case '36months':
     case '36month':
     case 'threemonthly':
     case '3monthly':
+    case 'threeyearly':
       return 36;
     case '48months':
     case '48month':
@@ -72,16 +75,19 @@ export function getPaymentTypeDisplay(paymentType: string): string {
     case 'month':
     case '12months':
     case '12month':
+    case 'yearly':
       return '12 months';
     case '24months':
     case '24month':
     case 'twomonthly':
     case '2monthly':
+    case 'twoyearly':
       return '24 months';
     case '36months':
     case '36month':
     case 'threemonthly':
     case '3monthly':
+    case 'threeyearly':
       return '36 months';
     case '48months':
     case '48month':
