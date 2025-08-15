@@ -31,8 +31,17 @@ serve(async (req) => {
     logStep("Function started");
 
     const { recipientEmail, variables } = await req.json();
-    const { planType, customerName, paymentType, policyNumber, registrationPlate } = variables || {};
-    logStep("Request data", { recipientEmail, planType, customerName, paymentType, policyNumber });
+    const { 
+      planType, 
+      customerName, 
+      paymentType, 
+      policyNumber, 
+      registrationPlate,
+      stripeSessionId,
+      bumperOrderId,
+      paymentSource 
+    } = variables || {};
+    logStep("Request data", { recipientEmail, planType, customerName, paymentType, policyNumber, paymentSource });
 
     if (!recipientEmail || !planType) {
       throw new Error("Missing required parameters");
@@ -200,68 +209,70 @@ serve(async (req) => {
       }
     }
 
-    // Calculate warranty duration based on payment type (corrected logic)
-    const getWarrantyDuration = (paymentType: string): number => {
-      const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '');
+    // Use centralized warranty duration utilities for consistency
+    const getWarrantyDurationInMonths = (paymentType: string): number => {
+      const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
       
       switch (normalizedPaymentType) {
         case 'monthly':
         case '1month':
         case 'month':
-          return 12; // Monthly payments still get 12 months coverage minimum
-        case 'yearly':
-        case 'annual':
         case '12months':
         case '12month':
-        case 'year':
+        case 'yearly':
           return 12;
-        case 'twoyearly':
-        case '2yearly':
         case '24months':
         case '24month':
-        case '2years':
-        case '2year':
-        case 'two_yearly':
+        case 'twomonthly':
+        case '2monthly':
+        case 'twoyearly':
           return 24;
-        case 'threeyearly':
-        case '3yearly':
         case '36months':
         case '36month':
-        case '3years':
-        case '3year':
-        case 'three_yearly':
+        case 'threemonthly':
+        case '3monthly':
+        case 'threeyearly':
           return 36;
-        case 'fouryearly':
-        case '4yearly':
         case '48months':
         case '48month':
-        case '4years':
-        case '4year':
-        case 'four_yearly':
+        case 'fourmonthly':
+        case '4monthly':
           return 48;
-        case 'fiveyearly':
-        case '5yearly':
         case '60months':
         case '60month':
-        case '5years':
-        case '5year':
-        case 'five_yearly':
+        case 'fivemonthly':
+        case '5monthly':
           return 60;
         default:
+          console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
           return 12;
       }
     };
 
     const calculateExpiryDate = (startDate: Date, paymentType: string): Date => {
       const expiry = new Date(startDate);
-      const months = getWarrantyDuration(paymentType);
+      const months = getWarrantyDurationInMonths(paymentType);
       expiry.setMonth(expiry.getMonth() + months);
       return expiry;
     };
 
+    // Determine payment method based on payment source
+    const getPaymentMethodDisplay = (): string => {
+      if (paymentSource) {
+        return paymentSource === 'stripe' ? 'Stripe' : paymentSource === 'bumper' ? 'Bumper' : 'Online Payment';
+      }
+      // Fallback logic based on session IDs
+      if (stripeSessionId) {
+        return 'Stripe';
+      } else if (bumperOrderId) {
+        return 'Bumper';
+      }
+      return 'Online Payment';
+    };
+
     const startDate = new Date();
     const expiryDate = calculateExpiryDate(startDate, paymentType || 'yearly');
-    const periodInMonths = getWarrantyDuration(paymentType || 'yearly');
+    const periodInMonths = getWarrantyDurationInMonths(paymentType || 'yearly');
 
     // Normalize plan type for consistent display
     const getDisplayPlanType = (planType: string): string => {
@@ -292,15 +303,21 @@ serve(async (req) => {
       planType: getDisplayPlanType(planType),
       policyNumber: policyNumber,
       registrationPlate: registrationPlate || 'N/A',
-      paymentType: paymentType,
+      paymentMethod: getPaymentMethodDisplay(), // Correct payment method name (new field)
+      paymentType: getPaymentMethodDisplay(), // Keep for backward compatibility with existing template
       periodInMonths: periodInMonths,
-      coveragePeriod: `${periodInMonths} month${periodInMonths === 1 ? '' : 's'}`,
+      coveragePeriod: `${periodInMonths} month${periodInMonths === 1 ? '' : 's'}`, // Correct coverage period
       policyStartDate: startDate.toLocaleDateString('en-GB', { 
         day: '2-digit', 
         month: '2-digit', 
         year: 'numeric' 
       }),
-      policyExpiryDate: expiryDate.toLocaleDateString('en-GB', { 
+      policyEndDate: expiryDate.toLocaleDateString('en-GB', { // Policy End Date field (new field)
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric' 
+      }),
+      policyExpiryDate: expiryDate.toLocaleDateString('en-GB', { // Keep for backward compatibility
         day: '2-digit', 
         month: '2-digit', 
         year: 'numeric' 
