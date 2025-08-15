@@ -323,6 +323,7 @@ function getWarrantyDuration(paymentType: string): string {
     case '24month':
     case '2years':
     case '2year':
+    case 'two_yearly':
       return '24';
     case 'threeyearly':
     case '3yearly':
@@ -330,6 +331,7 @@ function getWarrantyDuration(paymentType: string): string {
     case '36month':
     case '3years':
     case '3year':
+    case 'three_yearly':
       return '36';
     case 'fouryearly':
     case '4yearly':
@@ -337,6 +339,7 @@ function getWarrantyDuration(paymentType: string): string {
     case '48month':
     case '4years':
     case '4year':
+    case 'four_yearly':
       return '48';
     case 'fiveyearly':
     case '5yearly':
@@ -344,6 +347,7 @@ function getWarrantyDuration(paymentType: string): string {
     case '60month':
     case '5years':
     case '5year':
+    case 'five_yearly':
       return '60';
     default:
       console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
