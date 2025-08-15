@@ -187,8 +187,20 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Sending quote email:', emailRequest);
 
     // Validate required fields
-    if (!emailRequest.email || !emailRequest.firstName || !emailRequest.planData) {
-      throw new Error("Missing required fields: email, firstName, or planData");
+    if (!emailRequest.email || !emailRequest.firstName || !emailRequest.vehicleData) {
+      throw new Error("Missing required fields: email, firstName, or vehicleData");
+    }
+
+    // Ensure planData exists with defaults if not provided
+    if (!emailRequest.planData) {
+      emailRequest.planData = {
+        planName: "Vehicle Protection Plans",
+        totalPrice: 0,
+        monthlyPrice: 19.99,
+        voluntaryExcess: 50,
+        paymentType: "12months",
+        selectedAddOns: {}
+      };
     }
 
     // Generate unique quote ID if not provided
