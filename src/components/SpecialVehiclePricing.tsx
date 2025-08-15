@@ -45,7 +45,7 @@ interface SpecialVehiclePricingProps {
 
 const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   const [plan, setPlan] = useState<SpecialPlan | null>(null);
-  const [paymentType, setPaymentType] = useState<'monthly' | 'yearly' | 'two_yearly' | 'three_yearly'>('yearly');
+  const [paymentType, setPaymentType] = useState<'monthly' | '12months' | '24months' | '36months'>('12months');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -130,11 +130,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     if (!plan) return 0;
     
     switch (paymentType) {
-      case 'yearly':
+      case '12months':
         return plan.yearly_price || plan.monthly_price * 12;
-      case 'two_yearly':
+      case '24months':
         return plan.two_yearly_price || plan.monthly_price * 24;
-      case 'three_yearly':
+      case '36months':
         return plan.three_yearly_price || plan.monthly_price * 36;
       default:
         return plan.monthly_price;
@@ -199,11 +199,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
       
       // Calculate total warranty cost based on coverage period
       let totalWarrantyCost = monthlyPrice;
-      if (paymentType === 'yearly') {
+      if (paymentType === '12months') {
         totalWarrantyCost = monthlyPrice * 12;
-      } else if (paymentType === 'two_yearly') {
+      } else if (paymentType === '24months') {
         totalWarrantyCost = monthlyPrice * 24;
-      } else if (paymentType === 'three_yearly') {
+      } else if (paymentType === '36months') {
         totalWarrantyCost = monthlyPrice * 36;
       }
       
@@ -221,9 +221,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
 
   const getPaymentLabel = () => {
     switch (paymentType) {
-      case 'yearly': return 'per year';
-      case 'two_yearly': return 'for 2 years';
-      case 'three_yearly': return 'for 3 years';
+      case '12months': return 'per year';
+      case '24months': return 'for 2 years';
+      case '36months': return 'for 3 years';
       default: return 'per month';
     }
   };
@@ -315,9 +315,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
         <div className="flex justify-center mb-8 px-4">
           <div className="bg-white rounded-2xl p-1 shadow-lg border border-gray-200 inline-flex">
             <button
-              onClick={() => setPaymentType('yearly')}
+              onClick={() => setPaymentType('12months')}
               className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-                paymentType === 'yearly' 
+                paymentType === '12months' 
                   ? 'bg-[#1a365d] text-white shadow-md' 
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
@@ -326,13 +326,13 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
              </button>
             <div className="relative">
               <button
-                onClick={() => setPaymentType('two_yearly')}
+                onClick={() => setPaymentType('24months')}
                 className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-                  paymentType === 'two_yearly' 
+                  paymentType === '24months' 
                     ? 'bg-[#1a365d] text-white shadow-md' 
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
-               >
+                >
                  24 Months
                </button>
               <div className="absolute -top-2 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-1">
@@ -341,13 +341,13 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
             </div>
             <div className="relative">
               <button
-                onClick={() => setPaymentType('three_yearly')}
+                onClick={() => setPaymentType('36months')}
                 className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-                  paymentType === 'three_yearly' 
+                  paymentType === '36months' 
                     ? 'bg-[#1a365d] text-white shadow-md' 
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
-               >
+                >
                  36 Months
                </button>
               <div className="absolute -top-2 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-1">
@@ -390,9 +390,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                     {plan.name}
                   </h3>
                    <p className="text-gray-900 text-xl font-bold mb-6">
-                     {paymentType === 'yearly' ? '12 Months warranty' :
-                      paymentType === 'two_yearly' ? '24 Months warranty' :
-                      paymentType === 'three_yearly' ? '36 Months warranty' :
+                     {paymentType === '12months' ? '12 Months warranty' :
+                      paymentType === '24months' ? '24 Months warranty' :
+                      paymentType === '36months' ? '36 Months warranty' :
                       '12 Months warranty'}
                    </p>
                   <div className="text-4xl font-bold text-gray-900 mb-3">

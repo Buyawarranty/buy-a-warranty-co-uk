@@ -84,9 +84,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
     switch (paymentType) {
-      case 'yearly': return 12;
-      case 'two_yearly': return 24;
-      case 'three_yearly': return 36;
+      case '12months': return 12;
+      case '24months': return 24;
+      case '36months': return 36;
       default: return 12;
     }
   };
@@ -231,7 +231,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         const { data, error } = await supabase.functions.invoke('create-checkout', {
           body: {
             planName: planName.toLowerCase(),
-            paymentType: 'yearly', // Always yearly for Stripe full payment
+            paymentType: '12months', // Always 12 months for Stripe full payment
             voluntaryExcess: pricingData.voluntaryExcess,
             vehicleData,
             customerData: customerData,

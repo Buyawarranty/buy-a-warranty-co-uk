@@ -239,9 +239,9 @@ export default function TestBumper() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="monthly">Monthly</SelectItem>
-                <SelectItem value="yearly">Yearly</SelectItem>
-                <SelectItem value="two_yearly">2 Years</SelectItem>
-                <SelectItem value="three_yearly">3 Years</SelectItem>
+                <SelectItem value="12months">12 Months</SelectItem>
+                <SelectItem value="24months">24 Months</SelectItem>
+                <SelectItem value="36months">36 Months</SelectItem>
               </SelectContent>
             </Select>
           </div>
