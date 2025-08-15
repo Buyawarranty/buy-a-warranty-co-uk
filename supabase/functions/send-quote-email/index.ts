@@ -269,6 +269,7 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
     </div>
 </body>
 </html>`;
+  }
 };
 
 const handler = async (req: Request): Promise<Response> => {
