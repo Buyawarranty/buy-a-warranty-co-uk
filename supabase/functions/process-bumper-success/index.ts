@@ -74,7 +74,9 @@ serve(async (req) => {
     let plan;
     let planError;
     
-    // First try exact match
+    logStep("Looking for plan", { planId, vehicleType: vehicleData.vehicleType });
+    
+    // First try exact match in plans table
     const { data: exactPlan, error: exactError } = await supabaseClient
       .from('plans')
       .select('*')
@@ -83,6 +85,7 @@ serve(async (req) => {
     
     if (exactPlan) {
       plan = exactPlan;
+      logStep("Found exact plan match in plans table", { planName: plan.name });
     } else {
       // Try converting case for standard plans: "basic" to "Basic"
       const { data: casePlan, error: caseError } = await supabaseClient
@@ -93,18 +96,45 @@ serve(async (req) => {
       
       if (casePlan) {
         plan = casePlan;
+        logStep("Found case-converted plan match in plans table", { planName: plan.name });
       } else {
-        // Try special vehicle plans table for PHEV, EV, MOTORBIKE
-        const { data: specialPlan, error: specialError } = await supabaseClient
+        // For PHEV/hybrid vehicles, try special vehicle plans table
+        // Handle case-insensitive matching for names like "phev hybrid extended warranty"
+        const { data: specialPlans, error: specialError } = await supabaseClient
           .from('special_vehicle_plans')
           .select('*')
-          .ilike('name', `%${planId}%`)
-          .single();
+          .ilike('name', `%${planId.replace(/\s+/g, '%')}%`)
+          .eq('is_active', true);
           
-        if (specialPlan) {
-          plan = specialPlan;
+        if (specialPlans && specialPlans.length > 0) {
+          // Prefer PHEV vehicle_type for hybrid vehicles
+          const phevPlan = specialPlans.find(p => p.vehicle_type === 'PHEV');
+          plan = phevPlan || specialPlans[0];
+          logStep("Found special vehicle plan match", { planName: plan.name, vehicleType: plan.vehicle_type });
         } else {
-          planError = exactError || caseError || specialError;
+          // Last resort: try fuzzy matching on plan names
+          const planNameParts = planId.toLowerCase().split(' ');
+          const { data: fuzzyPlans, error: fuzzyError } = await supabaseClient
+            .from('special_vehicle_plans')
+            .select('*')
+            .eq('is_active', true);
+            
+          if (fuzzyPlans) {
+            const matchingPlan = fuzzyPlans.find(p => {
+              const nameLower = p.name.toLowerCase();
+              return planNameParts.every(part => nameLower.includes(part));
+            });
+            
+            if (matchingPlan) {
+              plan = matchingPlan;
+              logStep("Found fuzzy match in special vehicle plans", { planName: plan.name });
+            }
+          }
+          
+          if (!plan) {
+            planError = exactError || caseError || specialError || fuzzyError;
+            logStep("No plan matches found", { planId, errors: { exactError, caseError, specialError } });
+          }
         }
       }
     }
