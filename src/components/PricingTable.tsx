@@ -335,6 +335,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   };
 
   const handleAddToCart = async (plan: Plan) => {
+    console.log('handleAddToCart called with plan:', plan.name);
+    console.log('addToCart function:', addToCart);
+    console.log('vehicleData:', vehicleData);
+    
     setLoading(prev => ({ ...prev, [plan.id]: true }));
     
     try {
