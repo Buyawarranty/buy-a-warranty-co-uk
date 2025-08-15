@@ -1523,12 +1523,12 @@ export const CustomersTab = () => {
                        <span className="text-gray-400">N/A</span>
                      )}
                    </TableCell>
-                   <TableCell>
-                     <Badge variant="outline">
-                       {customer.stripe_session_id ? 'Stripe' : 
-                        customer.bumper_order_id ? 'Bumper' : 'N/A'}
-                     </Badge>
-                   </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {customer.bumper_order_id ? 'Bumper' : 
+                         customer.stripe_session_id ? 'Stripe' : 'N/A'}
+                      </Badge>
+                    </TableCell>
                   <TableCell className="font-mono text-sm">
                     {customer.warranty_reference_number || customer.warranty_number ? (
                       <div className="bg-green-50 px-2 py-1 rounded border">
