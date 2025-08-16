@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import { UserPlus, Shield, Eye, Users, Trash2 } from 'lucide-react';
+import { UserPlus, Shield, Eye, Users, Trash2, RotateCcw } from 'lucide-react';
 
 interface AdminUser {
   id: string;
@@ -141,6 +141,28 @@ export const UserPermissionsTab = () => {
     } catch (error) {
       console.error('Error updating user status:', error);
       toast.error('Failed to update user status');
+    }
+  };
+
+  const handleResetPassword = async (userId: string, email: string) => {
+    if (!confirm(`Are you sure you want to reset password for ${email}? This will send them a new temporary password.`)) return;
+
+    try {
+      const { data, error } = await supabase.functions.invoke('reset-admin-password', {
+        body: { 
+          userId,
+          email
+        }
+      });
+
+      if (error) throw error;
+      
+      toast.success(`Password reset email sent to ${email}. New temporary password: ${data.tempPassword}`, {
+        duration: 15000
+      });
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      toast.error('Failed to reset password');
     }
   };
 
@@ -325,7 +347,7 @@ export const UserPermissionsTab = () => {
                   </TableCell>
                   <TableCell>{new Date(user.invited_at).toLocaleDateString()}</TableCell>
                   <TableCell>{user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</TableCell>
-                  <TableCell>
+                   <TableCell>
                     <div className="flex gap-2">
                       <Button
                         size="sm"
@@ -333,6 +355,14 @@ export const UserPermissionsTab = () => {
                         onClick={() => toggleUserStatus(user.id, user.is_active)}
                       >
                         {user.is_active ? 'Deactivate' : 'Activate'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => handleResetPassword(user.id, user.email)}
+                        title="Reset Password"
+                      >
+                        <RotateCcw className="h-4 w-4" />
                       </Button>
                       <Button
                         size="sm"
