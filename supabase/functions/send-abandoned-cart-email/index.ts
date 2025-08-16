@@ -127,7 +127,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email using Resend
     const emailResponse = await resend.emails.send({
-      from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
+      from: "Buy A Warranty <support@buyawarranty.co.uk>",
       to: [emailRequest.email],
       subject: subject,
       html: htmlContent,
