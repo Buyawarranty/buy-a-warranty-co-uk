@@ -810,7 +810,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         
         {/* Mascot Image - Desktop Only */}
         {displayPlans.length > 0 && (
-          <div className="flex justify-center py-4">
+          <div className="flex justify-center py-2">
             <img 
               src="/lovable-uploads/9e567a00-ce64-4eeb-912d-29deacaf4568.png" 
               alt="Warranty mascot panda holding I'M COVERED number plate" 
