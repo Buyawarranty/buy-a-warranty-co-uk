@@ -272,11 +272,19 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           await supabase.functions.invoke('send-quote-email', {
             body: {
               email: customerData.email,
+              firstName: customerData.first_name,
+              lastName: customerData.last_name,
               vehicleData,
-              planName,
-              paymentType,
-              pricingData,
-              planId
+              planData: {
+                planName,
+                totalPrice: pricingData.totalPrice,
+                monthlyPrice: pricingData.monthlyPrice,
+                voluntaryExcess: pricingData.voluntaryExcess,
+                paymentType,
+                selectedAddOns: pricingData.selectedAddOns || {}
+              },
+              quoteId: `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+              isInitialQuote: false
             }
           });
           setQuoteSent(true);
