@@ -35,8 +35,15 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [showValidation, setShowValidation] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'bumper'>('stripe');
+  const [discountValidation, setDiscountValidation] = useState<{
+    valid: boolean;
+    message: string;
+    discountAmount: number;
+    finalAmount: number;
+  } | null>(null);
 
   const totalPrice = items.reduce((sum, item) => sum + item.pricingData.totalPrice, 0);
+  const finalPrice = discountValidation ? discountValidation.finalAmount : totalPrice;
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -58,6 +65,52 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     if (!customerData.postcode.trim()) errors.postcode = 'Postcode is required';
     
     return errors;
+  };
+
+  const handleValidateDiscount = async () => {
+    if (!customerData.discount_code.trim()) return;
+    
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-discount-code', {
+        body: {
+          code: customerData.discount_code,
+          customerEmail: customerData.email,
+          orderAmount: totalPrice
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.valid) {
+        setDiscountValidation({
+          valid: true,
+          message: `Discount applied! You save £${data.discountAmount.toFixed(2)}`,
+          discountAmount: data.discountAmount,
+          finalAmount: data.finalAmount
+        });
+        toast.success(`Discount applied! You save £${data.discountAmount.toFixed(2)}`);
+      } else {
+        setDiscountValidation({
+          valid: false,
+          message: data.error || 'Invalid discount code',
+          discountAmount: 0,
+          finalAmount: totalPrice
+        });
+        toast.error(data.error || 'Invalid discount code');
+      }
+    } catch (error) {
+      console.error('Discount validation error:', error);
+      setDiscountValidation({
+        valid: false,
+        message: 'Failed to validate discount code',
+        discountAmount: 0,
+        finalAmount: totalPrice
+      });
+      toast.error('Failed to validate discount code');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,7 +142,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             })),
             customerData: customerData,
             discountCode: customerData.discount_code || null,
-            totalAmount: totalPrice
+            totalAmount: finalPrice
           }
         });
 
@@ -110,7 +163,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               })),
               customerData: customerData,
               discountCode: customerData.discount_code || null,
-              totalAmount: totalPrice
+              totalAmount: finalPrice
             }
           });
           
@@ -138,7 +191,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             })),
             customerData: customerData,
             discountCode: customerData.discount_code || null,
-            totalAmount: totalPrice
+            totalAmount: finalPrice
           }
         });
 
@@ -340,7 +393,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                   <Button 
                     type="button" 
                     variant="outline" 
-                    onClick={() => {/* Add validation logic if needed */}}
+                    onClick={handleValidateDiscount}
+                    disabled={!customerData.discount_code.trim() || loading}
                     className="px-6"
                   >
                     Apply
@@ -422,9 +476,23 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
               {/* Overall Total */}
               <div className="border-t border-gray-200 pt-4 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold text-gray-900">Total to Pay:</span>
-                  <span className="text-xl font-bold text-blue-600">£{totalPrice}</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-medium text-gray-900">Subtotal:</span>
+                    <span className="text-lg font-medium text-gray-900">£{totalPrice}</span>
+                  </div>
+                  
+                  {discountValidation && discountValidation.valid && (
+                    <div className="flex justify-between items-center text-green-600">
+                      <span className="text-sm font-medium">Discount Applied:</span>
+                      <span className="text-sm font-medium">-£{discountValidation.discountAmount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-between items-center border-t pt-2">
+                    <span className="text-lg font-bold text-gray-900">Total to Pay:</span>
+                    <span className="text-xl font-bold text-blue-600">£{finalPrice}</span>
+                  </div>
                 </div>
               </div>
 
@@ -434,7 +502,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                   Discount Code
                   <span className="ml-2 text-xs text-gray-500">ⓘ</span>
                 </Label>
-                <div className="flex gap-2">
+                <div className="flex gap-2 mb-2">
                   <Input
                     id="cart_discount_code"
                     placeholder="Enter discount code"
@@ -445,12 +513,28 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                   <Button 
                     type="button" 
                     variant="outline" 
-                    onClick={() => {/* Add validation logic if needed */}}
+                    onClick={handleValidateDiscount}
+                    disabled={!customerData.discount_code.trim() || loading}
                     className="px-6"
                   >
                     Apply
                   </Button>
                 </div>
+                {discountValidation && (
+                  <div className={`text-sm px-3 py-2 rounded-md ${
+                    discountValidation.valid 
+                      ? 'bg-green-50 text-green-700 border border-green-200' 
+                      : 'bg-red-50 text-red-700 border border-red-200'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      {discountValidation.valid ? 
+                        <CheckCircle className="w-4 h-4" /> : 
+                        <AlertCircle className="w-4 h-4" />
+                      }
+                      {discountValidation.message}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Payment Method Selection */}
@@ -472,7 +556,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                         <span className="text-sm font-medium text-gray-900">Monthly Interest-Free Credit</span>
                         <Badge variant="default" className="text-xs bg-green-600">0% Interest</Badge>
                       </div>
-                      <p className="text-xs text-gray-600 mt-1">Pay £{Math.round(totalPrice / 12)} in 12 monthly payments = £{totalPrice} total</p>
+                      <p className="text-xs text-gray-600 mt-1">Pay £{Math.round(finalPrice / 12)} in 12 monthly payments = £{finalPrice} total</p>
                     </label>
                   </div>
                   

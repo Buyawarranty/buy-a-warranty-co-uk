@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { getWarrantyDurationDisplay } from '@/lib/warrantyDurationUtils';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { supabase } from '@/integrations/supabase/client';
 
 interface WarrantyCartProps {
   onAddMore: () => void;
@@ -21,6 +22,13 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
   const navigate = useNavigate();
   const [discountCode, setDiscountCode] = useState('');
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
+  const [discountValidation, setDiscountValidation] = useState<{
+    valid: boolean;
+    message: string;
+    discountAmount: number;
+    finalAmount: number;
+  } | null>(null);
+  const [validatingDiscount, setValidatingDiscount] = useState(false);
 
   if (items.length === 0) {
     return (
@@ -38,12 +46,60 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
   }
 
   const subtotal = getTotalPrice();
-  const discountAmount = subtotal * 0.1; // 10% multi-warranty discount
-  const finalTotal = getItemCount() >= 2 ? subtotal - discountAmount : subtotal;
+  const multiWarrantyDiscount = getItemCount() >= 2 ? subtotal * 0.1 : 0; // 10% multi-warranty discount
+  const additionalDiscount = discountValidation?.valid ? discountValidation.discountAmount : 0;
+  const totalDiscountAmount = multiWarrantyDiscount + additionalDiscount;
+  const finalTotal = subtotal - totalDiscountAmount;
 
   const handleProceedToCheckout = () => {
     if (items.length === 0) return;
     onProceedToCheckout(items);
+  };
+
+  const handleValidateDiscount = async () => {
+    if (!discountCode.trim()) return;
+    
+    setValidatingDiscount(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-discount-code', {
+        body: {
+          code: discountCode,
+          customerEmail: '', // We don't have customer email at this stage
+          orderAmount: subtotal
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.valid) {
+        setDiscountValidation({
+          valid: true,
+          message: `Discount applied! You save £${data.discountAmount.toFixed(2)}`,
+          discountAmount: data.discountAmount,
+          finalAmount: data.finalAmount
+        });
+        toast.success(`Discount applied! You save £${data.discountAmount.toFixed(2)}`);
+      } else {
+        setDiscountValidation({
+          valid: false,
+          message: data.error || 'Invalid discount code',
+          discountAmount: 0,
+          finalAmount: subtotal
+        });
+        toast.error(data.error || 'Invalid discount code');
+      }
+    } catch (error) {
+      console.error('Discount validation error:', error);
+      setDiscountValidation({
+        valid: false,
+        message: 'Failed to validate discount code',
+        discountAmount: 0,
+        finalAmount: subtotal
+      });
+      toast.error('Failed to validate discount code');
+    } finally {
+      setValidatingDiscount(false);
+    }
   };
 
   return (
@@ -215,16 +271,32 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
 
               {/* Payment Summary */}
               <div className="border-t border-gray-200 pt-4 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-gray-900">Total Price:</span>
-                  <div className="text-right">
-                    <div className="font-semibold text-gray-900">
-                      £{Math.round(finalTotal)} for entire cover period
-                      {getItemCount() >= 2 && (
-                        <span className="text-green-600 text-sm ml-2">
-                          (10% multi-warranty discount: -£{Math.round(discountAmount)})
-                        </span>
-                      )}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Subtotal:</span>
+                    <span className="font-semibold">£{Math.round(subtotal)}</span>
+                  </div>
+                  
+                  {getItemCount() >= 2 && (
+                    <div className="flex justify-between items-center text-green-600">
+                      <span className="text-sm">Multi-warranty discount (10%):</span>
+                      <span className="text-sm font-medium">-£{Math.round(multiWarrantyDiscount)}</span>
+                    </div>
+                  )}
+                  
+                  {discountValidation && discountValidation.valid && (
+                    <div className="flex justify-between items-center text-green-600">
+                      <span className="text-sm">Discount code applied:</span>
+                      <span className="text-sm font-medium">-£{discountValidation.discountAmount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-between items-center border-t pt-2">
+                    <span className="font-semibold text-gray-900">Total Price:</span>
+                    <div className="text-right">
+                      <div className="font-semibold text-gray-900">
+                        £{Math.round(finalTotal)} for entire cover period
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -257,11 +329,28 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                     <Button 
                       type="button" 
                       variant="outline"
-                      disabled={!discountCode.trim()}
+                      onClick={handleValidateDiscount}
+                      disabled={!discountCode.trim() || validatingDiscount}
                     >
-                      Apply
+                      {validatingDiscount ? 'Validating...' : 'Apply'}
                     </Button>
                   </div>
+                  
+                  {discountValidation && (
+                    <div className={`text-sm px-3 py-2 rounded-md mt-2 ${
+                      discountValidation.valid 
+                        ? 'bg-green-50 text-green-700 border border-green-200' 
+                        : 'bg-red-50 text-red-700 border border-red-200'
+                    }`}>
+                      <div className="flex items-center gap-2">
+                        {discountValidation.valid ? 
+                          <CheckCircle className="w-4 h-4" /> : 
+                          <AlertCircle className="w-4 h-4" />
+                        }
+                        {discountValidation.message}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

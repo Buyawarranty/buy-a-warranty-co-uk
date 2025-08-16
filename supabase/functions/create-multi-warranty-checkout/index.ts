@@ -104,12 +104,13 @@ serve(async (req) => {
         item_count: items.length.toString(),
         is_multi_warranty: "true",
       },
-      // Store all warranty data in session metadata
+      // Store essential data in session metadata (Stripe has 500 char limit per field)
       payment_intent_data: {
         metadata: {
-          warranties_data: JSON.stringify(items),
-          customer_data: JSON.stringify(customerData),
+          warranty_count: items.length.toString(),
+          customer_email: customerData.email,
           discount_code: discountCode || "",
+          first_reg: items[0]?.vehicleData?.regNumber?.substring(0, 20) || "",
         },
       },
     });
