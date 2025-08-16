@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, ArrowLeft, Info, FileText, ExternalLink } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ShoppingCart, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import { useCart } from '@/contexts/CartContext';
 
 interface SpecialPlan {
   id: string;
@@ -52,6 +53,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
   const { toast } = useToast();
+  const { addToCart, getItemCount } = useCart();
 
   useEffect(() => {
     fetchSpecialPlan();
@@ -191,6 +193,49 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     return excessData.monthly;
   };
 
+  const handleAddToCart = () => {
+    if (!plan) return;
+    
+    const monthlyPrice = getMonthlyDisplayPrice();
+    
+    // Calculate total warranty cost based on coverage period
+    let totalWarrantyCost = monthlyPrice;
+    if (paymentType === 'yearly') {
+      totalWarrantyCost = monthlyPrice * 12;
+    } else if (paymentType === 'two_yearly') {
+      totalWarrantyCost = monthlyPrice * 24;
+    } else if (paymentType === 'three_yearly') {
+      totalWarrantyCost = monthlyPrice * 36;
+    }
+    
+    const cartItem = {
+      vehicleData: {
+        regNumber: vehicleData.regNumber,
+        mileage: vehicleData.mileage,
+        make: vehicleData.make || 'Unknown',
+        model: vehicleData.model || 'Model',
+        year: vehicleData.year,
+        vehicleType: vehicleData.vehicleType
+      },
+      planName: plan.name,
+      planId: plan.id,
+      paymentType: paymentType,
+      pricingData: {
+        totalPrice: totalWarrantyCost,
+        monthlyPrice: monthlyPrice,
+        voluntaryExcess: voluntaryExcess,
+        selectedAddOns: {}
+      }
+    };
+    
+    addToCart(cartItem);
+    
+    toast({
+      title: "Added to Cart",
+      description: `${plan.name} plan for ${vehicleData.regNumber} has been added to your cart.`,
+    });
+  };
+
   const handlePurchase = () => {
     if (!plan) return;
     
@@ -272,7 +317,24 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
             <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             Back
           </Button>
-          <TrustpilotHeader />
+          
+          <div className="flex items-center gap-4">
+            {/* Cart Icon with Item Count */}
+            {getItemCount() > 0 && (
+              <div className="relative">
+                <Button
+                  onClick={() => window.location.href = '/?step=cart'}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 bg-white hover:bg-gray-50"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  <span className="font-semibold">{getItemCount()}</span>
+                </Button>
+              </div>
+            )}
+            <TrustpilotHeader />
+          </div>
         </div>
 
         {/* Header with Vehicle Type Image */}
@@ -402,13 +464,23 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                     for 12 months interest free
                   </div>
                   
-                  <Button
-                    onClick={handlePurchase}
-                    disabled={checkoutLoading}
-                    className="w-full py-4 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0 transition-colors duration-200"
-                  >
-                    {checkoutLoading ? 'Processing...' : 'Buy Now'}
-                  </Button>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleAddToCart}
+                      className="flex-1 py-4 text-lg font-bold rounded-xl bg-green-600 hover:bg-green-700 text-white border-0 transition-colors duration-200 flex items-center justify-center gap-2"
+                    >
+                      <Plus className="w-5 h-5" />
+                      Add to Cart
+                    </Button>
+                    
+                    <Button
+                      onClick={handlePurchase}
+                      disabled={checkoutLoading}
+                      className="flex-1 py-4 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0 transition-colors duration-200"
+                    >
+                      {checkoutLoading ? 'Processing...' : 'Buy Now'}
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Plan Content */}
