@@ -407,6 +407,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           {/* Order Summary */}
           <div>
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+              <h1 className="text-3xl font-bold text-gray-900 mb-6">Order Summary</h1>
+              
               {/* Confidence Message */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
@@ -414,8 +416,6 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                   Shop with confidence - cancel anytime within 14 days for a full refund ✅
                 </p>
               </div>
-
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">Order Summary</h1>
               
               {/* Warranty Items */}
               <div className="space-y-8 mb-6">
