@@ -400,7 +400,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   return (
     <div className="bg-[#e8f4fb] w-full min-h-screen">
       {/* Header with Back Button and Cart */}
-      <div className="absolute top-4 left-0 right-0 z-10 px-4">
+      <div className="absolute top-4 left-0 right-0 z-10 px-4 sm:px-8">
         <div className="flex justify-between items-center">
           <Button 
             variant="outline" 
