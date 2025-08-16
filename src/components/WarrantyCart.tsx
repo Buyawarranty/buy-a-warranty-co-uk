@@ -18,7 +18,7 @@ interface WarrantyCartProps {
 }
 
 const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheckout }) => {
-  const { items, removeFromCart, getTotalPrice, getItemCount, clearCart } = useCart();
+  const { items, removeFromCart, getTotalPrice, getItemCount } = useCart();
   const navigate = useNavigate();
   const [discountCode, setDiscountCode] = useState('');
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
@@ -358,16 +358,6 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                   Proceed to Checkout
                 </Button>
                 
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    clearCart();
-                    toast.success('Cart cleared');
-                  }}
-                  className="w-full text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
-                >
-                  Clear Cart
-                </Button>
               </div>
 
               <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
