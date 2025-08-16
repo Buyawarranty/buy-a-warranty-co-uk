@@ -304,10 +304,25 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                 
                 <div className="border-t pt-4">
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-semibold text-gray-900">Total:</span>
+                    <span className="text-lg font-semibold text-gray-900">Total to Pay:</span>
                     <span className="text-lg font-bold text-blue-600">
                       £{totalPrice}
                     </span>
+                  </div>
+                  
+                  {/* Payment Methods */}
+                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">Payment Methods Available:</h4>
+                    <div className="space-y-2 text-xs text-gray-600">
+                      <div className="flex justify-between">
+                        <span>💳 Stripe (Card Payment)</span>
+                        <span className="text-green-600 font-medium">Available</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>🏦 Bumper (Finance Options)</span>
+                        <span className="text-green-600 font-medium">Available</span>
+                      </div>
+                    </div>
                   </div>
                   
                   <Button
@@ -321,13 +336,14 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                     ) : (
                       <>
                         <CreditCard className="w-4 h-4 mr-2" />
-                        Complete Purchase
+                        Proceed to Payment
                       </>
                     )}
                   </Button>
                   
                   <div className="text-xs text-gray-500 text-center mt-3">
-                    <p>Secure checkout powered by Stripe</p>
+                    <p>Choose between Stripe (instant) or Bumper (finance) at checkout</p>
+                    <p>Secure payment processing with multiple options</p>
                   </div>
                 </div>
               </CardContent>

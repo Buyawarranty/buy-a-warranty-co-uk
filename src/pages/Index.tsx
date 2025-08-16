@@ -59,8 +59,7 @@ const Index = () => {
   const getStepFromUrl = () => {
     const stepParam = searchParams.get('step');
     if (stepParam === 'cart') {
-      setShowCart(true);
-      return 1; // Default step when showing cart
+      return 1; // Will be handled separately in useEffect
     }
     if (stepParam) {
       const step = parseInt(stepParam);
@@ -131,6 +130,7 @@ const Index = () => {
     const stepParam = searchParams.get('step');
     if (stepParam === 'cart') {
       setShowCart(true);
+      setCurrentStep(1); // Set a valid step for the progress indicator
       return;
     }
 
