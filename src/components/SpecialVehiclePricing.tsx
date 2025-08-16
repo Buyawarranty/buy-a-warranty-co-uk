@@ -397,8 +397,8 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                >
                  24 Months
                </button>
-              <div className="absolute -top-2 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-1">
-                10% OFF
+               <div className="absolute -top-3 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-3">
+                 10% OFF
               </div>
             </div>
             <div className="relative">
@@ -412,8 +412,8 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                >
                  36 Months
                </button>
-              <div className="absolute -top-2 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-1">
-                20% OFF
+               <div className="absolute -top-3 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold transform translate-x-3">
+                 20% OFF
               </div>
             </div>
           </div>

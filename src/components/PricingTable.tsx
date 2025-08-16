@@ -511,7 +511,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             >
               24 months
             </button>
-            <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+            <div className="absolute -top-3 -right-4 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
               10% OFF
             </div>
           </div>
@@ -526,7 +526,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             >
               36 months
             </button>
-            <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+            <div className="absolute -top-3 -right-4 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
               20% OFF
             </div>
           </div>
