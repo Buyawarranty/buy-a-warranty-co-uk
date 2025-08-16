@@ -364,54 +364,84 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               <h3 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h3>
               
               {/* Warranty Items */}
-              <div className="space-y-4 mb-6">
+              <div className="space-y-6 mb-6">
                 {items.map((item, index) => (
-                  <div key={item.id} className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-medium text-gray-900">
-                          Warranty {index + 1}
-                        </h4>
-                        <p className="text-sm text-gray-600 mb-1">
-                          {formatVehicleDisplay(item)}
-                        </p>
-                        <p className="text-xs text-gray-500 mb-2">
-                          {item.vehicleData.regNumber}
-                        </p>
-                        <Badge variant="outline" className="text-xs">
-                          {item.planName}
-                        </Badge>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-semibold text-gray-900 text-lg">
-                          £{item.pricingData.totalPrice}
-                        </span>
-                      </div>
+                  <div key={item.id}>
+                    {/* Vehicle Badge */}
+                    <div className="flex justify-center mb-4">
+                      <Badge className="bg-yellow-400 text-black text-sm font-bold px-4 py-2">
+                        {item.vehicleData.regNumber}
+                      </Badge>
                     </div>
                     
-                    <div className="mt-3 space-y-1 text-sm text-gray-600">
+                    {/* Plan Details */}
+                    <div className="space-y-3 text-sm">
                       <div className="flex justify-between">
-                        <span>Plan:</span>
-                        <span className="font-medium">{item.planName}</span>
+                        <span className="text-gray-600">Plan:</span>
+                        <span className="font-medium text-gray-900">{item.planName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Cover period:</span>
-                        <span>{item.paymentType === 'yearly' ? '12 months' : item.paymentType === 'two_yearly' ? '24 months' : '36 months'}</span>
+                        <span className="text-gray-600">Cover period:</span>
+                        <span className="text-gray-900">
+                          {item.paymentType === 'yearly' ? '12 months' : 
+                           item.paymentType === 'two_yearly' ? '24 months' : '36 months'}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Voluntary Excess:</span>
-                        <span>£{item.pricingData.voluntaryExcess}</span>
+                        <span className="text-gray-600">Voluntary Excess:</span>
+                        <span className="text-gray-900">£{item.pricingData.voluntaryExcess}</span>
                       </div>
                     </div>
+
+                    {/* Payment Information */}
+                    <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                      <p className="text-green-700 font-medium text-sm">
+                        Payment: £{Math.round(item.pricingData.totalPrice / 12)} x 12 easy payments
+                      </p>
+                    </div>
+
+                    {/* Total Price */}
+                    <div className="flex justify-between items-center mt-4 text-sm">
+                      <span className="text-gray-600">Total Price:</span>
+                      <span className="font-bold text-gray-900">£{item.pricingData.totalPrice} for entire cover period</span>
+                    </div>
+
+                    {/* Separator between items */}
+                    {index < items.length - 1 && <hr className="my-6 border-gray-200" />}
                   </div>
                 ))}
               </div>
 
-              {/* Total Price */}
+              {/* Overall Total */}
               <div className="border-t border-gray-200 pt-4 mb-6">
-                <div className="flex justify-between items-center text-xl font-bold">
-                  <span className="text-gray-900">Total Price:</span>
-                  <span className="text-gray-900">£{totalPrice} for entire cover period</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-bold text-gray-900">Total to Pay:</span>
+                  <span className="text-xl font-bold text-blue-600">£{totalPrice}</span>
+                </div>
+              </div>
+
+              {/* Discount Code Section */}
+              <div className="mb-6">
+                <Label htmlFor="cart_discount_code" className="text-sm font-medium text-gray-700 mb-2 block">
+                  Discount Code
+                  <span className="ml-2 text-xs text-gray-500">ⓘ</span>
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="cart_discount_code"
+                    placeholder="Enter discount code"
+                    value={customerData.discount_code}
+                    onChange={(e) => handleInputChange('discount_code', e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => {/* Add validation logic if needed */}}
+                    className="px-6"
+                  >
+                    Apply
+                  </Button>
                 </div>
               </div>
 
@@ -419,43 +449,41 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               <div className="mb-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Payment Method</h4>
                 <div className="space-y-3">
-                  <div className={`border rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'bumper' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
-                    <label className="flex items-start space-x-3 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="bumper"
-                        checked={selectedPaymentMethod === 'bumper'}
-                        onChange={(e) => setSelectedPaymentMethod(e.target.value as 'bumper')}
-                        className="w-4 h-4 text-green-600 mt-1"
-                      />
-                      <div className="flex-1">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-medium text-gray-900">Monthly Interest-Free Credit</span>
-                          <Badge variant="default" className="text-xs bg-green-600">0% Interest</Badge>
-                        </div>
-                        <p className="text-xs text-gray-600">Pay £{Math.round(totalPrice / 12)} in 12 monthly payments = £{totalPrice} total</p>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="radio"
+                      id="bumper"
+                      name="paymentMethod"
+                      value="bumper"
+                      checked={selectedPaymentMethod === 'bumper'}
+                      onChange={(e) => setSelectedPaymentMethod(e.target.value as 'bumper')}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                    <label htmlFor="bumper" className="flex-1 cursor-pointer">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-900">Monthly Interest-Free Credit</span>
+                        <Badge variant="default" className="text-xs bg-green-600">0% Interest</Badge>
                       </div>
+                      <p className="text-xs text-gray-600 mt-1">Pay £{Math.round(totalPrice / 12)} in 12 monthly payments = £{totalPrice} total</p>
                     </label>
                   </div>
                   
-                  <div className={`border rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
-                    <label className="flex items-start space-x-3 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="stripe"
-                        checked={selectedPaymentMethod === 'stripe'}
-                        onChange={(e) => setSelectedPaymentMethod(e.target.value as 'stripe')}
-                        className="w-4 h-4 text-blue-600 mt-1"
-                      />
-                      <div className="flex-1">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-medium text-gray-900">Pay Full Amount</span>
-                          <Badge variant="secondary" className="text-xs">Save a further 5% (£{Math.round(totalPrice * 0.05)})</Badge>
-                        </div>
-                        <p className="text-xs text-gray-600">Pay £{Math.round(totalPrice * 0.95)} upfront via card (was £{totalPrice})</p>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="radio"
+                      id="stripe"
+                      name="paymentMethod"
+                      value="stripe"
+                      checked={selectedPaymentMethod === 'stripe'}
+                      onChange={(e) => setSelectedPaymentMethod(e.target.value as 'stripe')}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                    <label htmlFor="stripe" className="flex-1 cursor-pointer">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-900">💳 Card Payment (Stripe)</span>
+                        <Badge variant="secondary" className="text-xs">Instant</Badge>
                       </div>
+                      <p className="text-xs text-gray-600 mt-1">Pay immediately with debit/credit card</p>
                     </label>
                   </div>
                 </div>
@@ -464,37 +492,19 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-4 text-lg"
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 text-base"
                 size="lg"
               >
                 {loading ? (
                   'Processing...'
                 ) : (
-                  <>
-                    {selectedPaymentMethod === 'bumper' ? (
-                      <>🏦 Continue with Bumper</>
-                    ) : (
-                      <>
-                        <CreditCard className="w-4 h-4 mr-2" />
-                        Continue with Stripe
-                      </>
-                    )}
-                  </>
+                  selectedPaymentMethod === 'bumper' ? 'Continue with Bumper' : 'Continue with Stripe'
                 )}
               </Button>
               
               <div className="text-xs text-gray-500 text-center mt-3">
-                {selectedPaymentMethod === 'bumper' ? (
-                  <>
-                    <p>Bumper will perform a credit check before proceeding</p>
-                    <p>If declined, you'll be redirected to Stripe payment</p>
-                  </>
-                ) : (
-                  <>
-                    <p>Secure instant payment with Stripe</p>
-                    <p>All major cards accepted</p>
-                  </>
-                )}
+                <p>🔒 Secure checkout powered by Stripe</p>
+                <p>All major cards accepted</p>
               </div>
             </div>
           </div>
