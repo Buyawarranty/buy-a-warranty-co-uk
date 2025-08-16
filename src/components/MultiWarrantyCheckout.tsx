@@ -364,50 +364,58 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               <h3 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h3>
               
               {/* Warranty Items */}
-              <div className="space-y-6 mb-6">
+              <div className="space-y-8 mb-6">
                 {items.map((item, index) => (
                   <div key={item.id}>
-                    {/* Vehicle Badge */}
-                    <div className="flex justify-center mb-4">
-                      <Badge className="bg-yellow-400 text-black text-sm font-bold px-4 py-2">
-                        {item.vehicleData.regNumber}
+                    {/* Warranty Header */}
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-2xl font-bold text-gray-900">Warranty {index + 1}</h4>
+                      <Badge variant="outline" className="text-sm font-medium px-3 py-1">
+                        {item.planName}
                       </Badge>
                     </div>
-                    
-                    {/* Plan Details */}
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Plan:</span>
-                        <span className="font-medium text-gray-900">{item.planName}</span>
+
+                    {/* Vehicle Registration Badge */}
+                    <div className="flex justify-center mb-6">
+                      <div className="bg-yellow-400 border-2 border-black rounded-lg px-6 py-3 flex items-center gap-3">
+                        <div className="w-8 h-5 bg-blue-600 flex items-center justify-center rounded-sm">
+                          <div className="w-6 h-3 bg-red-600 relative">
+                            <div className="absolute inset-0 bg-white" style={{
+                              clipPath: 'polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%, 15% 50%)'
+                            }}></div>
+                          </div>
+                        </div>
+                        <span className="text-black font-bold text-lg tracking-wider">
+                          {item.vehicleData.regNumber}
+                        </span>
                       </div>
-                      <div className="flex justify-between">
+                    </div>
+
+                    {/* Plan Details */}
+                    <div className="space-y-4 text-base">
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-gray-600">Plan:</span>
+                        <span className="font-bold text-gray-900">{item.planName}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2">
                         <span className="text-gray-600">Cover period:</span>
-                        <span className="text-gray-900">
+                        <span className="text-gray-900 font-medium">
                           {item.paymentType === 'yearly' ? '12 months' : 
                            item.paymentType === 'two_yearly' ? '24 months' : '36 months'}
                         </span>
                       </div>
-                      <div className="flex justify-between">
+                      
+                      <div className="flex justify-between items-center py-2">
                         <span className="text-gray-600">Voluntary Excess:</span>
-                        <span className="text-gray-900">£{item.pricingData.voluntaryExcess}</span>
+                        <span className="text-gray-900 font-medium">£{item.pricingData.voluntaryExcess}</span>
                       </div>
                     </div>
 
-                    {/* Payment Information */}
-                    <div className="mt-4 p-3 bg-green-50 rounded-lg">
-                      <p className="text-green-700 font-medium text-sm">
-                        Payment: £{Math.round(item.pricingData.totalPrice / 12)} x 12 easy payments
-                      </p>
-                    </div>
-
-                    {/* Total Price */}
-                    <div className="flex justify-between items-center mt-4 text-sm">
-                      <span className="text-gray-600">Total Price:</span>
-                      <span className="font-bold text-gray-900">£{item.pricingData.totalPrice} for entire cover period</span>
-                    </div>
-
-                    {/* Separator between items */}
-                    {index < items.length - 1 && <hr className="my-6 border-gray-200" />}
+                    {/* Separator line between warranties */}
+                    {index < items.length - 1 && (
+                      <hr className="my-8 border-gray-300" />
+                    )}
                   </div>
                 ))}
               </div>
