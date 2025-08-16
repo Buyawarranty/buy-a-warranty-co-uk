@@ -50,9 +50,9 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
   const { regNumber, make, model, year, mileage } = vehicleData;
   const { planName, totalPrice, monthlyPrice, voluntaryExcess, paymentType, selectedAddOns } = planData;
   
-    // Generate purchase URL with quote ID - use the correct domain
-    const baseUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com';
-    const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(data.email)}`;
+    // Generate purchase URL with quote ID - use the correct domain and step 3
+    const baseUrl = 'https://pricing.buyawarranty.co.uk';
+    const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(data.email)}&step=3`;
   
   const addOnsList = Object.entries(selectedAddOns || {})
     .filter(([_, selected]) => selected)
@@ -206,9 +206,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Generate unique quote ID if not provided
     const quoteId = emailRequest.quoteId || `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
     
-    // Generate purchase URL with quote ID - use the correct domain
-    const baseUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com';
-    const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}`;
+    // Generate purchase URL with quote ID - use the correct domain and step 3
+    const baseUrl = 'https://pricing.buyawarranty.co.uk';
+    const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}&step=3`;
 
     // Generate the email HTML
     const emailHtml = generateQuoteEmail({
@@ -218,8 +218,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email using Resend with enhanced anti-spam measures
     const emailResponse = await resend.emails.send({
-      from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
-      reply_to: "support@buyawarranty.co.uk", 
+      from: "Buy A Warranty <quotes@buyawarranty.co.uk>",
+      reply_to: "support@buyawarranty.co.uk",
       to: [emailRequest.email],
       subject: `🚗 Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote – Lock In Your Price Today`,
       html: emailHtml,
@@ -235,7 +235,7 @@ Vehicle Details:
 - Year: ${emailRequest.vehicleData.year || 'N/A'} 
 - Mileage: ${emailRequest.vehicleData.mileage}
 
-Complete your quote: ${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}
+Complete your quote: ${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}&step=3
 
 Or call us on 0330 229 5040
 
