@@ -34,6 +34,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [showValidation, setShowValidation] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'bumper'>('stripe');
 
   const totalPrice = items.reduce((sum, item) => sum + item.pricingData.totalPrice, 0);
 
@@ -74,30 +75,81 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     setLoading(true);
     
     try {
-      // Create multi-warranty checkout
-      const { data, error } = await supabase.functions.invoke('create-multi-warranty-checkout', {
-        body: {
-          items: items.map(item => ({
-            planName: item.planName.toLowerCase(),
-            paymentType: item.paymentType,
-            voluntaryExcess: item.pricingData.voluntaryExcess,
-            vehicleData: item.vehicleData,
-            selectedAddOns: item.pricingData.selectedAddOns,
-            totalPrice: item.pricingData.totalPrice
-          })),
-          customerData: customerData,
-          discountCode: customerData.discount_code || null,
-          totalAmount: totalPrice
+      if (selectedPaymentMethod === 'bumper') {
+        // Try Bumper first for multi-warranty checkout
+        const { data, error } = await supabase.functions.invoke('create-multi-warranty-bumper-checkout', {
+          body: {
+            items: items.map(item => ({
+              planName: item.planName.toLowerCase(),
+              paymentType: item.paymentType,
+              voluntaryExcess: item.pricingData.voluntaryExcess,
+              vehicleData: item.vehicleData,
+              selectedAddOns: item.pricingData.selectedAddOns,
+              totalPrice: item.pricingData.totalPrice
+            })),
+            customerData: customerData,
+            discountCode: customerData.discount_code || null,
+            totalAmount: totalPrice
+          }
+        });
+
+        if (error) throw error;
+
+        if (data.fallbackToStripe) {
+          // If Bumper failed, fallback to Stripe
+          toast.info('Bumper payment not available, redirecting to Stripe');
+          const stripeResponse = await supabase.functions.invoke('create-multi-warranty-checkout', {
+            body: {
+              items: items.map(item => ({
+                planName: item.planName.toLowerCase(),
+                paymentType: item.paymentType,
+                voluntaryExcess: item.pricingData.voluntaryExcess,
+                vehicleData: item.vehicleData,
+                selectedAddOns: item.pricingData.selectedAddOns,
+                totalPrice: item.pricingData.totalPrice
+              })),
+              customerData: customerData,
+              discountCode: customerData.discount_code || null,
+              totalAmount: totalPrice
+            }
+          });
+          
+          if (stripeResponse.error) throw stripeResponse.error;
+          if (stripeResponse.data.url) {
+            window.open(stripeResponse.data.url, '_blank');
+          }
+        } else if (data.url) {
+          // Redirect to Bumper checkout
+          window.open(data.url, '_blank');
+        } else {
+          toast.error('Failed to create Bumper checkout session');
         }
-      });
-
-      if (error) throw error;
-
-      if (data.url) {
-        // Redirect to checkout
-        window.location.href = data.url;
       } else {
-        toast.error('Failed to create checkout session');
+        // Create Stripe multi-warranty checkout
+        const { data, error } = await supabase.functions.invoke('create-multi-warranty-checkout', {
+          body: {
+            items: items.map(item => ({
+              planName: item.planName.toLowerCase(),
+              paymentType: item.paymentType,
+              voluntaryExcess: item.pricingData.voluntaryExcess,
+              vehicleData: item.vehicleData,
+              selectedAddOns: item.pricingData.selectedAddOns,
+              totalPrice: item.pricingData.totalPrice
+            })),
+            customerData: customerData,
+            discountCode: customerData.discount_code || null,
+            totalAmount: totalPrice
+          }
+        });
+
+        if (error) throw error;
+
+        if (data.url) {
+          // Redirect to Stripe checkout
+          window.open(data.url, '_blank');
+        } else {
+          toast.error('Failed to create checkout session');
+        }
       }
     } catch (error) {
       console.error('Multi-warranty checkout error:', error);
@@ -310,18 +362,45 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                     </span>
                   </div>
                   
-                  {/* Payment Methods */}
+                  {/* Payment Method Selection */}
                   <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">Payment Methods Available:</h4>
-                    <div className="space-y-2 text-xs text-gray-600">
-                      <div className="flex justify-between">
-                        <span>💳 Stripe (Card Payment)</span>
-                        <span className="text-green-600 font-medium">Available</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>🏦 Bumper (Finance Options)</span>
-                        <span className="text-green-600 font-medium">Available</span>
-                      </div>
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">Choose Payment Method:</h4>
+                    <div className="space-y-2">
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="stripe"
+                          checked={selectedPaymentMethod === 'stripe'}
+                          onChange={(e) => setSelectedPaymentMethod(e.target.value as 'stripe')}
+                          className="w-4 h-4 text-blue-600"
+                        />
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-900">💳 Card Payment (Stripe)</span>
+                            <Badge variant="secondary" className="text-xs">Instant</Badge>
+                          </div>
+                          <p className="text-xs text-gray-600">Pay immediately with debit/credit card</p>
+                        </div>
+                      </label>
+                      
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="bumper"
+                          checked={selectedPaymentMethod === 'bumper'}
+                          onChange={(e) => setSelectedPaymentMethod(e.target.value as 'bumper')}
+                          className="w-4 h-4 text-blue-600"
+                        />
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-900">🏦 Finance Option (Bumper)</span>
+                            <Badge variant="outline" className="text-xs">Credit Check</Badge>
+                          </div>
+                          <p className="text-xs text-gray-600">Spread payments with finance options</p>
+                        </div>
+                      </label>
                     </div>
                   </div>
                   
@@ -335,15 +414,30 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                       'Processing...'
                     ) : (
                       <>
-                        <CreditCard className="w-4 h-4 mr-2" />
-                        Proceed to Payment
+                        {selectedPaymentMethod === 'bumper' ? (
+                          <>🏦 Continue with Bumper</>
+                        ) : (
+                          <>
+                            <CreditCard className="w-4 h-4 mr-2" />
+                            Continue with Stripe
+                          </>
+                        )}
                       </>
                     )}
                   </Button>
                   
                   <div className="text-xs text-gray-500 text-center mt-3">
-                    <p>Choose between Stripe (instant) or Bumper (finance) at checkout</p>
-                    <p>Secure payment processing with multiple options</p>
+                    {selectedPaymentMethod === 'bumper' ? (
+                      <>
+                        <p>Bumper will perform a credit check before proceeding</p>
+                        <p>If declined, you'll be redirected to Stripe payment</p>
+                      </>
+                    ) : (
+                      <>
+                        <p>Secure instant payment with Stripe</p>
+                        <p>All major cards accepted</p>
+                      </>
+                    )}
                   </div>
                 </div>
               </CardContent>
