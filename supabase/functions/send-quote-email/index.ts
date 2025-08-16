@@ -218,10 +218,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email using Resend with enhanced anti-spam measures
     const emailResponse = await resend.emails.send({
-      from: "Buy A Warranty <quotes@buyawarranty.co.uk>",
-      reply_to: "support@buyawarranty.co.uk",
+      from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
+      reply_to: "info@buyawarranty.co.uk",
       to: [emailRequest.email],
-      subject: `🚗 Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote – Lock In Your Price Today`,
+      subject: `Your ${emailRequest.vehicleData.make || 'Vehicle'} Warranty Quote - Lock In Your Price Today`,
       html: emailHtml,
       text: `Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote
 
