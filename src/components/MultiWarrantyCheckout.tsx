@@ -181,9 +181,9 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
       <div className="max-w-6xl mx-auto p-6">
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Customer Details Form */}
+          {/* Personal Details Form */}
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Details</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Personal Details</h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Fields */}
@@ -253,7 +253,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
               {/* Address Details */}
               <div className="pt-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Address Details</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Address Details</h3>
                 
                 <div className="space-y-4">
                   <div>
@@ -264,11 +264,22 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                       value={customerData.street}
                       onChange={(e) => handleInputChange('street', e.target.value)}
                       required
-                      className={`mt-1 ${fieldErrors.street ? 'border-red-500' : ''}`}
+                      className={`mt-1 ${fieldErrors.street ? 'border-red-500 focus:border-red-500' : ''}`}
                     />
                     {fieldErrors.street && (
                       <p className="text-red-500 text-sm mt-1">{fieldErrors.street}</p>
                     )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="building_name" className="text-sm font-medium text-gray-700">Address Line 2 (optional)</Label>
+                    <Input
+                      id="building_name"
+                      placeholder="Apartment, flat, building name"
+                      value={customerData.building_name}
+                      onChange={(e) => handleInputChange('building_name', e.target.value)}
+                      className="mt-1"
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -280,168 +291,212 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                         value={customerData.town}
                         onChange={(e) => handleInputChange('town', e.target.value)}
                         required
-                        className={`mt-1 ${fieldErrors.town ? 'border-red-500' : ''}`}
+                        className={`mt-1 ${fieldErrors.town ? 'border-red-500 focus:border-red-500' : ''}`}
                       />
                       {fieldErrors.town && (
                         <p className="text-red-500 text-sm mt-1">{fieldErrors.town}</p>
                       )}
                     </div>
                     <div>
-                      <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
+                      <Label htmlFor="county" className="text-sm font-medium text-gray-700">County</Label>
                       <Input
-                        id="postcode"
-                        placeholder="Enter postcode"
-                        value={customerData.postcode}
-                        onChange={(e) => handleInputChange('postcode', e.target.value)}
-                        required
-                        className={`mt-1 ${fieldErrors.postcode ? 'border-red-500' : ''}`}
+                        id="county"
+                        placeholder="Enter county"
+                        value={customerData.county}
+                        onChange={(e) => handleInputChange('county', e.target.value)}
+                        className="mt-1"
                       />
-                      {fieldErrors.postcode && (
-                        <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
-                      )}
                     </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
+                    <Input
+                      id="postcode"
+                      placeholder="Enter postcode"
+                      value={customerData.postcode}
+                      onChange={(e) => handleInputChange('postcode', e.target.value)}
+                      required
+                      className={`mt-1 ${fieldErrors.postcode ? 'border-red-500 focus:border-red-500' : ''}`}
+                    />
+                    {fieldErrors.postcode && (
+                      <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
+                    )}
                   </div>
                 </div>
               </div>
 
               {/* Discount Code */}
-              <div>
-                <Label htmlFor="discount_code" className="text-sm font-medium text-gray-700">Discount Code (optional)</Label>
-                <Input
-                  id="discount_code"
-                  placeholder="Enter discount code"
-                  value={customerData.discount_code}
-                  onChange={(e) => handleInputChange('discount_code', e.target.value)}
-                  className="mt-1"
-                />
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <Label htmlFor="discount_code" className="text-sm font-medium text-gray-700 mb-2 block">Discount Code</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="discount_code"
+                    placeholder="Enter discount code"
+                    value={customerData.discount_code}
+                    onChange={(e) => handleInputChange('discount_code', e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => {/* Add validation logic if needed */}}
+                    className="px-6"
+                  >
+                    Apply
+                  </Button>
+                </div>
               </div>
             </form>
           </div>
 
           {/* Order Summary */}
           <div>
-            <Card className="sticky top-6">
-              <CardHeader>
-                <CardTitle className="text-xl text-gray-900">
-                  Order Summary ({items.length} {items.length === 1 ? 'warranty' : 'warranties'})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Warranty Items */}
-                <div className="space-y-4">
-                  {items.map((item, index) => (
-                    <div key={item.id} className="border-b pb-4 last:border-b-0">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h4 className="font-medium text-gray-900">
-                            Warranty {index + 1}
-                          </h4>
-                          <p className="text-sm text-gray-600">
-                            {formatVehicleDisplay(item)}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {item.vehicleData.regNumber}
-                          </p>
-                        </div>
-                        <Badge variant="outline">{item.planName}</Badge>
+            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+              {/* Confidence Message */}
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                <p className="text-sm text-green-800">
+                  Shop with confidence - cancel anytime within 14 days for a full refund ✅
+                </p>
+              </div>
+
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h3>
+              
+              {/* Warranty Items */}
+              <div className="space-y-4 mb-6">
+                {items.map((item, index) => (
+                  <div key={item.id} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-medium text-gray-900">
+                          Warranty {index + 1}
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-1">
+                          {formatVehicleDisplay(item)}
+                        </p>
+                        <p className="text-xs text-gray-500 mb-2">
+                          {item.vehicleData.regNumber}
+                        </p>
+                        <Badge variant="outline" className="text-xs">
+                          {item.planName}
+                        </Badge>
                       </div>
                       <div className="text-right">
-                        <span className="font-semibold text-gray-900">
+                        <span className="font-semibold text-gray-900 text-lg">
                           £{item.pricingData.totalPrice}
                         </span>
                       </div>
                     </div>
-                  ))}
-                </div>
-                
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-semibold text-gray-900">Total to Pay:</span>
-                    <span className="text-lg font-bold text-blue-600">
-                      £{totalPrice}
-                    </span>
-                  </div>
-                  
-                  {/* Payment Method Selection */}
-                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Choose Payment Method:</h4>
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-3 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="stripe"
-                          checked={selectedPaymentMethod === 'stripe'}
-                          onChange={(e) => setSelectedPaymentMethod(e.target.value as 'stripe')}
-                          className="w-4 h-4 text-blue-600"
-                        />
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-900">💳 Card Payment (Stripe)</span>
-                            <Badge variant="secondary" className="text-xs">Instant</Badge>
-                          </div>
-                          <p className="text-xs text-gray-600">Pay immediately with debit/credit card</p>
-                        </div>
-                      </label>
-                      
-                      <label className="flex items-center space-x-3 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="bumper"
-                          checked={selectedPaymentMethod === 'bumper'}
-                          onChange={(e) => setSelectedPaymentMethod(e.target.value as 'bumper')}
-                          className="w-4 h-4 text-blue-600"
-                        />
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-900">🏦 Finance Option (Bumper)</span>
-                            <Badge variant="outline" className="text-xs">Credit Check</Badge>
-                          </div>
-                          <p className="text-xs text-gray-600">Spread payments with finance options</p>
-                        </div>
-                      </label>
+                    
+                    <div className="mt-3 space-y-1 text-sm text-gray-600">
+                      <div className="flex justify-between">
+                        <span>Plan:</span>
+                        <span className="font-medium">{item.planName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Cover period:</span>
+                        <span>{item.paymentType === 'yearly' ? '12 months' : item.paymentType === 'two_yearly' ? '24 months' : '36 months'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Voluntary Excess:</span>
+                        <span>£{item.pricingData.voluntaryExcess}</span>
+                      </div>
                     </div>
                   </div>
+                ))}
+              </div>
+
+              {/* Total Price */}
+              <div className="border-t border-gray-200 pt-4 mb-6">
+                <div className="flex justify-between items-center text-xl font-bold">
+                  <span className="text-gray-900">Total Price:</span>
+                  <span className="text-gray-900">£{totalPrice} for entire cover period</span>
+                </div>
+              </div>
+
+              {/* Payment Method Selection */}
+              <div className="mb-6">
+                <h4 className="text-lg font-bold text-gray-900 mb-4">Payment Method</h4>
+                <div className="space-y-3">
+                  <div className={`border rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'bumper' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+                    <label className="flex items-start space-x-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="bumper"
+                        checked={selectedPaymentMethod === 'bumper'}
+                        onChange={(e) => setSelectedPaymentMethod(e.target.value as 'bumper')}
+                        className="w-4 h-4 text-green-600 mt-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm font-medium text-gray-900">Monthly Interest-Free Credit</span>
+                          <Badge variant="default" className="text-xs bg-green-600">0% Interest</Badge>
+                        </div>
+                        <p className="text-xs text-gray-600">Pay £{Math.round(totalPrice / 12)} in 12 monthly payments = £{totalPrice} total</p>
+                      </div>
+                    </label>
+                  </div>
                   
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-700"
-                    size="lg"
-                  >
-                    {loading ? (
-                      'Processing...'
-                    ) : (
-                      <>
-                        {selectedPaymentMethod === 'bumper' ? (
-                          <>🏦 Continue with Bumper</>
-                        ) : (
-                          <>
-                            <CreditCard className="w-4 h-4 mr-2" />
-                            Continue with Stripe
-                          </>
-                        )}
-                      </>
-                    )}
-                  </Button>
-                  
-                  <div className="text-xs text-gray-500 text-center mt-3">
-                    {selectedPaymentMethod === 'bumper' ? (
-                      <>
-                        <p>Bumper will perform a credit check before proceeding</p>
-                        <p>If declined, you'll be redirected to Stripe payment</p>
-                      </>
-                    ) : (
-                      <>
-                        <p>Secure instant payment with Stripe</p>
-                        <p>All major cards accepted</p>
-                      </>
-                    )}
+                  <div className={`border rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                    <label className="flex items-start space-x-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="stripe"
+                        checked={selectedPaymentMethod === 'stripe'}
+                        onChange={(e) => setSelectedPaymentMethod(e.target.value as 'stripe')}
+                        className="w-4 h-4 text-blue-600 mt-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm font-medium text-gray-900">Pay Full Amount</span>
+                          <Badge variant="secondary" className="text-xs">Save a further 5% (£{Math.round(totalPrice * 0.05)})</Badge>
+                        </div>
+                        <p className="text-xs text-gray-600">Pay £{Math.round(totalPrice * 0.95)} upfront via card (was £{totalPrice})</p>
+                      </div>
+                    </label>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              
+              <Button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-4 text-lg"
+                size="lg"
+              >
+                {loading ? (
+                  'Processing...'
+                ) : (
+                  <>
+                    {selectedPaymentMethod === 'bumper' ? (
+                      <>🏦 Continue with Bumper</>
+                    ) : (
+                      <>
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Continue with Stripe
+                      </>
+                    )}
+                  </>
+                )}
+              </Button>
+              
+              <div className="text-xs text-gray-500 text-center mt-3">
+                {selectedPaymentMethod === 'bumper' ? (
+                  <>
+                    <p>Bumper will perform a credit check before proceeding</p>
+                    <p>If declined, you'll be redirected to Stripe payment</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Secure instant payment with Stripe</p>
+                    <p>All major cards accepted</p>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
