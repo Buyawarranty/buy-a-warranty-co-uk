@@ -418,12 +418,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 // Navigate to cart page
                 window.location.href = '/?step=cart';
               }}
-              className="flex items-center gap-2 hover:bg-white text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3 bg-blue-50 border-blue-200 relative"
+              className="flex items-center gap-2 bg-orange-50 border-orange-200 hover:bg-orange-100 text-orange-800 text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3 relative shadow-sm"
             >
               <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
               Cart ({getItemCount()})
               {getItemCount() >= 2 && (
-                <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full px-2 py-1 font-bold">
+                <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full px-2 py-1 font-bold shadow-md">
                   10% OFF
                 </span>
               )}

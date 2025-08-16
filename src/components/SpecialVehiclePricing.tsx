@@ -326,7 +326,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   onClick={() => window.location.href = '/?step=cart'}
                   variant="outline"
                   size="sm"
-                  className="flex items-center gap-2 bg-white hover:bg-gray-50"
+                  className="flex items-center gap-2 bg-orange-50 border-orange-200 hover:bg-orange-100 text-orange-800 shadow-sm"
                 >
                   <ShoppingCart className="w-4 h-4" />
                   <span className="font-semibold">{getItemCount()}</span>
