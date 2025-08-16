@@ -153,22 +153,38 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
               ))}
             </div>
 
-            {/* Add Another Warranty */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6 mt-6 text-center">
-              <div className="text-2xl mb-2">+</div>
+            {/* Add Another Warranty - Redesigned */}
+            <div className="mt-6 space-y-4">
+              {/* Add Another Warranty Button */}
               <Button
-                variant="outline"
                 onClick={onAddMore}
-                className="bg-white hover:bg-green-50 border-green-300"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 text-lg rounded-lg flex items-center justify-center gap-3"
+                size="lg"
               >
-                Add Another Warranty{' '}
-                <Badge variant="secondary" className="ml-2 bg-green-200 text-green-800">
-                  Save even more with multiple warranties!
-                </Badge>
+                <Plus className="w-5 h-5" />
+                Add Another Warranty
               </Button>
-              <p className="text-sm text-green-700 mt-2">
-                Protect more vehicles and save money!
-              </p>
+              
+              {/* Benefits Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="flex items-start gap-4">
+                  <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
+                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                      <div className="w-3 h-3 bg-white rounded-full flex items-center justify-center">
+                        <div className="w-1 h-1 bg-green-600 rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      Save more when you cover multiple vehicles
+                    </h3>
+                    <p className="text-gray-600">
+                      Protect more vehicles and pay less!
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
