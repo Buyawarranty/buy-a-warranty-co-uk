@@ -837,6 +837,36 @@ export type Database = {
         }
         Relationships: []
       }
+      quote_data: {
+        Row: {
+          created_at: string
+          customer_email: string
+          expires_at: string
+          id: string
+          plan_data: Json | null
+          quote_id: string
+          vehicle_data: Json
+        }
+        Insert: {
+          created_at?: string
+          customer_email: string
+          expires_at?: string
+          id?: string
+          plan_data?: Json | null
+          quote_id: string
+          vehicle_data: Json
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          expires_at?: string
+          id?: string
+          plan_data?: Json | null
+          quote_id?: string
+          vehicle_data?: Json
+        }
+        Relationships: []
+      }
       sales_targets: {
         Row: {
           achieved_amount: number

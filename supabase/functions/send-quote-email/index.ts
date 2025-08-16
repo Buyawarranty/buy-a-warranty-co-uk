@@ -259,13 +259,28 @@ Buy A Warranty Customer Service Team`,
 
     console.log('Quote email sent successfully:', emailResponse);
 
-    // Log the email in Supabase for tracking
+    // Store quote data and log the email in Supabase
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
     );
 
+    // Store the quote data for restoration
+    const { error: quoteError } = await supabase
+      .from('quote_data')
+      .insert({
+        quote_id: quoteId,
+        vehicle_data: emailRequest.vehicleData,
+        plan_data: emailRequest.planData,
+        customer_email: emailRequest.email
+      });
+
+    if (quoteError) {
+      console.error('Error storing quote data:', quoteError);
+    }
+
+    // Log the email for tracking
     const { error: logError } = await supabase
       .from('email_logs')
       .insert({

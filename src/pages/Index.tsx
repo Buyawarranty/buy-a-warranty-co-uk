@@ -139,31 +139,56 @@ const Index = () => {
     const emailParam = searchParams.get('email');
     
     if (quoteParam && emailParam) {
-      // User is returning from a quote email - show quote lookup interface
-      import('@/components/QuoteLookup').then(({ default: QuoteLookup }) => {
-        // For now, we'll handle this by showing a message and redirecting to step 4
-        console.log('Quote lookup:', { quote: quoteParam, email: emailParam });
-        
-        // Set some mock data for demonstration
-        const mockQuoteData = {
-          regNumber: 'QUOTE-' + quoteParam.substr(-6),
-          mileage: '50000',
-          email: emailParam,
-          phone: '',
-          firstName: 'Quote',
-          lastName: 'Customer',
-          address: '',
-          make: 'Unknown',
-          model: 'Unknown',
-          year: '2020',
-          vehicleType: 'car'
-        };
-        
-        setVehicleData(mockQuoteData);
-        setFormData(prev => ({ ...prev, ...mockQuoteData }));
-        setCurrentStep(4); // Go directly to customer details
-        updateStepInUrl(4);
-      });
+      // User is returning from a quote email - fetch the stored quote data
+      const fetchQuoteData = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('quote_data')
+            .select('*')
+            .eq('quote_id', quoteParam)
+            .eq('customer_email', emailParam)
+            .single();
+
+          if (error || !data) {
+            console.error('Quote not found or expired:', error);
+            // Show error message and redirect to step 1
+            setCurrentStep(1);
+            updateStepInUrl(1);
+            return;
+          }
+
+          // Restore the vehicle data from the stored quote
+          const vehicleDataJson = data.vehicle_data as any;
+          const restoredVehicleData = {
+            regNumber: vehicleDataJson.regNumber || '',
+            mileage: vehicleDataJson.mileage || '',
+            email: emailParam,
+            phone: '',
+            firstName: '',
+            lastName: '',
+            address: '',
+            make: vehicleDataJson.make || '',
+            model: vehicleDataJson.model || '',
+            year: vehicleDataJson.year || '',
+            vehicleType: vehicleDataJson.vehicleType || 'car',
+            fuelType: vehicleDataJson.fuelType || '',
+            transmission: vehicleDataJson.transmission || ''
+          };
+          
+          setVehicleData(restoredVehicleData);
+          setFormData(prev => ({ ...prev, ...restoredVehicleData }));
+          setCurrentStep(3); // Go to step 3 (choose your plan)
+          updateStepInUrl(3);
+          
+          console.log('Quote data restored successfully:', restoredVehicleData);
+        } catch (error) {
+          console.error('Error fetching quote data:', error);
+          setCurrentStep(1);
+          updateStepInUrl(1);
+        }
+      };
+
+      fetchQuoteData();
       return;
     }
     
