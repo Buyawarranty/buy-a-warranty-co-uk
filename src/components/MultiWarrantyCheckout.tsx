@@ -415,7 +415,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                 </p>
               </div>
 
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h3>
+              <h1 className="text-3xl font-bold text-gray-900 mb-6">Order Summary</h1>
               
               {/* Warranty Items */}
               <div className="space-y-8 mb-6">
@@ -423,7 +423,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                   <div key={item.id}>
                     {/* Warranty Header */}
                     <div className="flex justify-between items-center mb-4">
-                      <h4 className="text-2xl font-bold text-gray-900">Warranty {index + 1}</h4>
+                      <h2 className="text-xl font-bold text-gray-900">Warranty {index + 1}</h2>
                       <Badge variant="outline" className="text-sm font-medium px-3 py-1">
                         {item.planName}
                       </Badge>
@@ -432,13 +432,6 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                     {/* Vehicle Registration Badge */}
                     <div className="flex justify-center mb-6">
                       <div className="bg-yellow-400 border-2 border-black rounded-lg px-6 py-3 flex items-center gap-3">
-                        <div className="w-8 h-5 bg-blue-600 flex items-center justify-center rounded-sm">
-                          <div className="w-6 h-3 bg-red-600 relative">
-                            <div className="absolute inset-0 bg-white" style={{
-                              clipPath: 'polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%, 15% 50%)'
-                            }}></div>
-                          </div>
-                        </div>
                         <span className="text-black font-bold text-lg tracking-wider">
                           {item.vehicleData.regNumber}
                         </span>

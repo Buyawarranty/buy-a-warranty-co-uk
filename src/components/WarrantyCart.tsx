@@ -118,9 +118,9 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Column - Cart Items */}
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">
               Your Warranty Cart ({getItemCount()} {getItemCount() === 1 ? 'item' : 'items'})
-            </h2>
+            </h1>
             
             {/* Multi-warranty discount banner */}
             {getItemCount() >= 2 && (
@@ -143,11 +143,6 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                       {/* Vehicle Registration */}
                       <div className="flex items-center mb-4">
                         <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-lg px-4 py-3 rounded-[6px] shadow-sm leading-tight border-2 border-black">
-                          <img 
-                            src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
-                            alt="GB Flag" 
-                            className="w-[25px] h-[18px] mr-3 object-cover rounded-[2px]"
-                          />
                           <div className="font-bold font-sans tracking-normal">
                             {item.vehicleData.regNumber}
                           </div>
@@ -249,7 +244,7 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
           <div className="space-y-6">
             {/* Order Summary Card */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
+              <h1 className="text-3xl font-bold text-gray-900 mb-6">Order Summary</h1>
               
               {/* Confidence Message */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -259,15 +254,14 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                 </div>
               </div>
               
-              {/* Individual warranty prices */}
-              <div className="space-y-4 mb-6">
-                {items.map((item, index) => (
-                  <div key={item.id} className="flex justify-between">
-                    <span className="text-gray-600">Warranty {index + 1} ({item.planName}):</span>
-                    <span className="font-semibold">£{item.pricingData.totalPrice}</span>
-                  </div>
-                ))}
-              </div>
+                <div className="space-y-4 mb-6">
+                  {items.map((item, index) => (
+                    <div key={item.id} className="flex justify-between">
+                      <span className="text-gray-600">Warranty {index + 1} ({item.planName}):</span>
+                      <span className="font-semibold">£{item.pricingData.totalPrice}</span>
+                    </div>
+                  ))}
+                </div>
 
               {/* Payment Summary */}
               <div className="border-t border-gray-200 pt-4 mb-6">
