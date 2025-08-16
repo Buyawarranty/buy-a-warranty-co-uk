@@ -165,22 +165,23 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                 Add Another Warranty
               </Button>
               
-              {/* Benefits Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
+              {/* Limited-Time Offer Card */}
+              <div className="bg-green-50 border border-green-200 rounded-lg p-6">
                 <div className="flex items-start gap-4">
                   <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
-                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
-                      <div className="w-3 h-3 bg-white rounded-full flex items-center justify-center">
-                        <div className="w-1 h-1 bg-green-600 rounded-full"></div>
-                      </div>
+                    <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">$</span>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                      Save more when you cover multiple vehicles
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      Limited-Time Offer: Get 10% Off!
                     </h3>
-                    <p className="text-gray-600">
-                      Protect more vehicles and pay less!
+                    <p className="text-gray-700 mb-3">
+                      Add another warranty now and save 10% instantly.
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                      This deal won't be available afterwards.
                     </p>
                   </div>
                 </div>
