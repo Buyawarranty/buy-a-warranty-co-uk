@@ -205,6 +205,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Generate unique quote ID if not provided
     const quoteId = emailRequest.quoteId || `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+    
+    // Generate purchase URL with quote ID - use the correct domain
+    const baseUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com';
+    const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}`;
 
     // Generate the email HTML
     const emailHtml = generateQuoteEmail({
