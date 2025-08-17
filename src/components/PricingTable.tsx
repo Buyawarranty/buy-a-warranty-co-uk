@@ -680,21 +680,31 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </div>
                     )}
                     
-                    {/* Buy Now Button */}
-                    <div className="space-y-3">
-                     <Button
-                       onClick={() => handleSelectPlan(plan)}
-                       disabled={isLoading}
-                       className={`w-full py-4 font-bold text-lg rounded-xl transition-colors duration-200 ${
-                         plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
-                         plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
-                         'bg-orange-500 hover:bg-orange-600 text-white'
-                       }`}
-                     >
-                       {isLoading ? 'Processing...' : 'Buy Now'}
-                     </Button>
-                     
-                   </div>
+                     {/* Action Buttons */}
+                     <div className="space-y-3">
+                      <Button
+                        onClick={() => handleSelectPlan(plan)}
+                        disabled={isLoading}
+                        className={`w-full py-4 font-bold text-lg rounded-xl transition-colors duration-200 ${
+                          plan.name === 'Basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
+                          plan.name === 'Gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
+                          'bg-orange-500 hover:bg-orange-600 text-white'
+                        }`}
+                      >
+                        {isLoading ? 'Processing...' : 'Buy Now'}
+                      </Button>
+                      
+                      <Button
+                        onClick={() => handleAddToCart(plan)}
+                        disabled={isLoading}
+                        variant="outline"
+                        className="w-full py-3 font-semibold text-base rounded-xl border-2 hover:bg-gray-50 transition-colors duration-200"
+                      >
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        Add to Cart
+                      </Button>
+                      
+                    </div>
                  </div>
 
                  {/* What's Covered */}

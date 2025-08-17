@@ -452,14 +452,23 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                     for 12 months interest free
                   </div>
                   
-                  <div className="flex gap-3">
-                    
+                  <div className="space-y-3">
                     <Button
                       onClick={handlePurchase}
                       disabled={checkoutLoading}
                       className="w-full py-4 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0 transition-colors duration-200"
                     >
                       {checkoutLoading ? 'Processing...' : 'Buy Now'}
+                    </Button>
+                    
+                    <Button
+                      onClick={handleAddToCart}
+                      disabled={checkoutLoading}
+                      variant="outline"
+                      className="w-full py-3 font-semibold text-base rounded-xl border-2 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <ShoppingCart className="w-5 h-5 mr-2" />
+                      Add to Cart
                     </Button>
                   </div>
                 </div>
