@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { getWarrantyDurationDisplay } from '@/lib/warrantyDurationUtils';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 
 interface WarrantyCartProps {
@@ -18,7 +19,7 @@ interface WarrantyCartProps {
 }
 
 const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheckout }) => {
-  const { items, removeFromCart, getTotalPrice, getItemCount } = useCart();
+  const { items, removeFromCart, clearCart, getTotalPrice, getItemCount } = useCart();
   const navigate = useNavigate();
   const [discountCode, setDiscountCode] = useState('');
   const [showDiscountInfo, setShowDiscountInfo] = useState(false);
@@ -118,9 +119,45 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Column - Cart Items */}
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">
-              Your Warranty Cart ({getItemCount()} {getItemCount() === 1 ? 'item' : 'items'})
-            </h1>
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-3xl font-bold text-gray-900">
+                Your Warranty Cart ({getItemCount()} {getItemCount() === 1 ? 'item' : 'items'})
+              </h1>
+              
+              {/* Clear Cart Button */}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Clear Cart
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Clear Cart</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to remove all warranties from your cart? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        clearCart();
+                        toast.success('Cart cleared successfully');
+                      }}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      Clear Cart
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
             
             {/* Multi-warranty discount banner */}
             {getItemCount() >= 2 && (
