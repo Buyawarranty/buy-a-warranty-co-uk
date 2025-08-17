@@ -397,16 +397,16 @@ const Index = () => {
               {/* Shopping Cart - Prominently placed above pricing tables */}
               {cartItems.length > 0 && (
                 <div className="w-full px-4 py-4">
-                  <div className="max-w-4xl mx-auto">
-                    <div className="bg-white rounded-lg shadow-md border-2 border-primary p-4 mb-6">
+                  <div className="max-w-2xl mx-auto">
+                    <div className="bg-orange-50 rounded-lg shadow-md border-2 border-orange-400 p-4 mb-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                          <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
                             {cartItems.length}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-lg">Your Cart</h3>
-                            <p className="text-sm text-gray-600">
+                            <h3 className="font-semibold text-lg text-orange-900">Your Cart</h3>
+                            <p className="text-sm text-orange-700">
                               {cartItems.length} warranty{cartItems.length > 1 ? 'es' : ''} added
                             </p>
                           </div>
@@ -414,7 +414,7 @@ const Index = () => {
                         <Button 
                           onClick={() => setShowCart(true)}
                           variant="outline"
-                          className="border-primary text-primary hover:bg-primary hover:text-white"
+                          className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
                         >
                           View Cart
                         </Button>
