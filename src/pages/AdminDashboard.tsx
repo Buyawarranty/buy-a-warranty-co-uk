@@ -15,6 +15,7 @@ import TestBumper from '@/components/TestBumper';
 import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
 import { UserPermissionsTab } from '@/components/admin/UserPermissionsTab';
 import { DocumentMappingTab } from '@/components/admin/DocumentMappingTab';
+import { BulkPricingTab } from '@/components/admin/BulkPricingTab';
 import OrderReconciliation from '@/components/admin/OrderReconciliation';
 import { ResendWelcomeEmail } from '@/components/admin/ResendWelcomeEmail';
 import { TestAutomatedEmail } from '@/components/admin/TestAutomatedEmail';
@@ -77,6 +78,8 @@ const AdminDashboard = () => {
         return <CustomersTab />;
       case 'plans':
         return <PlansTab />;
+      case 'bulk-pricing':
+        return <BulkPricingTab />;
       case 'special-plans':
         return <SpecialVehiclePlansTab />;
       case 'discount-codes':
