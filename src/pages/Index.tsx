@@ -394,6 +394,36 @@ const Index = () => {
         <div className="w-full overflow-x-hidden">
           {vehicleData && (
             <>
+              {/* Shopping Cart - Prominently placed above pricing tables */}
+              {cartItems.length > 0 && (
+                <div className="w-full px-4 py-4">
+                  <div className="max-w-4xl mx-auto">
+                    <div className="bg-white rounded-lg shadow-md border-2 border-primary p-4 mb-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                            {cartItems.length}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg">Your Cart</h3>
+                            <p className="text-sm text-gray-600">
+                              {cartItems.length} warranty{cartItems.length > 1 ? 'es' : ''} added
+                            </p>
+                          </div>
+                        </div>
+                        <Button 
+                          onClick={() => setShowCart(true)}
+                          variant="outline"
+                          className="border-primary text-primary hover:bg-primary hover:text-white"
+                        >
+                          View Cart
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               {isSpecialVehicle ? (
                 <SpecialVehiclePricing 
                   vehicleData={vehicleData as any}
