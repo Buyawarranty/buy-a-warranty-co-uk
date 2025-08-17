@@ -451,18 +451,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   </div>
                   
                   <div className="flex gap-3">
-                    <Button
-                      onClick={handleAddToCart}
-                      className="flex-1 py-4 text-lg font-bold rounded-xl bg-green-600 hover:bg-green-700 text-white border-0 transition-colors duration-200 flex items-center justify-center gap-2"
-                    >
-                      <Plus className="w-5 h-5" />
-                      Add to Cart
-                    </Button>
                     
                     <Button
                       onClick={handlePurchase}
                       disabled={checkoutLoading}
-                      className="flex-1 py-4 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0 transition-colors duration-200"
+                      className="w-full py-4 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0 transition-colors duration-200"
                     >
                       {checkoutLoading ? 'Processing...' : 'Buy Now'}
                     </Button>
