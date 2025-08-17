@@ -183,6 +183,11 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                     </div>
 
                     <div className="text-right ml-4">
+                      {/* Monthly Payment Display */}
+                      <div className="text-green-600 font-medium mb-1">
+                        Payment: £{item.pricingData.monthlyPrice} x {getWarrantyDurationDisplay(item.paymentType).includes('12') ? '12' : getWarrantyDurationDisplay(item.paymentType).includes('24') ? '24' : '36'} easy payments
+                      </div>
+                      
                       <div className="text-2xl font-bold text-blue-600 mb-2">
                         £{item.pricingData.totalPrice}
                       </div>
