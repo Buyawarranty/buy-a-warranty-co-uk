@@ -146,8 +146,9 @@ MOTORBIKE,"Up to 75 p/hr inc. VAT",£150,£27,£312,£47,£562,£62,£624,£69,�
       
       requiredPriceFields.forEach(field => {
         const value = (row as any)[field];
-        if (!value || (typeof value === 'string' && !value.replace(/[£,]/g, '').trim())) {
-          errors.push(`Row ${rowNum}: ${field} is required`);
+        // Allow 0 values, only flag as error if truly missing
+        if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
+          errors.push(`Row ${rowNum}: ${field} is required (use 0 for no charge)`);
         }
       });
     });

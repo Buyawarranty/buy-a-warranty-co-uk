@@ -65,29 +65,35 @@ const handler = async (req: Request): Promise<Response> => {
         const labourRate = row["Labour up to £ p/hr"];
         const voluntaryExcess = row["Voluntary Excess Amount"];
         
+        // Helper function to parse price values, treating 0 as valid
+        const parsePrice = (priceStr: string): number => {
+          if (!priceStr) return 0;
+          const cleanStr = priceStr.replace(/[£,]/g, '').trim();
+          if (cleanStr === '' || cleanStr === '0') return 0;
+          const parsed = parseFloat(cleanStr);
+          return isNaN(parsed) ? 0 : parsed;
+        };
+
         // Extract monthly price (12 month warranty in 12 installments)
-        const monthlyPriceStr = row["12 month Warranty in 12 installments"];
-        const monthlyPrice = parseFloat(monthlyPriceStr.replace(/[£,]/g, ''));
+        const monthlyPrice = parsePrice(row["12 month Warranty in 12 installments"]);
         
         // Extract yearly price (24 month warranty with 10% off)
-        const yearlyPriceStr = row["24 month warranty with 10% off"];
-        const yearlyPrice = parseFloat(yearlyPriceStr.replace(/[£,]/g, ''));
+        const yearlyPrice = parsePrice(row["24 month warranty with 10% off"]);
         
         // Extract 3-year price (36 month warranty with 20% off)
-        const threeYearPriceStr = row["36 month warranty with 20% off"];
-        const threeYearPrice = parseFloat(threeYearPriceStr.replace(/[£,]/g, ''));
+        const threeYearPrice = parsePrice(row["36 month warranty with 20% off"]);
 
         // Determine which table to update based on plan type
         const isSpecialVehicle = ['PHEV', 'EV', 'MOTORBIKE'].includes(planType);
         const tableName = isSpecialVehicle ? 'special_vehicle_plans' : 'plans';
         
-        // Build update object with pricing matrix
+        // Build update object with pricing matrix, handling 0 amounts properly
         const pricingMatrix = {
           "12": {
             "0": { "price": monthlyPrice, "excess": "No Contribution" },
-            "50": { "price": parseFloat(row["12 month Warranty in 12 installments"].replace(/[£,]/g, '')), "excess": "£50" },
-            "100": { "price": parseFloat(row["12 month Warranty in 12 installments"].replace(/[£,]/g, '')), "excess": "£100" },
-            "150": { "price": parseFloat(row["12 month Warranty in 12 installments"].replace(/[£,]/g, '')), "excess": "£150" }
+            "50": { "price": monthlyPrice, "excess": "£50" },
+            "100": { "price": monthlyPrice, "excess": "£100" },
+            "150": { "price": monthlyPrice, "excess": "£150" }
           },
           "24": {
             "0": { "price": yearlyPrice, "excess": "No Contribution" },
