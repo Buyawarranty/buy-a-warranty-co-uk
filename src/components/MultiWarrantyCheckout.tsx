@@ -477,17 +477,17 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                     <span className="text-lg font-medium text-gray-900">£{totalPrice}</span>
                   </div>
                   
-                  {discountValidation && discountValidation.valid && (
-                    <div className="flex justify-between items-center text-green-600">
-                      <span className="text-sm font-medium">Discount Applied:</span>
-                      <span className="text-sm font-medium">-£{discountValidation.discountAmount.toFixed(2)}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex justify-between items-center border-t pt-2">
-                    <span className="text-lg font-bold text-gray-900">Total to Pay:</span>
-                    <span className="text-xl font-bold text-blue-600">£{finalPrice}</span>
-                  </div>
+                   {discountValidation && discountValidation.valid && (
+                     <div className="flex justify-between items-center text-green-600">
+                       <span className="text-sm font-medium">Discount Applied:</span>
+                       <span className="text-sm font-medium">-£{Math.round(discountValidation.discountAmount)}</span>
+                     </div>
+                   )}
+                   
+                   <div className="flex justify-between items-center border-t pt-2">
+                     <span className="text-lg font-bold text-gray-900">Total to Pay:</span>
+                     <span className="text-xl font-bold text-blue-600">£{Math.round(finalPrice)}</span>
+                   </div>
                 </div>
               </div>
 
