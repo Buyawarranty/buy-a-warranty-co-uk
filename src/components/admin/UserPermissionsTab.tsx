@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import { UserPlus, Shield, Eye, Users, Trash2, RotateCcw } from 'lucide-react';
+import { UserPlus, Shield, Eye, Users, Trash2, RotateCcw, Mail } from 'lucide-react';
 
 interface AdminUser {
   id: string;
@@ -163,6 +163,28 @@ export const UserPermissionsTab = () => {
     } catch (error) {
       console.error('Error resetting password:', error);
       toast.error('Failed to reset password');
+    }
+  };
+
+  const handleResendInvite = async (userId: string, email: string) => {
+    if (!confirm(`Are you sure you want to resend the invitation to ${email}?`)) return;
+
+    try {
+      const { data, error } = await supabase.functions.invoke('resend-admin-invite', {
+        body: { 
+          userId,
+          email
+        }
+      });
+
+      if (error) throw error;
+      
+      toast.success(`Invitation resent to ${email}. New temporary password: ${data.tempPassword}`, {
+        duration: 15000
+      });
+    } catch (error) {
+      console.error('Error resending invite:', error);
+      toast.error('Failed to resend invitation');
     }
   };
 
@@ -355,6 +377,14 @@ export const UserPermissionsTab = () => {
                         onClick={() => toggleUserStatus(user.id, user.is_active)}
                       >
                         {user.is_active ? 'Deactivate' : 'Activate'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => handleResendInvite(user.id, user.email)}
+                        title="Resend Invite"
+                      >
+                        <Mail className="h-4 w-4" />
                       </Button>
                       <Button
                         size="sm"
