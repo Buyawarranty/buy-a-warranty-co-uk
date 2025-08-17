@@ -46,17 +46,25 @@ serve(async (req) => {
       }
     }
 
-    // Create line items for each warranty
+    // Create line items for each warranty with detailed metadata
     const lineItems = items.map((item: any, index: number) => ({
       price_data: {
         currency: "gbp",
         product_data: {
-          name: `${item.planName} Warranty - Vehicle ${index + 1}`,
+          name: `${item.planName} Warranty - ${item.vehicleData.regNumber}`,
           description: `${item.vehicleData.regNumber} - ${item.paymentType} coverage`,
           metadata: {
             vehicle_reg: item.vehicleData.regNumber,
             plan_name: item.planName,
             payment_type: item.paymentType,
+            vehicle_make: item.vehicleData.make || '',
+            vehicle_model: item.vehicleData.model || '',
+            vehicle_year: item.vehicleData.year || '',
+            vehicle_fuel_type: item.vehicleData.fuelType || '',
+            vehicle_transmission: item.vehicleData.transmission || '',
+            vehicle_mileage: item.vehicleData.mileage || '',
+            vehicle_type: item.vehicleData.vehicleType || 'standard',
+            voluntary_excess: item.voluntaryExcess?.toString() || '0',
           },
         },
         unit_amount: Math.round(item.totalPrice * 100), // Convert to pence
@@ -101,8 +109,20 @@ serve(async (req) => {
       metadata: {
         customer_email: customerData.email,
         customer_name: `${customerData.first_name} ${customerData.last_name}`,
+        customer_first_name: customerData.first_name,
+        customer_last_name: customerData.last_name,
+        customer_phone: customerData.mobile || '',
+        customer_street: customerData.street || '',
+        customer_town: customerData.town || '',
+        customer_county: customerData.county || '',
+        customer_postcode: customerData.postcode || '',
+        customer_country: customerData.country || 'United Kingdom',
+        customer_building_name: customerData.building_name || '',
+        customer_flat_number: customerData.flat_number || '',
+        customer_building_number: customerData.building_number || '',
         item_count: items.length.toString(),
         is_multi_warranty: "true",
+        discount_code: discountCode || "",
       },
       // Store essential data in session metadata (Stripe has 500 char limit per field)
       payment_intent_data: {

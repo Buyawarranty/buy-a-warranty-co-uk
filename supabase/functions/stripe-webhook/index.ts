@@ -63,16 +63,34 @@ serve(async (req) => {
         sessionId: session.id,
         customerEmail: session.customer_email,
         mode: session.mode,
-        paymentStatus: session.payment_status
+        paymentStatus: session.payment_status,
+        isMultiWarranty: session.metadata?.is_multi_warranty
       });
 
       // Only process if payment was successful
       if (session.payment_status === "paid") {
-        // Extract metadata to determine the plan and payment type
-        const planId = session.metadata?.plan_id;
-        const paymentType = session.metadata?.payment_type;
-        
-        if (planId && paymentType) {
+        // Check if this is a multi-warranty purchase
+        if (session.metadata?.is_multi_warranty === "true") {
+          logStep("Processing multi-warranty purchase", { sessionId: session.id });
+          
+          // Call the multi-warranty processing function
+          const { data, error } = await supabaseClient.functions.invoke('process-multi-warranty-stripe-success', {
+            body: { sessionId: session.id }
+          });
+
+          if (error) {
+            logStep("Multi-warranty processing failed", { error: error.message });
+            throw new Error(`Multi-warranty processing failed: ${error.message}`);
+          } else {
+            logStep("Multi-warranty processing completed", data);
+          }
+        } else {
+          logStep("Processing single warranty purchase", { sessionId: session.id });
+          // Extract metadata to determine the plan and payment type
+          const planId = session.metadata?.plan_id;
+          const paymentType = session.metadata?.payment_type;
+          
+          if (planId && paymentType) {
           // Retrieve the checkout session to get customer data
           const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
             apiVersion: "2023-10-16" 
@@ -139,13 +157,14 @@ serve(async (req) => {
             throw new Error(`Payment processing failed: ${processError.message}`);
           }
 
-          logStep("Payment processed successfully via webhook", processData);
-        } else {
-          logStep("Warning: Missing plan_id or payment_type in session metadata", {
-            planId,
-            paymentType,
-            metadata: session.metadata
-          });
+            logStep("Payment processed successfully via webhook", processData);
+          } else {
+            logStep("Warning: Missing plan_id or payment_type in session metadata", {
+              planId,
+              paymentType,
+              metadata: session.metadata
+            });
+          }
         }
       } else {
         logStep("Payment not completed, skipping processing", { 
