@@ -26,8 +26,9 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { items, customerData, discountCode, totalAmount } = body;
-    logStep("Request data", { itemCount: items.length, totalAmount, customerData, discountCode });
+    const { items, customerData, discountCode, originalAmount, finalAmount, totalAmount } = body;
+    const actualTotalAmount = finalAmount || totalAmount;
+    logStep("Request data", { itemCount: items.length, originalAmount, finalAmount, actualTotalAmount, customerData, discountCode });
 
     // Get authenticated user
     let user = null;
@@ -71,7 +72,8 @@ serve(async (req) => {
           items,
           customerData,
           discountCode,
-          totalAmount
+          originalAmount,
+          finalAmount: actualTotalAmount
         }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -89,7 +91,8 @@ serve(async (req) => {
           items,
           customerData,
           discountCode,
-          totalAmount
+          originalAmount,
+          finalAmount: actualTotalAmount
         }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -110,11 +113,11 @@ serve(async (req) => {
     const vehicleRegs = items.map((item: any) => item.vehicleData.regNumber).join(", ");
     
     const bumperRequestData = {
-      amount: totalAmount.toString(),
+      amount: actualTotalAmount.toString(),
       preferred_product_type: "paylater",
       api_key: bumperApiKey,
-      success_url: `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-multi-warranty-bumper-success?items=${encodeURIComponent(JSON.stringify(items))}&customer_data=${encodeURIComponent(JSON.stringify(customerData))}&discount_code=${encodeURIComponent(discountCode || '')}&total_amount=${totalAmount}&redirect=${encodeURIComponent(origin + '/thank-you')}`,
-      failure_url: `${origin}/payment-fallback?multi=true&email=${encodeURIComponent(customerData.email)}&total=${totalAmount}`,
+      success_url: `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-multi-warranty-bumper-success?items=${encodeURIComponent(JSON.stringify(items))}&customer_data=${encodeURIComponent(JSON.stringify(customerData))}&discount_code=${encodeURIComponent(discountCode || '')}&total_amount=${actualTotalAmount}&redirect=${encodeURIComponent(origin + '/thank-you')}`,
+      failure_url: `${origin}/payment-fallback?multi=true&email=${encodeURIComponent(customerData.email)}&total=${actualTotalAmount}`,
       currency: "GBP",
       order_reference: `MULTI-VW-${Date.now()}`,
       invoice_number: `INV-MULTI-${Date.now()}`,
@@ -148,7 +151,7 @@ serve(async (req) => {
     bumperRequestData.signature = signature;
 
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";
-    logStep("Making Bumper API request", { url: bumperApiUrl, totalAmount, itemCount: items.length });
+    logStep("Making Bumper API request", { url: bumperApiUrl, actualTotalAmount, itemCount: items.length });
 
     const bumperResponse = await fetch(bumperApiUrl, {
       method: "POST",
@@ -183,7 +186,8 @@ serve(async (req) => {
             items,
             customerData,
             discountCode,
-            totalAmount
+            originalAmount,
+            finalAmount: actualTotalAmount
           }
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -205,7 +209,8 @@ serve(async (req) => {
           items,
           customerData,
           discountCode,
-          totalAmount
+          originalAmount,
+          finalAmount: actualTotalAmount
         }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -229,7 +234,8 @@ serve(async (req) => {
           items,
           customerData,
           discountCode,
-          totalAmount
+          originalAmount,
+          finalAmount: actualTotalAmount
         }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -266,7 +272,8 @@ serve(async (req) => {
         items: items || [],
         customerData: customerData || {},
         discountCode: discountCode || null,
-        totalAmount: totalAmount || 0
+        originalAmount: originalAmount || 0,
+        finalAmount: actualTotalAmount || 0
       }
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

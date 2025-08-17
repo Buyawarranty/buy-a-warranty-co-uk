@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { items, customerData, discountCode, totalAmount } = await req.json();
+    const { items, customerData, discountCode, originalAmount, finalAmount } = await req.json();
 
     // Create Supabase client
     const supabaseClient = createClient(
@@ -81,7 +81,7 @@ serve(async (req) => {
           body: {
             code: discountCode,
             customerEmail: customerData.email,
-            orderAmount: totalAmount
+            orderAmount: originalAmount || finalAmount
           }
         });
 

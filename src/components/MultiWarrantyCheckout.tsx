@@ -143,7 +143,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             })),
             customerData: customerData,
             discountCode: customerData.discount_code || null,
-            totalAmount: finalPrice
+            originalAmount: totalPrice,
+            finalAmount: finalPrice
           }
         });
 
@@ -165,7 +166,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               })),
               customerData: customerData,
               discountCode: customerData.discount_code || null,
-              totalAmount: stripeDiscountedPrice
+              originalAmount: totalPrice,
+              finalAmount: stripeDiscountedPrice
             }
           });
           
@@ -194,7 +196,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             })),
             customerData: customerData,
             discountCode: customerData.discount_code || null,
-            totalAmount: stripeDiscountedPrice
+            originalAmount: totalPrice,
+            finalAmount: stripeDiscountedPrice
           }
         });
 
