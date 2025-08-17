@@ -237,9 +237,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
-      const periodData = matrix[paymentType];
+      // Map payment types to database keys
+      const dbKey = paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36';
+      const periodData = matrix[dbKey];
       if (periodData && periodData[voluntaryExcess.toString()]) {
-        return periodData[voluntaryExcess.toString()].monthly || 0;
+        return periodData[voluntaryExcess.toString()].price || 0;
       }
     }
     
@@ -262,7 +264,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
-      const periodData = matrix[paymentType];
+      // Map payment types to database keys
+      const dbKey = paymentType === '24months' ? '24' : '36';
+      const periodData = matrix[dbKey];
       if (periodData && periodData[voluntaryExcess.toString()]) {
         return periodData[voluntaryExcess.toString()].save || 0;
       }
