@@ -413,9 +413,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   return (
     <div className="bg-[#e8f4fb] w-full min-h-screen">
-      {/* Header with Back Button and Cart */}
+      {/* Header with Back Button */}
       <div className="absolute top-4 left-0 right-0 z-10 px-4 sm:px-8">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-start items-center">
           <Button 
             variant="outline" 
             onClick={onBack}
@@ -424,25 +424,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             Back
           </Button>
-          
-          {getItemCount() > 0 && (
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                // Navigate to cart page
-                window.location.href = '/?step=cart';
-              }}
-              className="flex items-center gap-2 bg-orange-50 border-orange-200 hover:bg-orange-100 text-orange-800 text-base sm:text-lg px-4 sm:px-6 py-2 sm:py-3 relative shadow-sm"
-            >
-              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
-              Cart ({getItemCount()})
-              {getItemCount() >= 2 && (
-                <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full px-2 py-1 font-bold shadow-md">
-                  10% OFF
-                </span>
-              )}
-            </Button>
-          )}
         </div>
       </div>
 

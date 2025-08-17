@@ -319,20 +319,6 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
           </Button>
           
           <div className="flex items-center gap-4">
-            {/* Cart Icon with Item Count */}
-            {getItemCount() > 0 && (
-              <div className="relative">
-                <Button
-                  onClick={() => window.location.href = '/?step=cart'}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2 bg-orange-50 border-orange-200 hover:bg-orange-100 text-orange-800 shadow-sm"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  <span className="font-semibold">{getItemCount()}</span>
-                </Button>
-              </div>
-            )}
             <TrustpilotHeader />
           </div>
         </div>
