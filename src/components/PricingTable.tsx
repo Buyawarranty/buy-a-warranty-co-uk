@@ -416,6 +416,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const displayPlans = vt === 'car' ? ensureCarOnly(plans) : ensureSpecialOnly(plans, vt);
 
   const getPaymentLabel = (price: number) => {
+    if (paymentType === '24months') {
+      return `£${Math.round(price / 12)}/mo for 12 months`;
+    } else if (paymentType === '36months') {
+      return `£${Math.round(price / 12)}/mo for 12 months`;
+    }
     return `£${price}/mo for 12 months`;
   };
 
