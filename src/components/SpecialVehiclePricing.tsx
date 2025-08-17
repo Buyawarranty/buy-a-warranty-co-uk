@@ -153,46 +153,20 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const getMonthlyDisplayPrice = () => {
     if (!plan) return 0;
     
-    // Try to use database pricing matrix first, fallback to hardcoded
-    if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
-      const matrix = plan.pricing_matrix as any;
-      // Map payment types to database keys  
-      const dbKey = paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36';
-      const periodData = matrix[dbKey];
-      if (periodData && periodData[voluntaryExcess.toString()]) {
-        return periodData[voluntaryExcess.toString()].price || 0;
-      }
+    // Use database pricing for monthly installment amounts
+    if (paymentType === 'yearly') {
+      return plan.yearly_price || plan.monthly_price * 12;
+    } else if (paymentType === 'two_yearly') {
+      // Show monthly installment for 24 months
+      const totalPrice = plan.two_yearly_price || plan.monthly_price * 24;
+      return Math.round(totalPrice / 24);
+    } else if (paymentType === 'three_yearly') {
+      // Show monthly installment for 36 months
+      const totalPrice = plan.three_yearly_price || plan.monthly_price * 36;
+      return Math.round(totalPrice / 36);
     }
     
-    // Fallback to hardcoded pricing (Gold plan equivalent)
-    const fallbackPricingTable = {
-      yearly: {
-        0: { monthly: 34 },
-        50: { monthly: 31 },
-        100: { monthly: 27 },
-        150: { monthly: 26 },
-        200: { monthly: 23 }
-      },
-      two_yearly: {
-        0: { monthly: 61 },
-        50: { monthly: 56 },
-        100: { monthly: 49 },
-        150: { monthly: 47 },
-        200: { monthly: 44 }
-      },
-      three_yearly: {
-        0: { monthly: 90 },
-        50: { monthly: 82 },
-        100: { monthly: 71 },
-        150: { monthly: 69 },
-        200: { monthly: 66 }
-      }
-    };
-    
-    const periodData = fallbackPricingTable[paymentType as keyof typeof fallbackPricingTable] || fallbackPricingTable.yearly;
-    const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
-    
-    return excessData.monthly;
+    return plan.monthly_price;
   };
 
   const handleAddToCart = () => {
@@ -448,9 +422,12 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   <div className="text-4xl font-bold text-gray-900 mb-3">
                     <span className="text-2xl">£</span>{Math.round(getMonthlyDisplayPrice())}<span className="text-2xl">/mo</span>
                   </div>
-                  <div className="text-gray-600 text-base mb-6">
-                    for 12 months interest free
-                  </div>
+                   <div className="text-gray-600 text-base mb-6">
+                     {paymentType === 'yearly' ? 'for 12 months interest free' :
+                      paymentType === 'two_yearly' ? 'for 24 months interest free' :
+                      paymentType === 'three_yearly' ? 'for 36 months interest free' :
+                      'for 12 months interest free'}
+                   </div>
                   
                   <div className="flex gap-3">
                     
