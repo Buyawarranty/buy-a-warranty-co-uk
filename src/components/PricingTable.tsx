@@ -54,7 +54,7 @@ interface PricingTableProps {
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
-  console.log('PricingTable received vehicleData:', vehicleData);
+  
   const { addToCart, getItemCount } = useCart();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('12months');
