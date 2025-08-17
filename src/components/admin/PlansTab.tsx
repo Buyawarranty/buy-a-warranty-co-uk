@@ -66,7 +66,7 @@ const defaultPlanFeatures = {
     'Differential',
     'Electrics',
     'Casings',
-    'Claim recovery costs',
+    'Recovery Claim-Back',
     'Basic plan plus:',
     'Clutch',
     'Cooling System',
@@ -102,7 +102,7 @@ const defaultPlanFeatures = {
     'Seals',
     'Casings',
     'Vehicle Hire',
-    'Claim recovery costs',
+    'Recovery Claim-Back',
     'European Cover'
   ]
 };
