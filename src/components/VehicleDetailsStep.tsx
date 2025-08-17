@@ -333,7 +333,21 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             </div>
           )}
 
-          {vehicleData && !vehicleData.found && (
+          {vehicleData && !vehicleData.found && vehicleData.error && vehicleData.error.includes('15 years') && (
+            <div className="bg-orange-50 border border-orange-200 rounded-[4px] p-4 mb-4">
+              <h3 className="text-lg font-bold text-orange-800 mb-2">
+                Sorry, We Can't Cover This Vehicle
+              </h3>
+              <p className="text-sm text-orange-700 mb-2">
+                We can't provide a warranty for vehicles that are more than 15 years old.
+              </p>
+              <p className="text-sm text-orange-700">
+                If your car is newer than that, feel free to try again. We may just need to run a couple of extra checks 🔍 before we can confirm your cover.
+              </p>
+            </div>
+          )}
+
+          {vehicleData && !vehicleData.found && (!vehicleData.error || !vehicleData.error.includes('15 years')) && (
             <div className="bg-blue-50 border border-blue-200 rounded-[4px] p-4 mb-4">
               <p className="text-sm text-blue-800 mb-2">
                 ⚠️ Vehicle not found -
@@ -438,8 +452,16 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                     )}
                   </div>
                   {yearError && (
-                    <div className="bg-red-50 border border-red-200 rounded-[4px] p-3 mt-2">
-                      <p className="text-sm text-red-800 font-semibold">{yearError}</p>
+                    <div className="bg-orange-50 border border-orange-200 rounded-[4px] p-3 mt-2">
+                      <h3 className="text-lg font-bold text-orange-800 mb-2">
+                        Sorry, We Can't Cover This Vehicle
+                      </h3>
+                      <p className="text-sm text-orange-700 mb-2">
+                        We can't provide a warranty for vehicles that are more than 15 years old.
+                      </p>
+                      <p className="text-sm text-orange-700">
+                        If your car is newer than that, feel free to try again. We may just need to run a couple of extra checks 🔍 before we can confirm your cover.
+                      </p>
                     </div>
                   )}
                 </div>
