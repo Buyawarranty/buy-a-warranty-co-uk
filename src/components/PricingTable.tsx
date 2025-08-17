@@ -392,7 +392,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       toast.success(`${plan.name} warranty added to cart!`);
     } catch (error) {
       console.error('Error adding to cart:', error);
-      toast.error('Failed to add to cart');
+      if (error instanceof Error && error.message.includes('already in your cart')) {
+        toast.error(error.message);
+      } else {
+        toast.error('Failed to add to cart');
+      }
     } finally {
       setLoading(prev => ({ ...prev, [plan.id]: false }));
     }

@@ -30,6 +30,7 @@ interface CartContextType {
   clearCart: () => void;
   getTotalPrice: () => number;
   getItemCount: () => number;
+  hasRegistration: (regNumber: string) => boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -67,6 +68,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [items]);
 
   const addToCart = (item: Omit<CartItem, 'id' | 'addedAt'>) => {
+    // Check if registration plate already exists in cart
+    const existingReg = items.find(cartItem => 
+      cartItem.vehicleData.regNumber.replace(/\s/g, '').toLowerCase() === 
+      item.vehicleData.regNumber.replace(/\s/g, '').toLowerCase()
+    );
+    
+    if (existingReg) {
+      throw new Error(`A warranty for registration ${item.vehicleData.regNumber} is already in your cart. We can only provide one warranty per vehicle.`);
+    }
+    
     const newItem: CartItem = {
       ...item,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
@@ -99,6 +110,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return items.length;
   };
 
+  const hasRegistration = (regNumber: string) => {
+    return items.some(item => 
+      item.vehicleData.regNumber.replace(/\s/g, '').toLowerCase() === 
+      regNumber.replace(/\s/g, '').toLowerCase()
+    );
+  };
+
   return (
     <CartContext.Provider value={{
       items,
@@ -107,7 +125,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateCartItem,
       clearCart,
       getTotalPrice,
-      getItemCount
+      getItemCount,
+      hasRegistration
     }}>
       {children}
     </CartContext.Provider>

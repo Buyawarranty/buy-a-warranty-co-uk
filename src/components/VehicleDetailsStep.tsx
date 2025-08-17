@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Check, Search, Zap } from 'lucide-react';
+import { Check, Search, Zap, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useCart } from '@/contexts/CartContext';
 
 interface VehicleDetailsStepProps {
   onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string; vehicleType?: string; isManualEntry?: boolean }) => void;
@@ -34,10 +35,12 @@ interface DVLAVehicleData {
 }
 
 const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initialData }) => {
-  const [regNumber, setRegNumber] = useState(initialData?.regNumber || '');
+  const { hasRegistration } = useCart();
+  const [regNumber, setRegNumber] = useState(''); // Always start empty for new warranties
   const [mileage, setMileage] = useState(initialData?.mileage || '');
   const [vehicleFound, setVehicleFound] = useState(false);
   const [mileageError, setMileageError] = useState('');
+  const [regError, setRegError] = useState('');
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [vehicleData, setVehicleData] = useState<DVLAVehicleData | null>(null);
@@ -75,6 +78,14 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     const formatted = formatRegNumber(e.target.value);
     if (formatted.length <= 8) {
       setRegNumber(formatted);
+      
+      // Check for duplicate registration
+      if (formatted.length >= 3 && hasRegistration(formatted)) {
+        setRegError(`Registration ${formatted} already has a warranty in your cart`);
+      } else {
+        setRegError('');
+      }
+      
       // Reset vehicle found state when reg number changes
       setVehicleFound(false);
       setVehicleData(null);
@@ -113,7 +124,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   };
 
   const handleFindCar = async () => {
-    if (!regNumber) return;
+    if (!regNumber || regError) return;
     
     setIsLookingUp(true);
     setVehicleFound(false);
@@ -221,8 +232,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
   const rawMileage = mileage.replace(/,/g, '');
   const numericMileage = parseInt(rawMileage) || 0;
 
-  const isManualFormValid = regNumber && mileage && make && model && year && vehicleType && numericMileage <= 150000 && mileageError === '' && yearError === '';
-  const isAutoFormValid = regNumber && mileage && numericMileage <= 150000 && mileageError === '';
+  const isManualFormValid = regNumber && mileage && make && model && year && vehicleType && numericMileage <= 150000 && mileageError === '' && yearError === '' && regError === '';
+  const isAutoFormValid = regNumber && mileage && numericMileage <= 150000 && mileageError === '' && regError === '';
 
   return (
     <section className="bg-[#e8f4fb] py-2 px-3 sm:px-0">
@@ -264,32 +275,39 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               alt="GB Flag" 
               className="w-[25px] sm:w-[35px] h-[18px] sm:h-[25px] mr-[10px] sm:mr-[15px] object-cover rounded-[2px]"
             />
-            <input
-              id="regInput"
-              type="text"
-              value={regNumber}
-              onChange={handleRegChange}
-              placeholder="Enter your reg"
-              className="bg-transparent border-none outline-none text-xl sm:text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal tracking-normal pr-[40px]"
-              maxLength={8}
-            />
-          </div>
+             <input
+               id="regInput"
+               type="text"
+               value={regNumber}
+               onChange={handleRegChange}
+               placeholder="Enter your reg"
+               className="bg-transparent border-none outline-none text-xl sm:text-[28px] text-gray-900 flex-1 font-bold font-sans placeholder:tracking-normal tracking-normal pr-[40px]"
+               maxLength={8}
+             />
+           </div>
+           
+           {regError && (
+             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+               <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+               <p className="text-sm text-red-700">{regError}</p>
+             </div>
+           )}
           
           {!showManualEntry && !vehicleFound && (
-            <button 
-              type="button"
-              onClick={handleFindCar}
-              disabled={!regNumber || isLookingUp}
-              className="w-full max-w-[520px] block text-white text-[21px] font-bold py-[20px] sm:py-[24px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-              style={{
-                backgroundColor: regNumber && !isLookingUp ? '#eb4b00' : '#eb4b00',
-                borderColor: regNumber && !isLookingUp ? '#eb4b00' : '#eb4b00',
-                color: 'white',
-                opacity: regNumber && !isLookingUp ? 1 : 0.5
-              }}
-            >
-              {isLookingUp ? 'Looking up...' : 'Find my vehicle'}
-            </button>
+             <button 
+               type="button"
+               onClick={handleFindCar}
+               disabled={!regNumber || isLookingUp || regError !== ''}
+               className="w-full max-w-[520px] block text-white text-[21px] font-bold py-[20px] sm:py-[24px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+               style={{
+                 backgroundColor: regNumber && !isLookingUp && !regError ? '#eb4b00' : '#eb4b00',
+                 borderColor: regNumber && !isLookingUp && !regError ? '#eb4b00' : '#eb4b00',
+                 color: 'white',
+                 opacity: regNumber && !isLookingUp && !regError ? 1 : 0.5
+               }}
+             >
+               {isLookingUp ? 'Looking up...' : 'Find my vehicle'}
+             </button>
           )}
 
           {vehicleFound && vehicleData?.found && !showManualEntry && (
