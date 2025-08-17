@@ -82,6 +82,11 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       // Check for duplicate registration
       if (formatted.length >= 3 && hasRegistration(formatted)) {
         setRegError(`Registration ${formatted} already has a warranty in your cart`);
+        // Clear the field after showing error for 2 seconds
+        setTimeout(() => {
+          setRegNumber("");
+          setRegError("");
+        }, 2000);
       } else {
         setRegError('');
       }
