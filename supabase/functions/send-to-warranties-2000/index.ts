@@ -224,20 +224,50 @@ serve(async (req) => {
     const planType = (policy?.plan_type || customer.plan_type || 'basic').toLowerCase();
     const warrantyType = warrantyTypeMapping[planType] || 'B-BASIC';
 
-    // Calculate coverage months based on payment type
-    // Note: Warranties 2000 requires minimum 12 months coverage
-    let coverageMonths = '12'; // Default to 1 year
-    const paymentType = (policy?.payment_type || customer.payment_type || 'yearly').toLowerCase();
+    // Calculate coverage months using the master function from warrantyDurationUtils
+    const paymentType = policy?.payment_type || customer.payment_type || 'yearly';
     
-    if (paymentType === 'monthly') {
-      coverageMonths = '12'; // Monthly payments still get 12 months coverage
-    } else if (paymentType === 'yearly') {
-      coverageMonths = '12';
-    } else if (paymentType?.includes('two') || paymentType?.includes('2')) {
-      coverageMonths = '24';
-    } else if (paymentType?.includes('three') || paymentType?.includes('3')) {
-      coverageMonths = '36';
+    // Use the same logic as the frontend for consistency
+    function getWarrantyDurationInMonths(paymentType: string): number {
+      const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
+      
+      switch (normalizedPaymentType) {
+        case 'monthly':
+        case '1month':
+        case 'month':
+        case '12months':
+        case '12month':
+        case 'yearly':
+          return 12;
+        case '24months':
+        case '24month':
+        case 'twomonthly':
+        case '2monthly':
+        case 'twoyearly':
+          return 24;
+        case '36months':
+        case '36month':
+        case 'threemonthly':
+        case '3monthly':
+        case 'threeyearly':
+          return 36;
+        case '48months':
+        case '48month':
+        case 'fourmonthly':
+        case '4monthly':
+          return 48;
+        case '60months':
+        case '60month':
+        case 'fivemonthly':
+        case '5monthly':
+          return 60;
+        default:
+          console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+          return 12;
+      }
     }
+    
+    const coverageMonths = getWarrantyDurationInMonths(paymentType).toString();
 
     // Calculate max claim amount based on plan type
     const maxClaimMapping: Record<string, string> = {
