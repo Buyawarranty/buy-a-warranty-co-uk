@@ -217,22 +217,22 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
               </Button>
               
               {/* Limited-Time Offer Card */}
-              <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                 <div className="flex items-start gap-4">
-                  <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
-                    <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">$</span>
+                  <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">🔥</span>
                     </div>
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      Limited-Time Offer: Get 10% Off!
+                      🔥 Save 10% Instantly — Today Only!
                     </h3>
                     <p className="text-gray-700 mb-3">
-                      Add another warranty now and save 10% instantly.
+                      Add another warranty to your order and get an extra 10% off right away.
                     </p>
-                    <p className="text-gray-600 text-sm">
-                      This deal won't be available afterwards.
+                    <p className="text-gray-600 text-sm font-medium">
+                      Don't miss out — this exclusive deal disappears after checkout!
                     </p>
                   </div>
                 </div>
