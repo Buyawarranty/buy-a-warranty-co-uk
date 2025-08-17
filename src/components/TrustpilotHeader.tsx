@@ -8,12 +8,7 @@ interface TrustpilotHeaderProps {
 
 const TrustpilotHeader: React.FC<TrustpilotHeaderProps> = ({ className = "" }) => {
   return (
-    <div className={`flex justify-between items-center ${className}`}>
-      <img 
-        src={buyAWarrantyLogo} 
-        alt="Buy A Warranty logo" 
-        className="h-8 sm:h-10 w-auto"
-      />
+    <div className={`flex justify-center items-center ${className}`}>
       <img 
         src={trustpilotLogo} 
         alt="Trustpilot 5 stars" 
