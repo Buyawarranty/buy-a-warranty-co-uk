@@ -221,7 +221,7 @@ const handler = async (req: Request): Promise<Response> => {
       from: "Buy A Warranty <support@buyawarranty.co.uk>",
       reply_to: "info@buyawarranty.co.uk",
       to: [emailRequest.email],
-      subject: `Your ${emailRequest.vehicleData.make || 'Vehicle'} Warranty Quote - Reference Required`,
+      subject: "Complete Your Vehicle Warranty Quote - in 30 seconds!",
       html: emailHtml,
       text: `Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote
 
