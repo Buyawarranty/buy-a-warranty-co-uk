@@ -10,19 +10,19 @@ import { toast } from 'sonner';
 import { Upload, Download, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface PricingRow {
-  plan_type: string;
-  labour_rate: string;
-  voluntary_excess_amount: string;
-  twelve_month_warranty_12_installments: string;
-  twelve_month_warranty_original_price: string;
-  twentyfour_month_warranty_12_installments: string;
-  twentyfour_month_warranty_10_off: string;
-  you_save: string;
-  twentyfour_month_warranty_original_price: string;
-  thirtysix_month_warranty_12_installments: string;
-  thirtysix_month_warranty_20_off: string;
-  three_year_warranty_you_save_amount: string;
-  thirtysix_month_warranty_original_price: string;
+  "Plan type": string;
+  "Labour up to £ p/hr": string;
+  "Voluntary Excess Amount": string;
+  "12 month Warranty in 12 installments": string;
+  "12 month warranty original price": string;
+  "24 month warranty in 12 installments": string;
+  "24 month warranty with 10% off": string;
+  "24 month warranty You Save Amount": string;
+  "24 month warranty original price": string;
+  "36 month warranty in 12 installments": string;
+  "36 month warranty with 20% off": string;
+  "36 month warranty You Save Amount": string;
+  "36 month warranty  original price": string;
 }
 
 interface UpdateResult {
@@ -37,31 +37,31 @@ export const BulkPricingTab = () => {
   const [results, setResults] = useState<UpdateResult | null>(null);
 
   const downloadTemplate = () => {
-    const csvContent = `plan_type,labour_rate,voluntary_excess_amount,twelve_month_warranty_12_installments,twelve_month_warranty_original_price,twentyfour_month_warranty_12_installments,twentyfour_month_warranty_10_off,you_save,twentyfour_month_warranty_original_price,thirtysix_month_warranty_12_installments,thirtysix_month_warranty_20_off,three_year_warranty_you_save_amount,thirtysix_month_warranty_original_price
-BASIC,Up to 55 p/hr inc. VAT,No Contribution,£29,£348,£52,£626,£70,£696,£77,£919,£230,£1148
-BASIC,Up to 55 p/hr inc. VAT,£50,£25,£300,£45,£540,£60,£600,£66,£792,£198,£990
-BASIC,Up to 55 p/hr inc. VAT,£100,£23,£276,£41,£497,£55,£552,£61,£729,£182,£911
-BASIC,Up to 55 p/hr inc. VAT,£150,£21,£252,£38,£457,£51,£510,£56,£673,£168,£841
-GOLD,Up to 75 p/hr inc. VAT,No Contribution,£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
-GOLD,Up to 75 p/hr inc. VAT,£50,£31,£372,£56,£670,£74,£744,£81,£965,£241,£1206
-GOLD,Up to 75 p/hr inc. VAT,£100,£27,£324,£49,£583,£65,£644,£70,£838,£210,£1050
-GOLD,Up to 75 p/hr inc. VAT,£150,£25,£300,£45,£540,£60,£600,£66,£792,£198,£990
-PLATINUM,Up to 100 p/hr inc. VAT,No Contribution,£36,£417,£65,£780,£87,£873,£95,£1153,£288,£1441
-PLATINUM,Up to 100 p/hr inc. VAT,£50,£33,£396,£59,£713,£79,£792,£87,£1045,£261,£1307
-PLATINUM,Up to 100 p/hr inc. VAT,£100,£29,£348,£52,£626,£70,£696,£77,£919,£230,£1148
-PLATINUM,Up to 100 p/hr inc. VAT,£150,£27,£324,£49,£583,£65,£648,£71,£855,£214,£1069
-PHEV,Up to 75 p/hr inc. VAT,No Contribution,£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
-PHEV,Up to 75 p/hr inc. VAT,£50,£31,£372,£56,£670,£74,£744,£82,£982,£246,£1228
-PHEV,Up to 75 p/hr inc. VAT,£100,£27,£324,£49,£583,£65,£648,£71,£855,£214,£1069
-PHEV,Up to 75 p/hr inc. VAT,£150,£27,£312,£47,£562,£62,£624,£69,£824,£206,£1030
-EV,Up to 75 p/hr inc. VAT,No Contribution,£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
-EV,Up to 75 p/hr inc. VAT,£50,£31,£372,£56,£670,£74,£744,£82,£982,£246,£1228
-EV,Up to 75 p/hr inc. VAT,£100,£27,£324,£49,£583,£65,£648,£71,£855,£214,£1069
-EV,Up to 75 p/hr inc. VAT,£150,£27,£312,£47,£562,£62,£624,£69,£824,£206,£1030
-MOTORBIKE,Up to 75 p/hr inc. VAT,No Contribution,£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
-MOTORBIKE,Up to 75 p/hr inc. VAT,£50,£31,£372,£56,£670,£74,£744,£82,£982,£246,£1228
-MOTORBIKE,Up to 75 p/hr inc. VAT,£100,£27,£324,£49,£583,£65,£648,£71,£855,£214,£1069
-MOTORBIKE,Up to 75 p/hr inc. VAT,£150,£27,£312,£47,£562,£62,£624,£69,£824,£206,£1030`;
+    const csvContent = `"Plan type","Labour up to £ p/hr","Voluntary Excess Amount","12 month Warranty in 12 installments","12 month warranty original price","24 month warranty in 12 installments","24 month warranty with 10% off","24 month warranty You Save Amount","24 month warranty original price","36 month warranty in 12 installments","36 month warranty with 20% off","36 month warranty You Save Amount","36 month warranty  original price"
+BASIC,"Up to 55 p/hr inc. VAT","No Contribution",£29,£348,£52,£626,£70,£696,£77,£919,£230,£1148
+BASIC,"Up to 55 p/hr inc. VAT",£50,£25,£300,£45,£540,£60,£600,£66,£792,£198,£990
+BASIC,"Up to 55 p/hr inc. VAT",£100,£23,£276,£41,£497,£55,£552,£61,£729,£182,£911
+BASIC,"Up to 55 p/hr inc. VAT",£150,£21,£252,£38,£457,£51,£510,£56,£673,£168,£841
+GOLD,"Up to 75 p/hr inc. VAT","No Contribution",£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
+GOLD,"Up to 75 p/hr inc. VAT",£50,£31,£372,£56,£670,£74,£744,£81,£965,£241,£1206
+GOLD,"Up to 75 p/hr inc. VAT",£100,£27,£324,£49,£583,£65,£644,£70,£838,£210,£1050
+GOLD,"Up to 75 p/hr inc. VAT",£150,£25,£300,£45,£540,£60,£600,£66,£792,£198,£990
+PLATINUM,"Up to 100 p/hr inc. VAT","No Contribution",£36,£417,£65,£780,£87,£873,£95,£1153,£288,£1441
+PLATINUM,"Up to 100 p/hr inc. VAT",£50,£33,£396,£59,£713,£79,£792,£87,£1045,£261,£1307
+PLATINUM,"Up to 100 p/hr inc. VAT",£100,£29,£348,£52,£626,£70,£696,£77,£919,£230,£1148
+PLATINUM,"Up to 100 p/hr inc. VAT",£150,£27,£324,£49,£583,£65,£648,£71,£855,£214,£1069
+PHEV,"Up to 75 p/hr inc. VAT","No Contribution",£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
+PHEV,"Up to 75 p/hr inc. VAT",£50,£31,£372,£56,£670,£74,£744,£82,£982,£246,£1228
+PHEV,"Up to 75 p/hr inc. VAT",£100,£27,£324,£49,£583,£65,£648,£71,£855,£214,£1069
+PHEV,"Up to 75 p/hr inc. VAT",£150,£27,£312,£47,£562,£62,£624,£69,£824,£206,£1030
+EV,"Up to 75 p/hr inc. VAT","No Contribution",£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
+EV,"Up to 75 p/hr inc. VAT",£50,£31,£372,£56,£670,£74,£744,£82,£982,£246,£1228
+EV,"Up to 75 p/hr inc. VAT",£100,£27,£324,£49,£583,£65,£648,£71,£855,£214,£1069
+EV,"Up to 75 p/hr inc. VAT",£150,£27,£312,£47,£562,£62,£624,£69,£824,£206,£1030
+MOTORBIKE,"Up to 75 p/hr inc. VAT","No Contribution",£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
+MOTORBIKE,"Up to 75 p/hr inc. VAT",£50,£31,£372,£56,£670,£74,£744,£82,£982,£246,£1228
+MOTORBIKE,"Up to 75 p/hr inc. VAT",£100,£27,£324,£49,£583,£65,£648,£71,£855,£214,£1069
+MOTORBIKE,"Up to 75 p/hr inc. VAT",£150,£27,£312,£47,£562,£62,£624,£69,£824,£206,£1030`;
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -78,10 +78,35 @@ MOTORBIKE,Up to 75 p/hr inc. VAT,£150,£27,£312,£47,£562,£62,£624,£69,£8
 
   const parseCSV = (text: string): PricingRow[] => {
     const lines = text.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim());
+    
+    // Parse CSV with proper handling of quoted fields
+    const parseCSVLine = (line: string): string[] => {
+      const result: string[] = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        
+        if (char === '"' && (i === 0 || line[i-1] === ',')) {
+          inQuotes = true;
+        } else if (char === '"' && inQuotes && (i === line.length - 1 || line[i+1] === ',')) {
+          inQuotes = false;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    };
+    
+    const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g, ''));
     
     return lines.slice(1).map(line => {
-      const values = line.split(',').map(v => v.trim());
+      const values = parseCSVLine(line).map(v => v.replace(/"/g, ''));
       const row: any = {};
       
       headers.forEach((header, index) => {
@@ -98,31 +123,31 @@ MOTORBIKE,Up to 75 p/hr inc. VAT,£150,£27,£312,£47,£562,£62,£624,£69,£8
     data.forEach((row, index) => {
       const rowNum = index + 2; // +2 because CSV starts at row 1 and we skip header
       
-      if (!row.plan_type?.trim()) {
+      if (!row["Plan type"]?.trim()) {
         errors.push(`Row ${rowNum}: Plan type is required`);
       }
       
-      if (!row.labour_rate?.trim()) {
-        errors.push(`Row ${rowNum}: Labour rate is required`);
+      if (!row["Labour up to £ p/hr"]?.trim()) {
+        errors.push(`Row ${rowNum}: Labour up to £ p/hr is required`);
       }
       
-      if (!row.voluntary_excess_amount?.trim()) {
-        errors.push(`Row ${rowNum}: Voluntary excess amount is required`);
+      if (!row["Voluntary Excess Amount"]?.trim()) {
+        errors.push(`Row ${rowNum}: Voluntary Excess Amount is required`);
       }
       
       // Validate required pricing fields
       const requiredPriceFields = [
-        'twelve_month_warranty_12_installments', 'twelve_month_warranty_original_price', 
-        'twentyfour_month_warranty_12_installments', 'twentyfour_month_warranty_10_off', 
-        'you_save', 'twentyfour_month_warranty_original_price', 
-        'thirtysix_month_warranty_12_installments', 'thirtysix_month_warranty_20_off', 
-        'three_year_warranty_you_save_amount', 'thirtysix_month_warranty_original_price'
+        '12 month Warranty in 12 installments', '12 month warranty original price', 
+        '24 month warranty in 12 installments', '24 month warranty with 10% off', 
+        '24 month warranty You Save Amount', '24 month warranty original price', 
+        '36 month warranty in 12 installments', '36 month warranty with 20% off', 
+        '36 month warranty You Save Amount', '36 month warranty  original price'
       ];
       
       requiredPriceFields.forEach(field => {
         const value = (row as any)[field];
         if (!value || (typeof value === 'string' && !value.replace(/[£,]/g, '').trim())) {
-          errors.push(`Row ${rowNum}: ${field.replace(/_/g, ' ')} is required`);
+          errors.push(`Row ${rowNum}: ${field} is required`);
         }
       });
     });
@@ -209,19 +234,19 @@ MOTORBIKE,Up to 75 p/hr inc. VAT,£150,£27,£312,£47,£562,£62,£624,£69,£8
               <AlertDescription>
                 <strong>CSV Format Required Columns:</strong>
                 <ul className="mt-2 space-y-1 text-xs">
-                  <li>• <strong>plan_type:</strong> BASIC, GOLD, PLATINUM, PHEV, EV, MOTORBIKE (required)</li>
-                  <li>• <strong>labour_rate:</strong> e.g., "Up to 55 p/hr inc. VAT" (required)</li>
-                  <li>• <strong>voluntary_excess_amount:</strong> e.g., "No Contribution", "£50", "£100", "£150" (required)</li>
-                  <li>• <strong>twelve_month_warranty_12_installments:</strong> 12 month warranty in 12 installments (required)</li>
-                  <li>• <strong>twelve_month_warranty_original_price:</strong> 12 month warranty original price (required)</li>
-                  <li>• <strong>twentyfour_month_warranty_12_installments:</strong> 24 month warranty in 12 installments (required)</li>
-                  <li>• <strong>twentyfour_month_warranty_10_off:</strong> 24 month warranty 10% off (required)</li>
-                  <li>• <strong>you_save:</strong> You save amount (required)</li>
-                  <li>• <strong>twentyfour_month_warranty_original_price:</strong> 24 month warranty original price (required)</li>
-                  <li>• <strong>thirtysix_month_warranty_12_installments:</strong> 36 month warranty in 12 installments (required)</li>
-                  <li>• <strong>thirtysix_month_warranty_20_off:</strong> 36 month warranty 20% off (required)</li>
-                  <li>• <strong>three_year_warranty_you_save_amount:</strong> 3 year warranty you save amount (required)</li>
-                  <li>• <strong>thirtysix_month_warranty_original_price:</strong> 36 month warranty original price (required)</li>
+                  <li>• <strong>Plan type:</strong> BASIC, GOLD, PLATINUM, PHEV, EV, MOTORBIKE (required)</li>
+                  <li>• <strong>Labour up to £ p/hr:</strong> e.g., "Up to 55 p/hr inc. VAT" (required)</li>
+                  <li>• <strong>Voluntary Excess Amount:</strong> e.g., "No Contribution", "£50", "£100", "£150" (required)</li>
+                  <li>• <strong>12 month Warranty in 12 installments:</strong> 12 month warranty in 12 installments (required)</li>
+                  <li>• <strong>12 month warranty original price:</strong> 12 month warranty original price (required)</li>
+                  <li>• <strong>24 month warranty in 12 installments:</strong> 24 month warranty in 12 installments (required)</li>
+                  <li>• <strong>24 month warranty with 10% off:</strong> 24 month warranty with 10% off (required)</li>
+                  <li>• <strong>24 month warranty You Save Amount:</strong> You save amount (required)</li>
+                  <li>• <strong>24 month warranty original price:</strong> 24 month warranty original price (required)</li>
+                  <li>• <strong>36 month warranty in 12 installments:</strong> 36 month warranty in 12 installments (required)</li>
+                  <li>• <strong>36 month warranty with 20% off:</strong> 36 month warranty with 20% off (required)</li>
+                  <li>• <strong>36 month warranty You Save Amount:</strong> 36 month warranty you save amount (required)</li>
+                  <li>• <strong>36 month warranty  original price:</strong> 36 month warranty original price (required)</li>
                 </ul>
               </AlertDescription>
             </Alert>

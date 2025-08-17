@@ -8,12 +8,19 @@ const corsHeaders = {
 };
 
 interface PricingRow {
-  plan_name: string;
-  vehicle_type?: string;
-  monthly_price: string;
-  yearly_price?: string;
-  two_yearly_price?: string;
-  three_yearly_price?: string;
+  "Plan type": string;
+  "Labour up to £ p/hr": string;
+  "Voluntary Excess Amount": string;
+  "12 month Warranty in 12 installments": string;
+  "12 month warranty original price": string;
+  "24 month warranty in 12 installments": string;
+  "24 month warranty with 10% off": string;
+  "24 month warranty You Save Amount": string;
+  "24 month warranty original price": string;
+  "36 month warranty in 12 installments": string;
+  "36 month warranty with 20% off": string;
+  "36 month warranty You Save Amount": string;
+  "36 month warranty  original price": string;
 }
 
 interface UpdateRequest {
@@ -54,36 +61,65 @@ const handler = async (req: Request): Promise<Response> => {
       try {
         logStep(`Processing row ${rowNum}`, row);
 
-        // Determine which table to update based on vehicle_type
-        const isSpecialVehicle = row.vehicle_type && row.vehicle_type !== 'standard';
+        const planType = row["Plan type"];
+        const labourRate = row["Labour up to £ p/hr"];
+        const voluntaryExcess = row["Voluntary Excess Amount"];
+        
+        // Extract monthly price (12 month warranty in 12 installments)
+        const monthlyPriceStr = row["12 month Warranty in 12 installments"];
+        const monthlyPrice = parseFloat(monthlyPriceStr.replace(/[£,]/g, ''));
+        
+        // Extract yearly price (24 month warranty with 10% off)
+        const yearlyPriceStr = row["24 month warranty with 10% off"];
+        const yearlyPrice = parseFloat(yearlyPriceStr.replace(/[£,]/g, ''));
+        
+        // Extract 3-year price (36 month warranty with 20% off)
+        const threeYearPriceStr = row["36 month warranty with 20% off"];
+        const threeYearPrice = parseFloat(threeYearPriceStr.replace(/[£,]/g, ''));
+
+        // Determine which table to update based on plan type
+        const isSpecialVehicle = ['PHEV', 'EV', 'MOTORBIKE'].includes(planType);
         const tableName = isSpecialVehicle ? 'special_vehicle_plans' : 'plans';
         
-        // Build update object
-        const updateData: any = {
-          monthly_price: parseFloat(row.monthly_price)
+        // Build update object with pricing matrix
+        const pricingMatrix = {
+          "12": {
+            "0": { "price": monthlyPrice, "excess": "No Contribution" },
+            "50": { "price": parseFloat(row["12 month Warranty in 12 installments"].replace(/[£,]/g, '')), "excess": "£50" },
+            "100": { "price": parseFloat(row["12 month Warranty in 12 installments"].replace(/[£,]/g, '')), "excess": "£100" },
+            "150": { "price": parseFloat(row["12 month Warranty in 12 installments"].replace(/[£,]/g, '')), "excess": "£150" }
+          },
+          "24": {
+            "0": { "price": yearlyPrice, "excess": "No Contribution" },
+            "50": { "price": yearlyPrice, "excess": "£50" },
+            "100": { "price": yearlyPrice, "excess": "£100" },
+            "150": { "price": yearlyPrice, "excess": "£150" }
+          },
+          "36": {
+            "0": { "price": threeYearPrice, "excess": "No Contribution" },
+            "50": { "price": threeYearPrice, "excess": "£50" },
+            "100": { "price": threeYearPrice, "excess": "£100" },
+            "150": { "price": threeYearPrice, "excess": "£150" }
+          }
         };
 
-        if (row.yearly_price) {
-          updateData.yearly_price = parseFloat(row.yearly_price);
-        }
-        if (row.two_yearly_price) {
-          updateData.two_yearly_price = parseFloat(row.two_yearly_price);
-        }
-        if (row.three_yearly_price) {
-          updateData.three_yearly_price = parseFloat(row.three_yearly_price);
-        }
-
-        updateData.updated_at = new Date().toISOString();
+        const updateData: any = {
+          monthly_price: monthlyPrice,
+          yearly_price: yearlyPrice,
+          three_yearly_price: threeYearPrice,
+          pricing_matrix: pricingMatrix,
+          updated_at: new Date().toISOString()
+        };
 
         // Build query conditions
         let query = supabaseClient
           .from(tableName)
           .update(updateData)
-          .eq('name', row.plan_name);
+          .eq('name', planType);
 
         // Add vehicle_type condition for special vehicles
         if (isSpecialVehicle) {
-          query = query.eq('vehicle_type', row.vehicle_type);
+          query = query.eq('vehicle_type', planType.toLowerCase());
         }
 
         const { data, error } = await query;
@@ -95,14 +131,19 @@ const handler = async (req: Request): Promise<Response> => {
         }
 
         // Check if any rows were actually updated
-        const { count } = await supabaseClient
+        const checkQuery = supabaseClient
           .from(tableName)
           .select('*', { count: 'exact', head: true })
-          .eq('name', row.plan_name)
-          .eq('vehicle_type', row.vehicle_type || 'standard');
+          .eq('name', planType);
+          
+        if (isSpecialVehicle) {
+          checkQuery.eq('vehicle_type', planType.toLowerCase());
+        }
+        
+        const { count } = await checkQuery;
 
         if (count === 0) {
-          results.errors.push(`Row ${rowNum}: Plan "${row.plan_name}" with vehicle type "${row.vehicle_type || 'standard'}" not found`);
+          results.errors.push(`Row ${rowNum}: Plan "${planType}" not found in ${tableName}`);
           continue;
         }
 
