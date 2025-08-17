@@ -407,7 +407,7 @@ const Index = () => {
                           <div>
                             <h3 className="font-semibold text-lg text-orange-900">Your Cart</h3>
                             <p className="text-sm text-orange-700">
-                              {cartItems.length} warranty{cartItems.length > 1 ? 's' : ''} added
+                              You've added {cartItems.length} warrant{cartItems.length === 1 ? 'y' : 'ies'}
                             </p>
                           </div>
                         </div>
@@ -416,7 +416,7 @@ const Index = () => {
                           variant="outline"
                           className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
                         >
-                          View Cart
+                          Checkout Now
                         </Button>
                       </div>
                     </div>
