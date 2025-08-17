@@ -411,13 +411,22 @@ const Index = () => {
                             </p>
                           </div>
                         </div>
-                        <Button 
-                          onClick={() => setShowCart(true)}
-                          variant="outline"
-                          className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
-                        >
-                          Checkout Now
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => setCurrentStep(1)}
+                            variant="outline"
+                            className="border-orange-500 text-orange-600 hover:bg-orange-100"
+                          >
+                            Add Another Vehicle
+                          </Button>
+                          <Button 
+                            onClick={() => setShowCart(true)}
+                            variant="outline"
+                            className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
+                          >
+                            Checkout Now
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
