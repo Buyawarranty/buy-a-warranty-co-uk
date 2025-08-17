@@ -323,10 +323,10 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
           </div>
         </div>
 
-        {/* Header with Vehicle Type Image */}
+        {/* Header */}
         <div className="text-center mb-6 sm:mb-10 px-4 sm:px-8">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
-            {getVehicleTypeTitle()}
+          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-6">
+            Your Warranty Quote
           </h1>
           
           {/* Vehicle Registration Display */}
