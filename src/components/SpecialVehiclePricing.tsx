@@ -153,20 +153,25 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const getMonthlyDisplayPrice = () => {
     if (!plan) return 0;
     
-    // Use database pricing for monthly installment amounts
+    // Get base 12-month price (yearly_price is the total for 12 months)
+    const base12MonthTotal = plan.yearly_price || plan.monthly_price * 12;
+    const baseMonthlyPrice = Math.round(base12MonthTotal / 12);
+    
     if (paymentType === 'yearly') {
-      return plan.yearly_price || plan.monthly_price * 12;
+      return baseMonthlyPrice;
     } else if (paymentType === 'two_yearly') {
-      // Show monthly installment for 24 months
-      const totalPrice = plan.two_yearly_price || plan.monthly_price * 24;
-      return Math.round(totalPrice / 24);
+      // Double the 12-month total cost, apply 10% discount, then divide by 24 months
+      const doubledCost = base12MonthTotal * 2;
+      const discountedCost = doubledCost * 0.9; // 10% discount
+      return Math.round(discountedCost / 24);
     } else if (paymentType === 'three_yearly') {
-      // Show monthly installment for 36 months
-      const totalPrice = plan.three_yearly_price || plan.monthly_price * 36;
-      return Math.round(totalPrice / 36);
+      // Triple the 12-month total cost, apply 20% discount, then divide by 36 months
+      const tripledCost = base12MonthTotal * 3;
+      const discountedCost = tripledCost * 0.8; // 20% discount
+      return Math.round(discountedCost / 36);
     }
     
-    return plan.monthly_price;
+    return baseMonthlyPrice;
   };
 
   const handleAddToCart = () => {
