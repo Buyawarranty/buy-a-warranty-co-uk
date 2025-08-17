@@ -216,12 +216,12 @@ const handler = async (req: Request): Promise<Response> => {
       quoteId
     });
 
-    // Send email using Resend with enhanced anti-spam measures
+    // Send email using Resend with enhanced deliverability
     const emailResponse = await resend.emails.send({
-      from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
+      from: "Buy A Warranty <support@buyawarranty.co.uk>",
       reply_to: "info@buyawarranty.co.uk",
       to: [emailRequest.email],
-      subject: `Your ${emailRequest.vehicleData.make || 'Vehicle'} Warranty Quote - Lock In Your Price Today`,
+      subject: `Your ${emailRequest.vehicleData.make || 'Vehicle'} Warranty Quote - Reference Required`,
       html: emailHtml,
       text: `Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote
 

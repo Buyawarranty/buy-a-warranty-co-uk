@@ -125,13 +125,28 @@ const handler = async (req: Request): Promise<Response> => {
       subject = subject.replace(new RegExp(placeholder, 'g'), value);
     });
 
-    // Send email using Resend
+    // Send email using Resend with improved deliverability
     const emailResponse = await resend.emails.send({
       from: "Buy A Warranty <support@buyawarranty.co.uk>",
+      reply_to: "info@buyawarranty.co.uk",
       to: [emailRequest.email],
       subject: subject,
       html: htmlContent,
-      text: textContent
+      text: textContent,
+      headers: {
+        'X-Entity-Ref-ID': `abandoned-cart-${emailRequest.email}`,
+        'List-Unsubscribe': '<mailto:unsubscribe@buyawarranty.co.uk>',
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        'X-Mailer': 'BuyAWarranty Reminder System v1.0',
+        'X-Priority': '3',
+        'X-MSMail-Priority': 'Normal',
+        'Importance': 'Normal',
+        'Auto-Submitted': 'auto-generated',
+      },
+      tags: [
+        { name: 'category', value: 'abandoned-cart' },
+        { name: 'vehicle-reg', value: emailRequest.vehicleReg || 'unknown' }
+      ]
     });
 
     console.log("Email sent successfully:", emailResponse);

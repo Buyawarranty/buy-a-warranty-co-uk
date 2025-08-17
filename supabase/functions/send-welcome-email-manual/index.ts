@@ -83,7 +83,7 @@ const handler = async (req: Request): Promise<Response> => {
     
     // Check environment variables at startup
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    const resendFrom = Deno.env.get('RESEND_FROM') || 'Buy A Warranty <support@buyawarranty.co.uk>';
+    const resendFrom = 'Buy A Warranty <support@buyawarranty.co.uk>';
     
     console.log(JSON.stringify({ 
       evt: "env.check", 
