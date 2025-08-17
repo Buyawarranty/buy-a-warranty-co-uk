@@ -234,46 +234,28 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   };
 
   const calculatePlanPrice = (plan: Plan) => {
-    // Get base 12-month price first
-    let baseMonthlyPrice = 0;
-    
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
-      const periodData12 = matrix['12'];
-      if (periodData12 && periodData12[voluntaryExcess.toString()]) {
-        baseMonthlyPrice = periodData12[voluntaryExcess.toString()].price || 0;
+      // Map payment types to database keys
+      const dbKey = paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36';
+      const periodData = matrix[dbKey];
+      if (periodData && periodData[voluntaryExcess.toString()]) {
+        return periodData[voluntaryExcess.toString()].price || 0;
       }
     }
     
-    // Fallback to hardcoded pricing for base price
-    if (baseMonthlyPrice === 0) {
-      const pricing = getPricingData(voluntaryExcess, 'yearly');
-      const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
-      
-      if (pricing[planType]) {
-        baseMonthlyPrice = pricing[planType].monthly || 0;
-      }
+    // Fallback to hardcoded pricing
+    const pricing = getPricingData(voluntaryExcess, paymentType);
+    const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
+    
+    // Safety check: ensure planType exists in pricing object
+    if (!pricing[planType]) {
+      console.warn(`Plan type "${planType}" not found in pricing data, defaulting to basic`);
+      return pricing.basic?.monthly || 0;
     }
     
-    // Calculate installment based on payment period
-    if (paymentType === '12months') {
-      return baseMonthlyPrice;
-    } else if (paymentType === '24months') {
-      // Double the 12-month total cost, apply 10% discount, then divide by 24 months
-      const totalWarrantyCost = baseMonthlyPrice * 12;
-      const doubledCost = totalWarrantyCost * 2;
-      const discountedCost = doubledCost * 0.9; // 10% discount
-      return Math.round(discountedCost / 24);
-    } else if (paymentType === '36months') {
-      // Triple the 12-month total cost, apply 20% discount, then divide by 36 months
-      const totalWarrantyCost = baseMonthlyPrice * 12;
-      const tripledCost = totalWarrantyCost * 3;
-      const discountedCost = tripledCost * 0.8; // 20% discount
-      return Math.round(discountedCost / 36);
-    }
-    
-    return baseMonthlyPrice;
+    return pricing[planType].monthly || 0;
   };
 
   const getPlanSavings = (plan: Plan) => {
@@ -434,11 +416,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const displayPlans = vt === 'car' ? ensureCarOnly(plans) : ensureSpecialOnly(plans, vt);
 
   const getPaymentLabel = (price: number) => {
-    if (paymentType === '24months') {
-      return `£${Math.round(price / 24)}/mo for 24 months`;
-    } else if (paymentType === '36months') {
-      return `£${Math.round(price / 36)}/mo for 36 months`;
-    }
     return `£${price}/mo for 12 months`;
   };
 
