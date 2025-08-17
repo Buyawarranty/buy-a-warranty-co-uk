@@ -673,14 +673,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    <div className="text-gray-600 text-base mb-6">
                      for 12 months interest free
                    </div>
-                   {savings && paymentType !== '12months' && (
-                     <div className="text-green-600 font-bold text-lg mb-6">
-                       You Save £{savings}
-                     </div>
-                   )}
-                   
-                   {/* Buy Now Button */}
-                   <div className="space-y-3">
+                    {savings && paymentType !== '12months' && (
+                      <div className="text-green-600 font-bold text-lg mb-6">
+                        You Save £{savings}
+                      </div>
+                    )}
+                    
+                    {/* Buy Now Button */}
+                    <div className="space-y-3">
                      <Button
                        onClick={() => handleSelectPlan(plan)}
                        disabled={isLoading}
