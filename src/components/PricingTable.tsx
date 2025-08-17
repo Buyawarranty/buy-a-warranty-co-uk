@@ -71,6 +71,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   // Normalize vehicle type once
   const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
 
+  // Check vehicle age validation
+  const vehicleAgeError = useMemo(() => {
+    if (vehicleData?.year) {
+      const currentYear = new Date().getFullYear();
+      const vehicleYear = parseInt(vehicleData.year);
+      const vehicleAge = currentYear - vehicleYear;
+      
+      if (vehicleAge > 15) {
+        return 'We cannot offer warranties for vehicles over 15 years of age';
+      }
+    }
+    return null;
+  }, [vehicleData?.year]);
+
   useEffect(() => {
     let alive = true;
     setPlans([]); // clear immediately so no leakage
@@ -485,6 +499,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
           </div>
         )}
+
+        {/* Vehicle Age Error */}
+        {vehicleAgeError && (
+          <div className="max-w-2xl mx-auto mb-8 px-4">
+            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
+              <h3 className="text-xl font-bold text-red-800 mb-2">Vehicle Not Eligible</h3>
+              <p className="text-red-700 text-lg mb-4">{vehicleAgeError}</p>
+              <p className="text-red-600 text-sm">
+                Please contact us if you believe this is an error.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Payment Period Toggle */}
@@ -604,7 +631,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       )}
 
       {/* Pricing Cards Container */}
-      {!plansLoading && !plansError && displayPlans.length > 0 && (
+      {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {displayPlans.map((plan) => {

@@ -147,6 +147,21 @@ serve(async (req) => {
     
     console.log(`Determined vehicle type: ${vehicleType}`);
 
+    // Check vehicle age (must be 15 years or newer)
+    const currentYear = new Date().getFullYear();
+    const vehicleAge = currentYear - data.yearOfManufacture;
+    
+    if (vehicleAge > 15) {
+      console.log(`Vehicle ${registrationNumber} is ${vehicleAge} years old - too old for warranty`);
+      return new Response(JSON.stringify({
+        found: false,
+        error: "We cannot offer warranties for vehicles over 15 years of age"
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     return new Response(JSON.stringify({
       found: true,
       make: data.make,
