@@ -10,12 +10,19 @@ import { toast } from 'sonner';
 import { Upload, Download, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface PricingRow {
-  plan_name: string;
-  vehicle_type?: string;
-  monthly_price: string;
-  yearly_price?: string;
-  two_yearly_price?: string;
-  three_yearly_price?: string;
+  plan_type: string;
+  labour_rate: string;
+  voluntary_excess_amount: string;
+  monthly_12_installments: string;
+  monthly_original_price: string;
+  monthly_24_installments: string;
+  monthly_20_off: string;
+  yearly_you_save: string;
+  yearly_original_price: string;
+  yearly_12_installments: string;
+  yearly_20_off: string;
+  three_year_you_save: string;
+  three_year_original_price: string;
 }
 
 interface UpdateResult {
@@ -30,12 +37,15 @@ export const BulkPricingTab = () => {
   const [results, setResults] = useState<UpdateResult | null>(null);
 
   const downloadTemplate = () => {
-    const csvContent = `plan_name,vehicle_type,monthly_price,yearly_price,two_yearly_price,three_yearly_price
-Basic,standard,29.99,299.99,599.99,899.99
-Gold,standard,49.99,499.99,999.99,1499.99
-Platinum,standard,79.99,799.99,1599.99,2399.99
-Basic,caravan,39.99,399.99,799.99,1199.99
-Gold,caravan,69.99,699.99,1399.99,2099.99`;
+    const csvContent = `plan_type,labour_rate,voluntary_excess_amount,monthly_12_installments,monthly_original_price,monthly_24_installments,monthly_20_off,yearly_you_save,yearly_original_price,yearly_12_installments,yearly_20_off,three_year_you_save,three_year_original_price
+Basic,Up to 55 p/hr inc. VAT,No Contribution,£29,£348,£52,£626,£70,£696,£77,£919,£230,£1148
+Basic,Up to 55 p/hr inc. VAT,£50,£25,£300,£45,£540,£60,£600,£66,£792,£198,£990
+Basic,Up to 55 p/hr inc. VAT,£100,£23,£276,£41,£497,£55,£552,£61,£729,£182,£911
+Basic,Up to 55 p/hr inc. VAT,£150,£21,£252,£38,£457,£51,£510,£56,£673,£168,£841
+Gold,Up to 75 p/hr inc. VAT,No Contribution,£34,£408,£61,£734,£82,£816,£90,£1077,£269,£1346
+Gold,Up to 75 p/hr inc. VAT,£50,£31,£372,£56,£670,£74,£744,£81,£965,£241,£1206
+Gold,Up to 75 p/hr inc. VAT,£100,£27,£324,£49,£583,£65,£644,£70,£838,£210,£1050
+Gold,Up to 75 p/hr inc. VAT,£150,£25,£300,£45,£540,£60,£600,£66,£792,£198,£990`;
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -72,25 +82,31 @@ Gold,caravan,69.99,699.99,1399.99,2099.99`;
     data.forEach((row, index) => {
       const rowNum = index + 2; // +2 because CSV starts at row 1 and we skip header
       
-      if (!row.plan_name?.trim()) {
-        errors.push(`Row ${rowNum}: Plan name is required`);
+      if (!row.plan_type?.trim()) {
+        errors.push(`Row ${rowNum}: Plan type is required`);
       }
       
-      if (!row.monthly_price || isNaN(parseFloat(row.monthly_price))) {
-        errors.push(`Row ${rowNum}: Valid monthly price is required`);
+      if (!row.labour_rate?.trim()) {
+        errors.push(`Row ${rowNum}: Labour rate is required`);
       }
       
-      if (row.yearly_price && isNaN(parseFloat(row.yearly_price))) {
-        errors.push(`Row ${rowNum}: Invalid yearly price`);
+      if (!row.voluntary_excess_amount?.trim()) {
+        errors.push(`Row ${rowNum}: Voluntary excess amount is required`);
       }
       
-      if (row.two_yearly_price && isNaN(parseFloat(row.two_yearly_price))) {
-        errors.push(`Row ${rowNum}: Invalid two yearly price`);
-      }
+      // Validate required pricing fields
+      const requiredPriceFields = [
+        'monthly_12_installments', 'monthly_original_price', 'monthly_24_installments', 
+        'monthly_20_off', 'yearly_you_save', 'yearly_original_price', 
+        'yearly_12_installments', 'yearly_20_off', 'three_year_you_save', 'three_year_original_price'
+      ];
       
-      if (row.three_yearly_price && isNaN(parseFloat(row.three_yearly_price))) {
-        errors.push(`Row ${rowNum}: Invalid three yearly price`);
-      }
+      requiredPriceFields.forEach(field => {
+        const value = (row as any)[field];
+        if (!value || (typeof value === 'string' && !value.replace(/[£,]/g, '').trim())) {
+          errors.push(`Row ${rowNum}: ${field.replace(/_/g, ' ')} is required`);
+        }
+      });
     });
     
     return errors;
@@ -173,14 +189,21 @@ Gold,caravan,69.99,699.99,1399.99,2099.99`;
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>CSV Format:</strong>
+                <strong>CSV Format Required Columns:</strong>
                 <ul className="mt-2 space-y-1 text-xs">
-                  <li>• <strong>plan_name:</strong> Name of the plan (required)</li>
-                  <li>• <strong>vehicle_type:</strong> standard, caravan, motorhome, etc.</li>
-                  <li>• <strong>monthly_price:</strong> Monthly price (required)</li>
-                  <li>• <strong>yearly_price:</strong> Yearly price (optional)</li>
-                  <li>• <strong>two_yearly_price:</strong> Two year price (optional)</li>
-                  <li>• <strong>three_yearly_price:</strong> Three year price (optional)</li>
+                  <li>• <strong>plan_type:</strong> Basic, Gold, Platinum (required)</li>
+                  <li>• <strong>labour_rate:</strong> e.g., "Up to 55 p/hr inc. VAT" (required)</li>
+                  <li>• <strong>voluntary_excess_amount:</strong> e.g., "No Contribution", "£50" (required)</li>
+                  <li>• <strong>monthly_12_installments:</strong> Monthly price in 12 installments (required)</li>
+                  <li>• <strong>monthly_original_price:</strong> Monthly original price (required)</li>
+                  <li>• <strong>monthly_24_installments:</strong> Monthly price in 24 installments (required)</li>
+                  <li>• <strong>monthly_20_off:</strong> Monthly 20% off price (required)</li>
+                  <li>• <strong>yearly_you_save:</strong> Yearly savings amount (required)</li>
+                  <li>• <strong>yearly_original_price:</strong> Yearly original price (required)</li>
+                  <li>• <strong>yearly_12_installments:</strong> Yearly price in 12 installments (required)</li>
+                  <li>• <strong>yearly_20_off:</strong> Yearly 20% off price (required)</li>
+                  <li>• <strong>three_year_you_save:</strong> 3-year savings amount (required)</li>
+                  <li>• <strong>three_year_original_price:</strong> 3-year original price (required)</li>
                 </ul>
               </AlertDescription>
             </Alert>
