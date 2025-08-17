@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, CreditCard, CheckCircle, AlertCircle, Plus, Flame } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CartItem } from '@/contexts/CartContext';
@@ -12,9 +12,10 @@ import { CartItem } from '@/contexts/CartContext';
 interface MultiWarrantyCheckoutProps {
   items: CartItem[];
   onBack: () => void;
+  onAddAnother?: () => void;
 }
 
-const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, onBack }) => {
+const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, onBack, onAddAnother }) => {
   const [customerData, setCustomerData] = useState({
     first_name: '',
     last_name: '',
@@ -418,6 +419,38 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                   Shop with confidence - cancel anytime within 14 days for a full refund ✅
                 </p>
               </div>
+              
+              {/* Add Another Warranty Section - Only show for single warranty */}
+              {items.length === 1 && onAddAnother && (
+                <div className="mb-6">
+                  <Button
+                    onClick={onAddAnother}
+                    variant="default"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 text-base mb-4"
+                    size="lg"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Add Another Warranty
+                  </Button>
+                  
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="flex items-center justify-center w-8 h-8 bg-blue-600 rounded-full flex-shrink-0">
+                        <Flame className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 mb-2">🔥 Save 10% Instantly — Today Only!</h4>
+                        <p className="text-sm text-gray-700 mb-2">
+                          Add another warranty to your order and get an extra 10% off right away.
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          Don't miss out — this exclusive deal disappears after checkout!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* Warranty Items */}
               <div className="space-y-8 mb-6">

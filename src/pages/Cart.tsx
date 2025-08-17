@@ -21,11 +21,17 @@ const Cart: React.FC = () => {
     setShowCheckout(false);
   };
 
+  const handleAddAnother = () => {
+    setShowCheckout(false);
+    navigate('/?step=1');
+  };
+
   if (showCheckout) {
     return (
       <MultiWarrantyCheckout 
         items={items}
         onBack={handleBackToCart}
+        onAddAnother={handleAddAnother}
       />
     );
   }
