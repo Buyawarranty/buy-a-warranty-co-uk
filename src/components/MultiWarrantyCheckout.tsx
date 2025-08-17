@@ -149,8 +149,9 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         if (error) throw error;
 
         if (data.fallbackToStripe) {
-          // If Bumper failed, fallback to Stripe
+          // If Bumper failed, fallback to Stripe with 5% discount
           toast.info('Bumper payment not available, redirecting to Stripe');
+          const stripeDiscountedPrice = Math.round(finalPrice * 0.95);
           const stripeResponse = await supabase.functions.invoke('create-multi-warranty-checkout', {
             body: {
               items: items.map(item => ({
@@ -163,7 +164,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               })),
               customerData: customerData,
               discountCode: customerData.discount_code || null,
-              totalAmount: finalPrice
+              totalAmount: stripeDiscountedPrice
             }
           });
           
@@ -178,7 +179,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           toast.error('Failed to create Bumper checkout session');
         }
       } else {
-        // Create Stripe multi-warranty checkout
+        // Create Stripe multi-warranty checkout with 5% discount
+        const stripeDiscountedPrice = Math.round(finalPrice * 0.95);
         const { data, error } = await supabase.functions.invoke('create-multi-warranty-checkout', {
           body: {
             items: items.map(item => ({
@@ -191,7 +193,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             })),
             customerData: customerData,
             discountCode: customerData.discount_code || null,
-            totalAmount: finalPrice
+            totalAmount: stripeDiscountedPrice
           }
         });
 
@@ -565,10 +567,14 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                     />
                     <label htmlFor="stripe" className="flex-1 cursor-pointer">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-900">💳 Card Payment (Stripe)</span>
-                        <Badge variant="secondary" className="text-xs">Instant</Badge>
+                        <span className="text-sm font-medium text-gray-900">Pay Full Amount</span>
+                        <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                          Save a further 5% (£{Math.round(finalPrice * 0.05)})
+                        </div>
                       </div>
-                      <p className="text-xs text-gray-600 mt-1">Pay immediately with debit/credit card</p>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Pay £{Math.round(finalPrice * 0.95)} upfront via card (was £{finalPrice})
+                      </p>
                     </label>
                   </div>
                 </div>
