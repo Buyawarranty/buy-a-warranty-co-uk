@@ -1419,6 +1419,7 @@ export const CustomersTab = () => {
               <TableHead>Dur.</TableHead>
               <TableHead>Expiry Date</TableHead>
               <TableHead>Payment Method</TableHead>
+              <TableHead>Vol. Excess</TableHead>
               <TableHead>Ref</TableHead>
               <TableHead>Email Status</TableHead>
               <TableHead>Warranties2000</TableHead>
@@ -1430,7 +1431,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={18} className="text-center py-8">
+                <TableCell colSpan={19} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -1523,13 +1524,18 @@ export const CustomersTab = () => {
                        <span className="text-gray-400">N/A</span>
                      )}
                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {customer.bumper_order_id ? 'Bumper' : 
-                         customer.stripe_session_id ? 'Stripe' : 'N/A'}
-                      </Badge>
-                    </TableCell>
-                  <TableCell className="font-mono text-sm">
+                     <TableCell>
+                       <Badge variant="outline">
+                         {customer.bumper_order_id ? 'Bumper' : 
+                          customer.stripe_session_id ? 'Stripe' : 'N/A'}
+                       </Badge>
+                     </TableCell>
+                     <TableCell>
+                       <Badge variant="secondary" className="bg-blue-50 text-blue-700">
+                         £{customer.voluntary_excess || 0}
+                       </Badge>
+                     </TableCell>
+                   <TableCell className="font-mono text-sm">
                     {customer.warranty_reference_number || customer.warranty_number ? (
                       <div className="bg-green-50 px-2 py-1 rounded border">
                         {customer.warranty_reference_number || customer.warranty_number}

@@ -128,7 +128,7 @@ serve(async (req) => {
             registration_plate, vehicle_make, vehicle_model, vehicle_year,
             mileage, flat_number, building_name, building_number,
             street, town, county, postcode, country, plan_type, payment_type,
-            final_amount, warranty_reference_number
+            final_amount, warranty_reference_number, voluntary_excess
           )
         `)
         .eq('id', policyId)
@@ -313,7 +313,8 @@ serve(async (req) => {
         nextYear.setFullYear(nextYear.getFullYear() + 1);
         return nextYear.toISOString().split('T')[0];
       })(),
-      Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`
+      Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
+      Notes: `Voluntary Excess: £${customer.voluntary_excess || 0}`
     };
 
     console.log(`[WARRANTIES-2000] Sending registration data:`, {
