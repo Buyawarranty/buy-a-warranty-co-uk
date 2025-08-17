@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ShoppingCart } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
@@ -351,7 +353,24 @@ const Index = () => {
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
       {/* Customer Login Header */}
       <div className="w-full bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-2 flex justify-end">
+        <div className="max-w-4xl mx-auto px-4 py-2 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            {/* Cart Icon */}
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/cart')}
+              className="flex items-center gap-2 relative"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              Cart
+              {cartItems.length > 0 && (
+                <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">
+                  {cartItems.length}
+                </Badge>
+              )}
+            </Button>
+          </div>
           <Link to="/auth">
             <Button variant="outline" size="sm">
               Customer Login
