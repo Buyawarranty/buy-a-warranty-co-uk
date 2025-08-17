@@ -631,7 +631,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           {displayPlans.map((plan) => {
             const basePrice = calculatePlanPrice(plan);
             const addOnPrice = calculateAddOnPrice(plan.id);
-            const monthlyPrice = basePrice + addOnPrice;
+            const totalMonthlyPrice = basePrice + addOnPrice;
+            
+            // For display: show installment amount for 24/36 months
+            let displayPrice = totalMonthlyPrice;
+            if (paymentType === '24months' || paymentType === '36months') {
+              displayPrice = Math.round(totalMonthlyPrice / 12);
+            }
+            
             const isLoading = loading[plan.id];
             const isPopular = plan.name === 'Gold';
             const savings = getPlanSavings(plan);
@@ -662,7 +669,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      '12 month warranty'}
                    </p>
                    <div className="text-4xl font-bold text-gray-900 mb-3">
-                     <span className="text-2xl">£</span>{monthlyPrice}<span className="text-2xl">/mo</span>
+                     <span className="text-2xl">£</span>{displayPrice}<span className="text-2xl">/mo</span>
                    </div>
                    <div className="text-gray-600 text-base mb-6">
                      for 12 months interest free
