@@ -241,7 +241,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const dbKey = paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36';
       const periodData = matrix[dbKey];
       if (periodData && periodData[voluntaryExcess.toString()]) {
-        return periodData[voluntaryExcess.toString()].price || 0;
+        const totalPrice = periodData[voluntaryExcess.toString()].price || 0;
+        // For 24 and 36 months, convert total to monthly installment
+        if (paymentType === '24months') {
+          return Math.round(totalPrice / 24);
+        } else if (paymentType === '36months') {
+          return Math.round(totalPrice / 36);
+        }
+        return totalPrice; // 12 months remains as is
       }
     }
     
