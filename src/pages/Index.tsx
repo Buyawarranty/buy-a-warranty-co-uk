@@ -407,7 +407,7 @@ const Index = () => {
                           <div>
                             <h3 className="font-semibold text-lg text-orange-900">Your Cart</h3>
                             <p className="text-sm text-orange-700">
-                              {cartItems.length} warranty{cartItems.length > 1 ? 'es' : ''} added
+                              {cartItems.length} warranty{cartItems.length > 1 ? 's' : ''} added
                             </p>
                           </div>
                         </div>
