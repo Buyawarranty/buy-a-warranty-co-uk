@@ -110,6 +110,19 @@ const ThankYou = () => {
             setPolicyNumber(data.policyNumber);
           }
           toast.success('Your warranty policy has been created successfully!');
+          
+          // Check if user enabled "Add Another Warranty" during checkout
+          const addAnotherWarranty = searchParams.get('addAnotherWarranty');
+          if (addAnotherWarranty === 'true') {
+            // Redirect to step 1 with 10% discount after a short delay
+            setTimeout(() => {
+              const url = new URL(window.location.origin);
+              url.searchParams.set('step', '1');
+              url.searchParams.set('discount', '10');
+              url.searchParams.set('discountMessage', 'Your 10% discount has been applied! Add your next vehicle warranty now.');
+              window.location.href = url.toString();
+            }, 3000);
+          }
         }
       } catch (error) {
         console.error('Payment processing failed:', error);
@@ -227,17 +240,28 @@ const ThankYou = () => {
           )}
         </div>
         
-        <div className="space-y-4">
-          <Button 
-            onClick={handleReturnHome}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg font-semibold"
-          >
-            Return to BuyAWarranty.co.uk
-          </Button>
-          <h3 className="text-lg text-gray-500">
-            Check your inbox for login details to access your customer dashboard
-          </h3>
-        </div>
+          <div className="space-y-4">
+            {searchParams.get('addAnotherWarranty') === 'true' ? (
+              <div className="text-center">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <p className="text-blue-800 font-semibold">
+                    🎉 Redirecting you to add your next vehicle with 10% discount applied!
+                  </p>
+                </div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              </div>
+            ) : (
+              <Button 
+                onClick={handleReturnHome}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg font-semibold"
+              >
+                Return to BuyAWarranty.co.uk
+              </Button>
+            )}
+            <h3 className="text-lg text-gray-500">
+              Check your inbox for login details to access your customer dashboard
+            </h3>
+          </div>
         </div>
       </div>
     </div>

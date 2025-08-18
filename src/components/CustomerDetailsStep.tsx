@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -80,6 +81,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [showValidation, setShowValidation] = useState(false);
   const [quoteSent, setQuoteSent] = useState(false);
+  const [addAnotherWarrantyEnabled, setAddAnotherWarrantyEnabled] = useState(false);
 
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
@@ -175,6 +177,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (!customerData.street.trim()) errors.street = 'Address is required';
     if (!customerData.town.trim()) errors.town = 'Town/City is required';
     if (!customerData.postcode.trim()) errors.postcode = 'Postcode is required';
+    if (!customerData.vehicle_reg.trim()) errors.vehicle_reg = 'Vehicle registration is required';
     
     return errors;
   };
@@ -206,7 +209,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             voluntaryExcess: pricingData.voluntaryExcess,
             customerData: customerData,
             discountCode: customerData.discount_code || null,
-            finalAmount: discountedBumperPrice // Pass the final calculated amount
+            finalAmount: discountedBumperPrice, // Pass the final calculated amount
+            addAnotherWarrantyEnabled
           }
         });
 
@@ -236,7 +240,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             vehicleData,
             customerData: customerData,
             discountCode: customerData.discount_code || null,
-            finalAmount: discountedStripePrice // Pass the final calculated amount
+            finalAmount: discountedStripePrice, // Pass the final calculated amount
+            addAnotherWarrantyEnabled
           }
         });
 
@@ -463,11 +468,23 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       value={customerData.vehicle_reg}
                       onChange={(e) => handleInputChange('vehicle_reg', e.target.value)}
                       required
-                      className="mt-1"
+                      className={`mt-1 transition-all duration-300 ${
+                        showValidation && !customerData.vehicle_reg.trim() 
+                          ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                          : 'focus:ring-2 focus:ring-blue-200'
+                      }`}
                     />
+                    {fieldErrors.vehicle_reg && (
+                      <p className="text-red-500 text-sm mt-1">{fieldErrors.vehicle_reg}</p>
+                    )}
                   </div>
                 </div>
               </div>
+
+              {/* Add Another Warranty Offer */}
+              <AddAnotherWarrantyOffer 
+                onAddAnotherWarranty={() => setAddAnotherWarrantyEnabled(true)}
+              />
 
             </form>
           </div>

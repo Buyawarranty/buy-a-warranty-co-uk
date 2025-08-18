@@ -384,6 +384,23 @@ const Index = () => {
       {currentStep === 1 && (
         <div className="w-full px-4 py-4 sm:py-8">
           <div className="max-w-4xl mx-auto">
+            {/* Discount Message Banner */}
+            {searchParams.get('discountMessage') && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 animate-fade-in">
+                <div className="flex items-center gap-3">
+                  <div className="text-green-600 text-2xl">🎉</div>
+                  <div>
+                    <h3 className="text-green-800 font-bold text-lg">
+                      10% Discount Applied!
+                    </h3>
+                    <p className="text-green-700">
+                      {searchParams.get('discountMessage')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <RegistrationForm 
               onNext={handleRegistrationComplete} 
               onBack={(step: number) => handleBackToStep(step)}
