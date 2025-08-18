@@ -216,18 +216,18 @@ const handler = async (req: Request): Promise<Response> => {
       quoteId
     });
 
-    // Send email using Resend with enhanced deliverability
+    // Send email using Resend with enhanced deliverability settings
     const emailResponse = await resend.emails.send({
       from: "Buy A Warranty <support@buyawarranty.co.uk>",
       reply_to: "info@buyawarranty.co.uk",
       to: [emailRequest.email],
-      subject: "Complete Your Vehicle Warranty Quote - in 30 seconds!",
+      subject: `Your vehicle warranty quote - ${emailRequest.vehicleData.regNumber}`,
       html: emailHtml,
       text: `Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote
 
-Hello Valued Customer,
+Hello,
 
-Your ${emailRequest.vehicleData.make || 'vehicle'} is just one step away from being fully protected against unexpected repair bills.
+Your ${emailRequest.vehicleData.make || 'vehicle'} quote is ready for review.
 
 Vehicle Details:
 - Registration: ${emailRequest.vehicleData.regNumber}
@@ -237,23 +237,16 @@ Vehicle Details:
 
 Complete your quote: ${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}&step=3
 
-Or call us on 0330 229 5040
+Questions? Call us on 0330 229 5040
 
-Kind regards,
 Buy A Warranty Customer Service Team`,
       headers: {
         'X-Entity-Ref-ID': quoteId,
-        'List-Unsubscribe': '<mailto:unsubscribe@buyawarranty.co.uk>',
-        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-        'X-Mailer': 'BuyAWarranty Quote System v1.0',
-        'X-Priority': '3',
-        'X-MSMail-Priority': 'Normal',
-        'Importance': 'Normal',
         'Auto-Submitted': 'auto-generated',
       },
       tags: [
-        { name: 'category', value: 'quote-email' },
-        { name: 'vehicle-make', value: emailRequest.vehicleData.make || 'unknown' }
+        { name: 'category', value: 'quote-confirmation' },
+        { name: 'vehicle-reg', value: emailRequest.vehicleData.regNumber }
       ]
     });
 
