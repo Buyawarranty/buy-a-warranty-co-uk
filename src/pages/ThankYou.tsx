@@ -243,9 +243,12 @@ const ThankYou = () => {
           <div className="space-y-4">
             {searchParams.get('addAnotherWarranty') === 'true' ? (
               <div className="text-center">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                  <p className="text-blue-800 font-semibold">
-                    🎉 Redirecting you to add your next vehicle with 10% discount applied!
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-4">
+                  <p className="text-blue-800 font-bold text-xl mb-2">
+                    🎉 Redirecting you to add your next vehicle
+                  </p>
+                  <p className="text-blue-700 font-semibold text-lg">
+                    with 10% discount applied!
                   </p>
                 </div>
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
@@ -258,9 +261,6 @@ const ThankYou = () => {
                 Return to BuyAWarranty.co.uk
               </Button>
             )}
-            <h3 className="text-lg text-gray-500">
-              Check your inbox for login details to access your customer dashboard
-            </h3>
           </div>
         </div>
       </div>
