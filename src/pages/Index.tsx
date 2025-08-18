@@ -1,19 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
-import WarrantyCart from '@/components/WarrantyCart';
-import MultiWarrantyCheckout from '@/components/MultiWarrantyCheckout';
 import { supabase } from '@/integrations/supabase/client';
-import { useCart, CartItem } from '@/contexts/CartContext';
 
 
 interface VehicleData {
@@ -36,7 +31,6 @@ interface VehicleData {
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { items: cartItems } = useCart();
   
   // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
@@ -60,9 +54,6 @@ const Index = () => {
   // Get current step from URL or default to 1
   const getStepFromUrl = () => {
     const stepParam = searchParams.get('step');
-    if (stepParam === 'cart') {
-      return 1; // Will be handled separately in useEffect
-    }
     if (stepParam) {
       const step = parseInt(stepParam);
       return step >= 1 && step <= 4 ? step : 1;
@@ -71,8 +62,6 @@ const Index = () => {
   };
   
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
-  const [showCart, setShowCart] = useState(false);
-  const [showCartCheckout, setShowCartCheckout] = useState(false);
   
   // Save state to localStorage
   const saveStateToLocalStorage = (step?: number) => {
@@ -127,14 +116,6 @@ const Index = () => {
     // Load saved state on initial load
     const savedState = loadStateFromLocalStorage();
     const stepFromUrl = getStepFromUrl();
-    
-    // Check for cart parameter
-    const stepParam = searchParams.get('step');
-    if (stepParam === 'cart') {
-      setShowCart(true);
-      setCurrentStep(1); // Set a valid step for the progress indicator
-      return;
-    }
 
     // Check for quote parameter from email links
     const quoteParam = searchParams.get('quote');
@@ -314,71 +295,8 @@ const Index = () => {
   // Check if vehicle is a special type
   const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
 
-  // Cart handlers
-  const handleAddMoreToCart = () => {
-    setShowCart(false);
-    setCurrentStep(1);
-    updateStepInUrl(1);
-  };
-
-  const handleProceedToCheckout = (items: CartItem[]) => {
-    setShowCartCheckout(true);
-  };
-
-  const handleBackToCart = () => {
-    setShowCartCheckout(false);
-  };
-
-  // Show cart interface
-  if (showCart && !showCartCheckout) {
-    return (
-      <WarrantyCart 
-        onAddMore={handleAddMoreToCart}
-        onProceedToCheckout={handleProceedToCheckout}
-      />
-    );
-  }
-
-  // Show cart checkout
-  if (showCartCheckout) {
-    return (
-      <MultiWarrantyCheckout 
-        items={cartItems}
-        onBack={handleBackToCart}
-      />
-    );
-  }
-
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
-      {/* Customer Login Header */}
-      <div className="w-full bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-2 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            {/* Cart Icon */}
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate('/cart')}
-              className="flex items-center gap-2 relative"
-            >
-              <ShoppingCart className="w-4 h-4" />
-              Cart
-              {cartItems.length > 0 && (
-                <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">
-                  {cartItems.length}
-                </Badge>
-              )}
-            </Button>
-          </div>
-          <Link to="/auth">
-            <Button variant="outline" size="sm">
-              Customer Login
-            </Button>
-          </Link>
-        </div>
-      </div>
-      
       <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
       
       {currentStep === 1 && (
