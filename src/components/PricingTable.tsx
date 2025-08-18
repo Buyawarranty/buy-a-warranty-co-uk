@@ -677,9 +677,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     {savings && paymentType !== '12months' && (
                       <div className="text-green-600 font-bold text-lg mb-6">
                         You Save £{savings}
-                      </div>
-                    )}
-                    
+                       </div>
+                     )}
+                     
                      {/* Action Buttons */}
                      <div className="space-y-3">
                       <Button
