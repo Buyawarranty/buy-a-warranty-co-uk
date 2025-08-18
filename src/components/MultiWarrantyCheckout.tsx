@@ -54,7 +54,9 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
   // Calculate total price
   const totalPrice = items.reduce((sum, item) => sum + item.pricingData.totalPrice, 0);
-  const finalPrice = discountValidation ? discountValidation.finalAmount : totalPrice;
+  const multiWarrantyDiscount = items.length >= 2 ? totalPrice * 0.1 : 0; // 10% multi-warranty discount
+  const subtotalAfterMultiDiscount = totalPrice - multiWarrantyDiscount;
+  const finalPrice = discountValidation ? (subtotalAfterMultiDiscount - discountValidation.discountAmount) : subtotalAfterMultiDiscount;
 
   // Check for URL discount parameters and auto-apply 10% discount
   useEffect(() => {
@@ -62,10 +64,10 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     const discountParam = urlParams.get('discount');
     const discountMessage = urlParams.get('discountMessage');
     
-    if (discountParam === '10') {
-      // Always recalculate 10% discount when totalPrice changes
-      const discountAmount = totalPrice * 0.1;
-      const finalAmount = totalPrice - discountAmount;
+      if (discountParam === '10') {
+        // Always recalculate 10% discount when totalPrice changes
+        const discountAmount = subtotalAfterMultiDiscount * 0.1;
+        const finalAmount = subtotalAfterMultiDiscount - discountAmount;
       
       setDiscountValidation({
         valid: true,
@@ -151,7 +153,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         body: {
           code: customerData.discount_code,
           customerEmail: customerData.email,
-          orderAmount: totalPrice
+          orderAmount: subtotalAfterMultiDiscount
         }
       });
 
@@ -170,7 +172,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           valid: false,
           message: data.error || 'Invalid discount code',
           discountAmount: 0,
-          finalAmount: totalPrice
+          finalAmount: subtotalAfterMultiDiscount
         });
         toast.error(data.error || 'Invalid discount code');
       }
@@ -180,7 +182,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         valid: false,
         message: 'Failed to validate discount code',
         discountAmount: 0,
-        finalAmount: totalPrice
+        finalAmount: subtotalAfterMultiDiscount
       });
       toast.error('Failed to validate discount code');
     } finally {
@@ -568,17 +570,24 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               {/* Overall Total */}
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-medium text-gray-900">Subtotal:</span>
-                    <span className="text-lg font-medium text-gray-900">£{totalPrice}</span>
-                  </div>
-                  
-                   {discountValidation && discountValidation.valid && (
+                   <div className="flex justify-between items-center">
+                     <span className="text-lg font-medium text-gray-900">Subtotal:</span>
+                     <span className="text-lg font-medium text-gray-900">£{totalPrice}</span>
+                   </div>
+                   
+                   {multiWarrantyDiscount > 0 && (
                      <div className="flex justify-between items-center text-green-600">
-                       <span className="text-sm font-medium">Discount Applied:</span>
-                       <span className="text-sm font-medium">-£{Math.round(discountValidation.discountAmount)}</span>
+                       <span className="text-sm font-medium">Multi-warranty discount (10%):</span>
+                       <span className="text-sm font-medium">-£{Math.round(multiWarrantyDiscount)}</span>
                      </div>
                    )}
+                   
+                    {discountValidation && discountValidation.valid && (
+                      <div className="flex justify-between items-center text-green-600">
+                        <span className="text-sm font-medium">Additional discount applied:</span>
+                        <span className="text-sm font-medium">-£{Math.round(discountValidation.discountAmount)}</span>
+                      </div>
+                    )}
                    
                    <div className="flex justify-between items-center border-t pt-2">
                      <span className="text-lg font-bold text-gray-900">Total to Pay:</span>
