@@ -164,21 +164,23 @@ serve(async (req) => {
     
     logStep("Document URLs determined", { planType, planDocumentUrl, termsUrl });
 
-    // Registration plate styling
+    // Registration plate styling - optimized for both light and dark modes
     const regPlate = registrationPlate || 'N/A';
     const regPlateStyle = `
       display: inline-block;
-      background: linear-gradient(to bottom, #ffeb3b 0%, #ffeb3b 30%, #fff 30%, #fff 70%, #ffeb3b 70%, #ffeb3b 100%);
-      color: #000;
+      background: linear-gradient(to bottom, #1a1a1a 0%, #1a1a1a 30%, #ffffff 30%, #ffffff 70%, #1a1a1a 70%, #1a1a1a 100%);
+      color: #1a1a1a;
       font-family: 'Charles Wright', monospace;
       font-weight: bold;
       font-size: 18px;
       padding: 8px 12px;
-      border: 2px solid #333;
+      border: 2px solid #1a1a1a;
       border-radius: 4px;
       letter-spacing: 2px;
       text-align: center;
       min-width: 120px;
+      text-shadow: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     `;
 
     const finalCustomerName = customerName || email.split('@')[0];
