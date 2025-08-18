@@ -57,7 +57,8 @@ serve(async (req) => {
       fuelType: url.searchParams.get('vehicle_fuel_type'),
       transmission: url.searchParams.get('vehicle_transmission'),
       mileage: url.searchParams.get('mileage'),
-      vehicleType: url.searchParams.get('vehicle_type')
+      vehicleType: url.searchParams.get('vehicle_type'),
+      voluntaryExcess: parseInt(url.searchParams.get('voluntary_excess') || '0')
     };
     
     const discountCode = url.searchParams.get('discount_code');
@@ -228,7 +229,8 @@ serve(async (req) => {
         original_amount: finalAmount,
         final_amount: finalAmount,
         warranty_reference_number: warrantyRef,
-        warranty_number: warrantyRef
+        warranty_number: warrantyRef,
+        voluntary_excess: vehicleData?.voluntaryExcess || 0
       })
       .select()
       .single();

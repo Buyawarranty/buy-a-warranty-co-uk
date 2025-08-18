@@ -196,14 +196,14 @@ serve(async (req) => {
     }
 
     // Add customer data to metadata if available
-    if (customerData) {
-      sessionData.metadata = {
-        ...sessionData.metadata,
-        customer_name: `${customerData.first_name || ''} ${customerData.last_name || ''}`.trim(),
-        customer_phone: customerData.mobile || '',
-        customer_address: `${customerData.building_number || ''} ${customerData.street || ''}, ${customerData.town || ''}, ${customerData.postcode || ''}`.trim()
-      };
-    }
+      if (customerData) {
+        sessionData.metadata = {
+          ...sessionData.metadata,
+          customer_name: `${customerData.first_name || ''} ${customerData.last_name || ''}`.trim(),
+          customer_phone: customerData.mobile || '',
+          customer_address: `${customerData.building_number || ''} ${customerData.street || ''}, ${customerData.town || ''}, ${customerData.postcode || ''}`.trim()
+        };
+      }
 
     const session = await stripe.checkout.sessions.create(sessionData);
     

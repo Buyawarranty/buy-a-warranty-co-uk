@@ -74,6 +74,7 @@ serve(async (req) => {
       fuelType: session.metadata?.vehicle_fuel_type || '',
       transmission: session.metadata?.vehicle_transmission || '',
       vehicleType: session.metadata?.vehicle_type || 'standard',
+      voluntaryExcess: parseInt(session.metadata?.voluntary_excess || '0'),
       fullName: session.metadata?.customer_name || '',
       phone: session.metadata?.customer_phone || '',
       address: `${session.metadata?.customer_street || ''} ${session.metadata?.customer_town || ''} ${session.metadata?.customer_county || ''} ${session.metadata?.customer_postcode || ''}`.trim(),

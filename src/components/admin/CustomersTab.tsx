@@ -419,7 +419,7 @@ export const CustomersTab = () => {
           country: 'United Kingdom',
           plan_type: policy.plan_type,
           signup_date: policy.created_at,
-          voluntary_excess: 0,
+          voluntary_excess: 0, // Orphaned policies don't have voluntary excess data
           status: 'Incomplete Record',
           registration_plate: 'Unknown',
           vehicle_make: null,
