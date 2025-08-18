@@ -78,11 +78,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error(`A warranty for registration ${item.vehicleData.regNumber} is already in your cart. We can only provide one warranty per vehicle.`);
     }
     
-    // Apply 10% discount to second warranty and beyond
-    const isSecondOrLaterWarranty = items.length >= 1;
+    // Check for "add another warranty" discount from previous purchase
+    const hasAddAnotherWarrantyDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
+    
+    // Apply 10% discount to second warranty and beyond OR if user has "add another warranty" discount
+    const shouldApplyDiscount = items.length >= 1 || hasAddAnotherWarrantyDiscount;
     let adjustedItem = { ...item };
     
-    if (isSecondOrLaterWarranty) {
+    if (shouldApplyDiscount) {
       // Apply 10% discount to the pricing
       const discountMultiplier = 0.9; // 10% off
       adjustedItem.pricingData = {
@@ -90,6 +93,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         totalPrice: item.pricingData.totalPrice * discountMultiplier,
         monthlyPrice: item.pricingData.monthlyPrice * discountMultiplier
       };
+      
+      // Clear the localStorage flag after using it
+      if (hasAddAnotherWarrantyDiscount) {
+        localStorage.removeItem('addAnotherWarrantyDiscount');
+      }
     }
     
     const newItem: CartItem = {
