@@ -314,7 +314,7 @@ serve(async (req) => {
         return nextYear.toISOString().split('T')[0];
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
-      Notes: `Voluntary Excess: £${customer.voluntary_excess || 0}`
+      Notes: `Voluntary Excess: £${customer.voluntary_excess || 0} | Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`
     };
 
     console.log(`[WARRANTIES-2000] Sending registration data:`, {
