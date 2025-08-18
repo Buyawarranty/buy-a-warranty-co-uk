@@ -81,8 +81,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check for "add another warranty" discount from previous purchase
     const hasAddAnotherWarrantyDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
     
-    // Apply 10% discount to second warranty and beyond OR if user has "add another warranty" discount
-    const shouldApplyDiscount = items.length >= 1 || hasAddAnotherWarrantyDiscount;
+    // Apply 10% discount ONLY if user has "add another warranty" discount from previous purchase
+    const shouldApplyDiscount = hasAddAnotherWarrantyDiscount;
     let adjustedItem = { ...item };
     
     // Debug logging
