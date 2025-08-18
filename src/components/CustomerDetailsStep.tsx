@@ -100,14 +100,20 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper
   const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount based on order summary total
   
-  // Apply discount if valid
+  // Check for automatic 10% discount (add another warranty)
+  const hasAutoDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
+  
+  // Apply automatic 10% discount or manual discount code
+  const baseDiscountedPrice = hasAutoDiscount ? bumperTotalPrice * 0.9 : bumperTotalPrice;
+  
+  // Apply manual discount if valid, otherwise use auto discount
   const discountedBumperPrice = discountValidation?.isValid 
     ? discountValidation.finalAmount 
-    : bumperTotalPrice; // Use Bumper total (monthly x 12)
+    : baseDiscountedPrice;
   
   const discountedStripePrice = discountValidation?.isValid 
     ? Math.round(discountValidation.finalAmount * 0.95)
-    : stripePrice;
+    : Math.round(baseDiscountedPrice * 0.95);
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -634,9 +640,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         </div>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Pay £{Math.round(monthlyBumperPrice)} x 12 monthly payments = £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} total
-                        {discountValidation?.isValid && (
-                          <span className="text-green-600"> (discount applied)</span>
+                        Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
+                        {(discountValidation?.isValid || hasAutoDiscount) && (
+                          <span className="text-green-600">
+                            {hasAutoDiscount && !discountValidation?.isValid 
+                              ? " (10% multi-warranty discount applied)" 
+                              : " (discount applied)"}
+                          </span>
+                        )}
+                        {hasAutoDiscount && !discountValidation?.isValid && (
+                          <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                         )}
                       </p>
                     </div>
@@ -650,16 +663,21 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
-                        <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save a further 5% (£{Math.round((discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice) * 0.05)})
-                        </div>
+                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                           Save a further 5% (£{Math.round(baseDiscountedPrice * 0.05)})
+                         </div>
                       </div>
                        <p className="text-sm text-gray-600">
-                        Pay £{discountedStripePrice} upfront via card 
-                        {discountValidation?.isValid ? (
-                          <span> (was £{Math.round(discountValidation.finalAmount * 0.95)})</span>
-                        ) : (
-                          <span> (was £{Math.round(bumperTotalPrice)})</span>
+                        Pay £{discountedStripePrice} upfront via card
+                        {(discountValidation?.isValid || hasAutoDiscount) && (
+                          <span className="text-green-600">
+                            {hasAutoDiscount && !discountValidation?.isValid 
+                              ? " (10% multi-warranty discount + 5% upfront discount)" 
+                              : " (discount applied)"}
+                          </span>
+                        )}
+                        {hasAutoDiscount && !discountValidation?.isValid && (
+                          <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.95)}</span>
                         )}
                       </p>
                     </div>
