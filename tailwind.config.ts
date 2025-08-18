@@ -125,6 +125,38 @@ export default {
 						transform: 'translateX(100px)'
 					}
 				},
+				'car-progress': {
+					'0%, 100%': {
+						transform: 'translateX(-50%) translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateX(-50%) translateY(-2px)'
+					}
+				},
+				'progress-fill': {
+					'0%': {
+						width: '20%'
+					},
+					'50%': {
+						width: '70%'
+					},
+					'100%': {
+						width: '90%'
+					}
+				},
+				'wind-lines': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateX(40px)'
+					},
+					'50%': {
+						opacity: '0.6'
+					},
+					'100%': {
+						opacity: '0',
+						transform: 'translateX(-40px)'
+					}
+				},
 				'fade-drift': {
 					'0%': {
 						opacity: '1',
@@ -143,6 +175,9 @@ export default {
 				'fade-in': 'fade-in 0.5s ease-out forwards',
 				'spin-slow': 'spin 3s linear infinite',
 				'car-drive': 'car-drive 3s ease-in-out infinite',
+				'car-progress': 'car-progress 3s ease-in-out infinite',
+				'progress-fill': 'progress-fill 3s ease-in-out infinite',
+				'wind-lines': 'wind-lines 1.5s linear infinite',
 				'slide-right': 'slide-right 1s linear infinite',
 				'fade-drift': 'fade-drift 2s ease-out infinite'
 			}

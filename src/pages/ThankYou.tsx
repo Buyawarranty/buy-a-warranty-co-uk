@@ -7,6 +7,7 @@ import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { CarDrivingSpinner } from '@/components/ui/car-driving-spinner';
+import { TrophySpinner } from '@/components/ui/trophy-spinner';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -210,7 +211,7 @@ const ThankYou = () => {
           
           {isProcessing ? (
             <div className="space-y-4">
-              <CarDrivingSpinner />
+              <TrophySpinner />
               <h3 className="text-lg text-gray-600">
                 Processing your warranty registration...
               </h3>
