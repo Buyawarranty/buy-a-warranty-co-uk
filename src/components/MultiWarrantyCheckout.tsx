@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,32 +16,75 @@ interface MultiWarrantyCheckoutProps {
 }
 
 const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, onBack, onAddAnother }) => {
-  const [customerData, setCustomerData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    mobile: '',
-    flat_number: '',
-    building_name: '',
-    building_number: '',
-    street: '',
-    town: '',
-    county: '',
-    postcode: '',
-    country: 'United Kingdom',
-    discount_code: ''
+  const [customerData, setCustomerData] = useState(() => {
+    const saved = localStorage.getItem('multiWarrantyCheckoutData');
+    return saved ? JSON.parse(saved) : {
+      first_name: '',
+      last_name: '',
+      email: '',
+      mobile: '',
+      flat_number: '',
+      building_name: '',
+      building_number: '',
+      street: '',
+      town: '',
+      county: '',
+      postcode: '',
+      country: 'United Kingdom',
+      discount_code: ''
+    };
   });
 
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [showValidation, setShowValidation] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'bumper'>('stripe');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'bumper'>(() => {
+    const saved = localStorage.getItem('multiWarrantyPaymentMethod');
+    return (saved as 'stripe' | 'bumper') || 'stripe';
+  });
   const [discountValidation, setDiscountValidation] = useState<{
     valid: boolean;
     message: string;
     discountAmount: number;
     finalAmount: number;
-  } | null>(null);
+  } | null>(() => {
+    const saved = localStorage.getItem('multiWarrantyDiscountValidation');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('multiWarrantyCheckoutData', JSON.stringify(customerData));
+  }, [customerData]);
+
+  // Save payment method to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('multiWarrantyPaymentMethod', selectedPaymentMethod);
+  }, [selectedPaymentMethod]);
+
+  // Save discount validation to localStorage whenever it changes
+  useEffect(() => {
+    if (discountValidation) {
+      localStorage.setItem('multiWarrantyDiscountValidation', JSON.stringify(discountValidation));
+    } else {
+      localStorage.removeItem('multiWarrantyDiscountValidation');
+    }
+  }, [discountValidation]);
+
+  // Handle page visibility to detect when user returns from payment
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // User returned to the page - data will be restored from localStorage
+        console.log('User returned to checkout page');
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   const totalPrice = items.reduce((sum, item) => sum + item.pricingData.totalPrice, 0);
   const finalPrice = discountValidation ? discountValidation.finalAmount : totalPrice;
