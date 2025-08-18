@@ -64,7 +64,13 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     multiWarrantyDiscount,
     subtotalAfterMultiDiscount,
     finalPrice,
-    discountValidation
+    discountValidation,
+    items: items.map(item => ({
+      id: item.id,
+      regNumber: item.vehicleData.regNumber,
+      planName: item.planName,
+      totalPrice: item.pricingData.totalPrice
+    }))
   });
 
   // Check for URL discount parameters and auto-apply 10% discount

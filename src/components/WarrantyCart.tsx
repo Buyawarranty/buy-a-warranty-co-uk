@@ -52,6 +52,22 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
   const totalDiscountAmount = multiWarrantyDiscount + additionalDiscount;
   const finalTotal = subtotal - totalDiscountAmount;
 
+  // Debug logging
+  console.log('WarrantyCart Debug:', {
+    itemCount: getItemCount(),
+    subtotal,
+    multiWarrantyDiscount,
+    additionalDiscount,
+    totalDiscountAmount,
+    finalTotal,
+    items: items.map(item => ({
+      id: item.id,
+      regNumber: item.vehicleData.regNumber,
+      planName: item.planName,
+      totalPrice: item.pricingData.totalPrice
+    }))
+  });
+
   const handleProceedToCheckout = () => {
     if (items.length === 0) return;
     onProceedToCheckout(items);
