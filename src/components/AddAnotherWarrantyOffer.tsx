@@ -75,7 +75,8 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
               Awesome! Your 10% discount is live.
             </div>
             <div className="text-green-600 font-medium mb-4">
-              Complete your purchase now and add your other vehicle right after.
+              Complete your purchase now and<br />
+              - add your other vehicle right after.
             </div>
           </div>
         )}
