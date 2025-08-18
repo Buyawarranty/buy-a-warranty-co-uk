@@ -6,6 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import { CarWarrantySpinner } from '@/components/ui/car-warranty-spinner';
+import { CarDiscountSpinner } from '@/components/ui/car-discount-spinner';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -209,7 +211,7 @@ const ThankYou = () => {
           
           {isProcessing ? (
             <div className="space-y-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <CarWarrantySpinner />
               <h3 className="text-lg text-gray-600">
                 Processing your warranty registration...
               </h3>
@@ -251,7 +253,7 @@ const ThankYou = () => {
                     with 10% discount applied!
                   </p>
                 </div>
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                <CarDiscountSpinner />
               </div>
             ) : (
               <Button 
