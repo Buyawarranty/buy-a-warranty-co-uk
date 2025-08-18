@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Check, Search, Zap, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useCart } from '@/contexts/CartContext';
+
 
 interface VehicleDetailsStepProps {
   onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string; vehicleType?: string; isManualEntry?: boolean }) => void;
@@ -35,7 +35,6 @@ interface DVLAVehicleData {
 }
 
 const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initialData }) => {
-  const { hasRegistration } = useCart();
   const [regNumber, setRegNumber] = useState(''); // Always start empty for new warranties
   const [mileage, setMileage] = useState(initialData?.mileage || '');
   const [vehicleFound, setVehicleFound] = useState(false);
@@ -79,14 +78,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     if (formatted.length <= 8) {
       setRegNumber(formatted);
       
-      // Check for duplicate registration
-      if (formatted.length >= 3 && hasRegistration(formatted)) {
-        setRegError(`Registration ${formatted} already has a warranty in your cart`);
-        // Clear the field after showing error for 2 seconds
-        setTimeout(() => {
-          setRegNumber("");
-          setRegError("");
-        }, 2000);
+      if (formatted.length >= 3) {
+        // Since we removed cart functionality, no duplicate check needed
+        setRegError('');
       } else {
         setRegError('');
       }
