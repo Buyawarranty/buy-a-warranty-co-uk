@@ -52,6 +52,35 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     return saved ? JSON.parse(saved) : null;
   });
 
+  // Calculate total price
+  const totalPrice = items.reduce((sum, item) => sum + item.pricingData.totalPrice, 0);
+  const finalPrice = discountValidation ? discountValidation.finalAmount : totalPrice;
+
+  // Check for URL discount parameters on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const discountParam = urlParams.get('discount');
+    const discountMessage = urlParams.get('discountMessage');
+    
+    if (discountParam === '10' && !discountValidation) {
+      // Auto-apply 10% discount for second warranty purchase
+      const discountAmount = totalPrice * 0.1;
+      const finalAmount = totalPrice - discountAmount;
+      
+      setDiscountValidation({
+        valid: true,
+        message: discountMessage || 'Your 10% discount has been applied! Add your next vehicle warranty now.',
+        discountAmount: discountAmount,
+        finalAmount: finalAmount
+      });
+      
+      // Set discount code to show it's applied
+      setCustomerData(prev => ({ ...prev, discount_code: '10OFF' }));
+      
+      toast.success('10% discount automatically applied!');
+    }
+  }, [totalPrice, discountValidation]);
+
   // Save form data to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('multiWarrantyCheckoutData', JSON.stringify(customerData));
@@ -86,8 +115,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     };
   }, []);
 
-  const totalPrice = items.reduce((sum, item) => sum + item.pricingData.totalPrice, 0);
-  const finalPrice = discountValidation ? discountValidation.finalAmount : totalPrice;
+  // Total price calculation moved up
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -458,6 +486,23 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
               <h1 className="text-3xl font-bold text-gray-900 mb-6">Order Summary</h1>
               
+              {/* Discount Alert for Second Purchase */}
+              {discountValidation && discountValidation.valid && (
+                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="text-green-600 text-2xl">🎉</div>
+                    <div>
+                      <h4 className="text-green-800 font-bold text-lg">
+                        10% Discount Applied!
+                      </h4>
+                      <p className="text-green-700">
+                        {discountValidation.message}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               {/* Confidence Message */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
@@ -539,30 +584,44 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                 </div>
               </div>
 
-              {/* Discount Code Section */}
-              <div className="mb-6">
-                <Label htmlFor="cart_discount_code" className="text-sm font-medium text-gray-700 mb-2 block">
-                  Discount Code
-                  <span className="ml-2 text-xs text-gray-500">ⓘ</span>
-                </Label>
-                <div className="flex gap-2 mb-2">
-                  <Input
-                    id="cart_discount_code"
-                    placeholder="Enter discount code"
-                    value={customerData.discount_code}
-                    onChange={(e) => handleInputChange('discount_code', e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={handleValidateDiscount}
-                    disabled={!customerData.discount_code.trim() || loading}
-                    className="px-6"
-                  >
-                    Apply
-                  </Button>
-                </div>
+               {/* Discount Code Section */}
+               <div className="mb-6">
+                 <Label htmlFor="cart_discount_code" className="text-sm font-medium text-gray-700 mb-2 block">
+                   Discount Code
+                   <span className="ml-2 text-xs text-gray-500">ⓘ</span>
+                 </Label>
+                 {discountValidation && discountValidation.valid && customerData.discount_code === '10OFF' ? (
+                   <div className="p-3 bg-green-50 border border-green-200 rounded-md">
+                     <div className="flex items-center justify-between">
+                       <span className="text-sm text-green-700 font-medium">10% Discount Applied</span>
+                       <Badge variant="secondary" className="bg-green-100 text-green-800">
+                         10OFF
+                       </Badge>
+                     </div>
+                     <p className="text-xs text-green-600 mt-1">
+                       Your additional warranty discount is already applied!
+                     </p>
+                   </div>
+                 ) : (
+                   <div className="flex gap-2 mb-2">
+                     <Input
+                       id="cart_discount_code"
+                       placeholder="Enter discount code"
+                       value={customerData.discount_code}
+                       onChange={(e) => handleInputChange('discount_code', e.target.value)}
+                       className="flex-1"
+                     />
+                     <Button 
+                       type="button" 
+                       variant="outline" 
+                       onClick={handleValidateDiscount}
+                       disabled={!customerData.discount_code.trim() || loading}
+                       className="px-6"
+                     >
+                       Apply
+                     </Button>
+                   </div>
+                 )}
                 {discountValidation && (
                   <div className={`text-sm px-3 py-2 rounded-md ${
                     discountValidation.valid 
