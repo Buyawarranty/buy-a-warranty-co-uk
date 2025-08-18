@@ -237,10 +237,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           checkoutUrl = data.url;
         }
         
-        // Store add another warranty preference for future purchases
-        if (addAnotherWarrantyEnabled) {
-          localStorage.setItem('addAnotherWarrantyDiscount', 'true');
-        }
+        // Note: addAnotherWarrantyDiscount flag is set in thank you page after successful purchase
       } else {
         console.log('Creating Stripe checkout with discounted price:', discountedStripePrice);
         const { data, error } = await supabase.functions.invoke('create-checkout', {
@@ -259,10 +256,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         if (error) throw error;
         checkoutUrl = data.url;
         
-        // Store add another warranty preference for future purchases
-        if (addAnotherWarrantyEnabled) {
-          localStorage.setItem('addAnotherWarrantyDiscount', 'true');
-        }
+        // Note: addAnotherWarrantyDiscount flag is set in thank you page after successful purchase
       }
 
       if (checkoutUrl) {

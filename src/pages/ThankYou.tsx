@@ -116,12 +116,13 @@ const ThankYou = () => {
           // Check if user enabled "Add Another Warranty" during checkout
           const addAnotherWarranty = searchParams.get('addAnotherWarranty');
           if (addAnotherWarranty === 'true') {
-            // Redirect to step 1 with 10% discount after a short delay
+            // Set the localStorage flag for the 10% discount
+            localStorage.setItem('addAnotherWarrantyDiscount', 'true');
+            
+            // Redirect to step 1 after a short delay
             setTimeout(() => {
               const url = new URL(window.location.origin);
               url.searchParams.set('step', '1');
-              url.searchParams.set('discount', '10');
-              url.searchParams.set('discountMessage', 'Your 10% discount has been applied! Add your next vehicle warranty now.');
               window.location.href = url.toString();
             }, 3000);
           }
@@ -274,10 +275,11 @@ const ThankYou = () => {
                   </div>
                   <Button
                     onClick={() => {
+                      // Set the localStorage flag for the 10% discount on next warranty
+                      localStorage.setItem('addAnotherWarrantyDiscount', 'true');
+                      
                       const url = new URL(window.location.origin);
                       url.searchParams.set('step', '1');
-                      url.searchParams.set('discount', '10');
-                      url.searchParams.set('discountMessage', 'Your 10% discount has been applied! Add your next vehicle warranty now.');
                       window.location.href = url.toString();
                     }}
                     className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold mr-4 mb-2"
