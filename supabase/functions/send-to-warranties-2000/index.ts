@@ -303,7 +303,7 @@ serve(async (req) => {
       RegNum: customer.registration_plate || "UNKNOWN",
       Mileage: customer.mileage || "50000",
       EngSize: "1968", // Default engine size
-      PurPrc: (policy?.payment_amount || customer.final_amount || 276).toString(),
+      PurPrc: "1000", // Default purchase price - actual price kept private on admin dashboard
       RegDate: customer.vehicle_year ? `${customer.vehicle_year}-01-01` : "2020-01-01",
       WarType: warrantyType,
       Month: coverageMonths,
