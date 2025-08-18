@@ -116,7 +116,7 @@ const ThankYou = () => {
           // Check if user enabled "Add Another Warranty" during checkout
           const addAnotherWarranty = searchParams.get('addAnotherWarranty');
           if (addAnotherWarranty === 'true') {
-            // Set the localStorage flag for the 10% discount
+            // Set the localStorage flag for the 10% discount ONLY when user actively clicked the component
             localStorage.setItem('addAnotherWarrantyDiscount', 'true');
             
             // Redirect to step 1 after a short delay

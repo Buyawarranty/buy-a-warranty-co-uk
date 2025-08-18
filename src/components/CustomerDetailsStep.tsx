@@ -234,10 +234,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           if (stripeResponse.error) throw stripeResponse.error;
           checkoutUrl = stripeResponse.data.url;
         } else {
-          checkoutUrl = data.url;
+          // Set the checkout URL with query parameter if add another warranty is enabled
+          if (data?.url) {
+            const url = new URL(data.url);
+            if (addAnotherWarrantyEnabled) {
+              url.searchParams.set('addAnotherWarranty', 'true');
+            }
+            checkoutUrl = url.toString();
+          } else {
+            checkoutUrl = data.url;
+          }
         }
-        
-        // Note: addAnotherWarrantyDiscount flag is set in thank you page after successful purchase
       } else {
         console.log('Creating Stripe checkout with discounted price:', discountedStripePrice);
         const { data, error } = await supabase.functions.invoke('create-checkout', {
@@ -254,9 +261,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         });
 
         if (error) throw error;
-        checkoutUrl = data.url;
         
-        // Note: addAnotherWarrantyDiscount flag is set in thank you page after successful purchase
+        // Set the checkout URL with query parameter if add another warranty is enabled
+        if (data?.url) {
+          const url = new URL(data.url);
+          if (addAnotherWarrantyEnabled) {
+            url.searchParams.set('addAnotherWarranty', 'true');
+          }
+          checkoutUrl = url.toString();
+        } else {
+          checkoutUrl = data.url;
+        }
       }
 
       if (checkoutUrl) {
