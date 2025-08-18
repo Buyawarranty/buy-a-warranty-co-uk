@@ -78,8 +78,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error(`A warranty for registration ${item.vehicleData.regNumber} is already in your cart. We can only provide one warranty per vehicle.`);
     }
     
+    // Apply 10% discount to second warranty and beyond
+    const isSecondOrLaterWarranty = items.length >= 1;
+    let adjustedItem = { ...item };
+    
+    if (isSecondOrLaterWarranty) {
+      // Apply 10% discount to the pricing
+      const discountMultiplier = 0.9; // 10% off
+      adjustedItem.pricingData = {
+        ...item.pricingData,
+        totalPrice: item.pricingData.totalPrice * discountMultiplier,
+        monthlyPrice: item.pricingData.monthlyPrice * discountMultiplier
+      };
+    }
+    
     const newItem: CartItem = {
-      ...item,
+      ...adjustedItem,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       addedAt: new Date()
     };
