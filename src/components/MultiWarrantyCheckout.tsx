@@ -54,9 +54,18 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
   // Calculate total price
   const totalPrice = items.reduce((sum, item) => sum + item.pricingData.totalPrice, 0);
-  const multiWarrantyDiscount = items.length >= 2 ? totalPrice * 0.1 : 0; // 10% multi-warranty discount
+  const multiWarrantyDiscount = items.length >= 2 ? Math.round(totalPrice * 0.1) : 0; // 10% multi-warranty discount
   const subtotalAfterMultiDiscount = totalPrice - multiWarrantyDiscount;
   const finalPrice = discountValidation ? (subtotalAfterMultiDiscount - discountValidation.discountAmount) : subtotalAfterMultiDiscount;
+  
+  console.log('MultiWarrantyCheckout Debug:', {
+    itemsCount: items.length,
+    totalPrice,
+    multiWarrantyDiscount,
+    subtotalAfterMultiDiscount,
+    finalPrice,
+    discountValidation
+  });
 
   // Check for URL discount parameters and auto-apply 10% discount
   useEffect(() => {
