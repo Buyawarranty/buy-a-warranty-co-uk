@@ -73,6 +73,7 @@ serve(async (req) => {
       discount_amount: customerData?.discount_amount || 0,
       original_amount: customerData?.original_amount || null,
       final_amount: customerData?.final_amount || null,
+      voluntary_excess: vehicleData?.voluntaryExcess || 0,
       warranty_reference_number: warrantyReference
     };
 
