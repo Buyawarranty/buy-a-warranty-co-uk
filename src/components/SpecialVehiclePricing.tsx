@@ -152,45 +152,46 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const getMonthlyDisplayPrice = () => {
     if (!plan) return 0;
     
-    // Try to use database pricing matrix first, fallback to hardcoded
+    // Try to use database pricing matrix first
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
       // Map payment types to database keys  
       const dbKey = paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36';
       const periodData = matrix[dbKey];
+      
       if (periodData && periodData[voluntaryExcess.toString()]) {
-        return periodData[voluntaryExcess.toString()].price || 0;
+        const price = periodData[voluntaryExcess.toString()].price;
+        console.log(`Getting price from database: ${dbKey} months, ${voluntaryExcess} excess = £${price}`);
+        return price || 0;
       }
     }
     
-    // Fallback to hardcoded pricing (Gold plan equivalent)
+    // Fallback to hardcoded pricing if database pricing doesn't exist
     const fallbackPricingTable = {
       yearly: {
         0: { monthly: 34 },
         50: { monthly: 31 },
         100: { monthly: 27 },
-        150: { monthly: 26 },
-        200: { monthly: 23 }
+        150: { monthly: 27 }
       },
       two_yearly: {
         0: { monthly: 61 },
         50: { monthly: 56 },
         100: { monthly: 49 },
-        150: { monthly: 47 },
-        200: { monthly: 44 }
+        150: { monthly: 47 }
       },
       three_yearly: {
         0: { monthly: 90 },
         50: { monthly: 82 },
         100: { monthly: 71 },
-        150: { monthly: 69 },
-        200: { monthly: 66 }
+        150: { monthly: 69 }
       }
     };
     
     const periodData = fallbackPricingTable[paymentType as keyof typeof fallbackPricingTable] || fallbackPricingTable.yearly;
     const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
     
+    console.log(`Using fallback pricing: ${paymentType}, ${voluntaryExcess} excess = £${excessData.monthly}`);
     return excessData.monthly;
   };
 
@@ -402,9 +403,9 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                       paymentType === 'three_yearly' ? '36 Months warranty' :
                       '12 Months warranty'}
                    </p>
-                  <div className="text-4xl font-bold text-gray-900 mb-3">
-                    <span className="text-2xl">£</span>{Math.round(getMonthlyDisplayPrice())}<span className="text-2xl">/mo</span>
-                  </div>
+                   <div className="text-4xl font-bold text-gray-900 mb-3">
+                     <span className="text-2xl">£</span>{getMonthlyDisplayPrice()}<span className="text-2xl">/mo</span>
+                   </div>
                   <div className="text-gray-600 text-base mb-6">
                      for 12 months interest free
                    </div>
@@ -505,11 +506,13 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                   <h4 className="font-bold text-lg text-yellow-600">
                     {plan.name}
                   </h4>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-sm">£</span>
-                    <span className="text-2xl font-bold">{Math.round(getMonthlyDisplayPrice())}</span>
-                    <span className="text-sm text-gray-600">x 12 easy payments</span>
-                  </div>
+                   <div className="flex items-baseline gap-1">
+                     <span className="text-sm">£</span>
+                     <span className="text-2xl font-bold">{getMonthlyDisplayPrice()}</span>
+                     <span className="text-sm text-gray-600">
+                       x {paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36'} easy payments
+                     </span>
+                   </div>
                 </div>
                 <Button
                   onClick={handlePurchase}
