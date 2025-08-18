@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, ShoppingCart, Plus } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
-import { useCart } from '@/contexts/CartContext';
+
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
 
@@ -54,8 +54,6 @@ interface PricingTableProps {
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
-  
-  const { addToCart, getItemCount } = useCart();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('12months');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
@@ -362,57 +360,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
   };
 
-  const handleAddToCart = async (plan: Plan) => {
-    console.log('handleAddToCart called with plan:', plan.name);
-    console.log('addToCart function:', addToCart);
-    console.log('vehicleData:', vehicleData);
-    
-    setLoading(prev => ({ ...prev, [plan.id]: true }));
-    
-    try {
-      const basePrice = calculatePlanPrice(plan);
-      const addOnPrice = calculateAddOnPrice(plan.id);
-      const monthlyTotal = basePrice + addOnPrice;
-      
-      let totalPrice = monthlyTotal;
-      if (paymentType === '12months') {
-        totalPrice = monthlyTotal * 12;
-      } else if (paymentType === '24months') {
-        totalPrice = monthlyTotal * 24;
-      } else if (paymentType === '36months') {
-        totalPrice = monthlyTotal * 36;
-      }
-      
-      const bumperMonthlyPrice = Math.round(monthlyTotal);
-      
-      const pricingData = {
-        totalPrice,
-        monthlyPrice: bumperMonthlyPrice,
-        voluntaryExcess,
-        selectedAddOns: selectedAddOns[plan.id] || {}
-      };
-
-      addToCart({
-        vehicleData,
-        planId: plan.id,
-        planName: plan.name,
-        paymentType,
-        pricingData
-      });
-
-      toast.success(`${plan.name} warranty added to cart!`);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      if (error instanceof Error && error.message.includes('already in your cart')) {
-        toast.error(error.message);
-      } else {
-        toast.error('Failed to add to cart');
-      }
-    } finally {
-      setLoading(prev => ({ ...prev, [plan.id]: false }));
-    }
-  };
-
   // Hard client-side guard (belt & braces)
   const ensureCarOnly = (rows: Plan[]) =>
     rows.filter(p => ['Basic', 'Gold', 'Platinum'].includes((p.name ?? '').trim()));
@@ -693,17 +640,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       >
                         {isLoading ? 'Processing...' : 'Buy Now'}
                       </Button>
-                      
-                      <Button
-                        onClick={() => handleAddToCart(plan)}
-                        disabled={isLoading}
-                        variant="outline"
-                        className="w-full py-3 font-semibold text-base rounded-xl border-2 hover:bg-gray-50 transition-colors duration-200"
-                      >
-                        <ShoppingCart className="w-5 h-5 mr-2" />
-                        Add to Cart
-                      </Button>
-                      
                     </div>
                  </div>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ShoppingCart, Plus } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
-import { useCart } from '@/contexts/CartContext';
+
 
 interface SpecialPlan {
   id: string;
@@ -53,7 +53,6 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
   const { toast } = useToast();
-  const { addToCart, getItemCount } = useCart();
 
   useEffect(() => {
     fetchSpecialPlan();
@@ -195,48 +194,6 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     return excessData.monthly;
   };
 
-  const handleAddToCart = () => {
-    if (!plan) return;
-    
-    const monthlyPrice = getMonthlyDisplayPrice();
-    
-    // Calculate total warranty cost based on coverage period
-    let totalWarrantyCost = monthlyPrice;
-    if (paymentType === 'yearly') {
-      totalWarrantyCost = monthlyPrice * 12;
-    } else if (paymentType === 'two_yearly') {
-      totalWarrantyCost = monthlyPrice * 24;
-    } else if (paymentType === 'three_yearly') {
-      totalWarrantyCost = monthlyPrice * 36;
-    }
-    
-    const cartItem = {
-      vehicleData: {
-        regNumber: vehicleData.regNumber,
-        mileage: vehicleData.mileage,
-        make: vehicleData.make || 'Unknown',
-        model: vehicleData.model || 'Model',
-        year: vehicleData.year,
-        vehicleType: vehicleData.vehicleType
-      },
-      planName: plan.name,
-      planId: plan.id,
-      paymentType: paymentType,
-      pricingData: {
-        totalPrice: totalWarrantyCost,
-        monthlyPrice: monthlyPrice,
-        voluntaryExcess: voluntaryExcess,
-        selectedAddOns: {}
-      }
-    };
-    
-    addToCart(cartItem);
-    
-    toast({
-      title: "Added to Cart",
-      description: `${plan.name} plan for ${vehicleData.regNumber} has been added to your cart.`,
-    });
-  };
 
   const handlePurchase = () => {
     if (!plan) return;
@@ -453,24 +410,14 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                    </div>
                    
                    <div className="space-y-3">
-                    <Button
-                      onClick={handlePurchase}
-                      disabled={checkoutLoading}
-                      className="w-full py-4 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0 transition-colors duration-200"
-                    >
-                      {checkoutLoading ? 'Processing...' : 'Buy Now'}
-                    </Button>
-                    
-                    <Button
-                      onClick={handleAddToCart}
-                      disabled={checkoutLoading}
-                      variant="outline"
-                      className="w-full py-3 font-semibold text-base rounded-xl border-2 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <ShoppingCart className="w-5 h-5 mr-2" />
-                      Add to Cart
-                    </Button>
-                  </div>
+                     <Button
+                       onClick={handlePurchase}
+                       disabled={checkoutLoading}
+                       className="w-full py-4 text-lg font-bold rounded-xl bg-yellow-400 hover:bg-yellow-500 text-gray-900 border-0 transition-colors duration-200"
+                     >
+                       {checkoutLoading ? 'Processing...' : 'Buy Now'}
+                     </Button>
+                   </div>
                 </div>
 
                 {/* Plan Content */}
