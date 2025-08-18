@@ -108,6 +108,32 @@ export default {
 						opacity: '1',
 						transform: 'translateY(0)'
 					}
+				},
+				'car-drive': {
+					'0%, 100%': {
+						transform: 'translateX(-10px) translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateX(10px) translateY(-2px)'
+					}
+				},
+				'slide-right': {
+					'0%': {
+						transform: 'translateX(-100px)'
+					},
+					'100%': {
+						transform: 'translateX(100px)'
+					}
+				},
+				'fade-drift': {
+					'0%': {
+						opacity: '1',
+						transform: 'translateX(0px) scale(1)'
+					},
+					'100%': {
+						opacity: '0',
+						transform: 'translateX(50px) scale(0.8)'
+					}
 				}
 			},
 			animation: {
@@ -115,7 +141,10 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'breathing': 'breathing 2s ease-in-out infinite',
 				'fade-in': 'fade-in 0.5s ease-out forwards',
-				'spin-slow': 'spin 3s linear infinite'
+				'spin-slow': 'spin 3s linear infinite',
+				'car-drive': 'car-drive 3s ease-in-out infinite',
+				'slide-right': 'slide-right 1s linear infinite',
+				'fade-drift': 'fade-drift 2s ease-out infinite'
 			}
 		}
 	},
