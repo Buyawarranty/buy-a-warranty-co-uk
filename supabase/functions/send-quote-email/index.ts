@@ -73,6 +73,7 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
         
         <!-- Header -->
         <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 30px 20px; text-align: center;">
+            <img src="https://pricing.buyawarranty.co.uk/lovable-uploads/1f952eca-5edd-4379-bc82-d921613c047d.png" alt="Buy A Warranty" style="max-width: 300px; height: auto; margin-bottom: 20px;">
             <h1 style="margin: 0; font-size: 28px; font-weight: bold;">🚗 Your ${make || 'Vehicle'}'s Warranty Quote</h1>
             <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Lock In Your Price Today</p>
         </div>
