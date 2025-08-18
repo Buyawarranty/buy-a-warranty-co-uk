@@ -20,27 +20,56 @@ export const CarDrivingSpinner = () => {
           </div>
         </div>
         
-        {/* Car positioned in middle of road */}
+        {/* SUV/Sports Car positioned in middle of road */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-[car-progress_3s_ease-in-out_infinite]">
-          <div className="relative w-12 h-6">
-            {/* Car body */}
-            <div className="w-12 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg relative shadow-lg">
-              {/* Car windows */}
-              <div className="absolute top-0.5 left-1.5 w-2 h-1.5 bg-blue-100 rounded-sm"></div>
-              <div className="absolute top-0.5 right-1.5 w-2 h-1.5 bg-blue-100 rounded-sm"></div>
+          <div className="relative w-16 h-8">
+            {/* Main car body - SUV style with higher profile */}
+            <div className="absolute bottom-1.5 w-16 h-5 bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg relative shadow-xl">
+              {/* Sport grille */}
+              <div className="absolute top-1 left-0 w-1 h-3 bg-gray-600 rounded-r"></div>
+              <div className="absolute top-1.5 left-0.5 w-0.5 h-2 bg-gray-400"></div>
               
-              {/* Car headlights */}
-              <div className="absolute top-1 left-0 w-0.5 h-1 bg-yellow-300 rounded-full animate-pulse"></div>
-              <div className="absolute top-3 left-0 w-0.5 h-1 bg-red-400 rounded-full"></div>
+              {/* Side mirror */}
+              <div className="absolute top-0 left-2 w-1 h-1 bg-gray-700 rounded-full"></div>
+              <div className="absolute top-0 right-2 w-1 h-1 bg-gray-700 rounded-full"></div>
+              
+              {/* Sport stripe */}
+              <div className="absolute top-2 left-1 right-1 h-0.5 bg-gradient-to-r from-blue-400 to-cyan-400 rounded"></div>
+              
+              {/* Chrome details */}
+              <div className="absolute bottom-0 left-1 right-1 h-0.5 bg-gradient-to-r from-gray-300 to-gray-400 rounded"></div>
             </div>
             
-            {/* Wheels */}
-            <div className="absolute -bottom-0.5 left-0.5 w-2 h-2 bg-gray-700 rounded-full border border-gray-600 animate-spin">
-              <div className="absolute inset-0.5 w-1 h-1 bg-gray-400 rounded-full"></div>
+            {/* Windshield and roof - higher SUV profile */}
+            <div className="absolute bottom-3.5 left-1.5 w-13 h-3 bg-gradient-to-b from-gray-700 to-gray-800 rounded-t-lg relative">
+              {/* Front windshield */}
+              <div className="absolute top-0.5 left-0.5 w-4 h-2 bg-gradient-to-b from-sky-100 to-sky-200 rounded-sm opacity-80"></div>
+              {/* Rear windshield */}
+              <div className="absolute top-0.5 right-0.5 w-4 h-2 bg-gradient-to-b from-sky-100 to-sky-200 rounded-sm opacity-80"></div>
+              {/* Side windows */}
+              <div className="absolute top-0.5 left-5 w-3 h-2 bg-gradient-to-b from-sky-100 to-sky-200 rounded-sm opacity-80"></div>
+              
+              {/* Roof rails */}
+              <div className="absolute top-0 left-1 right-1 h-0.5 bg-gray-400 rounded"></div>
             </div>
-            <div className="absolute -bottom-0.5 right-0.5 w-2 h-2 bg-gray-700 rounded-full border border-gray-600 animate-spin">
-              <div className="absolute inset-0.5 w-1 h-1 bg-gray-400 rounded-full"></div>
+            
+            {/* Modern LED headlights */}
+            <div className="absolute bottom-2.5 left-0 w-1 h-1.5 bg-gradient-to-b from-white to-blue-100 rounded-r shadow-lg animate-pulse"></div>
+            {/* LED taillights */}
+            <div className="absolute bottom-2.5 right-0 w-1 h-1.5 bg-gradient-to-b from-red-400 to-red-600 rounded-l shadow-lg"></div>
+            
+            {/* Larger SUV wheels with detailed rims */}
+            <div className="absolute -bottom-0.5 left-1 w-3 h-3 bg-gray-800 rounded-full border-2 border-gray-600 animate-spin shadow-lg">
+              <div className="absolute inset-0.5 w-2 h-2 bg-gradient-to-br from-gray-300 to-gray-500 rounded-full"></div>
+              <div className="absolute inset-1 w-1 h-1 bg-gray-700 rounded-full"></div>
             </div>
+            <div className="absolute -bottom-0.5 right-1 w-3 h-3 bg-gray-800 rounded-full border-2 border-gray-600 animate-spin shadow-lg">
+              <div className="absolute inset-0.5 w-2 h-2 bg-gradient-to-br from-gray-300 to-gray-500 rounded-full"></div>
+              <div className="absolute inset-1 w-1 h-1 bg-gray-700 rounded-full"></div>
+            </div>
+            
+            {/* Exhaust smoke effect */}
+            <div className="absolute bottom-1 right-0 w-2 h-1 bg-gray-400/30 rounded-full animate-pulse"></div>
           </div>
         </div>
         
