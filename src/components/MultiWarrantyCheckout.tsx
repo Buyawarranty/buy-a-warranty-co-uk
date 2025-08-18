@@ -56,14 +56,14 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
   const totalPrice = items.reduce((sum, item) => sum + item.pricingData.totalPrice, 0);
   const finalPrice = discountValidation ? discountValidation.finalAmount : totalPrice;
 
-  // Check for URL discount parameters on component mount
+  // Check for URL discount parameters and auto-apply 10% discount
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const discountParam = urlParams.get('discount');
     const discountMessage = urlParams.get('discountMessage');
     
-    if (discountParam === '10' && !discountValidation) {
-      // Auto-apply 10% discount for second warranty purchase
+    if (discountParam === '10') {
+      // Always recalculate 10% discount when totalPrice changes
       const discountAmount = totalPrice * 0.1;
       const finalAmount = totalPrice - discountAmount;
       
@@ -77,9 +77,12 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       // Set discount code to show it's applied
       setCustomerData(prev => ({ ...prev, discount_code: '10OFF' }));
       
-      toast.success('10% discount automatically applied!');
+      // Only show toast on first application
+      if (!discountValidation) {
+        toast.success('10% discount automatically applied!');
+      }
     }
-  }, [totalPrice, discountValidation]);
+  }, [totalPrice]); // Removed discountValidation dependency to allow recalculation
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
