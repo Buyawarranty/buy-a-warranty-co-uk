@@ -62,7 +62,30 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
               <Check className="w-6 h-6 text-green-600" />
             </div>
             <div className="text-green-700 font-semibold text-lg mb-2">
-              ✅ Awesome! Your 10% discount is live. Complete your purchase now and add your other vehicle right after.
+              Awesome! Your 10% discount is live.
+            </div>
+            <div className="text-green-600 font-medium mb-4 flex items-center justify-center gap-2">
+              <Check className="w-4 h-4" />
+              Complete your purchase now and add your other vehicle right after.
+            </div>
+            <div className="flex gap-3 justify-center">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setShowSuccess(false);
+                  setIsClicked(false);
+                }}
+                className="text-red-600 border-red-200 hover:bg-red-50"
+              >
+                Remove Warranty
+              </Button>
+              <Button 
+                size="sm"
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                Keep Warranty
+              </Button>
             </div>
           </div>
         )}
