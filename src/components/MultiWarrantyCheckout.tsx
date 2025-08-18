@@ -296,11 +296,11 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           
           if (stripeResponse.error) throw stripeResponse.error;
           if (stripeResponse.data.url) {
-            window.open(stripeResponse.data.url, '_blank');
+            window.location.href = stripeResponse.data.url;
           }
         } else if (data.url) {
           // Redirect to Bumper checkout
-          window.open(data.url, '_blank');
+          window.location.href = data.url;
         } else {
           toast.error('Failed to create Bumper checkout session');
         }
@@ -328,7 +328,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
         if (data.url) {
           // Redirect to Stripe checkout
-          window.open(data.url, '_blank');
+          window.location.href = data.url;
         } else {
           toast.error('Failed to create checkout session');
         }

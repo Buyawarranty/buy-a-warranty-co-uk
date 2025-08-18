@@ -85,6 +85,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const shouldApplyDiscount = items.length >= 1 || hasAddAnotherWarrantyDiscount;
     let adjustedItem = { ...item };
     
+    // Debug logging
+    console.log('CartContext Debug - addToCart:', {
+      regNumber: item.vehicleData.regNumber,
+      currentItemsCount: items.length,
+      hasAddAnotherWarrantyDiscount,
+      shouldApplyDiscount,
+      originalPrice: item.pricingData.totalPrice
+    });
+    
     if (shouldApplyDiscount) {
       // Apply 10% discount to the pricing
       const discountMultiplier = 0.9; // 10% off
