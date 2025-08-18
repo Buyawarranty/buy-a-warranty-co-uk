@@ -413,44 +413,6 @@ const Index = () => {
         <div className="w-full overflow-x-hidden">
           {vehicleData && (
             <>
-              {/* Shopping Cart - Prominently placed above pricing tables */}
-              {cartItems.length > 0 && (
-                <div className="w-full px-4 py-4">
-                  <div className="max-w-2xl mx-auto">
-                    <div className="bg-orange-50 rounded-lg shadow-md border-2 border-orange-400 p-4 mb-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-                            {cartItems.length}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-lg text-orange-900">Your Cart</h3>
-                            <p className="text-sm text-orange-700">
-                              You've added {cartItems.length} warrant{cartItems.length === 1 ? 'y' : 'ies'}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            onClick={() => setCurrentStep(1)}
-                            variant="outline"
-                            className="border-orange-500 text-orange-600 hover:bg-orange-100"
-                          >
-                            Add Another Vehicle
-                          </Button>
-                          <Button 
-                            onClick={() => setShowCart(true)}
-                            variant="outline"
-                            className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
-                          >
-                            Checkout Now
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
               
               {isSpecialVehicle ? (
                 <SpecialVehiclePricing 
