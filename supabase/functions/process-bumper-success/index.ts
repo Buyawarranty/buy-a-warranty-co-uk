@@ -431,10 +431,23 @@ serve(async (req) => {
 
     // Redirect to thank you page if redirectUrl is provided
     if (redirectUrl) {
+      // Ensure the redirect URL includes the required parameters for the ThankYou page
+      const redirectUrlObj = new URL(redirectUrl);
+      redirectUrlObj.searchParams.set('plan', planId);
+      redirectUrlObj.searchParams.set('payment', paymentType);
+      redirectUrlObj.searchParams.set('source', 'bumper');
+      
+      logStep("Redirecting to thank you page with parameters", { 
+        originalUrl: redirectUrl,
+        finalUrl: redirectUrlObj.toString(),
+        plan: planId,
+        payment: paymentType
+      });
+      
       return new Response(null, {
         headers: { 
           ...corsHeaders,
-          'Location': redirectUrl
+          'Location': redirectUrlObj.toString()
         },
         status: 302,
       });
