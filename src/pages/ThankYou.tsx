@@ -242,7 +242,7 @@ const ThankYou = () => {
           )}
         </div>
         
-          <div className="space-y-4">
+          <div className="space-y-6">
             {searchParams.get('addAnotherWarranty') === 'true' ? (
               <div className="text-center">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-4">
@@ -256,12 +256,47 @@ const ThankYou = () => {
                 <CarDrivingSpinner />
               </div>
             ) : (
-              <Button 
-                onClick={handleReturnHome}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg font-semibold"
-              >
-                Return to BuyAWarranty.co.uk
-              </Button>
+              <div className="space-y-4">
+                {/* Add Another Warranty Offer */}
+                <div className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6 text-center">
+                  <div className="text-3xl mb-3">🚗💚</div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    Got Another Vehicle?
+                  </h3>
+                  <p className="text-gray-700 mb-4">
+                    Save <span className="font-bold text-green-600">10% instantly</span> on your next warranty!
+                  </p>
+                  <div className="bg-white border border-green-300 rounded-lg p-4 mb-4">
+                    <p className="text-sm text-gray-600 mb-2">Limited time offer:</p>
+                    <p className="font-semibold text-green-700">
+                      🎯 10% OFF • 🚀 Instant Savings • ⏰ Available Now
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      const url = new URL(window.location.origin);
+                      url.searchParams.set('step', '1');
+                      url.searchParams.set('discount', '10');
+                      url.searchParams.set('discountMessage', 'Your 10% discount has been applied! Add your next vehicle warranty now.');
+                      window.location.href = url.toString();
+                    }}
+                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold mr-4 mb-2"
+                  >
+                    ✨ Add Another Warranty (10% OFF)
+                  </Button>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Discount automatically applied at checkout
+                  </p>
+                </div>
+                
+                <Button 
+                  onClick={handleReturnHome}
+                  variant="outline"
+                  className="w-full border-gray-300 text-gray-600 hover:bg-gray-50 px-8 py-3 text-lg font-semibold"
+                >
+                  Return to BuyAWarranty.co.uk
+                </Button>
+              </div>
             )}
           </div>
         </div>
