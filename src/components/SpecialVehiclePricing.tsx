@@ -72,10 +72,26 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
 
   const fetchSpecialPlan = async () => {
     try {
+      // Map frontend vehicle types to database vehicle types
+      let dbVehicleType = vehicleData.vehicleType;
+      if (vehicleData.vehicleType === 'hybrid') {
+        dbVehicleType = 'PHEV';
+      } else if (vehicleData.vehicleType === 'electric') {
+        dbVehicleType = 'EV';
+      } else if (vehicleData.vehicleType === 'phev') {
+        dbVehicleType = 'PHEV';
+      } else if (vehicleData.vehicleType === 'ev') {
+        dbVehicleType = 'EV';
+      } else if (vehicleData.vehicleType === 'motorbike') {
+        dbVehicleType = 'MOTORBIKE';
+      }
+
+      console.log(`🛵 Fetching special vehicle plans for frontend type: ${vehicleData.vehicleType}, database type: ${dbVehicleType}`);
+
       const { data, error } = await supabase
         .from('special_vehicle_plans')
         .select('*')
-        .eq('vehicle_type', vehicleData.vehicleType)
+        .eq('vehicle_type', dbVehicleType)
         .eq('is_active', true)
         .single();
 
