@@ -260,14 +260,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       }
 
       if (checkoutUrl) {
-        // Ensure current step 4 is saved in browser history before navigating to Bumper
-        // This way, the back button from Bumper payment page returns to step 4
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('step', '4');
-        window.history.pushState({ step: 4 }, '', currentUrl.toString());
+        // Open Stripe checkout in a new tab (standard practice)
+        window.open(checkoutUrl, '_blank');
         
-        // Redirect to Bumper payment page
-        window.location.href = checkoutUrl;
+        // Show a message to user about the new tab
+        toast.success('Payment window opened in new tab. Please complete your payment.');
       } else {
         toast.error('Failed to create checkout session');
       }
