@@ -532,8 +532,8 @@ const handler = async (req: Request): Promise<Response> => {
     const regPlate = customerDetails?.registration_plate || 'N/A';
     const regPlateStyle = `
       display: inline-block;
-      background: linear-gradient(to bottom, #1a1a1a 0%, #1a1a1a 30%, #ffffff 30%, #ffffff 70%, #1a1a1a 70%, #1a1a1a 100%);
-      color: #1a1a1a;
+      background: #1a1a1a;
+      color: #ffffff;
       font-family: 'Charles Wright', monospace;
       font-weight: bold;
       font-size: 18px;
