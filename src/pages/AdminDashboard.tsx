@@ -35,26 +35,35 @@ const AdminDashboard = () => {
 
   const checkAdminAccess = async () => {
     try {
+      console.log('Checking admin access...');
       const { data: { session } } = await supabase.auth.getSession();
       
+      console.log('Session:', session?.user?.email);
+      
       if (!session?.user) {
+        console.log('No session found, redirecting to auth');
         navigate('/auth');
         return;
       }
 
+      console.log('Checking user role for:', session.user.id);
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', session.user.id)
         .single();
 
+      console.log('Role query result:', { data, error });
+
       // Allow all admin role types: admin, member, viewer, guest
       if (error || !data || !['admin', 'member', 'viewer', 'guest'].includes(data.role)) {
         console.error('Access denied - not an admin user', error, data);
+        console.log('Redirecting to homepage');
         navigate('/');
         return;
       }
 
+      console.log('Access granted for role:', data.role);
       setIsLoading(false);
     } catch (error) {
       console.error('Error checking admin access:', error);
