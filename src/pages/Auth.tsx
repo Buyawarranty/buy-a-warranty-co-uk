@@ -102,13 +102,13 @@ const Auth = () => {
             .eq('user_id', session.user.id)
             .maybeSingle(); // Use maybeSingle instead of single to handle no results
 
-          // If there's an error (other than no results) or user is admin, redirect to admin
-          if (!error && roleData?.role === 'admin') {
-            navigate('/admin-dashboard', { replace: true });
-          } else {
-            // No role found means regular customer
-            navigate('/customer-dashboard', { replace: true });
-          }
+        // If there's an error (other than no results) or user has any admin role, redirect to admin
+        if (!error && roleData && ['admin', 'member', 'viewer', 'guest'].includes(roleData.role)) {
+          navigate('/admin-dashboard', { replace: true });
+        } else {
+          // No role found means regular customer
+          navigate('/customer-dashboard', { replace: true });
+        }
         }
       }
     );
@@ -149,8 +149,8 @@ const Auth = () => {
           description: "You have been signed in successfully!",
         });
 
-        // If there's an error (other than no results) or user is admin, redirect to admin
-        if (!error && roleData?.role === 'admin') {
+        // If there's an error (other than no results) or user has any admin role, redirect to admin
+        if (!error && roleData && ['admin', 'member', 'viewer', 'guest'].includes(roleData.role)) {
           console.log("Admin user detected, redirecting to admin dashboard");
           navigate('/admin-dashboard', { replace: true });
         } else {

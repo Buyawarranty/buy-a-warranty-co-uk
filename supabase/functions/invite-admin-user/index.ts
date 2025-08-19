@@ -137,7 +137,7 @@ serve(async (req: Request) => {
             <p><strong>Temporary Password:</strong> ${tempPassword}</p>
           </div>
           
-          <p><a href="https://buyawarranty.co.uk/auth?token=${invitationToken}&type=invite" 
+          <p><a href="${process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://buyawarranty.co.uk'}/auth?token=${invitationToken}&type=invite" 
              style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
              Accept Invitation
           </a></p>
