@@ -11,6 +11,7 @@ import AccountSettings from '@/components/admin/AccountSettings';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import CreateTestCustomer from '@/components/CreateTestCustomer';
 import CreateTestAdmin from '@/components/admin/CreateTestAdmin';
+import ResetAdminPassword from '@/components/admin/ResetAdminPassword';
 import TestWarranties2000 from '@/components/TestWarranties2000';
 import TestBumper from '@/components/TestBumper';
 import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
@@ -129,6 +130,8 @@ const AdminDashboard = () => {
               <CreateTestCustomer />
               
               <CreateTestAdmin />
+              
+              <ResetAdminPassword />
               
               <Card>
                 <CardHeader>
