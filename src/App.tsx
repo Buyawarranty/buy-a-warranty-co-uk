@@ -8,6 +8,7 @@ import WebsiteFooter from "@/components/WebsiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import CarSpinnerPreview from "./components/CarSpinnerPreview";
 import ThankYou from "./pages/ThankYou";
 import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./pages/Auth";
@@ -42,6 +43,7 @@ const App = () => (
                 <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                 <Route path="/reset-password" element={<PasswordReset />} />
                 <Route path="/car-journey" element={<CarJourneyDemo />} />
+                <Route path="/car-preview" element={<CarSpinnerPreview />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
