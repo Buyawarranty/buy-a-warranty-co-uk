@@ -15,6 +15,7 @@ import Auth from "./pages/Auth";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import AdminTest from "./pages/AdminTest";
 import PasswordReset from "./components/PasswordReset";
+import ResetPassword from "./pages/ResetPassword";
 import PaymentFallback from "./pages/PaymentFallback";
 
 import CarJourneyDemo from "./pages/CarJourneyDemo";
@@ -42,6 +43,7 @@ const App = () => (
                 <Route path="/admin-test" element={<AdminTest />} />
                 <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                 <Route path="/reset-password" element={<PasswordReset />} />
+                <Route path="/password-reset" element={<ResetPassword />} />
                 <Route path="/car-journey" element={<CarJourneyDemo />} />
                 <Route path="/car-preview" element={<CarSpinnerPreview />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
