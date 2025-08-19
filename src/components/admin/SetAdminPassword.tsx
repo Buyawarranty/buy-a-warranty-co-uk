@@ -9,11 +9,11 @@ import { supabase } from '@/integrations/supabase/client';
 const SetAdminPassword = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('admin@example.com');
-  const [password, setPasswordField] = useState('PasswordLogin123-');
+  const [passwordValue, setPasswordValue] = useState('PasswordLogin123-');
   const { toast } = useToast();
 
   const handleSetPassword = async () => {
-    if (!email || !password) {
+    if (!email || !passwordValue) {
       toast({
         title: "Error",
         description: "Please enter both email and password",
@@ -29,7 +29,7 @@ const SetAdminPassword = () => {
         .from('admin_users')
         .select('user_id')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
       if (!adminData) {
         toast({
@@ -44,7 +44,7 @@ const SetAdminPassword = () => {
         body: {
           userId: adminData.user_id,
           email: email,
-          password: password
+          password: passwordValue
         }
       });
 
@@ -54,7 +54,7 @@ const SetAdminPassword = () => {
 
       toast({
         title: "Password Set",
-        description: `Password successfully set for ${email}. You can now login with the new password.`,
+        description: `Password successfully set for ${email}. You can now login with: ${passwordValue}`,
       });
 
       console.log("Password set successfully for:", email);
@@ -95,18 +95,23 @@ const SetAdminPassword = () => {
           <Input
             id="password"
             type="password"
-            value={password}
-            onChange={(e) => setPasswordField(e.target.value)}
+            value={passwordValue}
+            onChange={(e) => setPasswordValue(e.target.value)}
             placeholder="Enter new password"
           />
         </div>
         <Button 
           onClick={handleSetPassword} 
-          disabled={loading || !email || !password}
+          disabled={loading || !email || !passwordValue}
           className="w-full"
         >
           {loading ? 'Setting Password...' : 'Set Password'}
         </Button>
+        <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+          <strong>Current credentials:</strong><br />
+          Email: {email}<br />
+          Password: {passwordValue}
+        </div>
       </CardContent>
     </Card>
   );
