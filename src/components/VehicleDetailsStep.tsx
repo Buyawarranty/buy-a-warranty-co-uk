@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Check, Search, Zap, AlertCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
 
@@ -35,6 +36,7 @@ interface DVLAVehicleData {
 }
 
 const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initialData }) => {
+  const { toast } = useToast();
   const [regNumber, setRegNumber] = useState(''); // Always start empty for new warranties
   const [mileage, setMileage] = useState(initialData?.mileage || '');
   const [vehicleFound, setVehicleFound] = useState(false);
@@ -132,9 +134,17 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     try {
       console.log('Looking up vehicle:', regNumber);
       
-      const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
+      // Create a timeout promise to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Lookup timeout - please try again')), 12000);
+      });
+      
+      // Race between the API call and timeout
+      const lookupPromise = supabase.functions.invoke('dvla-vehicle-lookup', {
         body: { registrationNumber: regNumber }
       });
+      
+      const { data, error } = await Promise.race([lookupPromise, timeoutPromise]) as any;
 
       if (error) {
         console.error('DVLA lookup error:', error);
@@ -150,8 +160,24 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         // If vehicle not found, show manual entry
         setShowManualEntry(true);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error looking up vehicle:', error);
+      
+      // Show specific error message for timeout
+      if (error.message?.includes('timeout')) {
+        toast({
+          title: "Lookup Timeout",
+          description: "The vehicle lookup is taking longer than usual. Please try again or enter details manually.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Lookup Failed",
+          description: "Unable to find vehicle details. You can enter them manually below.",
+          variant: "destructive",
+        });
+      }
+      
       // On error, fall back to manual entry
       setShowManualEntry(true);
     } finally {

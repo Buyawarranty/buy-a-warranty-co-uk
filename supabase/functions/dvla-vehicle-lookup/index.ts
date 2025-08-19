@@ -43,7 +43,7 @@ serve(async (req) => {
           body: JSON.stringify({
             registrationNumber: registrationNumber.replace(/\s/g, '').toUpperCase()
           }),
-          signal: AbortSignal.timeout(10000) // 10 second timeout
+          signal: AbortSignal.timeout(8000) // 8 second timeout
         });
         
         break; // Success, exit retry loop
