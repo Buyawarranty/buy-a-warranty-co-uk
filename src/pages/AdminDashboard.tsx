@@ -48,8 +48,9 @@ const AdminDashboard = () => {
         .eq('user_id', session.user.id)
         .single();
 
-      if (error || data?.role !== 'admin') {
-        console.error('Access denied - not an admin', error);
+      // Allow all admin role types: admin, member, viewer, guest
+      if (error || !data || !['admin', 'member', 'viewer', 'guest'].includes(data.role)) {
+        console.error('Access denied - not an admin user', error, data);
         navigate('/');
         return;
       }
