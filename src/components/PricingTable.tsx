@@ -630,11 +630,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      '12 month warranty'}
                    </p>
                    <div className="text-4xl font-bold text-gray-900 mb-3">
-                     £{displayPrice}/mo
+                     {paymentType === '12months' ? (
+                       <>£{displayPrice}/mo</>
+                     ) : (
+                       <>£{displayPrice}<span className="text-lg">/12 payments</span></>
+                     )}
                    </div>
-                    <div className="text-green-600 text-base font-bold mb-6">
-                      for 12 months interest free
-                    </div>
+                   <div className="text-green-600 text-base font-bold mb-6">
+                     {paymentType === '12months' ? 'for 12 months interest free' : 'paid over 12 months interest free'}
+                   </div>
                     {savings && paymentType !== '12months' && (
                       <div className="text-green-600 font-bold text-lg mb-6">
                         You Save £{savings}
@@ -832,10 +836,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       }`}>
                         {plan.name}
                       </h4>
-                       <div className="flex items-baseline gap-1">
-                         <span className="text-2xl font-bold">£{monthlyPrice}</span>
-                         <span className="text-sm text-gray-600">/mo</span>
-                       </div>
+                        <div className="flex items-baseline gap-1">
+                          {paymentType === '12months' ? (
+                            <>
+                              <span className="text-2xl font-bold">£{monthlyPrice}</span>
+                              <span className="text-sm text-gray-600">/mo</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-2xl font-bold">£{monthlyPrice}</span>
+                              <span className="text-sm text-gray-600">/12 payments</span>
+                            </>
+                          )}
+                        </div>
                       {savings && paymentType !== '12months' && (
                         <div className="text-green-600 font-semibold text-sm">
                           Save £{savings}
