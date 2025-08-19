@@ -235,15 +235,29 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
-      // Map payment types to database keys
-      const dbKey = paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36';
+      // Map payment types to database keys correctly
+      const dbKey = paymentType === '12months' ? 'monthly' : 
+                    paymentType === '24months' ? '24' : 
+                    paymentType === '36months' ? '36' : 'yearly';
+      
       const periodData = matrix[dbKey];
       if (periodData && periodData[voluntaryExcess.toString()]) {
-        const fullPrice = periodData[voluntaryExcess.toString()].price || 0;
+        const priceData = periodData[voluntaryExcess.toString()];
+        let fullPrice = priceData.price || 0;
         
-        // For 24 and 36 months, return installment amount (divide by 12)
-        if (paymentType === '24months' || paymentType === '36months') {
+        // For database pricing matrix, check if it's already monthly or needs conversion
+        if (paymentType === '12months' && dbKey === 'monthly') {
+          // Already monthly price
+          return fullPrice;
+        } else if (paymentType === '12months' && dbKey === 'yearly') {
+          // Convert yearly to monthly
           return Math.round(fullPrice / 12);
+        } else if (paymentType === '24months') {
+          // 24 month plans return the full 24-month price (not divided)
+          return fullPrice;
+        } else if (paymentType === '36months') {
+          // 36 month plans return the full 36-month price (not divided)
+          return fullPrice;
         }
         
         return fullPrice;
@@ -616,7 +630,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      '12 month warranty'}
                    </p>
                    <div className="text-4xl font-bold text-gray-900 mb-3">
-                     <span className="text-2xl">£</span>{displayPrice}<span className="text-2xl">/mo</span>
+                     £{displayPrice}/mo
                    </div>
                     <div className="text-green-600 text-base font-bold mb-6">
                       for 12 months interest free
@@ -819,8 +833,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         {plan.name}
                       </h4>
                        <div className="flex items-baseline gap-1">
-                         <span className="text-sm">£</span><span className="text-2xl font-bold">{Math.round(monthlyPrice)}</span>
-                         <span className="text-sm text-gray-600">x 12 easy payments</span>
+                         <span className="text-2xl font-bold">£{monthlyPrice}</span>
+                         <span className="text-sm text-gray-600">/mo</span>
                        </div>
                       {savings && paymentType !== '12months' && (
                         <div className="text-green-600 font-semibold text-sm">
