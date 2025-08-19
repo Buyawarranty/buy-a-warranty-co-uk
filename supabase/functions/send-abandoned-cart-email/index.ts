@@ -127,24 +127,33 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email using Resend with improved deliverability
     const emailResponse = await resend.emails.send({
-      from: "Buy A Warranty <support@buyawarranty.co.uk>",
+      from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
       reply_to: "info@buyawarranty.co.uk",
       to: [emailRequest.email],
       subject: subject,
       html: htmlContent,
       text: textContent,
       headers: {
-        'X-Entity-Ref-ID': `abandoned-cart-${emailRequest.email}`,
-        'List-Unsubscribe': '<mailto:unsubscribe@buyawarranty.co.uk>',
+        'X-Entity-Ref-ID': `baw-cart-${Date.now()}-${emailRequest.email.substring(0, 8)}`,
+        'List-Unsubscribe': '<mailto:unsubscribe@buyawarranty.co.uk>, <https://buyawarranty.co.uk/unsubscribe>',
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-        'X-Mailer': 'BuyAWarranty Reminder System v1.0',
+        'X-Mailer': 'Buy A Warranty Email System',
         'X-Priority': '3',
         'X-MSMail-Priority': 'Normal',
         'Importance': 'Normal',
-        'Auto-Submitted': 'auto-generated',
+        'Message-ID': `<baw-${Date.now()}-${Math.random().toString(36).substring(7)}@buyawarranty.co.uk>`,
+        'X-SES-MESSAGE-TAGS': 'category=transactional, type=abandoned-cart',
+        'X-SES-CONFIGURATION-SET': 'buyawarranty-transactional',
+        'Return-Path': 'bounces@buyawarranty.co.uk',
+        'Authentication-Results': 'spf=pass smtp.mailfrom=buyawarranty.co.uk',
+        'MIME-Version': '1.0',
+        'Content-Type': 'text/html; charset=UTF-8',
+        'X-Spam-Status': 'No',
+        'X-Spam-Score': '0.0',
       },
       tags: [
-        { name: 'category', value: 'abandoned-cart' },
+        { name: 'category', value: 'transactional' },
+        { name: 'type', value: 'abandoned-cart' },
         { name: 'vehicle-reg', value: emailRequest.vehicleReg || 'unknown' }
       ]
     });
