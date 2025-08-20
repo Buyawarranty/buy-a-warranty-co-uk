@@ -96,8 +96,6 @@ serve(async (req: Request) => {
       .upsert({
         user_id: newUser.user.id,
         role
-      }, {
-        onConflict: 'user_id,role'
       });
 
     if (roleError) {
@@ -138,7 +136,7 @@ serve(async (req: Request) => {
           </div>
           
           <p>
-            <a href="${Deno.env.get('SUPABASE_URL') || 'https://mzlpuxzwyrcyrgrongeb.supabase.co'}/auth/v1/verify?token=${invitationToken}&type=invite&redirect_to=https://pricing.buyawarranty.co.uk/admin" 
+            <a href="https://pricing.buyawarranty.co.uk/auth?token=${invitationToken}&type=invite" 
                style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">
                Accept Invitation & Access Dashboard
             </a>

@@ -54,7 +54,7 @@ const AdminDashboard = () => {
         .from('user_roles')
         .select('role')
         .eq('user_id', session.user.id)
-        .single();
+        .maybeSingle();
 
       console.log('Role query result:', { data, error });
 
