@@ -301,6 +301,57 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_note_tags: {
+        Row: {
+          created_at: string
+          id: string
+          note_id: string
+          tag_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note_id: string
+          tag_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note_id?: string
+          tag_id?: string
+        }
+        Relationships: []
+      }
+      customer_notes: {
+        Row: {
+          created_at: string
+          created_by: string
+          customer_id: string
+          id: string
+          is_pinned: boolean
+          note_text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          customer_id: string
+          id?: string
+          is_pinned?: boolean
+          note_text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          customer_id?: string
+          id?: string
+          is_pinned?: boolean
+          note_text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       customer_policies: {
         Row: {
           address: Json | null
@@ -721,6 +772,33 @@ export type Database = {
           subject?: string
           template_type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      note_tags: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
         }
         Relationships: []
       }
