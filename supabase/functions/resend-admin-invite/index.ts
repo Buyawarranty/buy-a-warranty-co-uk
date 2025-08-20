@@ -69,7 +69,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (passwordError) throw passwordError;
 
     // Create invitation link
-    const invitationLink = `${Deno.env.get("SUPABASE_URL").replace('.supabase.co', '.vercel.app')}/admin-dashboard`;
+    const invitationLink = `https://pricing.buyawarranty.co.uk/auth`;
 
     // Send invitation email
     const emailResult = await resend.emails.send({
@@ -99,6 +99,11 @@ const handler = async (req: Request): Promise<Response> => {
                 Access Admin Dashboard
               </a>
             </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">
+              Or you can log in directly at: 
+              <a href="${invitationLink}" style="color: #007bff;">${invitationLink}</a>
+            </p>
             
             <p style="color: #666; font-size: 14px; margin-top: 30px;">
               Please change your password after your first login for security purposes.

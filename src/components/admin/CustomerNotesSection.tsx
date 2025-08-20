@@ -79,7 +79,8 @@ export const CustomerNotesSection = ({ customerId, onNotesChange }: CustomerNote
 
   const fetchNotes = async () => {
     try {
-      const { data, error } = await supabase
+      // First get the notes
+      const { data: notesData, error: notesError } = await supabase
         .from('customer_notes')
         .select(`
           id,
@@ -87,31 +88,57 @@ export const CustomerNotesSection = ({ customerId, onNotesChange }: CustomerNote
           is_pinned,
           created_by,
           created_at,
-          updated_at,
-          admin_users!created_by(
-            email,
-            first_name,
-            last_name
-          ),
-          customer_note_tags(
-            note_tags(
-              id,
-              name,
-              color,
-              description
-            )
-          )
+          updated_at
         `)
         .eq('customer_id', customerId)
         .order('is_pinned', { ascending: false })
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (notesError) throw notesError;
 
-      const processedNotes = data?.map(note => ({
-        ...note,
-        tags: note.customer_note_tags?.map((ct: any) => ct.note_tags) || []
-      })) || [];
+      if (!notesData || notesData.length === 0) {
+        setNotes([]);
+        onNotesChange?.(0);
+        return;
+      }
+
+      // Get admin users for the notes
+      const createdByIds = [...new Set(notesData.map(note => note.created_by))];
+      const { data: adminUsers } = await supabase
+        .from('admin_users')
+        .select('user_id, email, first_name, last_name')
+        .in('user_id', createdByIds);
+
+      // Get note tags
+      const noteIds = notesData.map(note => note.id);
+      const { data: noteTags } = await supabase
+        .from('customer_note_tags')
+        .select(`
+          note_id,
+          note_tags(
+            id,
+            name,
+            color,
+            description
+          )
+        `)
+        .in('note_id', noteIds);
+
+      // Process the notes with admin users and tags
+      const processedNotes = notesData.map(note => {
+        const adminUser = adminUsers?.find(admin => admin.user_id === note.created_by);
+        const noteTagsForNote = noteTags?.filter(nt => nt.note_id === note.id) || [];
+        
+        return {
+          ...note,
+          admin_users: adminUser ? {
+            email: adminUser.email,
+            first_name: adminUser.first_name,
+            last_name: adminUser.last_name
+          } : null,
+          tags: noteTagsForNote.map((nt: any) => nt.note_tags).filter(Boolean)
+        };
+      });
 
       setNotes(processedNotes);
       onNotesChange?.(processedNotes.length);

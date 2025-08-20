@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
+import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { format } from 'date-fns';
@@ -2227,79 +2228,12 @@ export const CustomersTab = () => {
 
                               {/* Notes Section */}
                               <div className="space-y-4">
-                                <h3 className="text-lg font-semibold">Customer Notes</h3>
-                                
-                                {/* Add New Note */}
-                                <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
-                                  <div>
-                                    <Label htmlFor="note-date">Note Date</Label>
-                                    <Popover>
-                                      <PopoverTrigger asChild>
-                                        <Button
-                                          variant="outline"
-                                          className={cn(
-                                            "w-full justify-start text-left font-normal",
-                                            !noteDate && "text-muted-foreground"
-                                          )}
-                                        >
-                                          <CalendarIcon className="mr-2 h-4 w-4" />
-                                          {noteDate ? format(noteDate, "PPP") : <span>Pick a date</span>}
-                                        </Button>
-                                      </PopoverTrigger>
-                                      <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                          mode="single"
-                                          selected={noteDate}
-                                          onSelect={(date) => date && setNoteDate(date)}
-                                          initialFocus
-                                          className="pointer-events-auto"
-                                        />
-                                      </PopoverContent>
-                                    </Popover>
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="new-note">Add Note</Label>
-                                    <Textarea
-                                      id="new-note"
-                                      placeholder="Enter your note here..."
-                                      value={newNote}
-                                      onChange={(e) => setNewNote(e.target.value)}
-                                      rows={3}
-                                    />
-                                  </div>
-                                  
-                                  <Button 
-                                    onClick={addNote} 
-                                    disabled={!newNote.trim()}
-                                    className="w-full"
-                                  >
-                                    Add Note
-                                  </Button>
-                                </div>
-                                
-                                {/* Existing Notes */}
-                                <div className="space-y-2 max-h-96 overflow-y-auto">
-                                  {notesLoading ? (
-                                    <div className="text-center py-4">Loading notes...</div>
-                                  ) : notes.length === 0 ? (
-                                    <div className="text-center py-4 text-gray-500">No notes yet</div>
-                                  ) : (
-                                    notes.map((note) => (
-                                       <div key={note.id} className="bg-white p-3 rounded-lg border">
-                                         <p className="text-sm text-gray-800 whitespace-pre-wrap">{note.note}</p>
-                                         <div className="flex justify-between items-center mt-2">
-                                           <p className="text-xs text-gray-500">
-                                             {format(new Date(note.created_at), 'MMM dd, yyyy HH:mm')}
-                                           </p>
-                                           <p className="text-xs text-blue-600 font-medium">
-                                             Sales Staff
-                                           </p>
-                                         </div>
-                                       </div>
-                                    ))
-                                  )}
-                                </div>
+                                <CustomerNotesSection 
+                                  customerId={selectedCustomer.id}
+                                  onNotesChange={(count) => {
+                                    // Optional: Update UI to show note count
+                                  }}
+                                />
                               </div>
                             </div>
                           )}

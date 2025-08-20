@@ -233,11 +233,11 @@ export const UserPermissionsTab = () => {
               Invite User
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Invite New User</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="space-y-4 pr-2">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="firstName">First Name</Label>

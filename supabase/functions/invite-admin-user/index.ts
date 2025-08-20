@@ -137,10 +137,19 @@ serve(async (req: Request) => {
             <p><strong>Temporary Password:</strong> ${tempPassword}</p>
           </div>
           
-          <p><a href="https://pricing.buyawarranty.co.uk/auth?token=${invitationToken}&type=invite" 
-             style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-             Accept Invitation
-          </a></p>
+          <p>
+            <a href="${Deno.env.get('SUPABASE_URL') || 'https://mzlpuxzwyrcyrgrongeb.supabase.co'}/auth/v1/verify?token=${invitationToken}&type=invite&redirect_to=https://pricing.buyawarranty.co.uk/admin" 
+               style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">
+               Accept Invitation & Access Dashboard
+            </a>
+          </p>
+          
+          <p style="margin-top: 16px;">
+            Or you can log in directly at: 
+            <a href="https://pricing.buyawarranty.co.uk/auth" style="color: #007bff;">
+              https://pricing.buyawarranty.co.uk/auth
+            </a>
+          </p>
           
           <p><small>This invitation expires in 7 days.</small></p>
           <p><small>Please change your password after your first login.</small></p>
