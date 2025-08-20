@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
@@ -179,6 +180,7 @@ interface AdminUser {
   email: string;
   first_name?: string;
   last_name?: string;
+  role: string;
 }
 
 // Number plate component
@@ -224,6 +226,8 @@ export const CustomersTab = () => {
   const [currentUser, setCurrentUser] = useState<{ id: string; email: string; } | null>(null);
   const [currentAdminUser, setCurrentAdminUser] = useState<AdminUser | null>(null);
   const [assignmentLoading, setAssignmentLoading] = useState<{ [key: string]: boolean }>({});
+  const [selectedCustomers, setSelectedCustomers] = useState<Set<string>>(new Set());
+  const [bulkDeleteLoading, setBulkDeleteLoading] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
@@ -299,7 +303,7 @@ export const CustomersTab = () => {
         // Find the corresponding admin user
         const { data: adminUserData, error: adminError } = await supabase
           .from('admin_users')
-          .select('*')
+          .select('id, user_id, email, first_name, last_name, role')
           .eq('user_id', user.id)
           .eq('is_active', true)
           .single();
@@ -317,7 +321,7 @@ export const CustomersTab = () => {
     try {
       const { data, error } = await supabase
         .from('admin_users')
-        .select('id, user_id, email, first_name, last_name')
+        .select('id, user_id, email, first_name, last_name, role')
         .eq('is_active', true);
       
       if (error) throw error;
@@ -774,7 +778,18 @@ export const CustomersTab = () => {
     fetchNotes(customer.id);
   };
 
+  // Check if current user is admin (not just member)
+  const isAdmin = () => {
+    const isMasterAdmin = localStorage.getItem('masterAdmin') === 'true';
+    return isMasterAdmin || (currentAdminUser?.role === 'admin');
+  };
+
   const deleteCustomer = async (customerId: string, customerName: string) => {
+    if (!isAdmin()) {
+      toast.error('Only administrators can delete customer records');
+      return;
+    }
+
     if (!confirm(`Are you sure you want to delete "${customerName}"? This action cannot be undone and will also delete all associated data.`)) {
       return;
     }
@@ -872,6 +887,105 @@ export const CustomersTab = () => {
     } catch (error) {
       console.error('Unexpected error deleting record:', error);
       toast.error('An unexpected error occurred while deleting the record');
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (selectedCustomers.size === filteredCustomers.length) {
+      setSelectedCustomers(new Set());
+    } else {
+      setSelectedCustomers(new Set(filteredCustomers.map(c => c.id)));
+    }
+  };
+
+  const handleSelectCustomer = (customerId: string) => {
+    const newSelected = new Set(selectedCustomers);
+    if (newSelected.has(customerId)) {
+      newSelected.delete(customerId);
+    } else {
+      newSelected.add(customerId);
+    }
+    setSelectedCustomers(newSelected);
+  };
+
+  const bulkDeleteCustomers = async () => {
+    if (!isAdmin()) {
+      toast.error('Only administrators can delete customer records');
+      return;
+    }
+
+    if (selectedCustomers.size === 0) {
+      toast.error('No customers selected for deletion');
+      return;
+    }
+
+    const selectedCount = selectedCustomers.size;
+    if (!confirm(`Are you sure you want to delete ${selectedCount} customer(s)? This action cannot be undone and will also delete all associated data.`)) {
+      return;
+    }
+
+    setBulkDeleteLoading(true);
+    try {
+      const errors = [];
+      let successCount = 0;
+
+      for (const customerId of selectedCustomers) {
+        const customer = filteredCustomers.find(c => c.id === customerId);
+        if (!customer) continue;
+
+        try {
+          const isOrphanedPolicy = customer.name === 'Unknown Customer';
+          
+          if (isOrphanedPolicy) {
+            const { error: policyError } = await supabase
+              .from('customer_policies')
+              .delete()
+              .eq('id', customerId);
+
+            if (policyError) {
+              errors.push(`Failed to delete policy ${customerId}: ${policyError.message}`);
+            } else {
+              successCount++;
+            }
+          } else {
+            // Delete related records first
+            await supabase.from('warranty_audit_log').delete().eq('customer_id', customerId);
+            await supabase.from('email_logs').delete().eq('customer_id', customerId);
+            await supabase.from('customer_policies').delete().eq('customer_id', customerId);
+            await supabase.from('admin_notes').delete().eq('customer_id', customerId);
+            await supabase.from('payments').delete().eq('customer_id', customerId);
+
+            // Delete customer
+            const { error: customerError } = await supabase
+              .from('customers')
+              .delete()
+              .eq('id', customerId);
+
+            if (customerError) {
+              errors.push(`Failed to delete customer ${customer.name}: ${customerError.message}`);
+            } else {
+              successCount++;
+            }
+          }
+        } catch (error) {
+          errors.push(`Error deleting ${customer.name}: ${error}`);
+        }
+      }
+
+      if (errors.length > 0) {
+        console.error('Bulk delete errors:', errors);
+        toast.error(`${successCount} customers deleted, ${errors.length} failed`);
+      } else {
+        toast.success(`Successfully deleted ${successCount} customer(s)`);
+      }
+
+      setSelectedCustomers(new Set());
+      fetchCustomers();
+    } catch (error) {
+      console.error('Bulk delete error:', error);
+      toast.error('An error occurred during bulk deletion');
+    } finally {
+      setBulkDeleteLoading(false);
     }
   };
 
@@ -1379,27 +1493,53 @@ export const CustomersTab = () => {
               </div>
             </div>
 
-            {/* Results Summary */}
+            {/* Results Summary and Bulk Actions */}
             <div className="flex items-center justify-between text-sm text-gray-600 pt-2 border-t">
-              <span>
-                Showing {filteredCustomers.length} of {customers.length} customers
-                {searchTerm && ` for "${searchTerm}"`}
-                {filterByPlan !== 'all' && ` • ${filterByPlan} plan`}
-                {filterByStatus !== 'all' && ` • ${filterByStatus} status`}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSearchTerm('');
-                  setSortBy('newest');
-                  setFilterByPlan('all');
-                  setFilterByStatus('all');
-                }}
-                className="text-xs"
-              >
-                Clear Filters
-              </Button>
+              <div className="flex items-center gap-4">
+                <span>
+                  Showing {filteredCustomers.length} of {customers.length} customers
+                  {searchTerm && ` for "${searchTerm}"`}
+                  {filterByPlan !== 'all' && ` • ${filterByPlan} plan`}
+                  {filterByStatus !== 'all' && ` • ${filterByStatus} status`}
+                </span>
+                {selectedCustomers.size > 0 && (
+                  <Badge variant="secondary" className="bg-blue-50 text-blue-700">
+                    {selectedCustomers.size} selected
+                  </Badge>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {selectedCustomers.size > 0 && isAdmin() && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={bulkDeleteCustomers}
+                    disabled={bulkDeleteLoading}
+                    className="text-xs"
+                  >
+                    {bulkDeleteLoading ? (
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                    ) : (
+                      <Trash2 className="h-3 w-3 mr-1" />
+                    )}
+                    Delete Selected ({selectedCustomers.size})
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSortBy('newest');
+                    setFilterByPlan('all');
+                    setFilterByStatus('all');
+                    setSelectedCustomers(new Set());
+                  }}
+                  className="text-xs"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -1407,6 +1547,13 @@ export const CustomersTab = () => {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">
+                <Checkbox
+                  checked={selectedCustomers.size === filteredCustomers.length && filteredCustomers.length > 0}
+                  onCheckedChange={handleSelectAll}
+                  aria-label="Select all customers"
+                />
+              </TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
@@ -1431,7 +1578,7 @@ export const CustomersTab = () => {
           <TableBody>
             {filteredCustomers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={19} className="text-center py-8">
+                <TableCell colSpan={20} className="text-center py-8">
                   <div className="space-y-4">
                     <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -1450,6 +1597,13 @@ export const CustomersTab = () => {
             ) : (
               filteredCustomers.map((customer) => (
                 <TableRow key={customer.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedCustomers.has(customer.id)}
+                      onCheckedChange={() => handleSelectCustomer(customer.id)}
+                      aria-label={`Select ${customer.name}`}
+                    />
+                  </TableCell>
                   <TableCell className="font-medium">{customer.name}</TableCell>
                   <TableCell>{customer.email}</TableCell>
                   <TableCell>{customer.phone || 'N/A'}</TableCell>
@@ -1689,16 +1843,18 @@ export const CustomersTab = () => {
                               <Edit className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
-                       
-                       <Button
-                         variant="ghost"
-                         size="sm"
-                         onClick={() => deleteCustomer(customer.id, customer.name)}
-                         className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                         title="Delete Customer"
-                       >
-                         <Trash2 className="h-4 w-4" />
-                       </Button>
+                        
+                        {isAdmin() && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteCustomer(customer.id, customer.name)}
+                            className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                            title="Delete Customer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
                             <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
