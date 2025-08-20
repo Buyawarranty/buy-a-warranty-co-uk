@@ -372,7 +372,7 @@ export const CustomersTab = () => {
       // Query both customers and orphaned policies (policies without customer records)
       console.log('📊 Attempting query with policy data and real customers only...');
       
-      // First get customers with their policies
+      // First get customers with their policies and assigned admin details
       const { data: customersData, error: customersError } = await supabase
         .from('customers')
         .select(`
@@ -386,6 +386,12 @@ export const CustomersTab = () => {
             warranty_number,
             email_sent_status,
             warranties_2000_status
+          ),
+          admin_users!assigned_to(
+            id,
+            first_name,
+            last_name,
+            email
           )
         `)
         .not('email', 'ilike', '%test%')
@@ -1777,43 +1783,49 @@ export const CustomersTab = () => {
                       {customer.status}
                     </Badge>
                    </TableCell>
-                   <TableCell>
-                     <div className="flex flex-col space-y-1">
-                       {customer.assigned_to ? (
-                         <div className="flex items-center justify-between">
-                           <span className="text-sm text-gray-600">
-                             Assigned
-                           </span>
-                           {currentAdminUser?.id === customer.assigned_to && (
-                             <Button
-                               variant="ghost"
-                               size="sm"
-                               onClick={() => unassignCustomer(customer.id)}
-                               disabled={assignmentLoading[customer.id]}
-                               className="p-1 h-6 w-6 text-gray-400 hover:text-red-600"
-                               title="Unassign from me"
-                             >
-                               <UserX className="h-3 w-3" />
-                             </Button>
-                           )}
-                         </div>
-                       ) : (
-                         <Button
-                           variant="outline"
-                           size="sm"
-                           onClick={() => assignCustomerToMe(customer.id)}
-                           disabled={assignmentLoading[customer.id]}
-                           className="text-xs py-1 h-6"
-                         >
-                           {assignmentLoading[customer.id] ? (
-                             <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-400"></div>
-                           ) : (
-                             'Assign to me'
-                           )}
-                         </Button>
-                       )}
-                     </div>
-                   </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col space-y-1">
+                        {customer.assigned_to ? (
+                          <div className="flex items-center justify-between">
+                            <div className="flex flex-col">
+                              <span className="text-xs text-gray-500">Assigned to</span>
+                              <span className="text-sm font-medium text-gray-900">
+                                {customer.admin_users ? 
+                                  `${customer.admin_users.first_name || ''} ${customer.admin_users.last_name || ''}`.trim() || customer.admin_users.email :
+                                  'Unknown User'
+                                }
+                              </span>
+                            </div>
+                            {currentAdminUser?.id === customer.assigned_to && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => unassignCustomer(customer.id)}
+                                disabled={assignmentLoading[customer.id]}
+                                className="p-1 h-6 w-6 text-gray-400 hover:text-red-600"
+                                title="Unassign from me"
+                              >
+                                <UserX className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => assignCustomerToMe(customer.id)}
+                            disabled={assignmentLoading[customer.id]}
+                            className="text-xs py-1 h-6"
+                          >
+                            {assignmentLoading[customer.id] ? (
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-400"></div>
+                            ) : (
+                              'Assign to me'
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell>
                      <div className="flex space-x-2">
                         {/* DVLA Vehicle Data Refresh */}
