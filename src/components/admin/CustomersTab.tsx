@@ -296,9 +296,11 @@ export const CustomersTab = () => {
 
   const getCurrentUser = async () => {
     try {
+      console.log('getCurrentUser: Starting...');
       const { data: { user }, error } = await supabase.auth.getUser();
       if (error) throw error;
       if (user) {
+        console.log('getCurrentUser: Found user:', user.email);
         setCurrentUser({ id: user.id, email: user.email || '' });
         
         // Find the corresponding admin user
@@ -309,9 +311,16 @@ export const CustomersTab = () => {
           .eq('is_active', true)
           .single();
           
+        console.log('getCurrentUser: Admin user query result:', { adminUserData, adminError });
+          
         if (!adminError && adminUserData) {
+          console.log('getCurrentUser: Setting current admin user:', adminUserData);
           setCurrentAdminUser(adminUserData);
+        } else if (adminError) {
+          console.error('getCurrentUser: Admin user error:', adminError);
         }
+      } else {
+        console.log('getCurrentUser: No user found');
       }
     } catch (error) {
       console.error('Error getting current user:', error);
@@ -788,7 +797,16 @@ export const CustomersTab = () => {
   // Check if current user is admin (not just member)
   const isAdmin = () => {
     const isMasterAdmin = localStorage.getItem('masterAdmin') === 'true';
-    return isMasterAdmin || (currentAdminUser?.role === 'admin');
+    const hasAdminRole = currentAdminUser?.role === 'admin';
+    
+    console.log('isAdmin check:', {
+      isMasterAdmin,
+      currentAdminUser: currentAdminUser,
+      hasAdminRole,
+      result: isMasterAdmin || hasAdminRole
+    });
+    
+    return isMasterAdmin || hasAdminRole;
   };
 
   const deleteCustomer = async (customerId: string, customerName: string) => {
