@@ -402,12 +402,28 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                       paymentType === 'three_yearly' ? '36 Months warranty' :
                       '12 Months warranty'}
                    </p>
-                  <div className="text-4xl font-bold text-gray-900 mb-3">
-                    <span className="text-2xl">£</span>{Math.round(getMonthlyDisplayPrice())}<span className="text-2xl">/mo</span>
-                  </div>
-                  <div className="text-gray-600 text-base mb-6">
-                     for 12 months interest free
+                   <div className="text-4xl font-bold text-gray-900 mb-3">
+                     <span className="text-2xl">£</span>{Math.round(getMonthlyDisplayPrice())}<span className="text-2xl">/mo</span>
                    </div>
+                   <div className="text-gray-600 text-base mb-4">
+                      for 12 months interest free
+                    </div>
+
+                    {/* Pay Full Amount - Stripe Price with 5% Discount */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold text-gray-900">Pay Full Amount</span>
+                        <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                          Save 5% (£{Math.round((getMonthlyDisplayPrice() * 12) * 0.05)})
+                        </div>
+                      </div>
+                      <div className="text-xl font-bold text-blue-600">
+                        £{Math.round((getMonthlyDisplayPrice() * 12) * 0.95)} upfront
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Instead of £{Math.round(getMonthlyDisplayPrice() * 12)} over 12 months
+                      </div>
+                    </div>
                    
                    <div className="space-y-3">
                      <Button
