@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import AdminLoginDebug from '@/components/admin/AdminLoginDebug';
 
 const Auth = () => {
   const { toast } = useToast();
@@ -129,8 +130,13 @@ const Auth = () => {
       });
 
       if (error) {
-        console.error("Sign in error:", error);
-        throw error;
+        console.error("Sign in error:", error.message, error);
+        toast({
+          title: "Sign In Failed",
+          description: error.message || "Authentication failed. Please check your credentials.",
+          variant: "destructive",
+        });
+        return;
       }
 
       console.log("Sign in successful:", data.user?.email);
@@ -360,6 +366,11 @@ const Auth = () => {
             </Tabs>
           </CardContent>
         </Card>
+        
+        {/* Debug tool for admin login issues */}
+        <div className="mt-8">
+          <AdminLoginDebug />
+        </div>
         </div>
       </div>
     </div>
