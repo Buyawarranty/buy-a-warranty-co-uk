@@ -9,6 +9,11 @@ import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
 import { supabase } from '@/integrations/supabase/client';
+import { useABTest } from '@/hooks/useABTest';
+
+// Variant B Components
+import VehicleDetailsStepB from '@/components/variants/VehicleDetailsStepB';
+import PricingTableB from '@/components/variants/PricingTableB';
 
 
 interface VehicleData {
@@ -31,6 +36,13 @@ interface VehicleData {
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  
+  // AB Test setup
+  const { variant, isLoading: abTestLoading, trackEvent } = useABTest({
+    testName: 'pricing_journey_redesign',
+    variants: ['A', 'B'],
+    trafficSplit: 0.5 // 50/50 split
+  });
   
   // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
@@ -222,6 +234,15 @@ const Index = () => {
     setCurrentStep(nextStep);
     updateStepInUrl(nextStep);
     saveStateToLocalStorage(nextStep);
+    
+    // Track AB test event
+    trackEvent('step_1_completed', {
+      vehicle_make: data.make,
+      vehicle_model: data.model,
+      vehicle_year: data.year,
+      is_manual_entry: data.isManualEntry
+    });
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -243,6 +264,13 @@ const Index = () => {
     setCurrentStep(3);
     updateStepInUrl(3);
     saveStateToLocalStorage(3);
+    
+    // Track AB test event
+    trackEvent('step_2_completed', {
+      has_email: !!contactData.email,
+      has_phone: !!contactData.phone
+    });
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Track pricing page view for abandoned cart emails
@@ -254,6 +282,14 @@ const Index = () => {
     setCurrentStep(4);
     updateStepInUrl(4);
     saveStateToLocalStorage(4);
+    
+    // Track AB test event
+    trackEvent('step_3_completed', {
+      selected_plan: planId,
+      payment_type: paymentType,
+      plan_price: pricingData?.totalPrice
+    });
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Track plan selection for abandoned cart emails
@@ -295,6 +331,18 @@ const Index = () => {
   // Check if vehicle is a special type
   const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
 
+  // Show loading while AB test is determining variant
+  if (abTestLoading) {
+    return (
+      <div className="min-h-screen bg-[#e8f4fb] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
       <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
@@ -319,14 +367,24 @@ const Index = () => {
               </div>
             )}
             
-            <RegistrationForm 
-              onNext={handleRegistrationComplete} 
-              onBack={(step: number) => handleBackToStep(step)}
-              onFormDataUpdate={handleFormDataUpdate}
-              initialData={formData}
-              currentStep={currentStep}
-              onStepChange={handleStepChange}
-            />
+            {variant === 'A' ? (
+              <RegistrationForm 
+                onNext={handleRegistrationComplete} 
+                onBack={(step: number) => handleBackToStep(step)}
+                onFormDataUpdate={handleFormDataUpdate}
+                initialData={formData}
+                currentStep={currentStep}
+                onStepChange={handleStepChange}
+              />
+            ) : (
+              <VehicleDetailsStepB
+                onNext={handleRegistrationComplete}
+                onFormDataUpdate={handleFormDataUpdate}
+                initialData={formData}
+                currentStep={currentStep}
+                onStepChange={handleStepChange}
+              />
+            )}
           </div>
         </div>
       )}
@@ -348,7 +406,6 @@ const Index = () => {
         <div className="w-full overflow-x-hidden">
           {vehicleData && (
             <>
-              
               {isSpecialVehicle ? (
                 <SpecialVehiclePricing 
                   vehicleData={vehicleData as any}
@@ -356,11 +413,21 @@ const Index = () => {
                   onPlanSelected={handlePlanSelected}
                 />
               ) : (
-                <PricingTable 
-                  vehicleData={vehicleData} 
-                  onBack={() => handleBackToStep(2)} 
-                  onPlanSelected={handlePlanSelected}
-                />
+                <>
+                  {variant === 'A' ? (
+                    <PricingTable 
+                      vehicleData={vehicleData} 
+                      onBack={() => handleBackToStep(2)} 
+                      onPlanSelected={handlePlanSelected}
+                    />
+                  ) : (
+                    <PricingTableB
+                      vehicleData={vehicleData}
+                      onPlanSelected={handlePlanSelected}
+                      onBack={() => handleBackToStep(2)}
+                    />
+                  )}
+                </>
               )}
             </>
           )}
