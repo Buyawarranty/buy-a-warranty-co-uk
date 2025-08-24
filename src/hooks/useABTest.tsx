@@ -21,24 +21,47 @@ export const useABTest = (config: ABTestConfig) => {
 
   useEffect(() => {
     const storageKey = `ab_test_${config.testName}`;
-    const existingVariant = localStorage.getItem(storageKey) as ABTestVariant;
-
-    if (existingVariant && config.variants.includes(existingVariant)) {
-      setVariant(existingVariant);
-    } else {
-      // Randomly assign variant based on traffic split
-      const randomValue = Math.random();
-      const assignedVariant = randomValue < config.trafficSplit ? 'A' : 'B';
-      setVariant(assignedVariant);
-      localStorage.setItem(storageKey, assignedVariant);
+    
+    // Check for URL parameter to force a specific variant
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceVariant = urlParams.get('variant') as ABTestVariant;
+    
+    if (forceVariant && config.variants.includes(forceVariant)) {
+      // Force specific variant from URL parameter
+      setVariant(forceVariant);
+      localStorage.setItem(storageKey, forceVariant);
       
-      // Track variant assignment
+      // Track forced variant assignment
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'ab_test_assigned', {
           test_name: config.testName,
-          variant: assignedVariant,
-          custom_parameter_1: 'pricing_journey'
+          variant: forceVariant,
+          custom_parameter_1: 'pricing_journey',
+          forced: true
         });
+      }
+    } else {
+      // Normal AB test logic
+      const existingVariant = localStorage.getItem(storageKey) as ABTestVariant;
+
+      if (existingVariant && config.variants.includes(existingVariant)) {
+        setVariant(existingVariant);
+      } else {
+        // Randomly assign variant based on traffic split
+        const randomValue = Math.random();
+        const assignedVariant = randomValue < config.trafficSplit ? 'A' : 'B';
+        setVariant(assignedVariant);
+        localStorage.setItem(storageKey, assignedVariant);
+        
+        // Track variant assignment
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'ab_test_assigned', {
+            test_name: config.testName,
+            variant: assignedVariant,
+            custom_parameter_1: 'pricing_journey',
+            forced: false
+          });
+        }
       }
     }
 
