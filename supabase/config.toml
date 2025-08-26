@@ -87,6 +87,9 @@ verify_jwt = false
 [functions.process-bumper-success]
 verify_jwt = false
 
+[functions.fetch-mot-history]
+verify_jwt = true
+
 [db]
 port = 54322
 

@@ -775,6 +775,87 @@ export type Database = {
         }
         Relationships: []
       }
+      mot_history: {
+        Row: {
+          co2_emissions: number | null
+          colour: string | null
+          created_at: string | null
+          customer_id: string | null
+          date_of_last_v5c_issued: string | null
+          dvla_id: string | null
+          engine_capacity: number | null
+          euro_status: string | null
+          fuel_type: string | null
+          id: string
+          make: string | null
+          manufacture_date: string | null
+          marked_for_export: boolean | null
+          model: string | null
+          mot_expiry_date: string | null
+          mot_tests: Json
+          primary_colour: string | null
+          real_driving_emissions: string | null
+          registration: string
+          registration_date: string | null
+          revenue_weight: number | null
+          type_approval: string | null
+          updated_at: string | null
+          wheelplan: string | null
+        }
+        Insert: {
+          co2_emissions?: number | null
+          colour?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          date_of_last_v5c_issued?: string | null
+          dvla_id?: string | null
+          engine_capacity?: number | null
+          euro_status?: string | null
+          fuel_type?: string | null
+          id?: string
+          make?: string | null
+          manufacture_date?: string | null
+          marked_for_export?: boolean | null
+          model?: string | null
+          mot_expiry_date?: string | null
+          mot_tests?: Json
+          primary_colour?: string | null
+          real_driving_emissions?: string | null
+          registration: string
+          registration_date?: string | null
+          revenue_weight?: number | null
+          type_approval?: string | null
+          updated_at?: string | null
+          wheelplan?: string | null
+        }
+        Update: {
+          co2_emissions?: number | null
+          colour?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          date_of_last_v5c_issued?: string | null
+          dvla_id?: string | null
+          engine_capacity?: number | null
+          euro_status?: string | null
+          fuel_type?: string | null
+          id?: string
+          make?: string | null
+          manufacture_date?: string | null
+          marked_for_export?: boolean | null
+          model?: string | null
+          mot_expiry_date?: string | null
+          mot_tests?: Json
+          primary_colour?: string | null
+          real_driving_emissions?: string | null
+          registration?: string
+          registration_date?: string | null
+          revenue_weight?: number | null
+          type_approval?: string | null
+          updated_at?: string | null
+          wheelplan?: string | null
+        }
+        Relationships: []
+      }
       note_tags: {
         Row: {
           color: string

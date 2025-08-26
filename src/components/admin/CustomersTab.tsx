@@ -18,6 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
+import { MOTHistorySection } from './MOTHistorySection';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
@@ -1892,10 +1893,10 @@ export const CustomersTab = () => {
                           </DialogHeader>
                           
                           {editingCustomer && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              {/* Customer Details */}
-                              <div className="space-y-4">
-                                <h3 className="text-lg font-semibold">Customer Details</h3>
+                            <>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">{/* Customer Details */}
+                                <div className="space-y-4">
+                                  <h3 className="text-lg font-semibold">Customer Details</h3>
                                 
                                 <div className="space-y-3">
                                   <div>
@@ -2254,6 +2255,15 @@ export const CustomersTab = () => {
                                 />
                               </div>
                             </div>
+                            
+                            {/* MOT History Section - Full Width */}
+                            <div className="mt-6">
+                              <MOTHistorySection 
+                                registrationNumber={selectedCustomer.registration_plate}
+                                customerId={selectedCustomer.id}
+                              />
+                            </div>
+                            </>
                           )}
                         </DialogContent>
                       </Dialog>

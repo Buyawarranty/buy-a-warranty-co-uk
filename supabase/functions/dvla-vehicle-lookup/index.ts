@@ -1,5 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.2';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -161,6 +162,28 @@ serve(async (req) => {
         status: 200,
       });
     }
+
+    // Also fetch MOT history data in the background (don't wait for it to complete)
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Fetch MOT history in the background - don't await this
+    supabase.functions.invoke('fetch-mot-history', {
+      body: { 
+        registration: registrationNumber.replace(/\s/g, '').toUpperCase(),
+        customer_id: null // We don't have customer_id at this stage
+      }
+    }).then(response => {
+      if (response.data?.success) {
+        console.log('MOT history fetched and stored successfully');
+      } else {
+        console.log('MOT history fetch failed:', response.data?.error || 'Unknown error');
+      }
+    }).catch(error => {
+      console.log('MOT history fetch error:', error.message);
+    });
 
     return new Response(JSON.stringify({
       found: true,
