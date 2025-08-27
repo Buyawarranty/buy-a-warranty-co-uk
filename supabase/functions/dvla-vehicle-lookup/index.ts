@@ -117,6 +117,12 @@ serve(async (req) => {
             taxStatus: dvlaData.taxStatus,
             transmission: dvlaData.transmission || vehicleData.transmission
           };
+          
+          console.log('Vehicle data after DVLA:', {
+            make: vehicleData.make,
+            model: vehicleData.model,
+            year: vehicleData.yearOfManufacture
+          });
         } else {
           console.log('DVLA API failed with status:', dvlaResponse.status);
         }
@@ -126,6 +132,26 @@ serve(async (req) => {
     } else {
       console.log('No DVLA API key configured');
     }
+
+    // If model is still missing and we have MOT data, try to get it from DVSA
+    if (!vehicleData.model && hasMOTData && motData && motData.model) {
+      console.log('Using DVSA model as fallback:', motData.model);
+      vehicleData.model = motData.model;
+    }
+    
+    // If make is still missing and we have MOT data, try to get it from DVSA  
+    if (!vehicleData.make && hasMOTData && motData && motData.make) {
+      console.log('Using DVSA make as fallback:', motData.make);
+      vehicleData.make = motData.make;
+    }
+
+    console.log('Final vehicle data:', {
+      make: vehicleData.make,
+      model: vehicleData.model,
+      year: vehicleData.yearOfManufacture,
+      hasMOTData,
+      hasDVLAData
+    });
 
     // Check if we have enough data to proceed
     if (!vehicleData.make) {
