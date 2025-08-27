@@ -215,10 +215,11 @@ serve(async (req) => {
     console.error("Error fetching MOT history:", error);
     return new Response(JSON.stringify({ 
       success: false, 
-      error: error.message 
+      error: error.message,
+      data: null 
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status: 200, // Return 200 so it's not treated as a failed request
     });
   }
 });
