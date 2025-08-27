@@ -79,11 +79,13 @@ serve(async (req) => {
       };
     }
 
-    // Now supplement with DVLA data for tax status and other details
+    // Now try to get data from DVLA API (this should be the primary source if DVSA fails)
     const dvlaApiKey = Deno.env.get("DVLA_API_KEY");
+    let hasDVLAData = false;
+    
     if (dvlaApiKey) {
       try {
-        console.log(`Fetching additional data from DVLA for ${registrationNumber}`);
+        console.log(`Fetching data from DVLA for ${registrationNumber}`);
         
         const dvlaResponse = await fetch(`https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles`, {
           method: 'POST',
@@ -99,40 +101,48 @@ serve(async (req) => {
 
         if (dvlaResponse.ok) {
           const dvlaData = await dvlaResponse.json();
-          console.log('DVLA API supplementary response:', dvlaData);
+          console.log('DVLA API response:', dvlaData);
+          hasDVLAData = true;
           
-          // Supplement vehicle data with DVLA info
+          // Use DVLA data as primary or supplement existing MOT data
           vehicleData = {
-            ...vehicleData,
-            motStatus: dvlaData.motStatus,
-            taxStatus: dvlaData.taxStatus,
-            transmission: dvlaData.transmission || vehicleData.transmission,
-            // Use DVLA data as fallback if MOT data is missing or as primary if no MOT data
             make: vehicleData.make || dvlaData.make,
             model: vehicleData.model || dvlaData.model,
             fuelType: vehicleData.fuelType || dvlaData.fuelType,
             yearOfManufacture: vehicleData.yearOfManufacture || dvlaData.yearOfManufacture,
             colour: vehicleData.colour || dvlaData.colour,
-            engineCapacity: vehicleData.engineCapacity || dvlaData.engineCapacity
+            engineCapacity: vehicleData.engineCapacity || dvlaData.engineCapacity,
+            motExpiryDate: vehicleData.motExpiryDate,
+            motStatus: dvlaData.motStatus,
+            taxStatus: dvlaData.taxStatus,
+            transmission: dvlaData.transmission || vehicleData.transmission
           };
         } else {
-          console.log('DVLA API failed, continuing with MOT data only');
+          console.log('DVLA API failed with status:', dvlaResponse.status);
         }
       } catch (error) {
-        console.log('DVLA API error, continuing with MOT data only:', error.message);
+        console.log('DVLA API error:', error.message);
       }
+    } else {
+      console.log('No DVLA API key configured');
     }
 
     // Check if we have enough data to proceed
-    if (!vehicleData.make || !vehicleData.yearOfManufacture) {
-      console.log('Insufficient vehicle data - missing make or year');
+    if (!vehicleData.make) {
+      console.log('No vehicle data found from either DVLA or DVSA');
       return new Response(JSON.stringify({
         found: false,
-        error: "Vehicle not found - insufficient data from DVLA and DVSA databases"
+        error: "Vehicle not found in DVLA or DVSA databases"
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
+    }
+
+    // If we don't have year data, try to extract from other sources or set a reasonable default
+    if (!vehicleData.yearOfManufacture) {
+      console.log('No year data available, vehicle lookup incomplete');
+      // For now, we'll still allow the lookup to proceed without year validation
     }
 
     // Determine vehicle type based on combined vehicle data
@@ -199,19 +209,21 @@ serve(async (req) => {
     
     console.log(`Determined vehicle type: ${vehicleType}`);
 
-    // Check vehicle age (must be 15 years or newer)
-    const currentYear = new Date().getFullYear();
-    const vehicleAge = vehicleData.yearOfManufacture ? currentYear - vehicleData.yearOfManufacture : 0;
-    
-    if (vehicleAge > 15) {
-      console.log(`Vehicle ${registrationNumber} is ${vehicleAge} years old - too old for warranty`);
-      return new Response(JSON.stringify({
-        found: false,
-        error: "We cannot offer warranties for vehicles over 15 years of age"
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+    // Check vehicle age (must be 15 years or newer) - only if we have year data
+    if (vehicleData.yearOfManufacture) {
+      const currentYear = new Date().getFullYear();
+      const vehicleAge = currentYear - vehicleData.yearOfManufacture;
+      
+      if (vehicleAge > 15) {
+        console.log(`Vehicle ${registrationNumber} is ${vehicleAge} years old - too old for warranty`);
+        return new Response(JSON.stringify({
+          found: false,
+          error: "We cannot offer warranties for vehicles over 15 years of age"
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
     }
 
     return new Response(JSON.stringify({
