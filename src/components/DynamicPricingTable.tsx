@@ -182,8 +182,20 @@ export default function DynamicPricingTable({ vehicleData, onBack, onPlanSelecte
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      {/* Orange Header Section */}
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-3">
+            Confirm Your Vehicle
+          </h1>
+          <p className="text-orange-100 text-lg">
+            Please verify these details are correct
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <Button 
           variant="ghost" 
           onClick={onBack} 
@@ -193,278 +205,259 @@ export default function DynamicPricingTable({ vehicleData, onBack, onPlanSelecte
           Back to Vehicle Details
         </Button>
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
-            Choose Your Warranty Plan
-          </h1>
-          <p className="text-xl text-gray-600 mb-6">
-            Personalized pricing based on your vehicle's details and history
-          </p>
-        </div>
-
-        {/* Vehicle Summary */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
-                <Car className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-800">{vehicleData.make} {vehicleData.model}</h3>
-                <p className="text-gray-600">
-                  {vehicleData.year} • {vehicleData.fuelType} • {vehicleData.registration}
-                </p>
-              </div>
+        {/* Vehicle Details Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <div className="flex items-center mb-4">
+            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+              1
             </div>
-            <Badge className="bg-green-100 text-green-800 border-green-200 px-4 py-2 text-sm font-semibold">
-              ✓ Warranty Available
-            </Badge>
+            <span className="text-gray-600 font-medium">Based on your vehicle</span>
+          </div>
+          
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">{vehicleData.registration}</h2>
+            <h3 className="text-xl text-gray-700 mb-1">{vehicleData.make} {vehicleData.model}</h3>
+            <p className="text-gray-600">{vehicleData.year} • {vehicleData.fuelType}</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Car className="w-6 h-6 text-gray-600" />
+              </div>
+              <p className="text-sm text-gray-500">Fuel Type</p>
+              <p className="font-semibold text-gray-800">{vehicleData.fuelType}</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Clock className="w-6 h-6 text-gray-600" />
+              </div>
+              <p className="text-sm text-gray-500">Year</p>
+              <p className="font-semibold text-gray-800">{vehicleData.year}</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Zap className="w-6 h-6 text-gray-600" />
+              </div>
+              <p className="text-sm text-gray-500">Mileage</p>
+              <p className="font-semibold text-gray-800">{vehicleData.mileage || 'N/A'}</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Shield className="w-6 h-6 text-gray-600" />
+              </div>
+              <p className="text-sm text-gray-500">Status</p>
+              <p className="font-semibold text-green-600">Eligible</p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center text-green-600">
+            <CheckCircle className="w-5 h-5 mr-2" />
+            <span className="font-medium">Eligible for warranty coverage</span>
           </div>
         </div>
 
-        {/* Payment Period Selection */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Choose Your Warranty Period</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { key: '12months', label: '1 Year', monthly: displayPricing.monthly1Year, savings: 0, popular: false },
-              { key: '24months', label: '2 Years', monthly: displayPricing.monthly2Year, savings: displayPricing.savings2Year, popular: true },
-              { key: '36months', label: '3 Years', monthly: displayPricing.monthly3Year, savings: displayPricing.savings3Year, popular: false }
-            ].map((option) => (
-              <div
-                key={option.key}
-                className={`relative cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                  paymentType === option.key 
-                    ? 'ring-4 ring-blue-500 ring-opacity-50' 
-                    : ''
-                }`}
-                onClick={() => setPaymentType(option.key as typeof paymentType)}
-              >
-                {option.popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1 text-sm font-bold">
-                      Most Popular
-                    </Badge>
-                  </div>
-                )}
-                <div className={`bg-white border-2 rounded-xl p-6 text-center h-full ${
-                  paymentType === option.key 
-                    ? 'border-blue-500 bg-blue-50' 
-                    : 'border-gray-200 hover:border-blue-300'
-                }`}>
-                  <div className="text-xl font-bold text-gray-800 mb-2">{option.label}</div>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">£{option.monthly}</div>
-                  <div className="text-gray-600 mb-4">per month</div>
+        {/* Warranty Selection Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <div className="flex items-center mb-6">
+            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+              2
+            </div>
+            <span className="text-gray-800 font-semibold text-lg">Select your cover</span>
+            <div className="ml-auto">
+              <span className="text-orange-500 text-sm font-medium">What's Covered</span>
+            </div>
+          </div>
+          
+          <h3 className="text-xl font-bold text-gray-800 mb-6">
+            {enhanced ? 'Enhanced' : 'Standard'} Car Warranty
+          </h3>
+          
+          <div className="mb-6">
+            <p className="text-gray-600 mb-4">Choose your warranty duration</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { key: '12months', label: '1 Year', price: displayPricing.monthly1Year * 12, monthly: displayPricing.monthly1Year, savings: 0 },
+                { key: '24months', label: '2 Years', price: displayPricing.monthly2Year * 24, monthly: displayPricing.monthly2Year, savings: displayPricing.savings2Year },
+                { key: '36months', label: '3 Years', price: displayPricing.monthly3Year * 36, monthly: displayPricing.monthly3Year, savings: displayPricing.savings3Year }
+              ].map((option) => (
+                <div
+                  key={option.key}
+                  className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                    paymentType === option.key 
+                      ? 'border-orange-500 bg-orange-50' 
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => setPaymentType(option.key as typeof paymentType)}
+                >
                   {option.savings > 0 && (
-                    <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                      Save £{option.savings}
+                    <div className="absolute -top-2 -right-2">
+                      <Badge className="bg-green-500 text-white px-2 py-1 text-xs">
+                        Save £{option.savings}
+                      </Badge>
                     </div>
                   )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Coverage Level Selection */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Choose Your Coverage Level</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div
-              className={`cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                !enhanced 
-                  ? 'ring-4 ring-blue-500 ring-opacity-50' 
-                  : ''
-              }`}
-              onClick={() => setEnhanced(false)}
-            >
-              <div className={`bg-white border-2 rounded-xl p-6 h-full ${
-                !enhanced 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-gray-200 hover:border-blue-300'
-              }`}>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-gray-800">Standard Warranty</h3>
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Shield className="w-5 h-5 text-blue-600" />
+                  <div className="text-center">
+                    <h4 className="font-bold text-gray-800 mb-2">{option.label}</h4>
+                    <div className="text-2xl font-bold text-gray-800 mb-1">£{Math.round(option.price)}</div>
+                    <p className="text-sm text-gray-600">Comprehensive</p>
+                    <p className="text-xs text-gray-500">£{option.monthly}/month</p>
+                    {paymentType === option.key && (
+                      <Button className="mt-3 w-full bg-orange-500 hover:bg-orange-600">
+                        Selected
+                      </Button>
+                    )}
+                    {paymentType !== option.key && (
+                      <Button variant="outline" className="mt-3 w-full">
+                        Select
+                      </Button>
+                    )}
                   </div>
                 </div>
-                <p className="text-gray-600 mb-4">
-                  Comprehensive coverage for essential components
-                </p>
-                <ul className="space-y-2 mb-4">
-                  {getStandardCoverage().slice(0, 4).map((item, index) => (
-                    <li key={index} className="flex items-center text-sm">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                      <span className="text-gray-700">{item}</span>
-                    </li>
-                  ))}
-                  <li className="text-gray-500 text-sm ml-6">+ 4 more benefits...</li>
-                </ul>
-              </div>
+              ))}
             </div>
+          </div>
 
-            <div
-              className={`cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                enhanced 
-                  ? 'ring-4 ring-blue-500 ring-opacity-50' 
-                  : ''
-              }`}
-              onClick={() => setEnhanced(true)}
-            >
-              <div className={`bg-white border-2 rounded-xl p-6 h-full relative ${
-                enhanced 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-gray-200 hover:border-blue-300'
-              }`}>
-                <div className="absolute -top-3 right-4">
-                  <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 text-xs font-bold">
-                    Premium
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-gray-800">Enhanced Warranty</h3>
-                  <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                    <Star className="w-5 h-5 text-yellow-600" />
-                  </div>
-                </div>
-                <p className="text-gray-600 mb-4">
-                  Premium coverage with additional benefits
-                </p>
-                <ul className="space-y-2 mb-4">
-                  {getEnhancedCoverage().slice(0, 4).map((item, index) => (
-                    <li key={index} className="flex items-center text-sm">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                      <span className="text-gray-700">{item}</span>
-                    </li>
-                  ))}
-                  <li className="text-gray-500 text-sm ml-6">+ 7 more premium benefits...</li>
-                </ul>
-                <div className="bg-yellow-100 text-yellow-800 px-3 py-2 rounded-lg text-sm font-semibold text-center">
-                  +£{Math.ceil(79 * parseInt(paymentType.replace('months', '')) / 12)} per month
-                </div>
+          {/* Enhanced Cover Option */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-semibold text-gray-800">Enhanced Cover</h4>
+                <p className="text-sm text-gray-600">Increase your claim limit from £3,000 to £6,000</p>
+                <span className="text-blue-600 text-sm">+£0 total</span>
               </div>
+              <Button
+                variant={enhanced ? "default" : "outline"}
+                onClick={() => setEnhanced(!enhanced)}
+                className={enhanced ? "bg-blue-600 hover:bg-blue-700" : ""}
+              >
+                {enhanced ? "Added" : "Add"}
+              </Button>
+            </div>
+          </div>
+
+          {/* Summary Info */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
+            <div>
+              <p className="text-gray-500">Claim Limit:</p>
+              <p className="font-semibold">£{enhanced ? '6,000' : '3,000'}</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Vehicle Age:</p>
+              <p className="font-semibold">{new Date().getFullYear() - vehicleData.year} years old</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Pay in full:</p>
+              <p className="font-semibold text-green-600">£{Math.round(fullPrice)} (10% off)</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Monthly:</p>
+              <p className="font-semibold">£{currentPrice}/mo</p>
             </div>
           </div>
         </div>
 
-        {/* Payment Method Selection */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">How Would You Like to Pay?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div
-              className={`cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                paymentMethod === 'monthly' 
-                  ? 'ring-4 ring-blue-500 ring-opacity-50' 
-                  : ''
-              }`}
-              onClick={() => setPaymentMethod('monthly')}
-            >
-              <div className={`bg-white border-2 rounded-xl p-6 text-center h-full ${
-                paymentMethod === 'monthly' 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-gray-200 hover:border-blue-300'
-              }`}>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Monthly Payments</h3>
-                <div className="text-3xl font-bold text-blue-600 mb-2">£{currentPrice}</div>
-                <p className="text-gray-600 mb-4">per month</p>
-                <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                  0% APR • No Interest
-                </div>
-              </div>
+        {/* Payment Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center mb-6">
+            <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+              3
             </div>
+            <span className="text-gray-800 font-semibold text-lg">Choose how to pay</span>
+          </div>
 
-            <div
-              className={`cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                paymentMethod === 'full' 
-                  ? 'ring-4 ring-blue-500 ring-opacity-50' 
-                  : ''
-              }`}
-              onClick={() => setPaymentMethod('full')}
-            >
-              <div className={`bg-white border-2 rounded-xl p-6 text-center h-full relative ${
-                paymentMethod === 'full' 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-gray-200 hover:border-blue-300'
-              }`}>
-                <div className="absolute -top-3 right-4">
-                  <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 text-xs font-bold">
-                    Save 10%
-                  </Badge>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Zap className="w-6 h-6 text-green-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Pay in Full</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Pay in Full */}
+            <div className={`border-2 rounded-lg p-6 ${paymentMethod === 'full' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-lg font-semibold text-gray-800">Pay in Full</h4>
+                <span className="text-xs bg-green-500 text-white px-2 py-1 rounded">POPULAR</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">One-time payment with credit card</p>
+              
+              <div className="text-center mb-6">
                 <div className="text-3xl font-bold text-green-600 mb-2">£{fullPrice}</div>
-                <p className="text-gray-600 mb-4">one-time payment</p>
-                <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                  Save £{Math.ceil(currentPrice * parseInt(paymentType.replace('months', '')) * 0.1)}
+                <p className="text-sm text-gray-600">Total today</p>
+              </div>
+
+              <div className="space-y-2 text-sm text-gray-600 mb-6">
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>Instant coverage activation</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>10% upfront discount applied</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>Secure payment via Stripe</span>
                 </div>
               </div>
+
+              <Button 
+                className={`w-full py-3 text-lg font-semibold ${
+                  paymentMethod === 'full' 
+                    ? 'bg-green-600 hover:bg-green-700' 
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                onClick={() => {
+                  setPaymentMethod('full');
+                  handleSelectPlan();
+                }}
+              >
+                Pay £{fullPrice} Now →
+              </Button>
+            </div>
+
+            {/* Spread the Cost */}
+            <div className={`border-2 rounded-lg p-6 ${paymentMethod === 'monthly' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-lg font-semibold text-gray-800">Spread the Cost</h4>
+                <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded">0% APR</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">0% APR financing available</p>
+              
+              <div className="text-center mb-6">
+                <div className="text-3xl font-bold text-blue-600 mb-2">£{currentPrice}</div>
+                <p className="text-sm text-gray-600">Monthly payment</p>
+              </div>
+
+              <div className="space-y-2 text-sm text-gray-600 mb-6">
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>0% APR on vehicle products</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>Flexible payment terms ({paymentType.replace('months', ' months')})</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                  <span>Instant decision</span>
+                </div>
+              </div>
+
+              <Button 
+                className={`w-full py-3 text-lg font-semibold ${
+                  paymentMethod === 'monthly' 
+                    ? 'bg-blue-600 hover:bg-blue-700' 
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                onClick={() => {
+                  setPaymentMethod('monthly');
+                  handleSelectPlan();
+                }}
+              >
+                Apply for Finance →
+              </Button>
             </div>
           </div>
-        </div>
 
-        {/* Purchase Summary */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              {enhanced ? 'Enhanced' : 'Standard'} Warranty Summary
-            </h2>
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-6">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {paymentMethod === 'monthly' ? `£${currentPrice}` : `£${fullPrice}`}
-              </div>
-              <p className="text-xl text-gray-700">
-                {paymentMethod === 'monthly' 
-                  ? `per month for ${paymentType.replace('months', ' months')} • 0% APR`
-                  : `one-time payment • 10% discount applied`
-                }
-              </p>
-            </div>
-            
-            {savings > 0 && (
-              <div className="bg-green-100 border border-green-200 rounded-lg p-4 mb-6">
-                <div className="flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                  <span className="text-green-800 font-semibold">
-                    You save £{savings} with this {paymentType.replace('months', '-year')} plan!
-                  </span>
-                </div>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-sm">
-              <div className="flex items-center justify-center space-x-2 text-gray-600">
-                <Phone className="w-4 h-4" />
-                <span>24/7 Support</span>
-              </div>
-              <div className="flex items-center justify-center space-x-2 text-gray-600">
-                <Shield className="w-4 h-4" />
-                <span>UK Coverage</span>
-              </div>
-              <div className="flex items-center justify-center space-x-2 text-gray-600">
-                <Wrench className="w-4 h-4" />
-                <span>Approved Garages</span>
-              </div>
-            </div>
-            
-            <Button 
-              size="lg" 
-              onClick={handleSelectPlan} 
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-12 py-4 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
-              Get Your Warranty Now
+          <div className="text-center mt-6">
+            <Button variant="ghost" className="text-blue-600 hover:text-blue-700">
+              ← Choose Different Vehicle
             </Button>
-            
-            <p className="text-gray-500 mt-4 text-sm">
-              Secure checkout • No hidden fees • Cancel anytime
-            </p>
           </div>
         </div>
       </div>
