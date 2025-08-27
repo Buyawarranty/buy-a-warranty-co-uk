@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import RegistrationForm from '@/components/RegistrationForm';
-import PricingTable from '@/components/PricingTable';
-import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
+import DynamicPricingTable from '@/components/DynamicPricingTable';
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
@@ -347,22 +346,24 @@ const Index = () => {
       {currentStep === 3 && (
         <div className="w-full overflow-x-hidden">
           {vehicleData && (
-            <>
-              
-              {isSpecialVehicle ? (
-                <SpecialVehiclePricing 
-                  vehicleData={vehicleData as any}
-                  onBack={() => handleBackToStep(2)} 
-                  onPlanSelected={handlePlanSelected}
-                />
-              ) : (
-                <PricingTable 
-                  vehicleData={vehicleData} 
-                  onBack={() => handleBackToStep(2)} 
-                  onPlanSelected={handlePlanSelected}
-                />
+            <DynamicPricingTable 
+              vehicleData={{
+                registration: vehicleData.regNumber,
+                make: vehicleData.make || '',
+                model: vehicleData.model || '',
+                year: parseInt(vehicleData.year || '0'),
+                fuelType: vehicleData.fuelType || '',
+                bodyType: vehicleData.vehicleType,
+                mileage: vehicleData.mileage
+              }}
+              onBack={() => handleBackToStep(2)} 
+              onPlanSelected={(planData) => handlePlanSelected(
+                planData.planType,
+                planData.pricing.paymentType,
+                planData.planType,
+                planData.pricing
               )}
-            </>
+            />
           )}
         </div>
       )}
