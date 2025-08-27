@@ -32,6 +32,8 @@ serve(async (req) => {
     let hasMOTData = false;
     
     try {
+      console.log('Attempting to fetch MOT data for:', registrationNumber.replace(/\s/g, '').toUpperCase());
+      
       const motResponse = await supabase.functions.invoke('fetch-mot-history', {
         body: { 
           registration: registrationNumber.replace(/\s/g, '').toUpperCase(),
@@ -39,15 +41,24 @@ serve(async (req) => {
         }
       });
 
-      if (motResponse.data?.success && motResponse.data?.data) {
+      console.log('MOT Response structure:', {
+        error: motResponse.error,
+        data: motResponse.data,
+        dataSuccess: motResponse.data?.success,
+        dataError: motResponse.data?.error
+      });
+
+      if (motResponse.error) {
+        console.log('MOT function invocation error:', motResponse.error);
+      } else if (motResponse.data?.success && motResponse.data?.data) {
         motData = motResponse.data.data;
         hasMOTData = true;
-        console.log('DVSA MOT API response:', motData);
+        console.log('DVSA MOT API response received successfully');
       } else {
-        console.log('DVSA MOT API failed or no data:', motResponse.data?.error);
+        console.log('DVSA MOT API failed or no data. Error:', motResponse.data?.error || 'No error message provided');
       }
     } catch (error) {
-      console.log('DVSA MOT API error:', error);
+      console.log('DVSA MOT API error (catch block):', error.message || error);
     }
     // Initialize vehicle data structure
     let vehicleData = {
