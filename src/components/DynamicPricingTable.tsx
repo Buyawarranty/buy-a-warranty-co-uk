@@ -277,9 +277,9 @@ export default function DynamicPricingTable({ vehicleData, onBack, onPlanSelecte
             <p className="text-gray-600 mb-4">Choose your warranty duration</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { key: '12months', label: '1 Year', price: displayPricing.monthly1Year * 12, monthly: displayPricing.monthly1Year, savings: 0 },
-                { key: '24months', label: '2 Years', price: displayPricing.monthly2Year * 24, monthly: displayPricing.monthly2Year, savings: displayPricing.savings2Year },
-                { key: '36months', label: '3 Years', price: displayPricing.monthly3Year * 36, monthly: displayPricing.monthly3Year, savings: displayPricing.savings3Year }
+                { key: '12months', label: '1 Year', price: displayPricing.full1Year, monthly: displayPricing.monthly1Year, savings: 0 },
+                { key: '24months', label: '2 Years', price: displayPricing.full2Year, monthly: displayPricing.monthly2Year, savings: displayPricing.savings2Year },
+                { key: '36months', label: '3 Years', price: displayPricing.full3Year, monthly: displayPricing.monthly3Year, savings: displayPricing.savings3Year }
               ].map((option) => (
                 <div
                   key={option.key}
@@ -368,7 +368,7 @@ export default function DynamicPricingTable({ vehicleData, onBack, onPlanSelecte
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Pay in Full */}
-            <div className={`border-2 rounded-lg p-6 ${paymentMethod === 'full' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+            <div className={`border-2 rounded-lg p-6 ${paymentMethod === 'full' ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}>
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-lg font-semibold text-gray-800">Pay in Full</h4>
                 <span className="text-xs bg-green-500 text-white px-2 py-1 rounded">POPULAR</span>
@@ -398,7 +398,7 @@ export default function DynamicPricingTable({ vehicleData, onBack, onPlanSelecte
               <Button 
                 className={`w-full py-3 text-lg font-semibold ${
                   paymentMethod === 'full' 
-                    ? 'bg-green-600 hover:bg-green-700' 
+                    ? 'bg-orange-500 hover:bg-orange-600 text-white' 
                     : 'bg-gray-300 hover:bg-gray-400'
                 }`}
                 onClick={() => {
