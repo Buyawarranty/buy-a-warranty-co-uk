@@ -32,6 +32,7 @@ interface DVLAVehicleData {
   motStatus?: string;
   motExpiryDate?: string;
   taxStatus?: string;
+  motVerified?: string;
   error?: string;
 }
 
@@ -335,46 +336,71 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
              </button>
           )}
 
-          {vehicleFound && vehicleData?.found && !showManualEntry && (
-            <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-4">
-              <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following vehicle</p>
-              <p className="text-sm text-gray-600">
-                {vehicleData.make} • {vehicleData.fuelType} • {vehicleData.colour} • {vehicleData.yearOfManufacture}
-                {vehicleData.engineCapacity && (
-                  <span> • {vehicleData.engineCapacity}cc</span>
-                )}
-              </p>
-              {(vehicleData.motStatus || vehicleData.taxStatus) && (
-                <p className="text-xs text-gray-500 mt-1">
-                  {vehicleData.motStatus && `MOT: ${vehicleData.motStatus}`}
-                  {vehicleData.motStatus && vehicleData.taxStatus && ' • '}
-                  {vehicleData.taxStatus && `Tax: ${vehicleData.taxStatus}`}
-                </p>
-              )}
-              {vehicleData.vehicleType && !['car', 'van'].includes(vehicleData.vehicleType) && (
-                <p className="text-sm text-blue-600 font-semibold mt-1">
-                  Special Vehicle Type: {vehicleData.vehicleType}
-                </p>
-              )}
-              <button 
-                type="button"
-                onClick={handleNotMyCar}
-                className="mt-2 text-sm bg-white border-2 px-[16px] py-[6px] rounded-[6px] transition-all duration-200"
-                style={{
-                  borderColor: '#224380',
-                  color: '#224380'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f0f8ff';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                }}
-              >
-                This is not my vehicle
-              </button>
-            </div>
-          )}
+           {vehicleFound && vehicleData?.found && !showManualEntry && (
+             <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-4">
+               <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following vehicle</p>
+               <p className="text-sm text-gray-600">
+                 {vehicleData.make} {vehicleData.model && `• ${vehicleData.model}`} • {vehicleData.fuelType} • {vehicleData.colour} • {vehicleData.yearOfManufacture}
+                 {vehicleData.engineCapacity && (
+                   <span> • {vehicleData.engineCapacity}cc</span>
+                 )}
+               </p>
+               
+               {/* MOT Verification Status */}
+               {vehicleData.motVerified && (
+                 <div className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium mt-2 ${
+                   vehicleData.motVerified === 'verified' 
+                     ? 'bg-green-100 text-green-800' 
+                     : vehicleData.motVerified === 'invalid'
+                     ? 'bg-red-100 text-red-800'
+                     : 'bg-yellow-100 text-yellow-800'
+                 }`}>
+                   {vehicleData.motVerified === 'verified' ? '✓ MOT Verified' : 
+                    vehicleData.motVerified === 'invalid' ? '✗ MOT Invalid' : 
+                    '? MOT Status Unknown'}
+                 </div>
+               )}
+               
+               {/* Warning for invalid MOT */}
+               {vehicleData.motVerified === 'invalid' && (
+                 <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-md">
+                   <p className="text-xs text-red-700 font-medium">
+                     ⚠️ This vehicle has an invalid or expired MOT. You may not be able to purchase warranty coverage.
+                   </p>
+                 </div>
+               )}
+
+               {(vehicleData.motStatus || vehicleData.taxStatus) && (
+                 <p className="text-xs text-gray-500 mt-2">
+                   {vehicleData.motStatus && `MOT: ${vehicleData.motStatus}`}
+                   {vehicleData.motStatus && vehicleData.taxStatus && ' • '}
+                   {vehicleData.taxStatus && `Tax: ${vehicleData.taxStatus}`}
+                 </p>
+               )}
+               {vehicleData.vehicleType && !['car', 'van'].includes(vehicleData.vehicleType) && (
+                 <p className="text-sm text-blue-600 font-semibold mt-1">
+                   Special Vehicle Type: {vehicleData.vehicleType}
+                 </p>
+               )}
+               <button 
+                 type="button"
+                 onClick={handleNotMyCar}
+                 className="mt-3 text-sm bg-white border-2 px-[16px] py-[6px] rounded-[6px] transition-all duration-200"
+                 style={{
+                   borderColor: '#224380',
+                   color: '#224380'
+                 }}
+                 onMouseEnter={(e) => {
+                   e.currentTarget.style.backgroundColor = '#f0f8ff';
+                 }}
+                 onMouseLeave={(e) => {
+                   e.currentTarget.style.backgroundColor = 'white';
+                 }}
+               >
+                 This is not my vehicle
+               </button>
+             </div>
+           )}
 
           {vehicleData && !vehicleData.found && vehicleData.error && vehicleData.error.includes('15 years') && (
             <div className="bg-orange-50 border border-orange-200 rounded-[4px] p-4 mb-4">

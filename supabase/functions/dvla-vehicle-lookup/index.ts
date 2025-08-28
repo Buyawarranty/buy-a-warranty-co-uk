@@ -163,41 +163,94 @@ serve(async (req) => {
       });
     }
 
-    // Also fetch MOT history data in the background (don't wait for it to complete)
+    // Fetch MOT history to get missing model data and verify MOT status
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Fetch MOT history in the background - don't await this
-    supabase.functions.invoke('fetch-mot-history', {
-      body: { 
-        registration: registrationNumber.replace(/\s/g, '').toUpperCase(),
-        customer_id: null // We don't have customer_id at this stage
-      }
-    }).then(response => {
-      if (response.data?.success) {
-        console.log('MOT history fetched and stored successfully');
+    let motHistoryData = null;
+    let motVerified = 'unknown';
+    let finalModel = data.model;
+
+    try {
+      // Try to get MOT history synchronously for model data and MOT verification
+      const motResponse = await supabase.functions.invoke('fetch-mot-history', {
+        body: { 
+          registration: registrationNumber.replace(/\s/g, '').toUpperCase(),
+          customer_id: null
+        }
+      });
+
+      if (motResponse.data?.success && motResponse.data?.data) {
+        motHistoryData = motResponse.data.data;
+        console.log('MOT history fetched successfully:', motHistoryData);
+        
+        // Use model from MOT data if DVLA doesn't provide it
+        if (!finalModel && motHistoryData.model) {
+          finalModel = motHistoryData.model;
+          console.log(`Using model from MOT API: ${finalModel}`);
+        }
+        
+        // Check MOT validity
+        if (motHistoryData.mot_tests && Array.isArray(motHistoryData.mot_tests) && motHistoryData.mot_tests.length > 0) {
+          // Get the latest MOT test
+          const latestTest = motHistoryData.mot_tests
+            .sort((a: any, b: any) => new Date(b.completedDate).getTime() - new Date(a.completedDate).getTime())[0];
+          
+          if (latestTest) {
+            const testResult = latestTest.testResult?.toLowerCase();
+            const hasCurrentMOT = latestTest.expiryDate && new Date(latestTest.expiryDate) > new Date();
+            
+            // Check if MOT is valid (passed and not expired)
+            if (testResult === 'passed' && hasCurrentMOT) {
+              motVerified = 'verified';
+            } else if (testResult === 'failed' || !hasCurrentMOT) {
+              motVerified = 'invalid';
+            } else {
+              motVerified = 'unknown';
+            }
+            
+            console.log(`MOT status determined: ${motVerified} (test result: ${testResult}, has current MOT: ${hasCurrentMOT})`);
+          }
+        } else {
+          // No MOT tests found - could be new vehicle or data issue
+          const currentYear = new Date().getFullYear();
+          const vehicleAge = currentYear - data.yearOfManufacture;
+          
+          if (vehicleAge < 3) {
+            // New vehicles don't need MOT for first 3 years
+            motVerified = 'verified';
+            console.log('New vehicle - MOT not required yet');
+          } else {
+            motVerified = 'invalid';
+            console.log('No MOT tests found for vehicle over 3 years old');
+          }
+        }
       } else {
-        console.log('MOT history fetch failed:', response.data?.error || 'Unknown error');
+        console.log('MOT history fetch failed or no data returned');
+        // Default to unknown if we can't get MOT data
+        motVerified = 'unknown';
       }
-    }).catch(error => {
-      console.log('MOT history fetch error:', error.message);
-    });
+    } catch (error) {
+      console.error('Error fetching MOT history:', error);
+      motVerified = 'unknown';
+    }
 
     return new Response(JSON.stringify({
       found: true,
       make: data.make,
-      model: data.model || null, // Model might not be available from DVLA
+      model: finalModel || null,
       fuelType: data.fuelType,
-      transmission: data.transmission || null, // Transmission might not be available
+      transmission: data.transmission || null,
       yearOfManufacture: data.yearOfManufacture,
       colour: data.colour,
       engineCapacity: data.engineCapacity,
       vehicleType: vehicleType,
       motStatus: data.motStatus,
       motExpiryDate: data.motExpiryDate,
-      taxStatus: data.taxStatus
+      taxStatus: data.taxStatus,
+      motVerified: motVerified
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
