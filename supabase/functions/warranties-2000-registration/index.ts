@@ -27,6 +27,7 @@ interface RegistrationData {
   WarType: string; // Must be from predefined list
   Month: string; // Must be from predefined list
   MaxClm: string; // Must be from predefined list (full amounts)
+  VolEx?: string; // Voluntary excess amount
   Notes?: string;
   Ref?: string; // Your reference
   MOTDue?: string; // yyyy-mm-dd

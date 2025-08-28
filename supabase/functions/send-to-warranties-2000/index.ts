@@ -38,6 +38,7 @@ interface Warranties2000Registration {
   WarType: string; // Must be from predefined list
   Month: string; // Coverage period in months
   MaxClm: string; // Must be from predefined list (full amounts)
+  VolEx?: string; // Voluntary excess amount
   Notes?: string;
   Ref?: string; // Your reference
   MOTDue?: string; // yyyy-mm-dd
@@ -314,7 +315,8 @@ serve(async (req) => {
         return nextYear.toISOString().split('T')[0];
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
-      Notes: `Voluntary Excess: £${customer.voluntary_excess || 0} | Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`
+      VolEx: (customer.voluntary_excess || 0).toString(),
+      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`
     };
 
     console.log(`[WARRANTIES-2000] Sending registration data:`, {
