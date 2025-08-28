@@ -157,8 +157,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       if (data.found) {
         setVehicleFound(true);
       } else {
-        // If vehicle not found, still allow user to proceed
-        setVehicleFound(true);
+        // If vehicle not found, show manual entry
+        setShowManualEntry(true);
       }
     } catch (error: any) {
       console.error('Error looking up vehicle:', error);
@@ -178,8 +178,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         });
       }
       
-      // On error, still allow user to proceed
-      setVehicleFound(true);
+      // On error, fall back to manual entry
+      setShowManualEntry(true);
     } finally {
       setIsLookingUp(false);
     }
@@ -390,6 +390,22 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             </div>
           )}
 
+          {vehicleData && !vehicleData.found && (!vehicleData.error || !vehicleData.error.includes('15 years')) && (
+            <div className="bg-blue-50 border border-blue-200 rounded-[4px] p-4 mb-4">
+              <p className="text-sm text-blue-800 mb-2">
+                ⚠️ Vehicle not found -
+              </p>
+              <p className="text-sm text-blue-700 font-bold mb-2">
+                Please double-check your number plate and try again.
+              </p>
+              <p className="text-sm text-blue-700 mb-2">
+                We couldn't verify this registration with the DVLA.
+              </p>
+              <p className="text-sm text-blue-700">
+                If you'd still like to proceed, we may need to run some additional checks 🔍 before confirming your warranty.
+              </p>
+            </div>
+          )}
 
           {showManualEntry && (
             <div className="mb-4 p-3 sm:p-4 border-2 border-gray-200 rounded-[6px]">
