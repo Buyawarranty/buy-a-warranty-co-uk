@@ -7,6 +7,101 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+interface MOTTest {
+  completedDate: string;
+  testResult: string;
+  expiryDate?: string;
+  odometerValue?: number;
+  odometerUnit?: string;
+  motTestNumber?: string;
+  defects?: Array<{
+    text: string;
+    type: string;
+    dangerous?: boolean;
+  }>;
+}
+
+interface DVSAVehicleResponse {
+  make?: string;
+  model?: string;
+  primaryColour?: string;
+  fuelType?: string;
+  motTests?: MOTTest[];
+  dvlaId?: string;
+  registrationDate?: string;
+  manufactureDate?: string;
+  engineCapacity?: number;
+  co2Emissions?: number;
+  euroStatus?: string;
+  realDrivingEmissions?: string;
+  markedForExport?: boolean;
+  colour?: string;
+  typeApproval?: string;
+  wheelplan?: string;
+  revenueWeight?: number;
+  dateOfLastV5CIssued?: string;
+}
+
+async function getAccessToken(): Promise<string> {
+  const clientId = Deno.env.get('MOT_CLIENT_ID');
+  const clientSecret = Deno.env.get('MOT_CLIENT_SECRET');
+  const tokenUrl = Deno.env.get('MOT_TOKEN_URL');
+  const scopeUrl = Deno.env.get('MOT_SCOPE_URL');
+
+  if (!clientId || !clientSecret || !tokenUrl || !scopeUrl) {
+    throw new Error('Missing MOT API configuration');
+  }
+
+  const params = new URLSearchParams();
+  params.append('client_id', clientId);
+  params.append('client_secret', clientSecret);
+  params.append('scope', scopeUrl);
+  params.append('grant_type', 'client_credentials');
+
+  const response = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: params,
+  });
+
+  if (!response.ok) {
+    console.error('Token request failed:', await response.text());
+    throw new Error('Failed to get access token');
+  }
+
+  const tokenData = await response.json();
+  return tokenData.access_token;
+}
+
+async function fetchDVSAVehicleData(registration: string, accessToken: string): Promise<DVSAVehicleResponse> {
+  const apiKey = Deno.env.get('MOT_API_KEY');
+  
+  if (!apiKey) {
+    throw new Error('Missing MOT API key');
+  }
+
+  const response = await fetch(`https://history.mot.api.gov.uk/v1/trade/vehicles/registration/${registration.toUpperCase()}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'X-API-Key': apiKey,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error('Vehicle not found');
+    }
+    console.error('DVSA API request failed:', response.status, await response.text());
+    throw new Error('Failed to fetch vehicle data');
+  }
+
+  return await response.json();
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -19,38 +114,35 @@ serve(async (req) => {
       throw new Error("Registration number is required");
     }
 
-    const dvlaApiKey = Deno.env.get("DVLA_API_KEY");
-    if (!dvlaApiKey) {
-      throw new Error("DVLA API key not configured");
-    }
-
     console.log(`Looking up vehicle: ${registrationNumber}`);
 
-    // Call DVLA API with retry logic
-    let response;
+    // Get access token for DVSA API
+    const accessToken = await getAccessToken();
+    
+    // Call DVSA API with retry logic
+    let vehicleData;
     let lastError;
     const maxRetries = 3;
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        console.log(`DVLA API attempt ${attempt} for ${registrationNumber}`);
+        console.log(`DVSA API attempt ${attempt} for ${registrationNumber}`);
         
-        response = await fetch(`https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles`, {
-          method: 'POST',
-          headers: {
-            'x-api-key': dvlaApiKey,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            registrationNumber: registrationNumber.replace(/\s/g, '').toUpperCase()
-          }),
-          signal: AbortSignal.timeout(8000) // 8 second timeout
-        });
-        
+        vehicleData = await fetchDVSAVehicleData(registrationNumber, accessToken);
         break; // Success, exit retry loop
       } catch (error) {
         lastError = error;
-        console.error(`DVLA API attempt ${attempt} failed:`, error.message);
+        console.error(`DVSA API attempt ${attempt} failed:`, error.message);
+        
+        if (error.message === 'Vehicle not found') {
+          return new Response(JSON.stringify({
+            found: false,
+            error: "Vehicle not found in DVSA database"
+          }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 200,
+          });
+        }
         
         if (attempt < maxRetries) {
           // Wait before retrying (exponential backoff)
@@ -61,42 +153,39 @@ serve(async (req) => {
       }
     }
     
-    if (!response) {
-      throw new Error(`DVLA API failed after ${maxRetries} attempts: ${lastError?.message}`);
+    if (!vehicleData) {
+      throw new Error(`DVSA API failed after ${maxRetries} attempts: ${lastError?.message}`);
     }
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`DVLA API error: ${response.status} - ${errorText}`);
-      
-      if (response.status === 404) {
-        return new Response(JSON.stringify({
-          found: false,
-          error: "Vehicle not found in DVLA database"
-        }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        });
-      }
-      throw new Error(`DVLA API error: ${response.status} - ${errorText}`);
-    }
+    console.log('DVSA API response:', vehicleData);
 
-    const data = await response.json();
-    console.log('DVLA API response:', data);
-
-    // Determine vehicle type based on DVLA data
-    let vehicleType = 'car'; // Default to car
-    const fuelType = data.fuelType?.toLowerCase() || '';
-    const typeApproval = data.typeApproval?.toLowerCase() || '';
-    const wheelplan = data.wheelplan?.toLowerCase() || '';
-    const engineCapacity = data.engineCapacity || 0;
-    const revenueWeight = data.revenueWeight || 0;
+    // Extract vehicle information from DVSA response
+    const make = vehicleData.make;
+    const model = vehicleData.model;
+    const fuelType = vehicleData.fuelType;
+    const colour = vehicleData.primaryColour || vehicleData.colour;
     
-    console.log(`Vehicle classification data - Type Approval: ${typeApproval}, Wheelplan: ${wheelplan}, Fuel: ${fuelType}, Engine: ${engineCapacity}, Weight: ${revenueWeight}`);
+    // Calculate year of manufacture from registration or manufacture date
+    let yearOfManufacture;
+    if (vehicleData.manufactureDate) {
+      yearOfManufacture = new Date(vehicleData.manufactureDate).getFullYear();
+    } else if (vehicleData.registrationDate) {
+      yearOfManufacture = new Date(vehicleData.registrationDate).getFullYear();
+    }
+
+    // Determine vehicle type based on DVSA data
+    let vehicleType = 'car'; // Default to car
+    const fuelTypeLower = fuelType?.toLowerCase() || '';
+    const typeApproval = vehicleData.typeApproval?.toLowerCase() || '';
+    const wheelplan = vehicleData.wheelplan?.toLowerCase() || '';
+    const engineCapacity = vehicleData.engineCapacity || 0;
+    const revenueWeight = vehicleData.revenueWeight || 0;
+    
+    console.log(`Vehicle classification data - Type Approval: ${typeApproval}, Wheelplan: ${wheelplan}, Fuel: ${fuelTypeLower}, Engine: ${engineCapacity}, Weight: ${revenueWeight}`);
     
     // First check for electric/hybrid vehicles (these can be cars, vans, or motorbikes)
-    const isElectric = fuelType.includes('electricity') || fuelType === 'electric';
-    const isHybrid = fuelType.includes('hybrid') || fuelType.includes('petrol/electric') || fuelType.includes('plug-in hybrid');
+    const isElectric = fuelTypeLower.includes('electricity') || fuelTypeLower === 'electric';
+    const isHybrid = fuelTypeLower.includes('hybrid') || fuelTypeLower.includes('petrol/electric') || fuelTypeLower.includes('plug-in hybrid');
     
     // Motorcycle detection - L category type approval is the most reliable indicator
     if (typeApproval.startsWith('l') || 
@@ -105,7 +194,7 @@ serve(async (req) => {
         wheelplan.includes('motorcycle') ||
         // Additional motorcycle indicators
         (engineCapacity > 0 && engineCapacity <= 1500 && 
-         ['suzuki', 'honda', 'yamaha', 'kawasaki', 'ducati', 'bmw', 'ktm', 'triumph', 'harley-davidson', 'aprilia', 'husqvarna', 'mv agusta', 'piaggio'].includes(data.make?.toLowerCase()))) {
+         ['suzuki', 'honda', 'yamaha', 'kawasaki', 'ducati', 'bmw', 'ktm', 'triumph', 'harley-davidson', 'aprilia', 'husqvarna', 'mv agusta', 'piaggio'].includes(make?.toLowerCase()))) {
       
       if (isElectric) {
         vehicleType = 'EV'; // Electric motorcycle
@@ -123,9 +212,9 @@ serve(async (req) => {
              // Weight-based detection for vans (typically heavier than cars)
              (revenueWeight > 2000 && revenueWeight <= 3500) ||
              // Make/model based detection for common van manufacturers
-             (['ford', 'mercedes', 'volkswagen', 'renault', 'peugeot', 'citroen', 'fiat', 'iveco', 'nissan'].includes(data.make?.toLowerCase()) &&
+             (['ford', 'mercedes', 'volkswagen', 'renault', 'peugeot', 'citroen', 'fiat', 'iveco', 'nissan'].includes(make?.toLowerCase()) &&
               ['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'nv200', 'nv300', 'nv400'].some(model => 
-                (data.model?.toLowerCase() || '').includes(model)))) {
+                (vehicleData.model?.toLowerCase() || '').includes(model)))) {
       
       if (isElectric) {
         vehicleType = 'EV'; // Electric van
@@ -150,9 +239,9 @@ serve(async (req) => {
 
     // Check vehicle age (must be 15 years or newer)
     const currentYear = new Date().getFullYear();
-    const vehicleAge = currentYear - data.yearOfManufacture;
+    const vehicleAge = yearOfManufacture ? currentYear - yearOfManufacture : 0;
     
-    if (vehicleAge > 15) {
+    if (yearOfManufacture && vehicleAge > 15) {
       console.log(`Vehicle ${registrationNumber} is ${vehicleAge} years old - too old for warranty`);
       return new Response(JSON.stringify({
         found: false,
@@ -163,93 +252,121 @@ serve(async (req) => {
       });
     }
 
-    // Fetch MOT history to get missing model data and verify MOT status
+    // Process MOT test data from DVSA response
+    let motVerified = 'unknown';
+    let motStatus = 'Unknown';
+    let motExpiryDate = null;
+    let taxStatus = 'Unknown'; // DVSA doesn't provide tax status, keep as unknown
+
+    if (vehicleData.motTests && Array.isArray(vehicleData.motTests) && vehicleData.motTests.length > 0) {
+      // Get the latest MOT test
+      const latestTest = vehicleData.motTests
+        .sort((a: MOTTest, b: MOTTest) => new Date(b.completedDate).getTime() - new Date(a.completedDate).getTime())[0];
+      
+      if (latestTest) {
+        const testResult = latestTest.testResult?.toLowerCase();
+        const hasCurrentMOT = latestTest.expiryDate && new Date(latestTest.expiryDate) > new Date();
+        
+        motExpiryDate = latestTest.expiryDate;
+        motStatus = testResult === 'passed' ? 'Valid' : testResult === 'failed' ? 'Invalid' : 'Unknown';
+        
+        // Check if MOT is valid (passed and not expired)
+        if (testResult === 'passed' && hasCurrentMOT) {
+          motVerified = 'verified';
+        } else if (testResult === 'failed' || !hasCurrentMOT) {
+          motVerified = 'invalid';
+        } else {
+          motVerified = 'unknown';
+        }
+        
+        console.log(`MOT status determined: ${motVerified} (test result: ${testResult}, has current MOT: ${hasCurrentMOT})`);
+      }
+    } else {
+      // No MOT tests found - could be new vehicle
+      if (yearOfManufacture) {
+        const currentYear = new Date().getFullYear();
+        const vehicleAge = currentYear - yearOfManufacture;
+        
+        if (vehicleAge < 3) {
+          // New vehicles don't need MOT for first 3 years
+          motVerified = 'verified';
+          motStatus = 'Not Required';
+          console.log('New vehicle - MOT not required yet');
+        } else {
+          motVerified = 'invalid';
+          motStatus = 'No Tests Found';
+          console.log('No MOT tests found for vehicle over 3 years old');
+        }
+      }
+    }
+
+    // Store MOT history data in database for future reference
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    let motHistoryData = null;
-    let motVerified = 'unknown';
-    let finalModel = data.model;
-
     try {
-      // Try to get MOT history synchronously for model data and MOT verification
-      const motResponse = await supabase.functions.invoke('fetch-mot-history', {
-        body: { 
-          registration: registrationNumber.replace(/\s/g, '').toUpperCase(),
-          customer_id: null
-        }
-      });
-
-      if (motResponse.data?.success && motResponse.data?.data) {
-        motHistoryData = motResponse.data.data;
-        console.log('MOT history fetched successfully:', motHistoryData);
+      // Calculate MOT expiry date from latest test
+      let motExpiryDateForStorage = null;
+      if (vehicleData.motTests && vehicleData.motTests.length > 0) {
+        const latestTest = vehicleData.motTests
+          .filter(test => test.expiryDate)
+          .sort((a, b) => new Date(b.completedDate).getTime() - new Date(a.completedDate).getTime())[0];
         
-        // Use model from MOT data if DVLA doesn't provide it
-        if (!finalModel && motHistoryData.model) {
-          finalModel = motHistoryData.model;
-          console.log(`Using model from MOT API: ${finalModel}`);
+        if (latestTest && latestTest.expiryDate) {
+          motExpiryDateForStorage = latestTest.expiryDate;
         }
-        
-        // Check MOT validity
-        if (motHistoryData.mot_tests && Array.isArray(motHistoryData.mot_tests) && motHistoryData.mot_tests.length > 0) {
-          // Get the latest MOT test
-          const latestTest = motHistoryData.mot_tests
-            .sort((a: any, b: any) => new Date(b.completedDate).getTime() - new Date(a.completedDate).getTime())[0];
-          
-          if (latestTest) {
-            const testResult = latestTest.testResult?.toLowerCase();
-            const hasCurrentMOT = latestTest.expiryDate && new Date(latestTest.expiryDate) > new Date();
-            
-            // Check if MOT is valid (passed and not expired)
-            if (testResult === 'passed' && hasCurrentMOT) {
-              motVerified = 'verified';
-            } else if (testResult === 'failed' || !hasCurrentMOT) {
-              motVerified = 'invalid';
-            } else {
-              motVerified = 'unknown';
-            }
-            
-            console.log(`MOT status determined: ${motVerified} (test result: ${testResult}, has current MOT: ${hasCurrentMOT})`);
-          }
-        } else {
-          // No MOT tests found - could be new vehicle or data issue
-          const currentYear = new Date().getFullYear();
-          const vehicleAge = currentYear - data.yearOfManufacture;
-          
-          if (vehicleAge < 3) {
-            // New vehicles don't need MOT for first 3 years
-            motVerified = 'verified';
-            console.log('New vehicle - MOT not required yet');
-          } else {
-            motVerified = 'invalid';
-            console.log('No MOT tests found for vehicle over 3 years old');
-          }
-        }
-      } else {
-        console.log('MOT history fetch failed or no data returned');
-        // Default to unknown if we can't get MOT data
-        motVerified = 'unknown';
       }
+
+      // Store in database
+      const motHistoryData = {
+        registration: registrationNumber.toUpperCase(),
+        customer_id: null,
+        make: vehicleData.make,
+        model: vehicleData.model,
+        primary_colour: vehicleData.primaryColour,
+        fuel_type: vehicleData.fuelType,
+        mot_tests: vehicleData.motTests || [],
+        dvla_id: vehicleData.dvlaId,
+        registration_date: vehicleData.registrationDate ? new Date(vehicleData.registrationDate).toISOString().split('T')[0] : null,
+        manufacture_date: vehicleData.manufactureDate ? new Date(vehicleData.manufactureDate).toISOString().split('T')[0] : null,
+        engine_capacity: vehicleData.engineCapacity,
+        co2_emissions: vehicleData.co2Emissions,
+        euro_status: vehicleData.euroStatus,
+        real_driving_emissions: vehicleData.realDrivingEmissions,
+        marked_for_export: vehicleData.markedForExport || false,
+        colour: vehicleData.colour,
+        type_approval: vehicleData.typeApproval,
+        wheelplan: vehicleData.wheelplan,
+        revenue_weight: vehicleData.revenueWeight,
+        date_of_last_v5c_issued: vehicleData.dateOfLastV5CIssued ? new Date(vehicleData.dateOfLastV5CIssued).toISOString().split('T')[0] : null,
+        mot_expiry_date: motExpiryDateForStorage ? new Date(motExpiryDateForStorage).toISOString().split('T')[0] : null,
+      };
+
+      await supabase
+        .from('mot_history')
+        .upsert(motHistoryData, { onConflict: 'registration' });
+
+      console.log('MOT history stored successfully');
     } catch (error) {
-      console.error('Error fetching MOT history:', error);
-      motVerified = 'unknown';
+      console.error('Error storing MOT history:', error);
+      // Continue with response even if storage fails
     }
 
     return new Response(JSON.stringify({
       found: true,
-      make: data.make,
-      model: finalModel || null,
-      fuelType: data.fuelType,
-      transmission: data.transmission || null,
-      yearOfManufacture: data.yearOfManufacture,
-      colour: data.colour,
-      engineCapacity: data.engineCapacity,
+      make: make,
+      model: model || null,
+      fuelType: fuelType,
+      transmission: null, // DVSA doesn't provide transmission data
+      yearOfManufacture: yearOfManufacture,
+      colour: colour,
+      engineCapacity: vehicleData.engineCapacity,
       vehicleType: vehicleType,
-      motStatus: data.motStatus,
-      motExpiryDate: data.motExpiryDate,
-      taxStatus: data.taxStatus,
+      motStatus: motStatus,
+      motExpiryDate: motExpiryDate,
+      taxStatus: taxStatus,
       motVerified: motVerified
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -257,7 +374,7 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Error in DVLA lookup:', error);
+    console.error('Error in DVSA lookup:', error);
     return new Response(JSON.stringify({
       found: false,
       error: error.message || "Failed to lookup vehicle"

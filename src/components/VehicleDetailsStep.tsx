@@ -148,11 +148,11 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       const { data, error } = await Promise.race([lookupPromise, timeoutPromise]) as any;
 
       if (error) {
-        console.error('DVLA lookup error:', error);
+        console.error('DVSA lookup error:', error);
         throw error;
       }
 
-      console.log('DVLA lookup result:', data);
+      console.log('DVSA lookup result:', data);
       setVehicleData(data);
       
       if (data.found) {
@@ -425,7 +425,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 Please double-check your number plate and try again.
               </p>
               <p className="text-sm text-blue-700 mb-2">
-                We couldn't verify this registration with the DVLA.
+                We couldn't verify this registration with the DVSA database.
               </p>
               <p className="text-sm text-blue-700">
                 If you'd still like to proceed, we may need to run some additional checks 🔍 before confirming your warranty.
