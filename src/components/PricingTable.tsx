@@ -108,18 +108,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   const fetchPdfUrl = async () => {
     try {
+      // Try to fetch PDF based on vehicle type first, then fallback to general warranty
+      const vehicleType = vehicleData?.vehicleType || 'standard';
+      
       const { data, error } = await supabase
         .from('customer_documents')
-        .select('file_url')
-        .eq('plan_type', 'Warranty')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+        .select('file_url, plan_type, vehicle_type')
+        .or(`vehicle_type.eq.${vehicleType},vehicle_type.eq.standard,plan_type.eq.Warranty`)
+        .order('created_at', { ascending: false });
 
       if (error && error.code !== 'PGRST116') throw error;
       
-      if (data) {
-        setPdfUrl(data.file_url);
+      if (data && data.length > 0) {
+        // Prefer vehicle-specific documents, then fallback to general warranty
+        const specificDoc = data.find(doc => doc.vehicle_type === vehicleType) || data[0];
+        setPdfUrl(specificDoc.file_url);
       }
     } catch (error) {
       console.error('Error fetching PDF URL:', error);
@@ -449,55 +452,55 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       ))}
                     </div>
                   </div>
+
+                  {/* Optional Add-ons */}
+                  <div className="mt-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <h4 className="font-semibold">Optional Add-ons</h4>
+                      <Info className="h-4 w-4 text-gray-500" />
+                    </div>
+                    <div className="space-y-2">
+                      {addOnOptions.map((addon) => (
+                        <div key={addon.name} className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg">
+                          <Checkbox
+                            id={`${plan.key}-${addon.name}`}
+                            checked={selectedAddOns[addon.name] || false}
+                            onCheckedChange={() => toggleAddOn(addon.name)}
+                          />
+                          <label htmlFor={`${plan.key}-${addon.name}`} className="flex-1 cursor-pointer text-sm">
+                            {addon.name}
+                          </label>
+                          <span className="text-sm font-medium">£{addon.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Warranty Plan Details */}
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-gray-600" />
+                        <span className="text-sm text-gray-600">Warranty Plan Details</span>
+                      </div>
+                      {pdfUrl && (
+                        <a
+                          href={pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                        >
+                          View PDF <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Optional Add-ons */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <h3 className="text-lg font-semibold">Optional Add-ons</h3>
-            <Info className="h-4 w-4 text-gray-500" />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {addOnOptions.map((addon) => (
-              <div key={addon.name} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <Checkbox
-                  id={addon.name}
-                  checked={selectedAddOns[addon.name] || false}
-                  onCheckedChange={() => toggleAddOn(addon.name)}
-                />
-                <label htmlFor={addon.name} className="flex-1 cursor-pointer text-sm">
-                  {addon.name}
-                </label>
-                <span className="text-sm font-medium">£{addon.price}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Warranty Plan Details */}
-        <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <FileText className="h-4 w-4 text-blue-600" />
-            <span className="text-sm text-gray-600">Warranty Plan Details</span>
-          </div>
-          <div className="text-sm text-blue-600">
-            Full breakdown of coverage
-          </div>
-          {pdfUrl && (
-            <a
-              href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors mt-2"
-            >
-              View PDF <ExternalLink className="h-3 w-3" />
-            </a>
-          )}
-        </div>
       </div>
     </div>
   );
