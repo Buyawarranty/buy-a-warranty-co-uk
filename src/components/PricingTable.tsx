@@ -651,9 +651,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       <div className="text-xl font-bold text-blue-600">
                         £{Math.round((displayPrice * 12) * 0.95)}
                       </div>
-                      <div className="text-sm text-gray-600">
-                        Instead of £{displayPrice * 12} over 12 months
-                      </div>
                      </div>
                      {savings && paymentType !== '12months' && (
                       <div className="text-green-600 font-bold text-lg mb-6">
