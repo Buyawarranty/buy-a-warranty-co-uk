@@ -65,6 +65,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
+  const [selectedClaimLimit, setSelectedClaimLimit] = useState<number>(2000);
 
   // Normalize vehicle type once
   const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
@@ -540,6 +541,67 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 £{amount}
               </button>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Claim Limit Selection */}
+      <div className="flex justify-center mb-8 px-4">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 w-full max-w-4xl">
+          <h3 className="text-2xl font-bold text-center mb-2 text-gray-900">Choose Your Claim Limit</h3>
+          <p className="text-center text-gray-600 mb-6">All plans include unlimited number of claims</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button
+              onClick={() => setSelectedClaimLimit(1000)}
+              className={`p-6 rounded-xl border-2 transition-all duration-200 text-left ${
+                selectedClaimLimit === 1000
+                  ? 'border-[#1a365d] bg-blue-50'
+                  : 'border-gray-300 hover:border-[#1a365d] hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="text-2xl">✅</div>
+                <h4 className="text-lg font-bold text-gray-900">Essential Cover</h4>
+              </div>
+              <div className="text-xl font-bold text-[#1a365d] mb-2">£1,000 Claim Limit</div>
+              <p className="text-sm text-gray-600">Perfect for smaller repairs and peace of mind.</p>
+            </button>
+            
+            <button
+              onClick={() => setSelectedClaimLimit(2000)}
+              className={`p-6 rounded-xl border-2 transition-all duration-200 text-left relative ${
+                selectedClaimLimit === 2000
+                  ? 'border-yellow-500 bg-yellow-50'
+                  : 'border-gray-300 hover:border-yellow-500 hover:bg-gray-50'
+              }`}
+            >
+              <div className="absolute -top-3 right-4 bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-bold">
+                MOST POPULAR
+              </div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="text-2xl">⭐</div>
+                <h4 className="text-lg font-bold text-gray-900">Plus Cover</h4>
+              </div>
+              <div className="text-xl font-bold text-yellow-600 mb-2">£2,000 Claim Limit</div>
+              <p className="text-sm text-gray-600">Ideal for comprehensive protection on major repairs.</p>
+            </button>
+            
+            <button
+              onClick={() => setSelectedClaimLimit(3000)}
+              className={`p-6 rounded-xl border-2 transition-all duration-200 text-left ${
+                selectedClaimLimit === 3000
+                  ? 'border-orange-500 bg-orange-50'
+                  : 'border-gray-300 hover:border-orange-500 hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="text-2xl">🔒</div>
+                <h4 className="text-lg font-bold text-gray-900">Premium Cover</h4>
+              </div>
+              <div className="text-xl font-bold text-orange-600 mb-2">£3,000 Claim Limit</div>
+              <p className="text-sm text-gray-600">Maximum protection for high-value repairs.</p>
+            </button>
           </div>
         </div>
       </div>
