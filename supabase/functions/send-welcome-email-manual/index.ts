@@ -430,8 +430,8 @@ const handler = async (req: Request): Promise<Response> => {
     // CREATE USER ACCOUNT AND SEND LOGIN CREDENTIALS
     console.log(JSON.stringify({ evt: "user.creation.start", rid, customerEmail: customer.email }));
     
-    // Set the specific login URL for customers
-    const loginUrl = 'https://pricing.buyawarranty.co.uk/customer-dashboard';
+    // Set the login URL to the auth page where customers can sign in
+    const loginUrl = 'https://pricing.buyawarranty.co.uk/auth';
     
     console.log(JSON.stringify({ evt: "login.url.set", rid, loginUrl }));
     
@@ -664,7 +664,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p><strong>Email:</strong> ${customer.email}</p>
             <p><strong>Temporary Password:</strong> <code style="background-color: #f1f1f1; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${tempPassword}</code></p>
             <p style="color: #666; font-size: 14px; margin-top: 15px;">
-              <em>Please change your password after your first login for security.</em>
+              <em>After logging in, you will be automatically redirected to your customer dashboard where you can view your warranty details and policy documents.</em>
             </p>
           </div>
 
