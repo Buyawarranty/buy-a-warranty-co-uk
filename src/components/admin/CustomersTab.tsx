@@ -19,6 +19,7 @@ import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { MOTHistorySection } from './MOTHistorySection';
+import { VehicleReliabilityScore } from '../VehicleReliabilityScore';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
@@ -2261,6 +2262,13 @@ export const CustomersTab = () => {
                               <MOTHistorySection 
                                 registrationNumber={selectedCustomer.registration_plate}
                                 customerId={selectedCustomer.id}
+                              />
+                            </div>
+                            
+                            {/* Vehicle Reliability Score Section - Full Width */}
+                            <div className="mt-6">
+                              <VehicleReliabilityScore 
+                                registrationNumber={selectedCustomer.registration_plate}
                               />
                             </div>
                             </>

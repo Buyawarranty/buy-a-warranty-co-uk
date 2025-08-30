@@ -5,6 +5,7 @@ import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp,
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { VehicleReliabilityScore } from './VehicleReliabilityScore';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 
@@ -65,6 +66,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
+  const [reliabilityPricing, setReliabilityPricing] = useState<{ "12M": number; "24M": number; "36M": number } | null>(null);
+  const [useReliabilityPricing, setUseReliabilityPricing] = useState(false);
 
   // Normalize vehicle type once
   const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
@@ -232,6 +235,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   };
 
   const calculatePlanPrice = (plan: Plan) => {
+    // Use reliability-based pricing if available and enabled
+    if (useReliabilityPricing && reliabilityPricing) {
+      const periodKey = paymentType === '12months' ? '12M' : 
+                       paymentType === '24months' ? '24M' : 
+                       paymentType === '36months' ? '36M' : '12M';
+      return Math.round(reliabilityPricing[periodKey as keyof typeof reliabilityPricing] / 12);
+    }
+    
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
@@ -462,19 +473,32 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
         )}
 
-        {/* Vehicle Age Error */}
-        {vehicleAgeError && (
-          <div className="max-w-2xl mx-auto mb-8 px-4">
-            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
-              <h3 className="text-xl font-bold text-red-800 mb-2">Vehicle Not Eligible</h3>
-              <p className="text-red-700 text-lg mb-4">{vehicleAgeError}</p>
-              <p className="text-red-600 text-sm">
-                Please contact us if you believe this is an error.
-              </p>
-            </div>
+      {/* Vehicle Age Error */}
+      {vehicleAgeError && (
+        <div className="max-w-2xl mx-auto mb-8 px-4">
+          <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
+            <h3 className="text-xl font-bold text-red-800 mb-2">Vehicle Not Eligible</h3>
+            <p className="text-red-700 text-lg mb-4">{vehicleAgeError}</p>
+            <p className="text-red-600 text-sm">
+              Please contact us if you believe this is an error.
+            </p>
           </div>
-        )}
+        </div>
+      )}
+    </div>
+
+    {/* Vehicle Reliability Score Section */}
+    {!vehicleAgeError && vehicleData.regNumber && (
+      <div className="max-w-4xl mx-auto px-4 mb-8">
+        <VehicleReliabilityScore 
+          registrationNumber={vehicleData.regNumber}
+          onPricingUpdate={(pricing) => {
+            setReliabilityPricing(pricing);
+            setUseReliabilityPricing(true);
+          }}
+        />
       </div>
+    )}
 
       {/* Payment Period Toggle */}
       <div className="flex justify-center mb-8 px-4">

@@ -90,6 +90,9 @@ verify_jwt = false
 [functions.fetch-mot-history]
 verify_jwt = true
 
+[functions.calculate-vehicle-reliability]
+verify_jwt = false
+
 [db]
 port = 54322
 
