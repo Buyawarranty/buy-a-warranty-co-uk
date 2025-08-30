@@ -430,22 +430,10 @@ const handler = async (req: Request): Promise<Response> => {
     // CREATE USER ACCOUNT AND SEND LOGIN CREDENTIALS
     console.log(JSON.stringify({ evt: "user.creation.start", rid, customerEmail: customer.email }));
     
-    // Get the base URL from request headers or use default
-    const requestHeaders = new Headers(req.headers);
-    const referer = requestHeaders.get('referer');
-    const origin = requestHeaders.get('origin');
+    // Set the specific login URL for customers
+    const loginUrl = 'https://pricing.buyawarranty.co.uk/customer-dashboard';
     
-    // Determine the login URL dynamically
-    let loginUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com/auth';
-    
-    if (referer) {
-      const url = new URL(referer);
-      loginUrl = `${url.protocol}//${url.host}/auth`;
-    } else if (origin) {
-      loginUrl = `${origin}/auth`;
-    }
-    
-    console.log(JSON.stringify({ evt: "login.url.determined", rid, loginUrl }));
+    console.log(JSON.stringify({ evt: "login.url.set", rid, loginUrl }));
     
     // Generate temporary password for customer login
     const generateTempPassword = () => {
