@@ -35,6 +35,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [reliabilityScore, setReliabilityScore] = useState<number | null>(null);
   const [reliabilityTier, setReliabilityTier] = useState<string | null>(null);
   const [reliabilityLoading, setReliabilityLoading] = useState(false);
+  const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
 
   // Voluntary excess options with discounts
   const excessOptions = [
@@ -105,6 +106,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       calculateReliabilityScore();
     }
   }, [vehicleData?.regNumber]);
+
+  // Handle scroll to show/hide sticky bottom bar
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show floating bar when user scrolls past the plan cards section
+      const scrollY = window.scrollY;
+      setIsFloatingBarVisible(scrollY > 800); // Adjust this value based on when you want it to appear
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const fetchPdfUrl = async () => {
     try {
@@ -500,6 +513,83 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             );
           })}
         </div>
+
+        {/* Sticky Bottom Bar */}
+        {isFloatingBarVisible && (
+          <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 p-4 z-50">
+            <div className="max-w-6xl mx-auto">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-gray-600">Choose your plan:</span>
+                  <div className="flex gap-2">
+                    {[
+                      { 
+                        key: '12months' as const, 
+                        label: '1 Year', 
+                        price: (() => {
+                          const prices = { 0: 46, 50: 44, 100: 38, 150: 36, 200: 34, 250: 32, 300: 31, 400: 29, 500: 27 };
+                          return prices[voluntaryExcess as keyof typeof prices] || 44;
+                        })(), 
+                        borderColor: 'border-slate-800', 
+                        titleColor: 'text-slate-800' 
+                      },
+                      { 
+                        key: '24months' as const, 
+                        label: '2 Years', 
+                        price: (() => {
+                          const prices = { 0: 42, 50: 40, 100: 35, 150: 32, 200: 30, 250: 29, 300: 27, 400: 26, 500: 24 };
+                          return prices[voluntaryExcess as keyof typeof prices] || 40;
+                        })(), 
+                        borderColor: 'border-yellow-400', 
+                        titleColor: 'text-yellow-600', 
+                        popular: true 
+                      },
+                      { 
+                        key: '36months' as const, 
+                        label: '3 Years', 
+                        price: (() => {
+                          const prices = { 0: 37, 50: 36, 100: 31, 150: 29, 200: 27, 250: 26, 300: 25, 400: 24, 500: 22 };
+                          return prices[voluntaryExcess as keyof typeof prices] || 36;
+                        })(), 
+                        borderColor: 'border-orange-600', 
+                        titleColor: 'text-orange-600' 
+                      }
+                    ].map((plan) => (
+                      <button
+                        key={plan.key}
+                        onClick={() => setPaymentType(plan.key)}
+                        className={`relative px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                          paymentType === plan.key
+                            ? `${plan.borderColor} bg-gray-50 shadow-lg scale-105`
+                            : 'border-gray-300 bg-white hover:border-gray-400'
+                        }`}
+                      >
+                        {plan.popular && (
+                          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                            <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded font-bold">POPULAR</span>
+                          </div>
+                        )}
+                        <div className={`font-semibold text-sm ${paymentType === plan.key ? plan.titleColor : 'text-gray-700'}`}>
+                          {plan.label}
+                        </div>
+                        <div className="text-xs text-gray-600">£{plan.price}/mo</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <Button 
+                  onClick={handleSelectPlan}
+                  disabled={loading}
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-semibold shadow-lg"
+                >
+                  {loading ? 'Processing...' : 'Buy Now'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
