@@ -68,6 +68,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
   const [reliabilityPricing, setReliabilityPricing] = useState<{ "12M": number; "24M": number; "36M": number } | null>(null);
   const [useReliabilityPricing, setUseReliabilityPricing] = useState(false);
+  const [reliabilityScore, setReliabilityScore] = useState<number | null>(null);
+  const [reliabilityTier, setReliabilityTier] = useState<string | null>(null);
+  const [reliabilityLoading, setReliabilityLoading] = useState(false);
 
   // Normalize vehicle type once
   const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
@@ -114,6 +117,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   useEffect(() => {
     fetchPdfUrls();
   }, []);
+
+  // Auto-calculate reliability score when component loads with registration
+  useEffect(() => {
+    if (vehicleData?.regNumber && !vehicleAgeError) {
+      calculateReliabilityScore();
+    }
+  }, [vehicleData?.regNumber]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -234,13 +244,53 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return periodData[excess as keyof typeof periodData] || periodData[0];
   };
 
+  const calculateReliabilityScore = async () => {
+    if (!vehicleData?.regNumber) return;
+    
+    setReliabilityLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('calculate-vehicle-reliability', {
+        body: { registration: vehicleData.regNumber }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        setReliabilityScore(data.data.reliability_score);
+        setReliabilityTier(data.data.tier_label);
+        setReliabilityPricing(data.data.pricing);
+        setUseReliabilityPricing(true);
+      } else {
+        console.log('No reliability data available:', data?.error);
+        // Don't show error to user, just use standard pricing
+      }
+    } catch (error) {
+      console.error('Error calculating reliability:', error);
+      // Don't show error to user, just use standard pricing
+    } finally {
+      setReliabilityLoading(false);
+    }
+  };
+
   const calculatePlanPrice = (plan: Plan) => {
     // Use reliability-based pricing if available and enabled
     if (useReliabilityPricing && reliabilityPricing) {
       const periodKey = paymentType === '12months' ? '12M' : 
                        paymentType === '24months' ? '24M' : 
                        paymentType === '36months' ? '36M' : '12M';
-      return Math.round(reliabilityPricing[periodKey as keyof typeof reliabilityPricing] / 12);
+      
+      const basePriceTotal = reliabilityPricing[periodKey as keyof typeof reliabilityPricing];
+      
+      // Apply voluntary excess discount like the original pricing
+      let adjustedPrice = basePriceTotal;
+      if (voluntaryExcess === 250) {
+        adjustedPrice = basePriceTotal * 0.95; // 5% discount for £250 excess
+      } else if (voluntaryExcess === 500) {
+        adjustedPrice = basePriceTotal * 0.9; // 10% discount for £500 excess
+      }
+      
+      const monthlyPrice = adjustedPrice / (paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36);
+      return Math.round(monthlyPrice);
     }
     
     // Try to use database pricing matrix first, fallback to hardcoded
@@ -487,16 +537,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       )}
     </div>
 
-    {/* Vehicle Reliability Score Section */}
+    {/* Vehicle Reliability Score Display */}
     {!vehicleAgeError && vehicleData.regNumber && (
-      <div className="max-w-4xl mx-auto px-4 mb-8">
-        <VehicleReliabilityScore 
-          registrationNumber={vehicleData.regNumber}
-          onPricingUpdate={(pricing) => {
-            setReliabilityPricing(pricing);
-            setUseReliabilityPricing(true);
-          }}
-        />
+      <div className="max-w-4xl mx-auto px-4 mb-6">
+        {reliabilityLoading ? (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+            <div className="flex items-center justify-center gap-2 text-gray-600">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+              Calculating vehicle reliability score...
+            </div>
+          </div>
+        ) : reliabilityScore !== null && reliabilityTier ? (
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-center">
+            <div className="text-lg font-semibold text-primary mb-1">
+              Reliability Score: {reliabilityScore}/100
+            </div>
+            <div className="text-sm text-primary/80">
+              {reliabilityTier} • Pricing adjusted based on vehicle reliability
+            </div>
+          </div>
+        ) : null}
       </div>
     )}
 
