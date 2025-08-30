@@ -34,11 +34,11 @@ interface AddressData {
 }
 
 const CustomerDashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [policy, setPolicy] = useState<CustomerPolicy | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [policyLoading, setPolicyLoading] = useState(true);
   const [editingAddress, setEditingAddress] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
   const [address, setAddress] = useState<AddressData>({
@@ -53,7 +53,12 @@ const CustomerDashboard = () => {
 
   useEffect(() => {
     console.log("CustomerDashboard: useEffect triggered");
-    console.log("CustomerDashboard: user", user);
+    console.log("CustomerDashboard: user", user, "loading", loading);
+    
+    // Don't redirect if still loading auth state
+    if (loading) {
+      return;
+    }
     
     if (!user) {
       console.log("CustomerDashboard: No user found, redirecting to auth");
@@ -61,7 +66,7 @@ const CustomerDashboard = () => {
       return;
     }
     fetchPolicy();
-  }, [user, navigate]);
+  }, [user, navigate, loading]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -117,7 +122,7 @@ const CustomerDashboard = () => {
     } catch (error) {
       console.error('fetchPolicy: Error:', error);
     } finally {
-      setLoading(false);
+      setPolicyLoading(false);
     }
   };
 
@@ -236,7 +241,7 @@ const CustomerDashboard = () => {
     navigate('/');
   };
 
-  if (loading) {
+  if (loading || policyLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
