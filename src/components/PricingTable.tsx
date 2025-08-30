@@ -318,25 +318,25 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               key: '12months' as const, 
               title: 'Basic', 
               subtitle: '12 month warranty',
-              bgColor: 'bg-slate-700',
-              buttonColor: 'bg-slate-700 hover:bg-slate-800',
+              bgColor: 'bg-slate-800',
+              buttonColor: 'bg-slate-800 hover:bg-slate-900',
               textColor: 'text-white'
             },
             { 
               key: '24months' as const, 
               title: 'Gold', 
-              subtitle: '24 month warranty',
-              bgColor: 'bg-yellow-500',
+              subtitle: '12 month warranty',
+              bgColor: 'bg-yellow-400',
               buttonColor: 'bg-yellow-500 hover:bg-yellow-600',
-              textColor: 'text-white',
+              textColor: 'text-black',
               mostPopular: true
             },
             { 
               key: '36months' as const, 
               title: 'Platinum', 
-              subtitle: '36 month warranty',
-              bgColor: 'bg-orange-500',
-              buttonColor: 'bg-orange-500 hover:bg-orange-600',
+              subtitle: '12 month warranty',
+              bgColor: 'bg-orange-600',
+              buttonColor: 'bg-orange-600 hover:bg-orange-700',
               textColor: 'text-white'
             }
           ].map((plan) => {
