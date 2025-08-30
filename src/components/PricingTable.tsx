@@ -29,7 +29,16 @@ interface PricingTableProps {
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('12months');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
-  const [selectedAddOns, setSelectedAddOns] = useState<{[addon: string]: boolean}>({});
+  // Separate add-ons state for each plan
+  const [selectedAddOns, setSelectedAddOns] = useState<{
+    '12months': {[addon: string]: boolean};
+    '24months': {[addon: string]: boolean};
+    '36months': {[addon: string]: boolean};
+  }>({
+    '12months': {},
+    '24months': {},
+    '36months': {}
+  });
   const [loading, setLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [reliabilityScore, setReliabilityScore] = useState<number | null>(null);
@@ -205,8 +214,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return basePrices[paymentType][voluntaryExcess as keyof typeof basePrices[typeof paymentType]] || basePrices[paymentType][50];
   };
 
-  const calculateAddOnTotal = () => {
-    return Object.entries(selectedAddOns)
+  const calculateAddOnTotal = (planKey?: '12months' | '24months' | '36months') => {
+    const planAddOns = planKey ? selectedAddOns[planKey] : selectedAddOns[paymentType];
+    return Object.entries(planAddOns)
       .filter(([_, selected]) => selected)
       .reduce((total, [addonName]) => {
         const addon = addOnOptions.find(a => a.name === addonName);
@@ -214,10 +224,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       }, 0);
   };
 
-  const toggleAddOn = (addonName: string) => {
+  const toggleAddOn = (addonName: string, planKey: '12months' | '24months' | '36months') => {
     setSelectedAddOns(prev => ({
       ...prev,
-      [addonName]: !prev[addonName]
+      [planKey]: {
+        ...prev[planKey],
+        [addonName]: !prev[planKey][addonName]
+      }
     }));
   };
 
@@ -226,15 +239,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     
     try {
       const pricing = getPricingData();
-      const addOnTotal = calculateAddOnTotal();
+      const addOnTotal = calculateAddOnTotal(paymentType); // Use specific payment type
       const totalPrice = pricing.total + addOnTotal;
-      const monthlyPrice = pricing.monthly + Math.round(addOnTotal / 12);
+      const monthlyPrice = pricing.monthly + Math.round(addOnTotal / (paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36));
       
       const pricingData = {
         totalPrice,
         monthlyPrice,
         voluntaryExcess,
-        selectedAddOns
+        selectedAddOns: selectedAddOns[paymentType]
       };
 
       if (onPlanSelected) {
@@ -401,6 +414,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               return prices[plan.key][voluntaryExcess as keyof typeof prices[typeof plan.key]] || prices[plan.key][50];
             })();
 
+            // Calculate plan-specific add-on total
+            const planAddOnTotal = calculateAddOnTotal(plan.key);
+            const planTotalWithAddons = planPricing.total + planAddOnTotal;
+            const planMonthlyWithAddons = planPricing.monthly + Math.round(planAddOnTotal / (plan.key === '12months' ? 12 : plan.key === '24months' ? 24 : 36));
+
             return (
               <div key={plan.key} className="relative">
                 {plan.mostPopular && (
@@ -419,8 +437,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     
                     <div className="mt-6">
                       <div className="text-3xl font-bold text-gray-800">
-                        £{planPricing.monthly}/mo
+                        £{planMonthlyWithAddons}/mo
                       </div>
+                      {planAddOnTotal > 0 && (
+                        <p className="text-xs text-gray-500">
+                          Base: £{planPricing.monthly}/mo + Add-ons: £{Math.round(planAddOnTotal / 12)}/mo
+                        </p>
+                      )}
                       <p className="text-sm text-green-600 font-medium mt-1">
                         for {plan.key === '12months' ? '12' : plan.key === '24months' ? '24' : '36'} months interest free
                       </p>
@@ -435,19 +458,25 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </span>
                     </div>
                     <div className="text-xl font-bold text-blue-600">
-                      £{planPricing.total} upfront
+                      £{planTotalWithAddons} upfront
                     </div>
+                    {planAddOnTotal > 0 && (
+                      <div className="text-xs text-gray-500">
+                        Base: £{planPricing.total} + Add-ons: £{planAddOnTotal}
+                      </div>
+                    )}
                     <div className="text-xs text-gray-500">
-                      Instead of £{planPricing.total + planPricing.save} over {plan.key === '12months' ? '12' : plan.key === '24months' ? '24' : '36'} months
+                      Instead of £{planTotalWithAddons + planPricing.save} over {plan.key === '12months' ? '12' : plan.key === '24months' ? '24' : '36'} months
                     </div>
                   </div>
 
-                  <Button 
+                    <Button 
                     className={`w-full ${plan.buttonColor} text-white font-bold py-3 text-lg mb-6`}
                     onClick={(e) => {
                       e.stopPropagation();
                       setPaymentType(plan.key);
-                      handleSelectPlan();
+                      // Update the current pricing data to match this plan before proceeding
+                      setTimeout(() => handleSelectPlan(), 50); // Small delay to ensure state update
                     }}
                     disabled={loading}
                   >
@@ -477,8 +506,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         <div key={addon.name} className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg">
                           <Checkbox
                             id={`${plan.key}-${addon.name}`}
-                            checked={selectedAddOns[addon.name] || false}
-                            onCheckedChange={() => toggleAddOn(addon.name)}
+                            checked={selectedAddOns[plan.key][addon.name] || false}
+                            onCheckedChange={() => toggleAddOn(addon.name, plan.key)}
                           />
                           <label htmlFor={`${plan.key}-${addon.name}`} className="flex-1 cursor-pointer text-sm">
                             {addon.name}
@@ -528,7 +557,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         label: '1 Year', 
                         price: (() => {
                           const prices = { 0: 46, 50: 44, 100: 38, 150: 36, 200: 34, 250: 32, 300: 31, 400: 29, 500: 27 };
-                          return prices[voluntaryExcess as keyof typeof prices] || 44;
+                          const basePrice = prices[voluntaryExcess as keyof typeof prices] || 44;
+                          const addOnTotal = calculateAddOnTotal('12months');
+                          return basePrice + Math.round(addOnTotal / 12);
                         })(), 
                         borderColor: 'border-slate-800', 
                         titleColor: 'text-slate-800' 
@@ -538,7 +569,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         label: '2 Years', 
                         price: (() => {
                           const prices = { 0: 42, 50: 40, 100: 35, 150: 32, 200: 30, 250: 29, 300: 27, 400: 26, 500: 24 };
-                          return prices[voluntaryExcess as keyof typeof prices] || 40;
+                          const basePrice = prices[voluntaryExcess as keyof typeof prices] || 40;
+                          const addOnTotal = calculateAddOnTotal('24months');
+                          return basePrice + Math.round(addOnTotal / 24);
                         })(), 
                         borderColor: 'border-yellow-400', 
                         titleColor: 'text-yellow-600', 
@@ -549,7 +582,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         label: '3 Years', 
                         price: (() => {
                           const prices = { 0: 37, 50: 36, 100: 31, 150: 29, 200: 27, 250: 26, 300: 25, 400: 24, 500: 22 };
-                          return prices[voluntaryExcess as keyof typeof prices] || 36;
+                          const basePrice = prices[voluntaryExcess as keyof typeof prices] || 36;
+                          const addOnTotal = calculateAddOnTotal('36months');
+                          return basePrice + Math.round(addOnTotal / 36);
                         })(), 
                         borderColor: 'border-orange-600', 
                         titleColor: 'text-orange-600' 
