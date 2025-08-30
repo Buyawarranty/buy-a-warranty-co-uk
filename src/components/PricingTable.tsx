@@ -328,19 +328,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           Back to vehicle details
         </Button>
 
-        {/* Vehicle Registration Display */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Vehicle</h2>
-          <div className="inline-block bg-yellow-400 text-black font-bold text-2xl px-6 py-3 rounded border-2 border-black">
-            {vehicleData.regNumber?.toUpperCase()}
-          </div>
-          {vehicleData.make && vehicleData.model && (
-            <p className="text-lg text-gray-600 mt-3">
-              {vehicleData.year} {vehicleData.make} {vehicleData.model}
-            </p>
-          )}
-        </div>
-
         {/* Vehicle Reliability & Pricing Explanation */}
         {reliabilityScore !== null && (
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-8 mb-8 border border-blue-100">
@@ -348,9 +335,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <h3 className="text-2xl font-bold mb-2 text-gray-800">
                 Your Vehicle's Reliability Assessment
               </h3>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-gray-600 max-w-2xl mx-auto mb-6">
                 We've analyzed your vehicle's MOT history and reliability data to provide you with fair, personalized pricing
               </p>
+              
+              {/* Vehicle Registration Display */}
+              <div className="mb-6">
+                <div className="inline-block bg-yellow-400 text-black font-bold text-2xl px-6 py-3 rounded border-2 border-black">
+                  {vehicleData.regNumber?.toUpperCase()}
+                </div>
+                {vehicleData.make && vehicleData.model && (
+                  <p className="text-lg text-gray-600 mt-3">
+                    {vehicleData.year} {vehicleData.make} {vehicleData.model}
+                  </p>
+                )}
+              </div>
             </div>
             
             <div className="grid md:grid-cols-3 gap-6">
