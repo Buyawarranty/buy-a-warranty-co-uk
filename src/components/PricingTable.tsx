@@ -690,29 +690,33 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      paymentType === '24months' ? '24 month warranty' :
                      paymentType === '36months' ? '36 month warranty' :
                      '12 month warranty'}
-                   </p>
-                    <div className="text-4xl font-bold text-gray-900 mb-3">
-                      {paymentType === '12months' ? (
-                        <>£{displayPrice}/mo</>
-                      ) : (
-                        <>£{displayPrice}<span className="text-lg">/12 payments</span></>
-                      )}
-                    </div>
-                    <div className="text-green-600 text-base font-bold mb-4">
-                      {paymentType === '12months' ? 'for 12 months interest free' : 'paid over 12 months interest free'}
-                    </div>
+                    </p>
+                     
+                     {/* Pay Full Amount - Full Price */}
+                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                       <div className="flex items-center justify-between mb-2">
+                         <span className="font-semibold text-gray-900">Pay Full Amount</span>
+                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                           Save 5% (£{Math.round((displayPrice * 12) * 0.05)})
+                         </div>
+                       </div>
+                       <div className="text-xl font-bold text-blue-600">
+                         £{Math.round((displayPrice * 12) * 0.95)}
+                       </div>
+                     </div>
 
-                    {/* Pay Full Amount - Stripe Price with 5% Discount */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold text-gray-900">Pay Full Amount</span>
-                        <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save 5% (£{Math.round((displayPrice * 12) * 0.05)})
-                        </div>
-                      </div>
-                      <div className="text-xl font-bold text-blue-600">
-                        £{Math.round((displayPrice * 12) * 0.95)}
-                      </div>
+                     {/* Monthly Payment Option */}
+                     <div className="text-center mb-6">
+                       <div className="text-2xl font-bold text-gray-900 mb-2">
+                         {paymentType === '12months' ? (
+                           <>£{displayPrice}/mo</>
+                         ) : (
+                           <>£{displayPrice}<span className="text-lg">/12 payments</span></>
+                         )}
+                       </div>
+                       <div className="text-green-600 text-base font-bold">
+                         {paymentType === '12months' ? 'for 12 months interest free' : 'paid over 12 months interest free'}
+                       </div>
                      </div>
                      {savings && paymentType !== '12months' && (
                       <div className="text-green-600 font-bold text-lg mb-6">
