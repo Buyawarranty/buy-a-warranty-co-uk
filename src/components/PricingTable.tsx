@@ -323,15 +323,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         {/* Voluntary Excess Selection */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <h2 className="text-xl font-semibold text-center text-gray-800 mb-6">Voluntary Excess Amount</h2>
-          <div className="flex justify-center gap-2 flex-wrap">
-            {excessOptions.map((option) => (
+          <div className="flex justify-center gap-3 flex-wrap">
+            {excessOptions.slice(0, 4).map((option) => (
               <button
                 key={option.amount}
                 onClick={() => setVoluntaryExcess(option.amount)}
-                className={`px-4 py-2 rounded-lg border transition-all duration-200 ${
+                className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 min-w-[80px] ${
                   voluntaryExcess === option.amount
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-lg'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300'
+                    ? 'bg-slate-800 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
                 }`}
               >
                 {option.label}
