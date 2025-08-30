@@ -56,7 +56,11 @@ interface PricingTableProps {
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
+  const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
+  const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
+  const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
+  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('12months');
   const [reliabilityPricing, setReliabilityPricing] = useState<{ "12M": number; "24M": number; "36M": number } | null>(null);
   const [useReliabilityPricing, setUseReliabilityPricing] = useState(false);
   const [reliabilityScore, setReliabilityScore] = useState<number | null>(null);
@@ -88,6 +92,31 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
   }, [vehicleData?.regNumber]);
 
+  useEffect(() => {
+    fetchPdfUrls();
+  }, []);
+
+  const fetchPdfUrls = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('customer_documents')
+        .select('plan_type, file_url')
+        .in('plan_type', ['basic', 'gold', 'platinum']);
+
+      if (error) throw error;
+
+      const urls: {[key: string]: string} = {};
+      data?.forEach(doc => {
+        if (doc.plan_type && doc.file_url) {
+          urls[doc.plan_type.toLowerCase()] = doc.file_url;
+        }
+      });
+      setPdfUrls(urls);
+    } catch (error) {
+      console.error('Error fetching PDF URLs:', error);
+    }
+  };
+
   const calculateReliabilityScore = async () => {
     if (!vehicleData?.regNumber) return;
     
@@ -116,66 +145,108 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
   };
 
-  const getDurationPrice = (duration: '1year' | '2year' | '3year') => {
+  const calculatePlanPrice = () => {
     if (useReliabilityPricing && reliabilityPricing) {
-      const periodKey = duration === '1year' ? '12M' : 
-                       duration === '2year' ? '24M' : 
-                       duration === '3year' ? '36M' : '12M';
+      const periodKey = paymentType === '12months' ? '12M' : 
+                       paymentType === '24months' ? '24M' : 
+                       paymentType === '36months' ? '36M' : '12M';
       
-      let basePriceTotal = reliabilityPricing[periodKey as keyof typeof reliabilityPricing];
+      const basePriceTotal = reliabilityPricing[periodKey as keyof typeof reliabilityPricing];
       
       // Apply voluntary excess discount
+      let adjustedPrice = basePriceTotal;
       if (voluntaryExcess === 250) {
-        basePriceTotal = basePriceTotal * 0.95; // 5% discount for £250 excess
+        adjustedPrice = basePriceTotal * 0.95; // 5% discount for £250 excess
       } else if (voluntaryExcess === 500) {
-        basePriceTotal = basePriceTotal * 0.9; // 10% discount for £500 excess
+        adjustedPrice = basePriceTotal * 0.9; // 10% discount for £500 excess
       }
       
-      return Math.round(basePriceTotal);
+      const monthlyPrice = adjustedPrice / (paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36);
+      return Math.round(monthlyPrice);
     }
     
-    // Fallback pricing if no reliability data
-    const basePrices = {
-      '1year': 559, // Tier 5 default
-      '2year': 1009,
-      '3year': 1349
+    // Fallback pricing if no reliability data - use Tier 5 pricing as default
+    const fallbackPricing = {
+      '12months': 559,
+      '24months': 1009, 
+      '36months': 1349
     };
     
-    let price = basePrices[duration];
+    let basePriceTotal = fallbackPricing[paymentType];
     
     // Apply voluntary excess discount
     if (voluntaryExcess === 250) {
-      price = price * 0.95;
+      basePriceTotal = basePriceTotal * 0.95;
     } else if (voluntaryExcess === 500) {
-      price = price * 0.9;
+      basePriceTotal = basePriceTotal * 0.9;
     }
     
-    return Math.round(price);
+    const months = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+    return Math.round(basePriceTotal / months);
   };
 
-  const handleSelectDuration = (duration: '1year' | '2year' | '3year') => {
-    setSelectedDuration(duration);
-    setLoading(prev => ({ ...prev, [duration]: true }));
+  const getAddOnPrice = (addon: string) => {
+    // Standard add-on pricing
+    const addOnPrices: {[key: string]: number} = {
+      'Key Cover': 8,
+      'Breakdown Cover': 12,
+      'MOT Cover': 5
+    };
+    return addOnPrices[addon] || 5;
+  };
+
+  const calculateAddOnPrice = () => {
+    const selectedAddOnsList = selectedAddOns['single-plan'] || {};
+    return Object.entries(selectedAddOnsList)
+      .filter(([_, selected]) => selected)
+      .reduce((total, [addon]) => total + getAddOnPrice(addon), 0);
+  };
+
+  const toggleAddOn = (addon: string) => {
+    setSelectedAddOns(prev => ({
+      ...prev,
+      'single-plan': {
+        ...prev['single-plan'],
+        [addon]: !prev['single-plan']?.[addon]
+      }
+    }));
+  };
+
+  const toggleVoluntaryExcess = (amount: number) => {
+    setVoluntaryExcess(amount);
+  };
+
+  const toggleAddOnInfo = () => {
+    setShowAddOnInfo(prev => ({
+      ...prev,
+      'single-plan': !prev['single-plan']
+    }));
+  };
+
+  const handleSelectPlan = () => {
+    setLoading(prev => ({ ...prev, 'single-plan': true }));
     
     setTimeout(() => {
       if (onPlanSelected) {
-        const totalPrice = getDurationPrice(duration);
-        const months = duration === '1year' ? 12 : duration === '2year' ? 24 : 36;
-        const monthlyPrice = Math.round(totalPrice / months);
+        const monthlyPrice = calculatePlanPrice();
+        const addOnPrice = calculateAddOnPrice();
+        const totalMonthlyPrice = monthlyPrice + addOnPrice;
+        const months = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+        const totalPrice = totalMonthlyPrice * months;
         
         onPlanSelected(
           'single-plan', 
-          duration, 
+          paymentType, 
           'Vehicle Warranty', 
           {
             totalPrice,
-            monthlyPrice,
+            monthlyPrice: totalMonthlyPrice,
             voluntaryExcess,
-            selectedAddOns: {}
+            selectedAddOns: selectedAddOns['single-plan'] || {}
           }
         );
       }
-      setLoading(prev => ({ ...prev, [duration]: false }));
+      setLoading(prev => ({ ...prev, 'single-plan': false }));
     }, 1000);
   };
 
@@ -288,25 +359,63 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
       {/* Main pricing section */}
       {!vehicleAgeError && (
-        <>
+        <div className="max-w-7xl mx-auto px-4 space-y-8">
+          {/* Payment Type Toggle */}
+          <div className="flex justify-center">
+            <div className="bg-gray-100 rounded-full p-1 flex">
+              <button
+                onClick={() => setPaymentType('12months')}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  paymentType === '12months'
+                    ? 'bg-white shadow-sm text-primary'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                12 Months
+              </button>
+              <button
+                onClick={() => setPaymentType('24months')}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  paymentType === '24months'
+                    ? 'bg-white shadow-sm text-primary'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                24 Months
+                <Badge variant="secondary" className="ml-2 text-xs">Popular</Badge>
+              </button>
+              <button
+                onClick={() => setPaymentType('36months')}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  paymentType === '36months'
+                    ? 'bg-white shadow-sm text-primary'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                36 Months
+                <Badge variant="secondary" className="ml-2 text-xs bg-green-100 text-green-800">Save More</Badge>
+              </button>
+            </div>
+          </div>
+
           {/* Voluntary Excess Selection */}
-          <div className="max-w-4xl mx-auto px-4 mb-8">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex justify-center">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 w-full max-w-2xl">
               <h3 className="text-lg font-semibold mb-4 text-center">Select Your Voluntary Excess</h3>
               <div className="flex justify-center gap-4">
                 {[50, 250, 500].map((amount) => (
                   <button
                     key={amount}
-                    onClick={() => setVoluntaryExcess(amount)}
-                    className={`px-6 py-3 rounded-lg border-2 transition-all ${
+                    onClick={() => toggleVoluntaryExcess(amount)}
+                    className={`px-4 py-3 rounded-lg border-2 transition-all ${
                       voluntaryExcess === amount
                         ? 'border-primary bg-primary text-white'
                         : 'border-gray-200 hover:border-primary'
                     }`}
                   >
-                    <div className="text-lg font-semibold">£{amount}</div>
-                    <div className="text-sm opacity-80">
-                      {amount === 250 ? '5% discount' : amount === 500 ? '10% discount' : 'Standard'}
+                    <div className="font-semibold">£{amount}</div>
+                    <div className="text-xs opacity-80">
+                      {amount === 250 ? 'Save 5%' : amount === 500 ? 'Save 10%' : 'Standard'}
                     </div>
                   </button>
                 ))}
@@ -314,109 +423,136 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
           </div>
 
-          {/* Single Plan with Duration Options */}
-          <div className="max-w-4xl mx-auto px-4 mb-12">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Vehicle Warranty Plan</h2>
-                <p className="text-gray-600">Comprehensive coverage for your vehicle</p>
+          {/* Single Plan */}
+          <div className="flex justify-center">
+            <div className="relative bg-white rounded-2xl shadow-lg border-2 border-primary scale-105 max-w-md w-full">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-primary text-white px-4 py-1">Most Popular</Badge>
               </div>
 
-              {/* Duration Selection */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {(['1year', '2year', '3year'] as const).map((duration) => {
-                  const price = getDurationPrice(duration);
-                  const months = duration === '1year' ? 12 : duration === '2year' ? 24 : 36;
-                  const monthlyPrice = Math.round(price / months);
-                  const isSelected = selectedDuration === duration;
+              <div className="p-8">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Vehicle Warranty</h3>
+                  <div className="text-4xl font-bold text-primary mb-2">
+                    £{(calculatePlanPrice() + calculateAddOnPrice())}
+                    <span className="text-base text-gray-500 font-normal">/month</span>
+                  </div>
                   
-                  return (
-                    <div
-                      key={duration}
-                      className={`relative border-2 rounded-xl p-6 cursor-pointer transition-all ${
-                        isSelected
-                          ? 'border-primary bg-primary/5'
-                          : 'border-gray-200 hover:border-primary/50'
-                      }`}
-                      onClick={() => setSelectedDuration(duration)}
-                    >
-                      {duration === '2year' && (
-                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                          <span className="bg-primary text-white px-3 py-1 text-sm font-semibold rounded-full">
-                            Most Popular
-                          </span>
-                        </div>
-                      )}
-                      
-                      <div className="text-center">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
-                          {duration === '1year' ? '1 Year' : duration === '2year' ? '2 Years' : '3 Years'}
-                        </h3>
-                        <div className="text-3xl font-bold text-primary mb-1">
-                          £{price.toLocaleString()}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          £{monthlyPrice} per month
-                        </div>
-                        {duration === '3year' && (
-                          <div className="text-sm text-green-600 font-semibold mt-2">
-                            Best Value - Save more!
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                  <div className="text-sm text-gray-600">
+                    Total: £{(calculatePlanPrice() + calculateAddOnPrice()) * (paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36)} 
+                    ({paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36'} months)
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Voluntary Excess: £{voluntaryExcess}
+                  </div>
+                </div>
 
-              {/* Coverage Details */}
-              <div className="bg-gray-50 rounded-lg p-6 mb-8">
-                <h4 className="font-semibold mb-4 text-center">What's Covered</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Coverage List */}
+                <div className="space-y-3 mb-8">
                   {[
                     'Engine and transmission coverage',
-                    'Electrical system protection',
+                    'Electrical system protection', 
                     'Cooling and heating systems',
                     'Steering and suspension',
                     'Braking system coverage',
                     'Fuel system protection',
                     '24/7 breakdown assistance',
                     'UK-wide coverage'
-                  ].map((item, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <Check className="w-5 h-5 text-green-600" />
-                      <span className="text-sm">{item}</span>
+                  ].map((feature, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-gray-700">{feature}</span>
                     </div>
                   ))}
                 </div>
-              </div>
 
-              {/* Buy Now Button */}
-              <div className="text-center">
-                <Button
-                  onClick={() => handleSelectDuration(selectedDuration)}
-                  className="bg-primary hover:bg-primary/90 text-white px-12 py-4 text-lg font-semibold rounded-lg"
-                  disabled={loading[selectedDuration]}
-                >
-                  {loading[selectedDuration] ? (
-                    <>Processing...</>
-                  ) : (
-                    <>Buy {selectedDuration === '1year' ? '1 Year' : selectedDuration === '2year' ? '2 Year' : '3 Year'} Plan - £{getDurationPrice(selectedDuration).toLocaleString()}</>
-                  )}
-                </Button>
-                
-                <div className="mt-4 text-sm text-gray-600">
-                  <div>Voluntary Excess: £{voluntaryExcess}</div>
-                  {voluntaryExcess > 50 && (
-                    <div className="text-green-600">
-                      {voluntaryExcess === 250 ? '5%' : '10%'} discount applied
+                {/* Add-ons Section */}
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold text-gray-900">Optional Add-ons</h4>
+                    <button
+                      onClick={() => toggleAddOnInfo()}
+                      className="text-primary hover:text-primary/80 transition-colors"
+                    >
+                      <Info className="w-4 h-4" />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {['Key Cover', 'Breakdown Cover', 'MOT Cover'].map((addon) => (
+                      <label key={addon} className="flex items-center gap-3 cursor-pointer group">
+                        <Checkbox
+                          checked={selectedAddOns['single-plan']?.[addon] || false}
+                          onCheckedChange={() => toggleAddOn(addon)}
+                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        />
+                        <span className="text-sm text-gray-700 group-hover:text-gray-900 flex-1">
+                          {addon}
+                        </span>
+                        <span className="text-sm font-medium text-primary">
+                          +£{getAddOnPrice(addon)}/month
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+
+                  {showAddOnInfo['single-plan'] && (
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="text-sm text-blue-800">
+                        <strong>Add-on Benefits:</strong>
+                        <ul className="mt-2 space-y-1">
+                          <li className="flex items-start gap-2">
+                            <span className="text-blue-600">•</span>
+                            <span><strong>Key Cover:</strong> Lost or stolen key replacement</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-blue-600">•</span>
+                            <span><strong>Breakdown Cover:</strong> 24/7 roadside assistance</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-blue-600">•</span>
+                            <span><strong>MOT Cover:</strong> MOT failure repair coverage</span>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   )}
                 </div>
+
+                {/* Buy Button */}
+                <Button
+                  onClick={handleSelectPlan}
+                  disabled={loading['single-plan']}
+                  className="w-full py-4 text-lg font-semibold rounded-xl transition-all bg-primary hover:bg-primary/90 text-white shadow-lg"
+                >
+                  {loading['single-plan'] ? (
+                    <>Processing...</>
+                  ) : (
+                    <>
+                      Buy Plan - £{calculatePlanPrice() + calculateAddOnPrice()}/month
+                    </>
+                  )}
+                </Button>
+
+                {/* PDF Link */}
+                {pdfUrls['gold'] && (
+                  <div className="mt-4 text-center">
+                    <a
+                      href={pdfUrls['gold']}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
+                    >
+                      <FileText className="w-4 h-4" />
+                      View Plan Details (PDF)
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
