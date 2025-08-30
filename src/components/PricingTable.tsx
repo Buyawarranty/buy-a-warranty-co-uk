@@ -317,27 +317,30 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             { 
               key: '12months' as const, 
               title: 'Basic', 
-              subtitle: '12 month warranty',
-              bgColor: 'bg-slate-800',
+              subtitle: '1 year warranty',
+              borderColor: 'border-slate-800',
               buttonColor: 'bg-slate-800 hover:bg-slate-900',
-              textColor: 'text-white'
+              titleColor: 'text-slate-800',
+              textColor: 'text-gray-800'
             },
             { 
               key: '24months' as const, 
               title: 'Gold', 
-              subtitle: '12 month warranty',
-              bgColor: 'bg-yellow-400',
+              subtitle: '2 year warranty',
+              borderColor: 'border-yellow-400',
               buttonColor: 'bg-yellow-500 hover:bg-yellow-600',
-              textColor: 'text-black',
+              titleColor: 'text-yellow-600',
+              textColor: 'text-gray-800',
               mostPopular: true
             },
             { 
               key: '36months' as const, 
               title: 'Platinum', 
-              subtitle: '12 month warranty',
-              bgColor: 'bg-orange-600',
+              subtitle: '3 year warranty',
+              borderColor: 'border-orange-600',
               buttonColor: 'bg-orange-600 hover:bg-orange-700',
-              textColor: 'text-white'
+              titleColor: 'text-orange-600',
+              textColor: 'text-gray-800'
             }
           ].map((plan) => {
             const isSelected = paymentType === plan.key;
@@ -391,34 +394,34 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </Badge>
                   </div>
                 )}
-                <div className={`${plan.bgColor} ${plan.textColor} rounded-xl p-6 h-full ${isSelected ? 'ring-4 ring-blue-400' : ''} cursor-pointer transition-all duration-200 hover:shadow-xl`}
+                <div className={`bg-white ${plan.borderColor} border-2 ${plan.textColor} rounded-xl p-6 h-full ${isSelected ? 'ring-4 ring-blue-400' : ''} cursor-pointer transition-all duration-200 hover:shadow-xl`}
                      onClick={() => setPaymentType(plan.key)}>
                   
                   <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
-                    <p className="text-sm opacity-90">{plan.subtitle}</p>
+                    <h3 className={`text-2xl font-bold mb-2 ${plan.titleColor}`}>{plan.title}</h3>
+                    <p className="text-sm text-gray-600">{plan.subtitle}</p>
                     
                     <div className="mt-6">
-                      <div className="text-3xl font-bold">
+                      <div className="text-3xl font-bold text-gray-800">
                         £{planPricing.monthly}/mo
                       </div>
-                      <p className="text-sm text-green-300 font-medium mt-1">
+                      <p className="text-sm text-green-600 font-medium mt-1">
                         for {plan.key === '12months' ? '12' : plan.key === '24months' ? '24' : '36'} months interest free
                       </p>
                     </div>
                   </div>
 
-                  <div className="bg-white bg-opacity-10 rounded-lg p-4 mb-6">
+                  <div className="bg-gray-50 rounded-lg p-4 mb-6 border">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm">Pay Full Amount</span>
-                      <span className="text-sm text-green-300">
+                      <span className="text-sm text-gray-700">Pay Full Amount</span>
+                      <span className="text-sm text-blue-600">
                         Save 5% (£{planPricing.save})
                       </span>
                     </div>
-                    <div className="text-xl font-bold text-blue-200">
+                    <div className="text-xl font-bold text-blue-600">
                       £{planPricing.total} upfront
                     </div>
-                    <div className="text-xs opacity-80">
+                    <div className="text-xs text-gray-500">
                       Instead of £{planPricing.total + planPricing.save} over {plan.key === '12months' ? '12' : plan.key === '24months' ? '24' : '36'} months
                     </div>
                   </div>
@@ -440,8 +443,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <div className="space-y-2">
                       {coverageFeatures.slice(0, 6).map((feature, index) => (
                         <div key={index} className="flex items-center gap-2 text-sm">
-                          <Check className="h-4 w-4 text-green-300 flex-shrink-0" />
-                          <span className="opacity-90">{feature}</span>
+                          <Check className="h-4 w-4 text-green-600 flex-shrink-0" />
+                          <span className="text-gray-700">{feature}</span>
                         </div>
                       ))}
                     </div>
