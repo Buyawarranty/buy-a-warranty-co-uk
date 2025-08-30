@@ -427,6 +427,93 @@ const handler = async (req: Request): Promise<Response> => {
     
     console.log(JSON.stringify({ evt: "pdf.final.count", rid, attachmentCount: attachments.length }));
 
+    // CREATE USER ACCOUNT AND SEND LOGIN CREDENTIALS
+    console.log(JSON.stringify({ evt: "user.creation.start", rid, customerEmail: customer.email }));
+    
+    // Generate temporary password for customer login
+    const generateTempPassword = () => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let password = '';
+      for (let i = 0; i < 8; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return password;
+    };
+
+    const tempPassword = generateTempPassword();
+    console.log(JSON.stringify({ evt: "temp.password.generated", rid }));
+
+    // Check if user already exists
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const userExists = existingUsers?.users?.find(u => u.email === customer.email);
+    
+    let userId = null;
+    
+    if (userExists) {
+      console.log(JSON.stringify({ evt: "user.exists", rid, userId: userExists.id }));
+      userId = userExists.id;
+      
+      // Update existing user's password and metadata
+      await supabase.auth.admin.updateUserById(userExists.id, {
+        password: tempPassword,
+        user_metadata: {
+          plan_type: policy.plan_type,
+          policy_number: policy.policy_number,
+          warranty_number: policy.warranty_number
+        }
+      });
+      console.log(JSON.stringify({ evt: "user.updated", rid, userId }));
+    } else {
+      // Create new user account
+      const { data: userData, error: userError } = await supabase.auth.admin.createUser({
+        email: customer.email,
+        password: tempPassword,
+        email_confirm: true,
+        user_metadata: {
+          plan_type: policy.plan_type,
+          policy_number: policy.policy_number,
+          warranty_number: policy.warranty_number
+        }
+      });
+
+      if (userError) {
+        console.log(JSON.stringify({ evt: "user.creation.failed", rid, error: userError.message }));
+        throw new Error(`Failed to create user: ${userError.message}`);
+      }
+
+      if (!userData.user) {
+        throw new Error("User creation returned no user data");
+      }
+
+      userId = userData.user.id;
+      console.log(JSON.stringify({ evt: "user.created", rid, userId }));
+    }
+
+    // Link the customer policy to the user account
+    if (userId && !policy.user_id) {
+      await supabase
+        .from('customer_policies')
+        .update({ user_id: userId })
+        .eq('id', policy.id);
+      console.log(JSON.stringify({ evt: "policy.linked.to.user", rid, policyId: policy.id, userId }));
+    }
+
+    // Store welcome email record for audit
+    try {
+      await supabase
+        .from('welcome_emails')
+        .insert({
+          user_id: userId,
+          email: customer.email,
+          temporary_password: tempPassword,
+          policy_id: policy.id,
+          email_sent_at: new Date().toISOString()
+        });
+      console.log(JSON.stringify({ evt: "welcome.email.record.stored", rid }));
+    } catch (auditError) {
+      console.log(JSON.stringify({ evt: "welcome.email.audit.failed", rid, error: auditError.message }));
+    }
+
     // Get customer data with vehicle info from the customers table
     const { data: customerDetails } = await supabase
       .from('customers')
@@ -562,6 +649,17 @@ const handler = async (req: Request): Promise<Response> => {
             <p style="font-size: 16px; line-height: 1.6; margin: 0;">
               Your policy documents are attached to this email for your records. Your policy number is: 
               <strong style="color: #ff6b35; font-size: 18px;">${policy.warranty_number || policy.policy_number}</strong>
+            </p>
+          </div>
+
+          <div style="background-color: #e7f3ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #007bff;">
+            <h3 style="color: #333; margin-top: 0;">🔐 Your Customer Portal Access</h3>
+            <p>Access your customer portal to view your warranty details, policy documents, and manage your account:</p>
+            <p><strong>Login URL:</strong> <a href="https://buyawarranty.co.uk/auth" style="color: #007bff;">https://buyawarranty.co.uk/auth</a></p>
+            <p><strong>Email:</strong> ${customer.email}</p>
+            <p><strong>Temporary Password:</strong> <code style="background-color: #f1f1f1; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${tempPassword}</code></p>
+            <p style="color: #666; font-size: 14px; margin-top: 15px;">
+              <em>Please change your password after your first login for security.</em>
             </p>
           </div>
 
