@@ -430,6 +430,23 @@ const handler = async (req: Request): Promise<Response> => {
     // CREATE USER ACCOUNT AND SEND LOGIN CREDENTIALS
     console.log(JSON.stringify({ evt: "user.creation.start", rid, customerEmail: customer.email }));
     
+    // Get the base URL from request headers or use default
+    const requestHeaders = new Headers(req.headers);
+    const referer = requestHeaders.get('referer');
+    const origin = requestHeaders.get('origin');
+    
+    // Determine the login URL dynamically
+    let loginUrl = 'https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com/auth';
+    
+    if (referer) {
+      const url = new URL(referer);
+      loginUrl = `${url.protocol}//${url.host}/auth`;
+    } else if (origin) {
+      loginUrl = `${origin}/auth`;
+    }
+    
+    console.log(JSON.stringify({ evt: "login.url.determined", rid, loginUrl }));
+    
     // Generate temporary password for customer login
     const generateTempPassword = () => {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -655,7 +672,7 @@ const handler = async (req: Request): Promise<Response> => {
           <div style="background-color: #e7f3ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #007bff;">
             <h3 style="color: #333; margin-top: 0;">🔐 Your Customer Portal Access</h3>
             <p>Access your customer portal to view your warranty details, policy documents, and manage your account:</p>
-            <p><strong>Login URL:</strong> <a href="https://buyawarranty.co.uk/auth" style="color: #007bff;">https://buyawarranty.co.uk/auth</a></p>
+            <p><strong>Login URL:</strong> <a href="${loginUrl}" style="color: #007bff;">${loginUrl}</a></p>
             <p><strong>Email:</strong> ${customer.email}</p>
             <p><strong>Temporary Password:</strong> <code style="background-color: #f1f1f1; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${tempPassword}</code></p>
             <p style="color: #666; font-size: 14px; margin-top: 15px;">
