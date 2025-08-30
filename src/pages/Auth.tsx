@@ -85,32 +85,14 @@ const Auth = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    // Set up auth state listener to handle sign-out
+    // Set up auth state listener to handle sign-out only
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_OUT') {
           // User signed out, stay on auth page
           return;
         }
-        
-        if (session) {
-          console.log("User logged in, checking role for redirect");
-          
-          // Check if user is admin (only admins have roles in user_roles table)
-          const { data: roleData, error } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.user.id)
-            .maybeSingle(); // Use maybeSingle instead of single to handle no results
-
-        // If there's an error (other than no results) or user has any admin role, redirect to admin
-        if (!error && roleData && ['admin', 'member', 'viewer', 'guest'].includes(roleData.role)) {
-          navigate('/admin-dashboard', { replace: true });
-        } else {
-          // No role found means regular customer
-          navigate('/customer-dashboard', { replace: true });
-        }
-        }
+        // Don't handle navigation here - let handleSignIn do it to avoid conflicts
       }
     );
 

@@ -430,8 +430,8 @@ const handler = async (req: Request): Promise<Response> => {
     // CREATE USER ACCOUNT AND SEND LOGIN CREDENTIALS
     console.log(JSON.stringify({ evt: "user.creation.start", rid, customerEmail: customer.email }));
     
-    // Set the login URL to the auth page where customers can sign in
-    const loginUrl = 'https://pricing.buyawarranty.co.uk/auth';
+    // Set the customer dashboard URL as requested by user
+    const loginUrl = 'https://pricing.buyawarranty.co.uk/customer-dashboard';
     
     console.log(JSON.stringify({ evt: "login.url.set", rid, loginUrl }));
     
