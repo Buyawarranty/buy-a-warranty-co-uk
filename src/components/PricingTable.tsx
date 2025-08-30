@@ -43,6 +43,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [reliabilityScore, setReliabilityScore] = useState<number | null>(null);
   const [reliabilityTier, setReliabilityTier] = useState<string | null>(null);
+  const [reliabilityPricing, setReliabilityPricing] = useState<any>(null);
   const [reliabilityLoading, setReliabilityLoading] = useState(false);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
 
@@ -165,6 +166,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       if (data?.success) {
         setReliabilityScore(data.data.reliability_score);
         setReliabilityTier(data.data.tier_label);
+        setReliabilityPricing(data.data.pricing);
       }
     } catch (error) {
       console.error('Error calculating reliability:', error);
@@ -174,7 +176,39 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   };
 
   const getPricingData = () => {
-    // Enhanced pricing structure with more excess options
+    // If we have reliability-based pricing, use it as the base
+    if (reliabilityPricing) {
+      const baseTotalPrice = reliabilityPricing[paymentType === '12months' ? '12M' : paymentType === '24months' ? '24M' : '36M'];
+      
+      // Apply voluntary excess discounts
+      const discountMultiplier = (() => {
+        switch (voluntaryExcess) {
+          case 0: return 1.0; // No discount
+          case 50: return 0.95; // 5% discount
+          case 100: return 0.90; // 10% discount
+          case 150: return 0.88; // 12% discount
+          case 200: return 0.85; // 15% discount
+          case 250: return 0.82; // 18% discount
+          case 300: return 0.80; // 20% discount
+          case 400: return 0.78; // 22% discount
+          case 500: return 0.75; // 25% discount
+          default: return 0.95;
+        }
+      })();
+      
+      const discountedTotal = Math.round(baseTotalPrice * discountMultiplier);
+      const monthlyDivisor = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+      const monthlyPrice = Math.round(discountedTotal / monthlyDivisor);
+      const savings = baseTotalPrice - discountedTotal;
+      
+      return {
+        monthly: monthlyPrice,
+        total: discountedTotal,
+        save: savings
+      };
+    }
+    
+    // Fallback to hardcoded pricing if reliability pricing is not available
     const basePrices = {
       '12months': { 
         0: { monthly: 46, total: 559, save: 0 },
@@ -436,8 +470,40 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           ].map((plan) => {
             const isSelected = paymentType === plan.key;
             
-            // Calculate specific pricing for this plan period
+            // Calculate specific pricing for this plan period using reliability-based pricing if available
             const planPricing = (() => {
+              if (reliabilityPricing) {
+                const baseTotalPrice = reliabilityPricing[plan.key === '12months' ? '12M' : plan.key === '24months' ? '24M' : '36M'];
+                
+                // Apply voluntary excess discounts
+                const discountMultiplier = (() => {
+                  switch (voluntaryExcess) {
+                    case 0: return 1.0; // No discount
+                    case 50: return 0.95; // 5% discount
+                    case 100: return 0.90; // 10% discount
+                    case 150: return 0.88; // 12% discount
+                    case 200: return 0.85; // 15% discount
+                    case 250: return 0.82; // 18% discount
+                    case 300: return 0.80; // 20% discount
+                    case 400: return 0.78; // 22% discount
+                    case 500: return 0.75; // 25% discount
+                    default: return 0.95;
+                  }
+                })();
+                
+                const discountedTotal = Math.round(baseTotalPrice * discountMultiplier);
+                const monthlyDivisor = plan.key === '12months' ? 12 : plan.key === '24months' ? 24 : 36;
+                const monthlyPrice = Math.round(discountedTotal / monthlyDivisor);
+                const savings = baseTotalPrice - discountedTotal;
+                
+                return {
+                  monthly: monthlyPrice,
+                  total: discountedTotal,
+                  save: savings
+                };
+              }
+              
+              // Fallback to hardcoded pricing
               const prices = {
                 '12months': { 
                   0: { monthly: 46, total: 559, save: 0 },
