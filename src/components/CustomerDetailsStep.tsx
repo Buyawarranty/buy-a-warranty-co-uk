@@ -86,6 +86,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
     switch (paymentType) {
+      case '12months': return 12;
+      case '24months': return 24;
+      case '36months': return 36;
       case 'yearly': return 12;
       case 'two_yearly': return 24;
       case 'three_yearly': return 36;
@@ -94,9 +97,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   };
 
   // Calculate prices based on pricing data - use the exact prices from PricingTable
-  // For Bumper: use the total price calculated on the pricing page (includes add-ons)
   const bumperTotalPrice = pricingData.totalPrice; // Use the exact total price from PricingTable
-  const monthlyBumperPrice = pricingData.monthlyPrice; // Keep for display purposes
+  const monthlyBumperPrice = pricingData.monthlyPrice; // Monthly price for the selected period
+  const paymentPeriodMonths = getPaymentPeriodMonths();
   const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount for upfront payment
   
   // Check for automatic 10% discount (add another warranty)
@@ -562,7 +565,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               {/* Payment Summary */}
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="text-green-600 font-semibold text-lg mb-2">
-                  Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
+                  Payment: £{Math.round(monthlyBumperPrice)} x {paymentPeriodMonths} easy payments
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-semibold text-gray-900">Total Price:</span>
