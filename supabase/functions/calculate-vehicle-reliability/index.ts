@@ -196,22 +196,105 @@ serve(async (req) => {
     console.log(`Calculating reliability score for registration: ${registration}`);
 
     // Fetch MOT history from database
-    const { data: motHistory, error } = await supabase
+    let { data: motHistory, error } = await supabase
       .from('mot_history')
       .select('*')
       .eq('registration', registration.toUpperCase())
       .single();
 
-    if (error) {
-      if (error.code === 'PGRST116') {
+    // If no MOT history exists, try to fetch it automatically
+    if (error && error.code === 'PGRST116') {
+      console.log(`No MOT history found for ${registration}, attempting to fetch...`);
+      
+      try {
+        // Call the fetch-mot-history function
+        const { data: fetchResult, error: fetchError } = await supabase.functions.invoke('fetch-mot-history', {
+          body: { registration: registration }
+        });
+        
+        if (fetchError) {
+          console.error('Error fetching MOT history:', fetchError);
+          // Fall back to default reliability score
+          const defaultScore = 75; // Average reliability
+          const defaultTier = TIERS.find(t => defaultScore >= t.min && defaultScore <= t.max)!;
+          
+          return new Response(JSON.stringify({ 
+            success: true, 
+            data: {
+              reliability_score: defaultScore,
+              tier: defaultTier.tier,
+              tier_label: defaultTier.label,
+              pricing: defaultTier.pricing,
+              calculation_details: {
+                failure_rate: 0,
+                critical_failures: 0,
+                mileage_factor: 7400,
+                total_tests: 0,
+                failed_tests: 0,
+                vehicle_age_years: 10 // Default estimate
+              }
+            },
+            vehicle_info: {
+              registration: registration.toUpperCase(),
+              make: 'Unknown',
+              model: 'Unknown',
+              age_years: 10
+            },
+            note: 'Default reliability score used - MOT data not available'
+          }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 200,
+          });
+        }
+        
+        // Try to fetch the newly created MOT history
+        const { data: newMotHistory, error: newError } = await supabase
+          .from('mot_history')
+          .select('*')
+          .eq('registration', registration.toUpperCase())
+          .single();
+          
+        if (newError || !newMotHistory) {
+          throw new Error('Failed to fetch MOT history after auto-fetch attempt');
+        }
+        
+        motHistory = newMotHistory;
+        
+      } catch (autoFetchError) {
+        console.error('Auto-fetch failed:', autoFetchError);
+        // Return default reliability score when auto-fetch fails
+        const defaultScore = 75;
+        const defaultTier = TIERS.find(t => defaultScore >= t.min && defaultScore <= t.max)!;
+        
         return new Response(JSON.stringify({ 
-          success: false, 
-          error: 'No MOT history found for this vehicle. Please fetch MOT data first.' 
+          success: true, 
+          data: {
+            reliability_score: defaultScore,
+            tier: defaultTier.tier,
+            tier_label: defaultTier.label,
+            pricing: defaultTier.pricing,
+            calculation_details: {
+              failure_rate: 0,
+              critical_failures: 0,
+              mileage_factor: 7400,
+              total_tests: 0,
+              failed_tests: 0,
+              vehicle_age_years: 10
+            }
+          },
+          vehicle_info: {
+            registration: registration.toUpperCase(),
+            make: 'Unknown',
+            model: 'Unknown',
+            age_years: 10
+          },
+          note: 'Default reliability score used - MOT data unavailable'
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 404,
+          status: 200,
         });
       }
+    } else if (error) {
       throw error;
     }
 
