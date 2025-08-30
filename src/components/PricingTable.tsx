@@ -649,7 +649,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </div>
                       </div>
                       <div className="text-xl font-bold text-blue-600">
-                        £{Math.round((displayPrice * 12) * 0.95)} upfront
+                        £{Math.round((displayPrice * 12) * 0.95)}
                       </div>
                       <div className="text-sm text-gray-600">
                         Instead of £{displayPrice * 12} over 12 months
