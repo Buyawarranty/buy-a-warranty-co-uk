@@ -93,11 +93,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     }
   };
 
-  // Calculate prices based on pricing data - use the exact prices from PricingTable
-  // For Bumper: use the total price calculated on the pricing page (includes add-ons)
-  const bumperTotalPrice = pricingData.totalPrice; // Use the exact total price from PricingTable
-  const monthlyBumperPrice = pricingData.monthlyPrice; // Keep for display purposes
-  const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount for upfront payment
+  // Calculate prices based on pricing data
+  // For Bumper: always use the original monthly price shown on pricing page
+  // This ensures users pay the same monthly amount (e.g., £56) for 12 payments regardless of warranty duration
+  const monthlyBumperPrice = pricingData.monthlyPrice; // Use the original monthly price from pricing page
+  const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper
+  const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount based on order summary total
   
   // Check for automatic 10% discount (add another warranty)
   const hasAutoDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
