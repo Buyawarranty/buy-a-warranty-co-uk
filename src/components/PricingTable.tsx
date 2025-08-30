@@ -55,7 +55,7 @@ interface PricingTableProps {
 }
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
-  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(100);
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [reliabilityPricing, setReliabilityPricing] = useState<{ "12M": number; "24M": number; "36M": number } | null>(null);
   const [useReliabilityPricing, setUseReliabilityPricing] = useState(false);
@@ -63,6 +63,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [reliabilityTier, setReliabilityTier] = useState<string | null>(null);
   const [reliabilityLoading, setReliabilityLoading] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState<'1year' | '2year' | '3year'>('1year');
+  const [selectedAddOns, setSelectedAddOns] = useState<{[key: string]: boolean}>({});
+  const [showAllPlans, setShowAllPlans] = useState(false);
 
   // Normalize vehicle type once
   const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
@@ -124,12 +126,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       
       let basePriceTotal = reliabilityPricing[periodKey as keyof typeof reliabilityPricing];
       
-      // Apply voluntary excess discount
-      if (voluntaryExcess === 250) {
-        basePriceTotal = basePriceTotal * 0.95; // 5% discount for £250 excess
-      } else if (voluntaryExcess === 500) {
-        basePriceTotal = basePriceTotal * 0.9; // 10% discount for £500 excess
-      }
+      // Apply voluntary excess discount - old pricing structure
+      const discountRate = Math.min(voluntaryExcess / 1000, 0.15); // Max 15% discount
+      basePriceTotal = basePriceTotal * (1 - discountRate);
+      
+      // Add selected add-ons cost
+      Object.entries(selectedAddOns).forEach(([addon, selected]) => {
+        if (selected) {
+          const addonCost = addon === 'Key Cover' ? 25 :
+                           addon === 'Breakdown Cover' ? 35 :
+                           addon === 'MOT Cover' ? 40 : 0;
+          basePriceTotal += addonCost;
+        }
+      });
       
       return Math.round(basePriceTotal);
     }
@@ -143,14 +152,28 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     
     let price = basePrices[duration];
     
-    // Apply voluntary excess discount
-    if (voluntaryExcess === 250) {
-      price = price * 0.95;
-    } else if (voluntaryExcess === 500) {
-      price = price * 0.9;
-    }
+    // Apply voluntary excess discount - old pricing structure
+    const discountRate = Math.min(voluntaryExcess / 1000, 0.15); // Max 15% discount
+    price = price * (1 - discountRate);
+    
+    // Add selected add-ons cost
+    Object.entries(selectedAddOns).forEach(([addon, selected]) => {
+      if (selected) {
+        const addonCost = addon === 'Key Cover' ? 25 :
+                         addon === 'Breakdown Cover' ? 35 :
+                         addon === 'MOT Cover' ? 40 : 0;
+        price += addonCost;
+      }
+    });
     
     return Math.round(price);
+  };
+
+  const toggleAddOn = (addon: string) => {
+    setSelectedAddOns(prev => ({
+      ...prev,
+      [addon]: !prev[addon]
+    }));
   };
 
   const handleSelectDuration = (duration: '1year' | '2year' | '3year') => {
@@ -171,7 +194,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             totalPrice,
             monthlyPrice,
             voluntaryExcess,
-            selectedAddOns: {}
+            selectedAddOns
           }
         );
       }
@@ -290,25 +313,89 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {!vehicleAgeError && (
         <>
           {/* Voluntary Excess Selection */}
-          <div className="max-w-4xl mx-auto px-4 mb-8">
+          <div className="max-w-6xl mx-auto px-4 mb-8">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold mb-4 text-center">Select Your Voluntary Excess</h3>
-              <div className="flex justify-center gap-4">
-                {[50, 250, 500].map((amount) => (
+              <h3 className="text-xl font-semibold mb-6 text-center">Select Your Voluntary Excess</h3>
+              <p className="text-sm text-gray-600 text-center mb-6">
+                Higher voluntary excess = Lower premium cost
+              </p>
+              
+              <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-3">
+                {[0, 50, 100, 150, 200, 250, 300, 400, 500].map((amount) => (
                   <button
                     key={amount}
                     onClick={() => setVoluntaryExcess(amount)}
-                    className={`px-6 py-3 rounded-lg border-2 transition-all ${
+                    className={`px-4 py-3 rounded-lg border-2 transition-all text-center ${
                       voluntaryExcess === amount
-                        ? 'border-primary bg-primary text-white'
-                        : 'border-gray-200 hover:border-primary'
+                        ? 'border-primary bg-primary text-white shadow-md'
+                        : 'border-gray-200 hover:border-primary hover:shadow-sm bg-white'
                     }`}
                   >
-                    <div className="text-lg font-semibold">£{amount}</div>
-                    <div className="text-sm opacity-80">
-                      {amount === 250 ? '5% discount' : amount === 500 ? '10% discount' : 'Standard'}
+                    <div className="text-lg font-bold">£{amount}</div>
+                    <div className="text-xs opacity-80">
+                      {amount > 0 ? `${Math.min(Math.round(amount / 10), 15)}% off` : 'Standard'}
                     </div>
                   </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Add-ons Section */}
+          <div className="max-w-6xl mx-auto px-4 mb-8">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-xl font-semibold mb-6 text-center">Optional Add-ons</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    name: 'Key Cover',
+                    price: 25,
+                    description: 'Lost or stolen key replacement',
+                    pdfLink: '#'
+                  },
+                  {
+                    name: 'Breakdown Cover',
+                    price: 35,
+                    description: '24/7 roadside assistance',
+                    pdfLink: '#'
+                  },
+                  {
+                    name: 'MOT Cover',
+                    price: 40,
+                    description: 'MOT test failure coverage',
+                    pdfLink: '#'
+                  }
+                ].map((addon) => (
+                  <div
+                    key={addon.name}
+                    className={`border-2 rounded-lg p-4 transition-all cursor-pointer ${
+                      selectedAddOns[addon.name]
+                        ? 'border-primary bg-primary/5'
+                        : 'border-gray-200 hover:border-primary/50'
+                    }`}
+                    onClick={() => toggleAddOn(addon.name)}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <Checkbox
+                          checked={selectedAddOns[addon.name] || false}
+                          onChange={() => toggleAddOn(addon.name)}
+                        />
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{addon.name}</h4>
+                          <p className="text-sm text-gray-600">{addon.description}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-primary">+£{addon.price}</div>
+                        <button className="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1">
+                          <FileText className="w-3 h-3" />
+                          View PDF
+                          <ExternalLink className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -407,11 +494,25 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 
                 <div className="mt-4 text-sm text-gray-600">
                   <div>Voluntary Excess: £{voluntaryExcess}</div>
-                  {voluntaryExcess > 50 && (
+                  {voluntaryExcess > 0 && (
                     <div className="text-green-600">
-                      {voluntaryExcess === 250 ? '5%' : '10%'} discount applied
+                      {Math.min(Math.round(voluntaryExcess / 10), 15)}% discount applied
                     </div>
                   )}
+                  {Object.keys(selectedAddOns).some(addon => selectedAddOns[addon]) && (
+                    <div className="text-blue-600">
+                      Add-ons selected: {Object.keys(selectedAddOns).filter(addon => selectedAddOns[addon]).join(', ')}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Terms & Conditions PDF Link */}
+                <div className="mt-6 text-center">
+                  <button className="text-sm text-blue-600 hover:underline flex items-center gap-1 justify-center">
+                    <FileText className="w-4 h-4" />
+                    View Terms & Conditions PDF
+                    <ExternalLink className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
