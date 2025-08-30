@@ -294,27 +294,76 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           Back to vehicle details
         </Button>
 
-        {/* Reliability Score Display */}
+        {/* Vehicle Reliability & Pricing Explanation */}
         {reliabilityScore !== null && (
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <div className="text-center">
-              <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
-                <Info className="h-5 w-5 text-blue-600" />
-                Vehicle Reliability Score
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-8 mb-8 border border-blue-100">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold mb-2 text-gray-800">
+                Your Vehicle's Reliability Assessment
               </h3>
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <div className="text-3xl font-bold text-blue-600">
-                  {reliabilityScore}
-                  <span className="text-lg text-gray-500">/100</span>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                We've analyzed your vehicle's MOT history and reliability data to provide you with fair, personalized pricing
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Reliability Score */}
+              <div className="bg-white rounded-lg p-6 text-center shadow-sm">
+                <div className="flex items-center justify-center mb-3">
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold ${
+                    reliabilityScore >= 80 ? 'bg-green-100 text-green-600' :
+                    reliabilityScore >= 60 ? 'bg-yellow-100 text-yellow-600' :
+                    'bg-red-100 text-red-600'
+                  }`}>
+                    {reliabilityScore}
+                  </div>
                 </div>
-                {reliabilityTier && (
-                  <Badge className="bg-blue-100 text-blue-800 px-3 py-1 text-sm">
-                    {reliabilityTier}
-                  </Badge>
-                )}
+                <h4 className="font-semibold text-gray-800 mb-1">Reliability Score</h4>
+                <p className="text-sm text-gray-600">Based on MOT data</p>
               </div>
-              <p className="text-sm text-gray-600">
-                This score reflects your vehicle's reliability based on MOT history and helps determine pricing.
+              
+              {/* Tier Badge */}
+              <div className="bg-white rounded-lg p-6 text-center shadow-sm">
+                <div className="mb-3">
+                  {reliabilityTier && (
+                    <Badge className={`text-lg px-4 py-2 ${
+                      reliabilityTier.toLowerCase().includes('excellent') ? 'bg-green-100 text-green-800' :
+                      reliabilityTier.toLowerCase().includes('good') ? 'bg-blue-100 text-blue-800' :
+                      reliabilityTier.toLowerCase().includes('average') ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {reliabilityTier}
+                    </Badge>
+                  )}
+                </div>
+                <h4 className="font-semibold text-gray-800 mb-1">Risk Category</h4>
+                <p className="text-sm text-gray-600">Determines base pricing</p>
+              </div>
+              
+              {/* Pricing Impact */}
+              <div className="bg-white rounded-lg p-6 text-center shadow-sm">
+                <div className="flex items-center justify-center mb-3">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    reliabilityScore >= 80 ? 'bg-green-100' :
+                    reliabilityScore >= 60 ? 'bg-yellow-100' :
+                    'bg-red-100'
+                  }`}>
+                    {reliabilityScore >= 80 ? '💰' : reliabilityScore >= 60 ? '💳' : '⚠️'}
+                  </div>
+                </div>
+                <h4 className="font-semibold text-gray-800 mb-1">Your Pricing</h4>
+                <p className="text-sm text-gray-600">
+                  {reliabilityScore >= 80 ? 'Lower risk = Better rates' :
+                   reliabilityScore >= 60 ? 'Standard pricing applied' :
+                   'Higher risk = Premium pricing'}
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-6 bg-white rounded-lg p-4 border-l-4 border-blue-500">
+              <p className="text-sm text-gray-700">
+                <strong>How it works:</strong> Our AI analyzes your vehicle's MOT test history, failure rates, and defect patterns 
+                to calculate a reliability score. Higher scores indicate more reliable vehicles and qualify for better pricing.
               </p>
             </div>
           </div>
