@@ -856,6 +856,45 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_signups: {
+        Row: {
+          created_at: string
+          discount_amount: number | null
+          discount_code_sent: boolean | null
+          discount_code_used: boolean | null
+          email: string
+          id: string
+          ip_address: string | null
+          source: string | null
+          status: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          discount_amount?: number | null
+          discount_code_sent?: boolean | null
+          discount_code_used?: boolean | null
+          email: string
+          id?: string
+          ip_address?: string | null
+          source?: string | null
+          status?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          discount_amount?: number | null
+          discount_code_sent?: boolean | null
+          discount_code_used?: boolean | null
+          email?: string
+          id?: string
+          ip_address?: string | null
+          source?: string | null
+          status?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       note_tags: {
         Row: {
           color: string
