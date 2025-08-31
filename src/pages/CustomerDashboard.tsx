@@ -8,9 +8,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, FileText, User, Mail, Lock, MapPin, CreditCard, Eye, EyeOff } from 'lucide-react';
+import { Calendar, FileText, User, Mail, Lock, MapPin, CreditCard, Eye, EyeOff, Phone, MessageSquare, Download, AlertCircle, CheckCircle, X } from 'lucide-react';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { getWarrantyDurationDisplay, getPaymentTypeDisplay } from '@/lib/warrantyUtils';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface CustomerPolicy {
   id: string;
@@ -24,6 +26,7 @@ interface CustomerPolicy {
   pdf_basic_url?: string;
   pdf_gold_url?: string;
   pdf_platinum_url?: string;
+  payment_amount?: number;
 }
 
 interface AddressData {
@@ -37,10 +40,12 @@ const CustomerDashboard = () => {
   const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [policy, setPolicy] = useState<CustomerPolicy | null>(null);
+  const [policies, setPolicies] = useState<CustomerPolicy[]>([]);
+  const [selectedPolicy, setSelectedPolicy] = useState<CustomerPolicy | null>(null);
   const [policyLoading, setPolicyLoading] = useState(true);
   const [editingAddress, setEditingAddress] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
+  const [showSupportForm, setShowSupportForm] = useState(false);
   const [address, setAddress] = useState<AddressData>({
     street: '',
     city: '',
@@ -49,6 +54,8 @@ const CustomerDashboard = () => {
   });
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [supportMessage, setSupportMessage] = useState('');
+  const [supportSubject, setSupportSubject] = useState('');
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
   
   // Login form state
@@ -66,9 +73,9 @@ const CustomerDashboard = () => {
       return;
     }
     
-    // If user is logged in, fetch their policy
+    // If user is logged in, fetch their policies
     if (user) {
-      fetchPolicy();
+      fetchPolicies();
     } else {
       // User not logged in, show login form (don't redirect)
       setPolicyLoading(false);
@@ -123,36 +130,37 @@ const CustomerDashboard = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const fetchPolicy = async () => {
+  const fetchPolicies = async () => {
     if (!user) {
-      console.log("fetchPolicy: No user available");
+      console.log("fetchPolicies: No user available");
       return;
     }
     
-    console.log("fetchPolicy: Fetching policy for user:", user.id);
+    console.log("fetchPolicies: Fetching policies for user:", user.id);
     
     try {
       const { data, error } = await supabase
         .from('customer_policies')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .order('created_at', { ascending: false });
 
-      console.log("fetchPolicy: Query result:", { data, error });
+      console.log("fetchPolicies: Query result:", { data, error });
 
       if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching policy:', error);
+        console.error('Error fetching policies:', error);
         return;
       }
 
       if (data && data.length > 0) {
-        const policyData = data[0];
-        console.log("fetchPolicy: Found policy:", policyData);
-        setPolicy(policyData);
-        // Properly handle the address JSON data
-        if (policyData.address && typeof policyData.address === 'object') {
-          const addressData = policyData.address as Record<string, any>;
+        console.log("fetchPolicies: Found policies:", data);
+        setPolicies(data);
+        setSelectedPolicy(data[0]); // Set first policy as selected
+        
+        // Set address from the first policy
+        const firstPolicy = data[0];
+        if (firstPolicy.address && typeof firstPolicy.address === 'object') {
+          const addressData = firstPolicy.address as Record<string, any>;
           setAddress({
             street: addressData.street || '',
             city: addressData.city || '',
@@ -161,21 +169,21 @@ const CustomerDashboard = () => {
           });
         }
       } else {
-        console.log("fetchPolicy: No policy found for user");
-        setPolicy(null);
+        console.log("fetchPolicies: No policies found for user");
+        setPolicies([]);
+        setSelectedPolicy(null);
       }
     } catch (error) {
-      console.error('fetchPolicy: Error:', error);
+      console.error('fetchPolicies: Error:', error);
     } finally {
       setPolicyLoading(false);
     }
   };
 
   const updateAddress = async () => {
-    if (!policy) return;
+    if (!selectedPolicy) return;
 
     try {
-      // Convert AddressData to a plain object that matches Json type
       const addressJson = {
         street: address.street,
         city: address.city,
@@ -189,7 +197,7 @@ const CustomerDashboard = () => {
           address: addressJson,
           updated_at: new Date().toISOString()
         })
-        .eq('id', policy.id);
+        .eq('id', selectedPolicy.id);
 
       if (error) throw error;
 
@@ -198,7 +206,7 @@ const CustomerDashboard = () => {
         description: "Your address has been successfully updated.",
       });
       setEditingAddress(false);
-      fetchPolicy();
+      fetchPolicies();
     } catch (error) {
       toast({
         title: "Error",
@@ -250,7 +258,96 @@ const CustomerDashboard = () => {
     }
   };
 
-  const getPolicyPdf = () => {
+  const submitSupportRequest = async () => {
+    if (!supportSubject.trim() || !supportMessage.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide both subject and message.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.functions.invoke('send-email', {
+        body: {
+          to: 'support@buyawarranty.co.uk',
+          subject: `Support Request: ${supportSubject}`,
+          html: `
+            <h3>Support Request from Customer</h3>
+            <p><strong>Email:</strong> ${user?.email}</p>
+            <p><strong>Subject:</strong> ${supportSubject}</p>
+            <p><strong>Message:</strong></p>
+            <p>${supportMessage.replace(/\n/g, '<br>')}</p>
+            <hr>
+            <p><em>This message was sent from the customer dashboard.</em></p>
+          `
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Support request sent",
+        description: "Your support request has been sent successfully. We'll get back to you soon.",
+      });
+      
+      setShowSupportForm(false);
+      setSupportSubject('');
+      setSupportMessage('');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send support request. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleManageBilling = async () => {
+    try {
+      toast({
+        title: "Loading billing portal...",
+        description: "Please wait while we redirect you to the billing portal.",
+      });
+
+      const { data, error } = await supabase.functions.invoke('create-billing-portal');
+      
+      if (error) {
+        throw error;
+      }
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      } else {
+        throw new Error('No billing portal URL returned');
+      }
+    } catch (error) {
+      console.error('Billing portal error:', error);
+      toast({
+        title: "Error",
+        description: "Unable to access billing portal. Please contact support.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const downloadPolicyDocument = (policy: CustomerPolicy) => {
+    const pdfUrl = getPolicyPdf(policy);
+    if (pdfUrl) {
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.download = `Policy_${policy.policy_number}.pdf`;
+      link.click();
+      
+      toast({
+        title: "Download started",
+        description: `Downloading policy ${policy.policy_number}`,
+      });
+    }
+  };
+
+  const getPolicyPdf = (policy: CustomerPolicy) => {
     if (!policy) return null;
     
     switch (policy.plan_type) {
@@ -265,7 +362,7 @@ const CustomerDashboard = () => {
     }
   };
 
-  const getTimeRemaining = () => {
+  const getTimeRemaining = (policy: CustomerPolicy) => {
     if (!policy) return '';
     
     const endDate = new Date(policy.policy_end_date);
@@ -445,10 +542,10 @@ const CustomerDashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {!policy ? (
+        {policies.length === 0 ? (
           <Card>
             <CardHeader>
-              <CardTitle>No Policy Found</CardTitle>
+              <CardTitle>No Policies Found</CardTitle>
               <CardDescription>
                 We couldn't find any active policies for your account. Please contact support if you believe this is an error.
               </CardDescription>
@@ -457,287 +554,561 @@ const CustomerDashboard = () => {
               <p className="text-sm text-gray-600 mb-4">
                 Debug info: User ID: {user?.id}
               </p>
-              <Button onClick={fetchPolicy} variant="outline">
-                Refresh Policy Data
-              </Button>
+              <div className="flex gap-4">
+                <Button onClick={fetchPolicies} variant="outline">
+                  Refresh Policy Data
+                </Button>
+                <Button onClick={() => setShowSupportForm(true)} variant="default">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Contact Support
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-            {/* Policy Overview */}
-            <div className="lg:col-span-2 space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-lg">
-                    <FileText className="mr-2 h-5 w-5" />
-                    Your Policy
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy Number</Label>
-                      <p className="font-semibold text-sm sm:text-base">{policy.policy_number}</p>
-                    </div>
-                    <div>
-                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
-                      <p className="font-semibold capitalize text-sm sm:text-base">{policy.plan_type}</p>
-                    </div>
-                    <div>
-                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Warranty Duration</Label>
-                      <p className="font-semibold text-sm sm:text-base">
-                        {getWarrantyDurationDisplay(policy.payment_type)}
-                      </p>
-                    </div>
-                    <div>
-                      <Label className="text-xs sm:text-sm font-medium text-gray-500">Status</Label>
-                      <p className={`font-semibold capitalize text-sm sm:text-base ${
-                        policy.status === 'active' ? 'text-green-600' : 
-                        policy.status === 'expired' ? 'text-red-600' : 'text-yellow-600'
-                      }`}>
-                        {policy.status}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4 border-t">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div>
-                        <Label className="text-xs sm:text-sm font-medium text-gray-500">Time Remaining</Label>
-                        <p className="text-lg font-semibold text-blue-600">{getTimeRemaining()}</p>
-                      </div>
-                      <div className="sm:text-right">
-                        <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
-                        <p className="font-semibold text-sm sm:text-base">
-                          {new Date(policy.policy_end_date).toLocaleDateString('en-GB')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="policies">All Policies</TabsTrigger>
+              <TabsTrigger value="account">Account</TabsTrigger>
+              <TabsTrigger value="support">Support</TabsTrigger>
+            </TabsList>
 
-                  {/* Selected Plan Section */}
-                  <div className="pt-4 border-t">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                      <div className="flex items-center">
-                        <FileText className="mr-2 h-5 w-5 text-blue-600" />
-                        <span className="text-blue-800 font-medium">
-                          Selected Plan: {policy.plan_type.charAt(0).toUpperCase() + policy.plan_type.slice(1)} ({getPaymentTypeDisplay(policy.payment_type)})
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                {/* Policy Overview */}
+                <div className="lg:col-span-2 space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between text-lg">
+                        <span className="flex items-center">
+                          <FileText className="mr-2 h-5 w-5" />
+                          Your Active Policy
                         </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Warranty Plan Details Section */}
-                  {getPolicyPdf() && (
-                    <div className="pt-4 border-t">
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <div className="flex items-center mb-2">
-                              <FileText className="mr-2 h-5 w-5 text-gray-600" />
-                              <h3 className="font-semibold text-gray-900">Warranty Plan Details</h3>
+                        {policies.length > 1 && (
+                          <span className="text-sm font-normal text-gray-600">
+                            {policies.length} total policies
+                          </span>
+                        )}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {selectedPolicy && (
+                        <>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy Number</Label>
+                              <p className="font-semibold text-sm sm:text-base">{selectedPolicy.policy_number}</p>
                             </div>
-                            <p className="text-sm text-gray-600">*Full breakdown of coverage</p>
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
+                              <p className="font-semibold capitalize text-sm sm:text-base">{selectedPolicy.plan_type}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Warranty Duration</Label>
+                              <p className="font-semibold text-sm sm:text-base">
+                                {getWarrantyDurationDisplay(selectedPolicy.payment_type)}
+                              </p>
+                            </div>
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Status</Label>
+                              <p className={`font-semibold capitalize text-sm sm:text-base flex items-center gap-2 ${
+                                selectedPolicy.status === 'active' ? 'text-green-600' : 
+                                selectedPolicy.status === 'expired' ? 'text-red-600' : 'text-yellow-600'
+                              }`}>
+                                {selectedPolicy.status === 'active' && <CheckCircle className="h-4 w-4" />}
+                                {selectedPolicy.status === 'expired' && <X className="h-4 w-4" />}
+                                {selectedPolicy.status === 'pending' && <AlertCircle className="h-4 w-4" />}
+                                {selectedPolicy.status}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div className="mt-4">
-                          <Button 
-                            variant="outline" 
-                            className="w-full" 
-                            asChild
-                          >
-                            <a href={getPolicyPdf()} target="_blank" rel="noopener noreferrer">
-                              <FileText className="mr-2 h-4 w-4" />
-                              View PDF
-                            </a>
+                          
+                          <div className="pt-4 border-t">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                              <div>
+                                <Label className="text-xs sm:text-sm font-medium text-gray-500">Time Remaining</Label>
+                                <p className="text-lg font-semibold text-blue-600">{getTimeRemaining(selectedPolicy)}</p>
+                              </div>
+                              <div className="sm:text-right">
+                                <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
+                                <p className="font-semibold text-sm sm:text-base">
+                                  {new Date(selectedPolicy.policy_end_date).toLocaleDateString('en-GB')}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="pt-4 border-t">
+                            <div className="flex flex-wrap gap-3">
+                              {getPolicyPdf(selectedPolicy) && (
+                                <>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    asChild
+                                  >
+                                    <a href={getPolicyPdf(selectedPolicy)} target="_blank" rel="noopener noreferrer">
+                                      <FileText className="mr-2 h-4 w-4" />
+                                      View PDF
+                                    </a>
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => downloadPolicyDocument(selectedPolicy)}
+                                  >
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Download PDF
+                                  </Button>
+                                </>
+                              )}
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={handleManageBilling}
+                              >
+                                <CreditCard className="mr-2 h-4 w-4" />
+                                Manage Billing
+                              </Button>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Address Management */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span className="flex items-center">
+                          <MapPin className="mr-2 h-5 w-5" />
+                          Address Details
+                        </span>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setEditingAddress(!editingAddress)}
+                        >
+                          {editingAddress ? 'Cancel' : 'Edit'}
+                        </Button>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {editingAddress ? (
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="street">Street Address</Label>
+                            <Input
+                              id="street"
+                              value={address.street}
+                              onChange={(e) => setAddress({...address, street: e.target.value})}
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="city">City</Label>
+                              <Input
+                                id="city"
+                                value={address.city}
+                                onChange={(e) => setAddress({...address, city: e.target.value})}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="postcode">Postcode</Label>
+                              <Input
+                                id="postcode"
+                                value={address.postcode}
+                                onChange={(e) => setAddress({...address, postcode: e.target.value})}
+                              />
+                            </div>
+                          </div>
+                          <Button onClick={updateAddress} className="w-full">
+                            Update Address
                           </Button>
                         </div>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                      ) : (
+                        <div className="space-y-2">
+                          <p>{address.street || 'No street address provided'}</p>
+                          <p>{address.city} {address.postcode}</p>
+                          <p>{address.country}</p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
 
-              {/* Address Management */}
+                {/* Account Management Sidebar */}
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <User className="mr-2 h-5 w-5" />
+                        Account Settings
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <Label className="text-sm font-medium text-gray-500">Email</Label>
+                        <p className="font-semibold">{user?.email}</p>
+                      </div>
+                      
+                      <div className="pt-4 border-t">
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={() => setEditingPassword(!editingPassword)}
+                        >
+                          <Lock className="mr-2 h-4 w-4" />
+                          Change Password
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {editingPassword && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Change Password</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div>
+                          <Label htmlFor="newPassword">New Password</Label>
+                          <Input
+                            id="newPassword"
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="confirmPassword">Confirm Password</Label>
+                          <Input
+                            id="confirmPassword"
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                          />
+                        </div>
+                        <Button onClick={updatePassword} className="w-full">
+                          Update Password
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <CreditCard className="mr-2 h-5 w-5" />
+                        Billing & Renewal
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Manage your payment methods and renewal settings.
+                      </p>
+                      <Button onClick={handleManageBilling} variant="outline" className="w-full">
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Manage Billing
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <MessageSquare className="mr-2 h-5 w-5" />
+                        Need Help?
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Contact our support team for assistance.
+                      </p>
+                      <div className="space-y-2">
+                        <Button 
+                          onClick={() => setShowSupportForm(true)} 
+                          variant="outline" 
+                          className="w-full"
+                        >
+                          <MessageSquare className="mr-2 h-4 w-4" />
+                          Contact Support
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full" 
+                          asChild
+                        >
+                          <a href="tel:+441234567890">
+                            <Phone className="mr-2 h-4 w-4" />
+                            Call Support
+                          </a>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="policies" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span className="flex items-center">
-                      <MapPin className="mr-2 h-5 w-5" />
-                      Address Details
-                    </span>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setEditingAddress(!editingAddress)}
-                    >
-                      {editingAddress ? 'Cancel' : 'Edit'}
-                    </Button>
-                  </CardTitle>
+                  <CardTitle>All Your Policies</CardTitle>
+                  <CardDescription>
+                    Complete list of your warranty policies
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {editingAddress ? (
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="street">Street Address</Label>
-                        <Input
-                          id="street"
-                          value={address.street}
-                          onChange={(e) => setAddress({...address, street: e.target.value})}
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="city">City</Label>
-                          <Input
-                            id="city"
-                            value={address.city}
-                            onChange={(e) => setAddress({...address, city: e.target.value})}
-                          />
+                  <div className="space-y-4">
+                    {policies.map((policy) => (
+                      <div 
+                        key={policy.id} 
+                        className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                          selectedPolicy?.id === policy.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
+                        }`}
+                        onClick={() => setSelectedPolicy(policy)}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-semibold">{policy.policy_number}</h3>
+                            <p className="text-sm text-gray-600 capitalize">
+                              {policy.plan_type} - {getPaymentTypeDisplay(policy.payment_type)}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Expires: {new Date(policy.policy_end_date).toLocaleDateString('en-GB')}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${
+                              policy.status === 'active' ? 'bg-green-100 text-green-800' :
+                              policy.status === 'expired' ? 'bg-red-100 text-red-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {policy.status}
+                            </span>
+                            {getPolicyPdf(policy) && (
+                              <Button size="sm" variant="outline" asChild>
+                                <a href={getPolicyPdf(policy)} target="_blank" rel="noopener noreferrer">
+                                  <FileText className="h-3 w-3" />
+                                </a>
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          <Label htmlFor="postcode">Postcode</Label>
-                          <Input
-                            id="postcode"
-                            value={address.postcode}
-                            onChange={(e) => setAddress({...address, postcode: e.target.value})}
-                          />
-                        </div>
                       </div>
-                      <Button onClick={updateAddress} className="w-full">
-                        Update Address
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <p>{address.street || 'No street address provided'}</p>
-                      <p>{address.city} {address.postcode}</p>
-                      <p>{address.country}</p>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
-            </div>
+            </TabsContent>
 
-            {/* Account Management Sidebar */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <User className="mr-2 h-5 w-5" />
-                    Account Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">Email</Label>
-                    <p className="font-semibold">{user?.email}</p>
-                  </div>
-                  
-                  <div className="pt-4 border-t">
+            <TabsContent value="account" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Account Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Email Address</Label>
+                      <p className="font-semibold">{user?.email}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Account Created</Label>
+                      <p className="text-sm">{user?.created_at ? new Date(user.created_at).toLocaleDateString('en-GB') : 'Unknown'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Total Policies</Label>
+                      <p className="font-semibold">{policies.length}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Security Settings</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => setEditingPassword(!editingPassword)}
+                      onClick={() => setEditingPassword(true)}
                     >
                       <Lock className="mr-2 h-4 w-4" />
                       Change Password
                     </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {editingPassword && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Change Password</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <Label htmlFor="newPassword">New Password</Label>
-                      <Input
-                        id="newPassword"
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="confirmPassword">Confirm Password</Label>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      />
-                    </div>
-                    <Button onClick={updatePassword} className="w-full">
-                      Update Password
-                    </Button>
+                    <Alert>
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Keep your account secure by using a strong password and logging out on shared devices.
+                      </AlertDescription>
+                    </Alert>
                   </CardContent>
                 </Card>
-              )}
+              </div>
+            </TabsContent>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Calendar className="mr-2 h-5 w-5" />
-                    Renewal
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Your policy will automatically renew unless cancelled.
-                  </p>
-                  <Button variant="outline" className="w-full">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Manage Billing
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+            <TabsContent value="support" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Support</CardTitle>
+                    <CardDescription>
+                      Send us a message and we'll get back to you as soon as possible.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="supportSubject">Subject</Label>
+                        <Input
+                          id="supportSubject"
+                          placeholder="Brief description of your issue"
+                          value={supportSubject}
+                          onChange={(e) => setSupportSubject(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="supportMessage">Message</Label>
+                        <Textarea
+                          id="supportMessage"
+                          placeholder="Please describe your issue in detail..."
+                          rows={6}
+                          value={supportMessage}
+                          onChange={(e) => setSupportMessage(e.target.value)}
+                        />
+                      </div>
+                      <Button onClick={submitSupportRequest} className="w-full">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Send Support Request
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Other Ways to Reach Us</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 border rounded-lg">
+                      <Phone className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="font-medium">Phone Support</p>
+                        <p className="text-sm text-gray-600">+44 123 456 7890</p>
+                        <p className="text-xs text-gray-500">Mon-Fri: 9AM-6PM</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 border rounded-lg">
+                      <Mail className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="font-medium">Email Support</p>
+                        <p className="text-sm text-gray-600">support@buyawarranty.co.uk</p>
+                        <p className="text-xs text-gray-500">Response within 24 hours</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
         )}
       </div>
 
       {/* Sticky Bottom Price Bar */}
-      {isFloatingBarVisible && policy && (
+      {isFloatingBarVisible && selectedPolicy && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50 animate-slide-up">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-200">
               <div className="flex-1">
                 <h4 className={`font-bold text-base ${
-                  policy.plan_type === 'basic' ? 'text-blue-900' :
-                  policy.plan_type === 'gold' ? 'text-yellow-600' :
+                  selectedPolicy.plan_type === 'basic' ? 'text-blue-900' :
+                  selectedPolicy.plan_type === 'gold' ? 'text-yellow-600' :
                   'text-orange-600'
                 }`}>
-                  {policy.plan_type.charAt(0).toUpperCase() + policy.plan_type.slice(1)}
+                  {selectedPolicy.plan_type.charAt(0).toUpperCase() + selectedPolicy.plan_type.slice(1)}
                 </h4>
                 <div className="flex items-baseline gap-1">
                   <span className="text-xs">Current Plan</span>
                   <span className="text-xs text-gray-600">
-                    - {policy.payment_type === 'twoYear' ? '2 Year' : 
-                       policy.payment_type === 'threeYear' ? '3 Year' : 
-                       policy.payment_type.charAt(0).toUpperCase() + policy.payment_type.slice(1)}
+                    - {selectedPolicy.payment_type === 'twoYear' ? '2 Year' : 
+                       selectedPolicy.payment_type === 'threeYear' ? '3 Year' : 
+                       selectedPolicy.payment_type.charAt(0).toUpperCase() + selectedPolicy.payment_type.slice(1)}
                   </span>
                 </div>
               </div>
-              {getPolicyPdf() && (
+              {getPolicyPdf(selectedPolicy) && (
                 <Button
                   size="sm"
                   className={`ml-4 px-4 py-1.5 font-semibold rounded-lg transition-colors duration-200 ${
-                    policy.plan_type === 'basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
-                    policy.plan_type === 'gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
+                    selectedPolicy.plan_type === 'basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
+                    selectedPolicy.plan_type === 'gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
                     'bg-[#eb4b00] hover:bg-[#d44300] text-white'
                   }`}
                   asChild
                 >
-                  <a href={getPolicyPdf()} target="_blank" rel="noopener noreferrer">
+                  <a href={getPolicyPdf(selectedPolicy)} target="_blank" rel="noopener noreferrer">
                     <FileText className="mr-1 h-3 w-3" />
                     View PDF
                   </a>
                 </Button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Support Form Modal */}
+      {showSupportForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Contact Support</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSupportForm(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="modalSubject">Subject</Label>
+                <Input
+                  id="modalSubject"
+                  placeholder="Brief description of your issue"
+                  value={supportSubject}
+                  onChange={(e) => setSupportSubject(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="modalMessage">Message</Label>
+                <Textarea
+                  id="modalMessage"
+                  placeholder="Please describe your issue in detail..."
+                  rows={4}
+                  value={supportMessage}
+                  onChange={(e) => setSupportMessage(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-3">
+                <Button onClick={submitSupportRequest} className="flex-1">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Send Request
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowSupportForm(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
         </div>
