@@ -136,7 +136,7 @@ const CustomerDashboard = () => {
       return;
     }
     
-    console.log("fetchPolicies: Fetching policies for user:", user.id);
+    console.log("fetchPolicies: Fetching policies for user:", user.id, "email:", user.email);
     
     try {
       const { data, error } = await supabase
@@ -145,15 +145,20 @@ const CustomerDashboard = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      console.log("fetchPolicies: Query result:", { data, error });
+      console.log("fetchPolicies: Query result:", { data, error, count: data?.length });
 
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching policies:', error);
+        toast({
+          title: "Error fetching policies",
+          description: error.message,
+          variant: "destructive",
+        });
         return;
       }
 
       if (data && data.length > 0) {
-        console.log("fetchPolicies: Found policies:", data);
+        console.log("fetchPolicies: Found policies:", data.length);
         setPolicies(data);
         setSelectedPolicy(data[0]); // Set first policy as selected
         
@@ -175,6 +180,11 @@ const CustomerDashboard = () => {
       }
     } catch (error) {
       console.error('fetchPolicies: Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch policies. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setPolicyLoading(false);
     }
@@ -642,7 +652,7 @@ const CustomerDashboard = () => {
                           {/* Actions */}
                           <div className="pt-4 border-t">
                             <div className="flex flex-wrap gap-3">
-                              {getPolicyPdf(selectedPolicy) && (
+                              {getPolicyPdf(selectedPolicy) ? (
                                 <>
                                   <Button 
                                     variant="outline" 
@@ -663,6 +673,13 @@ const CustomerDashboard = () => {
                                     Download PDF
                                   </Button>
                                 </>
+                              ) : (
+                                <Alert className="w-full">
+                                  <AlertCircle className="h-4 w-4" />
+                                  <AlertDescription>
+                                    Policy documents are being processed. Please contact support if you need immediate access.
+                                  </AlertDescription>
+                                </Alert>
                               )}
                               <Button 
                                 variant="outline" 
