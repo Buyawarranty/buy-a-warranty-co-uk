@@ -553,9 +553,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
-              onClick={() => setSelectedClaimLimit(1000)}
+              onClick={() => setSelectedClaimLimit(750)}
               className={`p-6 rounded-xl border-2 transition-all duration-200 text-left ${
-                selectedClaimLimit === 1000
+                selectedClaimLimit === 750
                   ? 'border-[#1a365d] bg-blue-50'
                   : 'border-gray-300 hover:border-[#1a365d] hover:bg-gray-50'
               }`}
@@ -564,14 +564,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div className="text-2xl">✅</div>
                 <h4 className="text-lg font-bold text-gray-900">Essential Cover</h4>
               </div>
-              <div className="text-xl font-bold text-[#1a365d] mb-2">£1,000 Claim Limit</div>
+              <div className="text-xl font-bold text-[#1a365d] mb-2">£750 Claim Limit</div>
               <p className="text-sm text-gray-600">Perfect for smaller repairs and peace of mind.</p>
             </button>
             
             <button
-              onClick={() => setSelectedClaimLimit(2000)}
+              onClick={() => setSelectedClaimLimit(1250)}
               className={`p-6 rounded-xl border-2 transition-all duration-200 text-left relative ${
-                selectedClaimLimit === 2000
+                selectedClaimLimit === 1250
                   ? 'border-yellow-500 bg-yellow-50'
                   : 'border-gray-300 hover:border-yellow-500 hover:bg-gray-50'
               }`}
@@ -583,14 +583,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div className="text-2xl">⭐</div>
                 <h4 className="text-lg font-bold text-gray-900">Plus Cover</h4>
               </div>
-              <div className="text-xl font-bold text-yellow-600 mb-2">£2,000 Claim Limit</div>
+              <div className="text-xl font-bold text-yellow-600 mb-2">£1,250 Claim Limit</div>
               <p className="text-sm text-gray-600">Ideal for comprehensive protection on major repairs.</p>
             </button>
             
             <button
-              onClick={() => setSelectedClaimLimit(3000)}
+              onClick={() => setSelectedClaimLimit(2000)}
               className={`p-6 rounded-xl border-2 transition-all duration-200 text-left ${
-                selectedClaimLimit === 3000
+                selectedClaimLimit === 2000
                   ? 'border-orange-500 bg-orange-50'
                   : 'border-gray-300 hover:border-orange-500 hover:bg-gray-50'
               }`}
@@ -599,7 +599,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div className="text-2xl">🔒</div>
                 <h4 className="text-lg font-bold text-gray-900">Premium Cover</h4>
               </div>
-              <div className="text-xl font-bold text-orange-600 mb-2">£3,000 Claim Limit</div>
+              <div className="text-xl font-bold text-orange-600 mb-2">£2,000 Claim Limit</div>
               <p className="text-sm text-gray-600">Maximum protection for high-value repairs.</p>
             </button>
           </div>
