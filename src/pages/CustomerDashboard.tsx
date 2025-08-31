@@ -27,6 +27,15 @@ interface CustomerPolicy {
   pdf_gold_url?: string;
   pdf_platinum_url?: string;
   payment_amount?: number;
+  document_url?: string; // Add this for fetched documents
+}
+
+interface PolicyDocument {
+  id: string;
+  plan_type: string;
+  document_name: string;
+  file_url: string;
+  vehicle_type: string;
 }
 
 interface AddressData {
@@ -120,6 +129,69 @@ const CustomerDashboard = () => {
     }
   };
 
+  // Map plan types to document types
+  const mapPlanTypeToDocumentType = (planType: string): string => {
+    const mapping: Record<string, string> = {
+      'basic': 'basic',
+      'Basic': 'basic',
+      'gold': 'gold', 
+      'Gold': 'gold',
+      'platinum': 'platinum',
+      'Platinum': 'platinum',
+      'phev hybrid extended warranty': 'phev',
+      'PHEV Hybrid Extended Warranty': 'phev',
+      'electric': 'electric',
+      'Electric': 'electric',
+      'motorbike': 'motorbike',
+      'Motorbike': 'motorbike'
+    };
+    
+    return mapping[planType] || planType.toLowerCase();
+  };
+
+  // Fetch documents for policies
+  const fetchPolicyDocuments = async (policies: CustomerPolicy[]): Promise<CustomerPolicy[]> => {
+    try {
+      console.log("Fetching documents for policies");
+      
+      // Get all unique plan types
+      const planTypes = [...new Set(policies.map(p => mapPlanTypeToDocumentType(p.plan_type)))];
+      console.log("Plan types to fetch documents for:", planTypes);
+      
+      // Fetch documents for these plan types
+      const { data: documents, error } = await supabase
+        .from('customer_documents')
+        .select('*')
+        .in('plan_type', planTypes)
+        .eq('vehicle_type', 'standard');
+
+      if (error) {
+        console.error('Error fetching documents:', error);
+        return policies;
+      }
+
+      console.log("Found documents:", documents);
+
+      // Attach document URLs to policies
+      const policiesWithDocuments = policies.map(policy => {
+        const documentType = mapPlanTypeToDocumentType(policy.plan_type);
+        const document = documents?.find(doc => doc.plan_type === documentType);
+        
+        return {
+          ...policy,
+          document_url: document?.file_url || null
+        };
+      });
+
+      console.log("Policies with documents:", policiesWithDocuments);
+      return policiesWithDocuments;
+      
+    } catch (error) {
+      console.error('Error in fetchPolicyDocuments:', error);
+      return policies;
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -159,11 +231,15 @@ const CustomerDashboard = () => {
 
       if (data && data.length > 0) {
         console.log("fetchPolicies: Found policies:", data.length);
-        setPolicies(data);
-        setSelectedPolicy(data[0]); // Set first policy as selected
+        
+        // Fetch documents for policies
+        const policiesWithDocuments = await fetchPolicyDocuments(data);
+        
+        setPolicies(policiesWithDocuments);
+        setSelectedPolicy(policiesWithDocuments[0]); // Set first policy as selected (latest)
         
         // Set address from the first policy
-        const firstPolicy = data[0];
+        const firstPolicy = policiesWithDocuments[0];
         if (firstPolicy.address && typeof firstPolicy.address === 'object') {
           const addressData = firstPolicy.address as Record<string, any>;
           setAddress({
@@ -360,7 +436,13 @@ const CustomerDashboard = () => {
   const getPolicyPdf = (policy: CustomerPolicy) => {
     if (!policy) return null;
     
-    switch (policy.plan_type) {
+    // Use the fetched document URL first, then fallback to the old fields
+    if (policy.document_url) {
+      return policy.document_url;
+    }
+    
+    // Fallback to old PDF fields for backward compatibility
+    switch (policy.plan_type.toLowerCase()) {
       case 'basic':
         return policy.pdf_basic_url;
       case 'gold':
