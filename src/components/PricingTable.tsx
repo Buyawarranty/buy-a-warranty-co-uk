@@ -549,7 +549,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       <div className="flex justify-center mb-8 px-4">
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 w-full max-w-4xl">
           <h3 className="text-2xl font-bold text-center mb-2 text-gray-900">Choose Your Claim Limit</h3>
-          <p className="text-center text-gray-600 mb-6">All plans include unlimited number of claims</p>
+          <p className="text-center text-gray-600 mb-6">All plans include <strong>unlimited</strong> number of claims</p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
