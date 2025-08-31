@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, FileText, User, Mail, Lock, MapPin, CreditCard } from 'lucide-react';
+import { Calendar, FileText, User, Mail, Lock, MapPin, CreditCard, Eye, EyeOff } from 'lucide-react';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { getWarrantyDurationDisplay, getPaymentTypeDisplay } from '@/lib/warrantyUtils';
 
@@ -50,6 +50,12 @@ const CustomerDashboard = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
+  
+  // Login form state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     console.log("CustomerDashboard: useEffect triggered");
@@ -60,13 +66,52 @@ const CustomerDashboard = () => {
       return;
     }
     
-    if (!user) {
-      console.log("CustomerDashboard: No user found, redirecting to auth");
-      navigate('/auth');
-      return;
+    // If user is logged in, fetch their policy
+    if (user) {
+      fetchPolicy();
+    } else {
+      // User not logged in, show login form (don't redirect)
+      setPolicyLoading(false);
     }
-    fetchPolicy();
-  }, [user, navigate, loading]);
+  }, [user, loading]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast({
+          title: "Login Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data.user) {
+        toast({
+          title: "Welcome back!",
+          description: "You have been signed in successfully.",
+        });
+        // User state will be updated by the auth listener
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({
+        title: "Login Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoginLoading(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -247,6 +292,127 @@ const CustomerDashboard = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login form if user is not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white shadow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4">
+              <div className="flex items-center">
+                <img 
+                  src="/lovable-uploads/9b53da8c-70f3-4fc2-8497-e1958a650b4a.png" 
+                  alt="BuyAWarranty" 
+                  className="h-6 sm:h-8 w-auto mr-3 sm:mr-4"
+                />
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Customer Login</h1>
+              </div>
+              <div className="hidden sm:block">
+                <TrustpilotHeader />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Card>
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+              <CardDescription>
+                Sign in to your customer dashboard to view your warranty details
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10"
+                      required
+                      disabled={loginLoading}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 pr-10"
+                      required
+                      disabled={loginLoading}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={loginLoading}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full" 
+                  disabled={loginLoading || !email || !password}
+                >
+                  {loginLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Signing In...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600">
+                  Need help accessing your account?{' '}
+                  <Button 
+                    variant="link" 
+                    className="p-0 h-auto font-normal text-blue-600 hover:text-blue-800"
+                    onClick={() => navigate('/reset-password')}
+                  >
+                    Reset your password
+                  </Button>
+                </p>
+              </div>
+
+              <div className="mt-4 text-center">
+                <p className="text-xs text-gray-500">
+                  Don't have an account? Contact support to get started.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
