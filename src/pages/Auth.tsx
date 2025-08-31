@@ -85,19 +85,43 @@ const Auth = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    // Set up auth state listener to handle sign-out only
+    // Set up auth state listener to handle navigation on successful sign in
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === 'SIGNED_OUT') {
+        console.log('Auth page: Auth state changed:', event, session?.user?.email);
+        
+        if (event === 'SIGNED_IN' && session) {
+          console.log('Auth page: User signed in, checking role and navigating');
+          
+          // Check user role and navigate
+          const { data: roleData, error } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .maybeSingle();
+
+          toast({
+            title: "Success",
+            description: "You have been signed in successfully!",
+          });
+
+          // If user has admin role, redirect to admin dashboard
+          if (!error && roleData && ['admin', 'member', 'viewer', 'guest'].includes(roleData.role)) {
+            console.log("Auth page: Admin user detected, redirecting to admin dashboard");
+            navigate('/admin-dashboard', { replace: true });
+          } else {
+            console.log("Auth page: Regular user detected, redirecting to customer dashboard");
+            navigate('/customer-dashboard', { replace: true });
+          }
+        } else if (event === 'SIGNED_OUT') {
           // User signed out, stay on auth page
-          return;
+          console.log('Auth page: User signed out');
         }
-        // Don't handle navigation here - let handleSignIn do it to avoid conflicts
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,28 +148,8 @@ const Auth = () => {
       console.log("Sign in successful:", data.user?.email);
       console.log("Session:", data.session);
       
-      // Check user role and navigate
-      if (data.session) {
-        const { data: roleData, error } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', data.session.user.id)
-          .maybeSingle(); // Use maybeSingle instead of single to handle no results
-
-        toast({
-          title: "Success",
-          description: "You have been signed in successfully!",
-        });
-
-        // If there's an error (other than no results) or user has any admin role, redirect to admin
-        if (!error && roleData && ['admin', 'member', 'viewer', 'guest'].includes(roleData.role)) {
-          console.log("Admin user detected, redirecting to admin dashboard");
-          navigate('/admin-dashboard', { replace: true });
-        } else {
-          console.log("Regular user detected, redirecting to customer dashboard");
-          navigate('/customer-dashboard', { replace: true });
-        }
-      }
+      // Don't navigate immediately - let the auth state change handler do it
+      // This ensures proper auth state propagation
       
     } catch (error: any) {
       console.error("Sign in failed:", error);
