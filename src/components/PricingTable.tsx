@@ -254,11 +254,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           // Convert yearly to monthly
           return Math.round(fullPrice / 12);
         } else if (paymentType === '24months') {
-          // 24 month plans return the full 24-month price (not divided)
-          return fullPrice;
+          // 24 month plans: divide by 12 to get monthly payment over 12 months
+          return Math.round(fullPrice / 12);
         } else if (paymentType === '36months') {
-          // 36 month plans return the full 36-month price (not divided)
-          return fullPrice;
+          // 36 month plans: divide by 12 to get monthly payment over 12 months  
+          return Math.round(fullPrice / 12);
         }
         
         return fullPrice;
