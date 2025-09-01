@@ -344,11 +344,42 @@ serve(async (req) => {
         mot_expiry_date: motExpiryDateForStorage ? new Date(motExpiryDateForStorage).toISOString().split('T')[0] : null,
       };
 
-      await supabase
-        .from('mot_history')
-        .upsert(motHistoryData, { onConflict: 'registration' });
+      console.log('Attempting to store MOT history for:', registrationNumber.toUpperCase());
+      console.log('MOT history data to store:', {
+        registration: motHistoryData.registration,
+        make: motHistoryData.make,
+        model: motHistoryData.model,
+        testCount: motHistoryData.mot_tests?.length || 0,
+        sampleTest: motHistoryData.mot_tests?.[0]
+      });
 
-      console.log('MOT history stored successfully');
+      const { data, error } = await supabase
+        .from('mot_history')
+        .upsert(motHistoryData, { onConflict: 'registration' })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Database error storing MOT history:', error);
+        console.error('Error details:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+        throw error;
+      }
+
+      if (!data) {
+        console.error('No data returned from upsert operation');
+        throw new Error('Failed to store MOT history - no data returned');
+      }
+
+      console.log('MOT history stored successfully:', {
+        id: data.id,
+        registration: data.registration,
+        testCount: data.mot_tests?.length || 0
+      });
     } catch (error) {
       console.error('Error storing MOT history:', error);
       // Continue with response even if storage fails
