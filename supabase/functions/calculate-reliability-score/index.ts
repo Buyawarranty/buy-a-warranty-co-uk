@@ -190,13 +190,29 @@ serve(async (req) => {
     if (!motDataToUse) {
       console.log('No cached MOT data found, fetching fresh data...');
       
-      const { data: fetchResult } = await supabase.functions.invoke('fetch-mot-history', {
-        body: { registration, customer_id: null }
-      });
+      try {
+        const { data: fetchResult, error: invokeError } = await supabase.functions.invoke('fetch-mot-history', {
+          body: { registration, customer_id: null }
+        });
 
-      if (fetchResult?.success && fetchResult?.data) {
-        motDataToUse = fetchResult.data;
-        console.log('Got fresh MOT data from API');
+        console.log('Fetch MOT result:', { success: fetchResult?.success, error: invokeError, hasData: !!fetchResult?.data });
+
+        if (fetchResult?.success && fetchResult?.data) {
+          motDataToUse = fetchResult.data;
+          console.log('Got fresh MOT data from API:', {
+            make: motDataToUse.make,
+            model: motDataToUse.model,
+            testCount: motDataToUse.mot_tests?.length || 0
+          });
+        } else {
+          console.log('Failed to fetch MOT data:', { 
+            fetchResult, 
+            invokeError,
+            reason: fetchResult?.error || 'Unknown error'
+          });
+        }
+      } catch (fetchError) {
+        console.error('Error invoking fetch-mot-history:', fetchError);
       }
     }
 
