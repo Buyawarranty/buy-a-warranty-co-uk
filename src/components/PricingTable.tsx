@@ -127,12 +127,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   // Server-side filtering function
   async function fetchPlansFor(vt: VehicleType): Promise<Plan[]> {
     if (vt === 'car') {
-      console.log('🚗 Fetching standard car plans: Basic, Gold, Platinum');
+      console.log('🚗 Fetching standard car plans: Platinum only');
       const { data, error } = await supabase
         .from('plans')
         .select('*')
         .eq('is_active', true)
-        .in('name', ['Basic', 'Gold', 'Platinum'])
+        .in('name', ['Platinum'])
         .order('monthly_price');
       
       if (error) {
