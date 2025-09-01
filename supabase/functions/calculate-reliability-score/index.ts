@@ -172,41 +172,42 @@ serve(async (req) => {
 
     console.log(`Calculating reliability score for registration: ${registration}`);
 
-    // Get MOT history data for this vehicle - try multiple times to account for timing
-    let motData = null;
-    let attempts = 0;
-    const maxAttempts = 3;
-    
-    while (!motData && attempts < maxAttempts) {
-      const { data, error } = await supabase
-        .from('mot_history')
-        .select('*')
-        .eq('registration', registration.toUpperCase())
-        .single();
+    // First try to get existing MOT data
+    const { data: existingMotData, error: motError } = await supabase
+      .from('mot_history')
+      .select('*')
+      .eq('registration', registration.toUpperCase())
+      .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
-        console.error('Database error:', error);
-        throw error;
-      }
+    if (motError) {
+      console.error('Database error:', motError);
+      throw motError;
+    }
 
-      motData = data;
-      attempts++;
+    let motDataToUse = existingMotData;
+
+    // If no existing data, try to fetch fresh data
+    if (!motDataToUse) {
+      console.log('No cached MOT data found, fetching fresh data...');
       
-      if (!motData && attempts < maxAttempts) {
-        console.log(`Attempt ${attempts}: No MOT data found for ${registration}, retrying in 500ms...`);
-        await new Promise(resolve => setTimeout(resolve, 500));
+      const { data: fetchResult } = await supabase.functions.invoke('fetch-mot-history', {
+        body: { registration, customer_id: null }
+      });
+
+      if (fetchResult?.success && fetchResult?.data) {
+        motDataToUse = fetchResult.data;
+        console.log('Got fresh MOT data from API');
       }
     }
 
-    if (!motData) {
-      console.log(`No MOT data found after ${maxAttempts} attempts, returning default score`);
-      
-      // No MOT data available - return default high score for new vehicles
+    if (!motDataToUse || !motDataToUse.mot_tests || motDataToUse.mot_tests.length === 0) {
+      console.log(`No MOT test data available for ${registration}, using default score`);
       const defaultResult = calculateReliabilityScore({ mot_tests: [] }, mileage);
       
       return new Response(JSON.stringify({ 
         success: true, 
-        data: defaultResult
+        data: defaultResult,
+        debug: { dataFound: false, registration }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -214,14 +215,15 @@ serve(async (req) => {
     }
 
     console.log(`Found MOT data for ${registration}:`, {
-      make: motData.make,
-      model: motData.model,
-      totalTests: motData.mot_tests?.length || 0,
-      manufactureDate: motData.manufacture_date
+      make: motDataToUse.make,
+      model: motDataToUse.model,
+      totalTests: motDataToUse.mot_tests?.length || 0,
+      manufactureDate: motDataToUse.manufacture_date,
+      sampleTest: motDataToUse.mot_tests?.[0]
     });
 
     // Calculate reliability score
-    const reliabilityResult = calculateReliabilityScore(motData, mileage);
+    const reliabilityResult = calculateReliabilityScore(motDataToUse, mileage);
 
     console.log('Reliability calculation result:', {
       registration,
