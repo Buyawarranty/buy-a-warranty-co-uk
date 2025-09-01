@@ -244,29 +244,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const periodData = matrix[dbKey];
       if (periodData && periodData[voluntaryExcess.toString()]) {
         const priceData = periodData[voluntaryExcess.toString()];
-        let fullPrice = priceData.price || 0;
+        let totalPrice = priceData.price || 0;
         
-        // For database pricing matrix, check if it's already monthly or needs conversion
-        if (paymentType === '12months' && dbKey === 'monthly') {
-          // Already monthly price
-          return fullPrice;
-        } else if (paymentType === '12months' && dbKey === 'yearly') {
-          // Convert yearly to monthly
-          return Math.round(fullPrice / 12);
-        } else if (paymentType === '24months') {
-          // 24 month plans: divide by 12 to get monthly payment over 12 months
-          return Math.round(fullPrice / 12);
-        } else if (paymentType === '36months') {
-          // 36 month plans: divide by 12 to get monthly payment over 12 months  
-          return Math.round(fullPrice / 12);
-        }
-        
-        return fullPrice;
+        // Always return monthly payment amount (total price / 12 months)
+        return Math.round(totalPrice / 12);
       }
     }
     
     // Fallback to hardcoded pricing
-    const pricing = getPricingData(voluntaryExcess, paymentType);
+    const paymentPeriod = paymentType === '12months' ? 'yearly' : 
+                          paymentType === '24months' ? 'two_yearly' : 
+                          paymentType === '36months' ? 'three_yearly' : 'yearly';
+    const pricing = getPricingData(voluntaryExcess, paymentPeriod);
     const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
     
     // Safety check: ensure planType exists in pricing object
@@ -278,22 +267,63 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return pricing[planType].monthly || 0;
   };
 
-  const getPlanSavings = (plan: Plan) => {
-    if (paymentType === '12months') return null;
-    
-    // Try to use database pricing matrix first, fallback to hardcoded
+  // Get the total warranty cost (not monthly payment)
+  const getTotalWarrantyCost = (plan: Plan) => {
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
-      // Map payment types to database keys
-      const dbKey = paymentType === '24months' ? '24' : '36';
+      const dbKey = paymentType === '12months' ? 'monthly' : 
+                    paymentType === '24months' ? '24' : 
+                    paymentType === '36months' ? '36' : 'yearly';
+      
       const periodData = matrix[dbKey];
       if (periodData && periodData[voluntaryExcess.toString()]) {
-        return periodData[voluntaryExcess.toString()].save || 0;
+        return periodData[voluntaryExcess.toString()].price || 0;
       }
     }
     
     // Fallback to hardcoded pricing
-    const pricing = getPricingData(voluntaryExcess, paymentType);
+    const paymentPeriod = paymentType === '12months' ? 'yearly' : 
+                          paymentType === '24months' ? 'two_yearly' : 
+                          paymentType === '36months' ? 'three_yearly' : 'yearly';
+    const pricing = getPricingData(voluntaryExcess, paymentPeriod);
+    const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
+    
+    if (!pricing[planType]) {
+      return pricing.basic?.total || 0;
+    }
+    
+    return pricing[planType].total || 0;
+  };
+
+  const getPlanSavings = (plan: Plan) => {
+    if (paymentType === '12months') return null;
+    
+    // Calculate savings manually by comparing with 12-month price
+    if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
+      const matrix = plan.pricing_matrix as any;
+      
+      // Get 12-month price
+      const monthlyData = matrix['monthly'] || matrix['yearly'];
+      const monthlyPrice = monthlyData?.[voluntaryExcess.toString()]?.price || 0;
+      const annualTotal = monthlyPrice * 12; // What you'd pay for 12 months
+      
+      // Get longer term price
+      const dbKey = paymentType === '24months' ? '24' : '36';
+      const periodData = matrix[dbKey];
+      const longerTermPrice = periodData?.[voluntaryExcess.toString()]?.price || 0;
+      
+      // Calculate what the equivalent would cost if paying monthly
+      const monthsInPeriod = paymentType === '24months' ? 24 : 36;
+      const equivalentAnnualCost = (longerTermPrice / monthsInPeriod) * 12;
+      
+      // Savings is the difference
+      const savings = Math.round(annualTotal - equivalentAnnualCost);
+      return savings > 0 ? savings : 0;
+    }
+    
+    // Fallback to hardcoded pricing
+    const paymentPeriod = paymentType === '24months' ? 'two_yearly' : 'three_yearly';
+    const pricing = getPricingData(voluntaryExcess, paymentPeriod);
     const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
     
     // Safety check: ensure planType exists in pricing object
@@ -340,19 +370,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const addOnPrice = calculateAddOnPrice(plan.id);
       const monthlyTotal = basePrice + addOnPrice;
       
-      // Calculate the actual total price based on payment period (warranty duration)
-      let totalPrice = monthlyTotal;
-      if (paymentType === '12months') {
-        totalPrice = monthlyTotal * 12;
-      } else if (paymentType === '24months') {
-        totalPrice = monthlyTotal * 24;
-      } else if (paymentType === '36months') {
-        totalPrice = monthlyTotal * 36;
-      }
+      // Calculate the actual total warranty cost
+      const totalWarrantyCost = getTotalWarrantyCost(plan);
+      const addOnTotalCost = addOnPrice * 12; // Add-ons are always charged monthly for 12 months
+      const totalPrice = totalWarrantyCost + addOnTotalCost;
       
       // For Bumper payment: always 12 monthly payments regardless of warranty duration
-      // Monthly payment = original monthly amount (not divided by 12)
-      const bumperMonthlyPrice = Math.round(monthlyTotal);
+      // Monthly payment = total price / 12 months
+      const bumperMonthlyPrice = Math.round(totalPrice / 12);
       
       const pricingData = {
         totalPrice,
@@ -697,11 +722,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                        <div className="flex items-center justify-between mb-2">
                          <span className="font-semibold text-gray-900">Pay Full Amount</span>
                          <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                           Save 5% (£{Math.round((displayPrice * 12) * 0.05)})
+                           Save 5% (£{Math.round(getTotalWarrantyCost(plan) * 0.05)})
                          </div>
                        </div>
                        <div className="text-xl font-bold text-blue-600">
-                         £{Math.round((displayPrice * 12) * 0.95)}
+                         £{Math.round(getTotalWarrantyCost(plan) * 0.95)}
                        </div>
                      </div>
 
