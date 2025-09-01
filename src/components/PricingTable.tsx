@@ -66,6 +66,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
   const [selectedClaimLimit, setSelectedClaimLimit] = useState<number>(2000);
+  
+  // Reliability score state
+  const [reliabilityScore, setReliabilityScore] = useState<{
+    score: number;
+    tier: number;
+    tierLabel: string;
+    pricing: { [key: string]: number };
+  } | null>(null);
+  const [reliabilityLoading, setReliabilityLoading] = useState(false);
 
   // Normalize vehicle type once
   const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
@@ -112,6 +121,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   useEffect(() => {
     fetchPdfUrls();
   }, []);
+
+  // Fetch reliability score when component loads
+  useEffect(() => {
+    if (vehicleData?.regNumber && vt === 'car') {
+      fetchReliabilityScore();
+    }
+  }, [vehicleData?.regNumber, vehicleData?.mileage, vt]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -201,6 +217,40 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
   };
 
+  const fetchReliabilityScore = async () => {
+    if (!vehicleData?.regNumber) return;
+    
+    setReliabilityLoading(true);
+    try {
+      console.log('Fetching reliability score for:', vehicleData.regNumber);
+      
+      const mileageNumber = vehicleData.mileage ? 
+        parseInt(vehicleData.mileage.replace(/,/g, '')) : undefined;
+      
+      const { data, error } = await supabase.functions.invoke('calculate-reliability-score', {
+        body: { 
+          registration: vehicleData.regNumber,
+          mileage: mileageNumber
+        }
+      });
+
+      if (error) {
+        console.error('Reliability score error:', error);
+        throw error;
+      }
+
+      if (data?.success && data?.data) {
+        console.log('Reliability score result:', data.data);
+        setReliabilityScore(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching reliability score:', error);
+      // Don't show error to user, just continue with normal pricing
+    } finally {
+      setReliabilityLoading(false);
+    }
+  };
+
   // Get pricing data from database pricing matrix or fallback to hardcoded values
   const getPricingData = (excess: number, paymentPeriod: string) => {
     // Fallback pricing table if database is not available
@@ -233,6 +283,34 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   };
 
   const calculatePlanPrice = (plan: Plan) => {
+    // Use reliability-based pricing if available (only for cars)
+    if (vt === 'car' && reliabilityScore?.pricing) {
+      const periodKey = paymentType === '12months' ? '12months' : 
+                       paymentType === '24months' ? '24months' : 
+                       paymentType === '36months' ? '36months' : '12months';
+      
+      let basePrice = reliabilityScore.pricing[periodKey] || 0;
+      
+      // Apply voluntary excess discount
+      if (voluntaryExcess > 0) {
+        const discountRate = voluntaryExcess === 50 ? 0.1 : 
+                            voluntaryExcess === 100 ? 0.2 : 
+                            voluntaryExcess === 150 ? 0.25 : 0;
+        basePrice = Math.round(basePrice * (1 - discountRate));
+      }
+      
+      // Convert to monthly payment for display purposes
+      if (paymentType === '12months') {
+        return Math.round(basePrice / 12); // Monthly payment amount
+      } else if (paymentType === '24months') {
+        return Math.round(basePrice / 12); // 12 monthly payments for 24 month coverage
+      } else if (paymentType === '36months') {
+        return Math.round(basePrice / 12); // 12 monthly payments for 36 month coverage  
+      }
+      
+      return Math.round(basePrice / 12);
+    }
+    
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
@@ -342,12 +420,37 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       
       // Calculate the actual total price based on payment period (warranty duration)
       let totalPrice = monthlyTotal;
-      if (paymentType === '12months') {
-        totalPrice = monthlyTotal * 12;
-      } else if (paymentType === '24months') {
-        totalPrice = monthlyTotal * 24;
-      } else if (paymentType === '36months') {
-        totalPrice = monthlyTotal * 36;
+      
+      // Use reliability-based pricing for total if available (only for cars)
+      if (vt === 'car' && reliabilityScore?.pricing) {
+        const periodKey = paymentType === '12months' ? '12months' : 
+                         paymentType === '24months' ? '24months' : 
+                         paymentType === '36months' ? '36months' : '12months';
+        
+        let baseTotalPrice = reliabilityScore.pricing[periodKey] || 0;
+        
+        // Apply voluntary excess discount
+        if (voluntaryExcess > 0) {
+          const discountRate = voluntaryExcess === 50 ? 0.1 : 
+                              voluntaryExcess === 100 ? 0.2 : 
+                              voluntaryExcess === 150 ? 0.25 : 0;
+          baseTotalPrice = Math.round(baseTotalPrice * (1 - discountRate));
+        }
+        
+        // Add addon pricing (£2 per addon per month * 12)
+        const selectedAddOnCount = Object.values(selectedAddOns[plan.id] || {}).filter(Boolean).length;
+        const totalAddonCost = selectedAddOnCount * 2 * 12;
+        
+        totalPrice = baseTotalPrice + totalAddonCost;
+      } else {
+        // Fallback to original calculation
+        if (paymentType === '12months') {
+          totalPrice = monthlyTotal * 12;
+        } else if (paymentType === '24months') {
+          totalPrice = monthlyTotal * 24;
+        } else if (paymentType === '36months') {
+          totalPrice = monthlyTotal * 36;
+        }
       }
       
       // For Bumper payment: always 12 monthly payments regardless of warranty duration
@@ -433,6 +536,34 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
           </div>
         </div>
+
+        {/* Reliability Score Display - Only show for cars */}
+        {vt === 'car' && (
+          <div className="flex justify-center mb-6">
+            {reliabilityLoading ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg px-6 py-4">
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <p className="text-blue-700 font-medium">Calculating reliability score...</p>
+                </div>
+              </div>
+            ) : reliabilityScore ? (
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg px-6 py-4 shadow-sm">
+                <div className="text-center">
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    Reliability Score: {reliabilityScore.score}
+                  </h3>
+                  <p className="text-sm font-medium text-gray-700">
+                    {reliabilityScore.tierLabel}
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Based on MOT history and vehicle data
+                  </p>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
 
         {/* Vehicle Details */}
         {vehicleData.make && (

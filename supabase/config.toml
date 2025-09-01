@@ -96,6 +96,9 @@ verify_jwt = false
 [functions.fetch-mot-history]
 verify_jwt = true
 
+[functions.calculate-reliability-score]
+verify_jwt = true
+
 [db]
 port = 54322
 
