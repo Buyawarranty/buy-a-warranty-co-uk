@@ -284,14 +284,17 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                  <Zap size={28} className="text-orange-500" />
                </h1>
             </div>
-            <div className="flex items-center gap-2 mb-2">
-              <h2 className="flex items-center justify-between font-medium text-gray-600 text-lg sm:text-xl">
-                <div className="flex items-center gap-1">
-                  Let's find your vehicle  
-                </div>
-                <Search size={20} className="text-orange-500" />
-              </h2>
-           </div>
+           <div className="flex items-center gap-2 mb-2">
+             <h2 className="flex items-center justify-between font-medium text-gray-600 text-lg sm:text-xl">
+               <div className="flex items-center gap-1">
+                 Let's find your vehicle  
+                 {regNumber.length >= 3 && !regError && (
+                   <Check className="w-5 h-5 text-green-500 ml-2" />
+                 )}
+               </div>
+               <Search size={20} className="text-orange-500" />
+             </h2>
+          </div>
           <div 
             className="w-full max-w-[520px] flex items-center bg-[#ffdb00] text-gray-900 font-bold text-xl sm:text-[28px] px-[15px] sm:px-[25px] py-[12px] sm:py-[18px] rounded-[6px] mb-3 shadow-sm leading-tight cursor-pointer border-2 border-black relative"
             onClick={() => document.getElementById('regInput')?.focus()}
