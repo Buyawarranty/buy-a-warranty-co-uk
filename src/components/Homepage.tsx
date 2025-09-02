@@ -83,7 +83,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gray-100 py-16">
+      <section className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -366,7 +366,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       {/* Get Help With A Repair Section */}
       <section className="py-12 md:py-20 bg-brand-deep-blue text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8 text-white">
             Get Help With A <span className="text-brand-orange">Repair</span>
           </h2>
           
