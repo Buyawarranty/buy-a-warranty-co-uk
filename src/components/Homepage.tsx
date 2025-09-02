@@ -355,7 +355,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           {/* Warranty Quote Mockup */}
           <div className="relative max-w-4xl mx-auto">
             <img 
-              src="/lovable-uploads/9c67e382-089e-4e83-8907-9a65cb10e2ae.png" 
+              src="/lovable-uploads/8ed3b647-1683-4655-834b-40c98ddea286.png" 
               alt="Warranty quote interface with panda mascot and car" 
               className="w-full h-auto rounded-lg shadow-xl"
             />
@@ -370,17 +370,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             Get Help With A <span className="text-brand-orange">Repair</span>
           </h2>
           
-          <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-10 py-4 text-xl rounded shadow-lg transition-colors mb-12">
+          <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-10 py-4 text-xl rounded shadow-lg transition-colors">
             Make A Claim
           </button>
-
-          <div>
-            <img 
-              src="/lovable-uploads/53a6f4f0-3302-4124-9cf6-ba1915daa8f1.png" 
-              alt="Panda with vehicles for repair services" 
-              className="w-full h-auto max-w-2xl mx-auto"
-            />
-          </div>
         </div>
       </section>
 
