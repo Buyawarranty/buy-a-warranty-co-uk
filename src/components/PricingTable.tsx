@@ -564,175 +564,224 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             ) : null}
           </div>
         )}
-
-        {/* Vehicle Details */}
-        {vehicleData.make && (
-          <div className="mb-6 max-w-2xl mx-auto px-2">
-            <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2 sm:gap-4 text-sm sm:text-base text-gray-700">
-              <span className="font-semibold text-gray-900 text-center sm:text-left">
-                {vehicleData.make} {vehicleData.model || 'Vehicle'}
-              </span>
-              {vehicleData.fuelType && (
-                <span className="text-gray-600 text-center sm:text-left">
-                  <strong>Fuel:</strong> {vehicleData.fuelType}
-                </span>
-              )}
-              {vehicleData.year && (
-                <span className="text-gray-600 text-center sm:text-left">
-                  <strong>Year:</strong> {vehicleData.year}
-                </span>
-              )}
-              {vehicleData.transmission && (
-                <span className="text-gray-600 text-center sm:text-left">
-                  <strong>Transmission:</strong> {vehicleData.transmission}
-                </span>
-              )}
-              <span className="text-gray-600 text-center sm:text-left">
-                <strong>Mileage:</strong> {parseInt(vehicleData.mileage).toLocaleString()} miles
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Vehicle Age Error */}
-        {vehicleAgeError && (
-          <div className="max-w-2xl mx-auto mb-8 px-4">
-            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
-              <h3 className="text-xl font-bold text-red-800 mb-2">Vehicle Not Eligible</h3>
-              <p className="text-red-700 text-lg mb-4">{vehicleAgeError}</p>
-              <p className="text-red-600 text-sm">
-                Please contact us if you believe this is an error.
-              </p>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Payment Period Toggle */}
-      <div className="flex justify-center mb-8 px-4">
-        <div className="bg-white rounded-2xl p-1 shadow-lg border border-gray-200 inline-flex">
-          <button
-            onClick={() => setPaymentType('12months')}
-            className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-              paymentType === '12months'
-                ? 'bg-[#1a365d] text-white shadow-md' 
-                : 'text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            12 months
-          </button>
-          <div className="relative">
-            <button
-              onClick={() => setPaymentType('24months')}
-              className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-                paymentType === '24months'
-                  ? 'bg-[#1a365d] text-white shadow-md' 
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              24 months
-            </button>
-            <div className="absolute -top-3 -right-4 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-              10% OFF
+      {/* Vehicle Age Error */}
+      {vehicleAgeError && (
+        <div className="max-w-2xl mx-auto mb-8 px-4">
+          <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
+            <h3 className="text-xl font-bold text-red-800 mb-2">Vehicle Not Eligible</h3>
+            <p className="text-red-700 text-lg mb-4">{vehicleAgeError}</p>
+            <p className="text-red-600 text-sm">
+              Please contact us if you believe this is an error.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Numbered Sections Container */}
+      <div className="max-w-4xl mx-auto px-4 space-y-6 mb-12">
+        
+        {/* Section 1: Your Vehicle */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                1
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">Your Vehicle</h2>
             </div>
           </div>
-          <div className="relative">
-            <button
-              onClick={() => setPaymentType('36months')}
-              className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 ${
-                paymentType === '36months'
-                  ? 'bg-[#1a365d] text-white shadow-md' 
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              36 months
-            </button>
-            <div className="absolute -top-3 -right-4 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-              20% OFF
+          <div className="p-6">
+            {vehicleData.make && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                <div className="flex flex-col">
+                  <span className="text-gray-600 font-medium">Vehicle</span>
+                  <span className="font-bold text-gray-900">
+                    {vehicleData.make} {vehicleData.model || 'Vehicle'}
+                  </span>
+                </div>
+                {vehicleData.fuelType && (
+                  <div className="flex flex-col">
+                    <span className="text-gray-600 font-medium">Fuel Type</span>
+                    <span className="font-semibold text-gray-900">{vehicleData.fuelType}</span>
+                  </div>
+                )}
+                {vehicleData.year && (
+                  <div className="flex flex-col">
+                    <span className="text-gray-600 font-medium">Year</span>
+                    <span className="font-semibold text-gray-900">{vehicleData.year}</span>
+                  </div>
+                )}
+                {vehicleData.transmission && (
+                  <div className="flex flex-col">
+                    <span className="text-gray-600 font-medium">Transmission</span>
+                    <span className="font-semibold text-gray-900">{vehicleData.transmission}</span>
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <span className="text-gray-600 font-medium">Mileage</span>
+                  <span className="font-semibold text-gray-900">{parseInt(vehicleData.mileage).toLocaleString()} miles</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Section 2: Period */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                2
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">Period</h2>
+            </div>
+          </div>
+          <div className="p-6">
+            <div className="flex justify-center">
+              <div className="bg-gray-50 rounded-2xl p-1 inline-flex">
+                <button
+                  onClick={() => setPaymentType('12months')}
+                  className={`px-6 py-3 rounded-xl text-base font-semibold transition-all duration-200 ${
+                    paymentType === '12months'
+                      ? 'bg-[#1a365d] text-white shadow-md' 
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  1 Year
+                </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setPaymentType('24months')}
+                    className={`px-6 py-3 rounded-xl text-base font-semibold transition-all duration-200 ${
+                      paymentType === '24months'
+                        ? 'bg-[#1a365d] text-white shadow-md' 
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    2 Years
+                  </button>
+                  <div className="absolute -top-3 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                    10% OFF
+                  </div>
+                </div>
+                <div className="relative">
+                  <button
+                    onClick={() => setPaymentType('36months')}
+                    className={`px-6 py-3 rounded-xl text-base font-semibold transition-all duration-200 ${
+                      paymentType === '36months'
+                        ? 'bg-[#1a365d] text-white shadow-md' 
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    3 Years
+                  </button>
+                  <div className="absolute -top-3 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                    20% OFF
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Voluntary Excess Selection */}
-      <div className="flex justify-center mb-8 px-4">
-        <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-200 w-full max-w-2xl">
-          <h3 className="text-xl font-bold text-center mb-4 text-gray-900">Voluntary Excess Amount</h3>
-          <div className="flex justify-center gap-3">
-            {[0, 50, 100, 150].map((amount) => (
+        {/* Section 3: Voluntary Excess Amount */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-50 to-violet-50 px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                3
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">Voluntary Excess Amount</h2>
+            </div>
+          </div>
+          <div className="p-6">
+            <div className="flex justify-center">
+              <div className="flex gap-3 flex-wrap">
+                {[0, 50, 100, 150].map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => toggleVoluntaryExcess(amount)}
+                    className={`px-6 py-3 rounded-xl text-base font-semibold transition-all duration-200 min-w-[80px] ${
+                      voluntaryExcess === amount
+                        ? 'bg-[#1a365d] text-white border-2 border-[#1a365d]'
+                        : 'bg-gray-50 text-gray-700 border-2 border-gray-300 hover:border-[#1a365d]'
+                    }`}
+                  >
+                    £{amount}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: Choose Your Claim Limit */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-orange-50 to-amber-50 px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="bg-orange-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                4
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">Choose Your Claim Limit</h2>
+            </div>
+          </div>
+          <div className="p-6">
+            <p className="text-center text-gray-600 mb-6">All plans include <strong>unlimited</strong> number of claims</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button
-                key={amount}
-                onClick={() => toggleVoluntaryExcess(amount)}
-                className={`px-6 py-2 rounded-xl text-base font-semibold transition-all duration-200 min-w-[80px] ${
-                  voluntaryExcess === amount
-                    ? 'bg-[#1a365d] text-white border-2 border-[#1a365d]'
-                    : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-[#1a365d]'
+                onClick={() => setSelectedClaimLimit(750)}
+                className={`p-6 rounded-xl border-2 transition-all duration-200 text-left ${
+                  selectedClaimLimit === 750
+                    ? 'border-[#1a365d] bg-blue-50'
+                    : 'border-gray-300 hover:border-[#1a365d] hover:bg-gray-50'
                 }`}
               >
-                £{amount}
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="text-2xl">✅</div>
+                  <h4 className="text-lg font-bold text-gray-900">Essential Cover</h4>
+                </div>
+                <div className="text-xl font-bold text-[#1a365d] mb-2">£750 Claim Limit</div>
+                <p className="text-sm text-gray-600">Perfect for smaller repairs and peace of mind.</p>
               </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Claim Limit Selection */}
-      <div className="flex justify-center mb-8 px-4">
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 w-full max-w-4xl">
-          <h3 className="text-2xl font-bold text-center mb-2 text-gray-900">Choose Your Claim Limit</h3>
-          <p className="text-center text-gray-600 mb-6">All plans include <strong>unlimited</strong> number of claims</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button
-              onClick={() => setSelectedClaimLimit(750)}
-              className={`p-6 rounded-xl border-2 transition-all duration-200 text-left ${
-                selectedClaimLimit === 750
-                  ? 'border-[#1a365d] bg-blue-50'
-                  : 'border-gray-300 hover:border-[#1a365d] hover:bg-gray-50'
-              }`}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="text-2xl">✅</div>
-                <h4 className="text-lg font-bold text-gray-900">Essential Cover</h4>
-              </div>
-              <div className="text-xl font-bold text-[#1a365d] mb-2">£750 Claim Limit</div>
-              <p className="text-sm text-gray-600">Perfect for smaller repairs and peace of mind.</p>
-            </button>
-            
-            <button
-              onClick={() => setSelectedClaimLimit(1250)}
-              className={`p-6 rounded-xl border-2 transition-all duration-200 text-left relative ${
-                selectedClaimLimit === 1250
-                  ? 'border-yellow-500 bg-yellow-50'
-                  : 'border-gray-300 hover:border-yellow-500 hover:bg-gray-50'
-              }`}
-            >
-              <div className="absolute -top-3 right-4 bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-bold">
-                MOST POPULAR
-              </div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="text-2xl">⭐</div>
-                <h4 className="text-lg font-bold text-gray-900">Plus Cover</h4>
-              </div>
-              <div className="text-xl font-bold text-yellow-600 mb-2">£1,250 Claim Limit</div>
-              <p className="text-sm text-gray-600">Ideal for comprehensive protection on major repairs.</p>
-            </button>
-            
-            <button
-              onClick={() => setSelectedClaimLimit(2000)}
-              className={`p-6 rounded-xl border-2 transition-all duration-200 text-left ${
-                selectedClaimLimit === 2000
-                  ? 'border-orange-500 bg-orange-50'
-                  : 'border-gray-300 hover:border-orange-500 hover:bg-gray-50'
-              }`}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="text-2xl">🔒</div>
-                <h4 className="text-lg font-bold text-gray-900">Premium Cover</h4>
-              </div>
-              <div className="text-xl font-bold text-orange-600 mb-2">£2,000 Claim Limit</div>
-              <p className="text-sm text-gray-600">Maximum protection for high-value repairs.</p>
-            </button>
+              
+              <button
+                onClick={() => setSelectedClaimLimit(1250)}
+                className={`p-6 rounded-xl border-2 transition-all duration-200 text-left relative ${
+                  selectedClaimLimit === 1250
+                    ? 'border-yellow-500 bg-yellow-50'
+                    : 'border-gray-300 hover:border-yellow-500 hover:bg-gray-50'
+                }`}
+              >
+                <div className="absolute -top-3 right-4 bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-bold">
+                  MOST POPULAR
+                </div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="text-2xl">⭐</div>
+                  <h4 className="text-lg font-bold text-gray-900">Plus Cover</h4>
+                </div>
+                <div className="text-xl font-bold text-yellow-600 mb-2">£1,250 Claim Limit</div>
+                <p className="text-sm text-gray-600">Ideal for comprehensive protection on major repairs.</p>
+              </button>
+              
+              <button
+                onClick={() => setSelectedClaimLimit(2000)}
+                className={`p-6 rounded-xl border-2 transition-all duration-200 text-left ${
+                  selectedClaimLimit === 2000
+                    ? 'border-orange-500 bg-orange-50'
+                    : 'border-gray-300 hover:border-orange-500 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="text-2xl">🔒</div>
+                  <h4 className="text-lg font-bold text-gray-900">Premium Cover</h4>
+                </div>
+                <div className="text-xl font-bold text-orange-600 mb-2">£2,000 Claim Limit</div>
+                <p className="text-sm text-gray-600">Maximum protection for high-value repairs.</p>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -785,9 +834,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       )}
 
-      {/* Pricing Cards Container */}
+      {/* Section 5: What's Covered */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
-        <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
+        <div className="max-w-6xl mx-auto px-4 pb-16">
+          {/* Section 5 Header */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mb-8">
+            <div className="bg-gradient-to-r from-teal-50 to-cyan-50 px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="bg-teal-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                  5
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">What's Covered?</h2>
+              </div>
+            </div>
+            <div className="p-6 text-center">
+              <p className="text-gray-600">Choose your warranty plan and see what's included</p>
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {displayPlans.map((plan) => {
             const basePrice = calculatePlanPrice(plan);
