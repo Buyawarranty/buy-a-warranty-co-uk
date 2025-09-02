@@ -67,7 +67,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 size="sm"
                 className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600"
               >
-                Warranty Log in
+                WhatsApp Us
               </Button>
               <Button 
                 size="sm"
@@ -154,11 +154,18 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
               {/* Trustpilot */}
               <div className="flex items-center">
-                <img 
-                  src="/lovable-uploads/4e4faf8a-b202-4101-a858-9c58ad0a28c5.png" 
-                  alt="Trustpilot 5 stars" 
-                  className="h-8 w-auto"
-                />
+                <a 
+                  href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-80"
+                >
+                  <img 
+                    src="/lovable-uploads/4e4faf8a-b202-4101-a858-9c58ad0a28c5.png" 
+                    alt="Trustpilot 5 stars" 
+                    className="h-8 w-auto"
+                  />
+                </a>
               </div>
             </div>
 
@@ -245,7 +252,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 Why Choose <span className="text-orange-500">Buy a Warranty?</span>
               </h2>
               
-              <p className="text-gray-600 mb-6">Never leave pay a penny towards repairs.</p>
+              <p className="text-gray-600 mb-6">No Excess: Never pay a penny towards repairs.</p>
 
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
@@ -292,7 +299,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">Flexible Plans:</span>
-                    <span className="text-gray-600 ml-1">Available on 1, 2, or 3 year plans and monthly 0% APR Options.</span>
+                    <span className="text-gray-600 ml-1">Available on 1, 2, or 3 year plans and monthly 0% APR options.</span>
                   </div>
                 </div>
               </div>
@@ -360,7 +367,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   Protect Your Vehicle <span className="text-orange-500">Today!</span>
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Whether you drive an old or more reliable breakdown, Buy a Warranty offers the 
+                  Whether you drive an old or more reliable vehicle, Buy a Warranty offers the 
                   protection you need. Get covered in 1 minute and enjoy peace of mind on 
                   the road.
                 </p>
@@ -385,12 +392,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Quick Links */}
             <div>
-              <h3 className="font-bold text-lg mb-4">Quick Links</h3>
+              <h3 className="font-bold text-lg mb-4">Quick links</h3>
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="hover:text-orange-400">Home</a></li>
                 <li><a href="#" className="hover:text-orange-400">Make a Claim</a></li>
                 <li><a href="#" className="hover:text-orange-400">Warranty for Car</a></li>
                 <li><a href="#" className="hover:text-orange-400">Warranty for Van</a></li>
+                <li><a href="#" className="hover:text-orange-400">Warranty for EVs</a></li>
                 <li><a href="#" className="hover:text-orange-400">Warranty for Motorbikes UK</a></li>
               </ul>
             </div>
@@ -423,9 +431,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <div>
               <h3 className="font-bold text-lg mb-4">Looking for a new warranty provider?</h3>
               <p className="text-sm text-gray-300">
-                We make vehicle warranty simple, fast, and more affordable. With us you can find 
-                different types of comprehensive car and van warranty insurance, so whether you 
-                drive an older, SUV, or motorcycle - if it's under 15 years old, 
+                We make vehicle warranty simple, fast, 
+                and more affordable too. With easy warranty 
+                comparing options to find different types 
+                of comprehensive car and van warranty 
+                whether you drive an SUV, car, SUV, or 
+                motorbike - if it's under 15 years old, 
                 we've got you covered.
               </p>
             </div>
