@@ -588,13 +588,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
            
             {vehicleData && (
               <>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-5 h-5 bg-success rounded-full flex items-center justify-center">
-                    <Check className="h-3 w-3 text-success-foreground" />
-                  </div>
-                  <span className="text-success font-semibold">Warranty cover available for your vehicle</span>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm mb-4">
                <div className="flex items-center gap-2">
                  <Hash className="h-5 w-5 text-primary" />
                  <div>
@@ -636,6 +630,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    <span className="font-semibold text-foreground">{parseInt(vehicleData.mileage).toLocaleString()} miles</span>
                  </div>
                  </div>
+                </div>
+                
+                {/* Warranty Eligibility - under a line */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
+                      <Check className="h-3 w-3 text-green-600" />
+                    </div>
+                    <span className="text-green-700 font-medium">Warranty cover available for your vehicle</span>
+                  </div>
                 </div>
               </>
             )}
