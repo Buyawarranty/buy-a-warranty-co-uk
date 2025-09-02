@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -335,402 +334,510 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         <div className="max-w-6xl mx-auto">
           <Button variant="outline" onClick={onBack} className="mb-0">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Plans
+            Back
           </Button>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Column - Personal Details Form */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Personal Details</h2>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name Fields */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">First Name *</Label>
-                  <Input
-                    id="first_name"
-                    placeholder="Enter first name"
-                    value={customerData.first_name}
-                    onChange={(e) => handleInputChange('first_name', e.target.value)}
-                    required
-                    className={`mt-1 ${fieldErrors.first_name ? 'border-red-500 focus:border-red-500' : ''}`}
-                  />
-                  {fieldErrors.first_name && (
-                    <p className="text-red-500 text-sm mt-1">{fieldErrors.first_name}</p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">Last Name *</Label>
-                  <Input
-                    id="last_name"
-                    placeholder="Enter last name"
-                    value={customerData.last_name}
-                    onChange={(e) => handleInputChange('last_name', e.target.value)}
-                    required
-                    className={`mt-1 ${fieldErrors.last_name ? 'border-red-500 focus:border-red-500' : ''}`}
-                  />
-                  {fieldErrors.last_name && (
-                    <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>
-                  )}
-                </div>
-              </div>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Warranty Quote</h1>
+        </div>
 
-              {/* Email */}
-              <div>
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter email address"
-                  value={customerData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  required
-                  className={`mt-1 ${fieldErrors.email ? 'border-red-500 focus:border-red-500' : ''}`}
-                />
-                {fieldErrors.email && (
-                  <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
-                )}
-              </div>
-
-              {/* Mobile */}
-              <div>
-                <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">Mobile Number *</Label>
-                <Input
-                  id="mobile"
-                  placeholder="Enter mobile number"
-                  value={customerData.mobile}
-                  onChange={(e) => handleInputChange('mobile', e.target.value)}
-                  required
-                  className={`mt-1 ${fieldErrors.mobile ? 'border-red-500 focus:border-red-500' : ''}`}
-                />
-                {fieldErrors.mobile && (
-                  <p className="text-red-500 text-sm mt-1">{fieldErrors.mobile}</p>
-                )}
-              </div>
-
-              {/* Address Details */}
-              <div className="pt-4">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Address Details</h3>
-                
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="street" className="text-sm font-medium text-gray-700">Address Line 1 *</Label>
-                    <Input
-                      id="street"
-                      placeholder="Street address and house/building number"
-                      value={customerData.street}
-                      onChange={(e) => handleInputChange('street', e.target.value)}
-                      required
-                      className={`mt-1 ${fieldErrors.street ? 'border-red-500 focus:border-red-500' : ''}`}
-                    />
-                    {fieldErrors.street && (
-                      <p className="text-red-500 text-sm mt-1">{fieldErrors.street}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="building_name" className="text-sm font-medium text-gray-700">Address Line 2 (optional)</Label>
-                    <Input
-                      id="building_name"
-                      placeholder="Apartment, flat, building name"
-                      value={customerData.building_name}
-                      onChange={(e) => handleInputChange('building_name', e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="town" className="text-sm font-medium text-gray-700">Town/City *</Label>
-                      <Input
-                        id="town"
-                        placeholder="Enter town/city"
-                        value={customerData.town}
-                        onChange={(e) => handleInputChange('town', e.target.value)}
-                        required
-                        className={`mt-1 ${fieldErrors.town ? 'border-red-500 focus:border-red-500' : ''}`}
-                      />
-                      {fieldErrors.town && (
-                        <p className="text-red-500 text-sm mt-1">{fieldErrors.town}</p>
-                      )}
+        {/* Section 1: Your Vehicle */}
+        <Collapsible defaultOpen={true} className="mb-4">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                      1
                     </div>
-                    <div>
-                      <Label htmlFor="county" className="text-sm font-medium text-gray-700">County</Label>
-                      <Input
-                        id="county"
-                        placeholder="Enter county"
-                        value={customerData.county}
-                        onChange={(e) => handleInputChange('county', e.target.value)}
-                        className="mt-1"
+                    <CardTitle className="text-lg font-semibold">Your vehicle</CardTitle>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-sm px-3 py-2 rounded-[6px] shadow-sm leading-tight border-2 border-black">
+                      <img 
+                        src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
+                        alt="GB Flag" 
+                        className="w-[20px] h-[15px] mr-2 object-cover rounded-[2px]"
                       />
+                      <div className="font-bold font-sans tracking-normal">
+                        {vehicleData.regNumber}
+                      </div>
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
-                    <Input
-                      id="postcode"
-                      placeholder="Enter postcode"
-                      value={customerData.postcode}
-                      onChange={(e) => handleInputChange('postcode', e.target.value)}
-                      required
-                      className={`mt-1 ${fieldErrors.postcode ? 'border-red-500 focus:border-red-500' : ''}`}
-                    />
-                    {fieldErrors.postcode && (
-                      <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="vehicle_reg" className="text-sm font-medium text-gray-700">Vehicle Registration *</Label>
-                    <Input
-                      id="vehicle_reg"
-                      placeholder="Vehicle registration"
-                      value={customerData.vehicle_reg}
-                      onChange={(e) => handleInputChange('vehicle_reg', e.target.value)}
-                      required
-                      className={`mt-1 transition-all duration-300 ${
-                        showValidation && !customerData.vehicle_reg.trim() 
-                          ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                          : 'focus:ring-2 focus:ring-blue-200'
-                      }`}
-                    />
-                    {fieldErrors.vehicle_reg && (
-                      <p className="text-red-500 text-sm mt-1">{fieldErrors.vehicle_reg}</p>
-                    )}
+                    <ChevronDown className="w-5 h-5 text-gray-500" />
                   </div>
                 </div>
-              </div>
-
-              {/* Add Another Warranty Offer */}
-              <AddAnotherWarrantyOffer 
-                onAddAnotherWarranty={() => setAddAnotherWarrantyEnabled(true)}
-              />
-
-            </form>
-          </div>
-
-          {/* Right Column - Order Summary */}
-          <div className="space-y-6">
-            {/* Order Summary Card */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
-              
-              {/* Confidence Message */}
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                <div className="flex items-center justify-center text-green-800 font-medium">
-                  <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
-                  Shop with confidence - cancel anytime within 14 days for a full refund 💸
-                </div>
-              </div>
-              
-              {/* Vehicle Details Display */}
-              <div className="mb-6">
-                <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4">
-                  <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following vehicle</p>
-                  <p className="text-sm text-gray-600">
-                    {vehicleData.make} {vehicleData.model && `• ${vehicleData.model}`} • {vehicleData.fuelType} • {vehicleData.year}
-                  </p>
-                  
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p><strong>Make & Model:</strong> {vehicleData.make} {vehicleData.model}</p>
+                  <p><strong>Fuel Type:</strong> {vehicleData.fuelType}</p>
+                  <p><strong>Year:</strong> {vehicleData.year}</p>
+                  <p><strong>Mileage:</strong> {vehicleData.mileage} miles</p>
                   {vehicleData.vehicleType && !['car', 'van'].includes(vehicleData.vehicleType) && (
-                    <p className="text-sm text-blue-600 font-semibold mt-1">
-                      Special Vehicle Type: {vehicleData.vehicleType}
+                    <p className="text-blue-600 font-semibold">
+                      <strong>Special Vehicle Type:</strong> {vehicleData.vehicleType}
                     </p>
                   )}
-                  
-                  <button 
-                    type="button"
-                    onClick={() => window.location.href = window.location.pathname + '?step=1'}
-                    className="mt-3 text-sm bg-white border-2 px-[16px] py-[6px] rounded-[6px] transition-all duration-200"
-                    style={{
-                      borderColor: '#224380',
-                      color: '#224380'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f0f8ff';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'white';
-                    }}
-                  >
-                    Change vehicle
-                  </button>
                 </div>
-              </div>
+                <button 
+                  type="button"
+                  onClick={() => window.location.href = window.location.pathname + '?step=1'}
+                  className="mt-3 text-sm bg-white border-2 px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-50"
+                  style={{
+                    borderColor: '#224380',
+                    color: '#224380'
+                  }}
+                >
+                  Change vehicle
+                </button>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
-              {/* Plan Details */}
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Plan:</span>
-                  <span className="font-semibold">{planName}</span>
+        {/* Section 2: Select excess amount */}
+        <Collapsible defaultOpen={true} className="mb-4">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                      2
+                    </div>
+                    <CardTitle className="text-lg font-semibold">Select excess amount</CardTitle>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Cover period:</span>
-                  <span className="font-semibold">
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Voluntary Excess Amount</h4>
+                  <div className="text-2xl font-bold text-blue-600">
+                    £{pricingData.voluntaryExcess}
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">Selected excess amount</p>
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        {/* Section 3: Select period of cover */}
+        <Collapsible defaultOpen={true} className="mb-4">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                      3
+                    </div>
+                    <CardTitle className="text-lg font-semibold">Select period of cover</CardTitle>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Warranty Duration</h4>
+                  <div className="text-2xl font-bold text-orange-600">
                     {getWarrantyDurationDisplay(paymentType)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Voluntary Excess:</span>
-                  <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
-                </div>
-              </div>
-
-              {/* Payment Summary */}
-              <div className="border-t border-gray-200 pt-4 mb-6">
-                <div className="text-green-600 font-semibold text-lg mb-2">
-                  Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-gray-900">Total Price:</span>
-                  <div className="text-right">
-                    <div className="font-semibold text-gray-900">
-                      £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
-                      {discountValidation?.isValid && (
-                        <span className="text-green-600 text-sm ml-2">
-                          (5% discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
-                        </span>
-                      )}
-                    </div>
                   </div>
+                  <p className="text-sm text-gray-600 mt-1">Selected coverage period</p>
                 </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
-                {/* Discount Code Section */}
-                <div className="pt-4 border-t border-gray-200">
-                  <div className="flex items-center gap-2 mb-3">
-                    <h4 className="text-sm font-medium text-gray-700">Discount Code</h4>
-                    <Collapsible open={showDiscountInfo} onOpenChange={setShowDiscountInfo}>
-                      <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-0 h-auto">
-                          <Info className="h-4 w-4" />
-                        </Button>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-2">
-                        <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-md">
-                          <p>Enter a valid discount code to get money off your warranty. The discount will be applied to your final total.</p>
+        {/* Section 4: What's covered & Checkout */}
+        <Collapsible defaultOpen={true} className="mb-6">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                      4
+                    </div>
+                    <CardTitle className="text-lg font-semibold">What's covered</CardTitle>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="grid lg:grid-cols-2 gap-8">
+                  {/* Left Column - Personal Details Form */}
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-6">Complete Your Details</h3>
+                    
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      {/* Name Fields */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">First Name *</Label>
+                          <Input
+                            id="first_name"
+                            placeholder="Enter first name"
+                            value={customerData.first_name}
+                            onChange={(e) => handleInputChange('first_name', e.target.value)}
+                            required
+                            className={`mt-1 ${fieldErrors.first_name ? 'border-red-500 focus:border-red-500' : ''}`}
+                          />
+                          {fieldErrors.first_name && (
+                            <p className="text-red-500 text-sm mt-1">{fieldErrors.first_name}</p>
+                          )}
                         </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Enter discount code"
-                      value={customerData.discount_code}
-                      onChange={(e) => handleInputChange('discount_code', e.target.value)}
-                      className="flex-1"
-                    />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={validateDiscountCode}
-                      disabled={!customerData.discount_code.trim() || isValidatingDiscount}
-                    >
-                      {isValidatingDiscount ? 'Checking...' : 'Apply'}
-                    </Button>
-                  </div>
-                  
-                  {discountValidation && (
-                    <div className={`text-sm p-3 rounded-md flex items-center gap-2 mt-2 ${
-                      discountValidation.isValid 
-                        ? 'bg-green-50 text-green-700' 
-                        : 'bg-red-50 text-red-700'
-                    }`}>
-                      {discountValidation.isValid ? (
-                        <div className="text-green-600">✓</div>
-                      ) : (
-                        <AlertCircle className="h-4 w-4 text-red-600" />
-                      )}
-                      {discountValidation.message}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Payment Method */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment Method</h2>
-              
-              <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)} className="space-y-4">
-                {/* Monthly Interest Free Credit */}
-                <div className={`border rounded-lg p-4 ${paymentMethod === 'bumper' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="bumper" id="bumper" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="bumper" className="font-semibold text-gray-900">Monthly Interest-Free Credit</Label>
-                        <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
-                          0% Interest
+                        <div>
+                          <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">Last Name *</Label>
+                          <Input
+                            id="last_name"
+                            placeholder="Enter last name"
+                            value={customerData.last_name}
+                            onChange={(e) => handleInputChange('last_name', e.target.value)}
+                            required
+                            className={`mt-1 ${fieldErrors.last_name ? 'border-red-500 focus:border-red-500' : ''}`}
+                          />
+                          {fieldErrors.last_name && (
+                            <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>
+                          )}
                         </div>
                       </div>
-                      <p className="text-sm text-gray-600">
-                        Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
-                        {(discountValidation?.isValid || hasAutoDiscount) && (
-                          <span className="text-green-600">
-                            {hasAutoDiscount && !discountValidation?.isValid 
-                              ? " (10% multi-warranty discount applied)" 
-                              : " (discount applied)"}
-                          </span>
-                        )}
-                        {hasAutoDiscount && !discountValidation?.isValid && (
-                          <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                </div>
 
-                {/* Pay Full Amount */}
-                <div className={`border rounded-lg p-4 ${paymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="stripe" id="stripe" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
-                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                           Save a further 5% (£{Math.round(baseDiscountedPrice * 0.05)})
-                         </div>
+                      {/* Email */}
+                      <div>
+                        <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="Enter email address"
+                          value={customerData.email}
+                          onChange={(e) => handleInputChange('email', e.target.value)}
+                          required
+                          className={`mt-1 ${fieldErrors.email ? 'border-red-500 focus:border-red-500' : ''}`}
+                        />
+                        {fieldErrors.email && (
+                          <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
+                        )}
                       </div>
-                       <p className="text-sm text-gray-600">
-                        Pay £{discountedStripePrice} upfront via card
-                        {(discountValidation?.isValid || hasAutoDiscount) && (
-                          <span className="text-green-600">
-                            {hasAutoDiscount && !discountValidation?.isValid 
-                              ? " (10% multi-warranty discount + 5% upfront discount)" 
-                              : " (discount applied)"}
+
+                      {/* Mobile */}
+                      <div>
+                        <Label htmlFor="mobile" className="text-sm font-medium text-gray-700">Mobile Number *</Label>
+                        <Input
+                          id="mobile"
+                          placeholder="Enter mobile number"
+                          value={customerData.mobile}
+                          onChange={(e) => handleInputChange('mobile', e.target.value)}
+                          required
+                          className={`mt-1 ${fieldErrors.mobile ? 'border-red-500 focus:border-red-500' : ''}`}
+                        />
+                        {fieldErrors.mobile && (
+                          <p className="text-red-500 text-sm mt-1">{fieldErrors.mobile}</p>
+                        )}
+                      </div>
+
+                      {/* Address Details */}
+                      <div className="pt-4">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Address Details</h3>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="street" className="text-sm font-medium text-gray-700">Address Line 1 *</Label>
+                            <Input
+                              id="street"
+                              placeholder="Street address and house/building number"
+                              value={customerData.street}
+                              onChange={(e) => handleInputChange('street', e.target.value)}
+                              required
+                              className={`mt-1 ${fieldErrors.street ? 'border-red-500 focus:border-red-500' : ''}`}
+                            />
+                            {fieldErrors.street && (
+                              <p className="text-red-500 text-sm mt-1">{fieldErrors.street}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <Label htmlFor="building_name" className="text-sm font-medium text-gray-700">Address Line 2 (optional)</Label>
+                            <Input
+                              id="building_name"
+                              placeholder="Apartment, flat, building name"
+                              value={customerData.building_name}
+                              onChange={(e) => handleInputChange('building_name', e.target.value)}
+                              className="mt-1"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="town" className="text-sm font-medium text-gray-700">Town/City *</Label>
+                              <Input
+                                id="town"
+                                placeholder="Enter town/city"
+                                value={customerData.town}
+                                onChange={(e) => handleInputChange('town', e.target.value)}
+                                required
+                                className={`mt-1 ${fieldErrors.town ? 'border-red-500 focus:border-red-500' : ''}`}
+                              />
+                              {fieldErrors.town && (
+                                <p className="text-red-500 text-sm mt-1">{fieldErrors.town}</p>
+                              )}
+                            </div>
+                            <div>
+                              <Label htmlFor="county" className="text-sm font-medium text-gray-700">County</Label>
+                              <Input
+                                id="county"
+                                placeholder="Enter county"
+                                value={customerData.county}
+                                onChange={(e) => handleInputChange('county', e.target.value)}
+                                className="mt-1"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
+                            <Input
+                              id="postcode"
+                              placeholder="Enter postcode"
+                              value={customerData.postcode}
+                              onChange={(e) => handleInputChange('postcode', e.target.value)}
+                              required
+                              className={`mt-1 ${fieldErrors.postcode ? 'border-red-500 focus:border-red-500' : ''}`}
+                            />
+                            {fieldErrors.postcode && (
+                              <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <Label htmlFor="vehicle_reg" className="text-sm font-medium text-gray-700">Vehicle Registration *</Label>
+                            <Input
+                              id="vehicle_reg"
+                              placeholder="Vehicle registration"
+                              value={customerData.vehicle_reg}
+                              onChange={(e) => handleInputChange('vehicle_reg', e.target.value)}
+                              required
+                              className={`mt-1 transition-all duration-300 ${
+                                showValidation && !customerData.vehicle_reg.trim() 
+                                  ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                                  : 'focus:ring-2 focus:ring-blue-200'
+                              }`}
+                            />
+                            {fieldErrors.vehicle_reg && (
+                              <p className="text-red-500 text-sm mt-1">{fieldErrors.vehicle_reg}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Add Another Warranty Offer */}
+                      <AddAnotherWarrantyOffer 
+                        onAddAnotherWarranty={() => setAddAnotherWarrantyEnabled(true)}
+                      />
+                    </form>
+                  </div>
+
+                  {/* Right Column - Order Summary */}
+                  <div className="space-y-6">
+                    {/* Order Summary Card */}
+                    <div className="bg-white rounded-lg shadow-sm p-6 border">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
+                      
+                      {/* Confidence Message */}
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <div className="flex items-center justify-center text-green-800 font-medium">
+                          <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                          Shop with confidence - cancel anytime within 14 days for a full refund 💸
+                        </div>
+                      </div>
+
+                      {/* Plan Details */}
+                      <div className="space-y-4 mb-6">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Plan:</span>
+                          <span className="font-semibold">{planName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Cover period:</span>
+                          <span className="font-semibold">
+                            {getWarrantyDurationDisplay(paymentType)}
                           </span>
-                        )}
-                        {hasAutoDiscount && !discountValidation?.isValid && (
-                          <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.95)}</span>
-                        )}
-                      </p>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Voluntary Excess:</span>
+                          <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
+                        </div>
+                      </div>
+
+                      {/* Payment Summary */}
+                      <div className="border-t border-gray-200 pt-4 mb-6">
+                        <div className="text-green-600 font-semibold text-lg mb-2">
+                          Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold text-gray-900">Total Price:</span>
+                          <div className="text-right">
+                            <div className="font-semibold text-gray-900">
+                              £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
+                              {discountValidation?.isValid && (
+                                <span className="text-green-600 text-sm ml-2">
+                                  (5% discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Discount Code Section */}
+                        <div className="pt-4 border-t border-gray-200">
+                          <div className="flex items-center gap-2 mb-3">
+                            <h4 className="text-sm font-medium text-gray-700">Discount Code</h4>
+                            <Collapsible open={showDiscountInfo} onOpenChange={setShowDiscountInfo}>
+                              <CollapsibleTrigger asChild>
+                                <Button variant="ghost" size="sm" className="p-0 h-auto">
+                                  <Info className="h-4 w-4" />
+                                </Button>
+                              </CollapsibleTrigger>
+                              <CollapsibleContent className="mt-2">
+                                <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-md">
+                                  <p>Enter a valid discount code to get money off your warranty. The discount will be applied to your final total.</p>
+                                </div>
+                              </CollapsibleContent>
+                            </Collapsible>
+                          </div>
+                          
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Enter discount code"
+                              value={customerData.discount_code}
+                              onChange={(e) => handleInputChange('discount_code', e.target.value)}
+                              className="flex-1"
+                            />
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={validateDiscountCode}
+                              disabled={!customerData.discount_code.trim() || isValidatingDiscount}
+                            >
+                              {isValidatingDiscount ? 'Checking...' : 'Apply'}
+                            </Button>
+                          </div>
+                          
+                          {discountValidation && (
+                            <div className={`text-sm p-3 rounded-md flex items-center gap-2 mt-2 ${
+                              discountValidation.isValid 
+                                ? 'bg-green-50 text-green-700' 
+                                : 'bg-red-50 text-red-700'
+                            }`}>
+                              {discountValidation.isValid ? (
+                                <div className="text-green-600">✓</div>
+                              ) : (
+                                <AlertCircle className="h-4 w-4 text-red-600" />
+                              )}
+                              {discountValidation.message}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Payment Method */}
+                    <div className="bg-white rounded-lg shadow-sm p-6 border">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment Method</h2>
+                      
+                      <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)} className="space-y-4">
+                        {/* Monthly Interest Free Credit */}
+                        <div className={`border rounded-lg p-4 ${paymentMethod === 'bumper' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                          <div className="flex items-center space-x-3">
+                            <RadioGroupItem value="bumper" id="bumper" />
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="bumper" className="font-semibold text-gray-900">Monthly Interest-Free Credit</Label>
+                                <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                                  0% Interest
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-600">
+                                Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
+                                {(discountValidation?.isValid || hasAutoDiscount) && (
+                                  <span className="text-green-600">
+                                    {hasAutoDiscount && !discountValidation?.isValid 
+                                      ? " (10% multi-warranty discount applied)" 
+                                      : " (discount applied)"}
+                                  </span>
+                                )}
+                                {hasAutoDiscount && !discountValidation?.isValid && (
+                                  <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Pay Full Amount */}
+                        <div className={`border rounded-lg p-4 ${paymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                          <div className="flex items-center space-x-3">
+                            <RadioGroupItem value="stripe" id="stripe" />
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
+                                 <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                                   Save a further 5% (£{Math.round(baseDiscountedPrice * 0.05)})
+                                 </div>
+                              </div>
+                               <p className="text-sm text-gray-600">
+                                Pay £{discountedStripePrice} upfront via card
+                                {(discountValidation?.isValid || hasAutoDiscount) && (
+                                  <span className="text-green-600">
+                                    {hasAutoDiscount && !discountValidation?.isValid 
+                                      ? " (10% multi-warranty discount + 5% upfront discount)" 
+                                      : " (discount applied)"}
+                                  </span>
+                                )}
+                                {hasAutoDiscount && !discountValidation?.isValid && (
+                                  <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.95)}</span>
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </RadioGroup>
+
+                      {/* Complete Purchase Button */}
+                      <Button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        className="w-full mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-4 text-lg rounded-lg"
+                        size="lg"
+                      >
+                        {loading ? 'Processing...' : 'Complete Purchase'}
+                      </Button>
+
+                      <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 bg-gray-800 rounded"></div>
+                        Secure checkout powered by Stripe
+                      </div>
                     </div>
                   </div>
                 </div>
-              </RadioGroup>
-
-              {/* Complete Purchase Button */}
-              <Button
-                onClick={handleSubmit}
-                disabled={loading}
-                className="w-full mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-4 text-lg rounded-lg"
-                size="lg"
-              >
-                {loading ? 'Processing...' : 'Complete Purchase'}
-              </Button>
-
-              <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
-                <div className="w-4 h-4 bg-gray-800 rounded"></div>
-                Secure checkout powered by Stripe
-              </div>
-            </div>
-          </div>
-        </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       </div>
     </div>
   );
