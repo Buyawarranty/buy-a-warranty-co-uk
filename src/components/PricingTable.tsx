@@ -1306,57 +1306,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       )}
 
-      {/* Floating Action Bar */}
-      {isFloatingBarVisible && displayPlans.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-card border-t-2 border-border shadow-xl z-50">
-          <div className="max-w-6xl mx-auto px-4 py-4">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-               {displayPlans.map((plan) => {
-                 const basePrice = calculatePlanPrice(plan);
-                 const addOnPrice = calculateAddOnPrice(plan.id);
-                 const monthlyPrice = basePrice + addOnPrice;
-                 const isLoading = loading[plan.id];
-                 const savings = getPlanSavings(plan);
-                
-                return (
-                  <div key={plan.id} className="flex items-center justify-between neutral-container p-4">
-                    <div className="flex-1">
-                      <h4 className="font-bold text-lg text-foreground">
-                        {plan.name}
-                      </h4>
-                        <div className="flex items-baseline gap-1">
-                          {paymentType === '12months' ? (
-                            <>
-                              <span className="text-2xl font-bold text-foreground">£{monthlyPrice}</span>
-                              <span className="text-sm text-muted-foreground">/mo</span>
-                            </>
-                          ) : (
-                            <>
-                              <span className="text-2xl font-bold text-foreground">£{monthlyPrice}</span>
-                              <span className="text-sm text-muted-foreground">/12 payments</span>
-                            </>
-                          )}
-                        </div>
-                      {savings && paymentType !== '12months' && (
-                        <div className="savings-text text-sm">
-                          Save £{savings}
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => handleSelectPlan(plan)}
-                      disabled={isLoading}
-                      className="ml-4 btn-cta px-6 py-2"
-                    >
-                       {isLoading ? 'Processing...' : 'Buy Now'}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
