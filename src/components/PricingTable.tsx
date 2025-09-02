@@ -565,9 +565,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         
         {/* Vehicle Information */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border-2 border-orange-200 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
               1
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Vehicle Information</h2>
@@ -606,9 +606,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Voluntary Excess */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-purple-200 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
               2
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Choose your excess amount</h2>
@@ -619,10 +619,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <button
                 key={amount}
                 onClick={() => toggleVoluntaryExcess(amount)}
-                className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md ${
                   voluntaryExcess === amount
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-700 border border-gray-300 hover:border-gray-400'
+                    ? 'bg-purple-600 text-white shadow-lg transform scale-105'
+                    : 'bg-white text-gray-700 border-2 border-purple-200 hover:border-purple-400 hover:shadow-lg'
                 }`}
               >
                 £{amount}
@@ -632,9 +632,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Claim Limit Selection */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border-2 border-blue-200 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
               3
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Choose Your Claim Limit</h2>
@@ -645,43 +645,43 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               onClick={() => setSelectedClaimLimit(750)}
-              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
+              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left shadow-md ${
                 selectedClaimLimit === 750
-                  ? 'border-gray-900 bg-gray-50'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-blue-600 bg-blue-50 transform scale-105 shadow-lg'
+                  : 'border-blue-200 bg-white hover:border-blue-400 hover:shadow-lg'
               }`}
             >
               <h4 className="font-semibold text-gray-900 mb-2">Essential Cover</h4>
-              <div className="text-lg font-bold text-gray-900 mb-1">£750 Claim Limit</div>
+              <div className="text-lg font-bold text-blue-600 mb-1">£750 Claim Limit</div>
               <p className="text-sm text-gray-600">Perfect for smaller repairs and peace of mind.</p>
             </button>
             
             <button
               onClick={() => setSelectedClaimLimit(1250)}
-              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left relative ${
+              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left relative shadow-md ${
                 selectedClaimLimit === 1250
-                  ? 'border-gray-900 bg-gray-50'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-blue-600 bg-blue-50 transform scale-105 shadow-lg'
+                  : 'border-blue-200 bg-white hover:border-blue-400 hover:shadow-lg'
               }`}
             >
-              <div className="absolute -top-3 right-4 bg-gray-900 text-white text-xs px-3 py-1 rounded-full font-bold">
+              <div className="absolute -top-3 right-4 bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">
                 MOST POPULAR
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Plus Cover</h4>
-              <div className="text-lg font-bold text-gray-900 mb-1">£1,250 Claim Limit</div>
+              <div className="text-lg font-bold text-blue-600 mb-1">£1,250 Claim Limit</div>
               <p className="text-sm text-gray-600">Ideal for comprehensive protection on major repairs.</p>
             </button>
             
             <button
               onClick={() => setSelectedClaimLimit(2000)}
-              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
+              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left shadow-md ${
                 selectedClaimLimit === 2000
-                  ? 'border-gray-900 bg-gray-50'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-blue-600 bg-blue-50 transform scale-105 shadow-lg'
+                  : 'border-blue-200 bg-white hover:border-blue-400 hover:shadow-lg'
               }`}
             >
               <h4 className="font-semibold text-gray-900 mb-2">Premium Cover</h4>
-              <div className="text-lg font-bold text-gray-900 mb-1">£2,000 Claim Limit</div>
+              <div className="text-lg font-bold text-blue-600 mb-1">£2,000 Claim Limit</div>
               <p className="text-sm text-gray-600">Maximum protection for high-value repairs.</p>
             </button>
           </div>
@@ -741,9 +741,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="max-w-6xl mx-auto px-4 pb-16">
           
           {/* What's Covered Section */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg border-2 border-green-200 p-6 mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
                 4
               </div>
               <h2 className="text-xl font-semibold text-gray-900">What's Covered?</h2>
@@ -762,7 +762,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 'Recover Claim-back'
               ].map((item, index) => (
                 <div key={index} className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
                     <Check className="h-3 w-3 text-white" />
                   </div>
                   <span className="text-gray-700 font-medium">{item}</span>
