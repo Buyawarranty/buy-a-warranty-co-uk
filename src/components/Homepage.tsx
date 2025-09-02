@@ -143,11 +143,14 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
               {/* Registration Input */}
               <div className="space-y-4 max-w-lg">
-                <div className="flex items-center rounded-lg overflow-hidden shadow-lg border-2 border-black">
-                  {/* GB UK Section */}
-                  <div className="bg-blue-600 text-white font-bold text-lg px-4 py-4 flex flex-col items-center justify-center min-w-[60px]">
-                    <span className="text-xs leading-none">GB</span>
-                    <span className="text-xs leading-none">UK</span>
+                <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black">
+                  {/* GB UK Section with flag */}
+                  <div className="bg-blue-600 text-white font-bold text-lg px-4 py-4 flex items-center justify-center min-w-[80px] h-[64px]">
+                    <div className="flex flex-col items-center">
+                      <div className="text-xs leading-tight mb-1">🇬🇧</div>
+                      <div className="text-xs leading-none">GB</div>
+                      <div className="text-xs leading-none">UK</div>
+                    </div>
                   </div>
                   {/* Registration Input */}
                   <input
@@ -155,7 +158,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     value={regNumber}
                     onChange={handleRegChange}
                     placeholder="ENTER REG"
-                    className="bg-yellow-400 border-none outline-none text-xl text-black flex-1 font-bold placeholder:text-black/70 px-4 py-4 uppercase tracking-wider"
+                    className="bg-yellow-400 border-none outline-none text-xl text-black flex-1 font-bold placeholder:text-black/70 px-4 py-4 uppercase tracking-wider h-[64px]"
                     maxLength={8}
                   />
                 </div>
@@ -179,7 +182,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 {/* Get Quote Button */}
                 <Button 
                   onClick={handleGetQuote}
-                  className={`w-full px-8 py-4 text-lg font-bold rounded-lg transition-all ${
+                  className={`w-full px-12 py-5 text-lg font-bold rounded-lg transition-all ${
                     isFormValid 
                       ? 'bg-orange-500 hover:bg-orange-600 text-white' 
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -200,7 +203,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Right Content - Hero Image */}
             <div className="relative">
               <img 
-                src="/lovable-uploads/5d941097-e236-4f17-b3ff-ecfa2dcfad63.png" 
+                src="/lovable-uploads/c9993cb7-e55a-47a3-936b-d5bb733e4d87.png" 
                 alt="Panda mascot with cars and motorcycle" 
                 className="w-full h-auto"
               />
