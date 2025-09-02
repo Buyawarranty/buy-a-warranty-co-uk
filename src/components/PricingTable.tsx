@@ -644,7 +644,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         {/* Voluntary Excess */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-violet-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
               2
             </div>
             <h2 className="text-xl font-semibold text-foreground">Choose your excess amount</h2>
@@ -657,8 +657,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 onClick={() => toggleVoluntaryExcess(amount)}
                 className={`px-6 py-3 rounded-lg font-semibold border-2 transition-all duration-200 ${
                   voluntaryExcess === amount
-                    ? 'bg-violet-600 text-white border-violet-600'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-violet-400'
+                    ? 'selected-option bg-primary text-primary-foreground'
+                    : 'neutral-container text-foreground hover:border-primary/50'
                 }`}
               >
                 £{amount}
