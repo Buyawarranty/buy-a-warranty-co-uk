@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import Homepage from '@/components/Homepage';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
 import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
@@ -225,6 +226,16 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleHomepageRegistration = (regNumber: string) => {
+    console.log('Homepage registration submitted:', regNumber);
+    // Set the registration number and move to the detailed registration form
+    const partialData = { ...formData, regNumber };
+    setFormData(partialData);
+    setCurrentStep(1.5); // Use 1.5 to show the detailed form
+    // Don't update URL params yet - wait for full registration
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleBackToStep = (step: number) => {
     setCurrentStep(step);
     updateStepInUrl(step);
@@ -296,11 +307,19 @@ const Index = () => {
   const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
 
   return (
-    <div className="bg-[#e8f4fb] min-h-screen overflow-x-hidden">
-      <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
+    <div className="min-h-screen overflow-x-hidden">
+      {currentStep !== 1 && currentStep !== 1.5 && (
+        <div className="bg-[#e8f4fb]">
+          <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
+        </div>
+      )}
       
       {currentStep === 1 && (
-        <div className="w-full px-4 py-4 sm:py-8">
+        <Homepage onRegistrationSubmit={handleHomepageRegistration} />
+      )}
+
+      {currentStep === 1.5 && (
+        <div className="bg-[#e8f4fb] w-full px-4 py-4 sm:py-8">
           <div className="max-w-4xl mx-auto">
             {/* Discount Message Banner */}
             {searchParams.get('discountMessage') && (
@@ -321,10 +340,10 @@ const Index = () => {
             
             <RegistrationForm 
               onNext={handleRegistrationComplete} 
-              onBack={(step: number) => handleBackToStep(step)}
+              onBack={(step: number) => setCurrentStep(1)} // Go back to homepage
               onFormDataUpdate={handleFormDataUpdate}
               initialData={formData}
-              currentStep={currentStep}
+              currentStep={1} // Show as step 1 for progress
               onStepChange={handleStepChange}
             />
           </div>
@@ -332,7 +351,7 @@ const Index = () => {
       )}
 
       {currentStep === 2 && vehicleData && (
-        <div className="w-full px-4 py-4 sm:py-8">
+        <div className="bg-[#e8f4fb] w-full px-4 py-4 sm:py-8">
           <div className="max-w-4xl mx-auto">
             <QuoteDeliveryStep 
               vehicleData={vehicleData}
@@ -345,7 +364,7 @@ const Index = () => {
       )}
 
       {currentStep === 3 && (
-        <div className="w-full overflow-x-hidden">
+        <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
           {vehicleData && (
             <>
               
@@ -368,7 +387,7 @@ const Index = () => {
       )}
 
       {currentStep === 4 && (
-        <>
+        <div className="bg-[#e8f4fb]">
           {vehicleData && selectedPlan ? (
             <CustomerDetailsStep
               vehicleData={vehicleData}
@@ -403,7 +422,7 @@ const Index = () => {
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
       
     </div>
