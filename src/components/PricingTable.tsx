@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -660,32 +661,65 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
         {/* Claim Limit Selection */}
         <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-200 rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
               3
             </div>
             <h2 className="text-xl font-semibold text-foreground">Choose Your Claim Limit</h2>
           </div>
           
-          <p className="text-muted-foreground mb-6">All plans include <strong>unlimited</strong> number of claims</p>
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* AutoCare Essential */}
             <button
               onClick={() => setSelectedClaimLimit(750)}
-              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
+              className={`p-6 rounded-lg border-2 transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 750
                   ? 'selected-option'
                   : 'neutral-container hover:border-primary/50'
               }`}
             >
-              <h4 className="font-semibold text-foreground mb-2">Essential Cover</h4>
-              <div className="text-lg font-bold text-primary mb-1">£750 Claim Limit</div>
-              <p className="text-sm text-muted-foreground">Perfect for smaller repairs and peace of mind.</p>
+              <div className="absolute top-4 right-4">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="p-1 hover:bg-gray-100 rounded-full" onClick={(e) => e.stopPropagation()}>
+                      <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-4" align="end">
+                    <div className="space-y-3">
+                      <p className="text-sm text-foreground">
+                        Designed for everyday motoring peace of mind, this plan covers the most common and affordable mechanical and electrical faults—not wear and tear or consumables.
+                      </p>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-2">Example Repairs Covered:</h4>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Starter motor failure</li>
+                          <li>• Alternator replacement</li>
+                          <li>• Electric window motor faults</li>
+                          <li>• Central locking system issues</li>
+                          <li>• Fuel pump malfunction</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-1">What if the repair costs more?</h4>
+                        <p className="text-xs text-muted-foreground">
+                          If your repair exceeds the £750 limit, you'll just pay the difference. You're still making significant savings—without the high cost of unlimited cover.
+                        </p>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="text-2xl font-bold text-primary mb-2">£750</div>
+              <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Essential</h4>
+              <p className="text-sm text-muted-foreground mb-2">(10 claims per year)</p>
+              <p className="text-sm font-medium text-foreground">Confidence for the everyday drive.</p>
             </button>
             
+            {/* AutoCare Advantage */}
             <button
               onClick={() => setSelectedClaimLimit(1250)}
-              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left relative ${
+              className={`p-6 rounded-lg border-2 transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 1250
                   ? 'selected-option'
                   : 'neutral-container hover:border-primary/50'
@@ -694,22 +728,89 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <div className="absolute -top-3 right-4 savings-badge">
                 MOST POPULAR
               </div>
-              <h4 className="font-semibold text-foreground mb-2">Plus Cover</h4>
-              <div className="text-lg font-bold text-primary mb-1">£1,250 Claim Limit</div>
-              <p className="text-sm text-muted-foreground">Ideal for comprehensive protection on major repairs.</p>
+              <div className="absolute top-4 right-4">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="p-1 hover:bg-gray-100 rounded-full" onClick={(e) => e.stopPropagation()}>
+                      <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-4" align="end">
+                    <div className="space-y-3">
+                      <p className="text-sm text-foreground">
+                        A comprehensive option that balances cost and coverage, ideal for drivers who want broader protection.
+                      </p>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-2">Example Repairs Covered:</h4>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Transmission control module faults</li>
+                          <li>• Suspension arm or bush replacements</li>
+                          <li>• Radiator or water pump failure</li>
+                          <li>• ABS sensor or module issues</li>
+                          <li>• Air conditioning compressor faults</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-1">What if the repair costs more?</h4>
+                        <p className="text-xs text-muted-foreground">
+                          If your repair exceeds the £1,250 limit, you'll only need to top up the difference—still saving significantly compared to paying out of pocket.
+                        </p>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="text-2xl font-bold text-primary mb-2">£1,250</div>
+              <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Advantage</h4>
+              <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
+              <p className="text-sm font-medium text-foreground">Balanced protection for life's bigger bumps.</p>
             </button>
             
+            {/* AutoCare Elite */}
             <button
               onClick={() => setSelectedClaimLimit(2000)}
-              className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
+              className={`p-6 rounded-lg border-2 transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 2000
                   ? 'selected-option'
                   : 'neutral-container hover:border-primary/50'
               }`}
             >
-              <h4 className="font-semibold text-foreground mb-2">Premium Cover</h4>
-              <div className="text-lg font-bold text-primary mb-1">£2,000 Claim Limit</div>
-              <p className="text-sm text-muted-foreground">Maximum protection for high-value repairs.</p>
+              <div className="absolute top-4 right-4">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="p-1 hover:bg-gray-100 rounded-full" onClick={(e) => e.stopPropagation()}>
+                      <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-4" align="end">
+                    <div className="space-y-3">
+                      <p className="text-sm text-foreground">
+                        Premium-level protection for high-value repairs.
+                      </p>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-2">Example Repairs Covered:</h4>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Engine control unit (ECU) failure</li>
+                          <li>• Gearbox or clutch actuator replacement</li>
+                          <li>• Turbocharger faults</li>
+                          <li>• Hybrid or electric drive system issues</li>
+                          <li>• Advanced infotainment or navigation system faults</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-1">What if the repair costs more?</h4>
+                        <p className="text-xs text-muted-foreground">
+                          If the repair goes beyond the £2,000 limit, you'll just pay the extra. You still benefit from major savings—without the premium of unlimited cover.
+                        </p>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="text-2xl font-bold text-primary mb-2">£2,000</div>
+              <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Elite</h4>
+              <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
+              <p className="text-sm font-medium text-foreground">Top-tier cover for total peace of mind.</p>
             </button>
           </div>
         </div>
