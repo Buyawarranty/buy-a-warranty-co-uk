@@ -570,8 +570,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
-                1
+              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
+                <Car className="h-4 w-4" />
               </div>
               <h2 className="text-xl font-semibold text-foreground">Vehicle Information</h2>
             </div>
