@@ -370,13 +370,11 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                  </div>
                )}
 
-               {(vehicleData.motStatus || vehicleData.taxStatus) && (
-                 <p className="text-xs text-gray-500 mt-2">
-                   {vehicleData.motStatus && `MOT: ${vehicleData.motStatus}`}
-                   {vehicleData.motStatus && vehicleData.taxStatus && ' • '}
-                   {vehicleData.taxStatus && `Tax: ${vehicleData.taxStatus}`}
-                 </p>
-               )}
+                {vehicleData.motStatus && (
+                  <p className="text-xs text-gray-500 mt-2">
+                    MOT: {vehicleData.motStatus}
+                  </p>
+                )}
                {vehicleData.vehicleType && !['car', 'van'].includes(vehicleData.vehicleType) && (
                  <p className="text-sm text-blue-600 font-semibold mt-1">
                    Special Vehicle Type: {vehicleData.vehicleType}
