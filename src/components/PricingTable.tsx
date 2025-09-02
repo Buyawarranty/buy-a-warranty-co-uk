@@ -480,7 +480,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   // Hard client-side guard (belt & braces)
   const ensureCarOnly = (rows: Plan[]) =>
-    rows.filter(p => ['Basic', 'Gold', 'Platinum'].includes((p.name ?? '').trim()));
+    rows.filter(p => ['Basic', 'Gold'].includes((p.name ?? '').trim()));
 
   const ensureSpecialOnly = (rows: Plan[], vt: VehicleType) =>
     rows.filter(p => (p.vehicle_type ?? p.name?.toLowerCase()) === vt || (p.vehicle_type ?? p.name?.toLowerCase()) === (vt === 'ev' ? 'electric' : vt));
