@@ -165,7 +165,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Right Content - Hero Image */}
             <div className="relative">
               <img 
-                src="/lovable-uploads/2fb08882-4b90-4c73-b8b1-7d270c83aa5f.png" 
+                src="/lovable-uploads/c125ffa7-1dbd-4dd3-9223-30e694c05b05.png" 
                 alt="Panda mascot with cars and motorcycle" 
                 className="w-full h-auto"
               />
