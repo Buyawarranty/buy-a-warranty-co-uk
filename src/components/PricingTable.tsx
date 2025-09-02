@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -742,33 +743,35 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           
           {/* What's Covered Section */}
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg border-2 border-green-200 p-6 mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
-                4
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900">What's Covered?</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                'Engine',
-                'Manual Gearbox', 
-                'Automatic Transmission',
-                'Torque Converter',
-                'Overdrive',
-                'Differential',
-                'Electrics',
-                'Casings',
-                'Recover Claim-back'
-              ].map((item, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                    <Check className="h-3 w-3 text-white" />
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="whats-covered" className="border-none">
+                <AccordionTrigger className="hover:no-underline pb-4 pt-0">
+                  <h2 className="text-xl font-semibold text-gray-900">What's Covered?</h2>
+                </AccordionTrigger>
+                <AccordionContent className="pb-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[
+                      'Engine',
+                      'Manual Gearbox', 
+                      'Automatic Transmission',
+                      'Torque Converter',
+                      'Overdrive',
+                      'Differential',
+                      'Electrics',
+                      'Casings',
+                      'Recover Claim-back'
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                        <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
+                        <span className="text-gray-700 font-medium">{item}</span>
+                      </div>
+                    ))}
                   </div>
-                  <span className="text-gray-700 font-medium">{item}</span>
-                </div>
-              ))}
-            </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
 
 
