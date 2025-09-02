@@ -370,7 +370,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                  </div>
                )}
 
-                {vehicleData.motStatus && vehicleData.motStatus !== 'Not Required' && (
+                {vehicleData.motStatus && (
                   <p className="text-xs text-gray-500 mt-2">
                     MOT: {vehicleData.motStatus}
                   </p>
