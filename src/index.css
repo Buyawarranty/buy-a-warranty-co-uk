@@ -40,8 +40,8 @@ html {
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 4%;
 
-    /* CTA/Action Color (Bold Blue for primary actions) */
-    --primary: 217 91% 60%;
+    /* CTA/Action Color (Branded Orange for primary actions) */
+    --primary: 16 100% 46%;
     --primary-foreground: 0 0% 100%;
 
     /* Neutral variants */
@@ -64,7 +64,7 @@ html {
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 217 91% 60%;
+    --ring: 16 100% 46%;
 
     --radius: 0.5rem;
 
@@ -199,7 +199,7 @@ html {
 
 /* Swinton Design System Components */
 
-/* CTA Button - Bold Blue for Primary Actions */
+/* CTA Button - Branded Orange for Primary Actions */
 .btn-cta {
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
@@ -369,7 +369,7 @@ html {
   font-weight: bold;
 }
 
-/* Primary Button - Official Brand Blue */
+/* Primary Button - Official Brand Orange */
 .btn-primary {
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
