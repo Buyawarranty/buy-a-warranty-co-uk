@@ -768,7 +768,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="max-w-6xl mx-auto px-4 pb-16">
           
           {/* What's Covered Section */}
-          <div className="section-header mb-8">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-lg p-6 mb-8">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="whats-covered" className="border-none">
                 <AccordionTrigger className="hover:no-underline pb-2 pt-0 [&>svg]:h-8 [&>svg]:w-8 [&>svg]:text-primary">
