@@ -48,6 +48,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
       description: 'Manage email templates and campaigns'
     },
     {
+      id: 'email-marketing',
+      label: 'Email Marketing',
+      icon: Users,
+      description: 'Manage subscriber lists and send marketing campaigns'
+    },
+    {
       id: 'analytics',
       label: 'Analytics',
       icon: BarChart3,

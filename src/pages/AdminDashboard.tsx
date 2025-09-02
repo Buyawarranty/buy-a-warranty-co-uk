@@ -7,6 +7,7 @@ import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
 import { DiscountCodesTab } from '@/components/admin/DiscountCodesTab';
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
 import EmailManagementTab from '@/components/admin/EmailManagementTab';
+import EmailMarketingTab from '@/components/admin/EmailMarketingTab';
 import AccountSettings from '@/components/admin/AccountSettings';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import CreateTestCustomer from '@/components/CreateTestCustomer';
@@ -99,6 +100,8 @@ const AdminDashboard = () => {
         return <DiscountCodesTab />;
       case 'emails':
         return <EmailManagementTab />;
+      case 'email-marketing':
+        return <EmailMarketingTab />;
       case 'analytics':
         return <AnalyticsTab />;
       case 'user-permissions':
