@@ -20,6 +20,7 @@ import QuickPasswordReset from "./pages/QuickPasswordReset";
 import PaymentFallback from "./pages/PaymentFallback";
 
 import CarJourneyDemo from "./pages/CarJourneyDemo";
+import OriginalPricing from "./pages/OriginalPricing";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="/quick-reset" element={<QuickPasswordReset />} />
                 <Route path="/car-journey" element={<CarJourneyDemo />} />
                 <Route path="/car-preview" element={<CarSpinnerPreview />} />
+                <Route path="/original-pricing" element={<OriginalPricing />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
