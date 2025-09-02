@@ -760,10 +760,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 {/* Preview content when collapsed */}
                 <div className="block data-[state=open]:hidden">
                   <div className="relative overflow-hidden">
-                    <div className="text-sm text-muted-foreground blur-sm select-none pointer-events-none opacity-60 py-2">
+                    <div className="text-sm text-muted-foreground py-2">
                       Unlimited Claims • Engine, Gearbox, Clutch • Suspension & Braking • ECUs & Sensors • Air Conditioning • Labour Costs • Recovery...
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-card"></div>
                   </div>
                 </div>
 
