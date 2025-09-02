@@ -237,11 +237,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </p>
             </div>
 
-            {/* Right - Panda with car */}
+            {/* Right - Panda with vehicles */}
             <div className="relative text-center">
               <img 
-                src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
-                alt="Panda mascot with vehicle" 
+                src="/lovable-uploads/53a6f4f0-3302-4124-9cf6-ba1915daa8f1.png" 
+                alt="Panda mascot with various vehicles" 
                 className="w-full h-auto max-w-lg mx-auto"
               />
             </div>
@@ -253,26 +253,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       <section className="py-20 bg-brand-gray-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left - Panda with badges */}
+            {/* Left - Panda with plan badges */}
             <div className="relative text-center">
-              <div className="relative inline-block">
-                <img 
-                  src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
-                  alt="Panda mascot" 
-                  className="w-full h-auto max-w-lg mx-auto"
-                />
-                
-                {/* Floating badges */}
-                <div className="absolute -top-6 -left-8 bg-brand-orange text-white px-4 py-2 rounded-full text-sm font-bold transform -rotate-12 shadow-lg animate-pulse">
-                  Monthly
-                </div>
-                <div className="absolute -top-12 right-6 bg-brand-orange text-white px-4 py-2 rounded-full text-sm font-bold transform rotate-12 shadow-lg animate-pulse">
-                  Yearly  
-                </div>
-                <div className="absolute top-12 -right-12 bg-brand-orange text-white px-4 py-2 rounded-full text-sm font-bold transform rotate-6 shadow-lg animate-pulse">
-                  1,2,3 Years
-                </div>
-              </div>
+              <img 
+                src="/lovable-uploads/c7cd8118-a835-41a0-befa-88809afcde40.png" 
+                alt="Panda mascot with Monthly, Yearly, 1,2,3 Years options" 
+                className="w-full h-auto max-w-lg mx-auto"
+              />
             </div>
 
             {/* Right - Content */}
@@ -327,10 +314,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </button>
             </div>
 
-            {/* Right - Panda with EV charger */}
+            {/* Right - Panda with warranty active */}
             <div className="relative text-center">
               <img 
-                src="/lovable-uploads/9e567a00-ce64-4eeb-912d-29deacaf4568.png" 
+                src="/lovable-uploads/dac1df61-e069-48d7-bfb0-6cc26bc3e816.png" 
                 alt="Panda with EV charging station - Warranty Active" 
                 className="w-full h-auto max-w-lg mx-auto"
               />
@@ -352,8 +339,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
           <div>
             <img 
-              src="/lovable-uploads/c125ffa7-1dbd-4dd3-9223-30e694c05b05.png" 
-              alt="Panda with repair services" 
+              src="/lovable-uploads/53a6f4f0-3302-4124-9cf6-ba1915daa8f1.png" 
+              alt="Panda with vehicles for repair services" 
               className="w-full h-auto max-w-2xl mx-auto"
             />
           </div>
@@ -364,7 +351,16 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left - Content */}
+            {/* Left - Panda with garage */}
+            <div className="relative text-center">
+              <img 
+                src="/lovable-uploads/23670d98-259a-4eb2-82e6-8e55a7cfa9af.png" 
+                alt="Panda mascot with repair garage" 
+                className="w-full h-auto max-w-lg mx-auto"
+              />
+            </div>
+
+            {/* Right - Content */}
             <div className="space-y-8">
               <h2 className="text-4xl font-bold text-brand-dark-text leading-tight">
                 Big Repairs, Low Monthly Cost.
@@ -372,11 +368,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <span className="text-brand-orange">Shield Your Car From Costly Repairs</span>
               </h2>
               
-              <p className="text-lg text-brand-dark-text leading-relaxed">
-                Don't let unexpected repair bills catch you off guard. Our warranty plans 
-                provide comprehensive protection at an affordable monthly cost.
-              </p>
-
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mt-1 flex-shrink-0">
@@ -418,15 +409,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-10 py-4 text-xl rounded shadow-lg transition-colors">
                 See How Much I Can Save
               </button>
-            </div>
-
-            {/* Right - Panda with garage */}
-            <div className="relative text-center">
-              <img 
-                src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
-                alt="Panda mascot with repair garage" 
-                className="w-full h-auto max-w-lg mx-auto"
-              />
             </div>
           </div>
         </div>
