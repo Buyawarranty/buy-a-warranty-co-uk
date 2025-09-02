@@ -77,102 +77,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const handleSubmitContactForm = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // If no email provided, just skip to next step
-    if (!email.trim()) {
-      // Trigger confetti
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      
-      // Small delay to let confetti start before navigating
-      setTimeout(() => {
-        onNext({ firstName: '', lastName: '', email: '', phone: '', sendQuoteEmail: false });
-      }, 300);
-      return;
-    }
-    
-    // Mark email field as touched for validation
-    setTouched({
-      firstName: true,
-      lastName: true,
-      email: true,
-      phone: true
+    // Trigger confetti
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
     });
-
-    if (validateForm()) {
-      setSendingEmail(true);
-      
-      try {
-        // Send initial quote email (without specific plan details yet)
-        console.log('Sending initial quote email with data:', {
-          email,
-          firstName,
-          lastName,
-          vehicleData
-        });
-        
-        const quoteResponse = await supabase.functions.invoke('send-quote-email', {
-          body: {
-            email: email,
-            firstName: firstName,
-            lastName: lastName,
-            vehicleData: vehicleData,
-            planData: {
-              planName: "Vehicle Protection Plans",
-              totalPrice: 0, // Will be updated when plan is selected
-              monthlyPrice: 19.99, // Starting from price
-              voluntaryExcess: 50,
-              paymentType: "12months",
-              selectedAddOns: {}
-            },
-            quoteId: `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
-            isInitialQuote: true // Flag to indicate this is a pre-plan-selection quote
-          }
-        });
-
-        if (quoteResponse.error) {
-          console.error('Failed to send quote email:', quoteResponse.error);
-          throw new Error('Failed to send quote email');
-        }
-
-        console.log('Quote email sent successfully:', quoteResponse.data);
-
-        // Track abandoned cart for email quote users
-        await supabase.functions.invoke('track-abandoned-cart', {
-          body: {
-            full_name: email, // Using email as the name since we don't have separate fields
-            email: email,
-            phone: '',
-            vehicle_reg: vehicleData?.regNumber,
-            vehicle_make: vehicleData?.make,
-            vehicle_model: vehicleData?.model,
-            vehicle_year: vehicleData?.year,
-            mileage: vehicleData?.mileage,
-            step_abandoned: 2
-          }
-        });
-
-        // Trigger confetti
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-        
-        // Small delay to let confetti start before navigating
-        setTimeout(() => {
-          onNext({ firstName: '', lastName: '', email, phone: '', sendQuoteEmail: true });
-        }, 300);
-        
-      } catch (error) {
-        console.error('Error sending quote email:', error);
-        alert('There was an error sending your quote email. Please try again.');
-      } finally {
-        setSendingEmail(false);
-      }
-    }
+    
+    // Small delay to let confetti start before navigating
+    setTimeout(() => {
+      onNext({ firstName: '', lastName: '', email: email.trim(), phone: '', sendQuoteEmail: !!email.trim() });
+    }, 300);
   };
 
   const handleFieldBlur = (field: 'firstName' | 'lastName' | 'email' | 'phone') => {
