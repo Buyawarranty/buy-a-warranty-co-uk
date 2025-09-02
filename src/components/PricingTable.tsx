@@ -894,23 +894,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div 
                     onClick={() => setPaymentType('12months')}
-                    className={`border-3 rounded-lg p-6 transition-all duration-200 shadow-md cursor-pointer ${
+                    className={`border-3 rounded-lg p-6 transition-all duration-200 shadow-md cursor-pointer relative ${
                       paymentType === '12months'
                         ? 'border-primary bg-primary/5 shadow-lg transform scale-105'
                         : 'border-blue-300 bg-white hover:border-primary/70 hover:shadow-lg hover:bg-blue-50/50'
                     }`}>
-                    <div className="text-center">
-                      <div className="flex justify-center mb-3">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                          paymentType === '12months'
-                            ? 'border-primary bg-primary'
-                            : 'border-gray-300 bg-white'
-                        }`}>
-                          {paymentType === '12months' && (
-                            <div className="w-3 h-3 rounded-full bg-white"></div>
-                          )}
-                        </div>
+                    <div className="absolute top-4 right-4">
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-200 ${
+                        paymentType === '12months'
+                          ? 'border-primary bg-primary'
+                          : 'border-gray-400 bg-white'
+                      }`}>
+                        {paymentType === '12months' && (
+                          <div className="w-2 h-2 rounded-full bg-white"></div>
+                        )}
                       </div>
+                    </div>
+                    <div className="text-center">
                       <h3 className="text-xl font-bold text-foreground mb-2">1 Year</h3>
                       <div className="text-2xl font-bold text-foreground mb-1">£{oneYearPrice.total}</div>
                       <div className="text-lg text-muted-foreground mb-2">or £{oneYearPrice.monthly}/mo</div>
@@ -955,18 +955,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         Save £{twoYearPrice.save}
                       </div>
                     </div>
+                    <div className="absolute top-4 right-4">
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-200 ${
+                        paymentType === '24months'
+                          ? 'border-primary bg-primary'
+                          : 'border-gray-400 bg-white'
+                      }`}>
+                        {paymentType === '24months' && (
+                          <div className="w-2 h-2 rounded-full bg-white"></div>
+                        )}
+                      </div>
+                    </div>
                      <div className="text-center">
-                       <div className="flex justify-center mb-3">
-                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                           paymentType === '24months'
-                             ? 'border-primary bg-primary'
-                             : 'border-gray-300 bg-white'
-                         }`}>
-                           {paymentType === '24months' && (
-                             <div className="w-3 h-3 rounded-full bg-white"></div>
-                           )}
-                         </div>
-                       </div>
                        <h3 className="text-xl font-bold text-foreground mb-2">2 Years</h3>
                        <div className="text-2xl font-bold text-foreground mb-1">£{twoYearPrice.total}</div>
                        <div className="text-lg text-muted-foreground mb-2">or £{twoYearPrice.monthly}/mo</div>
@@ -1011,18 +1011,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         Save £{threeYearPrice.save}
                       </div>
                     </div>
+                    <div className="absolute top-4 right-4">
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-200 ${
+                        paymentType === '36months'
+                          ? 'border-primary bg-primary'
+                          : 'border-gray-400 bg-white'
+                      }`}>
+                        {paymentType === '36months' && (
+                          <div className="w-2 h-2 rounded-full bg-white"></div>
+                        )}
+                      </div>
+                    </div>
                      <div className="text-center">
-                       <div className="flex justify-center mb-3">
-                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                           paymentType === '36months'
-                             ? 'border-primary bg-primary'
-                             : 'border-gray-300 bg-white'
-                         }`}>
-                           {paymentType === '36months' && (
-                             <div className="w-3 h-3 rounded-full bg-white"></div>
-                           )}
-                         </div>
-                       </div>
                        <h3 className="text-xl font-bold text-foreground mb-2">3 Years</h3>
                        <div className="text-2xl font-bold text-foreground mb-1">£{threeYearPrice.total}</div>
                        <div className="text-lg text-muted-foreground mb-2">or £{threeYearPrice.monthly}/mo</div>
