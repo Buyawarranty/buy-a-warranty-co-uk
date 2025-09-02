@@ -156,33 +156,17 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <p className="text-sm text-gray-600">
                     Cover for vehicles up to 150,000 miles and 15 years old
                   </p>
-                </div>
-
-                <Button 
-                  onClick={handleGetQuote}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-lg w-full max-w-md"
-                  disabled={!regNumber.trim()}
-                >
-                  Get my quote →
-                </Button>
               </div>
 
-              {/* Trustpilot */}
-              <div className="flex items-center">
-                <a 
-                  href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="transition-opacity hover:opacity-80"
-                >
-                  <img 
-                    src="/lovable-uploads/4e4faf8a-b202-4101-a858-9c58ad0a28c5.png" 
-                    alt="Trustpilot 5 stars" 
-                    className="h-8 w-auto"
-                  />
-                </a>
-              </div>
+              <Button 
+                onClick={handleGetQuote}
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-lg w-full max-w-md"
+                disabled={!regNumber.trim()}
+              >
+                Get my quote →
+              </Button>
             </div>
+          </div>
 
             {/* Right Content - Hero Image */}
             <div className="relative">
@@ -504,9 +488,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* FAQ Section */}
       <HomepageFAQ />
-
-      {/* Footer */}
-      <WebsiteFooter />
     </div>
   );
 };
