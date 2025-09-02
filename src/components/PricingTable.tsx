@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
@@ -749,25 +749,75 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <h2 className="text-xl font-semibold text-foreground">What's Covered?</h2>
                 </AccordionTrigger>
                 <AccordionContent className="pb-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {[
-                      'Engine',
-                      'Manual Gearbox', 
-                      'Automatic Transmission',
-                      'Torque Converter',
-                      'Overdrive',
-                      'Differential',
-                      'Electrics',
-                      'Casings',
-                      'Recover Claim-back'
-                    ].map((item, index) => (
-                      <div key={index} className="flex items-center gap-3">
-                        <div className="w-5 h-5 bg-success rounded-full flex items-center justify-center flex-shrink-0">
-                          <Check className="h-3 w-3 text-success-foreground" />
-                        </div>
-                        <span className="text-foreground font-medium">{item}</span>
+                  {/* Main Coverage */}
+                  <div className="space-y-6">
+                    {/* Core Coverage Items */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground mb-4">Comprehensive Coverage</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {[
+                          { item: 'Unlimited Claims', icon: Infinity },
+                          { item: "'ALL' Mechanical & Electrical Components", icon: Zap },
+                          { item: 'Petrol/Diesel Car Coverage', icon: Car },
+                          { item: 'Engine, Gearbox, Clutch, Turbo & Drivetrain', icon: Cog },
+                          { item: 'Suspension, Steering & Braking Systems', icon: Settings },
+                          { item: 'Fuel, Cooling & Emissions Systems', icon: Droplets },
+                          { item: 'ECUs, Sensors & Driver Assistance Tech', icon: Cpu },
+                          { item: 'Air Conditioning, Airbags & Multimedia Systems', icon: Snowflake },
+                          { item: 'Diagnostics & Fault-Finding', icon: Search },
+                          { item: 'Labour Costs', icon: Users },
+                          { item: 'Recovery Claim-back', icon: RotateCcw }
+                        ].map(({ item, icon: Icon }, index) => (
+                          <div key={index} className="flex items-center gap-3">
+                            <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center flex-shrink-0">
+                              <Icon className="h-3.5 w-3.5 text-success-foreground" />
+                            </div>
+                            <span className="text-foreground font-medium">{item}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+
+                    {/* Additional Benefits */}
+                    <div className="bg-muted rounded-lg p-4">
+                      <h4 className="font-semibold text-foreground mb-3">Additional Benefits</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                            <Infinity className="h-3 w-3 text-primary-foreground" />
+                          </div>
+                          <span className="text-foreground">Claim as many times as needed</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                            <MapPin className="h-3 w-3 text-primary-foreground" />
+                          </div>
+                          <span className="text-foreground">Approved garages or choose your own</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* What's Not Included */}
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
+                        <X className="h-4 w-4" />
+                        What's not included:
+                      </h4>
+                      <div className="space-y-2">
+                        {[
+                          'Items related to routine servicing, such as tyres, brake pads and discs',
+                          'Pre-existing faults or issues',
+                          'Vehicles used for hire & reward (e.g. Taxis, Couriers, rentals etc.)'
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-4 h-4 mt-0.5 flex items-center justify-center flex-shrink-0">
+                              <X className="h-3 w-3 text-red-500" />
+                            </div>
+                            <span className="text-red-700 text-sm">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
