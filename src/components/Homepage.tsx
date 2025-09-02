@@ -3,15 +3,30 @@ import { Button } from '@/components/ui/button';
 import { Check, ArrowRight, Star, Shield, Clock, Zap } from 'lucide-react';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+
+interface VehicleData {
+  regNumber: string;
+  mileage: string;
+  make?: string;
+  model?: string;
+  fuelType?: string;
+  transmission?: string;
+  year?: string;
+  vehicleType?: string;
+}
 
 interface HomepageProps {
-  onRegistrationSubmit: (regNumber: string) => void;
+  onRegistrationSubmit: (vehicleData: VehicleData) => void;
 }
 
 const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
+  const { toast } = useToast();
   const [regNumber, setRegNumber] = useState('');
   const [mileage, setMileage] = useState('');
   const [showMileageField, setShowMileageField] = useState(false);
+  const [isLookingUp, setIsLookingUp] = useState(false);
 
   const formatRegNumber = (value: string) => {
     const formatted = value.replace(/\s/g, '').toUpperCase();
@@ -42,13 +57,67 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
   const handleEnterReg = () => {
     if (regNumber.trim()) {
-      onRegistrationSubmit(regNumber);
+      // This function is not used in the current flow
+      // We go directly through handleGetQuote
     }
   };
 
-  const handleGetQuote = () => {
+  const handleGetQuote = async () => {
     if (regNumber.trim() && mileage.trim()) {
-      onRegistrationSubmit(regNumber);
+      setIsLookingUp(true);
+      
+      try {
+        console.log('Looking up vehicle:', regNumber);
+        
+        const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
+          body: { registrationNumber: regNumber }
+        });
+
+        if (error) {
+          console.error('DVSA lookup error:', error);
+          throw error;
+        }
+
+        console.log('DVSA lookup result:', data);
+        
+        // Prepare vehicle data
+        const vehicleData: VehicleData = {
+          regNumber: regNumber,
+          mileage: mileage.replace(/,/g, ''), // Remove commas for storage
+        };
+
+        // Add DVLA data if found
+        if (data?.found) {
+          vehicleData.make = data.make;
+          vehicleData.model = data.model;
+          vehicleData.fuelType = data.fuelType;
+          vehicleData.transmission = data.transmission;
+          vehicleData.year = data.yearOfManufacture;
+          vehicleData.vehicleType = data.vehicleType || 'car';
+        }
+
+        // Submit to parent component
+        onRegistrationSubmit(vehicleData);
+        
+      } catch (error: any) {
+        console.error('Error looking up vehicle:', error);
+        
+        toast({
+          title: "Lookup Failed",
+          description: "Unable to find vehicle details, but you can still continue to get your quote.",
+          variant: "destructive",
+        });
+        
+        // Continue with basic vehicle data even if lookup fails
+        const vehicleData: VehicleData = {
+          regNumber: regNumber,
+          mileage: mileage.replace(/,/g, ''),
+        };
+        
+        onRegistrationSubmit(vehicleData);
+      } finally {
+        setIsLookingUp(false);
+      }
     }
   };
 
@@ -183,13 +252,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <Button 
                   onClick={handleGetQuote}
                   className={`w-full px-12 py-5 text-lg font-bold rounded-lg transition-all ${
-                    isFormValid 
+                    isFormValid && !isLookingUp
                       ? 'bg-orange-500 hover:bg-orange-600 text-white' 
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
-                  disabled={!isFormValid}
+                  disabled={!isFormValid || isLookingUp}
                 >
-                  Get My Quote
+                  {isLookingUp ? 'Looking up vehicle...' : 'Get My Quote'}
                 </Button>
 
                 {/* Trustpilot */}

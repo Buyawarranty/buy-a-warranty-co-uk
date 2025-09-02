@@ -226,13 +226,15 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleHomepageRegistration = (regNumber: string) => {
-    console.log('Homepage registration submitted:', regNumber);
-    // Set the registration number and move to the detailed registration form
-    const partialData = { ...formData, regNumber };
-    setFormData(partialData);
-    setCurrentStep(1.5); // Use 1.5 to show the detailed form
-    // Don't update URL params yet - wait for full registration
+  const handleHomepageRegistration = (vehicleData: VehicleData) => {
+    console.log('Homepage registration submitted:', vehicleData);
+    
+    // Set the vehicle data and go directly to pricing step
+    setVehicleData(vehicleData);
+    setFormData({ ...formData, ...vehicleData });
+    setCurrentStep(2); // Go directly to pricing (was step 3, now step 2)
+    updateStepInUrl(2);
+    saveStateToLocalStorage(2);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -262,14 +264,14 @@ const Index = () => {
 
   const handlePlanSelected = (planId: string, paymentType: string, planName?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}}) => {
     setSelectedPlan({ id: planId, paymentType, name: planName, pricingData });
-    setCurrentStep(4);
-    updateStepInUrl(4);
-    saveStateToLocalStorage(4);
+    setCurrentStep(3); // Now step 3 instead of step 4
+    updateStepInUrl(3);
+    saveStateToLocalStorage(3);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Track plan selection for abandoned cart emails
     if (vehicleData) {
-      trackAbandonedCart(vehicleData, 4, planName, paymentType);
+      trackAbandonedCart(vehicleData, 3, planName, paymentType); // Now step 3
     }
   };
 
@@ -308,7 +310,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden">
-      {currentStep !== 1 && currentStep !== 1.5 && (
+      {currentStep !== 1 && (
         <div className="bg-[#e8f4fb]">
           <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
         </div>
@@ -318,52 +320,7 @@ const Index = () => {
         <Homepage onRegistrationSubmit={handleHomepageRegistration} />
       )}
 
-      {currentStep === 1.5 && (
-        <div className="bg-[#e8f4fb] w-full px-4 py-4 sm:py-8">
-          <div className="max-w-4xl mx-auto">
-            {/* Discount Message Banner */}
-            {searchParams.get('discountMessage') && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 animate-fade-in">
-                <div className="flex items-center gap-3">
-                  <div className="text-green-600 text-2xl">🎉</div>
-                  <div>
-                    <h3 className="text-green-800 font-bold text-lg">
-                      10% Discount Applied!
-                    </h3>
-                    <p className="text-green-700">
-                      {searchParams.get('discountMessage')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            <RegistrationForm 
-              onNext={handleRegistrationComplete} 
-              onBack={(step: number) => setCurrentStep(1)} // Go back to homepage
-              onFormDataUpdate={handleFormDataUpdate}
-              initialData={formData}
-              currentStep={1} // Show as step 1 for progress
-              onStepChange={handleStepChange}
-            />
-          </div>
-        </div>
-      )}
-
-      {currentStep === 2 && vehicleData && (
-        <div className="bg-[#e8f4fb] w-full px-4 py-4 sm:py-8">
-          <div className="max-w-4xl mx-auto">
-            <QuoteDeliveryStep 
-              vehicleData={vehicleData}
-              onNext={handleQuoteDeliveryComplete}
-              onBack={() => handleBackToStep(1)}
-              onSkip={() => handleStepChange(3)}
-            />
-          </div>
-        </div>
-      )}
-
-      {currentStep === 3 && (
+      {currentStep === 2 && (
         <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
           {vehicleData && (
             <>
@@ -371,13 +328,13 @@ const Index = () => {
               {isSpecialVehicle ? (
                 <SpecialVehiclePricing 
                   vehicleData={vehicleData as any}
-                  onBack={() => handleBackToStep(2)} 
+                  onBack={() => handleBackToStep(1)} 
                   onPlanSelected={handlePlanSelected}
                 />
               ) : (
                 <PricingTable 
                   vehicleData={vehicleData} 
-                  onBack={() => handleBackToStep(2)} 
+                  onBack={() => handleBackToStep(1)} 
                   onPlanSelected={handlePlanSelected}
                 />
               )}
@@ -386,7 +343,7 @@ const Index = () => {
         </div>
       )}
 
-      {currentStep === 4 && (
+      {currentStep === 3 && (
         <div className="bg-[#e8f4fb]">
           {vehicleData && selectedPlan ? (
             <CustomerDetailsStep
@@ -396,7 +353,7 @@ const Index = () => {
               planName={selectedPlan.name}
               pricingData={selectedPlan.pricingData}
               onNext={handleCustomerDetailsComplete}
-              onBack={() => handleBackToStep(3)}
+              onBack={() => handleBackToStep(2)}
             />
           ) : (
             <div className="w-full px-4 py-8">
