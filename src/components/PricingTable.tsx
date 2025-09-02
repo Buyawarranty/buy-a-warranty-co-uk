@@ -745,7 +745,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="section-header mb-8">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="whats-covered" className="border-none">
-                <AccordionTrigger className="hover:no-underline pb-2 pt-0">
+                <AccordionTrigger className="hover:no-underline pb-2 pt-0 [&>svg]:h-8 [&>svg]:w-8 [&>svg]:text-primary">
                   <div className="flex flex-col items-start w-full">
                     <div className="flex items-center gap-3">
                       <Shield className="h-5 w-5 text-primary" />
@@ -756,6 +756,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </p>
                   </div>
                 </AccordionTrigger>
+                
+                {/* Preview content when collapsed */}
+                <div className="block data-[state=open]:hidden">
+                  <div className="relative overflow-hidden">
+                    <div className="text-sm text-muted-foreground blur-sm select-none pointer-events-none opacity-60 py-2">
+                      Unlimited Claims • Engine, Gearbox, Clutch • Suspension & Braking • ECUs & Sensors • Air Conditioning • Labour Costs • Recovery...
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-card"></div>
+                  </div>
+                </div>
+
                 <AccordionContent className="pb-0">
                   {/* Main Coverage */}
                   <div className="space-y-6">
