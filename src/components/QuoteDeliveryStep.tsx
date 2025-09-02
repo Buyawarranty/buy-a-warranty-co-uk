@@ -77,7 +77,23 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const handleSubmitContactForm = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Mark all fields as touched
+    // If no email provided, just skip to next step
+    if (!email.trim()) {
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      
+      // Small delay to let confetti start before navigating
+      setTimeout(() => {
+        onNext({ firstName: '', lastName: '', email: '', phone: '', sendQuoteEmail: false });
+      }, 300);
+      return;
+    }
+    
+    // Mark email field as touched for validation
     setTouched({
       firstName: true,
       lastName: true,
@@ -319,17 +335,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   
                   <button 
                     type="submit" 
-                    disabled={!email.trim() || !!errors.email || sendingEmail}
-                    title={!email.trim() ? "Please enter email" : sendingEmail ? "Processing..." : ""}
+                    disabled={!!errors.email || sendingEmail}
+                    title={sendingEmail ? "Processing..." : ""}
                     className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                     style={{ backgroundColor: '#eb4b00' }}
                     onMouseEnter={(e) => {
-                      if (email.trim() && !errors.email && !sendingEmail) {
+                      if (!errors.email && !sendingEmail) {
                         e.currentTarget.style.backgroundColor = '#d43f00';
                       }
                     }}
                     onMouseLeave={(e) => {
-                      if (email.trim() && !errors.email && !sendingEmail) {
+                      if (!errors.email && !sendingEmail) {
                         e.currentTarget.style.backgroundColor = '#eb4b00';
                       }
                     }}
