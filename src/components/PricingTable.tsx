@@ -662,8 +662,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         {/* Claim Limit Selection */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
-              3
+            <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
+              <Check className="h-4 w-4" />
             </div>
             <h2 className="text-xl font-semibold text-foreground">Choose Your Claim Limit</h2>
           </div>
