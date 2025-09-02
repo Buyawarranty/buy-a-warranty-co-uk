@@ -137,18 +137,33 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     type="text"
                     value={regNumber}
                     onChange={handleRegChange}
-                    placeholder="ENTER REG"
-                    className="bg-transparent border-none outline-none text-xl text-gray-900 flex-1 font-bold placeholder:text-gray-700"
+                    placeholder="Enter your reg"
+                    className="bg-transparent border-none outline-none text-xl text-gray-900 flex-1 font-bold placeholder:text-gray-600"
                     maxLength={8}
                   />
                 </div>
 
+                {/* Mileage Input */}
+                <div className="space-y-2">
+                  <label className="text-lg font-semibold text-gray-700">
+                    What's your approximate mileage?
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 32,000"
+                    className="w-full max-w-md px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                  />
+                  <p className="text-sm text-gray-600">
+                    We can only provide warranty for vehicles with a maximum mileage of 150,000
+                  </p>
+                </div>
+
                 <Button 
                   onClick={handleGetQuote}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-lg"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-lg w-full max-w-md"
                   disabled={!regNumber.trim()}
                 >
-                  Get My Quote
+                  Get my quote →
                 </Button>
               </div>
 
