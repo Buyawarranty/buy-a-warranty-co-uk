@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowRight, Star, Shield, Clock, Zap } from 'lucide-react';
+import HomepageFAQ from './HomepageFAQ';
+import WebsiteFooter from './WebsiteFooter';
 
 interface HomepageProps {
   onRegistrationSubmit: (regNumber: string) => void;
@@ -194,7 +196,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </section>
 
-      {/* Extended Warranty Section */}
+      {/* Extended Warranty Video Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -202,7 +204,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <div className="relative">
               <img 
                 src="/lovable-uploads/cacd3333-06fb-4bfb-b8f8-32505122c11d.png" 
-                alt="Video thumbnail showing people" 
+                alt="Extended warranty explainer video" 
                 className="w-full h-auto rounded-lg"
               />
             </div>
@@ -213,107 +215,118 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <h2 className="text-4xl font-bold text-gray-900 mb-4">
                   Extended Warranty.
                   <br />
-                  <span className="text-orange-500">Avoid Costly Repairs</span>
+                  <span className="text-[#eb4b00]">Avoid Costly Repairs</span>
                 </h2>
                 <p className="text-lg text-gray-600">
-                  Protect your vehicle from unexpected repairs with flexible, 
-                  affordable warranty plans. Get covered in under 60 seconds. No 
-                  hidden fees. No nonsense.
+                  Protect your vehicle from unexpected repairs with our comprehensive warranty plans. 
+                  Get covered quickly and easily with no hidden fees.
                 </p>
               </div>
 
               <Button 
-                className="bg-blue-900 hover:bg-blue-800 text-white font-bold px-8 py-3 rounded-lg"
+                className="bg-[#6B46C1] hover:bg-[#553C9A] text-white font-bold px-8 py-4 rounded-lg text-lg"
               >
-                Get My Cover
+                Start Cover
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Why Choose Section */}
+      {/* Step 1 - Enter Your Reg Plate */}
       <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left - Content */}
+            <div className="space-y-6">
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="w-12 h-12 bg-[#eb4b00] text-white rounded-full flex items-center justify-center font-bold text-xl">
+                  1
+                </div>
+                <h2 className="text-4xl font-bold text-gray-900">
+                  Enter Your <span className="text-[#eb4b00]">Reg Plate!</span>
+                </h2>
+              </div>
+              
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Get an instant quote by entering your vehicle registration number. 
+                Our system will automatically look up your vehicle details and show 
+                you available warranty options tailored to your car.
+              </p>
+
+              <div className="bg-[#eb4b00] text-white p-4 rounded-lg">
+                <p className="font-semibold">Quick & Easy Process</p>
+                <p className="text-sm">No lengthy forms - just your reg plate and mileage!</p>
+              </div>
+            </div>
+
+            {/* Right - Panda with car */}
+            <div className="relative text-center">
+              <img 
+                src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
+                alt="Panda mascot with vehicle" 
+                className="w-full h-auto max-w-md mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Step 2 - Choose Your Plan */}
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Panda with badges */}
             <div className="relative text-center">
               <div className="relative inline-block">
-                {/* Panda mascot */}
                 <img 
                   src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
                   alt="Panda mascot" 
-                  className="w-80 h-auto mx-auto"
+                  className="w-full h-auto max-w-md mx-auto"
                 />
                 
                 {/* Floating badges */}
-                <div className="absolute -top-4 -left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold transform -rotate-12">
+                <div className="absolute -top-4 -left-4 bg-[#eb4b00] text-white px-3 py-1 rounded-full text-sm font-bold transform -rotate-12">
                   Monthly
                 </div>
-                <div className="absolute -top-8 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold transform rotate-12">
-                  Yearly
+                <div className="absolute -top-8 right-4 bg-[#eb4b00] text-white px-3 py-1 rounded-full text-sm font-bold transform rotate-12">
+                  Yearly  
                 </div>
-                <div className="absolute top-8 -right-8 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold transform rotate-6">
+                <div className="absolute top-8 -right-8 bg-[#eb4b00] text-white px-3 py-1 rounded-full text-sm font-bold transform rotate-6">
                   1,2,3 Years
                 </div>
               </div>
             </div>
 
-            {/* Right - Benefits list */}
+            {/* Right - Content */}
             <div className="space-y-6">
-              <h2 className="text-4xl font-bold text-gray-900">
-                Why Choose <span className="text-orange-500">Buy a Warranty?</span>
-              </h2>
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="w-12 h-12 bg-[#eb4b00] text-white rounded-full flex items-center justify-center font-bold text-xl">
+                  2
+                </div>
+                <h2 className="text-4xl font-bold text-gray-900">
+                  <span className="text-[#eb4b00]">Choose Your Plan</span>
+                </h2>
+              </div>
               
-              <p className="text-gray-600 mb-6">No Excess: Never pay a penny towards repairs.</p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Select from our range of comprehensive warranty plans. Choose between 
+                £2,000 or £5,000 claim limits, and decide whether to pay monthly or 
+                annually. All plans include unlimited claims with no excess to pay.
+              </p>
 
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Unlimited Claims:</span>
-                    <span className="text-gray-600 ml-1">Claim as many times as you need.</span>
-                  </div>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-gray-700">Flexible payment options</span>
                 </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Comprehensive Coverage:</span>
-                    <span className="text-gray-600 ml-1">From engine to electrics.</span>
-                  </div>
+                <div className="flex items-center space-x-3">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-gray-700">No excess charges</span>
                 </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Free MOT Test:</span>
-                    <span className="text-gray-600 ml-1">We pay your MOT test fee.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Recovery:</span>
-                    <span className="text-gray-600 ml-1">Claim-back recovery costs.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Nationwide Repairs:</span>
-                    <span className="text-gray-600 ml-1">Repairs at trusted garages nationwide, ATS, Kwik Fit.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Flexible Plans:</span>
-                    <span className="text-gray-600 ml-1">Available on 1, 2, or 3 year plans and monthly 0% APR options.</span>
-                  </div>
+                <div className="flex items-center space-x-3">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-gray-700">Unlimited claims</span>
                 </div>
               </div>
             </div>
@@ -321,83 +334,179 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </section>
 
-      {/* What Do We Cover Section */}
-      <section className="py-16 bg-white">
+      {/* Step 3 - Drive With Confidence */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Content */}
             <div className="space-y-6">
-              <h2 className="text-4xl font-bold text-gray-900">
-                What Do We <span className="text-orange-500">Cover?</span>
-              </h2>
-              
-              <p className="text-gray-600 mb-6">Our warranty includes:</p>
-
-              <div className="space-y-3">
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Mechanical & Electrical Components:</span>
-                    <span className="text-gray-600 ml-1">Engine, gearbox, clutch, turbo, drivetrain, suspension, steering, braking systems, fuel, cooling, emissions systems, ECUs, electrical, driver assistance tech, oil conditioning, aircon, multimedia systems.</span>
-                  </div>
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="w-12 h-12 bg-[#eb4b00] text-white rounded-full flex items-center justify-center font-bold text-xl">
+                  3
                 </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Diagnostics & Fault-Finding:</span>
-                    <span className="text-gray-600 ml-1">Comprehensive diagnostic coverage.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Consequential Damage:</span>
-                    <span className="text-gray-600 ml-1">Protection against related damages.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Labour Costs:</span>
-                    <span className="text-gray-600 ml-1">Labour costs covered.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Claim Limits:</span>
-                    <span className="text-gray-600 ml-1">£2000 or £5,000 per claim.</span>
-                  </div>
-                </div>
+                <h2 className="text-4xl font-bold text-gray-900">
+                  Drive With Confidence –
+                  <br />
+                  <span className="text-[#eb4b00]">You're Covered</span>
+                </h2>
               </div>
+              
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Once you're covered, drive with complete peace of mind. If something 
+                goes wrong, simply call our claims team and we'll take care of everything. 
+                No upfront costs, no hassle.
+              </p>
 
-              <div className="bg-orange-50 p-4 rounded-lg">
-                <h3 className="font-bold text-lg text-gray-900 mb-2">
-                  Protect Your Vehicle <span className="text-orange-500">Today!</span>
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  Whether you drive an old or more reliable vehicle, Buy a Warranty offers the 
-                  protection you need. Get covered in 1 minute and enjoy peace of mind on 
-                  the road.
+              <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-semibold text-green-800">You're Protected!</span>
+                </div>
+                <p className="text-green-700 text-sm">
+                  Your warranty is now active and ready to protect your vehicle.
                 </p>
               </div>
             </div>
 
-            {/* Right - Panda with car and warranty badge */}
+            {/* Right - Panda with car and EV charger */}
             <div className="relative text-center">
               <img 
                 src="/lovable-uploads/9e567a00-ce64-4eeb-912d-29deacaf4568.png" 
-                alt="Panda with car and warranty active badge" 
+                alt="Panda with car and EV charging station" 
                 className="w-full h-auto"
               />
             </div>
           </div>
         </div>
       </section>
+
+      {/* Up to 150,000 Miles Section */}
+      <section className="py-16 bg-[#1E3A8A] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-8">
+            <h2 className="text-4xl font-bold">
+              Up To 150,000 Miles And <span className="text-[#eb4b00]">15 Years Old.</span>
+            </h2>
+            
+            <Button 
+              className="bg-[#eb4b00] hover:bg-[#d63f00] text-white font-bold px-8 py-4 text-lg rounded-lg"
+            >
+              Get Instant Quote
+            </Button>
+
+            <div className="mt-12">
+              <img 
+                src="/lovable-uploads/c125ffa7-1dbd-4dd3-9223-30e694c05b05.png" 
+                alt="Panda with laptop and car" 
+                className="w-full h-auto max-w-2xl mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Get Help With A Repair Section */}
+      <section className="py-16 bg-[#1E1B4B] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-8">
+            <h2 className="text-4xl font-bold">
+              Get Help With A <span className="text-[#eb4b00]">Repair</span>
+            </h2>
+            
+            <Button 
+              className="bg-[#eb4b00] hover:bg-[#d63f00] text-white font-bold px-8 py-4 text-lg rounded-lg"
+            >
+              Make A Claim
+            </Button>
+
+            <div className="mt-12">
+              <img 
+                src="/lovable-uploads/c125ffa7-1dbd-4dd3-9223-30e694c05b05.png" 
+                alt="Panda with repair services" 
+                className="w-full h-auto max-w-2xl mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Big Repairs Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left - Content */}
+            <div className="space-y-6">
+              <h2 className="text-4xl font-bold text-gray-900">
+                Big Repairs, Low Monthly Cost.
+                <br />
+                <span className="text-[#eb4b00]">Shield Your Car From Costly Repairs</span>
+              </h2>
+              
+              <p className="text-lg text-gray-600 mb-6">
+                Don't let unexpected repair bills catch you off guard. Our warranty plans 
+                provide comprehensive protection at an affordable monthly cost.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">No Excess:</span>
+                    <span className="text-gray-600 ml-1">Never pay a penny towards covered repairs</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3">
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Unlimited Claims:</span>
+                    <span className="text-gray-600 ml-1">Claim as many times as you need</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3">
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Fast Claims:</span>
+                    <span className="text-gray-600 ml-1">Quick approval and payment process</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3">
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Nationwide Coverage:</span>
+                    <span className="text-gray-600 ml-1">Repairs at approved garages across the UK</span>
+                  </div>
+                </div>
+              </div>
+
+              <Button 
+                className="bg-[#eb4b00] hover:bg-[#d63f00] text-white font-bold px-8 py-4 text-lg rounded-lg"
+              >
+                See How Much I Can Save
+              </Button>
+            </div>
+
+            {/* Right - Panda with garage */}
+            <div className="relative text-center">
+              <img 
+                src="/lovable-uploads/2d9a5fef-db12-4eb3-927b-bb28108b055c.png" 
+                alt="Panda mascot with repair garage" 
+                className="w-full h-auto max-w-md mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <HomepageFAQ />
+
+      {/* Footer */}
+      <WebsiteFooter />
     </div>
   );
 };
