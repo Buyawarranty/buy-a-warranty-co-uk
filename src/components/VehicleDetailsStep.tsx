@@ -380,23 +380,23 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                    Special Vehicle Type: {vehicleData.vehicleType}
                  </p>
                )}
-               <button 
-                 type="button"
-                 onClick={handleNotMyCar}
-                 className="mt-3 text-sm bg-white border-2 px-[16px] py-[6px] rounded-[6px] transition-all duration-200"
-                 style={{
-                   borderColor: '#224380',
-                   color: '#224380'
-                 }}
-                 onMouseEnter={(e) => {
-                   e.currentTarget.style.backgroundColor = '#f0f8ff';
-                 }}
-                 onMouseLeave={(e) => {
-                   e.currentTarget.style.backgroundColor = 'white';
-                 }}
-               >
-                 This is not my vehicle
-               </button>
+                <button 
+                  type="button"
+                  onClick={() => window.location.href = window.location.pathname + '?step=1'}
+                  className="mt-3 text-sm bg-white border-2 px-[16px] py-[6px] rounded-[6px] transition-all duration-200"
+                  style={{
+                    borderColor: '#224380',
+                    color: '#224380'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f0f8ff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'white';
+                  }}
+                >
+                  Change vehicle
+                </button>
              </div>
            )}
 

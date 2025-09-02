@@ -528,17 +528,37 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                 </div>
               </div>
               
-              {/* Vehicle Registration Display */}
-              <div className="flex justify-center mb-6">
-                <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-lg px-4 py-3 rounded-[6px] shadow-sm leading-tight border-2 border-black">
-                  <img 
-                    src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
-                    alt="GB Flag" 
-                    className="w-[25px] h-[18px] mr-3 object-cover rounded-[2px]"
-                  />
-                  <div className="font-bold font-sans tracking-normal">
-                    {vehicleData.regNumber}
-                  </div>
+              {/* Vehicle Details Display */}
+              <div className="mb-6">
+                <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4">
+                  <p className="text-sm text-gray-700 mb-2 font-semibold">We found the following vehicle</p>
+                  <p className="text-sm text-gray-600">
+                    {vehicleData.make} {vehicleData.model && `• ${vehicleData.model}`} • {vehicleData.fuelType} • {vehicleData.year}
+                  </p>
+                  
+                  {vehicleData.vehicleType && !['car', 'van'].includes(vehicleData.vehicleType) && (
+                    <p className="text-sm text-blue-600 font-semibold mt-1">
+                      Special Vehicle Type: {vehicleData.vehicleType}
+                    </p>
+                  )}
+                  
+                  <button 
+                    type="button"
+                    onClick={() => window.location.href = window.location.pathname + '?step=1'}
+                    className="mt-3 text-sm bg-white border-2 px-[16px] py-[6px] rounded-[6px] transition-all duration-200"
+                    style={{
+                      borderColor: '#224380',
+                      color: '#224380'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#f0f8ff';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'white';
+                    }}
+                  >
+                    Change vehicle
+                  </button>
                 </div>
               </div>
 
