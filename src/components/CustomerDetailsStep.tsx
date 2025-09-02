@@ -81,6 +81,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [showValidation, setShowValidation] = useState(false);
   const [quoteSent, setQuoteSent] = useState(false);
   const [addAnotherWarrantyEnabled, setAddAnotherWarrantyEnabled] = useState(false);
+  const [selectedClaimLimit, setSelectedClaimLimit] = useState('plus'); // Default to Plus Cover
 
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
@@ -89,6 +90,34 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       case 'two_yearly': return 24;
       case 'three_yearly': return 36;
       default: return 12;
+    }
+  };
+
+  // Helper functions for claim limits
+  const getClaimLimitAmount = (limit: string) => {
+    switch (limit) {
+      case 'essential': return 750;
+      case 'plus': return 1250;
+      case 'premium': return 2000;
+      default: return 1250;
+    }
+  };
+
+  const getClaimLimitTitle = (limit: string) => {
+    switch (limit) {
+      case 'essential': return 'Essential Cover';
+      case 'plus': return 'Plus Cover';
+      case 'premium': return 'Premium Cover';
+      default: return 'Plus Cover';
+    }
+  };
+
+  const getClaimLimitDescription = (limit: string) => {
+    switch (limit) {
+      case 'essential': return 'Perfect for smaller repairs and peace of mind.';
+      case 'plus': return 'Ideal for comprehensive protection on major repairs.';
+      case 'premium': return 'Maximum protection for high-value repairs.';
+      default: return 'Ideal for comprehensive protection on major repairs.';
     }
   };
 
@@ -401,7 +430,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           </Card>
         </Collapsible>
 
-        {/* Section 2: Select excess amount */}
+        {/* Section 2: Choose Your Claim Limit */}
         <Collapsible defaultOpen={true} className="mb-4">
           <Card className="border border-gray-200">
             <CollapsibleTrigger className="w-full">
@@ -411,6 +440,95 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
                       2
                     </div>
+                    <CardTitle className="text-lg font-semibold">Choose your claim limit</CardTitle>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="text-center mb-6">
+                  <p className="text-gray-600">All plans include <strong>unlimited</strong> number of claims</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {['essential', 'plus', 'premium'].map((limit) => (
+                    <div
+                      key={limit}
+                      onClick={() => setSelectedClaimLimit(limit)}
+                      className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                        selectedClaimLimit === limit 
+                          ? 'border-orange-500 bg-orange-50' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      {/* Badge for Plus Cover */}
+                      {limit === 'plus' && (
+                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                          <div className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">
+                            MOST POPULAR
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Icon */}
+                      <div className="flex justify-center mb-4">
+                        {limit === 'essential' && (
+                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-6 h-6 text-green-600" />
+                          </div>
+                        )}
+                        {limit === 'plus' && (
+                          <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <div className="text-2xl">⭐</div>
+                          </div>
+                        )}
+                        {limit === 'premium' && (
+                          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                            <div className="text-2xl">🔒</div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Title */}
+                      <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+                        {getClaimLimitTitle(limit)}
+                      </h3>
+                      
+                      {/* Amount */}
+                      <div className="text-center mb-4">
+                        <div className={`text-3xl font-bold ${
+                          limit === 'essential' ? 'text-green-600' :
+                          limit === 'plus' ? 'text-yellow-600' :
+                          'text-orange-600'
+                        }`}>
+                          £{getClaimLimitAmount(limit).toLocaleString()} Claim Limit
+                        </div>
+                      </div>
+                      
+                      {/* Description */}
+                      <p className="text-gray-600 text-center text-sm">
+                        {getClaimLimitDescription(limit)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        {/* Section 3: Select excess amount */}
+        <Collapsible defaultOpen={true} className="mb-4">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                       3
+                     </div>
                     <CardTitle className="text-lg font-semibold">Select excess amount</CardTitle>
                   </div>
                   <ChevronDown className="w-5 h-5 text-gray-500" />
@@ -431,17 +549,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           </Card>
         </Collapsible>
 
-        {/* Section 3: Select period of cover */}
+        {/* Section 4: Select period of cover */}
         <Collapsible defaultOpen={true} className="mb-4">
           <Card className="border border-gray-200">
             <CollapsibleTrigger className="w-full">
               <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
-                      3
-                    </div>
-                    <CardTitle className="text-lg font-semibold">Select period of cover</CardTitle>
+                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                       4
+                     </div>
+                     <CardTitle className="text-lg font-semibold">Select period of cover</CardTitle>
                   </div>
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 </div>
@@ -461,16 +579,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           </Card>
         </Collapsible>
 
-        {/* Section 4: What's covered & Checkout */}
+        {/* Section 5: What's covered & Checkout */}
         <Collapsible defaultOpen={true} className="mb-6">
           <Card className="border border-gray-200">
             <CollapsibleTrigger className="w-full">
               <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                      4
-                    </div>
+                     <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                       5
+                     </div>
                     <CardTitle className="text-lg font-semibold">What's covered</CardTitle>
                   </div>
                   <ChevronDown className="w-5 h-5 text-gray-500" />
@@ -665,23 +783,27 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         </div>
                       </div>
 
-                      {/* Plan Details */}
-                      <div className="space-y-4 mb-6">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Plan:</span>
-                          <span className="font-semibold">{planName}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Cover period:</span>
-                          <span className="font-semibold">
-                            {getWarrantyDurationDisplay(paymentType)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Voluntary Excess:</span>
-                          <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
-                        </div>
-                      </div>
+                       {/* Plan Details */}
+                       <div className="space-y-4 mb-6">
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Plan:</span>
+                           <span className="font-semibold">{planName}</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Claim Limit:</span>
+                           <span className="font-semibold">£{getClaimLimitAmount(selectedClaimLimit).toLocaleString()}</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Cover period:</span>
+                           <span className="font-semibold">
+                             {getWarrantyDurationDisplay(paymentType)}
+                           </span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Voluntary Excess:</span>
+                           <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
+                         </div>
+                       </div>
 
                       {/* Payment Summary */}
                       <div className="border-t border-gray-200 pt-4 mb-6">
