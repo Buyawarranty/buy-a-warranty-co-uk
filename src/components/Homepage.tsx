@@ -10,6 +10,8 @@ interface HomepageProps {
 
 const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [regNumber, setRegNumber] = useState('');
+  const [mileage, setMileage] = useState('');
+  const [showMileageField, setShowMileageField] = useState(false);
 
   const formatRegNumber = (value: string) => {
     const formatted = value.replace(/\s/g, '').toUpperCase();
@@ -23,7 +25,19 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
     const formatted = formatRegNumber(e.target.value);
     if (formatted.length <= 8) {
       setRegNumber(formatted);
+      // Show mileage field when user starts typing reg number
+      if (formatted.length > 0 && !showMileageField) {
+        setShowMileageField(true);
+      } else if (formatted.length === 0) {
+        setShowMileageField(false);
+        setMileage('');
+      }
     }
+  };
+
+  const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d,]/g, '');
+    setMileage(value);
   };
 
   const handleEnterReg = () => {
@@ -33,10 +47,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   };
 
   const handleGetQuote = () => {
-    if (regNumber.trim()) {
+    if (regNumber.trim() && mileage.trim()) {
       onRegistrationSubmit(regNumber);
     }
   };
+
+  const isFormValid = regNumber.trim() && mileage.trim();
 
   return (
     <div className="min-h-screen bg-white">
@@ -89,45 +105,45 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Left Content */}
             <div className="space-y-8">
               {/* Trust Indicators */}
-              <div className="flex items-center space-x-4 text-sm">
-                <div className="flex items-center text-green-600">
-                  <Check className="w-4 h-4 mr-1" />
-                  <span>Reliable Protection</span>
+              <div className="flex flex-wrap items-center gap-3 mb-6">
+                <div className="bg-green-100 px-3 py-1 rounded-full text-sm font-medium text-green-800">
+                  ✓ Reliable Protection
                 </div>
-                <div className="flex items-center text-green-600">
-                  <Check className="w-4 h-4 mr-1" />
-                  <span>No Hidden Costs</span>
+                <div className="bg-red-100 px-3 py-1 rounded-full text-sm font-medium text-red-800">
+                  No Hidden Costs
                 </div>
               </div>
 
               {/* Main Headline */}
-              <div className="space-y-4">
-                <h1 className="text-3xl lg:text-4xl font-black text-gray-900 leading-tight">
-                  We've got you covered
+              <div className="space-y-4 mb-8">
+                <h1 className="text-4xl lg:text-6xl font-black text-gray-900 leading-tight">
+                  We've Got You
                   <br />
-                  <span className="text-orange-500">in 60 Seconds!</span>
+                  Covered
+                  <br />
+                  <span className="text-orange-500">In 60 Seconds!</span>
                 </h1>
               </div>
 
               {/* Benefits */}
-              <div className="flex items-center space-x-6 text-gray-700">
+              <div className="flex flex-wrap items-center gap-4 mb-8 text-gray-700">
                 <div className="flex items-center">
                   <Check className="w-5 h-5 text-green-500 mr-2" />
-                  <span>from only £12/month</span>
+                  <span className="font-medium">From only £12/month</span>
                 </div>
                 <div className="flex items-center">
                   <Check className="w-5 h-5 text-green-500 mr-2" />
-                  <span>Unlimited claims</span>
+                  <span className="font-medium">Unlimited claims</span>
                 </div>
                 <div className="flex items-center">
                   <Check className="w-5 h-5 text-green-500 mr-2" />
-                  <span>Fast payout</span>
+                  <span className="font-medium">Fast payout</span>
                 </div>
               </div>
 
               {/* Registration Input */}
-              <div className="space-y-4">
-                <div className="flex items-center bg-yellow-400 text-gray-900 font-bold text-xl px-6 py-4 rounded-lg border-2 border-black shadow-sm max-w-md animate-[breathing_12s_ease-in-out_infinite]">
+              <div className="space-y-4 max-w-lg">
+                <div className="flex items-center bg-gradient-to-r from-blue-600 to-yellow-400 text-white font-bold text-xl px-6 py-4 rounded-lg shadow-lg">
                   <img 
                     src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
                     alt="UK Flag" 
@@ -137,41 +153,53 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     type="text"
                     value={regNumber}
                     onChange={handleRegChange}
-                    placeholder="Enter your reg"
-                    className="bg-transparent border-none outline-none text-xl text-gray-900 flex-1 font-bold placeholder:text-gray-600"
+                    placeholder="ENTER REG"
+                    className="bg-transparent border-none outline-none text-xl text-white flex-1 font-bold placeholder:text-white/90"
                     maxLength={8}
                   />
                 </div>
 
-                {/* Mileage Input */}
-                <div className="space-y-2">
-                  <label className="text-lg font-semibold text-gray-700">
-                    What's your approximate mileage?
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 32,000"
-                    className="w-full max-w-md px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none"
-                  />
-                  <p className="text-sm text-gray-600">
-                    Cover for vehicles up to 150,000 miles and 15 years old
-                  </p>
-              </div>
+                {/* Animated Mileage Field */}
+                {showMileageField && (
+                  <div className="animate-fade-in space-y-2">
+                    <input
+                      type="text"
+                      value={mileage}
+                      onChange={handleMileageChange}
+                      placeholder="Enter mileage (e.g. 32,000)"
+                      className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                    />
+                    <p className="text-sm text-gray-600">
+                      Cover for vehicles up to 150,000 miles and 15 years old
+                    </p>
+                  </div>
+                )}
 
-              <Button 
-                onClick={handleGetQuote}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-lg w-full max-w-md"
-                disabled={!regNumber.trim()}
-              >
-                Get my quote →
-              </Button>
+                {/* Get Quote Button */}
+                <Button 
+                  onClick={handleGetQuote}
+                  className={`w-full px-8 py-4 text-lg font-bold rounded-lg transition-all ${
+                    isFormValid 
+                      ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                  disabled={!isFormValid}
+                >
+                  Get My Quote
+                </Button>
+
+                {/* Trustpilot */}
+                <div className="flex items-center mt-6">
+                  <span className="text-green-600 text-lg font-bold mr-2">★</span>
+                  <span className="font-medium text-gray-700">Trustpilot</span>
+                </div>
+              </div>
             </div>
-          </div>
 
             {/* Right Content - Hero Image */}
             <div className="relative">
               <img 
-                src="/lovable-uploads/c125ffa7-1dbd-4dd3-9223-30e694c05b05.png" 
+                src="/lovable-uploads/5d941097-e236-4f17-b3ff-ecfa2dcfad63.png" 
                 alt="Panda mascot with cars and motorcycle" 
                 className="w-full h-auto"
               />
