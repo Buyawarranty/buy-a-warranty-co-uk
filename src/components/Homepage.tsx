@@ -329,6 +329,40 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </section>
 
+      {/* Coverage Showcase Section */}
+      <section className="py-20 bg-brand-gray-bg text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Trustpilot Rating */}
+          <div className="flex justify-center items-center mb-8">
+            <div className="flex items-center space-x-2">
+              <span className="text-green-600 text-lg font-bold">★ Trustpilot</span>
+              <div className="flex text-green-500">
+                <span>★★★★★</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Heading */}
+          <h2 className="text-5xl font-bold text-brand-deep-blue mb-4">
+            Up To 150,000 Miles And <span className="text-brand-orange">15 Years Old.</span>
+          </h2>
+
+          {/* CTA Button */}
+          <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-10 py-6 text-xl rounded-lg shadow-lg transition-colors mb-16">
+            Get Instant Quote
+          </button>
+
+          {/* Warranty Quote Mockup */}
+          <div className="relative max-w-4xl mx-auto">
+            <img 
+              src="/lovable-uploads/9c67e382-089e-4e83-8907-9a65cb10e2ae.png" 
+              alt="Warranty quote interface with panda mascot and car" 
+              className="w-full h-auto rounded-lg shadow-xl"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Get Help With A Repair Section */}
       <section className="py-20 bg-brand-deep-blue text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
