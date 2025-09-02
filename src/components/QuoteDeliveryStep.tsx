@@ -64,26 +64,14 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       phone: ''
     };
 
-    if (!firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    }
-
-    if (!lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-    }
-
     if (!email.trim()) {
       newErrors.email = 'Email address is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    if (phone.trim() && !/^(07\d{9}|01\d{8,9}|02\d{8,9}|03\d{8,9})$/.test(phone.replace(/\s/g, ''))) {
-      newErrors.phone = 'Please enter a valid UK phone number';
-    }
-
     setErrors(newErrors);
-    return !newErrors.firstName && !newErrors.lastName && !newErrors.email && !newErrors.phone;
+    return !newErrors.email;
   };
 
   const handleSubmitContactForm = async (e: React.FormEvent) => {
@@ -138,9 +126,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
         // Track abandoned cart for email quote users
         await supabase.functions.invoke('track-abandoned-cart', {
           body: {
-            full_name: `${firstName} ${lastName}`.trim(),
+            full_name: email, // Using email as the name since we don't have separate fields
             email: email,
-            phone: phone || '',
+            phone: '',
             vehicle_reg: vehicleData?.regNumber,
             vehicle_make: vehicleData?.make,
             vehicle_model: vehicleData?.model,
@@ -159,7 +147,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
         
         // Small delay to let confetti start before navigating
         setTimeout(() => {
-          onNext({ firstName, lastName, email, phone, sendQuoteEmail: true });
+          onNext({ firstName: '', lastName: '', email, phone: '', sendQuoteEmail: true });
         }, 300);
         
       } catch (error) {
@@ -176,8 +164,8 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     validateForm();
   };
 
-  const isFormValid = firstName.trim() && lastName.trim() && email.trim() && !errors.firstName && !errors.lastName && !errors.email && !errors.phone;
-  const areRequiredFieldsFilled = firstName.trim() && lastName.trim() && email.trim();
+  const isFormValid = email.trim() && !errors.email;
+  const areRequiredFieldsFilled = true; // No longer needed but keeping for compatibility
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0">
@@ -266,69 +254,18 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
           </>
         ) : (
           <>
-            <div className="mb-4 sm:mb-6">
-              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">One last step - this won't take long</h2>
+            <div className="mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">See your prices instantly & get them by email</h2>
             </div>
 
             <form onSubmit={handleSubmitContactForm}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 sm:mb-6">
-                <div>
-                  <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">First Name</label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="e.g. John"
-                    className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
-                      touched.firstName && errors.firstName ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = touched.firstName && errors.firstName ? '#ef4444' : '#224380';
-                    }}
-                    onBlur={(e) => {
-                      handleFieldBlur('firstName');
-                      e.target.style.borderColor = touched.firstName && errors.firstName ? '#ef4444' : '#d1d5db';
-                    }}
-                    required
-                  />
-                  {touched.firstName && errors.firstName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Last Name</label>
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="e.g. Smith"
-                    className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
-                      touched.lastName && errors.lastName ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = touched.lastName && errors.lastName ? '#ef4444' : '#224380';
-                    }}
-                    onBlur={(e) => {
-                      handleFieldBlur('lastName');
-                      e.target.style.borderColor = touched.lastName && errors.lastName ? '#ef4444' : '#d1d5db';
-                    }}
-                    required
-                  />
-                  {touched.lastName && errors.lastName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="mb-4 sm:mb-6">
-                <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Email Address</label>
+              <div className="mb-6 sm:mb-8">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="johnsmith@email.com"
-                  className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
+                  placeholder="Enter your email"
+                  className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[12px] sm:py-[14px] focus:outline-none transition-all duration-200 text-base ${
                     touched.email && errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   onFocus={(e) => {
@@ -345,34 +282,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 )}
               </div>
 
-              <div className="mb-4 sm:mb-6">
-                <label className="block font-semibold mb-2 sm:mb-3 text-gray-700 text-lg sm:text-xl">Phone Number (Optional)</label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^0-9]/g, '');
-                    setPhone(value);
-                  }}
-                  placeholder="07953866662"
-                  className={`w-full border-2 rounded-[6px] px-[12px] sm:px-[16px] py-[10px] sm:py-[12px] focus:outline-none transition-all duration-200 text-base ${
-                    touched.phone && errors.phone ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = touched.phone && errors.phone ? '#ef4444' : '#224380';
-                  }}
-                  onBlur={(e) => {
-                    handleFieldBlur('phone');
-                    e.target.style.borderColor = touched.phone && errors.phone ? '#ef4444' : '#d1d5db';
-                  }}
-                />
-                {touched.phone && errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                )}
-              </div>
-
               <div className="flex justify-end items-center">
-                
                 <div className="flex gap-3">
                   <button 
                     type="button" 
@@ -409,25 +319,22 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   
                   <button 
                     type="submit" 
-                    disabled={!isFormValid || sendingEmail}
-                    title={!isFormValid ? "Please enter details" : sendingEmail ? "Sending email..." : ""}
-                    className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                    style={{
-                      backgroundColor: isFormValid && !sendingEmail ? '#0f1351' : '#0f1351',
-                      borderColor: isFormValid && !sendingEmail ? '#0f1351' : '#0f1351'
-                    }}
+                    disabled={!email.trim() || !!errors.email || sendingEmail}
+                    title={!email.trim() ? "Please enter email" : sendingEmail ? "Processing..." : ""}
+                    className="flex items-center justify-center gap-2 text-white text-base sm:text-lg font-bold py-3 sm:py-3 px-6 sm:px-8 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                    style={{ backgroundColor: '#eb4b00' }}
                     onMouseEnter={(e) => {
-                      if (isFormValid && !sendingEmail) {
-                        e.currentTarget.style.backgroundColor = '#0a0d3a';
+                      if (email.trim() && !errors.email && !sendingEmail) {
+                        e.currentTarget.style.backgroundColor = '#d43f00';
                       }
                     }}
                     onMouseLeave={(e) => {
-                      if (isFormValid && !sendingEmail) {
-                        e.currentTarget.style.backgroundColor = '#0f1351';
+                      if (email.trim() && !errors.email && !sendingEmail) {
+                        e.currentTarget.style.backgroundColor = '#eb4b00';
                       }
                     }}
                   >
-                    {sendingEmail ? 'Sending email...' : 'Email me my quote'}
+                    {sendingEmail ? 'Processing...' : 'See prices'}
                     {!sendingEmail && <ArrowRight className="w-4 h-4" />}
                   </button>
                 </div>
