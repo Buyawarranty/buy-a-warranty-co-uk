@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 const HomepageFAQ = () => {
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
@@ -68,48 +68,51 @@ const HomepageFAQ = () => {
   ];
 
   const FAQItem = ({ faq }: { faq: { id: string; question: string; answer: string } }) => (
-    <div className="bg-[#eb4b00] rounded-lg overflow-hidden">
+    <div className="bg-[#eb4b00] rounded-lg overflow-hidden shadow-lg">
       <button
         onClick={() => toggleItem(faq.id)}
-        className="w-full px-6 py-4 text-left flex items-center justify-between text-white hover:bg-[#d63f00] transition-colors"
+        className="w-full px-6 py-5 text-left flex items-center justify-between text-white hover:bg-[#d63f00] transition-colors"
       >
-        <span className="font-semibold text-lg">{faq.question}</span>
-        {openItems[faq.id] ? (
-          <ChevronUp className="w-5 h-5 flex-shrink-0" />
-        ) : (
-          <ChevronDown className="w-5 h-5 flex-shrink-0" />
-        )}
+        <span className="font-bold text-lg pr-4">{faq.question}</span>
+        <ChevronDown 
+          className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
+            openItems[faq.id] ? 'rotate-180' : ''
+          }`}
+        />
       </button>
       
       {openItems[faq.id] && (
-        <div className="px-6 pb-4 text-white bg-[#d63f00]">
-          <p className="text-sm leading-relaxed">{faq.answer}</p>
+        <div className="px-6 pb-5 text-white bg-[#d63f00] animate-accordion-down">
+          <p className="text-base leading-relaxed opacity-95">{faq.answer}</p>
         </div>
       )}
     </div>
   );
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Frequently Asked <span className="text-[#eb4b00]">Questions</span>
           </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Find answers to the most common questions about our warranty services.
+          </p>
         </div>
 
         {/* FAQ Grid */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Left Column */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             {leftColumnFAQs.map((faq) => (
               <FAQItem key={faq.id} faq={faq} />
             ))}
           </div>
 
           {/* Right Column */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             {rightColumnFAQs.map((faq) => (
               <FAQItem key={faq.id} faq={faq} />
             ))}
