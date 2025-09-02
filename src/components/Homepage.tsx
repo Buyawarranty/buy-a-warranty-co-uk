@@ -184,12 +184,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       <section className="py-20 bg-brand-gray-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left - Video/Image */}
-            <div className="relative">
-              <img 
-                src="/lovable-uploads/cacd3333-06fb-4bfb-b8f8-32505122c11d.png" 
-                alt="Extended warranty explainer video" 
-                className="w-full h-auto rounded-md shadow-lg"
+            {/* Left - Video */}
+            <div className="relative aspect-video">
+              <iframe 
+                src="https://www.youtube.com/embed/G9QuVoxckbw" 
+                title="Extended warranty explainer video"
+                className="w-full h-full rounded-md shadow-lg"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
               />
             </div>
 
