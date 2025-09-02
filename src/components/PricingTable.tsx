@@ -542,15 +542,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-card border-b border-accent/20">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <Button 
               onClick={onBack}
               variant="ghost"
-              className="text-gray-600 hover:text-gray-900"
+              className="text-brand-purple hover:text-brand-purple/80 hover:bg-brand-purple/10"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
@@ -565,12 +565,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         
         {/* Vehicle Information */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-gradient-to-r from-brand-purple/10 to-accent/10 rounded-lg border border-brand-purple/20 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-brand-purple text-brand-purple-foreground rounded-full flex items-center justify-center text-sm font-bold">
               1
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">Vehicle Information</h2>
+            <h2 className="text-xl font-semibold text-brand-dark">Vehicle Information</h2>
           </div>
           
           {vehicleData && (
@@ -606,12 +606,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Voluntary Excess */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-card rounded-lg border border-brand-purple/20 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-accent text-accent-foreground rounded-full flex items-center justify-center text-sm font-bold">
               2
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">Voluntary Excess Amount</h2>
+            <h2 className="text-xl font-semibold text-brand-dark">Voluntary Excess Amount</h2>
           </div>
           
           <div className="flex gap-3 flex-wrap">
@@ -621,8 +621,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 onClick={() => toggleVoluntaryExcess(amount)}
                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                   voluntaryExcess === amount
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-700 border border-gray-300 hover:border-gray-400'
+                    ? 'bg-brand-purple text-brand-purple-foreground'
+                    : 'bg-card text-foreground border border-muted-foreground/30 hover:border-brand-purple/50'
                 }`}
               >
                 £{amount}
@@ -632,57 +632,57 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Claim Limit Selection */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-card rounded-lg border border-brand-purple/20 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-accent text-accent-foreground rounded-full flex items-center justify-center text-sm font-bold">
               3
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">Choose Your Claim Limit</h2>
+            <h2 className="text-xl font-semibold text-brand-dark">Choose Your Claim Limit</h2>
           </div>
           
-          <p className="text-gray-600 mb-6">All plans include <strong>unlimited</strong> number of claims</p>
+          <p className="text-muted-foreground mb-6">All plans include <strong>unlimited</strong> number of claims</p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               onClick={() => setSelectedClaimLimit(750)}
               className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
                 selectedClaimLimit === 750
-                  ? 'border-gray-900 bg-gray-50'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-brand-purple bg-brand-purple/10'
+                  : 'border-muted hover:border-brand-purple/50'
               }`}
             >
-              <h4 className="font-semibold text-gray-900 mb-2">Essential Cover</h4>
-              <div className="text-lg font-bold text-gray-900 mb-1">£750 Claim Limit</div>
-              <p className="text-sm text-gray-600">Perfect for smaller repairs and peace of mind.</p>
+              <h4 className="font-semibold text-brand-dark mb-2">Essential Cover</h4>
+              <div className="text-lg font-bold text-brand-dark mb-1">£750 Claim Limit</div>
+              <p className="text-sm text-muted-foreground">Perfect for smaller repairs and peace of mind.</p>
             </button>
             
             <button
               onClick={() => setSelectedClaimLimit(1250)}
               className={`p-4 rounded-lg border-2 transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 1250
-                  ? 'border-gray-900 bg-gray-50'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-brand-purple bg-brand-purple/10'
+                  : 'border-muted hover:border-brand-purple/50'
               }`}
             >
-              <div className="absolute -top-3 right-4 bg-gray-900 text-white text-xs px-3 py-1 rounded-full font-bold">
+              <div className="absolute -top-3 right-4 bg-accent text-accent-foreground text-xs px-3 py-1 rounded-full font-bold">
                 MOST POPULAR
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Plus Cover</h4>
-              <div className="text-lg font-bold text-gray-900 mb-1">£1,250 Claim Limit</div>
-              <p className="text-sm text-gray-600">Ideal for comprehensive protection on major repairs.</p>
+              <h4 className="font-semibold text-brand-dark mb-2">Plus Cover</h4>
+              <div className="text-lg font-bold text-brand-dark mb-1">£1,250 Claim Limit</div>
+              <p className="text-sm text-muted-foreground">Ideal for comprehensive protection on major repairs.</p>
             </button>
             
             <button
               onClick={() => setSelectedClaimLimit(2000)}
               className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
                 selectedClaimLimit === 2000
-                  ? 'border-gray-900 bg-gray-50'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-brand-purple bg-brand-purple/10'
+                  : 'border-muted hover:border-brand-purple/50'
               }`}
             >
-              <h4 className="font-semibold text-gray-900 mb-2">Premium Cover</h4>
-              <div className="text-lg font-bold text-gray-900 mb-1">£2,000 Claim Limit</div>
-              <p className="text-sm text-gray-600">Maximum protection for high-value repairs.</p>
+              <h4 className="font-semibold text-brand-dark mb-2">Premium Cover</h4>
+              <div className="text-lg font-bold text-brand-dark mb-1">£2,000 Claim Limit</div>
+              <p className="text-sm text-muted-foreground">Maximum protection for high-value repairs.</p>
             </button>
           </div>
         </div>
@@ -741,12 +741,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="max-w-6xl mx-auto px-4 pb-16">
           
           {/* What's Covered Section */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+          <div className="bg-card rounded-lg border border-brand-purple/20 p-6 mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              <div className="w-8 h-8 bg-accent text-accent-foreground rounded-full flex items-center justify-center text-sm font-bold">
                 4
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">What's Covered?</h2>
+              <h2 className="text-xl font-semibold text-brand-dark">What's Covered?</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -762,10 +762,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 'Recover Claim-back'
               ].map((item, index) => (
                 <div key={index} className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-5 h-5 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
                     <Check className="h-3 w-3 text-white" />
                   </div>
-                  <span className="text-gray-700 font-medium">{item}</span>
+                  <span className="text-brand-dark font-medium">{item}</span>
                 </div>
               ))}
             </div>
@@ -781,14 +781,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               const savings = getPlanSavings(plan);
               
               return (
-                <div key={plan.id} className="bg-white rounded-lg border border-gray-200 p-6">
+                <div key={plan.id} className="bg-card rounded-lg border border-brand-purple/20 p-6 hover:shadow-lg transition-shadow">
                   
                   {/* Plan Header */}
                   <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h3 className="text-2xl font-bold text-brand-dark mb-2">
                       {plan.name}
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       {paymentType === '12months' ? '12 month warranty' :
                        paymentType === '24months' ? '24 month warranty' :
                        paymentType === '36months' ? '36 month warranty' :
@@ -796,43 +796,43 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </p>
                      
                     {/* Pay Full Amount Option */}
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                    <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-gray-900">Pay Full Amount</span>
-                        <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                        <span className="font-medium text-brand-dark">Pay Full Amount</span>
+                        <div className="bg-accent text-accent-foreground text-xs font-semibold px-2 py-1 rounded">
                           Save 5% (£{Math.round((displayPrice * 12) * 0.05)})
                         </div>
                       </div>
-                      <div className="text-xl font-bold text-gray-900">
+                      <div className="text-xl font-bold text-brand-dark">
                         £{Math.round((displayPrice * 12) * 0.95)}
                       </div>
                     </div>
 
                     {/* Monthly Payment Option */}
                     <div className="text-center mb-6">
-                      <div className="text-2xl font-bold text-gray-900 mb-2">
+                      <div className="text-2xl font-bold text-brand-dark mb-2">
                         {paymentType === '12months' ? (
                           <>£{displayPrice}/mo</>
                         ) : (
                           <>£{displayPrice}<span className="text-lg">/12 payments</span></>
                         )}
                       </div>
-                      <div className="text-green-600 font-medium">
+                      <div className="text-accent font-medium">
                         {paymentType === '12months' ? 'for 12 months interest free' : 'paid over 12 months interest free'}
                       </div>
                     </div>
                     
                     {savings && paymentType !== '12months' && (
-                     <div className="text-green-600 font-bold text-lg mb-6">
+                     <div className="text-accent font-bold text-lg mb-6">
                        You Save £{savings}
-                      </div>
+                     </div>
                     )}
                      
                     {/* Action Button */}
                     <Button
                       onClick={() => handleSelectPlan(plan)}
                       disabled={isLoading}
-                      className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg"
+                      className="w-full bg-brand-purple hover:bg-brand-purple/90 text-brand-purple-foreground font-semibold py-3 rounded-lg"
                     >
                       {isLoading ? 'Processing...' : 'Buy Now'}
                     </Button>
@@ -843,8 +843,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
 
           {/* Payment Duration Selection */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mt-8">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">Choose Warranty Duration</h3>
+          <div className="bg-card rounded-lg border border-brand-purple/20 p-6 mt-8">
+            <h3 className="text-xl font-semibold text-brand-dark mb-6 text-center">Choose Warranty Duration</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* 1 Year Option */}
@@ -862,33 +862,33 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div className={`border-2 rounded-lg p-6 transition-all duration-200 ${
                     paymentType === '12months'
-                      ? 'border-gray-900 bg-gray-50'
-                      : 'border-gray-300 hover:border-gray-400'
+                      ? 'border-brand-purple bg-brand-purple/10'
+                      : 'border-muted hover:border-brand-purple/50'
                   }`}>
                     <div className="text-center">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">1 Year</h3>
+                      <h3 className="text-xl font-bold text-brand-dark mb-2">1 Year</h3>
                       
                       {/* Pay Full Amount Card */}
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                      <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-900 text-sm">Pay Full Amount</span>
-                          <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                          <span className="font-medium text-brand-dark text-sm">Pay Full Amount</span>
+                          <div className="bg-accent text-accent-foreground text-xs font-semibold px-2 py-1 rounded">
                             Save 5% (£{Math.round(oneYearPrice.total * 0.05)})
                           </div>
                         </div>
-                        <div className="text-xl font-bold text-gray-900">
+                        <div className="text-xl font-bold text-brand-dark">
                           £{Math.round(oneYearPrice.total * 0.95)}
                         </div>
                       </div>
                       
-                      <div className="text-2xl font-bold text-gray-900 mb-2">£{oneYearPrice.monthly}/mo</div>
-                      <p className="text-green-600 text-sm font-medium mb-4">for 12 months interest free</p>
+                      <div className="text-2xl font-bold text-brand-dark mb-2">£{oneYearPrice.monthly}/mo</div>
+                      <p className="text-accent text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
                         onClick={() => setPaymentType('12months')}
                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
                           paymentType === '12months'
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ? 'bg-brand-purple text-brand-purple-foreground'
+                            : 'bg-muted text-foreground hover:bg-brand-purple/20'
                         }`}
                       >
                         {paymentType === '12months' ? 'Selected' : 'Buy Now'}
@@ -914,38 +914,38 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div className={`border-2 rounded-lg p-6 transition-all duration-200 relative ${
                     paymentType === '24months'
-                      ? 'border-gray-900 bg-gray-50'
-                      : 'border-gray-300 hover:border-gray-400'
+                      ? 'border-brand-purple bg-brand-purple/10'
+                      : 'border-muted hover:border-brand-purple/50'
                   }`}>
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">
+                      <div className="bg-accent text-accent-foreground text-sm font-bold px-4 py-1 rounded-full">
                         Save £{twoYearPrice.save}
                       </div>
                     </div>
                     <div className="text-center">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">2 Years</h3>
+                      <h3 className="text-xl font-bold text-brand-dark mb-2">2 Years</h3>
                       
                       {/* Pay Full Amount Card */}
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                      <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-900 text-sm">Pay Full Amount</span>
-                          <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                          <span className="font-medium text-brand-dark text-sm">Pay Full Amount</span>
+                          <div className="bg-accent text-accent-foreground text-xs font-semibold px-2 py-1 rounded">
                             Save 5% (£{Math.round(twoYearPrice.total * 0.05)})
                           </div>
                         </div>
-                        <div className="text-xl font-bold text-gray-900">
+                        <div className="text-xl font-bold text-brand-dark">
                           £{Math.round(twoYearPrice.total * 0.95)}
                         </div>
                       </div>
                       
-                      <div className="text-2xl font-bold text-gray-900 mb-2">£{twoYearPrice.monthly}/mo</div>
-                      <p className="text-green-600 text-sm font-medium mb-4">for 12 months interest free</p>
+                      <div className="text-2xl font-bold text-brand-dark mb-2">£{twoYearPrice.monthly}/mo</div>
+                      <p className="text-accent text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
                         onClick={() => setPaymentType('24months')}
                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
                           paymentType === '24months'
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ? 'bg-brand-purple text-brand-purple-foreground'
+                            : 'bg-muted text-foreground hover:bg-brand-purple/20'
                         }`}
                       >
                         {paymentType === '24months' ? 'Selected' : 'Buy Now'}
@@ -971,38 +971,38 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div className={`border-2 rounded-lg p-6 transition-all duration-200 relative ${
                     paymentType === '36months'
-                      ? 'border-gray-900 bg-gray-50'
-                      : 'border-gray-300 hover:border-gray-400'
+                      ? 'border-brand-purple bg-brand-purple/10'
+                      : 'border-muted hover:border-brand-purple/50'
                   }`}>
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">
+                      <div className="bg-accent text-accent-foreground text-sm font-bold px-4 py-1 rounded-full">
                         Save £{threeYearPrice.save}
                       </div>
                     </div>
                     <div className="text-center">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">3 Years</h3>
+                      <h3 className="text-xl font-bold text-brand-dark mb-2">3 Years</h3>
                       
                       {/* Pay Full Amount Card */}
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                      <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-900 text-sm">Pay Full Amount</span>
-                          <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                          <span className="font-medium text-brand-dark text-sm">Pay Full Amount</span>
+                          <div className="bg-accent text-accent-foreground text-xs font-semibold px-2 py-1 rounded">
                             Save 5% (£{Math.round(threeYearPrice.total * 0.05)})
                           </div>
                         </div>
-                        <div className="text-xl font-bold text-gray-900">
+                        <div className="text-xl font-bold text-brand-dark">
                           £{Math.round(threeYearPrice.total * 0.95)}
                         </div>
                       </div>
                       
-                      <div className="text-2xl font-bold text-gray-900 mb-2">£{threeYearPrice.monthly}/mo</div>
-                      <p className="text-green-600 text-sm font-medium mb-4">for 12 months interest free</p>
+                      <div className="text-2xl font-bold text-brand-dark mb-2">£{threeYearPrice.monthly}/mo</div>
+                      <p className="text-accent text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
                         onClick={() => setPaymentType('36months')}
                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
                           paymentType === '36months'
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ? 'bg-brand-purple text-brand-purple-foreground'
+                            : 'bg-muted text-foreground hover:bg-brand-purple/20'
                         }`}
                       >
                         {paymentType === '36months' ? 'Selected' : 'Buy Now'}
