@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
@@ -574,36 +574,51 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <h2 className="text-xl font-semibold text-foreground">Vehicle Information</h2>
           </div>
           
-          {vehicleData && (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground block">Registration</span>
-                <span className="font-semibold text-foreground">{vehicleData.regNumber}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground block">Vehicle</span>
-                <span className="font-semibold text-foreground">
-                  {vehicleData.make} {vehicleData.model || 'Vehicle'}
-                </span>
-              </div>
-              {vehicleData.fuelType && (
-                <div>
-                  <span className="text-muted-foreground block">Fuel Type</span>
-                  <span className="font-semibold text-foreground">{vehicleData.fuelType}</span>
-                </div>
-              )}
-              {vehicleData.year && (
-                <div>
-                  <span className="text-muted-foreground block">Year</span>
-                  <span className="font-semibold text-foreground">{vehicleData.year}</span>
-                </div>
-              )}
-              <div>
-                <span className="text-muted-foreground block">Mileage</span>
-                <span className="font-semibold text-foreground">{parseInt(vehicleData.mileage).toLocaleString()} miles</span>
-              </div>
-            </div>
-          )}
+           {vehicleData && (
+             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+               <div className="flex items-center gap-2">
+                 <Hash className="h-4 w-4 text-primary" />
+                 <div>
+                   <span className="text-muted-foreground block">Registration</span>
+                   <span className="font-semibold text-foreground">{vehicleData.regNumber}</span>
+                 </div>
+               </div>
+               <div className="flex items-center gap-2">
+                 <Car className="h-4 w-4 text-primary" />
+                 <div>
+                   <span className="text-muted-foreground block">Vehicle</span>
+                   <span className="font-semibold text-foreground">
+                     {vehicleData.make} {vehicleData.model || 'Vehicle'}
+                   </span>
+                 </div>
+               </div>
+               {vehicleData.fuelType && (
+                 <div className="flex items-center gap-2">
+                   <Fuel className="h-4 w-4 text-primary" />
+                   <div>
+                     <span className="text-muted-foreground block">Fuel Type</span>
+                     <span className="font-semibold text-foreground">{vehicleData.fuelType}</span>
+                   </div>
+                 </div>
+               )}
+               {vehicleData.year && (
+                 <div className="flex items-center gap-2">
+                   <Calendar className="h-4 w-4 text-primary" />
+                   <div>
+                     <span className="text-muted-foreground block">Year</span>
+                     <span className="font-semibold text-foreground">{vehicleData.year}</span>
+                   </div>
+                 </div>
+               )}
+               <div className="flex items-center gap-2">
+                 <Gauge className="h-4 w-4 text-primary" />
+                 <div>
+                   <span className="text-muted-foreground block">Mileage</span>
+                   <span className="font-semibold text-foreground">{parseInt(vehicleData.mileage).toLocaleString()} miles</span>
+                 </div>
+               </div>
+             </div>
+           )}
         </div>
 
         {/* Voluntary Excess */}
