@@ -208,7 +208,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
         ) : (
           <>
             <div className="mb-6 sm:mb-8">
-              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">See your prices instantly & get them by email</h2>
+              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">See your prices instantly ⚡ & get them by email</h2>
             </div>
 
             <form onSubmit={handleSubmitContactForm}>
