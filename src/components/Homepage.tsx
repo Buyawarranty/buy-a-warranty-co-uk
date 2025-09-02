@@ -27,6 +27,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [mileage, setMileage] = useState('');
   const [showMileageField, setShowMileageField] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
+  const [mileageError, setMileageError] = useState('');
+  const [vehicleAgeError, setVehicleAgeError] = useState('');
 
   const formatRegNumber = (value: string) => {
     const formatted = value.replace(/\s/g, '').toUpperCase();
@@ -53,6 +55,14 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^\d,]/g, '');
     setMileage(value);
+    
+    // Validate mileage
+    const numericValue = parseInt(value.replace(/,/g, ''));
+    if (value && numericValue > 150000) {
+      setMileageError('We can only cover vehicles up to 150,000 miles');
+    } else {
+      setMileageError('');
+    }
   };
 
   const handleEnterReg = () => {
@@ -64,6 +74,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
   const handleGetQuote = async () => {
     if (regNumber.trim() && mileage.trim()) {
+      // Check mileage validation before proceeding
+      const numericMileage = parseInt(mileage.replace(/,/g, ''));
+      if (numericMileage > 150000) {
+        setMileageError('We can only cover vehicles up to 150,000 miles');
+        return;
+      }
+      
       setIsLookingUp(true);
       
       try {
@@ -79,6 +96,21 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         }
 
         console.log('DVSA lookup result:', data);
+        
+        // Check vehicle age if data found
+        if (data?.found && data.yearOfManufacture) {
+          const currentYear = new Date().getFullYear();
+          const vehicleYear = parseInt(data.yearOfManufacture);
+          const vehicleAge = currentYear - vehicleYear;
+          
+          if (vehicleAge > 15) {
+            setVehicleAgeError('We cannot offer warranties for vehicles over 15 years old');
+            setIsLookingUp(false);
+            return;
+          } else {
+            setVehicleAgeError('');
+          }
+        }
         
         // Prepare vehicle data
         const vehicleData: VehicleData = {
@@ -121,7 +153,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
     }
   };
 
-  const isFormValid = regNumber.trim() && mileage.trim();
+  const isFormValid = regNumber.trim() && mileage.trim() && !mileageError && !vehicleAgeError;
 
   return (
     <div className="min-h-screen bg-white">
@@ -240,11 +272,25 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       value={mileage}
                       onChange={handleMileageChange}
                       placeholder="Enter mileage (e.g. 32,000)"
-                      className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                      className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
+                        mileageError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-orange-500'
+                      }`}
                     />
-                    <p className="text-sm text-gray-600">
-                      Cover for vehicles up to 150,000 miles and 15 years old
-                    </p>
+                    {mileageError && (
+                      <p className="text-sm text-red-600 font-medium">
+                        {mileageError}
+                      </p>
+                    )}
+                    {vehicleAgeError && (
+                      <p className="text-sm text-red-600 font-medium">
+                        {vehicleAgeError}
+                      </p>
+                    )}
+                    {!mileageError && !vehicleAgeError && (
+                      <p className="text-sm text-gray-600">
+                        Cover for vehicles up to 150,000 miles and 15 years old
+                      </p>
+                    )}
                   </div>
                 )}
 
