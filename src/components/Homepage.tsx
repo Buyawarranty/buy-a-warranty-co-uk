@@ -83,7 +83,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gray-100 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -355,7 +355,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           {/* Warranty Quote Mockup */}
           <div className="relative max-w-2xl md:max-w-3xl mx-auto">
             <img 
-              src="/lovable-uploads/8ed3b647-1683-4655-834b-40c98ddea286.png" 
+              src="/lovable-uploads/warranty-quote-transparent.png" 
               alt="Warranty quote interface with panda mascot and car" 
               className="w-full h-auto rounded-lg shadow-xl"
             />
