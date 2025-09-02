@@ -143,18 +143,19 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
               {/* Registration Input */}
               <div className="space-y-4 max-w-lg">
-                <div className="flex items-center bg-gradient-to-r from-blue-600 to-yellow-400 text-white font-bold text-xl px-6 py-4 rounded-lg shadow-lg">
-                  <img 
-                    src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
-                    alt="UK Flag" 
-                    className="w-8 h-6 mr-4 object-cover rounded-sm"
-                  />
+                <div className="flex items-center rounded-lg overflow-hidden shadow-lg border-2 border-black">
+                  {/* GB UK Section */}
+                  <div className="bg-blue-600 text-white font-bold text-lg px-4 py-4 flex flex-col items-center justify-center min-w-[60px]">
+                    <span className="text-xs leading-none">GB</span>
+                    <span className="text-xs leading-none">UK</span>
+                  </div>
+                  {/* Registration Input */}
                   <input
                     type="text"
                     value={regNumber}
                     onChange={handleRegChange}
                     placeholder="ENTER REG"
-                    className="bg-transparent border-none outline-none text-xl text-white flex-1 font-bold placeholder:text-white/90"
+                    className="bg-yellow-400 border-none outline-none text-xl text-black flex-1 font-bold placeholder:text-black/70 px-4 py-4 uppercase tracking-wider"
                     maxLength={8}
                   />
                 </div>
