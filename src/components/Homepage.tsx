@@ -127,7 +127,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
               {/* Registration Input */}
               <div className="space-y-4">
-                <div className="flex items-center bg-yellow-400 text-gray-900 font-bold text-xl px-6 py-4 rounded-lg border-2 border-black shadow-sm max-w-md">
+                <div className="flex items-center bg-yellow-400 text-gray-900 font-bold text-xl px-6 py-4 rounded-lg border-2 border-black shadow-sm max-w-md animate-[breathing_3s_ease-in-out_infinite]">
                   <img 
                     src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
                     alt="UK Flag" 

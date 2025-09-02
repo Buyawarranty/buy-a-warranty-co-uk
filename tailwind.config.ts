@@ -91,12 +91,10 @@ export default {
 				},
 				'breathing': {
 					'0%, 100%': {
-						transform: 'scale(1)',
-						boxShadow: '0 0 0 0 rgba(235, 75, 0, 0.7)'
+						transform: 'scale(1)'
 					},
 					'50%': {
-						transform: 'scale(1.05)',
-						boxShadow: '0 0 0 10px rgba(235, 75, 0, 0)'
+						transform: 'scale(1.03)'
 					}
 				},
 				'fade-in': {
