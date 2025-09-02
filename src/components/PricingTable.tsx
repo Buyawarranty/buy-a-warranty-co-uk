@@ -567,7 +567,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         
         {/* Vehicle Information */}
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-lg p-6">
+        <div className="section-header rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
@@ -634,7 +634,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Voluntary Excess */}
-        <div className="bg-gradient-to-br from-sky-50 to-sky-100 border-2 border-sky-200 rounded-lg p-6">
+        <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
               2
@@ -660,7 +660,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Claim Limit Selection */}
-        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-200 rounded-lg p-6">
+        <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
               3
@@ -726,7 +726,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   : 'neutral-container hover:border-primary/50'
               }`}
             >
-              <div className="absolute -top-3 right-4 savings-badge">
+              <div className="absolute -top-3 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
                 MOST POPULAR
               </div>
               <div className="absolute top-4 right-4">
@@ -871,7 +871,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="max-w-6xl mx-auto px-4 pb-16">
           
           {/* What's Covered Section */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-lg p-6 mb-8">
+          <div className="section-header rounded-lg p-6 mb-8">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="whats-covered" className="border-none">
                 <AccordionTrigger className="hover:no-underline pb-2 pt-0 [&>svg]:h-8 [&>svg]:w-8 [&>svg]:text-primary">
@@ -973,7 +973,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
 
           {/* Payment Duration Selection */}
-          <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 rounded-lg p-6 mt-8">
+          <div className="section-header rounded-lg p-6 mt-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
                 4
@@ -997,11 +997,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div 
                     onClick={() => setPaymentType('12months')}
-                    className={`border-3 rounded-lg p-6 transition-all duration-200 shadow-md cursor-pointer relative ${
-                      paymentType === '12months'
-                        ? 'border-primary bg-primary/5 shadow-lg transform scale-105'
-                        : 'border-blue-300 bg-white hover:border-primary/70 hover:shadow-lg hover:bg-blue-50/50'
-                    }`}>
+                     className={`border-2 rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
+                       paymentType === '12months'
+                         ? 'selected-option'
+                         : 'neutral-container hover:border-primary/50'
+                     }`}>
                     <div className="absolute top-4 right-4">
                       <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-200 ${
                         paymentType === '12months'
@@ -1048,10 +1048,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div 
                     onClick={() => setPaymentType('24months')}
-                    className={`border-3 rounded-lg p-6 transition-all duration-200 relative shadow-md cursor-pointer ${
+                    className={`border-2 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
                       paymentType === '24months'
-                        ? 'border-primary bg-primary/5 shadow-lg transform scale-105'
-                        : 'border-blue-300 bg-white hover:border-primary/70 hover:shadow-lg hover:bg-blue-50/50'
+                        ? 'selected-option'
+                        : 'neutral-container hover:border-primary/50'
                     }`}>
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                       <div className="savings-badge">
@@ -1104,10 +1104,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div 
                     onClick={() => setPaymentType('36months')}
-                    className={`border-3 rounded-lg p-6 transition-all duration-200 relative shadow-md cursor-pointer ${
+                    className={`border-2 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
                       paymentType === '36months'
-                        ? 'border-primary bg-primary/5 shadow-lg transform scale-105'
-                        : 'border-blue-300 bg-white hover:border-primary/70 hover:shadow-lg hover:bg-blue-50/50'
+                        ? 'selected-option'
+                        : 'neutral-container hover:border-primary/50'
                     }`}>
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                       <div className="savings-badge">
