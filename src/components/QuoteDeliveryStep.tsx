@@ -19,7 +19,6 @@ interface QuoteDeliveryStepProps {
 }
 
 const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNext, onBack, onSkip }) => {
-  const [showContactForm, setShowContactForm] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -52,10 +51,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     }, 300);
   };
 
-  const handleEmailQuoteClick = () => {
-    setShowContactForm(true);
-  };
-
   const validateForm = () => {
     const newErrors = {
       firstName: '',
@@ -74,8 +69,12 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     return !newErrors.email;
   };
 
-  const handleSubmitContactForm = async (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    setSendingEmail(true);
     
     // Track abandoned cart if email is provided
     if (email.trim()) {
@@ -109,6 +108,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     // Small delay to let confetti start before navigating
     setTimeout(() => {
       onNext({ firstName: '', lastName: '', email: email.trim(), phone: '', sendQuoteEmail: !!email.trim() });
+      setSendingEmail(false);
     }, 300);
   };
 
@@ -135,84 +135,54 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       </div>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
-        {!showContactForm ? (
-          <>
-            <div className="text-center mb-8 sm:mb-12">
-              <h1 className="text-xl sm:text-4xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight px-2">
-                How would you like to receive your quote?
-              </h1>
-            </div>
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-xl sm:text-4xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight px-2">
+            How would you like to receive your quote?
+          </h1>
+        </div>
 
-            <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-              <button 
-                onClick={handleSkipClick}
-                className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg ${
-                  areRequiredFieldsFilled ? '' : 'opacity-50'
-                }`}
-                style={{ backgroundColor: '#eb4b00' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#d43f00';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#eb4b00';
-                }}
-              >
-                <Zap className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
-                <div className="text-center px-8 sm:px-12">
-                  <div className="text-base sm:text-xl leading-tight">
-                    View my quote now
-                  </div>
-                </div>
-                <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
-              </button>
-
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-white px-4 sm:px-6 py-2 text-gray-700 text-base sm:text-lg font-semibold border border-gray-300 rounded-full">
-                    or
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <button 
-                  onClick={handleEmailQuoteClick}
-                  className="w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg"
-                  style={{ backgroundColor: '#224380' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#1e3a70';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#224380';
-                  }}
-                >
-                  <Mail className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
-                  <div className="text-center px-8 sm:px-12">
-                    <div className="text-base sm:text-xl leading-tight">
-                      Email me my quote
-                    </div>
-                  </div>
-                  <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
-                </button>
-                
-                <p className="text-center text-sm text-gray-500 mt-2">
-                  Unsubscribe at any time
-                </p>
+        <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+          <button 
+            onClick={handleSkipClick}
+            className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg ${
+              areRequiredFieldsFilled ? '' : 'opacity-50'
+            }`}
+            style={{ backgroundColor: '#eb4b00' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#d43f00';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#eb4b00';
+            }}
+          >
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
+            <div className="text-center px-8 sm:px-12">
+              <div className="text-base sm:text-xl leading-tight">
+                View my quote now
               </div>
             </div>
+            <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
+          </button>
 
-          </>
-        ) : (
-          <>
-            <div className="mb-6 sm:mb-8">
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-white px-4 sm:px-6 py-2 text-gray-700 text-base sm:text-lg font-semibold border border-gray-300 rounded-full">
+                or
+              </span>
+            </div>
+          </div>
+
+          {/* Inline Email Form Section */}
+          <div className="bg-gray-50 p-6 sm:p-8 rounded-xl">
+            <div className="mb-6">
               <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">See your prices instantly ⚡ & get them by email</h2>
             </div>
 
-            <form onSubmit={handleSubmitContactForm}>
-              <div className="mb-6 sm:mb-8">
+            <form onSubmit={handleEmailSubmit}>
+              <div className="mb-6">
                 <input
                   type="email"
                   value={email}
@@ -239,19 +209,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 <div className="flex gap-3">
                   <button 
                     type="button" 
-                    onClick={() => {
-                      // Trigger confetti
-                      confetti({
-                        particleCount: 100,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                      });
-                      
-                      // Small delay to let confetti start before navigating
-                      setTimeout(() => {
-                        onSkip();
-                      }, 300);
-                    }}
+                    onClick={handleSkipClick}
                     className="flex items-center justify-center gap-2 text-sm sm:text-base font-medium py-3 sm:py-3 px-4 sm:px-6 rounded-lg border-2 transition-all duration-200 hover-scale"
                     style={{
                       backgroundColor: 'transparent',
@@ -293,8 +251,8 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                 </div>
               </div>
             </form>
-          </>
-        )}
+          </div>
+        </div>
       </div>
     </section>
   );
