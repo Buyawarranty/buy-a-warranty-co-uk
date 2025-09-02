@@ -882,15 +882,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16">
           
-          {/* What's Covered Section */}
+          {/* Section 4: Pick the Cover That Suits You */}
           <div className="section-header rounded-lg p-6 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
+                4
+              </div>
+              <h2 className="text-xl font-semibold text-foreground">Pick the Cover That Suits You</h2>
+            </div>
+            
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="whats-covered" className="border-none">
                 <AccordionTrigger className="hover:no-underline pb-2 pt-0 [&>svg]:h-8 [&>svg]:w-8 [&>svg]:text-primary">
                   <div className="flex flex-col items-start w-full">
                     <div className="flex items-center gap-3">
                       <Shield className="h-5 w-5 text-primary" />
-                      <h2 className="text-xl font-semibold text-foreground">What's Covered?</h2>
+                      <h3 className="text-lg font-medium text-foreground">What's Covered?</h3>
                     </div>
                     <p className="text-sm text-muted-foreground mt-1 ml-8">
                       Full protection for mechanical and electrical faults - no surprises, just peace of mind.
