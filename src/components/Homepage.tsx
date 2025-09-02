@@ -385,64 +385,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Quick Links */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">Quick links</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-orange-400">Home</a></li>
-                <li><a href="#" className="hover:text-orange-400">Make a Claim</a></li>
-                <li><a href="#" className="hover:text-orange-400">Warranty for Car</a></li>
-                <li><a href="#" className="hover:text-orange-400">Warranty for Van</a></li>
-                <li><a href="#" className="hover:text-orange-400">Warranty for EVs</a></li>
-                <li><a href="#" className="hover:text-orange-400">Warranty for Motorbikes UK</a></li>
-              </ul>
-            </div>
-
-            {/* Support */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">Support</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-orange-400">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-orange-400">Terms & Conditions</a></li>
-              </ul>
-            </div>
-
-            {/* Need Help */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">Need Help?</h3>
-              <div className="space-y-2 text-sm">
-                <p>Call us:</p>
-                <p className="text-orange-400 font-bold text-lg">0330 229 5040</p>
-                <p>or</p>
-                <p className="text-orange-400 font-bold text-lg">0330 229 5045</p>
-                <p>Email us directly:</p>
-                <a href="mailto:info@buyawarranty.co.uk" className="text-orange-400 hover:underline">
-                  info@buyawarranty.co.uk
-                </a>
-              </div>
-            </div>
-
-            {/* Looking for new warranty provider */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">Looking for a new warranty provider?</h3>
-              <p className="text-sm text-gray-300">
-                We make vehicle warranty simple, fast, 
-                and more affordable too. With easy warranty 
-                comparing options to find different types 
-                of comprehensive car and van warranty 
-                whether you drive an SUV, car, SUV, or 
-                motorbike - if it's under 15 years old, 
-                we've got you covered.
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
