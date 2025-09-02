@@ -667,6 +667,24 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
         </div>
 
+        {/* What's Covered Box */}
+        <div className="bg-white border-2 border-primary rounded-lg p-6 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+              <Shield className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-primary">What's Covered?</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Full protection for mechanical and electrical faults - no surprises, just peace of mind.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 text-sm text-muted-foreground">
+            Unlimited Claims • Engine, Gearbox, Clutch • Suspension & Braking • ECUs & Sensors • Air Conditioning • Labour Costs • Recovery & more
+          </div>
+        </div>
+
         {/* Claim Limit Selection */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
@@ -878,107 +896,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16">
           
-          {/* What's Covered Section */}
-          <div className="section-header rounded-lg p-6 mb-8">
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="whats-covered" className="border-none">
-                <AccordionTrigger className="hover:no-underline pb-2 pt-0 [&>svg]:h-8 [&>svg]:w-8 [&>svg]:text-primary">
-                  <div className="flex flex-col items-start w-full">
-                    <div className="flex items-center gap-3">
-                      <Shield className="h-5 w-5 text-primary" />
-                      <h2 className="text-xl font-semibold text-foreground">What's Covered?</h2>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1 ml-8">
-                      Full protection for mechanical and electrical faults - no surprises, just peace of mind.
-                    </p>
-                  </div>
-                </AccordionTrigger>
-                
-                {/* Preview content when collapsed */}
-                <div className="block data-[state=open]:hidden">
-                  <div className="relative overflow-hidden">
-                    <div className="text-sm text-muted-foreground py-2">
-                      Unlimited Claims • Engine, Gearbox, Clutch • Suspension & Braking • ECUs & Sensors • Air Conditioning • Labour Costs • Recovery...
-                    </div>
-                  </div>
-                </div>
-
-                <AccordionContent className="pb-0">
-                  {/* Main Coverage */}
-                  <div className="space-y-6">
-                    {/* Core Coverage Items */}
-                    <div>
-                      <h3 className="text-lg font-semibold text-foreground mb-4">Comprehensive Coverage</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {[
-                          { item: 'Unlimited Claims', icon: Infinity },
-                          { item: "'ALL' Mechanical & Electrical Components", icon: Zap },
-                          { item: 'Petrol/Diesel Car Coverage', icon: Car },
-                          { item: 'Engine, Gearbox, Clutch, Turbo & Drivetrain', icon: Cog },
-                          { item: 'Suspension, Steering & Braking Systems', icon: Settings },
-                          { item: 'Fuel, Cooling & Emissions Systems', icon: Droplets },
-                          { item: 'ECUs, Sensors & Driver Assistance Tech', icon: Cpu },
-                          { item: 'Air Conditioning, Airbags & Multimedia Systems', icon: Snowflake },
-                          { item: 'Diagnostics & Fault-Finding', icon: Search },
-                          { item: 'Labour Costs', icon: Users },
-                          { item: 'Recovery Claim-back', icon: RotateCcw }
-                        ].map(({ item, icon: Icon }, index) => (
-                          <div key={index} className="flex items-center gap-3">
-                            <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center flex-shrink-0">
-                              <Icon className="h-3.5 w-3.5 text-success-foreground" />
-                            </div>
-                            <span className="text-foreground font-medium">{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Additional Benefits */}
-                    <div className="bg-muted rounded-lg p-4">
-                      <h4 className="font-semibold text-foreground mb-3">Additional Benefits</h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                          <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                            <Infinity className="h-3 w-3 text-primary-foreground" />
-                          </div>
-                          <span className="text-foreground">Claim as many times as needed</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                            <MapPin className="h-3 w-3 text-primary-foreground" />
-                          </div>
-                          <span className="text-foreground">Approved garages or choose your own</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* What's Not Included */}
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <h4 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
-                        <X className="h-4 w-4" />
-                        What's not included:
-                      </h4>
-                      <div className="space-y-2">
-                        {[
-                          'Items related to routine servicing, such as tyres, brake pads and discs',
-                          'Pre-existing faults or issues',
-                          'Vehicles used for hire & reward (e.g. Taxis, Couriers, rentals etc.)'
-                        ].map((item, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="w-4 h-4 mt-0.5 flex items-center justify-center flex-shrink-0">
-                              <X className="h-3 w-3 text-red-500" />
-                            </div>
-                            <span className="text-red-700 text-sm">{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-
 
           {/* Payment Duration Selection */}
           <div className="section-header rounded-lg p-6 mt-8">
