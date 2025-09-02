@@ -154,7 +154,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     className="w-full max-w-md px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none"
                   />
                   <p className="text-sm text-gray-600">
-                    We can only provide warranty for vehicles with a maximum mileage of 150,000
+                    Cover for vehicles up to 150,000 miles and 15 years old
                   </p>
                 </div>
 
