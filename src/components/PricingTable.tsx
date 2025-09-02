@@ -537,33 +537,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
         </div>
 
-        {/* Reliability Score Display - Only show for cars */}
-        {vt === 'car' && (
-          <div className="flex justify-center mb-6">
-            {reliabilityLoading ? (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg px-6 py-4">
-                <div className="flex items-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                  <p className="text-blue-700 font-medium">Calculating reliability score...</p>
-                </div>
-              </div>
-            ) : reliabilityScore ? (
-              <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg px-6 py-4 shadow-sm">
-                <div className="text-center">
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
-                    Reliability Score: {reliabilityScore.score}
-                  </h3>
-                  <p className="text-sm font-medium text-gray-700">
-                    {reliabilityScore.tierLabel}
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1">
-                    Based on MOT history and vehicle data
-                  </p>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        )}
 
         {/* Vehicle Details */}
         {vehicleData.make && (
