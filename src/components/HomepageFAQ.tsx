@@ -68,10 +68,10 @@ const HomepageFAQ = () => {
   ];
 
   const FAQItem = ({ faq }: { faq: { id: string; question: string; answer: string } }) => (
-    <div className="bg-[#eb4b00] rounded-lg overflow-hidden shadow-lg">
+    <div className="bg-brand-orange-light rounded-lg overflow-hidden shadow-lg">
       <button
         onClick={() => toggleItem(faq.id)}
-        className="w-full px-6 py-5 text-left flex items-center justify-between text-white hover:bg-[#d63f00] transition-colors"
+        className="w-full px-6 py-5 text-left flex items-center justify-between text-white hover:bg-brand-orange transition-colors"
       >
         <span className="font-bold text-lg pr-4">{faq.question}</span>
         <ChevronDown 
@@ -82,7 +82,7 @@ const HomepageFAQ = () => {
       </button>
       
       {openItems[faq.id] && (
-        <div className="px-6 pb-5 text-white bg-[#d63f00] animate-accordion-down">
+        <div className="px-6 pb-5 text-white bg-brand-orange animate-accordion-down">
           <p className="text-base leading-relaxed opacity-95">{faq.answer}</p>
         </div>
       )}
@@ -94,10 +94,10 @@ const HomepageFAQ = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Frequently Asked <span className="text-[#eb4b00]">Questions</span>
+          <h2 className="text-4xl font-bold text-brand-dark-text mb-6 leading-tight">
+            Frequently Asked <span className="text-brand-orange">Questions</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg text-brand-dark-text max-w-3xl mx-auto leading-relaxed">
             Find answers to the most common questions about our warranty services.
           </p>
         </div>
