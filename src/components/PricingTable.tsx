@@ -777,10 +777,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       )}
 
-      {/* Section 5: What's Covered */}
+      {/* Section 4: What's Covered */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16">
-          {/* Section 5 Header */}
+          {/* Section 4 Header */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mb-8">
             <div className="bg-gradient-to-r from-teal-50 to-cyan-50 px-6 py-4 border-b border-gray-200">
               <div className="flex items-center gap-3">
@@ -790,8 +790,28 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <h2 className="text-xl font-bold text-gray-900">What's Covered?</h2>
               </div>
             </div>
-            <div className="p-6 text-center">
-              <p className="text-gray-600">Choose your warranty plan and see what's included</p>
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Coverage items based on platinum plan coverage */}
+                {[
+                  'Engine',
+                  'Manual Gearbox', 
+                  'Automatic Transmission',
+                  'Torque Converter',
+                  'Overdrive',
+                  'Differential',
+                  'Electrics',
+                  'Casings',
+                  'Recover Claim-back'
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-base text-gray-700 font-medium">{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -877,22 +897,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </div>
                  </div>
 
-                 {/* What's Covered */}
-                <div className="px-6 mb-6">
-                  <h4 className="font-bold text-lg mb-4 text-gray-900">What's Covered:</h4>
-                  <div className="space-y-2">
-                    {plan.coverage.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
-                          <Check className="h-3 w-3 text-white" />
-                        </div>
-                        <span className={`text-base text-gray-700 ${feature.includes("Basic plan plus:") || feature.includes("Gold plan plus:") ? "font-bold text-gray-900" : ""}`}>
-                          {feature}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Optional Add-ons */}
                 <div className="px-6 mb-6">
@@ -1020,86 +1024,173 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* 1 Year Option */}
-              <div className={`border-2 rounded-xl p-6 transition-all duration-200 ${
-                paymentType === '12months'
-                  ? 'border-orange-500 bg-orange-50'
-                  : 'border-gray-300 hover:border-orange-500'
-              }`}>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">1 Year</h3>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">£699</div>
-                  <p className="text-gray-600 mb-2">Comprehensive coverage</p>
-                  <p className="text-gray-600 text-sm mb-4">or £58.25/mo</p>
-                  <button
-                    onClick={() => setPaymentType('12months')}
-                    className={`w-full py-3 rounded-xl font-bold text-base transition-all duration-200 ${
-                      paymentType === '12months'
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {paymentType === '12months' ? 'Selected' : 'Select'}
-                  </button>
-                </div>
-              </div>
+              {(() => {
+                // Calculate pricing for 1 year platinum plan
+                const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+                if (!platinumPlan) return null;
+                
+                const tempPaymentType = paymentType;
+                const oneYearPrice = (() => {
+                  // Temporarily set to 12months to get 1 year pricing
+                  const savedPaymentType = paymentType;
+                  const pricing = getPricingData(voluntaryExcess, 'yearly');
+                  const totalPrice = pricing.platinum?.total || 437;
+                  const monthlyEquivalent = Math.round(totalPrice / 12);
+                  return { total: totalPrice, monthly: monthlyEquivalent };
+                })();
+                
+                return (
+                  <div className={`border-2 rounded-xl p-6 transition-all duration-200 ${
+                    paymentType === '12months'
+                      ? 'border-orange-500 bg-orange-50'
+                      : 'border-gray-300 hover:border-orange-500'
+                  }`}>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">1 Year</h3>
+                      
+                      {/* Pay Full Amount Card */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-gray-900 text-sm">Pay Full Amount</span>
+                          <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                            Save 5% (£{Math.round(oneYearPrice.total * 0.05)})
+                          </div>
+                        </div>
+                        <div className="text-xl font-bold text-blue-600">
+                          £{Math.round(oneYearPrice.total * 0.95)}
+                        </div>
+                      </div>
+                      
+                      <div className="text-2xl font-bold text-gray-900 mb-2">£{oneYearPrice.monthly}/mo</div>
+                      <p className="text-green-600 text-sm font-bold mb-4">for 12 months interest free</p>
+                      <button
+                        onClick={() => setPaymentType('12months')}
+                        className={`w-full py-3 rounded-xl font-bold text-base transition-all duration-200 ${
+                          paymentType === '12months'
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {paymentType === '12months' ? 'Selected' : 'Buy Now'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* 2 Years Option */}
-              <div className={`border-2 rounded-xl p-6 transition-all duration-200 relative ${
-                paymentType === '24months'
-                  ? 'border-orange-500 bg-orange-50'
-                  : 'border-gray-300 hover:border-orange-500'
-              }`}>
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">
-                    Save £399
+              {(() => {
+                const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+                if (!platinumPlan) return null;
+                
+                const twoYearPrice = (() => {
+                  const pricing = getPricingData(voluntaryExcess, 'two_yearly');
+                  const totalPrice = pricing.platinum?.total || 786;
+                  const monthlyEquivalent = Math.round(totalPrice / 12);
+                  const savings = pricing.platinum?.save || 87;
+                  return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
+                })();
+                
+                return (
+                  <div className={`border-2 rounded-xl p-6 transition-all duration-200 relative ${
+                    paymentType === '24months'
+                      ? 'border-orange-500 bg-orange-50'
+                      : 'border-gray-300 hover:border-orange-500'
+                  }`}>
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">
+                        Save £{twoYearPrice.save}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">2 Years</h3>
+                      
+                      {/* Pay Full Amount Card */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-gray-900 text-sm">Pay Full Amount</span>
+                          <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                            Save 5% (£{Math.round(twoYearPrice.total * 0.05)})
+                          </div>
+                        </div>
+                        <div className="text-xl font-bold text-blue-600">
+                          £{Math.round(twoYearPrice.total * 0.95)}
+                        </div>
+                      </div>
+                      
+                      <div className="text-2xl font-bold text-gray-900 mb-2">£{twoYearPrice.monthly}/mo</div>
+                      <p className="text-green-600 text-sm font-bold mb-4">for 12 months interest free</p>
+                      <button
+                        onClick={() => setPaymentType('24months')}
+                        className={`w-full py-3 rounded-xl font-bold text-base transition-all duration-200 ${
+                          paymentType === '24months'
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {paymentType === '24months' ? 'Selected' : 'Buy Now'}
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">2 Years</h3>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">£999</div>
-                  <p className="text-gray-600 mb-2">Comprehensive coverage</p>
-                  <p className="text-gray-600 text-sm mb-4">or £83.25/mo</p>
-                  <button
-                    onClick={() => setPaymentType('24months')}
-                    className={`w-full py-3 rounded-xl font-bold text-base transition-all duration-200 ${
-                      paymentType === '24months'
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {paymentType === '24months' ? 'Selected' : 'Select'}
-                  </button>
-                </div>
-              </div>
+                );
+              })()}
 
               {/* 3 Years Option */}
-              <div className={`border-2 rounded-xl p-6 transition-all duration-200 relative ${
-                paymentType === '36months'
-                  ? 'border-orange-500 bg-orange-50'
-                  : 'border-gray-300 hover:border-orange-500'
-              }`}>
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">
-                    Save £748
+              {(() => {
+                const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+                if (!platinumPlan) return null;
+                
+                const threeYearPrice = (() => {
+                  const pricing = getPricingData(voluntaryExcess, 'three_yearly');
+                  const totalPrice = pricing.platinum?.total || 1153;
+                  const monthlyEquivalent = Math.round(totalPrice / 12);
+                  const savings = pricing.platinum?.save || 157;
+                  return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
+                })();
+                
+                return (
+                  <div className={`border-2 rounded-xl p-6 transition-all duration-200 relative ${
+                    paymentType === '36months'
+                      ? 'border-orange-500 bg-orange-50'
+                      : 'border-gray-300 hover:border-orange-500'
+                  }`}>
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">
+                        Save £{threeYearPrice.save}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">3 Years</h3>
+                      
+                      {/* Pay Full Amount Card */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-gray-900 text-sm">Pay Full Amount</span>
+                          <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                            Save 5% (£{Math.round(threeYearPrice.total * 0.05)})
+                          </div>
+                        </div>
+                        <div className="text-xl font-bold text-blue-600">
+                          £{Math.round(threeYearPrice.total * 0.95)}
+                        </div>
+                      </div>
+                      
+                      <div className="text-2xl font-bold text-gray-900 mb-2">£{threeYearPrice.monthly}/mo</div>
+                      <p className="text-green-600 text-sm font-bold mb-4">for 12 months interest free</p>
+                      <button
+                        onClick={() => setPaymentType('36months')}
+                        className={`w-full py-3 rounded-xl font-bold text-base transition-all duration-200 ${
+                          paymentType === '36months'
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {paymentType === '36months' ? 'Selected' : 'Buy Now'}
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">3 Years</h3>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">£1349</div>
-                  <p className="text-gray-600 mb-2">Comprehensive coverage</p>
-                  <p className="text-gray-600 text-sm mb-4">or £112.42/mo</p>
-                  <button
-                    onClick={() => setPaymentType('36months')}
-                    className={`w-full py-3 rounded-xl font-bold text-base transition-all duration-200 ${
-                      paymentType === '36months'
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {paymentType === '36months' ? 'Selected' : 'Select'}
-                  </button>
-                </div>
-              </div>
+                );
+              })()}
             </div>
           </div>
         </div>
