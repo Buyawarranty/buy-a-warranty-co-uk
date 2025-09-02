@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -668,7 +668,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <h2 className="text-xl font-semibold text-foreground">Choose Your Claim Limit</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <TooltipProvider>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* AutoCare Essential */}
             <button
               onClick={() => setSelectedClaimLimit(750)}
@@ -679,13 +680,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               }`}
             >
               <div className="absolute top-4 right-4">
-                <Popover>
-                  <PopoverTrigger asChild>
+                <Tooltip>
+                  <TooltipTrigger asChild>
                     <button className="p-1 hover:bg-gray-100 rounded-full" onClick={(e) => e.stopPropagation()}>
                       <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                     </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-4" align="end">
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="w-80 p-4">
                     <div className="space-y-3">
                       <p className="text-sm text-foreground">
                         Designed for everyday motoring peace of mind, this plan covers the most common and affordable mechanical and electrical faults—not wear and tear or consumables.
@@ -707,8 +708,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </p>
                       </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
+                  </TooltipContent>
+                </Tooltip>
               </div>
               <div className="text-2xl font-bold text-primary mb-2">£750</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Essential</h4>
@@ -729,13 +730,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 MOST POPULAR
               </div>
               <div className="absolute top-4 right-4">
-                <Popover>
-                  <PopoverTrigger asChild>
+                <Tooltip>
+                  <TooltipTrigger asChild>
                     <button className="p-1 hover:bg-gray-100 rounded-full" onClick={(e) => e.stopPropagation()}>
                       <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                     </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-4" align="end">
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="w-80 p-4">
                     <div className="space-y-3">
                       <p className="text-sm text-foreground">
                         A comprehensive option that balances cost and coverage, ideal for drivers who want broader protection.
@@ -757,8 +758,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </p>
                       </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
+                  </TooltipContent>
+                </Tooltip>
               </div>
               <div className="text-2xl font-bold text-primary mb-2">£1,250</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Advantage</h4>
@@ -776,13 +777,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               }`}
             >
               <div className="absolute top-4 right-4">
-                <Popover>
-                  <PopoverTrigger asChild>
+                <Tooltip>
+                  <TooltipTrigger asChild>
                     <button className="p-1 hover:bg-gray-100 rounded-full" onClick={(e) => e.stopPropagation()}>
                       <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                     </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-4" align="end">
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="w-80 p-4">
                     <div className="space-y-3">
                       <p className="text-sm text-foreground">
                         Premium-level protection for high-value repairs.
@@ -804,15 +805,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </p>
                       </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
+                  </TooltipContent>
+                </Tooltip>
               </div>
               <div className="text-2xl font-bold text-primary mb-2">£2,000</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Elite</h4>
               <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
               <p className="text-sm font-medium text-foreground">Top-tier cover for total peace of mind.</p>
             </button>
-          </div>
+            </div>
+          </TooltipProvider>
         </div>
       </div>
 
