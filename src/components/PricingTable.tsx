@@ -771,63 +771,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
           </div>
 
-          {/* Plan Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {displayPlans.map((plan) => {
-              const basePrice = calculatePlanPrice(plan);
-              const addOnPrice = calculateAddOnPrice(plan.id);
-              const displayPrice = basePrice + addOnPrice;
-              const isLoading = loading[plan.id];
-              const savings = getPlanSavings(plan);
-              
-              return (
-                <div key={plan.id} className="bg-white rounded-lg border border-gray-200 p-6">
-                  
-                  {/* Plan Header */}
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                      {plan.name}
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      {paymentType === '12months' ? '12 month warranty' :
-                       paymentType === '24months' ? '24 month warranty' :
-                       paymentType === '36months' ? '36 month warranty' :
-                       '12 month warranty'}
-                     </p>
-
-                     {/* Monthly Payment Option */}
-                    <div className="text-center mb-6">
-                      <div className="text-2xl font-bold text-gray-900 mb-2">
-                        {paymentType === '12months' ? (
-                          <>£{displayPrice}/mo</>
-                        ) : (
-                          <>£{displayPrice}<span className="text-lg">/12 payments</span></>
-                        )}
-                      </div>
-                      <div className="text-green-600 font-medium">
-                        {paymentType === '12months' ? 'for 12 months interest free' : 'paid over 12 months interest free'}
-                      </div>
-                    </div>
-                    
-                    {savings && paymentType !== '12months' && (
-                     <div className="text-green-600 font-bold text-lg mb-6">
-                       You Save £{savings}
-                      </div>
-                    )}
-                     
-                    {/* Action Button */}
-                    <Button
-                      onClick={() => handleSelectPlan(plan)}
-                      disabled={isLoading}
-                      className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg"
-                    >
-                      {isLoading ? 'Processing...' : 'Buy Now'}
-                    </Button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
 
           {/* Payment Duration Selection */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mt-8">
