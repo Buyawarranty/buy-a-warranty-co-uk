@@ -611,7 +611,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-bold">
               2
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">Voluntary Excess Amount</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Choose your excess amount</h2>
           </div>
           
           <div className="flex gap-3 flex-wrap">
