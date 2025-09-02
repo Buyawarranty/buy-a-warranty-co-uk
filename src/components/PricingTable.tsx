@@ -588,14 +588,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
            {vehicleData && (
              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                <div className="flex items-center gap-2">
-                 <Hash className="h-4 w-4 text-primary" />
+                 <Hash className="h-5 w-5 text-primary" />
                  <div>
                    <span className="text-muted-foreground block">Registration</span>
                    <span className="font-semibold text-foreground">{vehicleData.regNumber}</span>
                  </div>
                </div>
                <div className="flex items-center gap-2">
-                 <Car className="h-4 w-4 text-primary" />
+                 <Car className="h-5 w-5 text-primary" />
                  <div>
                    <span className="text-muted-foreground block">Vehicle</span>
                    <span className="font-semibold text-foreground">
@@ -605,7 +605,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                </div>
                {vehicleData.fuelType && (
                  <div className="flex items-center gap-2">
-                   <Fuel className="h-4 w-4 text-primary" />
+                   <Fuel className="h-5 w-5 text-primary" />
                    <div>
                      <span className="text-muted-foreground block">Fuel Type</span>
                      <span className="font-semibold text-foreground">{vehicleData.fuelType}</span>
@@ -614,7 +614,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                )}
                {vehicleData.year && (
                  <div className="flex items-center gap-2">
-                   <Calendar className="h-4 w-4 text-primary" />
+                   <Calendar className="h-5 w-5 text-primary" />
                    <div>
                      <span className="text-muted-foreground block">Year</span>
                      <span className="font-semibold text-foreground">{vehicleData.year}</span>
@@ -622,7 +622,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                  </div>
                )}
                <div className="flex items-center gap-2">
-                 <Gauge className="h-4 w-4 text-primary" />
+                 <Gauge className="h-5 w-5 text-primary" />
                  <div>
                    <span className="text-muted-foreground block">Mileage</span>
                    <span className="font-semibold text-foreground">{parseInt(vehicleData.mileage).toLocaleString()} miles</span>
