@@ -793,22 +793,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                        paymentType === '24months' ? '24 month warranty' :
                        paymentType === '36months' ? '36 month warranty' :
                        '12 month warranty'}
-                    </p>
-                     
-                    {/* Pay Full Amount Option */}
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-gray-900">Pay Full Amount</span>
-                        <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save 5% (£{Math.round((displayPrice * 12) * 0.05)})
-                        </div>
-                      </div>
-                      <div className="text-xl font-bold text-gray-900">
-                        £{Math.round((displayPrice * 12) * 0.95)}
-                      </div>
-                    </div>
+                     </p>
 
-                    {/* Monthly Payment Option */}
+                     {/* Monthly Payment Option */}
                     <div className="text-center mb-6">
                       <div className="text-2xl font-bold text-gray-900 mb-2">
                         {paymentType === '12months' ? (
@@ -867,20 +854,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   }`}>
                     <div className="text-center">
                       <h3 className="text-xl font-bold text-gray-900 mb-2">1 Year</h3>
-                      
-                      {/* Pay Full Amount Card */}
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-900 text-sm">Pay Full Amount</span>
-                          <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
-                            Save 5% (£{Math.round(oneYearPrice.total * 0.05)})
-                          </div>
-                        </div>
-                        <div className="text-xl font-bold text-gray-900">
-                          £{Math.round(oneYearPrice.total * 0.95)}
-                        </div>
-                      </div>
-                      
                       <div className="text-2xl font-bold text-gray-900 mb-2">£{oneYearPrice.monthly}/mo</div>
                       <p className="text-green-600 text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
@@ -924,20 +897,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </div>
                     <div className="text-center">
                       <h3 className="text-xl font-bold text-gray-900 mb-2">2 Years</h3>
-                      
-                      {/* Pay Full Amount Card */}
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-900 text-sm">Pay Full Amount</span>
-                          <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
-                            Save 5% (£{Math.round(twoYearPrice.total * 0.05)})
-                          </div>
-                        </div>
-                        <div className="text-xl font-bold text-gray-900">
-                          £{Math.round(twoYearPrice.total * 0.95)}
-                        </div>
-                      </div>
-                      
                       <div className="text-2xl font-bold text-gray-900 mb-2">£{twoYearPrice.monthly}/mo</div>
                       <p className="text-green-600 text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
@@ -981,20 +940,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </div>
                     <div className="text-center">
                       <h3 className="text-xl font-bold text-gray-900 mb-2">3 Years</h3>
-                      
-                      {/* Pay Full Amount Card */}
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-900 text-sm">Pay Full Amount</span>
-                          <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
-                            Save 5% (£{Math.round(threeYearPrice.total * 0.05)})
-                          </div>
-                        </div>
-                        <div className="text-xl font-bold text-gray-900">
-                          £{Math.round(threeYearPrice.total * 0.95)}
-                        </div>
-                      </div>
-                      
                       <div className="text-2xl font-bold text-gray-900 mb-2">£{threeYearPrice.monthly}/mo</div>
                       <p className="text-green-600 text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
