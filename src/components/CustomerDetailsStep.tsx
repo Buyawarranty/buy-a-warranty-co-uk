@@ -5,7 +5,8 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -105,19 +106,75 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const getClaimLimitTitle = (limit: string) => {
     switch (limit) {
-      case 'essential': return 'Essential Cover';
-      case 'plus': return 'Plus Cover';
-      case 'premium': return 'Premium Cover';
-      default: return 'Plus Cover';
+      case 'essential': return 'AutoCare Standard';
+      case 'plus': return 'AutoCare Enhanced';
+      case 'premium': return 'AutoCare Ultimate';
+      default: return 'AutoCare Enhanced';
+    }
+  };
+
+  const getClaimLimitTagline = (limit: string) => {
+    switch (limit) {
+      case 'essential': return 'Confidence for the everyday drive.';
+      case 'plus': return 'Balanced protection for life\'s bigger bumps.';
+      case 'premium': return 'Top-tier cover for total peace of mind.';
+      default: return 'Balanced protection for life\'s bigger bumps.';
     }
   };
 
   const getClaimLimitDescription = (limit: string) => {
     switch (limit) {
-      case 'essential': return 'Perfect for smaller repairs and peace of mind.';
-      case 'plus': return 'Ideal for comprehensive protection on major repairs.';
-      case 'premium': return 'Maximum protection for high-value repairs.';
-      default: return 'Ideal for comprehensive protection on major repairs.';
+      case 'essential': return 'Designed for everyday motoring peace of mind, this plan covers the most common and affordable mechanical and electrical faults—not wear and tear or consumables.';
+      case 'plus': return 'A comprehensive option that balances cost and coverage, ideal for drivers who want broader protection.';
+      case 'premium': return 'Premium-level protection for high-value repairs.';
+      default: return 'A comprehensive option that balances cost and coverage, ideal for drivers who want broader protection.';
+    }
+  };
+
+  const getClaimLimitDetails = (limit: string) => {
+    switch (limit) {
+      case 'essential': 
+        return {
+          claims: '10 claims per warranty',
+          exampleRepairs: [
+            'Starter motor failure',
+            'Alternator replacement',
+            'Electric window motor faults',
+            'Central locking system issues',
+            'Fuel pump malfunction'
+          ],
+          whatIf: 'If your repair exceeds the £750 limit, you\'ll just pay the difference. You\'re still making significant savings—without the high cost of unlimited cover.'
+        };
+      case 'plus':
+        return {
+          claims: 'Unlimited claims',
+          exampleRepairs: [
+            'Transmission control module faults',
+            'Suspension arm or bush replacements',
+            'Radiator or water pump failure',
+            'ABS sensor or module issues',
+            'Air conditioning compressor faults'
+          ],
+          whatIf: 'If your repair exceeds the £1,250 limit, you\'ll only need to top up the difference—still saving significantly compared to paying out of pocket.'
+        };
+      case 'premium':
+        return {
+          claims: 'Unlimited claims',
+          exampleRepairs: [
+            'Engine control unit (ECU) failure',
+            'Gearbox or clutch actuator replacement',
+            'Turbocharger faults',
+            'Hybrid or electric drive system issues',
+            'Advanced infotainment or navigation system faults'
+          ],
+          whatIf: 'If the repair goes beyond the £2,000 limit, you\'ll just pay the extra. You still benefit from major savings—without the premium of unlimited cover.'
+        };
+      default:
+        return {
+          claims: 'Unlimited claims',
+          exampleRepairs: [],
+          whatIf: ''
+        };
     }
   };
 
@@ -448,72 +505,130 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             </CollapsibleTrigger>
             <CollapsibleContent>
               <CardContent className="pt-0">
-                <div className="text-center mb-6">
-                  <p className="text-gray-600">All plans include <strong>unlimited</strong> number of claims</p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {['essential', 'plus', 'premium'].map((limit) => (
-                    <div
-                      key={limit}
-                      onClick={() => setSelectedClaimLimit(limit)}
-                      className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all ${
-                        selectedClaimLimit === limit 
-                          ? 'border-orange-500 bg-orange-50' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      {/* Badge for Plus Cover */}
-                      {limit === 'plus' && (
-                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                          <div className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">
-                            MOST POPULAR
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Icon */}
-                      <div className="flex justify-center mb-4">
-                        {limit === 'essential' && (
-                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                            <CheckCircle className="w-6 h-6 text-green-600" />
-                          </div>
-                        )}
-                        {limit === 'plus' && (
-                          <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                            <div className="text-2xl">⭐</div>
-                          </div>
-                        )}
-                        {limit === 'premium' && (
-                          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                            <div className="text-2xl">🔒</div>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Title */}
-                      <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
-                        {getClaimLimitTitle(limit)}
-                      </h3>
-                      
-                      {/* Amount */}
-                      <div className="text-center mb-4">
-                        <div className={`text-3xl font-bold ${
-                          limit === 'essential' ? 'text-green-600' :
-                          limit === 'plus' ? 'text-yellow-600' :
-                          'text-orange-600'
-                        }`}>
-                          £{getClaimLimitAmount(limit).toLocaleString()} Claim Limit
-                        </div>
-                      </div>
-                      
-                      {/* Description */}
-                      <p className="text-gray-600 text-center text-sm">
-                        {getClaimLimitDescription(limit)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                 <div className="text-center mb-1">
+                   <p className="text-gray-600 text-sm">Choose the claim limit that's right for you</p>
+                 </div>
+                 
+                 <TooltipProvider>
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                     {['essential', 'plus', 'premium'].map((limit) => {
+                       const details = getClaimLimitDetails(limit);
+                       return (
+                         <div
+                           key={limit}
+                           onClick={() => setSelectedClaimLimit(limit)}
+                           className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                             selectedClaimLimit === limit 
+                               ? 'border-orange-500 bg-orange-50' 
+                               : 'border-gray-200 hover:border-gray-300'
+                           }`}
+                         >
+                           {/* Badge for Plus Cover */}
+                           {limit === 'plus' && (
+                             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                               <div className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">
+                                 MOST POPULAR
+                               </div>
+                             </div>
+                           )}
+                           
+                           {/* Icon */}
+                           <div className="flex justify-center mb-3">
+                             {limit === 'essential' && (
+                               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                 <CheckCircle className="w-6 h-6 text-green-600" />
+                               </div>
+                             )}
+                             {limit === 'plus' && (
+                               <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                 <div className="text-2xl">⭐</div>
+                               </div>
+                             )}
+                             {limit === 'premium' && (
+                               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                 <div className="text-2xl">🔒</div>
+                               </div>
+                             )}
+                           </div>
+                           
+                           {/* Title */}
+                           <h3 className="text-lg font-bold text-gray-900 text-center mb-1">
+                             {getClaimLimitTitle(limit)}
+                           </h3>
+                           
+                           {/* Claims Info */}
+                           <p className="text-xs text-gray-500 text-center mb-3">
+                             ({details.claims})
+                           </p>
+                           
+                           {/* Amount */}
+                           <div className="text-center mb-3">
+                             <div className={`text-2xl font-bold ${
+                               limit === 'essential' ? 'text-green-600' :
+                               limit === 'plus' ? 'text-yellow-600' :
+                               'text-orange-600'
+                             }`}>
+                               £{getClaimLimitAmount(limit).toLocaleString()}
+                             </div>
+                             <p className="text-xs text-gray-500">Claim Limit</p>
+                           </div>
+                           
+                           {/* Tagline */}
+                           <p className="text-sm font-medium text-gray-700 text-center mb-2">
+                             {getClaimLimitTagline(limit)}
+                           </p>
+                           
+                           {/* Description */}
+                           <p className="text-xs text-gray-600 text-center mb-4">
+                             {getClaimLimitDescription(limit)}
+                           </p>
+                           
+                           {/* Question Mark Tooltips */}
+                           <div className="flex justify-center gap-3">
+                             {/* Example Repairs Tooltip */}
+                             <Tooltip>
+                               <TooltipTrigger asChild>
+                                 <button className="flex items-center text-blue-600 hover:text-blue-800 text-xs">
+                                   <HelpCircle className="w-4 h-4 mr-1" />
+                                   Example Repairs
+                                 </button>
+                               </TooltipTrigger>
+                               <TooltipContent className="max-w-xs">
+                                 <div className="p-2">
+                                   <p className="font-semibold mb-2">Example Repairs Covered:</p>
+                                   <ul className="text-sm space-y-1">
+                                     {details.exampleRepairs.map((repair, index) => (
+                                       <li key={index} className="flex items-start">
+                                         <span className="text-green-600 mr-2">•</span>
+                                         {repair}
+                                       </li>
+                                     ))}
+                                   </ul>
+                                 </div>
+                               </TooltipContent>
+                             </Tooltip>
+                             
+                             {/* What If Tooltip */}
+                             <Tooltip>
+                               <TooltipTrigger asChild>
+                                 <button className="flex items-center text-orange-600 hover:text-orange-800 text-xs">
+                                   <HelpCircle className="w-4 h-4 mr-1" />
+                                   What if more?
+                                 </button>
+                               </TooltipTrigger>
+                               <TooltipContent className="max-w-xs">
+                                 <div className="p-2">
+                                   <p className="font-semibold mb-2">What if the repair costs more?</p>
+                                   <p className="text-sm">{details.whatIf}</p>
+                                 </div>
+                               </TooltipContent>
+                             </Tooltip>
+                           </div>
+                         </div>
+                       );
+                     })}
+                   </div>
+                 </TooltipProvider>
               </CardContent>
             </CollapsibleContent>
           </Card>
