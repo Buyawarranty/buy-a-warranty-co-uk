@@ -845,7 +845,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
           {/* Payment Duration Selection */}
           <div className="neutral-container p-6 mt-8">
-            <h3 className="text-xl font-semibold text-foreground mb-6 text-center">Choose Warranty Duration</h3>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
+                4
+              </div>
+              <h3 className="text-xl font-semibold text-foreground">Choose Warranty Duration</h3>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* 1 Year Option */}
