@@ -897,10 +897,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       ? 'selected-option'
                       : 'neutral-container hover:border-primary/50'
                   }`}>
-                    <div className="text-center">
-                      <h3 className="text-xl font-bold text-foreground mb-2">1 Year</h3>
-                      <div className="text-2xl font-bold text-foreground mb-2">£{oneYearPrice.monthly}/mo</div>
-                      <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
+                     <div className="text-center">
+                       <h3 className="text-xl font-bold text-foreground mb-2">1 Year</h3>
+                       <div className="text-2xl font-bold text-foreground mb-1">£{oneYearPrice.total}</div>
+                       <div className="text-lg text-muted-foreground mb-2">or £{oneYearPrice.monthly}/mo</div>
+                       <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
                         onClick={() => setPaymentType('12months')}
                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
@@ -940,10 +941,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         Save £{twoYearPrice.save}
                       </div>
                     </div>
-                    <div className="text-center">
-                      <h3 className="text-xl font-bold text-foreground mb-2">2 Years</h3>
-                      <div className="text-2xl font-bold text-foreground mb-2">£{twoYearPrice.monthly}/mo</div>
-                      <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
+                     <div className="text-center">
+                       <h3 className="text-xl font-bold text-foreground mb-2">2 Years</h3>
+                       <div className="text-2xl font-bold text-foreground mb-1">£{twoYearPrice.total}</div>
+                       <div className="text-lg text-muted-foreground mb-2">or £{twoYearPrice.monthly}/mo</div>
+                       <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
                         onClick={() => setPaymentType('24months')}
                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
@@ -983,10 +985,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         Save £{threeYearPrice.save}
                       </div>
                     </div>
-                    <div className="text-center">
-                      <h3 className="text-xl font-bold text-foreground mb-2">3 Years</h3>
-                      <div className="text-2xl font-bold text-foreground mb-2">£{threeYearPrice.monthly}/mo</div>
-                      <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
+                     <div className="text-center">
+                       <h3 className="text-xl font-bold text-foreground mb-2">3 Years</h3>
+                       <div className="text-2xl font-bold text-foreground mb-1">£{threeYearPrice.total}</div>
+                       <div className="text-lg text-muted-foreground mb-2">or £{threeYearPrice.monthly}/mo</div>
+                       <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
                       <button
                         onClick={() => setPaymentType('36months')}
                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
