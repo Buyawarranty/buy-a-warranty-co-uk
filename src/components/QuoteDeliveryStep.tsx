@@ -77,6 +77,28 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const handleSubmitContactForm = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Track abandoned cart if email is provided
+    if (email.trim()) {
+      try {
+        await supabase.functions.invoke('track-abandoned-cart', {
+          body: {
+            full_name: email, // Using email as the name since we don't have separate fields
+            email: email,
+            phone: '',
+            vehicle_reg: vehicleData?.regNumber,
+            vehicle_make: vehicleData?.make,
+            vehicle_model: vehicleData?.model,
+            vehicle_year: vehicleData?.year,
+            mileage: vehicleData?.mileage,
+            step_abandoned: 2
+          }
+        });
+      } catch (error) {
+        console.error('Error tracking abandoned cart:', error);
+        // Don't block the flow if tracking fails
+      }
+    }
+    
     // Trigger confetti
     confetti({
       particleCount: 100,
