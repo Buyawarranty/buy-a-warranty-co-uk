@@ -127,22 +127,20 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
               {/* Registration Input */}
               <div className="space-y-4">
-                <div className="relative max-w-md">
-                  <div className="flex items-center bg-yellow-400 text-gray-900 font-bold text-2xl px-6 py-4 rounded-lg border-2 border-black shadow-sm animate-pulse">
-                    <img 
-                      src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
-                      alt="UK Flag" 
-                      className="w-8 h-6 mr-4 object-cover rounded-sm"
-                    />
-                    <input
-                      type="text"
-                      value={regNumber}
-                      onChange={handleRegChange}
-                      placeholder="Enter your reg"
-                      className="bg-transparent border-none outline-none text-2xl text-gray-900 flex-1 font-bold placeholder:text-gray-600 animate-none"
-                      maxLength={8}
-                    />
-                  </div>
+                <div className="flex items-center bg-yellow-400 text-gray-900 font-bold text-xl px-6 py-4 rounded-lg border-2 border-black shadow-sm max-w-md">
+                  <img 
+                    src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
+                    alt="UK Flag" 
+                    className="w-8 h-6 mr-4 object-cover rounded-sm"
+                  />
+                  <input
+                    type="text"
+                    value={regNumber}
+                    onChange={handleRegChange}
+                    placeholder="Enter your reg"
+                    className="bg-transparent border-none outline-none text-xl text-gray-900 flex-1 font-bold placeholder:text-gray-600"
+                    maxLength={8}
+                  />
                 </div>
 
                 {/* Mileage Input */}
