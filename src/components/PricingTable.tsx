@@ -779,7 +779,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
       {/* Section 4: What's Covered */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
-        <div className="max-w-4xl mx-auto px-4 pb-16">
+        <div className="max-w-6xl mx-auto px-4 pb-16">
           {/* Section 4 Header */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mb-8">
             <div className="bg-gradient-to-r from-teal-50 to-cyan-50 px-6 py-4 border-b border-gray-200">
