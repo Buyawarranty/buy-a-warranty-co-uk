@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
@@ -745,8 +745,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="section-header mb-8">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="whats-covered" className="border-none">
-                <AccordionTrigger className="hover:no-underline pb-4 pt-0">
-                  <h2 className="text-xl font-semibold text-foreground">What's Covered?</h2>
+                <AccordionTrigger className="hover:no-underline pb-2 pt-0">
+                  <div className="flex flex-col items-start w-full">
+                    <div className="flex items-center gap-3">
+                      <Shield className="h-5 w-5 text-primary" />
+                      <h2 className="text-xl font-semibold text-foreground">What's Covered?</h2>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1 ml-8">
+                      Full protection for mechanical and electrical faults - no surprises, just peace of mind.
+                    </p>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent className="pb-0">
                   {/* Main Coverage */}
