@@ -73,83 +73,101 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   };
 
   const handleGetQuote = async () => {
-    if (regNumber.trim() && mileage.trim()) {
-      // Check mileage validation before proceeding
-      const numericMileage = parseInt(mileage.replace(/,/g, ''));
-      if (numericMileage > 150000) {
-        setMileageError('We can only cover vehicles up to 150,000 miles');
-        return;
+    // Check if registration number is entered
+    if (!regNumber.trim()) {
+      toast({
+        title: "Registration Required",
+        description: "Please enter your vehicle registration number.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Check if mileage is entered
+    if (!mileage.trim()) {
+      toast({
+        title: "Mileage Required", 
+        description: "Please enter your vehicle's mileage to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Check mileage validation before proceeding
+    const numericMileage = parseInt(mileage.replace(/,/g, ''));
+    if (numericMileage > 150000) {
+      setMileageError('We can only cover vehicles up to 150,000 miles');
+      return;
+    }
+    
+    setIsLookingUp(true);
+    
+    try {
+      console.log('Looking up vehicle:', regNumber);
+      
+      const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
+        body: { registrationNumber: regNumber }
+      });
+
+      if (error) {
+        console.error('DVSA lookup error:', error);
+        throw error;
+      }
+
+      console.log('DVSA lookup result:', data);
+      
+      // Check vehicle age if data found
+      if (data?.found && data.yearOfManufacture) {
+        const currentYear = new Date().getFullYear();
+        const vehicleYear = parseInt(data.yearOfManufacture);
+        const vehicleAge = currentYear - vehicleYear;
+        
+        if (vehicleAge > 15) {
+          setVehicleAgeError('We cannot offer warranties for vehicles over 15 years old');
+          setIsLookingUp(false);
+          return;
+        } else {
+          setVehicleAgeError('');
+        }
       }
       
-      setIsLookingUp(true);
-      
-      try {
-        console.log('Looking up vehicle:', regNumber);
-        
-        const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
-          body: { registrationNumber: regNumber }
-        });
+      // Prepare vehicle data
+      const vehicleData: VehicleData = {
+        regNumber: regNumber,
+        mileage: mileage.replace(/,/g, ''), // Remove commas for storage
+      };
 
-        if (error) {
-          console.error('DVSA lookup error:', error);
-          throw error;
-        }
-
-        console.log('DVSA lookup result:', data);
-        
-        // Check vehicle age if data found
-        if (data?.found && data.yearOfManufacture) {
-          const currentYear = new Date().getFullYear();
-          const vehicleYear = parseInt(data.yearOfManufacture);
-          const vehicleAge = currentYear - vehicleYear;
-          
-          if (vehicleAge > 15) {
-            setVehicleAgeError('We cannot offer warranties for vehicles over 15 years old');
-            setIsLookingUp(false);
-            return;
-          } else {
-            setVehicleAgeError('');
-          }
-        }
-        
-        // Prepare vehicle data
-        const vehicleData: VehicleData = {
-          regNumber: regNumber,
-          mileage: mileage.replace(/,/g, ''), // Remove commas for storage
-        };
-
-        // Add DVLA data if found
-        if (data?.found) {
-          vehicleData.make = data.make;
-          vehicleData.model = data.model;
-          vehicleData.fuelType = data.fuelType;
-          vehicleData.transmission = data.transmission;
-          vehicleData.year = data.yearOfManufacture;
-          vehicleData.vehicleType = data.vehicleType || 'car';
-        }
-
-        // Submit to parent component
-        onRegistrationSubmit(vehicleData);
-        
-      } catch (error: any) {
-        console.error('Error looking up vehicle:', error);
-        
-        toast({
-          title: "Lookup Failed",
-          description: "Unable to find vehicle details, but you can still continue to get your quote.",
-          variant: "destructive",
-        });
-        
-        // Continue with basic vehicle data even if lookup fails
-        const vehicleData: VehicleData = {
-          regNumber: regNumber,
-          mileage: mileage.replace(/,/g, ''),
-        };
-        
-        onRegistrationSubmit(vehicleData);
-      } finally {
-        setIsLookingUp(false);
+      // Add DVLA data if found
+      if (data?.found) {
+        vehicleData.make = data.make;
+        vehicleData.model = data.model;
+        vehicleData.fuelType = data.fuelType;
+        vehicleData.transmission = data.transmission;
+        vehicleData.year = data.yearOfManufacture;
+        vehicleData.vehicleType = data.vehicleType || 'car';
       }
+
+      // Submit to parent component
+      onRegistrationSubmit(vehicleData);
+      
+    } catch (error: any) {
+      console.error('Error looking up vehicle:', error);
+      
+      toast({
+        title: "Lookup Failed",
+        description: "Unable to find vehicle details, but you can still continue to get your quote.",
+        variant: "destructive",
+      });
+      
+      // Continue with basic vehicle data even if lookup fails
+      const vehicleData: VehicleData = {
+        regNumber: regNumber,
+        mileage: mileage.replace(/,/g, ''),
+      };
+      
+      onRegistrationSubmit(vehicleData);
+    } finally {
+      setIsLookingUp(false);
     }
   };
 
@@ -298,11 +316,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <Button 
                   onClick={handleGetQuote}
                   className={`w-full px-12 py-5 text-lg font-bold rounded-lg transition-all ${
-                    isFormValid && !isLookingUp
-                      ? 'bg-orange-500 hover:bg-orange-600 text-white' 
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    isLookingUp
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-orange-500 hover:bg-orange-600 text-white'
                   }`}
-                  disabled={!isFormValid || isLookingUp}
+                  disabled={isLookingUp}
                 >
                   {isLookingUp ? 'Looking up vehicle...' : 'Get My Quote'}
                 </Button>
