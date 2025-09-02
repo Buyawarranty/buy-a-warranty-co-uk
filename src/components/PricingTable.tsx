@@ -892,10 +892,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 })();
                 
                 return (
-                  <div className={`border-2 rounded-lg p-6 transition-all duration-200 ${
+                  <div className={`border-3 rounded-lg p-6 transition-all duration-200 shadow-md ${
                     paymentType === '12months'
-                      ? 'selected-option'
-                      : 'neutral-container hover:border-primary/50'
+                      ? 'border-primary bg-primary/5 shadow-lg transform scale-105'
+                      : 'border-blue-300 bg-white hover:border-primary/70 hover:shadow-lg hover:bg-blue-50/50'
                   }`}>
                      <div className="text-center">
                        <h3 className="text-xl font-bold text-foreground mb-2">1 Year</h3>
@@ -931,10 +931,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 })();
                 
                 return (
-                  <div className={`border-2 rounded-lg p-6 transition-all duration-200 relative ${
+                  <div className={`border-3 rounded-lg p-6 transition-all duration-200 relative shadow-md ${
                     paymentType === '24months'
-                      ? 'selected-option'
-                      : 'neutral-container hover:border-primary/50'
+                      ? 'border-primary bg-primary/5 shadow-lg transform scale-105'
+                      : 'border-blue-300 bg-white hover:border-primary/70 hover:shadow-lg hover:bg-blue-50/50'
                   }`}>
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                       <div className="savings-badge">
@@ -975,10 +975,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 })();
                 
                 return (
-                  <div className={`border-2 rounded-lg p-6 transition-all duration-200 relative ${
+                  <div className={`border-3 rounded-lg p-6 transition-all duration-200 relative shadow-md ${
                     paymentType === '36months'
-                      ? 'selected-option'
-                      : 'neutral-container hover:border-primary/50'
+                      ? 'border-primary bg-primary/5 shadow-lg transform scale-105'
+                      : 'border-blue-300 bg-white hover:border-primary/70 hover:shadow-lg hover:bg-blue-50/50'
                   }`}>
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                       <div className="savings-badge">
