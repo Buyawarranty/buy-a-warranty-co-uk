@@ -526,7 +526,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   if (vehicleAgeError) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-16">
+      <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center">
           <div className="bg-red-50 border border-red-200 rounded-lg p-8 max-w-md mx-auto">
             <h2 className="text-2xl font-bold text-red-800 mb-4">Vehicle Age Restriction</h2>
@@ -562,7 +562,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       </div>
 
       {/* Configuration Sections */}
-      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         
         {/* Vehicle Information */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
