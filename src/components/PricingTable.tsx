@@ -886,15 +886,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="whats-covered" className="border-none">
-                <AccordionTrigger className="hover:no-underline pb-2 pt-0 [&>svg]:h-8 [&>svg]:w-8 [&>svg]:text-primary">
-                  <div className="flex flex-col items-start w-full">
-                    <div className="flex items-center gap-3">
-                      <Shield className="h-5 w-5 text-primary" />
-                      <h3 className="text-lg font-medium text-foreground">What's Covered?</h3>
+                <AccordionTrigger className="hover:no-underline pb-2 pt-0 [&>svg]:hidden">
+                  <div className="flex items-center justify-center w-full">
+                    <div className="border-2 border-orange-500 text-orange-500 rounded-lg px-4 py-2 bg-white hover:bg-orange-50 transition-colors duration-200 flex items-center gap-2">
+                      <div className="w-5 h-5 border border-orange-500 rounded-full flex items-center justify-center text-xs font-bold">
+                        i
+                      </div>
+                      <span className="font-medium">What's Covered</span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1 ml-8">
-                      Full protection for mechanical and electrical faults - no surprises, just peace of mind.
-                    </p>
                   </div>
                 </AccordionTrigger>
                 
