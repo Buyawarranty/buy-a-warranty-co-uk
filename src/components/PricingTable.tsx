@@ -1150,12 +1150,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {/* Step 5: Payment Options */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16 -mt-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-full bg-orange-500 text-white font-semibold flex items-center justify-center text-sm">
-              5
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 rounded-full bg-orange-500 text-white font-semibold flex items-center justify-center text-sm">
+                5
+              </div>
+              <h2 className="text-xl font-semibold text-foreground">Choose how to pay</h2>
             </div>
-            <h2 className="text-xl font-semibold text-foreground">Choose how to pay</h2>
-          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Pay in Full Option */}
@@ -1282,6 +1283,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               >
                 Apply for Finance →
               </Button>
+            </div>
             </div>
           </div>
         </div>
