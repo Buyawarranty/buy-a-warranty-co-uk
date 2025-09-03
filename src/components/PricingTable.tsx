@@ -898,11 +898,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <Accordion type="single" collapsible className="w-auto">
                 <AccordionItem value="whats-included" className="border-none">
                   <AccordionTrigger className="hover:no-underline pb-0 pt-0 [&>svg]:hidden">
-                    <div className="border-2 border-orange-500 text-orange-500 rounded-lg px-3 py-2 bg-white hover:bg-orange-50 transition-colors duration-200 flex items-center gap-2 text-sm">
-                      <div className="w-4 h-4 border border-orange-500 rounded-full flex items-center justify-center text-xs font-bold">
+                    <div className="relative border-2 border-orange-500 text-orange-500 rounded-lg px-3 py-2 bg-white hover:bg-orange-50 transition-all duration-300 flex items-center gap-2 text-sm shadow-lg hover:shadow-xl animate-pulse hover:animate-none hover:scale-105 cursor-pointer">
+                      {/* Glow effect */}
+                      <div className="absolute inset-0 bg-orange-500 rounded-lg opacity-20 blur-sm animate-pulse"></div>
+                      <div className="relative w-4 h-4 border border-orange-500 rounded-full flex items-center justify-center text-xs font-bold animate-bounce">
                         i
                       </div>
-                      <span className="font-medium">What's Included?</span>
+                      <span className="relative font-medium">What's Included?</span>
                     </div>
                   </AccordionTrigger>
                   
