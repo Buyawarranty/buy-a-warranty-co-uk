@@ -984,6 +984,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         ))}
                       </div>
                     </div>
+                    
+                    {/* Mobile Close Button */}
+                    <div className="md:hidden mt-6 pt-4 border-t border-border">
+                      <AccordionTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                        >
+                          <ChevronUp className="h-4 w-4 mr-2" />
+                          Close Coverage Details
+                        </Button>
+                      </AccordionTrigger>
+                    </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
