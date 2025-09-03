@@ -544,7 +544,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-4 py-6">
