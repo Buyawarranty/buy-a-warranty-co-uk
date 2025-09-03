@@ -1149,7 +1149,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
       {/* Step 5: Payment Options */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
-        <div className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="max-w-6xl mx-auto px-4 pb-16 -mt-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 rounded-full bg-orange-500 text-white font-semibold flex items-center justify-center text-sm">
               5
