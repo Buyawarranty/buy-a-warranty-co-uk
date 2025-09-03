@@ -902,8 +902,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       {/* Echo effect rings */}
                       <div className="absolute inset-0 border border-orange-300 rounded-lg animate-ping opacity-75" style={{ transform: 'scale(1.1)', animationDuration: '2s' }}></div>
                       <div className="absolute inset-0 border border-orange-200 rounded-lg animate-ping opacity-50" style={{ transform: 'scale(1.2)', animationDuration: '2.5s', animationDelay: '0.5s' }}></div>
-                      {/* Pulsating border overlay */}
-                      <div className="absolute inset-0 border-2 border-orange-500 rounded-lg animate-pulse" style={{ animationDuration: '2s' }}></div>
                       <div className="relative w-4 h-4 border border-orange-500 rounded-full flex items-center justify-center text-xs font-bold">
                         i
                       </div>
