@@ -1015,42 +1015,31 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   return { total: totalPrice, monthly: monthlyEquivalent };
                 })();
                 
-                return (
-                  <div 
-                    onClick={() => setPaymentType('12months')}
+                 return (
+                   <div 
+                     onClick={() => setPaymentType('12months')}
                      className={`border-4 rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
                        paymentType === '12months'
-                         ? 'selected-option'
-                         : 'neutral-container hover:border-primary/50'
+                         ? 'border-orange-500 bg-orange-50'
+                         : 'border-gray-300 bg-white hover:border-gray-400'
                      }`}>
-                    <div className="absolute top-4 right-4">
-                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                        paymentType === '12months'
-                          ? 'border-primary bg-primary'
-                          : 'border-gray-400 bg-white'
-                      }`}>
-                        {paymentType === '12months' && (
-                          <div className="w-2 h-2 rounded-full bg-white"></div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <h3 className="text-xl font-bold text-foreground mb-2">1 Year</h3>
-                      <div className="text-2xl font-bold text-foreground mb-1">£{oneYearPrice.total}</div>
-                      <div className="text-lg text-muted-foreground mb-2">or £{oneYearPrice.monthly}/mo</div>
-                      <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
-                      <div
-                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
-                          paymentType === '12months'
-                            ? 'btn-cta'
-                            : 'neutral-container text-foreground hover:bg-muted'
-                        }`}
-                      >
-                        {paymentType === '12months' ? 'Selected' : 'Buy Now'}
-                      </div>
-                    </div>
-                  </div>
-                );
+                     <div className="text-center">
+                       <h3 className="text-2xl font-bold text-foreground mb-2">1 Year</h3>
+                       <p className="text-gray-600 mb-4">Comprehensive coverage</p>
+                       <div className="text-3xl font-bold text-foreground mb-1">£{oneYearPrice.total}</div>
+                       <div className="text-lg text-gray-500 mb-6">or £{oneYearPrice.monthly}/mo</div>
+                       <button
+                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
+                           paymentType === '12months'
+                             ? 'bg-orange-500 text-white'
+                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                         }`}
+                       >
+                         {paymentType === '12months' ? 'Selected' : 'Select'}
+                       </button>
+                     </div>
+                   </div>
+                 );
               })()}
 
               {/* 2 Years Option */}
@@ -1066,47 +1055,36 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
                 })();
                 
-                return (
-                  <div 
-                    onClick={() => setPaymentType('24months')}
-                    className={`border-4 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
-                      paymentType === '24months'
-                        ? 'selected-option'
-                        : 'neutral-container hover:border-primary/50'
-                    }`}>
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <div className="savings-badge">
-                        Save £{twoYearPrice.save}
-                      </div>
-                    </div>
-                    <div className="absolute top-4 right-4">
-                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                        paymentType === '24months'
-                          ? 'border-primary bg-primary'
-                          : 'border-gray-400 bg-white'
-                      }`}>
-                        {paymentType === '24months' && (
-                          <div className="w-2 h-2 rounded-full bg-white"></div>
-                        )}
-                      </div>
-                    </div>
-                     <div className="text-center">
-                       <h3 className="text-xl font-bold text-foreground mb-2">2 Years</h3>
-                       <div className="text-2xl font-bold text-foreground mb-1">£{twoYearPrice.total}</div>
-                       <div className="text-lg text-muted-foreground mb-2">or £{twoYearPrice.monthly}/mo</div>
-                       <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
-                      <div
-                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
-                          paymentType === '24months'
-                            ? 'btn-cta'
-                            : 'neutral-container text-foreground hover:bg-muted'
-                        }`}
-                      >
-                        {paymentType === '24months' ? 'Selected' : 'Buy Now'}
-                      </div>
+                 return (
+                   <div 
+                     onClick={() => setPaymentType('24months')}
+                     className={`border-4 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
+                       paymentType === '24months'
+                         ? 'border-orange-500 bg-orange-50'
+                         : 'border-gray-300 bg-white hover:border-gray-400'
+                     }`}>
+                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                       <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                         Save £{twoYearPrice.save}
+                       </div>
                      </div>
-                  </div>
-                );
+                     <div className="text-center">
+                       <h3 className="text-2xl font-bold text-foreground mb-2">2 Years</h3>
+                       <p className="text-gray-600 mb-4">Comprehensive coverage</p>
+                       <div className="text-3xl font-bold text-foreground mb-1">£{twoYearPrice.total}</div>
+                       <div className="text-lg text-gray-500 mb-6">or £{twoYearPrice.monthly}/mo</div>
+                       <button
+                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
+                           paymentType === '24months'
+                             ? 'bg-orange-500 text-white'
+                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                         }`}
+                       >
+                         {paymentType === '24months' ? 'Selected' : 'Select'}
+                       </button>
+                     </div>
+                   </div>
+                 );
               })()}
 
               {/* 3 Years Option */}
@@ -1122,47 +1100,36 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
                 })();
                 
-                return (
-                  <div 
-                    onClick={() => setPaymentType('36months')}
-                    className={`border-4 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
-                      paymentType === '36months'
-                        ? 'selected-option'
-                        : 'neutral-container hover:border-primary/50'
-                    }`}>
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <div className="savings-badge">
-                        Save £{threeYearPrice.save}
-                      </div>
-                    </div>
-                    <div className="absolute top-4 right-4">
-                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                        paymentType === '36months'
-                          ? 'border-primary bg-primary'
-                          : 'border-gray-400 bg-white'
-                      }`}>
-                        {paymentType === '36months' && (
-                          <div className="w-2 h-2 rounded-full bg-white"></div>
-                        )}
-                      </div>
-                    </div>
-                     <div className="text-center">
-                       <h3 className="text-xl font-bold text-foreground mb-2">3 Years</h3>
-                       <div className="text-2xl font-bold text-foreground mb-1">£{threeYearPrice.total}</div>
-                       <div className="text-lg text-muted-foreground mb-2">or £{threeYearPrice.monthly}/mo</div>
-                       <p className="savings-text text-sm font-medium mb-4">for 12 months interest free</p>
-                      <div
-                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
-                          paymentType === '36months'
-                            ? 'btn-cta'
-                            : 'neutral-container text-foreground hover:bg-muted'
-                        }`}
-                      >
-                        {paymentType === '36months' ? 'Selected' : 'Buy Now'}
-                      </div>
+                 return (
+                   <div 
+                     onClick={() => setPaymentType('36months')}
+                     className={`border-4 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
+                       paymentType === '36months'
+                         ? 'border-orange-500 bg-orange-50'
+                         : 'border-gray-300 bg-white hover:border-gray-400'
+                     }`}>
+                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                       <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                         Save £{threeYearPrice.save}
+                       </div>
                      </div>
-                  </div>
-                );
+                     <div className="text-center">
+                       <h3 className="text-2xl font-bold text-foreground mb-2">3 Years</h3>
+                       <p className="text-gray-600 mb-4">Comprehensive coverage</p>
+                       <div className="text-3xl font-bold text-foreground mb-1">£{threeYearPrice.total}</div>
+                       <div className="text-lg text-gray-500 mb-6">or £{threeYearPrice.monthly}/mo</div>
+                       <button
+                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
+                           paymentType === '36months'
+                             ? 'bg-orange-500 text-white'
+                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                         }`}
+                       >
+                         {paymentType === '36months' ? 'Selected' : 'Select'}
+                       </button>
+                     </div>
+                   </div>
+                 );
               })()}
             </div>
           </div>
