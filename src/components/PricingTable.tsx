@@ -1023,21 +1023,25 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          ? 'border-orange-500 bg-orange-50'
                          : 'border-gray-300 bg-white hover:border-gray-400'
                      }`}>
-                     <div className="text-center">
-                       <h3 className="text-2xl font-bold text-foreground mb-2">1 Year</h3>
-                       <p className="text-gray-600 mb-4">Comprehensive coverage</p>
-                       <div className="text-3xl font-bold text-foreground mb-1">£{oneYearPrice.total}</div>
-                       <div className="text-lg text-gray-500 mb-6">or £{oneYearPrice.monthly}/mo</div>
-                       <button
-                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
-                           paymentType === '12months'
-                             ? 'bg-orange-500 text-white'
-                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                         }`}
-                       >
-                         {paymentType === '12months' ? 'Selected' : 'Select'}
-                       </button>
+                     <div className="flex items-center justify-between">
+                       <div className="flex flex-col">
+                         <h3 className="text-2xl font-bold text-foreground mb-1">1 Year</h3>
+                         <p className="text-gray-600">Comprehensive coverage</p>
+                       </div>
+                       <div className="text-right">
+                         <div className="text-3xl font-bold text-foreground">£{oneYearPrice.total}</div>
+                         <div className="text-lg text-gray-500">or £{oneYearPrice.monthly}/mo</div>
+                       </div>
                      </div>
+                     <button
+                       className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                         paymentType === '12months'
+                           ? 'bg-orange-500 text-white'
+                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                       }`}
+                     >
+                       {paymentType === '12months' ? 'Selected' : 'Select'}
+                     </button>
                    </div>
                  );
               })()}
@@ -1068,21 +1072,25 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          Save £{twoYearPrice.save}
                        </div>
                      </div>
-                     <div className="text-center">
-                       <h3 className="text-2xl font-bold text-foreground mb-2">2 Years</h3>
-                       <p className="text-gray-600 mb-4">Comprehensive coverage</p>
-                       <div className="text-3xl font-bold text-foreground mb-1">£{twoYearPrice.total}</div>
-                       <div className="text-lg text-gray-500 mb-6">or £{twoYearPrice.monthly}/mo</div>
-                       <button
-                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
-                           paymentType === '24months'
-                             ? 'bg-orange-500 text-white'
-                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                         }`}
-                       >
-                         {paymentType === '24months' ? 'Selected' : 'Select'}
-                       </button>
+                     <div className="flex items-center justify-between">
+                       <div className="flex flex-col">
+                         <h3 className="text-2xl font-bold text-foreground mb-1">2 Years</h3>
+                         <p className="text-gray-600">Comprehensive coverage</p>
+                       </div>
+                       <div className="text-right">
+                         <div className="text-3xl font-bold text-foreground">£{twoYearPrice.total}</div>
+                         <div className="text-lg text-gray-500">or £{twoYearPrice.monthly}/mo</div>
+                       </div>
                      </div>
+                     <button
+                       className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                         paymentType === '24months'
+                           ? 'bg-orange-500 text-white'
+                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                       }`}
+                     >
+                       {paymentType === '24months' ? 'Selected' : 'Select'}
+                     </button>
                    </div>
                  );
               })()}
@@ -1113,21 +1121,25 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          Save £{threeYearPrice.save}
                        </div>
                      </div>
-                     <div className="text-center">
-                       <h3 className="text-2xl font-bold text-foreground mb-2">3 Years</h3>
-                       <p className="text-gray-600 mb-4">Comprehensive coverage</p>
-                       <div className="text-3xl font-bold text-foreground mb-1">£{threeYearPrice.total}</div>
-                       <div className="text-lg text-gray-500 mb-6">or £{threeYearPrice.monthly}/mo</div>
-                       <button
-                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
-                           paymentType === '36months'
-                             ? 'bg-orange-500 text-white'
-                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                         }`}
-                       >
-                         {paymentType === '36months' ? 'Selected' : 'Select'}
-                       </button>
+                     <div className="flex items-center justify-between">
+                       <div className="flex flex-col">
+                         <h3 className="text-2xl font-bold text-foreground mb-1">3 Years</h3>
+                         <p className="text-gray-600">Comprehensive coverage</p>
+                       </div>
+                       <div className="text-right">
+                         <div className="text-3xl font-bold text-foreground">£{threeYearPrice.total}</div>
+                         <div className="text-lg text-gray-500">or £{threeYearPrice.monthly}/mo</div>
+                       </div>
                      </div>
+                     <button
+                       className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                         paymentType === '36months'
+                           ? 'bg-orange-500 text-white'
+                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                       }`}
+                     >
+                       {paymentType === '36months' ? 'Selected' : 'Select'}
+                     </button>
                    </div>
                  );
               })()}
