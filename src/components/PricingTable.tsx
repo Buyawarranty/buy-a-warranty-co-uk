@@ -882,14 +882,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16">
           
-          {/* Section 4: Pick the Cover That Suits You */}
           <div className="section-header rounded-lg p-6 mb-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
-                4
-              </div>
-              <h2 className="text-xl font-semibold text-foreground">Pick the Cover That Suits You</h2>
-            </div>
             
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="whats-covered" className="border-none">
