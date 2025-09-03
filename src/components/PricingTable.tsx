@@ -1094,15 +1094,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       
                       {/* Mobile Close Button */}
                       <div className="md:hidden mt-6 pt-4 border-t border-border">
-                        <AccordionTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            className="w-full"
-                          >
-                            <ChevronUp className="h-4 w-4 mr-2" />
-                            Close Coverage Details
-                          </Button>
-                        </AccordionTrigger>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={() => {
+                            // This will close the accordion by triggering it
+                            const accordionTrigger = document.querySelector('[data-state="open"] button[data-radix-collection-item]') as HTMLElement;
+                            accordionTrigger?.click();
+                          }}
+                        >
+                          <ChevronUp className="h-4 w-4 mr-2" />
+                          Close Coverage Details
+                        </Button>
                       </div>
                     </div>
                   </AccordionContent>
