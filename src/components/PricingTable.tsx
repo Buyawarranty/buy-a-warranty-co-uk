@@ -1000,10 +1000,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
             </div>
             
-            {/* Complete Protection Section */}
-            <div className="mt-6 mb-6">
-              <h4 className="text-lg font-semibold text-foreground mb-4">Complete Protection</h4>
-            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* 1 Year Option */}
