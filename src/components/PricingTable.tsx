@@ -898,7 +898,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <Accordion type="single" collapsible className="w-auto">
                 <AccordionItem value="whats-included" className="border-none">
                   <AccordionTrigger className="hover:no-underline pb-0 pt-0 [&>svg]:hidden">
-                    <div className="border border-orange-500 text-orange-500 rounded-lg px-3 py-2 bg-white hover:bg-orange-50 transition-colors duration-200 flex items-center gap-2 text-sm">
+                    <div className="border-2 border-orange-500 text-orange-500 rounded-lg px-3 py-2 bg-white hover:bg-orange-50 transition-colors duration-200 flex items-center gap-2 text-sm">
                       <div className="w-4 h-4 border border-orange-500 rounded-full flex items-center justify-center text-xs font-bold">
                         i
                       </div>
@@ -1018,7 +1018,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div 
                     onClick={() => setPaymentType('12months')}
-                     className={`border-2 rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
+                     className={`border-4 rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
                        paymentType === '12months'
                          ? 'selected-option'
                          : 'neutral-container hover:border-primary/50'
@@ -1069,7 +1069,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div 
                     onClick={() => setPaymentType('24months')}
-                    className={`border-2 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
+                    className={`border-4 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
                       paymentType === '24months'
                         ? 'selected-option'
                         : 'neutral-container hover:border-primary/50'
@@ -1125,7 +1125,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 return (
                   <div 
                     onClick={() => setPaymentType('36months')}
-                    className={`border-2 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
+                    className={`border-4 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
                       paymentType === '36months'
                         ? 'selected-option'
                         : 'neutral-container hover:border-primary/50'
@@ -1181,7 +1181,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Pay in Full Option */}
-            <div className="bg-card border rounded-xl p-6 shadow-sm">
+            <div className="bg-card border-4 rounded-xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-foreground">Pay in Full</h3>
                 <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
@@ -1244,7 +1244,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
 
             {/* Spread the Cost Option */}
-            <div className="bg-card border rounded-xl p-6 shadow-sm">
+            <div className="bg-card border-4 rounded-xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-foreground">Spread the Cost</h3>
                 <div className="flex items-center gap-2">
