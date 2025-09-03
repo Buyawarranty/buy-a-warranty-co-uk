@@ -898,7 +898,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <Accordion type="single" collapsible className="w-auto">
                 <AccordionItem value="whats-included" className="border-none">
                   <AccordionTrigger className="hover:no-underline pb-0 pt-0 [&>svg]:hidden">
-                    <div className="relative border-2 border-orange-500 text-orange-500 rounded-lg px-3 py-2 bg-white hover:bg-orange-50 transition-colors duration-200 flex items-center gap-2 text-sm cursor-pointer">
+                    <div className="relative border-2 border-orange-500 text-orange-500 rounded-lg px-3 py-2 bg-white hover:bg-orange-50 transition-colors duration-200 flex items-center gap-2 text-sm cursor-pointer" style={{ boxShadow: '0 0 8px rgba(249, 115, 22, 0.3)' }}>
                       {/* Pulsating border overlay */}
                       <div className="absolute inset-0 border-2 border-orange-500 rounded-lg animate-pulse" style={{ animationDuration: '2s' }}></div>
                       <div className="relative w-4 h-4 border border-orange-500 rounded-full flex items-center justify-center text-xs font-bold">
