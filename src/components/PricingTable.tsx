@@ -544,7 +544,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-4 py-6">
@@ -938,7 +938,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </div>
 
                       {/* Additional Benefits */}
-                      <div className="bg-muted rounded-lg p-4 mb-6">
+                      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
                         <h4 className="font-semibold text-foreground mb-3">Additional Benefits</h4>
                         <div className="space-y-2">
                           <div className="flex items-center gap-3">
@@ -1159,10 +1159,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Pay in Full Option */}
-            <div className="bg-card border-4 rounded-xl p-6 shadow-sm">
+            <div className="bg-white border-4 rounded-xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-foreground">Pay in Full</h3>
-                <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
+                <div className="w-8 h-8 bg-white border border-gray-200 rounded flex items-center justify-center">
                   <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
                     <line x1="1" y1="10" x2="23" y2="10"/>
@@ -1222,7 +1222,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
 
             {/* Spread the Cost Option */}
-            <div className="bg-card border-4 rounded-xl p-6 shadow-sm">
+            <div className="bg-white border-4 rounded-xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-foreground">Spread the Cost</h3>
                 <div className="flex items-center gap-2">
