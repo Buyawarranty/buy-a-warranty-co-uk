@@ -1030,27 +1030,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           {/* Bullet points with ticks */}
                           <div className="mt-3 space-y-2">
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">Drive now, pay later</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">12 interest-free payments</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">Complete coverage</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">⚡ Instant Payout within 90 Minutes</span>
                             </div>
                           </div>
@@ -1107,27 +1099,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           {/* Bullet points with ticks */}
                           <div className="mt-3 space-y-2">
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">Drive now, pay later</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">12 interest-free payments</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">Complete coverage</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">⚡ Instant Payout within 90 Minutes</span>
                             </div>
                           </div>
@@ -1184,27 +1168,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           {/* Bullet points with ticks */}
                           <div className="mt-3 space-y-2">
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">Drive now, pay later</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">12 interest-free payments</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">Complete coverage</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
+                              <Check className="h-4 w-4 text-black flex-shrink-0" />
                               <span className="text-sm text-gray-600">⚡ Instant Payout within 90 Minutes</span>
                             </div>
                           </div>
@@ -1256,15 +1232,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      {/* Bullet points with ticks */}
                      <div className="mt-3 space-y-2">
                        <div className="flex items-center gap-2">
-                         <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                           <Check className="h-2.5 w-2.5 text-white" />
-                         </div>
+                         <Check className="h-4 w-4 text-black flex-shrink-0" />
                          <span className="text-sm text-gray-600">Instant coverage activation</span>
                        </div>
                        <div className="flex items-center gap-2">
-                         <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                           <Check className="h-2.5 w-2.5 text-white" />
-                         </div>
+                         <Check className="h-4 w-4 text-black flex-shrink-0" />
                          <span className="text-sm text-gray-600">Secure payment via Stripe</span>
                        </div>
                      </div>
@@ -1319,21 +1291,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      {/* Bullet points with ticks */}
                      <div className="mt-3 space-y-2">
                        <div className="flex items-center gap-2">
-                         <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                           <Check className="h-2.5 w-2.5 text-white" />
-                         </div>
+                         <Check className="h-4 w-4 text-black flex-shrink-0" />
                          <span className="text-sm text-gray-600">Soft search only - Will not affect your credit score</span>
                        </div>
                        <div className="flex items-center gap-2">
-                         <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                           <Check className="h-2.5 w-2.5 text-white" />
-                         </div>
+                         <Check className="h-4 w-4 text-black flex-shrink-0" />
                          <span className="text-sm text-gray-600">Flexible payment terms</span>
                        </div>
                        <div className="flex items-center gap-2">
-                         <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                           <Check className="h-2.5 w-2.5 text-white" />
-                         </div>
+                         <Check className="h-4 w-4 text-black flex-shrink-0" />
                          <span className="text-sm text-gray-600">Instant decision</span>
                        </div>
                      </div>
