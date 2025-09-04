@@ -313,7 +313,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 {/* Get Quote Button */}
                 <Button 
                   onClick={handleGetQuote}
-                  className={`w-full px-12 py-5 text-lg font-bold rounded-lg transition-all ${
+                  className={`w-full px-12 h-[64px] text-lg font-bold rounded-lg transition-all ${
                     isLookingUp
                       ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       : 'bg-orange-500 hover:bg-orange-600 text-white'
