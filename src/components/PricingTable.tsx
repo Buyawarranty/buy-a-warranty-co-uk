@@ -665,7 +665,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     : 'neutral-container text-foreground hover:border-primary/50'
                 }`}
               >
-                £{amount}
+                <span className="font-semibold">£{amount}</span>
               </button>
             ))}
           </div>
