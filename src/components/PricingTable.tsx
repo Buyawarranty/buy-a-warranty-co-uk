@@ -1322,7 +1322,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
                            <Check className="h-2.5 w-2.5 text-white" />
                          </div>
-                         <span className="text-sm text-gray-600">0% APR on vehicle products</span>
+                         <span className="text-sm text-gray-600">Soft search only - Will not affect your credit score</span>
                        </div>
                        <div className="flex items-center gap-2">
                          <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center flex-shrink-0">
