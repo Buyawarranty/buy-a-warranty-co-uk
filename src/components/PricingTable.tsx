@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -1202,6 +1202,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    </div>
                  );
               })()}
+            </div>
+            
+            {/* Animated CTA Button - Bottom Right */}
+            <div className="flex justify-end mt-8">
+              <div className="animate-bounce">
+                <Button 
+                  size="lg"
+                  onClick={() => {
+                    // Find the selected plan and proceed to checkout
+                    const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+                    if (platinumPlan) {
+                      handleSelectPlan(platinumPlan);
+                    }
+                  }}
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
+                >
+                  Confirm & Pay
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
