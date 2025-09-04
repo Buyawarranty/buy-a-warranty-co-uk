@@ -212,15 +212,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               >
                 Get My Quote
               </Button>
-              
-              {/* Halfords Logo */}
-              <div className="ml-4">
-                <img 
-                  src="/lovable-uploads/d5f9a604-cacf-42fd-9ab5-a387dedf8a3b.png" 
-                  alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
-                  className="h-12 w-auto"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -349,6 +340,14 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 alt="Panda mascot with cars and motorcycle" 
                 className="w-full h-auto"
               />
+              {/* Halfords Logo positioned to the right */}
+              <div className="absolute top-4 right-0 z-10">
+                <img 
+                  src="/lovable-uploads/d5f9a604-cacf-42fd-9ab5-a387dedf8a3b.png" 
+                  alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
+                  className="h-16 w-auto"
+                />
+              </div>
             </div>
           </div>
         </div>
