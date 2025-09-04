@@ -213,7 +213,7 @@ const Index = () => {
     };
   }, []);
   
-  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Final Details'];
+  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Review & Confirm'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
     setVehicleData(data);
