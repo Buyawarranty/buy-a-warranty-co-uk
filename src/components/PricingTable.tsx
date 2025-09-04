@@ -659,10 +659,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <button
                 key={amount}
                 onClick={() => toggleVoluntaryExcess(amount)}
-                className={`px-6 py-3 rounded-lg font-semibold border-2 transition-all duration-200 ${
+                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
                   voluntaryExcess === amount
-                    ? 'selected-option bg-primary text-primary-foreground'
-                    : 'neutral-container text-foreground hover:border-primary/50'
+                    ? 'selected-option bg-primary text-primary-foreground shadow-lg shadow-primary/30'
+                    : 'neutral-container text-foreground shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-primary/20'
                 }`}
               >
                 <span className="font-semibold">£{amount}</span>
@@ -685,10 +685,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             {/* AutoCare Essential */}
             <button
               onClick={() => setSelectedClaimLimit(750)}
-              className={`p-6 rounded-lg border-2 transition-all duration-200 text-left relative ${
+              className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 750
-                  ? 'selected-option'
-                  : 'neutral-container hover:border-primary/50'
+                  ? 'selected-option shadow-lg shadow-primary/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-primary/20'
               }`}
             >
               <div className="absolute top-4 right-4">
@@ -732,10 +732,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             {/* AutoCare Advantage */}
             <button
               onClick={() => setSelectedClaimLimit(1250)}
-              className={`p-6 rounded-lg border-2 transition-all duration-200 text-left relative ${
+              className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 1250
-                  ? 'selected-option'
-                  : 'neutral-container hover:border-primary/50'
+                  ? 'selected-option shadow-lg shadow-primary/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-primary/20'
               }`}
             >
               <div className="absolute -top-3 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
@@ -782,10 +782,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             {/* AutoCare Elite */}
             <button
               onClick={() => setSelectedClaimLimit(2000)}
-              className={`p-6 rounded-lg border-2 transition-all duration-200 text-left relative ${
+              className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 2000
-                  ? 'selected-option'
-                  : 'neutral-container hover:border-primary/50'
+                  ? 'selected-option shadow-lg shadow-primary/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-primary/20'
               }`}
             >
               <div className="absolute top-4 right-4">
@@ -938,7 +938,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </div>
 
                       {/* Additional Benefits */}
-                      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+                      <div className="bg-white rounded-lg p-4 mb-6 shadow-lg shadow-black/10">
                         <h4 className="font-semibold text-foreground mb-3">Additional Benefits</h4>
                         <div className="space-y-2">
                           <div className="flex items-center gap-3">
@@ -1160,10 +1160,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Pay in Full Option */}
-              <div className="bg-white border-4 rounded-xl p-6 shadow-sm">
+              <div className="bg-white rounded-xl p-6 shadow-xl shadow-black/15">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-foreground">Pay in Full</h3>
-                  <div className="w-8 h-8 bg-white border border-gray-200 rounded flex items-center justify-center">
+                  <div className="w-8 h-8 bg-white rounded flex items-center justify-center shadow-md shadow-black/10">
                     <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
                       <line x1="1" y1="10" x2="23" y2="10"/>
@@ -1223,7 +1223,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
 
               {/* Spread the Cost Option */}
-              <div className="bg-white border-4 rounded-xl p-6 shadow-sm">
+              <div className="bg-white rounded-xl p-6 shadow-xl shadow-black/15">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-foreground">Spread the Cost</h3>
                   <div className="flex items-center gap-2">
