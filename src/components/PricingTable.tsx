@@ -1300,6 +1300,24 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             {/* Pricing Summary and CTA */}
             <div className="flex flex-col lg:flex-row items-end justify-between gap-6 mt-8">
+              {/* Animated CTA Button */}
+              <div className="animate-bounce">
+                <Button 
+                  size="lg"
+                  onClick={() => {
+                    // Find the selected plan and proceed to checkout
+                    const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+                    if (platinumPlan) {
+                      handleSelectPlan(platinumPlan);
+                    }
+                  }}
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group min-w-[180px]"
+                >
+                  Confirm & Pay
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                </Button>
+              </div>
+
               {/* Prominent Pricing Display */}
               <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border-2 border-orange-200 shadow-lg">
                 <div className="space-y-2">
@@ -1323,24 +1341,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Animated CTA Button */}
-              <div className="animate-bounce">
-                <Button 
-                  size="lg"
-                  onClick={() => {
-                    // Find the selected plan and proceed to checkout
-                    const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
-                    if (platinumPlan) {
-                      handleSelectPlan(platinumPlan);
-                    }
-                  }}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group min-w-[180px]"
-                >
-                  Confirm & Pay
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
-                </Button>
               </div>
             </div>
           </div>
