@@ -661,8 +661,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 onClick={() => toggleVoluntaryExcess(amount)}
                 className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
                   voluntaryExcess === amount
-                    ? 'selected-option bg-primary text-primary-foreground shadow-lg shadow-primary/30'
-                    : 'neutral-container text-foreground shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-primary/20'
+                    ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                    : 'neutral-container text-foreground shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                 }`}
               >
                 <span className="font-semibold">£{amount}</span>
@@ -687,8 +687,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               onClick={() => setSelectedClaimLimit(750)}
               className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 750
-                  ? 'selected-option shadow-lg shadow-primary/30'
-                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-primary/20'
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}
             >
               <div className="absolute top-4 right-4">
@@ -734,8 +734,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               onClick={() => setSelectedClaimLimit(1250)}
               className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 1250
-                  ? 'selected-option shadow-lg shadow-primary/30'
-                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-primary/20'
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}
             >
               <div className="absolute -top-3 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
@@ -784,8 +784,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               onClick={() => setSelectedClaimLimit(2000)}
               className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 2000
-                  ? 'selected-option shadow-lg shadow-primary/30'
-                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-primary/20'
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}
             >
               <div className="absolute top-4 right-4">
@@ -1017,11 +1017,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                  return (
                    <div 
                      onClick={() => setPaymentType('12months')}
-                     className={`border-4 rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
-                       paymentType === '12months'
-                         ? 'border-orange-500 bg-orange-50'
-                         : 'border-gray-300 bg-white hover:border-gray-400'
-                     }`}>
+                      className={`rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
+                        paymentType === '12months'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                          : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                      }`}>
                      <div className="flex items-center justify-between">
                        <div className="flex flex-col">
                          <h3 className="text-2xl font-bold text-foreground mb-1">1 Year</h3>
@@ -1061,11 +1061,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                  return (
                    <div 
                      onClick={() => setPaymentType('24months')}
-                     className={`border-4 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
-                       paymentType === '24months'
-                         ? 'border-orange-500 bg-orange-50'
-                         : 'border-gray-300 bg-white hover:border-gray-400'
-                     }`}>
+                      className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
+                        paymentType === '24months'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                          : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                      }`}>
                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                        <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                          Save £{twoYearPrice.save}
@@ -1110,11 +1110,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                  return (
                    <div 
                      onClick={() => setPaymentType('36months')}
-                     className={`border-4 rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
-                       paymentType === '36months'
-                         ? 'border-orange-500 bg-orange-50'
-                         : 'border-gray-300 bg-white hover:border-gray-400'
-                     }`}>
+                      className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
+                        paymentType === '36months'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                          : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                      }`}>
                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                        <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                          Save £{threeYearPrice.save}
