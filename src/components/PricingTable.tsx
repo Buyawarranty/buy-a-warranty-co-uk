@@ -1017,11 +1017,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                  return (
                    <div 
                      onClick={() => setPaymentType('12months')}
-                      className={`rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
-                        paymentType === '12months'
-                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                          : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                      }`}>
+                       className={`rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
+                         paymentType === '12months'
+                           ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                           : 'bg-white shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                       }`}>
                       <div className="flex items-center justify-between">
                        <div className="flex flex-col">
                          <h3 className="text-2xl font-bold text-foreground mb-1">1 Year</h3>
@@ -1081,11 +1081,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                  return (
                    <div 
                      onClick={() => setPaymentType('24months')}
-                      className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
-                        paymentType === '24months'
-                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                          : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                      }`}>
+                       className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
+                         paymentType === '24months'
+                           ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                           : 'bg-white shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                       }`}>
                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                        <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                          Save £{twoYearPrice.save}
@@ -1150,11 +1150,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                  return (
                    <div 
                      onClick={() => setPaymentType('36months')}
-                      className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
-                        paymentType === '36months'
-                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                          : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                      }`}>
+                       className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
+                         paymentType === '36months'
+                           ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                           : 'bg-white shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                       }`}>
                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                        <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                          Save £{threeYearPrice.save}
@@ -1222,7 +1222,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               {/* Pay in Full Option */}
               <div 
                 onClick={() => {/* Handle selection */}}
-                className="rounded-lg p-6 transition-all duration-200 cursor-pointer shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-green-500/20"
+                className="bg-white rounded-lg p-6 transition-all duration-200 cursor-pointer shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-green-500/20"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
@@ -1281,7 +1281,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               {/* Spread the Cost Option */}
               <div 
                 onClick={() => {/* Handle selection */}}
-                className="rounded-lg p-6 transition-all duration-200 cursor-pointer shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-blue-500/20"
+                className="bg-white rounded-lg p-6 transition-all duration-200 cursor-pointer shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-blue-500/20"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
