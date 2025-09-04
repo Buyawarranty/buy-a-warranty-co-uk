@@ -115,26 +115,8 @@ const WebsiteFooter = () => {
 
           {/* Legal Footer */}
           <div className="border-t border-gray-200 pt-8">
-            <div className="text-center text-sm text-gray-500 space-y-4">
-              <p>
-                Buy A Warranty Ltd is a trading name of Halfords Autocentres Limited. Registered in England No. 01847893. 
-                Registered office: Halfords Autocentres Limited, Icknield Street Drive, Washford West, Redditch, Worcestershire B98 0DE.
-              </p>
-              <p>
-                Buy A Warranty Ltd is an Appointed Representative of Automotive Warranty Services Ltd which is authorised 
-                and regulated by the Financial Conduct Authority (FCA Register Number 308658). 
-                You can check this on the FCA Register by visiting the FCA website www.fca.org.uk/register.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6">
-                <p>© 2024 Buy A Warranty Ltd. All rights reserved.</p>
-                <div className="flex items-center space-x-4">
-                  <a href="/privacy" className="hover:text-[#eb4b00] transition-colors">Privacy</a>
-                  <span>•</span>
-                  <a href="/terms" className="hover:text-[#eb4b00] transition-colors">Terms</a>
-                  <span>•</span>
-                  <a href="/cookies" className="hover:text-[#eb4b00] transition-colors">Cookies</a>
-                </div>
-              </div>
+            <div className="text-center text-sm text-gray-500">
+              <p>© 2025 Buy A Warranty Ltd. All rights reserved.</p>
             </div>
           </div>
         </div>
