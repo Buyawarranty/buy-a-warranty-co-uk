@@ -723,7 +723,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-primary mb-2">£750</div>
+              <div className="text-2xl font-bold text-black mb-2">£750</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Essential</h4>
               <p className="text-sm text-muted-foreground mb-2">(10 claims per year)</p>
               <p className="text-sm font-medium text-foreground">Confidence for the everyday drive.</p>
@@ -773,7 +773,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-primary mb-2">£1,250</div>
+              <div className="text-2xl font-bold text-black mb-2">£1,250</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Advantage</h4>
               <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
               <p className="text-sm font-medium text-foreground">Balanced protection for life's bigger bumps.</p>
@@ -820,7 +820,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-primary mb-2">£2,000</div>
+              <div className="text-2xl font-bold text-black mb-2">£2,000</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Elite</h4>
               <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
               <p className="text-sm font-medium text-foreground">Top-tier cover for total peace of mind.</p>
