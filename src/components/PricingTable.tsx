@@ -1043,7 +1043,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                             </div>
                             <div className="flex items-center gap-2">
                               <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">⚡ Instant Payout within 90 Minutes</span>
+                              <span className="text-sm text-gray-600">Claim payouts in 90 minutes 🕒</span>
                             </div>
                           </div>
                        </div>
@@ -1112,7 +1112,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                             </div>
                             <div className="flex items-center gap-2">
                               <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">⚡ Instant Payout within 90 Minutes</span>
+                              <span className="text-sm text-gray-600">Claim payouts in 90 minutes 🕒</span>
                             </div>
                           </div>
                        </div>
@@ -1181,7 +1181,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                             </div>
                             <div className="flex items-center gap-2">
                               <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">⚡ Instant Payout within 90 Minutes</span>
+                              <span className="text-sm text-gray-600">Claim payouts in 90 minutes 🕒</span>
                             </div>
                           </div>
                        </div>
