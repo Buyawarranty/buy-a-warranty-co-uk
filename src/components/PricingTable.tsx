@@ -1033,15 +1033,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           <div className="text-sm text-gray-600 mt-1">Drive now, pay later — 12 interest-free payments.</div>
                         </div>
                      </div>
-                     <button
-                       className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                         paymentType === '12months'
-                           ? 'bg-orange-500 text-white'
-                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                       }`}
-                     >
-                       {paymentType === '12months' ? 'Selected' : 'Select'}
-                     </button>
+                      <button
+                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                          paymentType === '12months'
+                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                        }`}
+                      >
+                        {paymentType === '12months' ? 'Selected' : 'Select'}
+                      </button>
                    </div>
                  );
               })()}
@@ -1083,15 +1083,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           <div className="text-sm text-gray-600 mt-1">Drive now, pay later — 12 interest-free payments.</div>
                         </div>
                      </div>
-                     <button
-                       className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                         paymentType === '24months'
-                           ? 'bg-orange-500 text-white'
-                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                       }`}
-                     >
-                       {paymentType === '24months' ? 'Selected' : 'Select'}
-                     </button>
+                      <button
+                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                          paymentType === '24months'
+                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                        }`}
+                      >
+                        {paymentType === '24months' ? 'Selected' : 'Select'}
+                      </button>
                    </div>
                  );
               })()}
@@ -1133,15 +1133,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           <div className="text-sm text-gray-600 mt-1">Drive now, pay later — 12 interest-free payments.</div>
                         </div>
                      </div>
-                     <button
-                       className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                         paymentType === '36months'
-                           ? 'bg-orange-500 text-white'
-                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                       }`}
-                     >
-                       {paymentType === '36months' ? 'Selected' : 'Select'}
-                     </button>
+                      <button
+                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                          paymentType === '36months'
+                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                        }`}
+                      >
+                        {paymentType === '36months' ? 'Selected' : 'Select'}
+                      </button>
                    </div>
                  );
               })()}
