@@ -564,20 +564,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       </div>
 
       {/* Configuration Sections */}
-      <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 relative">
         
-        {/* £25 Off Voucher Code Display */}
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6 mb-6 text-center">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Gift className="h-8 w-8 text-green-600 animate-bounce" />
-            <h3 className="text-2xl font-bold text-green-700">Special Offer!</h3>
-            <Gift className="h-8 w-8 text-green-600 animate-bounce" />
+        {/* Small £25 Off Voucher Code - Side Element */}
+        <div className="fixed top-1/2 right-4 transform -translate-y-1/2 z-50 bg-gradient-to-r from-green-100 to-emerald-100 border border-green-300 rounded-lg p-3 shadow-lg max-w-xs">
+          <div className="flex items-center gap-2 mb-1">
+            <Gift className="h-4 w-4 text-green-600 animate-bounce" />
+            <span className="text-sm font-semibold text-green-700">£25 OFF</span>
           </div>
-          <p className="text-lg text-green-600 font-semibold mb-2">Get £25 off your warranty</p>
-          <div className="bg-white rounded-lg p-3 border-2 border-dashed border-green-300 inline-block">
-            <span className="text-xl font-mono font-bold text-green-700">SAVE25NOW</span>
+          <div className="bg-white rounded p-2 border border-dashed border-green-300 text-center">
+            <span className="text-xs font-mono font-bold text-green-700">SAVE25NOW</span>
           </div>
-          <p className="text-sm text-green-600 mt-2">Use this code at checkout</p>
+          <p className="text-xs text-green-600 mt-1 text-center">Use at checkout</p>
         </div>
         
         {/* Vehicle Information */}
