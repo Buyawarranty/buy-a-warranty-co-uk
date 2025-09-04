@@ -78,7 +78,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       toast({
         title: "Registration Required",
         description: "Please enter your vehicle registration number.",
-        className: "bg-white border-gray-200 text-gray-900",
+        variant: "destructive",
       });
       return;
     }
@@ -88,7 +88,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       toast({
         title: "Mileage Required", 
         description: "Please enter your vehicle's mileage to continue.",
-        className: "bg-white border-gray-200 text-gray-900",
       });
       return;
     }
@@ -156,7 +155,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       toast({
         title: "Lookup Failed",
         description: "Unable to find vehicle details, but you can still continue to get your quote.",
-        className: "bg-white border-gray-200 text-gray-900",
+        variant: "destructive",
       });
       
       // Continue with basic vehicle data even if lookup fails
