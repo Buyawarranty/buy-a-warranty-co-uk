@@ -66,13 +66,27 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
           </div>
         </div>
 
-        {/* Find My Vehicle Button */}
+        {/* Get My Quote Button */}
         <Button 
           type="submit"
           disabled={!registrationNumber.trim() || isLoading}
-          className="w-full bg-pink-400 hover:bg-pink-500 text-white font-semibold py-3 text-lg rounded-lg border-2 border-black disabled:opacity-50"
+          className="w-full text-white font-semibold p-3 text-lg rounded-lg border-2 border-black disabled:opacity-50"
+          style={{
+            backgroundColor: '#eb4b00',
+            borderColor: '#eb4b00'
+          }}
+          onMouseEnter={(e) => {
+            if (!e.currentTarget.disabled) {
+              e.currentTarget.style.backgroundColor = '#d43f00';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!e.currentTarget.disabled) {
+              e.currentTarget.style.backgroundColor = '#eb4b00';
+            }
+          }}
         >
-          {isLoading ? 'Finding...' : 'Find my vehicle'}
+          {isLoading ? 'Loading...' : 'Get My Quote'}
         </Button>
       </form>
     </div>
