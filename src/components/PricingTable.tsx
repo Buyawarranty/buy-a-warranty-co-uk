@@ -1249,6 +1249,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <h4 className="font-semibold text-lg text-foreground mb-2">MOT Repair Cover</h4>
                     <p className="text-sm text-gray-600 mb-4">Avoid unexpected costs during your MOT. This cover helps with repairs that could otherwise fail your test. Stay roadworthy without the worry.</p>
                     <div className="text-xl font-bold text-orange-600">£89/year</div>
+                    <div className="text-sm text-gray-500">or £7.42/mo (12 interest-free payments)</div>
                   </div>
                   
                   {/* Wear & Tear Cover */}
@@ -1270,6 +1271,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <h4 className="font-semibold text-lg text-foreground mb-2">Wear & Tear Cover</h4>
                     <p className="text-sm text-gray-600 mb-4">Parts wear out — that's a fact. This cover protects you against the natural ageing of your vehicle's components, so you're not left footing the bill.</p>
                     <div className="text-xl font-bold text-orange-600">£89/year</div>
+                    <div className="text-sm text-gray-500">or £7.42/mo (12 interest-free payments)</div>
                   </div>
                   
                   {/* Transfer Cover */}
