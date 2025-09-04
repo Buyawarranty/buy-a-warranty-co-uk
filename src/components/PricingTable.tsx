@@ -1216,55 +1216,55 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {/* Step 5: Payment Options */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16 -mt-8">
-          <div className="bg-white border-2 rounded-xl p-8 shadow-sm">
+          <div className="section-header rounded-lg p-6 mt-8 relative">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-full bg-gray-600 text-white font-semibold flex items-center justify-center text-sm">
+              <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                 5
               </div>
-              <h2 className="text-xl font-semibold text-foreground">Choose how to pay</h2>
+              <h3 className="text-xl font-semibold text-foreground">Choose How to Pay</h3>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Pay in Full Option */}
-              <div className="bg-white rounded-xl p-6 shadow-xl shadow-black/15">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-foreground">Pay in Full</h3>
-                  <div className="w-8 h-8 bg-white rounded flex items-center justify-center shadow-md shadow-black/10">
-                    <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-                      <line x1="1" y1="10" x2="23" y2="10"/>
-                    </svg>
+              <div 
+                onClick={() => {/* Handle selection */}}
+                className="rounded-lg p-6 transition-all duration-200 cursor-pointer shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-green-500/20"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <h3 className="text-2xl font-bold text-foreground mb-1">Pay in Full</h3>
+                    <p className="text-gray-600">One-time payment with card</p>
+                    
+                    {/* Bullet points with ticks */}
+                    <div className="mt-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Check className="h-2.5 w-2.5 text-white" />
+                        </div>
+                        <span className="text-sm text-gray-600">Instant coverage activation</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Check className="h-2.5 w-2.5 text-white" />
+                        </div>
+                        <span className="text-sm text-gray-600">Secure payment via Stripe</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                
-                <p className="text-muted-foreground mb-6">One-time payment with card</p>
-                
-                <div className="mb-6">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-muted-foreground">Total today:</span>
-                    <span className="text-3xl font-bold text-green-600">
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-foreground">
                       £{(() => {
                         const pricing = getPricingData(voluntaryExcess, paymentType);
                         return pricing.platinum?.total || 437;
                       })()}
-                    </span>
+                    </div>
+                    <div className="text-lg text-gray-500">Total today</div>
                   </div>
                 </div>
-
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                    Instant coverage activation
-                  </div>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                    Secure payment via Stripe
-                  </div>
-                </div>
-
                 <Button 
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                  onClick={() => {
+                  className="w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 bg-green-600 hover:bg-green-700 text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
                     const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                     if (platinumPlan) {
                       handleSelectPlan(platinumPlan);
@@ -1289,60 +1289,51 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
 
               {/* Spread the Cost Option */}
-              <div className="bg-white rounded-xl p-6 shadow-xl shadow-black/15">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-foreground">Spread the Cost</h3>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">
-                      0% APR
-                    </Badge>
-                    <Badge variant="outline" className="bg-gray-100 text-gray-800">
-                      BUMPER
-                    </Badge>
-                  </div>
-                </div>
-                
-                <p className="text-muted-foreground mb-6">0% APR financing available</p>
-                
-                <div className="mb-6">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-muted-foreground">Monthly payment:</span>
-                    <div className="text-right">
-                      <span className="text-3xl font-bold text-blue-600">
-                        £{(() => {
-                          const pricing = getPricingData(voluntaryExcess, paymentType);
-                          return pricing.platinum?.monthly || 41;
-                        })()}
-                      </span>
-                      <div className="text-sm text-muted-foreground mt-1">from per month</div>
+              <div 
+                onClick={() => {/* Handle selection */}}
+                className="rounded-lg p-6 transition-all duration-200 cursor-pointer shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-blue-500/20"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <h3 className="text-2xl font-bold text-foreground mb-1">Spread the Cost</h3>
+                    <p className="text-gray-600">0% APR financing available</p>
+                    
+                    {/* Bullet points with ticks */}
+                    <div className="mt-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Check className="h-2.5 w-2.5 text-white" />
+                        </div>
+                        <span className="text-sm text-gray-600">0% APR on vehicle products</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Check className="h-2.5 w-2.5 text-white" />
+                        </div>
+                        <span className="text-sm text-gray-600">Flexible payment terms</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Check className="h-2.5 w-2.5 text-white" />
+                        </div>
+                        <span className="text-sm text-gray-600">Instant decision</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
-                    0% APR on vehicle products
-                  </div>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
-                    Flexible payment terms (3-12 months)
-                  </div>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
-                    Instant decision
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-foreground">
+                      £{(() => {
+                        const pricing = getPricingData(voluntaryExcess, paymentType);
+                        return pricing.platinum?.monthly || 41;
+                      })()}
+                    </div>
+                    <div className="text-lg text-gray-500">per month</div>
                   </div>
                 </div>
-
-                <div className="mb-4">
-                  <a href="#" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                    About Bumper →
-                  </a>
-                </div>
-
                 <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                  onClick={() => {
+                  className="w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
                     // Handle Bumper financing application
                     toast.info('Bumper financing integration coming soon');
                   }}
