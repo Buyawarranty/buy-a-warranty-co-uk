@@ -1333,10 +1333,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <span className="text-sm font-normal text-gray-600 ml-2">total</span>
                   </div>
                   
-                  {/* 23 Instalments */}
+                  {/* 12 Instalments */}
                   <div className="border-t border-orange-200 pt-2">
                     <div className="text-xl font-semibold text-gray-800">
-                      £17.09 <span className="text-sm font-normal text-gray-600">x 23 monthly instalments</span>
+                      £32.75 <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
                   </div>
