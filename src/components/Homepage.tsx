@@ -57,12 +57,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
     setMileage(value);
     
     // Validate mileage
-    const numericValue = parseInt(value.replace(/,/g, ''));
-    if (value && numericValue > 150000) {
-      setMileageError('We can only cover vehicles up to 150,000 miles');
-    } else {
-      setMileageError('');
-    }
+      const numericValue = parseInt(value.replace(/,/g, ''));
+      if (value && numericValue > 150000) {
+        setMileageError('We can only cover vehicles up to 150,000 miles');
+      } else {
+        setMileageError('');
+      }
   };
 
   const handleEnterReg = () => {
@@ -88,7 +88,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       toast({
         title: "Mileage Required", 
         description: "Please enter your vehicle's mileage to continue.",
-        variant: "destructive",
       });
       return;
     }
@@ -291,16 +290,16 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       onChange={handleMileageChange}
                       placeholder="Enter mileage (e.g. 32,000)"
                       className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
-                        mileageError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-orange-500'
+                        mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
                       }`}
                     />
                     {mileageError && (
-                      <p className="text-sm text-red-600 font-medium">
+                      <p className="text-sm text-blue-600 font-medium">
                         {mileageError}
                       </p>
                     )}
                     {vehicleAgeError && (
-                      <p className="text-sm text-red-600 font-medium">
+                      <p className="text-sm text-blue-600 font-medium">
                         {vehicleAgeError}
                       </p>
                     )}
