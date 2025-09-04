@@ -212,6 +212,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               >
                 Get My Quote
               </Button>
+              
+              {/* Halfords Logo */}
+              <div className="ml-4">
+                <img 
+                  src="/lovable-uploads/d5f9a604-cacf-42fd-9ab5-a387dedf8a3b.png" 
+                  alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
+                  className="h-12 w-auto"
+                />
+              </div>
             </div>
           </div>
         </div>
