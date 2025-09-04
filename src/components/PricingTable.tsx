@@ -570,8 +570,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
-                <Car className="h-4 w-4" />
+              <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
+                1
               </div>
               <h2 className="text-xl font-semibold text-foreground">Vehicle Information</h2>
             </div>
@@ -648,7 +648,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         {/* Voluntary Excess */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
               2
             </div>
             <h2 className="text-xl font-semibold text-foreground">Choose your excess amount</h2>
@@ -674,8 +674,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         {/* Claim Limit Selection */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
-              <Check className="h-4 w-4" />
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
+              3
             </div>
             <h2 className="text-xl font-semibold text-foreground">Choose Your Claim Limit</h2>
           </div>
@@ -888,7 +888,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="section-header rounded-lg p-6 mt-8 relative">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
+                <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   4
                 </div>
                 <h3 className="text-xl font-semibold text-foreground">Choose Warranty Duration</h3>
@@ -1152,7 +1152,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="max-w-6xl mx-auto px-4 pb-16 -mt-8">
           <div className="bg-white border-2 rounded-xl p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-full bg-orange-500 text-white font-semibold flex items-center justify-center text-sm">
+              <div className="w-8 h-8 rounded-full bg-gray-600 text-white font-semibold flex items-center justify-center text-sm">
                 5
               </div>
               <h2 className="text-xl font-semibold text-foreground">Choose how to pay</h2>
