@@ -1054,12 +1054,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           <div className="text-lg text-gray-500">or £{oneYearPrice.monthly}/mo</div>
                         </div>
                      </div>
-                      <button
-                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                          paymentType === '12months'
-                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                        }`}
+                       <button
+                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                           paymentType === '12months'
+                             ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                             : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                         }`}
                       >
                         {paymentType === '12months' ? 'Selected' : 'Select'}
                       </button>
@@ -1125,12 +1125,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           <div className="text-lg text-gray-500">or £{twoYearPrice.monthly}/mo</div>
                         </div>
                      </div>
-                      <button
-                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                          paymentType === '24months'
-                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                        }`}
+                       <button
+                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                           paymentType === '24months'
+                             ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                             : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                         }`}
                       >
                         {paymentType === '24months' ? 'Selected' : 'Select'}
                       </button>
@@ -1196,12 +1196,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           <div className="text-lg text-gray-500">or £{threeYearPrice.monthly}/mo</div>
                         </div>
                      </div>
-                      <button
-                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                          paymentType === '36months'
-                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                        }`}
+                       <button
+                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
+                           paymentType === '36months'
+                             ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                             : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                         }`}
                       >
                         {paymentType === '36months' ? 'Selected' : 'Select'}
                       </button>
