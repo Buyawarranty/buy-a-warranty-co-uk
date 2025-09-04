@@ -1153,7 +1153,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="bg-white border-2 rounded-xl p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 rounded-full bg-orange-500 text-white font-semibold flex items-center justify-center text-sm">
-                6
+                5
               </div>
               <h2 className="text-xl font-semibold text-foreground">Choose how to pay</h2>
             </div>
