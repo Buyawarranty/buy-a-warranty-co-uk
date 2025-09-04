@@ -66,7 +66,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
-  const [selectedClaimLimit, setSelectedClaimLimit] = useState<number>(2000);
+  const [selectedClaimLimit, setSelectedClaimLimit] = useState<number>(2500);
   
   // Reliability score state
   const [reliabilityScore, setReliabilityScore] = useState<{
@@ -723,7 +723,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-primary mb-2">£750</div>
+              <div className="text-2xl font-bold text-black mb-2">£750</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Essential</h4>
               <p className="text-sm text-muted-foreground mb-2">(10 claims per year)</p>
               <p className="text-sm font-medium text-foreground">Confidence for the everyday drive.</p>
@@ -773,7 +773,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-primary mb-2">£1,250</div>
+              <div className="text-2xl font-bold text-black mb-2">£1,250</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Advantage</h4>
               <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
               <p className="text-sm font-medium text-foreground">Balanced protection for life's bigger bumps.</p>
@@ -781,9 +781,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             {/* AutoCare Elite */}
             <button
-              onClick={() => setSelectedClaimLimit(2000)}
+              onClick={() => setSelectedClaimLimit(2500)}
               className={`p-6 rounded-lg border-2 transition-all duration-200 text-left relative ${
-                selectedClaimLimit === 2000
+                selectedClaimLimit === 2500
                   ? 'selected-option'
                   : 'neutral-container hover:border-primary/50'
               }`}
@@ -813,14 +813,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       <div>
                         <h4 className="font-semibold text-sm mb-1">What if the repair costs more?</h4>
                         <p className="text-xs text-muted-foreground">
-                          If the repair goes beyond the £2,000 limit, you'll just pay the extra. You still benefit from major savings—without the premium of unlimited cover.
+                          If the repair goes beyond the £2,500 limit, you'll just pay the extra. You still benefit from major savings—without the premium of unlimited cover.
                         </p>
                       </div>
                     </div>
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-primary mb-2">£2,000</div>
+              <div className="text-2xl font-bold text-black mb-2">£2,500</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Elite</h4>
               <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
               <p className="text-sm font-medium text-foreground">Top-tier cover for total peace of mind.</p>
