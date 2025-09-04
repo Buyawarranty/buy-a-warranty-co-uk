@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -565,6 +565,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
       {/* Configuration Sections */}
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        
+        {/* £25 Off Voucher Code Display */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6 mb-6 text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Gift className="h-8 w-8 text-green-600 animate-bounce" />
+            <h3 className="text-2xl font-bold text-green-700">Special Offer!</h3>
+            <Gift className="h-8 w-8 text-green-600 animate-bounce" />
+          </div>
+          <p className="text-lg text-green-600 font-semibold mb-2">Get £25 off your warranty</p>
+          <div className="bg-white rounded-lg p-3 border-2 border-dashed border-green-300 inline-block">
+            <span className="text-xl font-mono font-bold text-green-700">SAVE25NOW</span>
+          </div>
+          <p className="text-sm text-green-600 mt-2">Use this code at checkout</p>
+        </div>
         
         {/* Vehicle Information */}
         <div className="section-header rounded-lg p-6">
