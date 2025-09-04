@@ -1298,8 +1298,34 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
             </div>
             
-            {/* Animated CTA Button - Bottom Right */}
-            <div className="flex justify-end mt-8">
+            {/* Pricing Summary and CTA */}
+            <div className="flex flex-col lg:flex-row items-end justify-between gap-6 mt-8">
+              {/* Prominent Pricing Display */}
+              <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border-2 border-orange-200 shadow-lg">
+                <div className="space-y-2">
+                  {/* Original Price with Strikethrough */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500 line-through text-lg">£437</span>
+                    <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">SAVE 10%</span>
+                  </div>
+                  
+                  {/* Discounted Total Price */}
+                  <div className="text-3xl font-bold text-orange-600">
+                    £393
+                    <span className="text-sm font-normal text-gray-600 ml-2">total</span>
+                  </div>
+                  
+                  {/* 23 Instalments */}
+                  <div className="border-t border-orange-200 pt-2">
+                    <div className="text-xl font-semibold text-gray-800">
+                      £17.09 <span className="text-sm font-normal text-gray-600">x 23 monthly instalments</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Animated CTA Button */}
               <div className="animate-bounce">
                 <Button 
                   size="lg"
@@ -1310,7 +1336,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       handleSelectPlan(platinumPlan);
                     }
                   }}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group min-w-[180px]"
                 >
                   Confirm & Pay
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
