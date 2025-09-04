@@ -573,7 +573,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
                 1
               </div>
-              <h2 className="text-xl font-semibold text-foreground">Vehicle Information</h2>
+              <h2 className="text-xl font-semibold text-foreground">🚗 Vehicle Information</h2>
             </div>
             <Button
               onClick={onBack}
@@ -651,7 +651,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
               2
             </div>
-            <h2 className="text-xl font-semibold text-foreground">Choose your excess amount</h2>
+            <h2 className="text-xl font-semibold text-foreground">💰 Choose your excess amount</h2>
           </div>
           
           <div className="flex gap-3 flex-wrap">
@@ -677,7 +677,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
               3
             </div>
-            <h2 className="text-xl font-semibold text-foreground">Choose Your Claim Limit</h2>
+            <h2 className="text-xl font-semibold text-foreground">🛡️ Choose Your Claim Limit</h2>
           </div>
           
           <TooltipProvider>
@@ -891,7 +891,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   4
                 </div>
-                <h3 className="text-xl font-semibold text-foreground">Choose Warranty Duration</h3>
+                <h3 className="text-xl font-semibold text-foreground">📅 Choose Warranty Duration</h3>
               </div>
               
               {/* What's Included button in top right corner */}
@@ -1215,7 +1215,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                 5
               </div>
-              <h3 className="text-xl font-semibold text-foreground">Choose How to Pay</h3>
+              <h3 className="text-xl font-semibold text-foreground">💳 Choose How to Pay</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
