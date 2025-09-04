@@ -67,7 +67,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
   const [selectedClaimLimit, setSelectedClaimLimit] = useState<number>(2000);
-  const [selectedPaymentOption, setSelectedPaymentOption] = useState<'full' | 'spread'>('full');
   
   // Reliability score state
   const [reliabilityScore, setReliabilityScore] = useState<{
@@ -688,7 +687,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               onClick={() => setSelectedClaimLimit(750)}
               className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 750
-                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                   : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}
             >
@@ -724,10 +723,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className={`text-2xl font-bold mb-2 ${selectedClaimLimit === 750 ? 'text-white' : 'text-black'}`}>£750</div>
-              <h4 className={`text-lg font-semibold mb-1 ${selectedClaimLimit === 750 ? 'text-white' : 'text-foreground'}`}>AutoCare Essential</h4>
-              <p className={`text-sm mb-2 ${selectedClaimLimit === 750 ? 'text-white/80' : 'text-muted-foreground'}`}>(10 claims per year)</p>
-              <p className={`text-sm font-medium ${selectedClaimLimit === 750 ? 'text-white' : 'text-foreground'}`}>Confidence for the everyday drive.</p>
+              <div className="text-2xl font-bold text-black mb-2">£750</div>
+              <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Essential</h4>
+              <p className="text-sm text-muted-foreground mb-2">(10 claims per year)</p>
+              <p className="text-sm font-medium text-foreground">Confidence for the everyday drive.</p>
             </button>
             
             {/* AutoCare Advantage */}
@@ -735,7 +734,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               onClick={() => setSelectedClaimLimit(1250)}
               className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 1250
-                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                   : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}
             >
@@ -774,10 +773,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className={`text-2xl font-bold mb-2 ${selectedClaimLimit === 1250 ? 'text-white' : 'text-black'}`}>£1,250</div>
-              <h4 className={`text-lg font-semibold mb-1 ${selectedClaimLimit === 1250 ? 'text-white' : 'text-foreground'}`}>AutoCare Advantage</h4>
-              <p className={`text-sm mb-2 ${selectedClaimLimit === 1250 ? 'text-white/80' : 'text-muted-foreground'}`}>(Unlimited claims)</p>
-              <p className={`text-sm font-medium ${selectedClaimLimit === 1250 ? 'text-white' : 'text-foreground'}`}>Balanced protection for life's bigger bumps.</p>
+              <div className="text-2xl font-bold text-black mb-2">£1,250</div>
+              <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Advantage</h4>
+              <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
+              <p className="text-sm font-medium text-foreground">Balanced protection for life's bigger bumps.</p>
             </button>
             
             {/* AutoCare Elite */}
@@ -785,7 +784,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               onClick={() => setSelectedClaimLimit(2000)}
               className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
                 selectedClaimLimit === 2000
-                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                   : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}
             >
@@ -821,10 +820,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className={`text-2xl font-bold mb-2 ${selectedClaimLimit === 2000 ? 'text-white' : 'text-black'}`}>£2,000</div>
-              <h4 className={`text-lg font-semibold mb-1 ${selectedClaimLimit === 2000 ? 'text-white' : 'text-foreground'}`}>AutoCare Elite</h4>
-              <p className={`text-sm mb-2 ${selectedClaimLimit === 2000 ? 'text-white/80' : 'text-muted-foreground'}`}>(Unlimited claims)</p>
-              <p className={`text-sm font-medium ${selectedClaimLimit === 2000 ? 'text-white' : 'text-foreground'}`}>Top-tier cover for total peace of mind.</p>
+              <div className="text-2xl font-bold text-black mb-2">£2,000</div>
+              <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Elite</h4>
+              <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
+              <p className="text-sm font-medium text-foreground">Top-tier cover for total peace of mind.</p>
             </button>
             </div>
           </TooltipProvider>
@@ -1020,32 +1019,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      onClick={() => setPaymentType('12months')}
                       className={`rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
                         paymentType === '12months'
-                          ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                           : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                       }`}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex flex-col">
-                           <h3 className={`text-2xl font-bold mb-1 ${paymentType === '12months' ? 'text-white' : 'text-foreground'}`}>1 Year</h3>
-                           <div className="space-y-2 mb-4">
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '12months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '12months' ? 'text-white/90' : 'text-gray-600'}`}>Drive now, pay later</span>
-                             </div>
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '12months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '12months' ? 'text-white/90' : 'text-gray-600'}`}>12 interest-free payments</span>
-                             </div>
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '12months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '12months' ? 'text-white/90' : 'text-gray-600'}`}>Complete coverage</span>
-                             </div>
-                           </div>
-                         </div>
-                         <div className="text-right">
-                           <div className={`text-3xl font-bold ${paymentType === '12months' ? 'text-white' : 'text-foreground'}`}>£{oneYearPrice.total}</div>
-                           <div className={`text-lg ${paymentType === '12months' ? 'text-white/80' : 'text-gray-500'}`}>or £{oneYearPrice.monthly}/mo</div>
+                     <div className="flex items-center justify-between">
+                       <div className="flex flex-col">
+                         <h3 className="text-2xl font-bold text-foreground mb-1">1 Year</h3>
+                         <p className="text-gray-600">Comprehensive coverage</p>
+                       </div>
+                        <div className="text-right">
+                          <div className="text-3xl font-bold text-foreground">£{oneYearPrice.total}</div>
+                          <div className="text-lg text-gray-500">or £{oneYearPrice.monthly}/mo</div>
+                          <div className="text-sm text-gray-600 mt-1">Drive now, pay later — 12 interest-free payments.</div>
                         </div>
-                      </div>
+                     </div>
                      <button
                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
                          paymentType === '12months'
@@ -1077,7 +1064,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      onClick={() => setPaymentType('24months')}
                       className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
                         paymentType === '24months'
-                          ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                           : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                       }`}>
                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -1085,29 +1072,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          Save £{twoYearPrice.save}
                        </div>
                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex flex-col">
-                           <h3 className={`text-2xl font-bold mb-1 ${paymentType === '24months' ? 'text-white' : 'text-foreground'}`}>2 Years</h3>
-                           <div className="space-y-2 mb-4">
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '24months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '24months' ? 'text-white/90' : 'text-gray-600'}`}>Drive now, pay later</span>
-                             </div>
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '24months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '24months' ? 'text-white/90' : 'text-gray-600'}`}>12 interest-free payments</span>
-                             </div>
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '24months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '24months' ? 'text-white/90' : 'text-gray-600'}`}>Complete coverage</span>
-                             </div>
-                           </div>
-                         </div>
-                         <div className="text-right">
-                           <div className={`text-3xl font-bold ${paymentType === '24months' ? 'text-white' : 'text-foreground'}`}>£{twoYearPrice.total}</div>
-                           <div className={`text-lg ${paymentType === '24months' ? 'text-white/80' : 'text-gray-500'}`}>or £{twoYearPrice.monthly}/mo</div>
+                     <div className="flex items-center justify-between">
+                       <div className="flex flex-col">
+                         <h3 className="text-2xl font-bold text-foreground mb-1">2 Years</h3>
+                         <p className="text-gray-600">Comprehensive coverage</p>
+                       </div>
+                        <div className="text-right">
+                          <div className="text-3xl font-bold text-foreground">£{twoYearPrice.total}</div>
+                          <div className="text-lg text-gray-500">or £{twoYearPrice.monthly}/mo</div>
+                          <div className="text-sm text-gray-600 mt-1">Drive now, pay later — 12 interest-free payments.</div>
                         </div>
-                      </div>
+                     </div>
                      <button
                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
                          paymentType === '24months'
@@ -1139,7 +1114,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      onClick={() => setPaymentType('36months')}
                       className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
                         paymentType === '36months'
-                          ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                           : 'shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                       }`}>
                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -1147,29 +1122,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          Save £{threeYearPrice.save}
                        </div>
                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex flex-col">
-                           <h3 className={`text-2xl font-bold mb-1 ${paymentType === '36months' ? 'text-white' : 'text-foreground'}`}>3 Years</h3>
-                           <div className="space-y-2 mb-4">
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '36months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '36months' ? 'text-white/90' : 'text-gray-600'}`}>Drive now, pay later</span>
-                             </div>
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '36months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '36months' ? 'text-white/90' : 'text-gray-600'}`}>12 interest-free payments</span>
-                             </div>
-                             <div className="flex items-center gap-2">
-                               <Check className={`h-4 w-4 ${paymentType === '36months' ? 'text-white' : 'text-green-500'}`} />
-                               <span className={`text-sm ${paymentType === '36months' ? 'text-white/90' : 'text-gray-600'}`}>Complete coverage</span>
-                             </div>
-                           </div>
-                         </div>
-                         <div className="text-right">
-                           <div className={`text-3xl font-bold ${paymentType === '36months' ? 'text-white' : 'text-foreground'}`}>£{threeYearPrice.total}</div>
-                           <div className={`text-lg ${paymentType === '36months' ? 'text-white/80' : 'text-gray-500'}`}>or £{threeYearPrice.monthly}/mo</div>
+                     <div className="flex items-center justify-between">
+                       <div className="flex flex-col">
+                         <h3 className="text-2xl font-bold text-foreground mb-1">3 Years</h3>
+                         <p className="text-gray-600">Comprehensive coverage</p>
+                       </div>
+                        <div className="text-right">
+                          <div className="text-3xl font-bold text-foreground">£{threeYearPrice.total}</div>
+                          <div className="text-lg text-gray-500">or £{threeYearPrice.monthly}/mo</div>
+                          <div className="text-sm text-gray-600 mt-1">Drive now, pay later — 12 interest-free payments.</div>
                         </div>
-                      </div>
+                     </div>
                      <button
                        className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
                          paymentType === '36months'
@@ -1200,29 +1163,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Pay in Full Option */}
-              <div 
-                onClick={() => setSelectedPaymentOption('full')}
-                className={`rounded-xl p-6 cursor-pointer transition-all duration-200 ${
-                  selectedPaymentOption === 'full'
-                    ? 'bg-orange-500 text-white shadow-xl shadow-orange-500/30'
-                    : 'bg-white shadow-xl shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                }`}>
+              <div className="bg-white rounded-xl p-6 shadow-xl shadow-black/15">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`text-lg font-semibold ${selectedPaymentOption === 'full' ? 'text-white' : 'text-foreground'}`}>Pay in Full</h3>
-                  <div className={`w-8 h-8 rounded flex items-center justify-center shadow-md ${selectedPaymentOption === 'full' ? 'bg-white/20 shadow-white/10' : 'bg-white shadow-black/10'}`}>
-                    <svg className={`w-5 h-5 ${selectedPaymentOption === 'full' ? 'text-white' : 'text-muted-foreground'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <h3 className="text-lg font-semibold text-foreground">Pay in Full</h3>
+                  <div className="w-8 h-8 bg-white rounded flex items-center justify-center shadow-md shadow-black/10">
+                    <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
                       <line x1="1" y1="10" x2="23" y2="10"/>
                     </svg>
                   </div>
                 </div>
                 
-                <p className={`mb-6 ${selectedPaymentOption === 'full' ? 'text-white/90' : 'text-muted-foreground'}`}>One-time payment with card</p>
+                <p className="text-muted-foreground mb-6">One-time payment with card</p>
                 
                 <div className="mb-6">
                   <div className="flex items-baseline justify-between">
-                    <span className={`${selectedPaymentOption === 'full' ? 'text-white/80' : 'text-muted-foreground'}`}>Total today:</span>
-                    <span className={`text-3xl font-bold ${selectedPaymentOption === 'full' ? 'text-white' : 'text-green-600'}`}>
+                    <span className="text-muted-foreground">Total today:</span>
+                    <span className="text-3xl font-bold text-green-600">
                       £{(() => {
                         const pricing = getPricingData(voluntaryExcess, paymentType);
                         return pricing.platinum?.total || 437;
@@ -1232,20 +1189,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </div>
 
                 <div className="space-y-3 mb-6">
-                  <div className={`flex items-center text-sm ${selectedPaymentOption === 'full' ? 'text-white/90' : 'text-muted-foreground'}`}>
-                    <Check className={`h-4 w-4 mr-2 flex-shrink-0 ${selectedPaymentOption === 'full' ? 'text-white' : 'text-green-500'}`} />
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
                     Instant coverage activation
                   </div>
-                  <div className={`flex items-center text-sm ${selectedPaymentOption === 'full' ? 'text-white/90' : 'text-muted-foreground'}`}>
-                    <Check className={`h-4 w-4 mr-2 flex-shrink-0 ${selectedPaymentOption === 'full' ? 'text-white' : 'text-green-500'}`} />
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
                     Secure payment via Stripe
                   </div>
                 </div>
 
                 <Button 
-                  className={`w-full ${selectedPaymentOption === 'full' ? 'bg-white text-orange-500 hover:bg-white/90' : 'bg-green-600 hover:bg-green-700 text-white'}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  onClick={() => {
                     const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                     if (platinumPlan) {
                       handleSelectPlan(platinumPlan);
@@ -1255,7 +1211,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 >
                   {loading['platinum'] ? (
                     <div className="flex items-center">
-                      <div className={`animate-spin rounded-full h-4 w-4 border-b-2 mr-2 ${selectedPaymentOption === 'full' ? 'border-orange-500' : 'border-white'}`}></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                       Loading...
                     </div>
                   ) : (
@@ -1270,67 +1226,60 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
 
               {/* Spread the Cost Option */}
-              <div 
-                onClick={() => setSelectedPaymentOption('spread')}
-                className={`rounded-xl p-6 cursor-pointer transition-all duration-200 ${
-                  selectedPaymentOption === 'spread'
-                    ? 'bg-orange-500 text-white shadow-xl shadow-orange-500/30'
-                    : 'bg-white shadow-xl shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                }`}>
+              <div className="bg-white rounded-xl p-6 shadow-xl shadow-black/15">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`text-lg font-semibold ${selectedPaymentOption === 'spread' ? 'text-white' : 'text-foreground'}`}>Spread the Cost</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Spread the Cost</h3>
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className={`border ${selectedPaymentOption === 'spread' ? 'bg-white/20 text-white border-white/30' : 'bg-blue-100 text-blue-800 border-blue-200'}`}>
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">
                       0% APR
                     </Badge>
-                    <Badge variant="outline" className={`${selectedPaymentOption === 'spread' ? 'bg-white/20 text-white border-white/30' : 'bg-gray-100 text-gray-800'}`}>
+                    <Badge variant="outline" className="bg-gray-100 text-gray-800">
                       BUMPER
                     </Badge>
                   </div>
                 </div>
                 
-                <p className={`mb-6 ${selectedPaymentOption === 'spread' ? 'text-white/90' : 'text-muted-foreground'}`}>0% APR financing available</p>
+                <p className="text-muted-foreground mb-6">0% APR financing available</p>
                 
                 <div className="mb-6">
                   <div className="flex items-baseline justify-between">
-                    <span className={`${selectedPaymentOption === 'spread' ? 'text-white/80' : 'text-muted-foreground'}`}>Monthly payment:</span>
+                    <span className="text-muted-foreground">Monthly payment:</span>
                     <div className="text-right">
-                      <span className={`text-3xl font-bold ${selectedPaymentOption === 'spread' ? 'text-white' : 'text-blue-600'}`}>
+                      <span className="text-3xl font-bold text-blue-600">
                         £{(() => {
                           const pricing = getPricingData(voluntaryExcess, paymentType);
                           return pricing.platinum?.monthly || 41;
                         })()}
                       </span>
-                      <div className={`text-sm mt-1 ${selectedPaymentOption === 'spread' ? 'text-white/80' : 'text-muted-foreground'}`}>from per month</div>
+                      <div className="text-sm text-muted-foreground mt-1">from per month</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-3 mb-6">
-                  <div className={`flex items-center text-sm ${selectedPaymentOption === 'spread' ? 'text-white/90' : 'text-muted-foreground'}`}>
-                    <Check className={`h-4 w-4 mr-2 flex-shrink-0 ${selectedPaymentOption === 'spread' ? 'text-white' : 'text-blue-500'}`} />
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
                     0% APR on vehicle products
                   </div>
-                  <div className={`flex items-center text-sm ${selectedPaymentOption === 'spread' ? 'text-white/90' : 'text-muted-foreground'}`}>
-                    <Check className={`h-4 w-4 mr-2 flex-shrink-0 ${selectedPaymentOption === 'spread' ? 'text-white' : 'text-blue-500'}`} />
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
                     Flexible payment terms (3-12 months)
                   </div>
-                  <div className={`flex items-center text-sm ${selectedPaymentOption === 'spread' ? 'text-white/90' : 'text-muted-foreground'}`}>
-                    <Check className={`h-4 w-4 mr-2 flex-shrink-0 ${selectedPaymentOption === 'spread' ? 'text-white' : 'text-blue-500'}`} />
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
                     Instant decision
                   </div>
                 </div>
 
                 <div className="mb-4">
-                  <a href="#" className={`text-sm font-medium ${selectedPaymentOption === 'spread' ? 'text-white hover:text-white/80' : 'text-blue-600 hover:text-blue-700'}`}>
+                  <a href="#" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
                     About Bumper →
                   </a>
                 </div>
 
                 <Button 
-                  className={`w-full ${selectedPaymentOption === 'spread' ? 'bg-white text-orange-500 hover:bg-white/90' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => {
                     // Handle Bumper financing application
                     toast.info('Bumper financing integration coming soon');
                   }}
