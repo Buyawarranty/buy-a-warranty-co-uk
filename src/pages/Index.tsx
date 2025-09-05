@@ -108,16 +108,11 @@ const Index = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    // Check if we should show discount popup (only on first visit to homepage)
-    const hasSeenPopup = localStorage.getItem('hasSeenDiscountPopup');
-    console.log('Popup check:', { hasSeenPopup, currentStep, showDiscountPopup });
-    
-    if (!hasSeenPopup && currentStep === 1) {
-      console.log('Setting popup to show in 2 seconds');
+    // Show discount popup on every homepage load after 2 seconds
+    if (currentStep === 1) {
       setTimeout(() => {
-        console.log('Showing popup now');
         setShowDiscountPopup(true);
-      }, 2000); // Show after 2 seconds
+      }, 2000);
     }
     
     // Handle browser back/forward navigation
@@ -409,18 +404,6 @@ const Index = () => {
         </div>
       )}
       
-      {/* Debug button for testing popup */}
-      {currentStep === 1 && (
-        <button
-          onClick={() => {
-            localStorage.removeItem('hasSeenDiscountPopup');
-            setShowDiscountPopup(true);
-          }}
-          className="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded z-50"
-        >
-          Test Popup
-        </button>
-      )}
 
       {/* Discount Popup */}
       <DiscountPopup 

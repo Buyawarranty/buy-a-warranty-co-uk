@@ -49,6 +49,7 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
       const codeString = discountData?.code || 'DISCOUNT25';
 
       setDiscountCode(codeString);
+      onClose(); // Close popup after sending email
 
       // Send email with discount code
       const { error: emailError } = await supabase.functions.invoke('send-discount-email', {
@@ -109,56 +110,26 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
           {/* Content */}
           <div className="px-6 pb-6">
-            {!discountCode ? (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="relative">
-                  <Input
-                    type="email"
-                    placeholder="Your email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-12 pl-4 pr-4 text-base border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors"
-                >
-                  {isLoading ? 'Generating...' : 'Get My Discount Code'}
-                </Button>
-              </form>
-            ) : (
-              <div className="text-center space-y-4">
-                <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-green-800 mb-2">
-                    Your Discount Code:
-                  </h3>
-                  <div className="text-2xl font-mono font-bold text-green-700 bg-white px-4 py-2 rounded border">
-                    {discountCode}
-                  </div>
-                  <p className="text-sm text-green-600 mt-2">
-                    Code copied to clipboard! Also sent to your email.
-                  </p>
-                </div>
-                
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(discountCode);
-                    toast({
-                      title: "Copied!",
-                      description: "Discount code copied to clipboard"
-                    });
-                  }}
-                  variant="outline"
-                  className="w-full"
-                >
-                  Copy Code
-                </Button>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="relative">
+                <Input
+                  type="email"
+                  placeholder="Your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-12 pl-4 pr-4 text-base border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
+                  required
+                />
               </div>
-            )}
+              
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors"
+              >
+                {isLoading ? 'Sending...' : 'Get My Discount Code'}
+              </Button>
+            </form>
 
             <p className="text-xs text-gray-500 text-center mt-4">
               We'll occasionally send you useful warranty tips. Unsubscribe anytime - no worries!
