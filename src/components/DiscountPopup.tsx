@@ -72,7 +72,7 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
       const { data: discountData, error: discountError } = await supabase.functions.invoke('auto-generate-discount', {
         body: { 
           customerEmail: email,
-          orderAmount: 25 // £25 discount
+          orderAmount: 1000 // Pass a base amount for percentage calculation
         }
       });
 
@@ -80,9 +80,8 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       console.log('Discount response:', discountData);
       
-      // The auto-generate-discount function returns the full discount object
-      // Extract just the code string for display
-      const codeString = discountData?.code || 'DISCOUNT25';
+      // The auto-generate-discount function returns the discount code
+      const codeString = discountData?.discountCode?.code || discountData?.code || 'DISCOUNT25';
 
       setDiscountCode(codeString);
       setShowSuccess(true);

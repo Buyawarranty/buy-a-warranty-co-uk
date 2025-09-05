@@ -37,6 +37,7 @@ interface CustomerDetailsStepProps {
     monthlyPrice: number;
     voluntaryExcess: number;
     selectedAddOns: {[addon: string]: boolean};
+    protectionAddOns?: {[key: string]: boolean};
   };
   onBack: () => void;
   onNext: (customerData: any) => void;
@@ -182,7 +183,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // For Bumper: always use the original monthly price shown on pricing page
   // This ensures users pay the same monthly amount (e.g., £56) for 12 payments regardless of warranty duration
   const monthlyBumperPrice = pricingData.monthlyPrice; // Use the original monthly price from pricing page
-  const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper
+  
+  // Calculate protection addons total (one-time fees)
+  let protectionAddonsTotal = 0;
+  if (pricingData.protectionAddOns?.motRepair) protectionAddonsTotal += 89;
+  if (pricingData.protectionAddOns?.wearTear) protectionAddonsTotal += 89;
+  if (pricingData.protectionAddOns?.transfer) protectionAddonsTotal += 30;
+  
+  const bumperTotalPrice = (monthlyBumperPrice * 12) + protectionAddonsTotal; // Always 12 payments with Bumper + addons
   const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount based on order summary total
   
   // Check for automatic 10% discount (add another warranty)
@@ -656,24 +664,56 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          </div>
                        </div>
 
-                      {/* Payment Summary */}
-                      <div className="border-t border-gray-200 pt-4 mb-6">
-                        <div className="text-green-600 font-semibold text-lg mb-2">
-                          Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="font-semibold text-gray-900">Total Price:</span>
-                          <div className="text-right">
-                            <div className="font-semibold text-gray-900">
-                              £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
-                              {discountValidation?.isValid && (
-                                <span className="text-green-600 text-sm ml-2">
-                                  (5% discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
+                       {/* Protection Add-ons */}
+                       {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
+                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                           <h4 className="font-semibold text-blue-800 mb-3">Protection Add-ons</h4>
+                           <div className="space-y-2">
+                             {pricingData.protectionAddOns.motRepair && (
+                               <div className="flex justify-between text-sm">
+                                 <span className="text-blue-700">🔧 MOT Repair Cover</span>
+                                 <span className="font-medium text-blue-800">£89/year</span>
+                               </div>
+                             )}
+                             {pricingData.protectionAddOns.wearTear && (
+                               <div className="flex justify-between text-sm">
+                                 <span className="text-blue-700">🛠️ Wear & Tear Cover</span>
+                                 <span className="font-medium text-blue-800">£89/year</span>
+                               </div>
+                             )}
+                             {pricingData.protectionAddOns.transfer && (
+                               <div className="flex justify-between text-sm">
+                                 <span className="text-blue-700">🔁 Transfer Cover</span>
+                                 <span className="font-medium text-blue-800">£30 one-time</span>
+                               </div>
+                             )}
+                           </div>
+                         </div>
+                       )}
+
+                       {/* Payment Summary */}
+                       <div className="border-t border-gray-200 pt-4 mb-6">
+                         <div className="text-green-600 font-semibold text-lg mb-2">
+                           Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
+                           {protectionAddonsTotal > 0 && (
+                             <div className="text-sm font-normal text-gray-600">
+                               + £{protectionAddonsTotal} protection add-ons
+                             </div>
+                           )}
+                         </div>
+                         <div className="flex justify-between items-center">
+                           <span className="font-semibold text-gray-900">Total Price:</span>
+                           <div className="text-right">
+                             <div className="font-semibold text-gray-900">
+                               £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
+                               {discountValidation?.isValid && (
+                                 <span className="text-green-600 text-sm ml-2">
+                                   (Discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
+                                 </span>
+                               )}
+                             </div>
+                           </div>
+                         </div>
 
                         {/* Discount Code Section */}
                         <div className="pt-4 border-t border-gray-200">

@@ -71,7 +71,7 @@ serve(async (req) => {
       .insert({
         code: discountCode,
         type: 'percentage',
-        value: 10,
+        value: 25,
         valid_from: validFrom.toISOString(),
         valid_to: validTo.toISOString(),
         usage_limit: 1,
@@ -88,7 +88,7 @@ serve(async (req) => {
     }
 
     // Calculate discount amount
-    const discountAmount = (orderAmount * 10) / 100;
+    const discountAmount = (orderAmount * 25) / 100;
     const finalAmount = orderAmount - discountAmount;
 
     logStep("Auto-generated discount code successfully", {
