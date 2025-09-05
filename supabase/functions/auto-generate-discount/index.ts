@@ -13,11 +13,20 @@ const logStep = (step: string, details?: any) => {
 
 const generateRandomCode = (): string => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = 'MULTI';
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  let firstPart = '';
+  let secondPart = '';
+  
+  // Generate first 3 characters
+  for (let i = 0; i < 3; i++) {
+    firstPart += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return result;
+  
+  // Generate second 3 characters
+  for (let i = 0; i < 3; i++) {
+    secondPart += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  
+  return `${firstPart}-${secondPart}`;
 };
 
 serve(async (req) => {

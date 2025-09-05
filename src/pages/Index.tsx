@@ -108,40 +108,19 @@ const Index = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    // Show discount popup with timing conditions
+    // Show discount popup right after homepage loads in new session
     if (currentStep === 1) {
-      let hasScrolled30Percent = false;
-      let has15SecondsPassed = false;
-      
       // Check if already seen popup in this session
       const hasSeenPopup = sessionStorage.getItem('hasSeenDiscountPopup');
       if (hasSeenPopup) return;
       
-      // 15 second timer
+      // Show popup after 3 seconds on homepage
       const timer = setTimeout(() => {
-        has15SecondsPassed = true;
-        if (hasScrolled30Percent && has15SecondsPassed) {
-          setShowDiscountPopup(true);
-        }
-      }, 15000);
-      
-      // Scroll detection
-      const handleScroll = () => {
-        const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-        if (scrollPercent >= 30) {
-          hasScrolled30Percent = true;
-          if (hasScrolled30Percent && has15SecondsPassed) {
-            setShowDiscountPopup(true);
-            window.removeEventListener('scroll', handleScroll);
-          }
-        }
-      };
-      
-      window.addEventListener('scroll', handleScroll);
+        setShowDiscountPopup(true);
+      }, 3000);
       
       return () => {
         clearTimeout(timer);
-        window.removeEventListener('scroll', handleScroll);
       };
     }
     
