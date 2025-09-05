@@ -177,6 +177,14 @@ export default {
 						opacity: '0',
 						transform: 'translateX(50px) scale(0.8)'
 					}
+				},
+				'float-slow': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-8px)'
+					}
 				}
 			},
 			animation: {
@@ -190,7 +198,8 @@ export default {
 				'progress-fill': 'progress-fill 3s ease-in-out infinite',
 				'wind-lines': 'wind-lines 1.5s linear infinite',
 				'slide-right': 'slide-right 1s linear infinite',
-				'fade-drift': 'fade-drift 2s ease-out infinite'
+				'fade-drift': 'fade-drift 2s ease-out infinite',
+				'float-slow': 'float-slow 6s ease-in-out infinite'
 			}
 		}
 	},

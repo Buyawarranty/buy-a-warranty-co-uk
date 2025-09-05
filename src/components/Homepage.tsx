@@ -209,7 +209,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 size="sm"
                 className="bg-orange-500 text-white hover:bg-orange-600"
               >
-                Get My Quote
+                get my quote
               </Button>
             </div>
           </div>
@@ -313,14 +313,14 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 {/* Get Quote Button */}
                 <Button 
                   onClick={handleGetQuote}
-                  className={`w-full px-12 h-[64px] text-lg font-bold rounded-lg transition-all ${
+                  className={`w-full px-12 h-[64px] text-lg font-bold rounded-lg transition-all animate-float-slow ${
                     isLookingUp
                       ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       : 'bg-orange-500 hover:bg-orange-600 text-white'
                   }`}
                   disabled={isLookingUp}
                 >
-                  {isLookingUp ? 'Looking up vehicle...' : 'Get My Quote'}
+                  {isLookingUp ? 'Looking up vehicle...' : 'get my quote'}
                 </Button>
 
                 {/* Trustpilot */}

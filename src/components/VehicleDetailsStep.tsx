@@ -624,7 +624,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                     animation: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 'breathe 5s ease-in-out infinite' : 'none'
                   }}
                 >
-                  Get my quote →
+                  get my quote →
                 </button>
               </div>
             </>

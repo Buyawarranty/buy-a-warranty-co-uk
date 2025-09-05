@@ -86,7 +86,7 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
             }
           }}
         >
-          {isLoading ? 'Loading...' : 'Get My Quote'}
+          {isLoading ? 'Loading...' : 'get my quote'}
         </Button>
       </form>
     </div>
