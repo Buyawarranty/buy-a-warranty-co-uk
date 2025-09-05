@@ -44,14 +44,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
     const formatted = formatRegNumber(e.target.value);
     if (formatted.length <= 8) {
       setRegNumber(formatted);
-      // Show mileage field when user starts typing reg number
-      if (formatted.length > 0 && !showMileageField) {
-        setShowMileageField(true);
-      } else if (formatted.length === 0) {
-        setShowMileageField(false);
-        setMileage('');
-        setSliderMileage(50000);
-      }
     }
   };
 
@@ -300,60 +292,58 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   />
                 </div>
 
-                {/* Animated Mileage Options */}
-                {showMileageField && (
-                  <div className="animate-fade-in space-y-4">
-                    {/* Text Input Option */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Enter approximate mileage
-                      </label>
-                      <input
-                        type="text"
-                        value={mileage}
-                        onChange={handleMileageChange}
-                        placeholder="Enter mileage (e.g. 32,000)"
-                        className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
-                          mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
-                        }`}
-                      />
-                    </div>
-
-                    {/* Divider */}
-                    <div className="flex items-center">
-                      <div className="flex-1 border-t border-gray-300"></div>
-                      <span className="px-4 text-sm text-gray-500 bg-white">OR</span>
-                      <div className="flex-1 border-t border-gray-300"></div>
-                    </div>
-
-                    {/* Slider Option */}
-                    <div>
-                        <MileageSlider
-                          value={sliderMileage}
-                          onChange={handleSliderChange}
-                          min={0}
-                          max={150000}
-                        />
-                    </div>
-
-                    {/* Error Messages */}
-                    {mileageError && (
-                      <p className="text-sm text-blue-600 font-medium">
-                        {mileageError}
-                      </p>
-                    )}
-                    {vehicleAgeError && (
-                      <p className="text-sm text-blue-600 font-medium">
-                        {vehicleAgeError}
-                      </p>
-                    )}
-                    {!mileageError && !vehicleAgeError && (
-                      <p className="text-sm text-gray-600 text-center">
-                        Cover for vehicles up to 150,000 miles and 15 years old
-                      </p>
-                    )}
+                {/* Mileage Options - Always Visible */}
+                <div className="space-y-4">
+                  {/* Text Input Option */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Enter approximate mileage
+                    </label>
+                    <input
+                      type="text"
+                      value={mileage}
+                      onChange={handleMileageChange}
+                      placeholder="Enter mileage (e.g. 32,000)"
+                      className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
+                        mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
+                      }`}
+                    />
                   </div>
-                )}
+
+                  {/* Divider */}
+                  <div className="flex items-center">
+                    <div className="flex-1 border-t border-gray-300"></div>
+                    <span className="px-4 text-sm text-gray-500 bg-white">OR</span>
+                    <div className="flex-1 border-t border-gray-300"></div>
+                  </div>
+
+                  {/* Slider Option */}
+                  <div>
+                    <MileageSlider
+                      value={sliderMileage}
+                      onChange={handleSliderChange}
+                      min={0}
+                      max={150000}
+                    />
+                  </div>
+
+                  {/* Error Messages */}
+                  {mileageError && (
+                    <p className="text-sm text-blue-600 font-medium">
+                      {mileageError}
+                    </p>
+                  )}
+                  {vehicleAgeError && (
+                    <p className="text-sm text-blue-600 font-medium">
+                      {vehicleAgeError}
+                    </p>
+                  )}
+                  {!mileageError && !vehicleAgeError && (
+                    <p className="text-sm text-gray-600 text-center">
+                      Cover for vehicles up to 150,000 miles and 15 years old
+                    </p>
+                  )}
+                </div>
 
                 {/* Get Quote Button */}
                 <Button 
