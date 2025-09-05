@@ -5,6 +5,7 @@ import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import MileageSlider from './MileageSlider';
 
 interface VehicleData {
   regNumber: string;
@@ -24,7 +25,7 @@ interface HomepageProps {
 const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const { toast } = useToast();
   const [regNumber, setRegNumber] = useState('');
-  const [mileage, setMileage] = useState('');
+  const [mileage, setMileage] = useState(50000); // Changed to number for slider
   const [showMileageField, setShowMileageField] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [mileageError, setMileageError] = useState('');
@@ -47,22 +48,20 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         setShowMileageField(true);
       } else if (formatted.length === 0) {
         setShowMileageField(false);
-        setMileage('');
+        setMileage(50000);
       }
     }
   };
 
-  const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^\d,]/g, '');
+  const handleMileageChange = (value: number) => {
     setMileage(value);
     
     // Validate mileage
-      const numericValue = parseInt(value.replace(/,/g, ''));
-      if (value && numericValue > 150000) {
-        setMileageError('We can only cover vehicles up to 150,000 miles');
-      } else {
-        setMileageError('');
-      }
+    if (value > 150000) {
+      setMileageError('We can only cover vehicles up to 150,000 miles');
+    } else {
+      setMileageError('');
+    }
   };
 
   const handleEnterReg = () => {
@@ -83,18 +82,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       return;
     }
     
-    // Check if mileage is entered
-    if (!mileage.trim()) {
-      toast({
-        title: "Mileage Required", 
-        description: "Please enter your vehicle's mileage to continue.",
-      });
-      return;
-    }
-    
     // Check mileage validation before proceeding
-    const numericMileage = parseInt(mileage.replace(/,/g, ''));
-    if (numericMileage > 150000) {
+    if (mileage > 150000) {
       setMileageError('We can only cover vehicles up to 150,000 miles');
       return;
     }
@@ -133,7 +122,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       // Prepare vehicle data
       const vehicleData: VehicleData = {
         regNumber: regNumber,
-        mileage: mileage.replace(/,/g, ''), // Remove commas for storage
+        mileage: mileage.toString(),
       };
 
       // Add DVLA data if found
@@ -161,7 +150,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       // Continue with basic vehicle data even if lookup fails
       const vehicleData: VehicleData = {
         regNumber: regNumber,
-        mileage: mileage.replace(/,/g, ''),
+        mileage: mileage.toString(),
       };
       
       onRegistrationSubmit(vehicleData);
@@ -170,7 +159,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
     }
   };
 
-  const isFormValid = regNumber.trim() && mileage.trim() && !mileageError && !vehicleAgeError;
+  const isFormValid = regNumber.trim() && !mileageError && !vehicleAgeError;
 
   return (
     <div className="min-h-screen bg-white">
@@ -280,30 +269,26 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   />
                 </div>
 
-                {/* Animated Mileage Field */}
+                {/* Animated Mileage Slider */}
                 {showMileageField && (
-                  <div className="animate-fade-in space-y-2">
-                    <input
-                      type="text"
-                      value={mileage}
-                      onChange={handleMileageChange}
-                      placeholder="Enter mileage (e.g. 32,000)"
-                      className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
-                        mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
-                      }`}
-                    />
-                    {mileageError && (
-                      <p className="text-sm text-blue-600 font-medium">
-                        {mileageError}
-                      </p>
-                    )}
+                  <div className="animate-fade-in">
+                    <div className={`bg-white rounded-lg border-2 p-4 ${
+                      mileageError ? 'border-blue-400' : 'border-gray-300'
+                    }`}>
+                      <MileageSlider
+                        value={mileage}
+                        onChange={handleMileageChange}
+                        min={0}
+                        max={200000}
+                      />
+                    </div>
                     {vehicleAgeError && (
-                      <p className="text-sm text-blue-600 font-medium">
+                      <p className="text-sm text-blue-600 font-medium mt-2">
                         {vehicleAgeError}
                       </p>
                     )}
                     {!mileageError && !vehicleAgeError && (
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 mt-2 text-center">
                         Cover for vehicles up to 150,000 miles and 15 years old
                       </p>
                     )}
