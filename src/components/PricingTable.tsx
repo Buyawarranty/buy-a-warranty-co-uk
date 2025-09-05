@@ -295,6 +295,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     const selectedPlan = getSelectedPlan();
     if (!selectedPlan) return 0;
     
+    console.log('calculatePlanPrice:', {
+      paymentType,
+      selectedPlan: selectedPlan?.name,
+      voluntaryExcess,
+      selectedClaimLimit,
+      pricingMatrix: selectedPlan?.pricing_matrix
+    });
+    
     // FIRST: Try to use database pricing matrix (this has the exact prices we want)
     if (selectedPlan.pricing_matrix && typeof selectedPlan.pricing_matrix === 'object') {
       const matrix = selectedPlan.pricing_matrix as any;
@@ -304,13 +312,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     paymentType === '36months' ? '36' : '12';
       
       const periodData = matrix[dbKey];
+      console.log('Period data lookup:', { dbKey, periodData, voluntaryExcess: voluntaryExcess.toString() });
+      
       if (periodData && periodData[voluntaryExcess.toString()]) {
         const priceData = periodData[voluntaryExcess.toString()];
         let fullPrice = priceData.price || 0;
         
+        console.log('Found price in matrix:', { fullPrice, priceData });
+        
         // Database pricing matrix stores the correct price for each period
         // No conversion needed since keys are '12', '24', '36' representing months
         return fullPrice;
+      } else {
+        console.log('No price found in matrix for:', { dbKey, voluntaryExcess: voluntaryExcess.toString() });
       }
     }
     
