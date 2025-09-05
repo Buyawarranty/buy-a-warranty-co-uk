@@ -85,6 +85,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [addAnotherWarrantyEnabled, setAddAnotherWarrantyEnabled] = useState(false);
   const [selectedClaimLimit, setSelectedClaimLimit] = useState('plus'); // Default to Plus Cover
 
+  // Debug logging for pricing
+  console.log('CustomerDetailsStep - Pricing Debug:', {
+    monthlyPrice: pricingData.monthlyPrice,
+    totalPrice: pricingData.totalPrice,
+    protectionAddOns: pricingData.protectionAddOns,
+    voluntaryExcess: pricingData.voluntaryExcess
+  });
+
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
     switch (paymentType) {
@@ -179,19 +187,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     }
   };
 
-  // Calculate prices based on pricing data
-  // For Bumper: always use the original monthly price shown on pricing page
-  // This ensures users pay the same monthly amount (e.g., £56) for 12 payments regardless of warranty duration
-  const monthlyBumperPrice = pricingData.monthlyPrice; // Use the original monthly price from pricing page
+  // Calculate prices based on pricing data passed from PricingTable
+  // The pricingData.totalPrice already includes base price + all addons
+  const monthlyBumperPrice = pricingData.monthlyPrice; // Monthly amount for display
+  const bumperTotalPrice = pricingData.totalPrice; // Total already includes all addons
+  const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount for Stripe
   
-  // Calculate protection addons total (one-time fees)
+  // Calculate protection addons total for display purposes only
   let protectionAddonsTotal = 0;
   if (pricingData.protectionAddOns?.motRepair) protectionAddonsTotal += 89;
   if (pricingData.protectionAddOns?.wearTear) protectionAddonsTotal += 89;
   if (pricingData.protectionAddOns?.transfer) protectionAddonsTotal += 30;
-  
-  const bumperTotalPrice = (monthlyBumperPrice * 12) + protectionAddonsTotal; // Always 12 payments with Bumper + addons
-  const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount based on order summary total
   
   // Check for automatic 10% discount (add another warranty)
   const hasAutoDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
@@ -691,29 +697,24 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          </div>
                        )}
 
-                       {/* Payment Summary */}
-                       <div className="border-t border-gray-200 pt-4 mb-6">
-                         <div className="text-green-600 font-semibold text-lg mb-2">
-                           Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
-                           {protectionAddonsTotal > 0 && (
-                             <div className="text-sm font-normal text-gray-600">
-                               + £{protectionAddonsTotal} protection add-ons
-                             </div>
-                           )}
-                         </div>
-                         <div className="flex justify-between items-center">
-                           <span className="font-semibold text-gray-900">Total Price:</span>
-                           <div className="text-right">
-                             <div className="font-semibold text-gray-900">
-                               £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
-                               {discountValidation?.isValid && (
-                                 <span className="text-green-600 text-sm ml-2">
-                                   (Discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
-                                 </span>
-                               )}
-                             </div>
-                           </div>
-                         </div>
+                        {/* Payment Summary */}
+                        <div className="border-t border-gray-200 pt-4 mb-6">
+                          <div className="text-green-600 font-semibold text-lg mb-2">
+                            Payment: £{Math.round(bumperTotalPrice / 12)} x 12 easy payments
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold text-gray-900">Total Price:</span>
+                            <div className="text-right">
+                              <div className="font-semibold text-gray-900">
+                                £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
+                                {discountValidation?.isValid && (
+                                  <span className="text-green-600 text-sm ml-2">
+                                    (Discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
 
                         {/* Discount Code Section */}
                         <div className="pt-4 border-t border-gray-200">
