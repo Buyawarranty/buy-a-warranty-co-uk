@@ -92,9 +92,15 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
       {/* Slider Track */}
       <div 
         ref={sliderRef}
-        className="relative h-3 bg-gradient-to-r from-orange-400 via-yellow-400 to-red-400 rounded-full cursor-pointer"
+        className="relative h-3 bg-white rounded-full cursor-pointer border border-gray-200"
         onClick={handleSliderClick}
       >
+        {/* Selected Area (Orange) */}
+        <div 
+          className="absolute top-0 left-0 h-full bg-orange-500 rounded-full transition-all duration-150"
+          style={{ width: `${percentage}%` }}
+        />
+        
         {/* Panda Head Handle */}
         <div
           className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-grab ${
