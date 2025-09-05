@@ -25,8 +25,8 @@ interface HomepageProps {
 const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const { toast } = useToast();
   const [regNumber, setRegNumber] = useState('');
-  const [mileage, setMileage] = useState('');
-  const [sliderMileage, setSliderMileage] = useState(50000);
+  const [mileage, setMileage] = useState('60,000');
+  const [sliderMileage, setSliderMileage] = useState(60000);
   const [showMileageField, setShowMileageField] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [mileageError, setMileageError] = useState('');
