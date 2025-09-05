@@ -333,8 +333,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     </p>
                   )}
                   {!mileageError && !vehicleAgeError && (
-                    <p className="text-sm text-gray-600 text-center">
-                      Cover for vehicles up to 150,000 miles and 15 years old
+                    <p className="text-sm text-gray-400 text-center">
+                      Protection for vehicle up to 150,000 miles or 15 years.
                     </p>
                   )}
                 </div>
