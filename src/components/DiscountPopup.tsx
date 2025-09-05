@@ -61,15 +61,8 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       if (emailError) {
         console.error('Email sending failed:', emailError);
-        toast({
-          title: "Discount Code Generated!",
-          description: `Your code ${codeString} is ready! (Email sending failed - please save your code)`,
-        });
       } else {
-        toast({
-          title: "Discount Code Generated!",
-          description: `Your code ${codeString} has been sent to your email`,
-        });
+        console.log('Discount email sent successfully');
       }
 
     } catch (error) {
