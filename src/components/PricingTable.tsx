@@ -151,12 +151,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   // Server-side filtering function
   async function fetchPlansFor(vt: VehicleType): Promise<Plan[]> {
     if (vt === 'car') {
-      console.log('🚗 Fetching standard car plans: Platinum only');
+      console.log('🚗 Fetching standard car plans: All plans for claim limits');
       const { data, error } = await supabase
         .from('plans')
         .select('*')
         .eq('is_active', true)
-        .in('name', ['Platinum'])
+        .in('name', ['Basic', 'Gold', 'Platinum'])
         .order('monthly_price');
       
       if (error) {
@@ -290,7 +290,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return periodData[excess as keyof typeof periodData] || periodData[0];
   };
 
-  const calculatePlanPrice = (plan: Plan) => {
+  const calculatePlanPrice = () => {
+    // Get the correct plan based on selected claim limit
+    const selectedPlan = getSelectedPlan();
+    if (!selectedPlan) return 0;
+    
     // Use reliability-based pricing if available (only for cars)
     if (vt === 'car' && reliabilityScore?.pricing) {
       const periodKey = paymentType === '12months' ? '12months' : 
@@ -320,8 +324,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
     
     // Try to use database pricing matrix first, fallback to hardcoded
-    if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
-      const matrix = plan.pricing_matrix as any;
+    if (selectedPlan.pricing_matrix && typeof selectedPlan.pricing_matrix === 'object') {
+      const matrix = selectedPlan.pricing_matrix as any;
       // Map payment types to database keys correctly - align with migration keys
       const dbKey = paymentType === '12months' ? '12' : 
                     paymentType === '24months' ? '24' : 
@@ -340,7 +344,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     
     // Fallback to hardcoded pricing
     const pricing = getPricingData(voluntaryExcess, paymentType);
-    const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
+    const planType = selectedPlan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
     
     // Safety check: ensure planType exists in pricing object
     if (!pricing[planType]) {
@@ -349,6 +353,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
     
     return pricing[planType].monthly || 0;
+  };
+
+  // Get the plan that matches the selected claim limit
+  const getSelectedPlan = (): Plan | null => {
+    if (selectedClaimLimit === 750) {
+      return plans.find(p => p.name === 'Basic') || plans[0] || null;
+    } else if (selectedClaimLimit === 1250) {
+      return plans.find(p => p.name === 'Gold') || plans[0] || null;
+    } else if (selectedClaimLimit === 2000) {
+      return plans.find(p => p.name === 'Platinum') || plans[0] || null;
+    }
+    return plans.find(p => p.name === 'Platinum') || plans[0] || null; // Default to Platinum
   };
 
   const getPlanSavings = (plan: Plan) => {
@@ -413,13 +429,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }));
   };
 
-  const handleSelectPlan = async (plan: Plan) => {
+  const handleSelectPlan = async () => {
+    const selectedPlan = getSelectedPlan();
+    if (!selectedPlan) return;
+    
     // Set loading state for this plan
-    setLoading(prev => ({ ...prev, [plan.id]: true }));
+    setLoading(prev => ({ ...prev, [selectedPlan.id]: true }));
     
     try {
-      const basePrice = calculatePlanPrice(plan);
-      const addOnPrice = calculateAddOnPrice(plan.id);
+      const basePrice = calculatePlanPrice();
+      const addOnPrice = calculateAddOnPrice(selectedPlan.id);
       const monthlyTotal = basePrice + addOnPrice;
       
       // Calculate the actual total price based on payment period (warranty duration)
@@ -451,8 +470,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       } else {
         // For non-car vehicles or when reliability scoring is not available
         // Use database pricing matrix or fallback pricing
-        if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
-          const matrix = plan.pricing_matrix as any;
+        if (selectedPlan.pricing_matrix && typeof selectedPlan.pricing_matrix === 'object') {
+          const matrix = selectedPlan.pricing_matrix as any;
           const dbKey = paymentType === '12months' ? 'yearly' : 
                         paymentType === '24months' ? '24' : 
                         paymentType === '36months' ? '36' : 'yearly';
@@ -472,7 +491,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         } else {
           // Fallback calculation
           const pricing = getPricingData(voluntaryExcess, paymentType);
-          const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
+          const planType = selectedPlan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
           
           if (pricing[planType]) {
             totalPrice = pricing[planType].total || 0;
@@ -494,27 +513,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       }
       
       console.log('Selected plan pricing data:', {
-        planId: plan.id,
-        planName: plan.name,
+        planId: selectedPlan.id,
+        planName: selectedPlan.name,
         paymentType,
         basePrice,
         addOnPrice,
         monthlyTotal,
         totalPrice,
         voluntaryExcess,
-        selectedAddOns: selectedAddOns[plan.id]
+        selectedAddOns: selectedAddOns[selectedPlan.id]
       });
       
       // Call onPlanSelected with the calculated pricing data
       onPlanSelected?.(
-        plan.id, 
+        selectedPlan.id, 
         paymentType, 
-        plan.name,
+        selectedPlan.name,
         {
           totalPrice,
           monthlyPrice: monthlyTotal,
           voluntaryExcess,
-          selectedAddOns: selectedAddOns[plan.id] || {},
+          selectedAddOns: selectedAddOns[selectedPlan.id] || {},
           protectionAddOns: selectedProtectionAddOns
         }
       );
@@ -523,7 +542,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       console.error('Error selecting plan:', error);
       toast.error('Failed to select plan. Please try again.');
     } finally {
-      setLoading(prev => ({ ...prev, [plan.id]: false }));
+      setLoading(prev => ({ ...prev, [selectedPlan.id]: false }));
     }
   };
 
@@ -1012,10 +1031,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 if (!platinumPlan) return null;
                 
                 const oneYearPrice = (() => {
-                  const pricing = getPricingData(voluntaryExcess, 'yearly');
-                  const totalPrice = pricing.platinum?.total || 437;
-                  const monthlyEquivalent = Math.round(totalPrice / 12);
-                  return { total: totalPrice, monthly: monthlyEquivalent };
+                  // Use the new pricing calculation that respects claim limit
+                  const currentPrice = calculatePlanPrice();
+                  return { total: currentPrice, monthly: Math.round(currentPrice / 12) };
                 })();
                 
                  return (
@@ -1075,10 +1093,24 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 if (!platinumPlan) return null;
                 
                 const twoYearPrice = (() => {
-                  const pricing = getPricingData(voluntaryExcess, 'two_yearly');
-                  const totalPrice = pricing.platinum?.total || 786;
+                  // Calculate using the selected plan and payment period
+                  const selectedPlan = getSelectedPlan();
+                  if (!selectedPlan) return { total: 786, monthly: 65, save: 87 };
+                  
+                  // Temporarily set payment type to get 24-month pricing
+                  const originalPaymentType = paymentType;
+                  // Calculate 24-month price using the pricing matrix
+                  let totalPrice = 786; // fallback
+                  if (selectedPlan.pricing_matrix) {
+                    const matrix = selectedPlan.pricing_matrix as any;
+                    const periodData = matrix['24'];
+                    if (periodData && periodData[voluntaryExcess.toString()]) {
+                      totalPrice = periodData[voluntaryExcess.toString()].price || 786;
+                    }
+                  }
+                  
                   const monthlyEquivalent = Math.round(totalPrice / 12);
-                  const savings = pricing.platinum?.save || 87;
+                  const savings = 87; // Fixed savings for now
                   return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
                 })();
                 
@@ -1144,10 +1176,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 if (!platinumPlan) return null;
                 
                 const threeYearPrice = (() => {
-                  const pricing = getPricingData(voluntaryExcess, 'three_yearly');
-                  const totalPrice = pricing.platinum?.total || 1153;
+                  // Calculate using the selected plan and payment period
+                  const selectedPlan = getSelectedPlan();
+                  if (!selectedPlan) return { total: 1153, monthly: 96, save: 157 };
+                  
+                  // Calculate 36-month price using the pricing matrix
+                  let totalPrice = 1153; // fallback
+                  if (selectedPlan.pricing_matrix) {
+                    const matrix = selectedPlan.pricing_matrix as any;
+                    const periodData = matrix['36'];
+                    if (periodData && periodData[voluntaryExcess.toString()]) {
+                      totalPrice = periodData[voluntaryExcess.toString()].price || 1153;
+                    }
+                  }
+                  
                   const monthlyEquivalent = Math.round(totalPrice / 12);
-                  const savings = pricing.platinum?.save || 157;
+                  const savings = 157; // Fixed savings for now
                   return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
                 })();
                 
@@ -1292,11 +1336,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <Button 
                   size="lg"
                   onClick={() => {
-                    // Find the selected plan and proceed to checkout
-                    const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
-                    if (platinumPlan) {
-                      handleSelectPlan(platinumPlan);
-                    }
+                    // Use the selected plan based on claim limit
+                    handleSelectPlan();
                   }}
                   className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group min-w-[180px]"
                 >
@@ -1308,22 +1349,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               {/* Prominent Pricing Display */}
               <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border-2 border-orange-200 shadow-lg">
                 <div className="space-y-2">
-                  {/* Original Price with Strikethrough */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-500 line-through text-lg">£437</span>
-                    <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">SAVE 10%</span>
-                  </div>
-                  
-                  {/* Discounted Total Price */}
+                  {/* Current Price Display */}
                   <div className="text-3xl font-bold text-orange-600">
-                    £393
+                    £{calculatePlanPrice()}
                     <span className="text-sm font-normal text-gray-600 ml-2">total</span>
                   </div>
                   
                   {/* 12 Instalments */}
                   <div className="border-t border-orange-200 pt-2">
                     <div className="text-xl font-semibold text-gray-800">
-                      £32.75 <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
+                      £{Math.round(calculatePlanPrice() / 12)} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
                   </div>
