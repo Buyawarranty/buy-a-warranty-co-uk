@@ -274,7 +274,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     type="text"
                     value={regNumber}
                     onChange={handleRegChange}
-                    placeholder="ENTER REG"
+                    placeholder="Enter my reg"
                     className="bg-yellow-400 border-none outline-none text-xl text-black flex-1 font-bold placeholder:text-black/70 px-4 py-4 uppercase tracking-wider h-[64px]"
                     maxLength={8}
                   />
