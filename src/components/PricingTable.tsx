@@ -526,7 +526,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         monthlyTotal,
         totalPrice,
         voluntaryExcess,
-        selectedAddOns: selectedAddOns[selectedPlan.id]
+        selectedAddOns: selectedAddOns[selectedPlan.id],
+        protectionAddOns: selectedProtectionAddOns
       });
       
       // Call onPlanSelected with the calculated pricing data
