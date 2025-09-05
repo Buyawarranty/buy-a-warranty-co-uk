@@ -1362,7 +1362,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       if (!selectedPlan) return calculatePlanPrice();
                       const basePrice = calculatePlanPrice();
                       
-                      // Protection addon prices are one-time fees (£89, £89, £30)
+                      // Protection addon prices: £89 addons + £30 one-time
                       let protectionPrice = 0;
                       if (selectedProtectionAddOns.motRepair) protectionPrice += 89;
                       if (selectedProtectionAddOns.wearTear) protectionPrice += 89;
@@ -1378,22 +1378,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <div className="text-xl font-semibold text-gray-800">
                       £{(() => {
                         const selectedPlan = getSelectedPlan();
-                        const installmentMonths = paymentType === '12months' ? 12 : 
-                                                 paymentType === '24months' ? 12 : 
-                                                 paymentType === '36months' ? 12 : 12;
+                        const installmentMonths = 12; // Always 12 monthly instalments
                         
                         if (!selectedPlan) return Math.round(calculatePlanPrice() / installmentMonths);
                         const basePrice = calculatePlanPrice();
+                        const monthlyBasePrice = Math.round(basePrice / installmentMonths);
                         
-                        // Protection addon prices distributed across installment period
-                        let protectionPrice = 0;
-                        if (selectedProtectionAddOns.motRepair) protectionPrice += 89;
-                        if (selectedProtectionAddOns.wearTear) protectionPrice += 89;
-                        if (selectedProtectionAddOns.transfer) protectionPrice += 30;
+                        // £89 addons are distributed monthly (£7.42 each)
+                        let monthlyAddonPrice = 0;
+                        if (selectedProtectionAddOns.motRepair) monthlyAddonPrice += Math.round((89 / installmentMonths) * 100) / 100; // £7.42
+                        if (selectedProtectionAddOns.wearTear) monthlyAddonPrice += Math.round((89 / installmentMonths) * 100) / 100; // £7.42
                         
-                        const totalPrice = basePrice + protectionPrice;
-                        return Math.round(totalPrice / installmentMonths);
+                        // £30 transfer addon is one-time (handled separately, not in monthly calculation)
+                        
+                        const totalMonthlyPrice = monthlyBasePrice + monthlyAddonPrice;
+                        return Math.round(totalMonthlyPrice);
                       })()} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
+                      {selectedProtectionAddOns.transfer && (
+                        <div className="text-sm text-gray-600 mt-1">
+                          + £30 one-time transfer fee
+                        </div>
+                      )}
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
                   </div>
