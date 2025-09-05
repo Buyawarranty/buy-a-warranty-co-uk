@@ -295,35 +295,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     const selectedPlan = getSelectedPlan();
     if (!selectedPlan) return 0;
     
-    // Use reliability-based pricing if available (only for cars)
-    if (vt === 'car' && reliabilityScore?.pricing) {
-      const periodKey = paymentType === '12months' ? '12months' : 
-                       paymentType === '24months' ? '24months' : 
-                       paymentType === '36months' ? '36months' : '12months';
-      
-      let basePrice = reliabilityScore.pricing[periodKey] || 0;
-      
-      // Apply voluntary excess discount
-      if (voluntaryExcess > 0) {
-        const discountRate = voluntaryExcess === 50 ? 0.1 : 
-                            voluntaryExcess === 100 ? 0.2 : 
-                            voluntaryExcess === 150 ? 0.25 : 0;
-        basePrice = Math.round(basePrice * (1 - discountRate));
-      }
-      
-      // Return full price - no conversion needed
-      if (paymentType === '12months') {
-        return basePrice; // Full price for 1-year
-      } else if (paymentType === '24months') {
-        return basePrice; // Full price for 2-year coverage
-      } else if (paymentType === '36months') {
-        return basePrice; // Full price for 3-year coverage  
-      }
-      
-      return basePrice;
-    }
-    
-    // Try to use database pricing matrix first, fallback to hardcoded
+    // FIRST: Try to use database pricing matrix (this has the exact prices we want)
     if (selectedPlan.pricing_matrix && typeof selectedPlan.pricing_matrix === 'object') {
       const matrix = selectedPlan.pricing_matrix as any;
       // Map payment types to database keys correctly - align with migration keys
@@ -342,7 +314,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       }
     }
     
-    // Fallback to hardcoded pricing
+    // FALLBACK: Use reliability-based pricing if database pricing is not available
+    if (vt === 'car' && reliabilityScore?.pricing) {
+      const periodKey = paymentType === '12months' ? '12months' : 
+                       paymentType === '24months' ? '24months' : 
+                       paymentType === '36months' ? '36months' : '12months';
+      
+      let basePrice = reliabilityScore.pricing[periodKey] || 0;
+      
+      // Apply voluntary excess discount
+      if (voluntaryExcess > 0) {
+        const discountRate = voluntaryExcess === 50 ? 0.1 : 
+                            voluntaryExcess === 100 ? 0.2 : 
+                            voluntaryExcess === 150 ? 0.25 : 0;
+        basePrice = Math.round(basePrice * (1 - discountRate));
+      }
+      
+      return basePrice;
+    }
+    
+    // Final fallback to hardcoded pricing
     const pricing = getPricingData(voluntaryExcess, paymentType);
     const planType = selectedPlan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
     
