@@ -9,6 +9,7 @@ import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
+import { DiscountPopup } from '@/components/DiscountPopup';
 import { supabase } from '@/integrations/supabase/client';
 
 
@@ -63,6 +64,7 @@ const Index = () => {
   };
   
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
+  const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   
   // Save state to localStorage
   const saveStateToLocalStorage = (step?: number) => {
@@ -105,6 +107,12 @@ const Index = () => {
   
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Check if we should show discount popup (only on first visit to homepage)
+    const hasSeenPopup = localStorage.getItem('hasSeenDiscountPopup');
+    if (!hasSeenPopup && currentStep === 1) {
+      setTimeout(() => setShowDiscountPopup(true), 2000); // Show after 2 seconds
+    }
     
     // Handle browser back/forward navigation
     const handlePopState = () => {
@@ -395,6 +403,14 @@ const Index = () => {
         </div>
       )}
       
+      {/* Discount Popup */}
+      <DiscountPopup 
+        isOpen={showDiscountPopup} 
+        onClose={() => {
+          setShowDiscountPopup(false);
+          localStorage.setItem('hasSeenDiscountPopup', 'true');
+        }} 
+      />
     </div>
   );
 };
