@@ -310,12 +310,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     />
                   </div>
 
-                  {/* Divider */}
-                  <div className="flex items-center">
-                    <div className="flex-1 border-t border-gray-300"></div>
-                    <span className="px-4 text-sm text-gray-500 bg-white">OR</span>
-                    <div className="flex-1 border-t border-gray-300"></div>
-                  </div>
 
                   {/* Slider Option */}
                   <div>
