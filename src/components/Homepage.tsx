@@ -328,19 +328,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
                     {/* Slider Option */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Use the slider
-                      </label>
-                      <div className={`bg-white rounded-lg border-2 p-4 ${
-                        mileageError ? 'border-blue-400' : 'border-gray-300'
-                      }`}>
                         <MileageSlider
                           value={sliderMileage}
                           onChange={handleSliderChange}
                           min={0}
-                          max={200000}
+                          max={150000}
                         />
-                      </div>
                     </div>
 
                     {/* Error Messages */}

@@ -13,7 +13,7 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
   value, 
   onChange, 
   min = 0, 
-  max = 200000 
+  max = 150000 
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -88,70 +88,42 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
   const percentage = ((value - min) / (max - min)) * 100;
 
   return (
-    <div className="space-y-4">
-      {/* Mileage Display */}
-      <div className="text-center">
-        <div className="text-2xl font-bold text-gray-900 mb-1">
-          {formatMileage(value)} miles
-        </div>
-        <div className="text-sm text-gray-600">
-          Select your vehicle's mileage
+    <div className="px-4 py-6">
+      {/* Slider Track */}
+      <div 
+        ref={sliderRef}
+        className="relative h-3 bg-gradient-to-r from-orange-400 via-yellow-400 to-red-400 rounded-full cursor-pointer"
+        onClick={handleSliderClick}
+      >
+        {/* Panda Head Handle */}
+        <div
+          className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-grab ${
+            isDragging ? 'cursor-grabbing scale-110' : ''
+          } transition-all duration-150 ease-out`}
+          style={{ left: `${percentage}%` }}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+        >
+          <img 
+            src={pandaHead} 
+            alt="Panda slider handle" 
+            className={`w-12 h-12 object-contain ${
+              isDragging ? 'drop-shadow-lg' : 'hover:drop-shadow-md'
+            } transition-all duration-150`}
+            draggable={false}
+          />
         </div>
       </div>
 
-      {/* Slider Container */}
-      <div className="relative px-8 py-6">
-        {/* Range Labels */}
-        <div className="flex justify-between text-sm text-gray-500 mb-4">
-          <span>{formatMileage(min)}</span>
-          <span>{formatMileage(max)}</span>
-        </div>
-
-        {/* Slider Track */}
-        <div 
-          ref={sliderRef}
-          className="relative h-3 bg-gradient-to-r from-red-400 via-yellow-400 to-red-400 rounded-full cursor-pointer shadow-inner"
-          onClick={handleSliderClick}
-        >
-          {/* Progress Bar */}
-          <div 
-            className="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-150 ease-out"
-            style={{ width: `${percentage}%` }}
-          />
-
-          {/* Panda Head Handle */}
-          <div
-            className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-grab ${
-              isDragging ? 'cursor-grabbing scale-110' : ''
-            } transition-all duration-150 ease-out`}
-            style={{ left: `${percentage}%` }}
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-          >
-            <div className={`w-12 h-12 rounded-full bg-white shadow-lg border-2 border-gray-300 flex items-center justify-center ${
-              isDragging ? 'shadow-xl' : 'hover:shadow-lg'
-            } transition-all duration-150`}>
-              <img 
-                src={pandaHead} 
-                alt="Panda slider handle" 
-                className="w-8 h-8 object-contain"
-                draggable={false}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Mileage Markers */}
-        <div className="flex justify-between text-xs text-gray-400 mt-2">
-          <span>Low</span>
-          <span>Average</span>
-          <span>High</span>
-        </div>
+      {/* Range Numbers at Bottom */}
+      <div className="flex justify-between text-sm text-gray-600 mt-3">
+        <span>0</span>
+        <span>150,000</span>
       </div>
 
       {/* Validation Message */}
       {value > 150000 && (
-        <div className="text-center text-sm text-blue-600 font-medium">
+        <div className="text-center text-sm text-blue-600 font-medium mt-2">
           We can only cover vehicles up to 150,000 miles
         </div>
       )}
