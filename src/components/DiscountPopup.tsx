@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, Gift, Copy, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
@@ -17,18 +17,41 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [discountCode, setDiscountCode] = useState<string | null>(null);
+  const [hasCopied, setHasCopied] = useState(false);
   const { toast } = useToast();
 
-  // Trigger confetti when popup opens
+  // Present popping effect when popup opens
   useEffect(() => {
     if (isOpen) {
       confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
+        particleCount: 30,
+        spread: 45,
+        origin: { y: 0.6 },
+        shapes: ['square'],
+        colors: ['#f97316', '#fbbf24', '#34d399']
       });
     }
   }, [isOpen]);
+
+  const copyToClipboard = async () => {
+    if (discountCode) {
+      try {
+        await navigator.clipboard.writeText(discountCode);
+        setHasCopied(true);
+        toast({
+          title: "Copied!",
+          description: "Discount code copied to clipboard",
+        });
+        setTimeout(() => setHasCopied(false), 2000);
+      } catch (err) {
+        toast({
+          title: "Copy failed",
+          description: "Please copy the code manually",
+          variant: "destructive"
+        });
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,12 +87,15 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
       setDiscountCode(codeString);
       setShowSuccess(true);
 
-      // Trigger success confetti
+      // Present unwrapping effect
       confetti({
-        particleCount: 150,
-        spread: 100,
-        origin: { y: 0.7 },
-        colors: ['#f97316', '#3b82f6']
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.5 },
+        shapes: ['square'],
+        colors: ['#f97316', '#fbbf24', '#34d399'],
+        gravity: 0.8,
+        scalar: 1.2
       });
 
       // Send email with discount code
@@ -129,6 +155,11 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
               
               {!showSuccess ? (
                 <>
+                  <div className="flex justify-center space-x-2 mb-4">
+                    <Gift className="h-8 w-8 text-orange-500 animate-bounce" />
+                    <Gift className="h-8 w-8 text-yellow-500 animate-bounce" style={{ animationDelay: '0.1s' }} />
+                    <Gift className="h-8 w-8 text-green-500 animate-bounce" style={{ animationDelay: '0.2s' }} />
+                  </div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     Hey! Want £25 off your warranty?
                   </h2>
@@ -139,13 +170,27 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
                 </>
               ) : (
                 <>
-                  <div className="text-4xl mb-3">✅</div>
+                  <div className="text-4xl mb-3">🎁</div>
                   <h2 className="text-2xl font-bold text-green-600 mb-2">
-                    Discount code sent!
+                    Your discount code is ready!
                   </h2>
                   
+                  <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4">
+                    <div className="flex items-center justify-between">
+                      <code className="text-lg font-bold text-gray-900">{discountCode}</code>
+                      <Button
+                        onClick={copyToClipboard}
+                        variant="outline"
+                        size="sm"
+                        className="ml-2"
+                      >
+                        {hasCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                  
                   <p className="text-gray-600 text-sm">
-                    Check your email for your £25 discount code. Use it at checkout to save money on your warranty!
+                    Code copied! Also check your email. Use this code at checkout to save £25 on your warranty!
                   </p>
                 </>
               )}
