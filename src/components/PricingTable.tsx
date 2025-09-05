@@ -1373,22 +1373,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <span className="text-sm font-normal text-gray-600 ml-2">total</span>
                   </div>
                   
-                  {/* 12 Instalments */}
+                  {/* Monthly Instalments */}
                   <div className="border-t border-orange-200 pt-2">
                     <div className="text-xl font-semibold text-gray-800">
                       £{(() => {
                         const selectedPlan = getSelectedPlan();
-                        if (!selectedPlan) return Math.round(calculatePlanPrice() / 12);
+                        const installmentMonths = paymentType === '12months' ? 12 : 
+                                                 paymentType === '24months' ? 12 : 
+                                                 paymentType === '36months' ? 12 : 12;
+                        
+                        if (!selectedPlan) return Math.round(calculatePlanPrice() / installmentMonths);
                         const basePrice = calculatePlanPrice();
                         
-                        // Protection addon prices are one-time fees
+                        // Protection addon prices distributed across installment period
                         let protectionPrice = 0;
                         if (selectedProtectionAddOns.motRepair) protectionPrice += 89;
                         if (selectedProtectionAddOns.wearTear) protectionPrice += 89;
                         if (selectedProtectionAddOns.transfer) protectionPrice += 30;
                         
                         const totalPrice = basePrice + protectionPrice;
-                        return Math.round(totalPrice / 12);
+                        return Math.round(totalPrice / installmentMonths);
                       })()} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>

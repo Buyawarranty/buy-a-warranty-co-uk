@@ -113,8 +113,8 @@ const Index = () => {
       let hasScrolled30Percent = false;
       let has15SecondsPassed = false;
       
-      // Check if already seen popup
-      const hasSeenPopup = localStorage.getItem('hasSeenDiscountPopup');
+      // Check if already seen popup in this session
+      const hasSeenPopup = sessionStorage.getItem('hasSeenDiscountPopup');
       if (hasSeenPopup) return;
       
       // 15 second timer
@@ -440,8 +440,8 @@ const Index = () => {
         isOpen={showDiscountPopup} 
         onClose={() => {
           setShowDiscountPopup(false);
-          localStorage.setItem('hasSeenDiscountPopup', 'true');
-        }} 
+          sessionStorage.setItem('hasSeenDiscountPopup', 'true');
+        }}
       />
     </div>
   );
