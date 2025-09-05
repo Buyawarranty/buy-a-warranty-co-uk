@@ -322,31 +322,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
-      // Map payment types to database keys correctly
-      const dbKey = paymentType === '12months' ? 'monthly' : 
+      // Map payment types to database keys correctly - align with migration keys
+      const dbKey = paymentType === '12months' ? '12' : 
                     paymentType === '24months' ? '24' : 
-                    paymentType === '36months' ? '36' : 'yearly';
+                    paymentType === '36months' ? '36' : '12';
       
       const periodData = matrix[dbKey];
       if (periodData && periodData[voluntaryExcess.toString()]) {
         const priceData = periodData[voluntaryExcess.toString()];
         let fullPrice = priceData.price || 0;
         
-        // For database pricing matrix, check if it's already monthly or needs conversion
-        if (paymentType === '12months' && dbKey === 'monthly') {
-          // Already monthly price
-          return fullPrice;
-        } else if (paymentType === '12months' && dbKey === 'yearly') {
-          // Convert yearly to monthly
-          return Math.round(fullPrice / 12);
-        } else if (paymentType === '24months') {
-          // 24 month plans return the full 24-month price (not divided)
-          return fullPrice;
-        } else if (paymentType === '36months') {
-          // 36 month plans return the full 36-month price (not divided)
-          return fullPrice;
-        }
-        
+        // Database pricing matrix stores the correct price for each period
+        // No conversion needed since keys are '12', '24', '36' representing months
         return fullPrice;
       }
     }
