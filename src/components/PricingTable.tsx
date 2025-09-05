@@ -1360,17 +1360,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       const selectedPlan = getSelectedPlan();
                       if (!selectedPlan) return calculatePlanPrice();
                       const basePrice = calculatePlanPrice();
-                      const addonPrice = calculateAddOnPrice(selectedPlan.id);
                       
-                      // Calculate total price including addon costs for the full warranty period
-                      const warrantyMonths = paymentType === '12months' ? 12 : 
-                                           paymentType === '24months' ? 24 : 
-                                           paymentType === '36months' ? 36 : 12;
+                      // Protection addon prices are one-time fees (£89, £89, £30)
+                      let protectionPrice = 0;
+                      if (selectedProtectionAddOns.motRepair) protectionPrice += 89;
+                      if (selectedProtectionAddOns.wearTear) protectionPrice += 89;
+                      if (selectedProtectionAddOns.transfer) protectionPrice += 30;
                       
-                      // For base price from database matrix, it's already the full period price
-                      // For addon price, need to multiply by warranty period
-                      const addonTotalCost = addonPrice * warrantyMonths;
-                      return basePrice + addonTotalCost;
+                      return basePrice + protectionPrice;
                     })()}
                     <span className="text-sm font-normal text-gray-600 ml-2">total</span>
                   </div>
@@ -1382,15 +1379,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         const selectedPlan = getSelectedPlan();
                         if (!selectedPlan) return Math.round(calculatePlanPrice() / 12);
                         const basePrice = calculatePlanPrice();
-                        const addonPrice = calculateAddOnPrice(selectedPlan.id);
                         
-                        // Calculate total price including addon costs for the full warranty period
-                        const warrantyMonths = paymentType === '12months' ? 12 : 
-                                             paymentType === '24months' ? 24 : 
-                                             paymentType === '36months' ? 36 : 12;
+                        // Protection addon prices are one-time fees
+                        let protectionPrice = 0;
+                        if (selectedProtectionAddOns.motRepair) protectionPrice += 89;
+                        if (selectedProtectionAddOns.wearTear) protectionPrice += 89;
+                        if (selectedProtectionAddOns.transfer) protectionPrice += 30;
                         
-                        const addonTotalCost = addonPrice * warrantyMonths;
-                        const totalPrice = basePrice + addonTotalCost;
+                        const totalPrice = basePrice + protectionPrice;
                         return Math.round(totalPrice / 12);
                       })()} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
                     </div>
