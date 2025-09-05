@@ -349,7 +349,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden">
-      {currentStep !== 1 && (
+      {currentStep !== 1 && currentStep !== 4 && (
         <div className="bg-[#e8f4fb]">
           <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
         </div>
