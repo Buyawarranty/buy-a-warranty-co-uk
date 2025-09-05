@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Clock, Zap } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike } from 'lucide-react';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
 import { useToast } from '@/hooks/use-toast';
@@ -246,6 +246,33 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
                 <div className="bg-red-100 px-3 py-1 rounded-full text-sm font-medium text-red-800">
                   No Hidden Costs
+                </div>
+              </div>
+
+              {/* Vehicle Types */}
+              <div className="mb-8">
+                <p className="text-sm font-medium text-gray-600 mb-4 text-center lg:text-left">We cover all vehicle types:</p>
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6">
+                  <div className="flex items-center space-x-2">
+                    <Car className="w-5 h-5 text-brand-orange" />
+                    <span className="font-medium text-gray-700">Cars</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Truck className="w-5 h-5 text-brand-orange" />
+                    <span className="font-medium text-gray-700">Vans</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Zap className="w-5 h-5 text-brand-orange" />
+                    <span className="font-medium text-gray-700">Hybrid</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Battery className="w-5 h-5 text-brand-orange" />
+                    <span className="font-medium text-gray-700">EV</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Bike className="w-5 h-5 text-brand-orange" />
+                    <span className="font-medium text-gray-700">Motorbikes</span>
+                  </div>
                 </div>
               </div>
 
