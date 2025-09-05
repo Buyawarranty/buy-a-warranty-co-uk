@@ -38,6 +38,12 @@ interface CustomerDetailsStepProps {
     voluntaryExcess: number;
     selectedAddOns: {[addon: string]: boolean};
     protectionAddOns?: {[key: string]: boolean};
+    installmentBreakdown?: {
+      firstInstallment: number;
+      standardInstallment: number;
+      hasTransfer: boolean;
+      transferAmount: number;
+    };
   };
   onBack: () => void;
   onNext: (customerData: any) => void;
@@ -670,32 +676,61 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          </div>
                        </div>
 
-                       {/* Protection Add-ons */}
-                       {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
-                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                           <h4 className="font-semibold text-blue-800 mb-3">Protection Add-ons</h4>
-                           <div className="space-y-2">
-                             {pricingData.protectionAddOns.motRepair && (
-                               <div className="flex justify-between text-sm">
-                                 <span className="text-blue-700">🔧 MOT Repair Cover</span>
-                                 <span className="font-medium text-blue-800">£89/year</span>
-                               </div>
-                             )}
-                             {pricingData.protectionAddOns.wearTear && (
-                               <div className="flex justify-between text-sm">
-                                 <span className="text-blue-700">🛠️ Wear & Tear Cover</span>
-                                 <span className="font-medium text-blue-800">£89/year</span>
-                               </div>
-                             )}
-                             {pricingData.protectionAddOns.transfer && (
-                               <div className="flex justify-between text-sm">
-                                 <span className="text-blue-700">🔁 Transfer Cover</span>
-                                 <span className="font-medium text-blue-800">£30 one-time</span>
-                               </div>
-                             )}
-                           </div>
-                         </div>
-                       )}
+                        {/* Protection Add-ons */}
+                        {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                            <h4 className="font-semibold text-blue-800 mb-3">Protection Add-ons</h4>
+                            <div className="space-y-2">
+                              {pricingData.protectionAddOns.motRepair && (
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-blue-700">🔧 MOT Repair Cover (yearly)</span>
+                                  <span className="font-medium text-blue-800">£89</span>
+                                </div>
+                              )}
+                              {pricingData.protectionAddOns.wearTear && (
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-blue-700">🛠️ Wear & Tear Cover (yearly)</span>
+                                  <span className="font-medium text-blue-800">£89</span>
+                                </div>
+                              )}
+                              {pricingData.protectionAddOns.transfer && (
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-blue-700">🔁 Transfer Cover (one-time)</span>
+                                  <span className="font-medium text-blue-800">£30</span>
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Installment Breakdown */}
+                            {pricingData.installmentBreakdown && (
+                              <div className="mt-4 pt-3 border-t border-blue-300">
+                                <h5 className="font-semibold text-blue-800 mb-2">Payment Schedule:</h5>
+                                {pricingData.installmentBreakdown.hasTransfer ? (
+                                  <div className="space-y-1 text-sm">
+                                    <div className="flex justify-between">
+                                      <span className="text-blue-700">1st installment:</span>
+                                      <span className="font-medium text-blue-800">£{Math.round(pricingData.installmentBreakdown.firstInstallment * 100) / 100}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-blue-700">Installments 2-12:</span>
+                                      <span className="font-medium text-blue-800">£{Math.round(pricingData.installmentBreakdown.standardInstallment * 100) / 100} each</span>
+                                    </div>
+                                    <div className="text-xs text-blue-600 mt-2 italic">
+                                      *Transfer fee (£30) added to 1st installment only
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="text-sm">
+                                    <div className="flex justify-between">
+                                      <span className="text-blue-700">All 12 installments:</span>
+                                      <span className="font-medium text-blue-800">£{Math.round(pricingData.installmentBreakdown.standardInstallment * 100) / 100} each</span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {/* Payment Summary */}
                         <div className="border-t border-gray-200 pt-4 mb-6">
@@ -786,7 +821,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                 </div>
                               </div>
                               <p className="text-sm text-gray-600">
-                                Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
+                                {pricingData.installmentBreakdown?.hasTransfer ? (
+                                  <>
+                                    1st payment: £{Math.round((pricingData.installmentBreakdown.firstInstallment || 0) * (discountValidation?.isValid ? (discountValidation.finalAmount / pricingData.totalPrice) : hasAutoDiscount ? 0.9 : 1) * 100) / 100}, 
+                                    then £{Math.round((pricingData.installmentBreakdown.standardInstallment || 0) * (discountValidation?.isValid ? (discountValidation.finalAmount / pricingData.totalPrice) : hasAutoDiscount ? 0.9 : 1) * 100) / 100} × 11 payments = £{Math.round(discountedBumperPrice)} total
+                                  </>
+                                ) : (
+                                  <>
+                                    Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
+                                  </>
+                                )}
                                 {(discountValidation?.isValid || hasAutoDiscount) && (
                                   <span className="text-green-600">
                                     {hasAutoDiscount && !discountValidation?.isValid 
