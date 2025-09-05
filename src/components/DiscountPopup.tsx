@@ -14,6 +14,7 @@ interface DiscountPopupProps {
 export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [discountCode, setDiscountCode] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -49,7 +50,7 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
       const codeString = discountData?.code || 'DISCOUNT25';
 
       setDiscountCode(codeString);
-      onClose(); // Close popup after sending email
+      setShowSuccess(true);
 
       // Send email with discount code
       const { error: emailError } = await supabase.functions.invoke('send-discount-email', {
@@ -65,6 +66,11 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
       } else {
         console.log('Discount email sent successfully');
       }
+
+      // Auto close after 3 seconds
+      setTimeout(() => {
+        onClose();
+      }, 3000);
 
     } catch (error) {
       console.error('Error generating discount:', error);
@@ -98,43 +104,68 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
                 <span className="text-orange-500 font-bold text-xl">warranty</span>
               </div>
               
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Hey! Want £25 off your warranty?
-              </h2>
-              
-              <p className="text-gray-600 text-sm">
-                Just pop your email below and we'll give you an instant discount code - no strings attached!
-              </p>
+              {!showSuccess ? (
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Hey! Want £25 off your warranty?
+                  </h2>
+                  
+                  <p className="text-gray-600 text-sm">
+                    Just pop your email below and we'll give you an instant discount code - no strings attached!
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="text-4xl mb-3">✅</div>
+                  <h2 className="text-2xl font-bold text-green-600 mb-2">
+                    Discount code sent!
+                  </h2>
+                  
+                  <p className="text-gray-600 text-sm">
+                    Check your email for your £25 discount code. Use it at checkout to save money on your warranty!
+                  </p>
+                </>
+              )}
             </div>
           </div>
 
           {/* Content */}
-          <div className="px-6 pb-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="relative">
-                <Input
-                  type="email"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12 pl-4 pr-4 text-base border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors"
-              >
-                {isLoading ? 'Sending...' : 'Get My Discount Code'}
-              </Button>
-            </form>
+          {!showSuccess && (
+            <div className="px-6 pb-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="relative">
+                  <Input
+                    type="email"
+                    placeholder="Your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full h-12 pl-4 pr-4 text-base border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors"
+                >
+                  {isLoading ? 'Sending...' : 'Get My Discount Code'}
+                </Button>
+              </form>
 
-            <p className="text-xs text-gray-500 text-center mt-4">
-              We'll occasionally send you useful warranty tips. Unsubscribe anytime - no worries!
-            </p>
-          </div>
+              <p className="text-xs text-gray-500 text-center mt-4">
+                We'll occasionally send you useful warranty tips. Unsubscribe anytime - no worries!
+              </p>
+            </div>
+          )}
+
+          {showSuccess && (
+            <div className="px-6 pb-6 text-center">
+              <p className="text-sm text-gray-500">
+                This window will close automatically in a few seconds.
+              </p>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
