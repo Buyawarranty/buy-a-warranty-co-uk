@@ -12,6 +12,7 @@ interface QuoteDeliveryStepProps {
     fuelType?: string;
     transmission?: string;
     year?: string;
+    vehicleType?: string;
   };
   onNext: (data: { email: string; phone: string; firstName: string; lastName: string; sendQuoteEmail?: boolean }) => void;
   onBack: () => void;
@@ -77,39 +78,80 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const handleSubmitContactForm = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Track abandoned cart if email is provided
-    if (email.trim()) {
-      try {
-        await supabase.functions.invoke('track-abandoned-cart', {
-          body: {
-            full_name: email, // Using email as the name since we don't have separate fields
-            email: email,
-            phone: '',
-            vehicle_reg: vehicleData?.regNumber,
-            vehicle_make: vehicleData?.make,
-            vehicle_model: vehicleData?.model,
-            vehicle_year: vehicleData?.year,
-            mileage: vehicleData?.mileage,
-            step_abandoned: 2
-          }
-        });
-      } catch (error) {
-        console.error('Error tracking abandoned cart:', error);
-        // Don't block the flow if tracking fails
-      }
+    if (!validateForm()) {
+      return;
     }
-    
-    // Trigger confetti
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
-    
-    // Small delay to let confetti start before navigating
-    setTimeout(() => {
-      onNext({ firstName: '', lastName: '', email: email.trim(), phone: '', sendQuoteEmail: !!email.trim() });
-    }, 300);
+
+    setSendingEmail(true);
+
+    try {
+      // Send quote email
+      const { error: emailError } = await supabase.functions.invoke('send-quote-email', {
+        body: {
+          email: email.trim(),
+          firstName: firstName.trim() || 'Valued Customer',
+          lastName: lastName.trim() || '',
+          vehicleData: {
+            regNumber: vehicleData.regNumber,
+            make: vehicleData.make,
+            model: vehicleData.model,
+            year: vehicleData.year,
+            mileage: vehicleData.mileage,
+            vehicleType: vehicleData.vehicleType || 'car',
+            fuelType: vehicleData.fuelType,
+            transmission: vehicleData.transmission
+          },
+          isInitialQuote: true
+        }
+      });
+
+      if (emailError) {
+        console.error('Error sending quote email:', emailError);
+        // Still proceed with the flow even if email fails
+      }
+
+      // Track abandoned cart if email is provided
+      if (email.trim()) {
+        try {
+          await supabase.functions.invoke('track-abandoned-cart', {
+            body: {
+              full_name: email,
+              email: email,
+              phone: '',
+              vehicle_reg: vehicleData?.regNumber,
+              vehicle_make: vehicleData?.make,
+              vehicle_model: vehicleData?.model,
+              vehicle_year: vehicleData?.year,
+              mileage: vehicleData?.mileage,
+              step_abandoned: 2
+            }
+          });
+        } catch (error) {
+          console.error('Error tracking abandoned cart:', error);
+        }
+      }
+      
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      
+      // Small delay to let confetti start before navigating
+      setTimeout(() => {
+        onNext({ firstName: '', lastName: '', email: email.trim(), phone: '', sendQuoteEmail: true });
+      }, 300);
+
+    } catch (error) {
+      console.error('Error in quote submission:', error);
+      // Still proceed with the flow
+      setTimeout(() => {
+        onNext({ firstName: '', lastName: '', email: email.trim(), phone: '', sendQuoteEmail: true });
+      }, 300);
+    } finally {
+      setSendingEmail(false);
+    }
   };
 
   const handleFieldBlur = (field: 'firstName' | 'lastName' | 'email' | 'phone') => {
