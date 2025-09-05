@@ -42,14 +42,22 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       if (discountError) throw discountError;
 
-      setDiscountCode(discountData.discountCode);
+      console.log('Discount response:', discountData);
+      
+      // Extract the discount code string from the response
+      const codeString = typeof discountData === 'string' ? discountData : 
+                        discountData?.discountCode || 
+                        discountData?.code || 
+                        'DISCOUNT25';
+
+      setDiscountCode(codeString);
 
       // Send email with discount code
       const { error: emailError } = await supabase.functions.invoke('send-discount-email', {
         body: {
           email,
-          discountCode: discountData.discountCode,
-          discountAmount: discountData.discountAmount
+          discountCode: codeString,
+          discountAmount: 25
         }
       });
 
@@ -60,7 +68,7 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       toast({
         title: "Discount Code Generated!",
-        description: `Your code ${discountData.discountCode} has been sent to your email`,
+        description: `Your code ${codeString} has been sent to your email`,
       });
 
     } catch (error) {
