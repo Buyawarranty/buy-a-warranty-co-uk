@@ -180,10 +180,12 @@ export default {
 				},
 				'float-slow': {
 					'0%, 100%': {
-						transform: 'translateY(0px)'
+						transform: 'scale(1)',
+						opacity: '1'
 					},
 					'50%': {
-						transform: 'translateY(-8px)'
+						transform: 'scale(1.02)',
+						opacity: '0.9'
 					}
 				}
 			},
