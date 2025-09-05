@@ -113,6 +113,8 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       if (emailError) {
         console.error('Error sending quote email:', emailError);
         // Still proceed with the flow even if email fails
+      } else {
+        console.log('Quote email sent successfully:', emailResponse);
       }
 
       // Track abandoned cart if email is provided
