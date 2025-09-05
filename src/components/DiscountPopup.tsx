@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import confetti from 'canvas-confetti';
 
 interface DiscountPopupProps {
   isOpen: boolean;
@@ -17,6 +18,17 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
   const [showSuccess, setShowSuccess] = useState(false);
   const [discountCode, setDiscountCode] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Trigger confetti when popup opens
+  useEffect(() => {
+    if (isOpen) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +63,14 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       setDiscountCode(codeString);
       setShowSuccess(true);
+
+      // Trigger success confetti
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.7 },
+        colors: ['#f97316', '#3b82f6']
+      });
 
       // Send email with discount code
       const { error: emailError } = await supabase.functions.invoke('send-discount-email', {
@@ -100,8 +120,11 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
           <div className="bg-white px-6 pt-6 pb-4">
             <div className="text-center">
               <div className="mb-4">
-                <span className="text-blue-600 font-bold text-xl">buya</span>
-                <span className="text-orange-500 font-bold text-xl">warranty</span>
+                <img 
+                  src="/lovable-uploads/d30b22f7-d176-417c-b227-abdfc0fd84cf.png" 
+                  alt="BuyaWarranty" 
+                  className="h-8 mx-auto"
+                />
               </div>
               
               {!showSuccess ? (
