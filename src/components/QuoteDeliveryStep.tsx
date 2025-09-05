@@ -86,7 +86,12 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
     try {
       // Send quote email
-      const { error: emailError } = await supabase.functions.invoke('send-quote-email', {
+      console.log('Sending quote email with data:', {
+        email: email.trim(),
+        vehicleData
+      });
+
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-quote-email', {
         body: {
           email: email.trim(),
           firstName: firstName.trim() || 'Valued Customer',

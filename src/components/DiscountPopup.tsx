@@ -44,11 +44,9 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       console.log('Discount response:', discountData);
       
-      // Extract the discount code string from the response
-      const codeString = typeof discountData === 'string' ? discountData : 
-                        discountData?.discountCode || 
-                        discountData?.code || 
-                        'DISCOUNT25';
+      // The auto-generate-discount function returns the full discount object
+      // Extract just the code string for display
+      const codeString = discountData?.code || 'DISCOUNT25';
 
       setDiscountCode(codeString);
 
@@ -63,13 +61,16 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       if (emailError) {
         console.error('Email sending failed:', emailError);
-        // Don't show error to user if discount code was generated successfully
+        toast({
+          title: "Discount Code Generated!",
+          description: `Your code ${codeString} is ready! (Email sending failed - please save your code)`,
+        });
+      } else {
+        toast({
+          title: "Discount Code Generated!",
+          description: `Your code ${codeString} has been sent to your email`,
+        });
       }
-
-      toast({
-        title: "Discount Code Generated!",
-        description: `Your code ${codeString} has been sent to your email`,
-      });
 
     } catch (error) {
       console.error('Error generating discount:', error);
