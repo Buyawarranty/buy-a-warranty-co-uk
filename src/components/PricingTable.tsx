@@ -311,16 +311,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         basePrice = Math.round(basePrice * (1 - discountRate));
       }
       
-      // Convert to monthly payment for display purposes
+      // Return full price - no conversion needed
       if (paymentType === '12months') {
-        return Math.round(basePrice / 12); // Monthly payment amount
+        return basePrice; // Full price for 1-year
       } else if (paymentType === '24months') {
-        return Math.round(basePrice / 12); // 12 monthly payments for 24 month coverage
+        return basePrice; // Full price for 2-year coverage
       } else if (paymentType === '36months') {
-        return Math.round(basePrice / 12); // 12 monthly payments for 36 month coverage  
+        return basePrice; // Full price for 3-year coverage  
       }
       
-      return Math.round(basePrice / 12);
+      return basePrice;
     }
     
     // Try to use database pricing matrix first, fallback to hardcoded
