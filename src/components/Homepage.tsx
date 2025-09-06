@@ -621,51 +621,31 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               
               <div className="space-y-3 md:space-y-4">
                 <div className="flex items-start gap-3">
-                  <img 
-                    src="/lovable-uploads/single-tick.png" 
-                    alt="checkmark"
-                    className="w-5 h-5 mt-1"
-                  />
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>Pay Monthly or in Full</strong> – Choose what works for you.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <img 
-                    src="/lovable-uploads/single-tick.png" 
-                    alt="checkmark"
-                    className="w-5 h-5 mt-1"
-                  />
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>1, 2 or 3-Year Cover</strong> – Long-term protection, your choice.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <img 
-                    src="/lovable-uploads/single-tick.png" 
-                    alt="checkmark"
-                    className="w-5 h-5 mt-1"
-                  />
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>0% APR & No Hidden Fees</strong> – Interest-free, stress-free.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <img 
-                    src="/lovable-uploads/single-tick.png" 
-                    alt="checkmark"
-                    className="w-5 h-5 mt-1"
-                  />
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>Save an Extra 10%</strong> – When you pay in full.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <img 
-                    src="/lovable-uploads/single-tick.png" 
-                    alt="checkmark"
-                    className="w-5 h-5 mt-1"
-                  />
+                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>From Just £20/Month</strong> – Affordable peace of mind.
                   </span>
