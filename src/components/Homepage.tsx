@@ -244,11 +244,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               {/* Main Headline */}
               <div className="space-y-4 mb-8">
                 <h1 className="text-4xl lg:text-6xl font-black text-gray-900 leading-tight">
-                  We've Got You
+                  We{"'"}ve got you
                   <br />
-                  Covered
+                  covered
                   <br />
-                  <span className="text-orange-500">In 60 Seconds!</span>
+                  <span className="text-orange-500">in 60 seconds!</span>
                 </h1>
               </div>
 
