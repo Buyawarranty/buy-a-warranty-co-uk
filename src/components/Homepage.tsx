@@ -248,7 +248,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <br />
                   covered
                   <br />
-                  <span className="text-[#CC6600]">in 60 seconds!</span>
+                  <span className="text-[#D37321]">in 60 seconds!</span>
                 </h1>
               </div>
 
@@ -339,7 +339,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     className={`w-full px-12 h-[66px] text-xl font-bold rounded-lg transition-all ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-[#CC6600] hover:bg-[#B85500] text-white btn-slow-pulsate'
+                        : 'bg-[#D37321] hover:bg-[#B85500] text-white btn-slow-pulsate'
                     }`}
                     disabled={isLookingUp}
                   >
