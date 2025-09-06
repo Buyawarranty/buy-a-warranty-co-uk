@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
@@ -612,42 +612,48 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <div className="space-y-6 md:space-y-8">
               <div className="mb-4 md:mb-6">
                 <div className="inline-block bg-brand-orange text-white px-3 md:px-4 py-2 rounded text-sm font-bold mb-3 md:mb-4">
-                  Easy Options
+                  Additional Options
                 </div>
                 <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
-                  <span className="text-brand-orange">Flexible Warranty Plans</span>
+                  <span className="text-brand-orange">Additional Cover Options</span>
                 </h2>
               </div>
               
               <div className="space-y-3 md:space-y-4">
                 <div className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <Phone className="w-5 h-5 text-brand-orange mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
-                    <strong>Pay Monthly or in Full</strong> – Choose what works for you.
+                    <strong>24/7 Breakdown Recovery</strong> – Help whenever you need it.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <FileCheck className="w-5 h-5 text-brand-orange mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
-                    <strong>1, 2 or 3-Year Cover</strong> – Long-term protection, your choice.
+                    <strong>MOT Repair Cover</strong> – Stay road-legal without the stress.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <Car className="w-5 h-5 text-brand-orange mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
-                    <strong>0% APR & No Hidden Fees</strong> – Interest-free, stress-free.
+                    <strong>Tyre Cover</strong> – Protection against unexpected punctures.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <Settings className="w-5 h-5 text-brand-orange mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
-                    <strong>Save an Extra 10%</strong> – When you pay in full.
+                    <strong>Wear & Tear</strong> – Extra peace of mind for ageing parts.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                  <Key className="w-5 h-5 text-brand-orange mt-1 flex-shrink-0" />
                   <span className="text-base md:text-lg text-brand-dark-text">
-                    <strong>From Just £19/Month</strong> – Affordable peace of mind.
+                    <strong>Lost Key Cover</strong> – No more panic if your keys go missing.
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Globe className="w-5 h-5 text-brand-orange mt-1 flex-shrink-0" />
+                  <span className="text-base md:text-lg text-brand-dark-text">
+                    <strong>European Cover</strong> – Drive with confidence across Europe.
                   </span>
                 </div>
               </div>
