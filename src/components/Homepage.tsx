@@ -336,14 +336,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
             <div className="space-y-4">
-              {/* Trustpilot Branding */}
-              <div className="text-center space-y-3 mb-4">
-                <img 
-                  src="/lovable-uploads/39555042-4eb1-436c-a0b8-910fb79ac11c.png" 
-                  alt="Trustpilot with 5 star rating" 
-                  className="h-12 sm:h-16 mx-auto"
-                />
-              </div>
 
               {/* Main Headline */}
               <div className="space-y-3 mb-4 sm:mb-6">
@@ -481,6 +473,17 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 />
               </div>
               
+              {/* Trustpilot Logo positioned below panda's feet */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-32">
+                <div className="text-center mb-4">
+                  <img 
+                    src="/lovable-uploads/39555042-4eb1-436c-a0b8-910fb79ac11c.png" 
+                    alt="Trustpilot with 5 star rating" 
+                    className="h-12 sm:h-16 mx-auto"
+                  />
+                </div>
+              </div>
+
               {/* Vehicle Types positioned underneath the panda's feet */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-20">
                 <div className="flex items-center justify-center gap-6">
