@@ -111,11 +111,13 @@ const WebsiteFooter = () => {
                 old and has less than 150,000 miles, we've got you covered.
               </p>
               <div className="flex items-center">
-                <img 
-                  src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                  alt="Buy a Warranty Logo" 
-                  className="h-8 w-auto"
-                />
+                <a href="/" className="hover:opacity-80 transition-opacity">
+                  <img 
+                    src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                    alt="Buy a Warranty Logo" 
+                    className="h-8 w-auto"
+                  />
+                </a>
               </div>
             </div>
           </div>

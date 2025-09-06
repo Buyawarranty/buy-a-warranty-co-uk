@@ -199,11 +199,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center">
-              <img 
-                src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                alt="Buy a Warranty" 
-                className="h-6 sm:h-8 w-auto"
-              />
+              <a href="/" className="hover:opacity-80 transition-opacity">
+                <img 
+                  src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                  alt="Buy a Warranty" 
+                  className="h-6 sm:h-8 w-auto"
+                />
+              </a>
             </div>
 
             {/* Navigation - Hidden on mobile */}
@@ -247,11 +249,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="flex flex-col h-full">
                   {/* Header with logo */}
                   <div className="flex items-center justify-between pb-6">
-                    <img 
-                      src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                      alt="Buy a Warranty" 
-                      className="h-8 w-auto"
-                    />
+                    <a href="/" className="hover:opacity-80 transition-opacity">
+                      <img 
+                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                        alt="Buy a Warranty" 
+                        className="h-8 w-auto"
+                      />
+                    </a>
                   </div>
 
                   {/* Navigation Links */}

@@ -93,7 +93,9 @@ const Claims = () => {
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
             <div className="flex items-center">
-              <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+              <a href="/" className="hover:opacity-80 transition-opacity">
+                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+              </a>
             </div>
             
             {/* Navigation - Hidden on mobile, visible on lg+ */}

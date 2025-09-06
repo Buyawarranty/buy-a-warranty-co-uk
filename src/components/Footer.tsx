@@ -40,11 +40,13 @@ const Footer = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
             {/* Logo section */}
             <div className="flex justify-center lg:justify-start">
-              <img 
-                src="/lovable-uploads/ce43a78c-28ec-400b-8a16-1e98b15e0185.png" 
-                alt="Buy a Warranty" 
-                className="h-16 w-auto"
-              />
+              <a href="/" className="hover:opacity-80 transition-opacity">
+                <img 
+                  src="/lovable-uploads/ce43a78c-28ec-400b-8a16-1e98b15e0185.png" 
+                  alt="Buy a Warranty" 
+                  className="h-16 w-auto"
+                />
+              </a>
             </div>
 
             {/* Navigation links */}
