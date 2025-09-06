@@ -531,8 +531,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <span className="text-brand-orange">If it breaks, we{"'"}ll fix it 🔧</span>
                 </h2>
                 <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
-                  Protect your vehicle from unexpected repairs with our comprehensive warranty plans. 
-                  No hidden fees. No nonsense.
+                  Enjoy complete peace of mind with our comprehensive cover. From vital mechanical components to essential electrical parts, we{"'"}ve got it all covered.
                 </p>
               </div>
 
