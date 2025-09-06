@@ -343,7 +343,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 sm:mb-8 text-gray-700 text-sm sm:text-base">
                 <div className="flex items-center">
                   <Check className="w-5 h-5 text-green-500 mr-2" />
-                  <span className="font-medium">From only £12/month</span>
+                  <span className="font-medium">From just 80p a day</span>
                 </div>
                 <div className="flex items-center">
                   <Check className="w-5 h-5 text-green-500 mr-2" />
