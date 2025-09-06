@@ -115,10 +115,10 @@ const Index = () => {
       const hasSeenPopup = sessionStorage.getItem('hasSeenDiscountPopup');
       if (hasSeenPopup) return;
       
-      // Show popup after 3 seconds on homepage
+      // Show popup after 15 seconds on homepage
       const timer = setTimeout(() => {
         setShowDiscountPopup(true);
-      }, 3000);
+      }, 15000);
       
       return () => {
         clearTimeout(timer);

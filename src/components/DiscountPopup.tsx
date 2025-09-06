@@ -24,7 +24,7 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
   useEffect(() => {
     if (isOpen) {
       confetti({
-        particleCount: 30,
+        particleCount: 15,
         spread: 45,
         origin: { y: 0.6 },
         shapes: ['square'],
@@ -88,7 +88,7 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       // Present unwrapping effect
       confetti({
-        particleCount: 50,
+        particleCount: 25,
         spread: 60,
         origin: { y: 0.5 },
         shapes: ['square'],
