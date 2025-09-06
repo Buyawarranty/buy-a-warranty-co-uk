@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { CarDrivingSpinner } from '@/components/ui/car-driving-spinner';
 import { TrophySpinner } from '@/components/ui/trophy-spinner';
+import { SEOHead } from '@/components/SEOHead';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -185,6 +186,11 @@ const ThankYou = () => {
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-orange-50 min-h-screen flex flex-col">
+      <SEOHead 
+        title="Thank You! | Warranty Purchase Complete"
+        description="Your car warranty purchase is complete! Access your policy documents and manage your coverage through your customer dashboard."
+        keywords="warranty purchase complete, policy confirmation, warranty documents"
+      />
       {/* Trustpilot header */}
       <div className="w-full px-4 pt-4">
         <div className="max-w-6xl mx-auto">

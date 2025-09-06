@@ -2,6 +2,7 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import { SEOHead } from '@/components/SEOHead';
 
 const NotFound = () => {
   const location = useLocation();
@@ -15,6 +16,11 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
+      <SEOHead 
+        title="Page Not Found | BuyAWarranty"
+        description="The page you're looking for doesn't exist. Return to our car warranty homepage to find the perfect coverage for your vehicle."
+        keywords="404, page not found, car warranty, vehicle warranty"
+      />
       {/* Trustpilot header */}
       <div className="w-full px-4 pt-4">
         <div className="max-w-6xl mx-auto">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { SEOHead } from '@/components/SEOHead';
 import { CustomersTab } from '@/components/admin/CustomersTab';
 import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
@@ -173,6 +174,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+      <SEOHead 
+        title="Admin Dashboard | BuyAWarranty Management"
+        description="Administrative dashboard for managing warranties, customers, and business operations. Secure access for authorized personnel only."
+        keywords="admin, dashboard, warranty management, customer management"
+      />
       <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       
       <div className="flex-1 lg:ml-64">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -239,6 +240,11 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex flex-col">
+      <SEOHead 
+        title="Sign In | BuyAWarranty Customer Portal"
+        description="Access your warranty account or create a new one. Manage your policies, view documents, and get support for your vehicle warranty."
+        keywords="sign in, login, customer portal, warranty account, vehicle warranty"
+      />
       {/* Trustpilot header */}
       <div className="w-full px-4 pt-4">
         <div className="max-w-6xl mx-auto">
