@@ -123,11 +123,6 @@ const WebsiteFooter = () => {
           <div className="border-t border-gray-200 pt-6">
             <div className="text-center space-y-3">
               <p className="text-xs text-gray-500">© 2025 Buy A Warranty. All rights reserved.</p>
-              <img 
-                src={companyRegistrationImage} 
-                alt="Company registration information" 
-                className="max-w-3xl mx-auto h-auto"
-              />
             </div>
           </div>
         </div>
