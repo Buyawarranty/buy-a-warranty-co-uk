@@ -284,7 +284,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     value={regNumber}
                     onChange={handleRegChange}
                     placeholder="Enter reg"
-                    className="bg-yellow-400 border-none outline-none text-xl text-black flex-1 font-bold placeholder:text-black/70 px-4 py-4 uppercase tracking-wider h-[64px]"
+                    className="bg-yellow-400 border-none outline-none text-xl text-black flex-1 font-bold placeholder:text-black/70 px-4 py-4 uppercase tracking-wider h-[66px]"
                     maxLength={8}
                   />
                 </div>
@@ -336,7 +336,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="space-y-2">
                   <Button 
                     onClick={handleGetQuote}
-                    className={`w-full px-12 h-[64px] text-xl font-bold rounded-lg transition-all ${
+                    className={`w-full px-12 h-[66px] text-xl font-bold rounded-lg transition-all ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-primary hover:bg-primary/90 text-white btn-slow-pulsate'
