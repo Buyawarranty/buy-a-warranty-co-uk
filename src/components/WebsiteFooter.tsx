@@ -114,9 +114,12 @@ const WebsiteFooter = () => {
           </div>
 
           {/* Legal Footer */}
-          <div className="border-t border-gray-200 pt-8">
-            <div className="text-center text-sm text-gray-500">
-              <p>© 2025 Buy A Warranty Ltd. All rights reserved.</p>
+          <div className="border-t border-gray-200 pt-6">
+            <div className="text-center space-y-3">
+              <p className="text-xs text-gray-500">© 2025 Buy A Warranty Ltd. All rights reserved.</p>
+              <p className="text-xs text-gray-400 max-w-4xl mx-auto leading-relaxed">
+                Buyawarranty.co.uk is the trading name of One warranty Limited. A company registered in England and Wales since 2016 under limited company registration number 0314863 with its registered office at: Warranty House, Berkhamsted Avenue, Wembley, HA9 6DT.
+              </p>
             </div>
           </div>
         </div>
