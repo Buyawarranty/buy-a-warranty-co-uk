@@ -378,7 +378,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               
               {/* Vehicle Types positioned underneath the panda's feet */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-20">
-                <div className="flex flex-wrap items-center justify-center gap-6">
+                <div className="flex items-center justify-center gap-6">
                   <div className="flex items-center space-x-1">
                     <Car className="w-5 h-5 text-orange-500" />
                     <span className="font-medium text-gray-700 text-base">Cars</span>
