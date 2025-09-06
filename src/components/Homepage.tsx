@@ -767,15 +767,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       {/* Additional Cover Options Section */}
       <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Warranty Quote Mockup */}
-          <div className="relative max-w-4xl mx-auto mb-12 md:mb-16">
-            <img 
-              src="/lovable-uploads/ac4e7fb7-1e63-4c97-b7ba-0f6f4395044d.png" 
-              alt="Warranty quote interface with panda mascot and VW Golf - I'm Covered" 
-              className="w-full h-auto rounded-lg shadow-lg"
-            />
-          </div>
-
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
               Additional Cover <span className="text-brand-orange">Options</span>
