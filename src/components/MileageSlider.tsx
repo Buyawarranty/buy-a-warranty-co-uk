@@ -93,7 +93,7 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
       {/* Slider Track */}
       <div 
         ref={sliderRef}
-        className="relative h-6 bg-white rounded-full cursor-pointer border-2 border-primary"
+        className="relative h-6 bg-white rounded-full cursor-pointer border-2 border-primary/50"
         onClick={handleSliderClick}
       >
         {/* Selected Area (Brand Orange) */}
