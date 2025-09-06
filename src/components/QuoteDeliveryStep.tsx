@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, Zap, Mail } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Zap, Mail, Car, Edit3 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -184,6 +184,70 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       </div>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
+        {/* Vehicle Details Section */}
+        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Car className="w-5 h-5 text-orange-500" />
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Vehicle Details</h3>
+            </div>
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors duration-200"
+            >
+              <Edit3 className="w-4 h-4" />
+              Change Vehicle
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-500 font-medium">Registration</span>
+              <span className="text-base font-semibold text-gray-900">{vehicleData.regNumber}</span>
+            </div>
+            
+            {vehicleData.make && (
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-500 font-medium">Make</span>
+                <span className="text-base font-semibold text-gray-900">{vehicleData.make}</span>
+              </div>
+            )}
+            
+            {vehicleData.model && (
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-500 font-medium">Model</span>
+                <span className="text-base font-semibold text-gray-900">{vehicleData.model}</span>
+              </div>
+            )}
+            
+            {vehicleData.year && (
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-500 font-medium">Year</span>
+                <span className="text-base font-semibold text-gray-900">{vehicleData.year}</span>
+              </div>
+            )}
+            
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-500 font-medium">Mileage</span>
+              <span className="text-base font-semibold text-gray-900">{vehicleData.mileage}</span>
+            </div>
+            
+            {vehicleData.fuelType && (
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-500 font-medium">Fuel Type</span>
+                <span className="text-base font-semibold text-gray-900">{vehicleData.fuelType}</span>
+              </div>
+            )}
+            
+            {vehicleData.transmission && (
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-500 font-medium">Transmission</span>
+                <span className="text-base font-semibold text-gray-900">{vehicleData.transmission}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
         {!showContactForm ? (
           <>
             <div className="text-center mb-8 sm:mb-12">
