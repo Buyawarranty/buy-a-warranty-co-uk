@@ -129,12 +129,6 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
         </div>
       </div>
 
-      {/* Range Numbers at Bottom */}
-      <div className="flex justify-between text-sm text-gray-600 mt-3">
-        <span>0</span>
-        <span>150,000</span>
-      </div>
-
       {/* Validation Message */}
       {value > 150000 && (
         <div className="text-center text-sm text-blue-600 font-medium mt-2">
