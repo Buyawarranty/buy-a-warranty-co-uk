@@ -448,12 +448,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     </p>
                   )}
                 </div>
-
-                {/* Trustpilot */}
-                <div className="flex items-center mt-6">
-                  <span className="text-green-600 text-lg font-bold mr-2">★</span>
-                  <span className="font-medium text-primary">Trustpilot</span>
-                </div>
               </div>
             </div>
 
