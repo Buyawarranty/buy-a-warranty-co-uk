@@ -111,8 +111,18 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       return;
     }
     
-    // Check mileage validation before proceeding
+    // Check if mileage is zero
     const numericMileage = parseInt(mileage.replace(/,/g, ''));
+    if (numericMileage === 0) {
+      toast({
+        title: "Mileage Required",
+        description: "Please select a mileage greater than 0 to get your quote.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Check mileage validation before proceeding
     if (numericMileage > 150000) {
       setMileageError('We can only cover vehicles up to 150,000 miles');
       return;
