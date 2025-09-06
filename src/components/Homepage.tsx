@@ -331,27 +331,22 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-white py-8 sm:py-12 lg:py-16">
+      <section className="bg-white py-4 sm:py-6 lg:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
-            <div className="space-y-8">
+            <div className="space-y-4">
               {/* Trustpilot Branding */}
-              <div className="text-center space-y-6 mb-8">
+              <div className="text-center space-y-3 mb-4">
                 <img 
-                  src="/lovable-uploads/dab9a08a-abb9-4a81-9bb0-d5fc409bf4ec.png" 
-                  alt="Trustpilot" 
-                  className="h-8 sm:h-12 mx-auto"
-                />
-                <img 
-                  src="/lovable-uploads/5177bd8b-5eba-43f3-836c-910aacbc796f.png" 
-                  alt="Trustpilot 5 star rating" 
-                  className="h-16 sm:h-20 mx-auto"
+                  src="/lovable-uploads/39555042-4eb1-436c-a0b8-910fb79ac11c.png" 
+                  alt="Trustpilot with 5 star rating" 
+                  className="h-12 sm:h-16 mx-auto"
                 />
               </div>
 
               {/* Main Headline */}
-              <div className="space-y-4 mb-6 sm:mb-8">
+              <div className="space-y-3 mb-4 sm:mb-6">
                 <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-gray-900 leading-tight">
                   We{"'"}ve got you
                   <br className="hidden sm:block" />
@@ -362,7 +357,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Benefits */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 sm:mb-8 text-gray-700 text-sm sm:text-base">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6 text-gray-700 text-sm sm:text-base">
                 <div className="flex items-center">
                   <Check className="w-5 h-5 text-green-500 mr-2" />
                   <span className="font-medium">From just 80p a day</span>
@@ -378,7 +373,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Registration Input */}
-              <div className="space-y-4 max-w-lg">
+              <div className="space-y-3 max-w-lg">
                 <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black">
                   {/* UK Section with flag */}
                   <div className="bg-blue-600 text-white font-bold px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[60px] sm:min-w-[80px] h-[56px] sm:h-[64px]">
