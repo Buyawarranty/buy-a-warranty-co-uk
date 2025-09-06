@@ -720,7 +720,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-brand-dark-text">Complete Protection</h3>
-                <p className="text-brand-dark-text">Comprehensive coverage for all major components</p>
+                <p className="text-brand-dark-text">Comprehensive cover for your engine, mechanical and electrical parts.</p>
               </div>
 
               <div className="space-y-4">
@@ -728,15 +728,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <Zap className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-brand-dark-text">Instant Claims</h3>
-                <p className="text-brand-dark-text">Quick and hassle-free claims process</p>
+                <p className="text-brand-dark-text">Fast, hassle-free claims process to get you back on the road quickly.</p>
               </div>
 
               <div className="space-y-4">
                 <div className="w-16 h-16 bg-brand-orange rounded-full flex items-center justify-center mx-auto">
                   <Clock className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-brand-dark-text">24/7 Support</h3>
-                <p className="text-brand-dark-text">Round-the-clock assistance when you need it</p>
+                <h3 className="text-xl font-bold text-brand-dark-text">Clear Terms</h3>
+                <p className="text-brand-dark-text">Simple, transparent conditions that make sense—no hidden surprises.</p>
               </div>
             </div>
           </div>
