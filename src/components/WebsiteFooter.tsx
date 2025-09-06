@@ -58,7 +58,7 @@ const WebsiteFooter = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-6">Quick Links</h3>
               <ul className="space-y-3 text-gray-600">
                 <li><a href="/" className="hover:text-[#eb4b00] transition-colors">Home</a></li>
-                <li><a href="/claim" className="hover:text-[#eb4b00] transition-colors">Make a Claim</a></li>
+                <li><a href="/make-a-claim" className="hover:text-[#eb4b00] transition-colors">Make a Claim</a></li>
                 <li><a href="/warranty-car-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Car</a></li>
                 <li><a href="/warranty-van-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Van</a></li>
                 <li><a href="/warranty-ev-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs</a></li>

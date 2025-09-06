@@ -208,7 +208,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <nav className="hidden md:flex items-center space-x-6">
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Warranty Plans</a>
               <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium">How You're Protected</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Make a Claim</a>
+              <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium">Make a Claim</a>
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">FAQ</a>
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Contact Us</a>
             </nav>
@@ -649,9 +649,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             Get Help With A <span className="text-brand-orange">Repair</span>
           </h2>
           
-          <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
-            Make A Claim
-          </button>
+          <a href="/make-a-claim">
+            <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
+              Make A Claim
+            </button>
+          </a>
         </div>
       </section>
 
