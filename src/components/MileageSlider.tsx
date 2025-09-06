@@ -102,18 +102,6 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
           style={{ width: `${percentage}%` }}
         />
         
-        {/* Moving Orange Arrow inside track */}
-        {!isDragging && percentage < 15 && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 flex items-center">
-            <div className="animate-pulse">
-              <div className="flex items-center">
-                <div className="w-8 h-1 bg-gradient-to-r from-primary to-orange-400 rounded-full animate-[slide_2s_ease-in-out_infinite]"></div>
-                <div className="w-0 h-0 border-l-[8px] border-l-primary border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent ml-1 animate-[slide_2s_ease-in-out_infinite]"></div>
-              </div>
-            </div>
-          </div>
-        )}
-        
         {/* Panda Head Handle */}
         <div
           className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-grab ${
@@ -131,6 +119,13 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
             } transition-all duration-150`}
             draggable={false}
           />
+          
+          {/* Moving Orange Arrow next to panda head */}
+          {!isDragging && percentage < 15 && (
+            <div className="absolute top-1/2 left-full transform -translate-y-1/2 ml-2">
+              <ArrowRight className="w-6 h-6 text-primary animate-[slide_2s_ease-in-out_infinite] drop-shadow-sm" />
+            </div>
+          )}
         </div>
       </div>
 
