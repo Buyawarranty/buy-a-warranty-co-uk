@@ -495,14 +495,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
 
-      {/* Slogan Section */}
-      <section className="py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
-            🔧 If it breaks, we'll fix it
-          </h2>
-        </div>
-      </section>
 
       {/* Extended Warranty Video Section */}
       <section className="py-12 md:py-20 bg-brand-gray-bg">
