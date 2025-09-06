@@ -336,10 +336,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="space-y-3">
                   <Button 
                     onClick={handleGetQuote}
-                    className={`w-full px-12 h-[64px] text-xl font-bold rounded-lg transition-all animate-float-slow ${
+                    className={`w-full px-12 h-[64px] text-xl font-bold rounded-lg transition-all ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-orange-500 hover:bg-orange-600 text-white'
+                        : 'bg-orange-500 hover:bg-orange-600 text-white btn-slow-pulsate'
                     }`}
                     disabled={isLookingUp}
                   >
