@@ -619,11 +619,38 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </h2>
               </div>
               
-              <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
-                Select from our range of flexible protection plans. Choose between 
-                different claim limits and decide whether to pay monthly or 
-                annually. All plans include comprehensive coverage.
-              </p>
+              <div className="space-y-3 md:space-y-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <span className="text-base md:text-lg text-brand-dark-text">
+                    <strong>Pay Monthly or in Full</strong> – Choose what works for you.
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <span className="text-base md:text-lg text-brand-dark-text">
+                    <strong>1, 2 or 3-Year Cover</strong> – Long-term protection, your choice.
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <span className="text-base md:text-lg text-brand-dark-text">
+                    <strong>0% APR & No Hidden Fees</strong> – Interest-free, stress-free.
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <span className="text-base md:text-lg text-brand-dark-text">
+                    <strong>Save an Extra 10%</strong> – When you pay in full.
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <span className="text-base md:text-lg text-brand-dark-text">
+                    <strong>From Just £20/Month</strong> – Affordable peace of mind.
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
