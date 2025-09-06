@@ -559,11 +559,29 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </h2>
               </div>
               
-              <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
-                Get an instant quote by entering your vehicle registration number. 
-                Our system will automatically look up your vehicle details and show 
-                you available warranty options tailored to your car.
-              </p>
+              <div className="space-y-4">
+                <h3 className="text-xl md:text-2xl font-bold text-brand-dark-text">
+                  Transparent Pricing. Trusted Protection.
+                </h3>
+                <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
+                  No hidden fees. No confusing jargon. Just clear cover options tailored to your vehicle and budget.
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-base text-brand-dark-text">14-day money-back guarantee</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-base text-brand-dark-text">Rated Excellent by UK drivers</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-base text-brand-dark-text">Backed by trusted repair networks</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Right - Panda with vehicles */}
