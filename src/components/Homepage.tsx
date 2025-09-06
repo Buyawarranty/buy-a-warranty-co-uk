@@ -25,8 +25,8 @@ interface HomepageProps {
 const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const { toast } = useToast();
   const [regNumber, setRegNumber] = useState('');
-  const [mileage, setMileage] = useState('60,000');
-  const [sliderMileage, setSliderMileage] = useState(60000);
+  const [mileage, setMileage] = useState('0');
+  const [sliderMileage, setSliderMileage] = useState(0);
   const [showMileageField, setShowMileageField] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [mileageError, setMileageError] = useState('');
@@ -301,7 +301,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       value={mileage}
                       onChange={handleMileageChange}
                       onFocus={handleMileageFocus}
-                      placeholder="Enter mileage or use slider"
+                      placeholder="Enter mileage (e.g. 32,000)"
                       className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
                         mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
                       }`}
