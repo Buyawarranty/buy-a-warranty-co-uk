@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Claims = () => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,6 +17,7 @@ const Claims = () => {
     message: ''
   });
   const [file, setFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -28,10 +32,78 @@ const Claims = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData, file);
+    
+    if (!formData.name || !formData.email) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in your name and email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      let fileData = null;
+      
+      if (file) {
+        // Convert file to base64
+        const reader = new FileReader();
+        const fileBase64 = await new Promise<string>((resolve, reject) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        fileData = {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          data: fileBase64
+        };
+      }
+
+      const response = await supabase.functions.invoke('submit-claim', {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          file: fileData
+        }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to submit claim');
+      }
+
+      toast({
+        title: "Claim Submitted Successfully",
+        description: "Thank you! We'll contact you within 1-2 business days.",
+      });
+
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: ''
+      });
+      setFile(null);
+      
+    } catch (error: any) {
+      console.error('Submission error:', error);
+      toast({
+        title: "Submission Failed",
+        description: error.message || "Please try again or call us at 0330 229 5045.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -275,8 +347,12 @@ const Claims = () => {
                   
                   {/* Submit Button */}
                   <div className="flex justify-end">
-                    <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg">
-                      Submit
+                    <Button 
+                      type="submit" 
+                      disabled={isSubmitting}
+                      className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg disabled:opacity-50"
+                    >
+                      {isSubmitting ? 'Submitting...' : 'Submit'}
                     </Button>
                   </div>
                 </form>

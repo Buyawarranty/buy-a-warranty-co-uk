@@ -1,3 +1,4 @@
+import { ClaimsTab } from '@/components/admin/ClaimsTab';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -99,6 +100,8 @@ const AdminDashboard = () => {
         return <SpecialVehiclePlansTab />;
       case 'discount-codes':
         return <DiscountCodesTab />;
+      case 'claims':
+        return <ClaimsTab />;
       case 'emails':
         return <EmailManagementTab />;
       case 'email-marketing':
