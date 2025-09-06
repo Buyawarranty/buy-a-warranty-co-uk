@@ -756,6 +756,35 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </section>
 
+      {/* Coverage Showcase Section */}
+      <section className="py-12 md:py-20 bg-brand-gray-bg text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Trustpilot Rating */}
+          <div className="flex justify-center items-center mb-6 md:mb-8">
+            <div className="flex items-center space-x-2">
+              <span className="text-green-600 text-base md:text-lg font-bold">★ Trustpilot</span>
+              <div className="flex text-green-500">
+                <span>★★★★★</span>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <button className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors mb-8 md:mb-16 w-full sm:w-auto">
+            Get Instant Quote
+          </button>
+
+          {/* Warranty Quote Mockup */}
+          <div className="relative max-w-2xl md:max-w-3xl mx-auto">
+            <img 
+              src="/lovable-uploads/7fe5ce8a-d5a6-422c-b391-f67e26229445.png" 
+              alt="Warranty quote interface with panda mascot and car" 
+              className="w-full h-auto rounded-lg"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Additional Cover Options Section */}
       <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -836,117 +865,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Coverage Showcase Section */}
-      <section className="py-12 md:py-20 bg-brand-gray-bg text-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Trustpilot Rating */}
-          <div className="flex justify-center items-center mb-6 md:mb-8">
-            <div className="flex items-center space-x-2">
-              <span className="text-green-600 text-base md:text-lg font-bold">★ Trustpilot</span>
-              <div className="flex text-green-500">
-                <span>★★★★★</span>
-              </div>
-            </div>
-          </div>
-
-          {/* CTA Button */}
-          <button className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors mb-8 md:mb-16 w-full sm:w-auto">
-            Get Instant Quote
-          </button>
-
-          {/* Warranty Quote Mockup */}
-          <div className="relative max-w-2xl md:max-w-3xl mx-auto">
-            <img 
-              src="/lovable-uploads/7fe5ce8a-d5a6-422c-b391-f67e26229445.png" 
-              alt="Warranty quote interface with panda mascot and car" 
-              className="w-full h-auto rounded-lg"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Get Help With A Repair Section */}
-      <section className="py-12 md:py-20 bg-brand-deep-blue text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8 text-white">
-            Get Help With A <span className="text-brand-orange">Repair</span>
-          </h2>
-          
-          <a href="/make-a-claim">
-            <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
-              Make A Claim
-            </button>
-          </a>
-        </div>
-      </section>
-
-      {/* Big Repairs, Low Monthly Cost Section */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
-            {/* Left - Panda with garage */}
-            <div className="relative text-center">
-              <img 
-                src="/lovable-uploads/23670d98-259a-4eb2-82e6-8e55a7cfa9af.png" 
-                alt="Panda mascot with repair garage" 
-                className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
-              />
-            </div>
-
-            {/* Right - Content */}
-            <div className="space-y-6 md:space-y-8">
-              <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
-                Big Repairs, Low Monthly Cost.
-                <br />
-                <span className="text-brand-orange">Shield Your Car From Costly Repairs</span>
-              </h2>
-              
-              <div className="space-y-4 md:space-y-6">
-                <div className="flex items-start space-x-3 md:space-x-4">
-                  <div className="w-5 h-5 md:w-6 md:h-6 bg-green-500 rounded-full flex items-center justify-center mt-1 flex-shrink-0">
-                    <svg className="w-3 h-3 md:w-4 md:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-bold text-base md:text-lg text-brand-dark-text">Instantly Activated:</span>
-                    <span className="text-brand-dark-text ml-2 text-base md:text-lg">Coverage starts immediately</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3 md:space-x-4">
-                  <div className="w-5 h-5 md:w-6 md:h-6 bg-green-500 rounded-full flex items-center justify-center mt-1 flex-shrink-0">
-                    <svg className="w-3 h-3 md:w-4 md:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-bold text-base md:text-lg text-brand-dark-text">Unlimited Claims:</span>
-                    <span className="text-brand-dark-text ml-2 text-base md:text-lg">Claim as many times as you need</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3 md:space-x-4">
-                  <div className="w-5 h-5 md:w-6 md:h-6 bg-green-500 rounded-full flex items-center justify-center mt-1 flex-shrink-0">
-                    <svg className="w-3 h-3 md:w-4 md:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-bold text-base md:text-lg text-brand-dark-text">Fast Claims:</span>
-                    <span className="text-brand-dark-text ml-2 text-base md:text-lg">Quick approval and payment process</span>
-                  </div>
-                </div>
-              </div>
-
-              <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
-                See How Much I Can Save
-              </button>
             </div>
           </div>
         </div>
