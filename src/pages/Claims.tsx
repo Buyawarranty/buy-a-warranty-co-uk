@@ -111,11 +111,11 @@ const Claims = () => {
                   <div className="ml-14 space-y-2">
                     <div>
                       <span className="font-medium text-gray-700">Customer service:</span>
-                      <span className="text-gray-600"> support@lime-stingray-370762.hostingersite.com</span>
+                      <span className="text-gray-600"> support@buyawarranty.co.uk</span>
                     </div>
                     <div>
                       <span className="font-medium text-gray-700">Claims:</span>
-                      <span className="text-gray-600"> claims@lime-stingray-370762.hostingersite.com</span>
+                      <span className="text-gray-600"> claims@buyawarranty.co.uk</span>
                     </div>
                   </div>
                 </div>
