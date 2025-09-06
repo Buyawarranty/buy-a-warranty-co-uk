@@ -215,18 +215,18 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</a>
             </nav>
 
-            {/* Desktop CTA Buttons - Hidden on mobile */}
-            <div className="hidden lg:flex items-center space-x-2 sm:space-x-3">
+            {/* Desktop CTA Buttons - Show on desktop */}
+            <div className="hidden lg:flex items-center space-x-3">
               <Button 
                 variant="outline" 
                 size="sm"
-                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-2 sm:px-3 text-xs sm:text-sm"
+                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
               >
                 WhatsApp Us
               </Button>
               <Button 
                 size="sm"
-                className="bg-primary text-white hover:bg-primary/90 px-2 sm:px-3 text-xs sm:text-sm"
+                className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
               >
                 Get my quote
               </Button>
