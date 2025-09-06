@@ -332,7 +332,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   )}
                 </div>
 
-{/* Get Quote Button */}
+                {/* Get Quote Button */}
                 <div className="space-y-3">
                   <Button 
                     onClick={handleGetQuote}
