@@ -336,7 +336,19 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8">
-
+              {/* Trustpilot Branding */}
+              <div className="text-center space-y-6 mb-8">
+                <img 
+                  src="/lovable-uploads/dab9a08a-abb9-4a81-9bb0-d5fc409bf4ec.png" 
+                  alt="Trustpilot" 
+                  className="h-8 sm:h-12 mx-auto"
+                />
+                <img 
+                  src="/lovable-uploads/5177bd8b-5eba-43f3-836c-910aacbc796f.png" 
+                  alt="Trustpilot 5 star rating" 
+                  className="h-16 sm:h-20 mx-auto"
+                />
+              </div>
 
               {/* Main Headline */}
               <div className="space-y-4 mb-6 sm:mb-8">
