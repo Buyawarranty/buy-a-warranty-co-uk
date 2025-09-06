@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
@@ -737,6 +737,91 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
                 <h3 className="text-xl font-bold text-brand-dark-text">Clear Terms</h3>
                 <p className="text-brand-dark-text">Simple, transparent conditions that make sense—no hidden surprises.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Additional Cover Options Section */}
+      <section className="py-12 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="space-y-6 md:space-y-8">
+            <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
+              Additional Cover <span className="text-brand-orange">Options</span>
+            </h2>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12 max-w-6xl mx-auto">
+              <div className="space-y-4 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-brand-dark-text">24/7 Breakdown Recovery</h3>
+                    <p className="text-brand-dark-text">Help whenever you need it.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
+                    <FileCheck className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-brand-dark-text">MOT Repair Cover</h3>
+                    <p className="text-brand-dark-text">Stay road-legal without the stress.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
+                    <Car className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-brand-dark-text">Tyre Cover</h3>
+                    <p className="text-brand-dark-text">Protection against unexpected punctures.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
+                    <Settings className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-brand-dark-text">Wear & Tear</h3>
+                    <p className="text-brand-dark-text">Extra peace of mind for ageing parts.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
+                    <Key className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-brand-dark-text">Lost Key Cover</h3>
+                    <p className="text-brand-dark-text">No more panic if your keys go missing.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
+                    <Globe className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-brand-dark-text">European Cover</h3>
+                    <p className="text-brand-dark-text">Drive with confidence across Europe.</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
