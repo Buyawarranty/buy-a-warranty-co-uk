@@ -129,17 +129,6 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
         </div>
       </div>
 
-      {/* Interactive Arrow Encouragement */}
-      {!isDragging && percentage < 10 && (
-        <div className="flex items-center justify-center mt-4 mb-2 animate-pulse">
-          <ArrowRight className="w-5 h-5 text-primary mr-2 animate-bounce" />
-          <span className="text-sm text-gray-600 font-medium">
-            Slide to set your vehicle's mileage
-          </span>
-          <ArrowRight className="w-5 h-5 text-primary ml-2 animate-bounce" style={{ animationDelay: '0.5s' }} />
-        </div>
-      )}
-
       {/* Range Numbers at Bottom */}
       <div className="flex justify-between text-sm text-gray-600 mt-3">
         <span>0</span>
