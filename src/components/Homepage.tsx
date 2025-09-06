@@ -436,9 +436,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <div className="space-y-6 md:space-y-8">
               <div>
                 <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight mb-4 md:mb-6">
-                  Extended Warranty.
+                  Reliable extended warranty
                   <br />
-                  <span className="text-brand-orange">Avoid Costly Repairs</span>
+                  <span className="text-brand-orange">If it breaks, we{"'"}ll fix it 🔧</span>
                 </h2>
                 <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
                   Protect your vehicle from unexpected repairs with our comprehensive warranty plans. 
