@@ -569,15 +569,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="space-y-3">
                   <div className="flex items-center">
                     <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-base text-brand-dark-text">14-day money-back guarantee</span>
+                    <span className="text-base text-brand-dark-text"><strong>14-day</strong> money-back guarantee</span>
                   </div>
                   <div className="flex items-center">
                     <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-base text-brand-dark-text">Rated Excellent by UK drivers</span>
+                    <span className="text-base text-brand-dark-text"><strong>Rated</strong> Excellent by UK drivers</span>
                   </div>
                   <div className="flex items-center">
                     <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-base text-brand-dark-text">Backed by trusted repair networks</span>
+                    <span className="text-base text-brand-dark-text"><strong>Backed</strong> by trusted repair networks</span>
                   </div>
                 </div>
               </div>
