@@ -682,7 +682,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 No upfront costs, no hassle.
               </p>
 
-              <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
+              <button className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
                 Get Instant Quote
               </button>
             </div>
@@ -761,7 +761,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           </h2>
 
           {/* CTA Button */}
-          <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors mb-8 md:mb-16 w-full sm:w-auto">
+          <button className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors mb-8 md:mb-16 w-full sm:w-auto">
             Get Instant Quote
           </button>
 
