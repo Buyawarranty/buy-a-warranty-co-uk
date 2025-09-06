@@ -123,7 +123,7 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
           {/* Moving Orange Arrow next to panda head */}
           {!isDragging && percentage < 15 && (
             <div className="absolute top-1/2 left-full transform -translate-y-1/2 ml-2">
-              <ArrowRight className="w-6 h-6 text-primary animate-[slide_2s_ease-in-out_infinite] drop-shadow-sm" />
+              <ArrowRight className="w-6 h-6 text-gray-400 animate-[slide_12s_ease-in-out_infinite] drop-shadow-sm" />
             </div>
           )}
         </div>
