@@ -27,6 +27,7 @@ import Widget from "./pages/Widget";
 import Cart from "./pages/Cart";
 import Terms from "./pages/Terms";
 import Protected from "./pages/Protected";
+import Claims from "./pages/Claims";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const App = () => (
                   <Route path="/original-pricing" element={<OriginalPricing />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/protected" element={<Protected />} />
+                  <Route path="/claims" element={<Claims />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
