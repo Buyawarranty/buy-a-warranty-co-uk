@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { MessageCircle, Mail, Clock, Upload } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,9 +13,8 @@ const Claims = () => {
     name: '',
     email: '',
     phone: '',
-    message: ''
+    vehicleReg: ''
   });
-  const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -26,11 +24,6 @@ const Claims = () => {
     });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,32 +40,13 @@ const Claims = () => {
     setIsSubmitting(true);
     
     try {
-      let fileData = null;
-      
-      if (file) {
-        // Convert file to base64
-        const reader = new FileReader();
-        const fileBase64 = await new Promise<string>((resolve, reject) => {
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-
-        fileData = {
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          data: fileBase64
-        };
-      }
-
       const response = await supabase.functions.invoke('submit-claim', {
         body: {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          message: formData.message,
-          file: fileData
+          message: `Claim for vehicle: ${formData.vehicleReg}`,
+          file: null
         }
       });
 
@@ -90,9 +64,8 @@ const Claims = () => {
         name: '',
         email: '',
         phone: '',
-        message: ''
+        vehicleReg: ''
       });
-      setFile(null);
       
     } catch (error: any) {
       console.error('Submission error:', error);
@@ -110,7 +83,7 @@ const Claims = () => {
     <>
       <SEOHead
         title="Make a Claim - Buy a Warranty"
-        description="Submit your warranty claim easily. Get in touch with our customer service team via email, WhatsApp, or phone for fast claim processing."
+        description="Submit your warranty claim easily. Fast, simple, hassle-free process. We've got you covered!"
         keywords="warranty claim, car warranty claim, vehicle warranty support, customer service"
       />
       
@@ -125,11 +98,11 @@ const Claims = () => {
             
             {/* Navigation - Hidden on mobile, visible on lg+ */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</a>
-              <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">How You're Protected</a>
-              <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</a>
+              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</a>
+              <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</a>
+              <a href="/make-a-claim" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">MAKE A CLAIM</a>
               <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</a>
+              <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</a>
             </nav>
 
             {/* CTA Buttons - Responsive */}
@@ -139,14 +112,14 @@ const Claims = () => {
                 size="sm"
                 className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-2 sm:px-3 text-xs sm:text-sm"
               >
-                <span className="hidden sm:inline">WhatsApp Us</span>
+                <span className="hidden sm:inline">WhatsApp</span>
                 <span className="sm:hidden">WhatsApp</span>
               </Button>
               <Button 
                 size="sm"
-                className="bg-primary text-white hover:bg-primary/90 px-2 sm:px-3 text-xs sm:text-sm"
+                className="bg-orange-500 text-white hover:bg-orange-600 px-2 sm:px-3 text-xs sm:text-sm"
               >
-                <span className="hidden sm:inline">Get my quote</span>
+                <span className="hidden sm:inline">Get Quote</span>
                 <span className="sm:hidden">Quote</span>
               </Button>
             </div>
@@ -154,212 +127,344 @@ const Claims = () => {
         </div>
       </header>
 
-      <div className="min-h-screen bg-gray-50">
-        {/* Top Section - Get In Touch With Us */}
-        <section className="bg-white py-8 sm:py-12 lg:py-16 px-4">
+      <div className="min-h-screen">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-b from-blue-50 to-gray-100 py-12 lg:py-20 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
-              {/* Panda Image */}
-              <div className="flex justify-center lg:justify-start order-2 lg:order-1">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left Side - Content */}
+              <div className="text-center lg:text-left space-y-6">
+                <h1 className="text-4xl lg:text-6xl font-bold text-gray-900">
+                  Make A Claim - Fast, Simple, Hassle-Free{' '}
+                  <span className="text-orange-500">We've Got You Covered!</span>
+                </h1>
+                <p className="text-gray-600 text-lg lg:text-xl">
+                  Get in touch with our team to start your claim today. Fast and hassle-free!
+                </p>
+                <Button 
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-full"
+                  onClick={() => document.getElementById('claim-form')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Start Your Claim Now
+                </Button>
+              </div>
+              
+              {/* Right Side - Car Image */}
+              <div className="flex justify-center">
                 <img 
-                  src="/lovable-uploads/dd63a384-ee39-4b63-8b4a-0789f2b81de1.png" 
-                  alt="Panda on motorcycle mascot" 
-                  className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
+                  src="/lovable-uploads/warranty-quote-transparent.png" 
+                  alt="Orange car with buyawarranty branding" 
+                  className="w-full max-w-lg h-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Form Section */}
+        <section className="py-12 lg:py-20 px-4 bg-white" id="claim-form">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left Side - Form */}
+              <div className="space-y-6">
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+                  Make A Claim
+                </h2>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <Label htmlFor="name" className="text-gray-700 font-medium">
+                      Name
+                    </Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      placeholder="Your Name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="mt-1 h-12"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="phone" className="text-gray-700 font-medium">
+                      Phone Number
+                    </Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="Your Phone Number"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="mt-1 h-12"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="vehicleReg" className="text-gray-700 font-medium">
+                      Vehicle Reg/Make/Model
+                    </Label>
+                    <Input
+                      id="vehicleReg"
+                      name="vehicleReg"
+                      type="text"
+                      placeholder="Vehicle Registration/Make/Model"
+                      value={formData.vehicleReg}
+                      onChange={handleInputChange}
+                      className="mt-1 h-12"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="email" className="text-gray-700 font-medium">
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="Your Email Address"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="mt-1 h-12"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 w-full text-lg font-semibold disabled:opacity-50"
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit'}
+                  </Button>
+                </form>
+              </div>
+              
+              {/* Right Side - Illustration */}
+              <div className="flex justify-center">
+                <img 
+                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
+                  alt="Vehicle service illustration" 
+                  className="w-full max-w-md h-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Step 1: Vehicle Diagnosis */}
+        <section className="py-12 lg:py-16 px-4 bg-gray-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left Side - Content */}
+              <div className="space-y-6">
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+                  Step 1: Vehicle <span className="text-orange-500">Diagnosis</span>
+                </h2>
+                <p className="text-gray-600 text-lg">
+                  One of our technical experts will conduct a detailed diagnosis to assess the issue
+                </p>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">We PICK your Car up</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">Our EXPERT MECHANIC does a COMPREHENSIVE diagnosis from the car</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">We DROP your vehicle home or at an alternate convenient location</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Right Side - Illustration */}
+              <div className="flex justify-center">
+                <img 
+                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
+                  alt="Vehicle diagnosis illustration" 
+                  className="w-full max-w-md h-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Step 2: Claim Review & Authorisation */}
+        <section className="py-12 lg:py-16 px-4 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left Side - Illustration */}
+              <div className="flex justify-center order-2 lg:order-1">
+                <img 
+                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
+                  alt="Claim review illustration" 
+                  className="w-full max-w-md h-auto"
                 />
               </div>
               
-              {/* Contact Information */}
-              <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8 text-center lg:text-left">
-                  Get In Touch With Us
-                </h1>
+              {/* Right Side - Content */}
+              <div className="space-y-6 order-1 lg:order-2">
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+                  Step 2: Claim Review & <span className="text-orange-500">Authorisation</span>
+                </h2>
+                <p className="text-gray-600 text-lg">
+                  We'll review the claim
+                </p>
                 
-                {/* Email Us Section */}
-                <div className="space-y-3 sm:space-y-4">
+                <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary text-white rounded-full p-2">
-                      <Mail size={20} className="sm:w-6 sm:h-6" />
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
                     </div>
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Email Us</h2>
+                    <span className="text-gray-700">Expert Commissioned conducts your CLAIM check</span>
                   </div>
-                  <div className="ml-11 sm:ml-14 space-y-2">
-                    <div className="text-sm sm:text-base">
-                      <span className="font-medium text-gray-700">Customer service:</span>
-                      <span className="text-gray-600"> support@buyawarranty.co.uk</span>
-                    </div>
-                    <div className="text-sm sm:text-base">
-                      <span className="font-medium text-gray-700">Claims:</span>
-                      <span className="text-gray-600"> claims@buyawarranty.co.uk</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* WhatsApp Section */}
-                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary text-white rounded-full p-2">
-                      <MessageCircle size={20} className="sm:w-6 sm:h-6" />
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
                     </div>
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Chat With Us On WhatsApp:</h2>
+                    <span className="text-gray-700">Once Reviewed and claim is COVERED in your policy, you get</span>
                   </div>
-                  <div className="ml-11 sm:ml-14 space-y-3">
-                    <p className="text-gray-600 text-sm sm:text-base">Quick question? Send us a message on WhatsApp and we'll be right with you.</p>
-                    <button className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base">
-                      WhatsApp Us ✓
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Opening Hours Section */}
-                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary text-white rounded-full p-2">
-                      <Clock size={20} className="sm:w-6 sm:h-6" />
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
                     </div>
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Opening Hours:</h2>
+                    <span className="text-gray-700">FULL REPAIR OR REPLACEMENT AUTHORIZED with our</span>
                   </div>
-                  <div className="ml-11 sm:ml-14">
-                    <p className="text-gray-600 text-sm sm:text-base">Monday – Saturday : 9am to 6pm</p>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">AUTHORISED MECHANICS USING ONLY</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">THE BEST PARTS to GET YOU READY! 100% authorised you for your car</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-        
-        {/* Contact Form Section */}
-        <section className="py-8 sm:py-12 lg:py-16 px-4 bg-gray-100">
+
+        {/* Step 3: Authorisation & Payment */}
+        <section className="py-12 lg:py-16 px-4 bg-gray-50">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
-              {/* Left Side - Image and Text */}
-              <div className="space-y-4 sm:space-y-6 order-2 lg:order-1">
-                <div className="text-center lg:text-left">
-                  <p className="text-primary text-base sm:text-lg font-medium mb-2">Contact Us</p>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                    Contact Our <span className="text-primary">Support</span> Team!
-                  </h2>
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left Side - Content */}
+              <div className="space-y-6">
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+                  Step 3: Authorisation & <span className="text-orange-500">Payment</span>
+                </h2>
+                <p className="text-gray-600 text-lg">
+                  Once approved
+                </p>
                 
-                <div className="flex justify-center">
-                  <img 
-                    src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
-                    alt="Panda with car and mechanic" 
-                    className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
-                  />
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">You'll receive an INSTANT confirmation of your claim</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">We pay your MECHANIC directly so there's no upfront cost for you</span>
+                  </div>
                 </div>
               </div>
               
-              {/* Right Side - Form */}
-              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 order-1 lg:order-2">
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center lg:text-left">
-                  How Can We Help You Today?
-                </h3>
-                
-                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                  {/* Name Field */}
-                  <div>
-                    <Label htmlFor="name" className="text-gray-700 font-medium text-sm sm:text-base">
-                      Your Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      placeholder="Enter Your Name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="mt-1"
-                    />
-                  </div>
-                  
-                  {/* Email and Phone Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="email" className="text-gray-700 font-medium text-sm sm:text-base">
-                        Email <span className="text-red-500">*</span>
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="phone" className="text-gray-700 font-medium text-sm sm:text-base">
-                        Phone Number (optional)
-                      </Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        placeholder="Telephone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-                  
-                  {/* File Upload */}
-                  <div>
-                    <Label htmlFor="file" className="text-gray-700 font-medium">
-                      File Upload
-                    </Label>
-                    <div className="mt-1 flex items-center gap-3">
-                      <Label
-                        htmlFor="file-upload"
-                        className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded cursor-pointer inline-flex items-center gap-2"
-                      >
-                        <Upload size={16} />
-                        Choose a file
-                      </Label>
-                      <input
-                        id="file-upload"
-                        type="file"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                      <span className="text-gray-500 text-sm">
-                        {file ? file.name : "No file chosen."}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  {/* Message Field */}
-                  <div>
-                    <Label htmlFor="message" className="text-gray-700 font-medium">
-                      Your Message
-                    </Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      placeholder="How Can We Help You?"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="mt-1"
-                    />
-                  </div>
-                  
-                  {/* Submit Button */}
-                  <div className="flex justify-end">
-                    <Button 
-                      type="submit" 
-                      disabled={isSubmitting}
-                      className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg disabled:opacity-50"
-                    >
-                      {isSubmitting ? 'Submitting...' : 'Submit'}
-                    </Button>
-                  </div>
-                </form>
+              {/* Right Side - Illustration */}
+              <div className="flex justify-center">
+                <img 
+                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
+                  alt="Payment illustration" 
+                  className="w-full max-w-md h-auto"
+                />
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Why Choose Us */}
+        <section className="py-12 lg:py-16 px-4 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left Side - Illustration */}
+              <div className="flex justify-center order-2 lg:order-1">
+                <img 
+                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
+                  alt="Why choose us illustration" 
+                  className="w-full max-w-md h-auto"
+                />
+              </div>
+              
+              {/* Right Side - Content */}
+              <div className="space-y-6 order-1 lg:order-2">
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+                  Why <span className="text-orange-500">Choose</span> Us?
+                </h2>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">Quick Response</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">We pick up your vehicle from your place</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">Expert mechanics</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700">24/7 breakdown cover</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Ready To Start Your Claim */}
+        <section className="py-12 lg:py-20 px-4 bg-gray-50">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">
+              Ready To <span className="text-orange-500">Start</span> Your Claim?
+            </h2>
+            <Button 
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-full"
+              onClick={() => document.getElementById('claim-form')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Start Your Claim Now
+            </Button>
           </div>
         </section>
       </div>
