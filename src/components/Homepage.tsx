@@ -301,7 +301,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       value={mileage}
                       onChange={handleMileageChange}
                       onFocus={handleMileageFocus}
-                      placeholder="Enter mileage (e.g. 32,000)"
+                      placeholder="Enter mileage or use slider"
                       className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
                         mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
                       }`}
