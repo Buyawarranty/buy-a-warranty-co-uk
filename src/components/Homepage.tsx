@@ -211,8 +211,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</a>
               <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">How You're Protected</a>
               <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</a>
+              <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
+              <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</a>
             </nav>
 
             {/* Desktop CTA Buttons - Show on desktop */}
@@ -285,7 +285,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       FAQ
                     </a>
                     <a 
-                      href="#" 
+                      href="/contact-us" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >

@@ -48,6 +48,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
       description: 'Manage customer claim submissions'
     },
     {
+      id: 'contact',
+      label: 'Contact Submissions',
+      icon: Mail,
+      description: 'Manage customer contact form submissions'
+    },
+    {
       id: 'emails',
       label: 'Email Management',
       icon: Mail,

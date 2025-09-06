@@ -62,10 +62,10 @@ const Footer = () => {
                 Frequently Asked Questions
               </a>
               <a 
-                href="/contact" 
+                href="/contact-us" 
                 className="text-white hover:text-[#eb4b00] transition-colors font-medium"
               >
-                Contact
+                Contact Us
               </a>
             </div>
 
