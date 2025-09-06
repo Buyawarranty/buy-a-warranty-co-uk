@@ -207,7 +207,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Warranty Plans</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">What's Covered</a>
+              <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium">How You're Protected</a>
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Make a Claim</a>
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">FAQ</a>
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Contact Us</a>
