@@ -224,7 +224,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </Button>
               <Button 
                 size="sm"
-                className="bg-orange-500 text-white hover:bg-orange-600"
+                className="bg-primary text-white hover:bg-primary/90"
               >
                 Get my quote
               </Button>
@@ -248,7 +248,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <br />
                   covered
                   <br />
-                  <span className="text-orange-500">in 60 seconds!</span>
+                  <span className="text-primary">in 60 seconds!</span>
                 </h1>
               </div>
 
@@ -339,7 +339,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     className={`w-full px-12 h-[64px] text-xl font-bold rounded-lg transition-all ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-orange-500 hover:bg-orange-600 text-white btn-slow-pulsate'
+                        : 'bg-primary hover:bg-primary/90 text-white btn-slow-pulsate'
                     }`}
                     disabled={isLookingUp}
                   >
@@ -548,7 +548,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 No upfront costs, no hassle.
               </p>
 
-              <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
+              <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
                 Get Instant Quote
               </button>
             </div>
@@ -627,7 +627,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           </h2>
 
           {/* CTA Button */}
-          <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors mb-8 md:mb-16 w-full sm:w-auto">
+          <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors mb-8 md:mb-16 w-full sm:w-auto">
             Get Instant Quote
           </button>
 
@@ -649,7 +649,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             Get Help With A <span className="text-brand-orange">Repair</span>
           </h2>
           
-          <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
+          <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
             Make A Claim
           </button>
         </div>
@@ -714,7 +714,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
               </div>
 
-              <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
+              <button className="bg-primary hover:bg-primary/90 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
                 See How Much I Can Save
               </button>
             </div>
