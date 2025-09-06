@@ -612,10 +612,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <div className="space-y-6 md:space-y-8">
               <div className="mb-4 md:mb-6">
                 <div className="inline-block bg-brand-orange text-white px-3 md:px-4 py-2 rounded text-sm font-bold mb-3 md:mb-4">
-                  Step 2
+                  Easy Options
                 </div>
                 <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
-                  <span className="text-brand-orange">Choose Your Plan</span>
+                  <span className="text-brand-orange">Flexible Warranty Plans</span>
                 </h2>
               </div>
               
