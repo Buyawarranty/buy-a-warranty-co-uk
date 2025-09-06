@@ -117,35 +117,37 @@ const Claims = () => {
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
             <div className="flex items-center">
-              <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-8 w-auto" />
+              <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
             </div>
             
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Warranty Plans</a>
-              <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium">How You're Protected</a>
-              <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium">Make a Claim</a>
-              <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium">FAQ</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Contact Us</a>
+            {/* Navigation - Hidden on mobile, visible on lg+ */}
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</a>
+              <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">How You're Protected</a>
+              <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</a>
+              <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
+              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</a>
             </nav>
 
-            {/* CTA Buttons */}
-            <div className="flex items-center space-x-3">
+            {/* CTA Buttons - Responsive */}
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <Button 
                 variant="outline" 
                 size="sm"
-                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600"
+                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-2 sm:px-3 text-xs sm:text-sm"
               >
-                WhatsApp Us
+                <span className="hidden sm:inline">WhatsApp Us</span>
+                <span className="sm:hidden">WhatsApp</span>
               </Button>
               <Button 
                 size="sm"
-                className="bg-primary text-white hover:bg-primary/90"
+                className="bg-primary text-white hover:bg-primary/90 px-2 sm:px-3 text-xs sm:text-sm"
               >
-                Get my quote
+                <span className="hidden sm:inline">Get my quote</span>
+                <span className="sm:hidden">Quote</span>
               </Button>
             </div>
           </div>
@@ -154,38 +156,38 @@ const Claims = () => {
 
       <div className="min-h-screen bg-gray-50">
         {/* Top Section - Get In Touch With Us */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-white py-8 sm:py-12 lg:py-16 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
               {/* Panda Image */}
-              <div className="flex justify-center lg:justify-start">
+              <div className="flex justify-center lg:justify-start order-2 lg:order-1">
                 <img 
                   src="/lovable-uploads/dd63a384-ee39-4b63-8b4a-0789f2b81de1.png" 
                   alt="Panda on motorcycle mascot" 
-                  className="w-full max-w-md h-auto"
+                  className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
                 />
               </div>
               
               {/* Contact Information */}
-              <div className="space-y-8">
-                <h1 className="text-4xl font-bold text-gray-900 mb-8">
+              <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8 text-center lg:text-left">
                   Get In Touch With Us
                 </h1>
                 
                 {/* Email Us Section */}
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary text-white rounded-full p-2">
-                      <Mail size={24} />
+                      <Mail size={20} className="sm:w-6 sm:h-6" />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900">Email Us</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Email Us</h2>
                   </div>
-                  <div className="ml-14 space-y-2">
-                    <div>
+                  <div className="ml-11 sm:ml-14 space-y-2">
+                    <div className="text-sm sm:text-base">
                       <span className="font-medium text-gray-700">Customer service:</span>
                       <span className="text-gray-600"> support@buyawarranty.co.uk</span>
                     </div>
-                    <div>
+                    <div className="text-sm sm:text-base">
                       <span className="font-medium text-gray-700">Claims:</span>
                       <span className="text-gray-600"> claims@buyawarranty.co.uk</span>
                     </div>
@@ -193,31 +195,31 @@ const Claims = () => {
                 </div>
                 
                 {/* WhatsApp Section */}
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary text-white rounded-full p-2">
-                      <MessageCircle size={24} />
+                      <MessageCircle size={20} className="sm:w-6 sm:h-6" />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900">Chat With Us On WhatsApp:</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Chat With Us On WhatsApp:</h2>
                   </div>
-                  <div className="ml-14 space-y-3">
-                    <p className="text-gray-600">Quick question? Send us a message on WhatsApp and we'll be right with you.</p>
-                    <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                  <div className="ml-11 sm:ml-14 space-y-3">
+                    <p className="text-gray-600 text-sm sm:text-base">Quick question? Send us a message on WhatsApp and we'll be right with you.</p>
+                    <button className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base">
                       WhatsApp Us ✓
                     </button>
                   </div>
                 </div>
                 
                 {/* Opening Hours Section */}
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary text-white rounded-full p-2">
-                      <Clock size={24} />
+                      <Clock size={20} className="sm:w-6 sm:h-6" />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900">Opening Hours:</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Opening Hours:</h2>
                   </div>
-                  <div className="ml-14">
-                    <p className="text-gray-600">Monday – Saturday : 9am to 6pm</p>
+                  <div className="ml-11 sm:ml-14">
+                    <p className="text-gray-600 text-sm sm:text-base">Monday – Saturday : 9am to 6pm</p>
                   </div>
                 </div>
               </div>
@@ -226,14 +228,14 @@ const Claims = () => {
         </section>
         
         {/* Contact Form Section */}
-        <section className="py-16 px-4 bg-gray-100">
+        <section className="py-8 sm:py-12 lg:py-16 px-4 bg-gray-100">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
               {/* Left Side - Image and Text */}
-              <div className="space-y-6">
-                <div>
-                  <p className="text-primary text-lg font-medium mb-2">Contact Us</p>
-                  <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              <div className="space-y-4 sm:space-y-6 order-2 lg:order-1">
+                <div className="text-center lg:text-left">
+                  <p className="text-primary text-base sm:text-lg font-medium mb-2">Contact Us</p>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
                     Contact Our <span className="text-primary">Support</span> Team!
                   </h2>
                 </div>
@@ -242,21 +244,21 @@ const Claims = () => {
                   <img 
                     src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
                     alt="Panda with car and mechanic" 
-                    className="w-full max-w-md h-auto"
+                    className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
                   />
                 </div>
               </div>
               
               {/* Right Side - Form */}
-              <div className="bg-white rounded-lg shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-8">
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 order-1 lg:order-2">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center lg:text-left">
                   How Can We Help You Today?
                 </h3>
                 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                   {/* Name Field */}
                   <div>
-                    <Label htmlFor="name" className="text-gray-700 font-medium">
+                    <Label htmlFor="name" className="text-gray-700 font-medium text-sm sm:text-base">
                       Your Name <span className="text-red-500">*</span>
                     </Label>
                     <Input
@@ -272,9 +274,9 @@ const Claims = () => {
                   </div>
                   
                   {/* Email and Phone Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="email" className="text-gray-700 font-medium">
+                      <Label htmlFor="email" className="text-gray-700 font-medium text-sm sm:text-base">
                         Email <span className="text-red-500">*</span>
                       </Label>
                       <Input
@@ -289,7 +291,7 @@ const Claims = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="phone" className="text-gray-700 font-medium">
+                      <Label htmlFor="phone" className="text-gray-700 font-medium text-sm sm:text-base">
                         Phone Number (optional)
                       </Label>
                       <Input
