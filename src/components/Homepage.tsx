@@ -249,32 +249,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
               </div>
 
-              {/* Vehicle Types */}
-              <div className="mb-8">
-                <p className="text-sm font-medium text-gray-600 mb-4 text-center lg:text-left">We cover all vehicle types:</p>
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6">
-                  <div className="flex items-center space-x-2">
-                    <Car className="w-5 h-5 text-brand-orange" />
-                    <span className="font-medium text-gray-700">Cars</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Truck className="w-5 h-5 text-brand-orange" />
-                    <span className="font-medium text-gray-700">Vans</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Zap className="w-5 h-5 text-brand-orange" />
-                    <span className="font-medium text-gray-700">Hybrid</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Battery className="w-5 h-5 text-brand-orange" />
-                    <span className="font-medium text-gray-700">EV</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Bike className="w-5 h-5 text-brand-orange" />
-                    <span className="font-medium text-gray-700">Motorbikes</span>
-                  </div>
-                </div>
-              </div>
 
               {/* Main Headline */}
               <div className="space-y-4 mb-8">
@@ -407,6 +381,37 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
                   className="h-16 w-auto"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Vehicle Types Section */}
+      <section className="py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-lg font-medium text-gray-600 mb-6">We cover all vehicle types:</p>
+            <div className="flex flex-wrap items-center justify-center gap-8">
+              <div className="flex items-center space-x-2">
+                <Car className="w-6 h-6 text-orange-500" />
+                <span className="font-medium text-gray-700 text-lg">Cars</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Truck className="w-6 h-6 text-orange-500" />
+                <span className="font-medium text-gray-700 text-lg">Vans</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Zap className="w-6 h-6 text-orange-500" />
+                <span className="font-medium text-gray-700 text-lg">Hybrid</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Battery className="w-6 h-6 text-orange-500" />
+                <span className="font-medium text-gray-700 text-lg">EV</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Bike className="w-6 h-6 text-orange-500" />
+                <span className="font-medium text-gray-700 text-lg">Motorbikes</span>
               </div>
             </div>
           </div>
