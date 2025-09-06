@@ -290,7 +290,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
 
                 {/* Mileage Options - Always Visible */}
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {/* Text Input Option */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -333,7 +333,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
 
                 {/* Get Quote Button */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <Button 
                     onClick={handleGetQuote}
                     className={`w-full px-12 h-[64px] text-xl font-bold rounded-lg transition-all ${

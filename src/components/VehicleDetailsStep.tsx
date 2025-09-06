@@ -584,7 +584,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                   value={mileage}
                   onChange={handleMileageChange}
                   placeholder="e.g. 32,000"
-                  className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] pr-[50px] mb-2 focus:outline-none ${
+                  className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] pr-[50px] mb-1 focus:outline-none ${
                     mileageError ? 'border-red-500' : 'border-gray-300'
                   }`}
                   onFocus={(e) => {
@@ -603,12 +603,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                 )}
               </div>
               {mileageError && (
-                <div className="bg-red-50 border border-red-200 rounded-[4px] p-3 mb-2">
+                <div className="bg-red-50 border border-red-200 rounded-[4px] p-3 mb-1">
                   <p className="text-sm text-red-800 font-semibold">{mileageError}</p>
                 </div>
               )}
               {!mileageError && (
-                <p className="text-sm text-black mb-4">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
+                <p className="text-sm text-black mb-2">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
               )}
 
 
