@@ -683,9 +683,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <br />
                   <span className="text-brand-orange">You're Covered</span>
                 </h2>
-                <div className="mt-3 md:mt-4 text-lg md:text-2xl font-bold text-brand-deep-blue">
-                  Up to 150,000 miles and <span className="text-brand-orange">15 Years Old</span>
-                </div>
               </div>
               
               <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
@@ -864,11 +861,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
             </div>
           </div>
-
-          {/* Heading */}
-          <h2 className="text-2xl md:text-5xl font-bold text-brand-deep-blue mb-4 md:mb-6 px-4">
-            Up to 150,000 miles and <span className="text-brand-orange">15 Years Old.</span>
-          </h2>
 
           {/* CTA Button */}
           <button className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors mb-8 md:mb-16 w-full sm:w-auto">
