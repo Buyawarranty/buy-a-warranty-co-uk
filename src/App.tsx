@@ -24,6 +24,7 @@ import CarJourneyDemo from "./pages/CarJourneyDemo";
 import OriginalPricing from "./pages/OriginalPricing";
 import Widget from "./pages/Widget";
 import Cart from "./pages/Cart";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => (
                   <Route path="/car-journey" element={<CarJourneyDemo />} />
                   <Route path="/car-preview" element={<CarSpinnerPreview />} />
                   <Route path="/original-pricing" element={<OriginalPricing />} />
+                  <Route path="/terms" element={<Terms />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
