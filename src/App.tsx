@@ -8,6 +8,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import WebsiteFooter from "@/components/WebsiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
+import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import CarSpinnerPreview from "./components/CarSpinnerPreview";
 import ThankYou from "./pages/ThankYou";
@@ -42,6 +43,7 @@ const App = () => (
               <main className="flex-1 pb-32">
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/faq" element={<FAQ />} />
                   <Route path="/thank-you" element={<ThankYou />} />
                   <Route path="/payment-fallback" element={<PaymentFallback />} />
                   <Route path="/cart" element={<Cart />} />

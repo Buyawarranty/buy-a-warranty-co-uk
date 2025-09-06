@@ -82,6 +82,11 @@ const WebsiteFooter = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-6">Help</h3>
               <div className="space-y-3 text-gray-600">
                 <div>
+                  <a href="/faq" className="text-[#eb4b00] hover:text-[#d63f00] transition-colors font-semibold">
+                    FAQ's
+                  </a>
+                </div>
+                <div>
                   <p className="font-semibold text-gray-900">Sales Enquiries:</p>
                   <p className="text-lg font-bold text-[#eb4b00]">0330 229 5040</p>
                 </div>
