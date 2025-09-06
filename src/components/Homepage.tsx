@@ -755,6 +755,18 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </section>
 
+      {/* Get Instant Quote CTA */}
+      <section className="py-8 md:py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Button 
+            className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-8 md:px-12 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors"
+            onClick={handleGetQuote}
+          >
+            Get Instant Quote
+          </Button>
+        </div>
+      </section>
+
       {/* Additional Cover Options Section */}
       <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
