@@ -95,7 +95,7 @@ const HomepageFAQ = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-brand-dark-text mb-6 leading-tight">
-            Frequently Asked <span className="text-brand-orange">Questions</span>
+            <span className="text-brand-orange">FAQ's</span>
           </h2>
           <p className="text-lg text-brand-dark-text max-w-3xl mx-auto leading-relaxed">
             Find answers to the most common questions about our warranty services.
