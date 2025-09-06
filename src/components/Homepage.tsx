@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
 import { useToast } from '@/hooks/use-toast';
@@ -31,6 +32,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [mileageError, setMileageError] = useState('');
   const [vehicleAgeError, setVehicleAgeError] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const formatRegNumber = (value: string) => {
     const formatted = value.replace(/\s/g, '').toUpperCase();
@@ -213,24 +215,103 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</a>
             </nav>
 
-            {/* CTA Buttons - Responsive */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Desktop CTA Buttons - Hidden on mobile */}
+            <div className="hidden lg:flex items-center space-x-2 sm:space-x-3">
               <Button 
                 variant="outline" 
                 size="sm"
                 className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-2 sm:px-3 text-xs sm:text-sm"
               >
-                <span className="hidden sm:inline">WhatsApp Us</span>
-                <span className="sm:hidden">WhatsApp</span>
+                WhatsApp Us
               </Button>
               <Button 
                 size="sm"
                 className="bg-primary text-white hover:bg-primary/90 px-2 sm:px-3 text-xs sm:text-sm"
               >
-                <span className="hidden sm:inline">Get my quote</span>
-                <span className="sm:hidden">Quote</span>
+                Get my quote
               </Button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="lg:hidden p-2"
+                >
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <div className="flex flex-col h-full">
+                  {/* Header with logo */}
+                  <div className="flex items-center justify-between pb-6">
+                    <img 
+                      src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                      alt="Buy a Warranty" 
+                      className="h-8 w-auto"
+                    />
+                  </div>
+
+                  {/* Navigation Links */}
+                  <nav className="flex flex-col space-y-6 flex-1">
+                    <a 
+                      href="#" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Warranty Plans
+                    </a>
+                    <a 
+                      href="/protected" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      How You're Protected
+                    </a>
+                    <a 
+                      href="/make-a-claim" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Make a Claim
+                    </a>
+                    <a 
+                      href="#" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      FAQ
+                    </a>
+                    <a 
+                      href="#" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Contact Us
+                    </a>
+                  </nav>
+
+                  {/* CTA Buttons */}
+                  <div className="space-y-4 pt-6 mt-auto">
+                    <Button 
+                      variant="outline" 
+                      className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      WhatsApp Us
+                    </Button>
+                    <Button 
+                      className="w-full bg-primary text-white hover:bg-primary/90 text-lg py-3"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Get my quote
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
