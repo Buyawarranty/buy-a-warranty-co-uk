@@ -376,28 +376,28 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 />
               </div>
               
-              {/* Vehicle Types positioned over the image */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-                <div className="flex flex-wrap items-center justify-center gap-4">
+              {/* Vehicle Types positioned underneath the panda's feet */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-2">
+                <div className="flex flex-wrap items-center justify-center gap-6">
                   <div className="flex items-center space-x-1">
-                    <Car className="w-4 h-4 text-orange-500" />
-                    <span className="font-medium text-gray-700 text-sm">Cars</span>
+                    <Car className="w-5 h-5 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-base">Cars</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Truck className="w-4 h-4 text-orange-500" />
-                    <span className="font-medium text-gray-700 text-sm">Vans</span>
+                    <Truck className="w-5 h-5 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-base">Vans</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Zap className="w-4 h-4 text-orange-500" />
-                    <span className="font-medium text-gray-700 text-sm">Hybrid</span>
+                    <Zap className="w-5 h-5 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-base">Hybrid</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Battery className="w-4 h-4 text-orange-500" />
-                    <span className="font-medium text-gray-700 text-sm">EV</span>
+                    <Battery className="w-5 h-5 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-base">EV</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Bike className="w-4 h-4 text-orange-500" />
-                    <span className="font-medium text-gray-700 text-sm">Motorbikes</span>
+                    <Bike className="w-5 h-5 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-base">Motorbikes</span>
                   </div>
                 </div>
               </div>
