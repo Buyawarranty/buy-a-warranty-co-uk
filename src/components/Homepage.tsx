@@ -621,31 +621,51 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               
               <div className="space-y-3 md:space-y-4">
                 <div className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <img 
+                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    alt="checkmark"
+                    className="w-5 h-5 mt-1"
+                  />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>Pay Monthly or in Full</strong> – Choose what works for you.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <img 
+                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    alt="checkmark"
+                    className="w-5 h-5 mt-1"
+                  />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>1, 2 or 3-Year Cover</strong> – Long-term protection, your choice.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <img 
+                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    alt="checkmark"
+                    className="w-5 h-5 mt-1"
+                  />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>0% APR & No Hidden Fees</strong> – Interest-free, stress-free.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <img 
+                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    alt="checkmark"
+                    className="w-5 h-5 mt-1"
+                  />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>Save an Extra 10%</strong> – When you pay in full.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold text-lg">✔</span>
+                  <img 
+                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    alt="checkmark"
+                    className="w-5 h-5 mt-1"
+                  />
                   <span className="text-base md:text-lg text-brand-dark-text">
                     <strong>From Just £20/Month</strong> – Affordable peace of mind.
                   </span>
