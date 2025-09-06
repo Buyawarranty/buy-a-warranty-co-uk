@@ -622,7 +622,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <div className="space-y-3 md:space-y-4">
                 <div className="flex items-start gap-3">
                   <img 
-                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    src="/lovable-uploads/single-tick.png" 
                     alt="checkmark"
                     className="w-5 h-5 mt-1"
                   />
@@ -632,7 +632,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
                 <div className="flex items-start gap-3">
                   <img 
-                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    src="/lovable-uploads/single-tick.png" 
                     alt="checkmark"
                     className="w-5 h-5 mt-1"
                   />
@@ -642,7 +642,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
                 <div className="flex items-start gap-3">
                   <img 
-                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    src="/lovable-uploads/single-tick.png" 
                     alt="checkmark"
                     className="w-5 h-5 mt-1"
                   />
@@ -652,7 +652,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
                 <div className="flex items-start gap-3">
                   <img 
-                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    src="/lovable-uploads/single-tick.png" 
                     alt="checkmark"
                     className="w-5 h-5 mt-1"
                   />
@@ -662,7 +662,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
                 <div className="flex items-start gap-3">
                   <img 
-                    src="/lovable-uploads/ddaa0cc4-fd88-485d-a144-827e6101468b.png" 
+                    src="/lovable-uploads/single-tick.png" 
                     alt="checkmark"
                     className="w-5 h-5 mt-1"
                   />
