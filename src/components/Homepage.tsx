@@ -239,15 +239,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8">
-              {/* Trust Indicators */}
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <div className="bg-green-100 px-3 py-1 rounded-full text-sm font-medium text-green-800">
-                  ✓ Reliable Protection
-                </div>
-                <div className="bg-red-100 px-3 py-1 rounded-full text-sm font-medium text-red-800">
-                  No Hidden Costs
-                </div>
-              </div>
 
 
               {/* Main Headline */}
@@ -339,25 +330,27 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       {vehicleAgeError}
                     </p>
                   )}
+                </div>
+
+{/* Get Quote Button */}
+                <div className="space-y-3">
+                  <Button 
+                    onClick={handleGetQuote}
+                    className={`w-full px-12 h-[64px] text-xl font-bold rounded-lg transition-all animate-float-slow ${
+                      isLookingUp
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-orange-500 hover:bg-orange-600 text-white'
+                    }`}
+                    disabled={isLookingUp}
+                  >
+                    {isLookingUp ? 'Looking up vehicle...' : 'Get my quote'}
+                  </Button>
                   {!mileageError && !vehicleAgeError && (
                     <p className="text-sm text-gray-400 text-center">
                       Protection for vehicles up to 150,000 miles or 15 years.
                     </p>
                   )}
                 </div>
-
-                {/* Get Quote Button */}
-                <Button 
-                  onClick={handleGetQuote}
-                  className={`w-full px-12 h-[64px] text-xl font-bold rounded-lg transition-all animate-float-slow ${
-                    isLookingUp
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-orange-500 hover:bg-orange-600 text-white'
-                  }`}
-                  disabled={isLookingUp}
-                >
-                  {isLookingUp ? 'Looking up vehicle...' : 'Get my quote'}
-                </Button>
 
                 {/* Trustpilot */}
                 <div className="flex items-center mt-6">
@@ -367,7 +360,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
             </div>
 
-            {/* Right Content - Hero Image */}
+{/* Right Content - Hero Image */}
             <div className="relative">
               <img 
                 src="/lovable-uploads/c9993cb7-e55a-47a3-936b-d5bb733e4d87.png" 
@@ -382,41 +375,37 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   className="h-16 w-auto"
                 />
               </div>
+              
+              {/* Vehicle Types positioned over the image */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                <div className="flex flex-wrap items-center justify-center gap-4">
+                  <div className="flex items-center space-x-1">
+                    <Car className="w-4 h-4 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-sm">Cars</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Truck className="w-4 h-4 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-sm">Vans</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Zap className="w-4 h-4 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-sm">Hybrid</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Battery className="w-4 h-4 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-sm">EV</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Bike className="w-4 h-4 text-orange-500" />
+                    <span className="font-medium text-gray-700 text-sm">Motorbikes</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Vehicle Types Section */}
-      <section className="py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-lg font-medium text-gray-600 mb-6">We cover all vehicle types:</p>
-            <div className="flex flex-wrap items-center justify-center gap-8">
-              <div className="flex items-center space-x-2">
-                <Car className="w-6 h-6 text-orange-500" />
-                <span className="font-medium text-gray-700 text-lg">Cars</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Truck className="w-6 h-6 text-orange-500" />
-                <span className="font-medium text-gray-700 text-lg">Vans</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Zap className="w-6 h-6 text-orange-500" />
-                <span className="font-medium text-gray-700 text-lg">Hybrid</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Battery className="w-6 h-6 text-orange-500" />
-                <span className="font-medium text-gray-700 text-lg">EV</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Bike className="w-6 h-6 text-orange-500" />
-                <span className="font-medium text-gray-700 text-lg">Motorbikes</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Slogan Section */}
       <section className="py-8 bg-white">
