@@ -356,7 +356,7 @@ const Index = () => {
       )}
 
       {currentStep === 2 && vehicleData && (
-        <div className="bg-[#e8f4fb] w-full px-4 py-4 sm:py-8">
+        <div className="bg-[#e8f4fb] w-full px-4 py-2 sm:py-4">
           <div className="max-w-4xl mx-auto">
             <QuoteDeliveryStep 
               vehicleData={vehicleData}

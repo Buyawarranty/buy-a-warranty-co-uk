@@ -178,7 +178,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="flex items-center gap-2 sm:gap-3">
               <Car className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Vehicle Details</h3>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900">Vehicle Details</h3>
             </div>
             <button
               onClick={onBack}
