@@ -162,8 +162,8 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                   />
                 </div>
 
-                <div className="flex justify-end">
-                  <Collapsible open={expandedItems[addon.key]} onOpenChange={() => toggleExpanded(addon.key)}>
+                <Collapsible open={expandedItems[addon.key]} onOpenChange={() => toggleExpanded(addon.key)}>
+                  <div className="flex justify-end">
                     <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors">
                       <span>Read more</span>
                       {expandedItems[addon.key] ? (
@@ -172,18 +172,18 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                         <ChevronDown className="h-4 w-4" strokeWidth={3} />
                       )}
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3">
-                      <div className="space-y-2">
-                        {addon.bulletPoints.map((point, index) => (
-                          <div key={index} className="flex items-start gap-2">
-                            <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" strokeWidth={3} />
-                            <span className="text-sm text-muted-foreground">{point}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
+                  </div>
+                  <CollapsibleContent className="mt-3">
+                    <div className="space-y-2">
+                      {addon.bulletPoints.map((point, index) => (
+                        <div key={index} className="flex items-start gap-2">
+                          <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" strokeWidth={3} />
+                          <span className="text-sm text-muted-foreground">{point}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
             ))}
           </div>
