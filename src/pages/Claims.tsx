@@ -236,14 +236,11 @@ const Claims = () => {
               
               {/* Right Side - Car Image */}
               <div className="flex justify-center">
-                <div className="w-full max-w-lg h-auto relative">
-                  <div className="absolute inset-0 bg-gradient-to-b from-blue-50 to-gray-100 rounded-lg"></div>
-                  <img 
-                    src="/lovable-uploads/f2e6fbe6-5875-44f3-8d38-4f2349f95cf4.png" 
-                    alt="Panda mascot with various vehicles including cars, van and motorcycle" 
-                    className="relative z-10 w-full h-auto"
-                  />
-                </div>
+                <img 
+                  src="/lovable-uploads/e747314c-6d0e-4b2e-8622-345a13c1ede4.png" 
+                  alt="Panda mascot with various vehicles including cars, van and motorcycle" 
+                  className="w-full max-w-lg h-auto"
+                />
               </div>
             </div>
           </div>
