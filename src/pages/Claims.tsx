@@ -237,8 +237,8 @@ const Claims = () => {
               {/* Right Side - Car Image */}
               <div className="flex justify-center">
                 <img 
-                  src="/lovable-uploads/warranty-quote-transparent.png" 
-                  alt="Orange car with buyawarranty branding" 
+                  src="/lovable-uploads/f2e6fbe6-5875-44f3-8d38-4f2349f95cf4.png" 
+                  alt="Panda mascot with various vehicles including cars, van and motorcycle" 
                   className="w-full max-w-lg h-auto"
                 />
               </div>
