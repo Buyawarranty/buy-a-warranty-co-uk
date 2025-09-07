@@ -439,184 +439,52 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
               <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-700">Enter your vehicle details manually</h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <label className="block font-semibold text-gray-700">Make</label>
-                    {make.trim() && (
-                      <Check className="w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={make}
-                      onChange={(e) => setMake(e.target.value)}
-                      placeholder="e.g. Audi"
-                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
-                      onFocus={(e) => e.target.style.borderColor = '#224380'}
-                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                      required
-                    />
-                    {make.trim() && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <label className="block font-semibold text-gray-700">Model</label>
-                    {model.trim() && (
-                      <Check className="w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={model}
-                      onChange={(e) => setModel(e.target.value)}
-                      placeholder="e.g. A3"
-                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
-                      onFocus={(e) => e.target.style.borderColor = '#224380'}
-                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                      required
-                    />
-                    {model.trim() && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <label className="block font-semibold text-gray-700">Year</label>
-                    {year && !yearError && (
-                      <Check className="w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={year}
-                      onChange={handleYearChange}
-                      placeholder="e.g. 2020"
-                      min="1990"
-                      max={new Date().getFullYear()}
-                      className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none ${
-                        yearError ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      onFocus={(e) => {
-                        if (!yearError) {
-                          e.target.style.borderColor = '#224380';
-                        }
-                      }}
-                      onBlur={(e) => {
-                        if (!yearError) {
-                          e.target.style.borderColor = '#d1d5db';
-                        }
-                      }}
-                      required
-                    />
-                    {year && !yearError && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                  {yearError && (
-                    <div className="bg-orange-50 border border-orange-200 rounded-[4px] p-3 mt-2">
-                      <h3 className="text-lg font-bold text-orange-800 mb-2">
-                        Sorry, We Can't Cover This Vehicle
-                      </h3>
-                      <p className="text-sm text-orange-700 mb-2">
-                        We can't provide a warranty for vehicles that are more than 15 years old.
-                      </p>
-                      <p className="text-sm text-orange-700">
-                        If your car is newer than that, feel free to try again. We may just need to run a couple of extra checks 🔍 before we can confirm your cover.
-                      </p>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <label className="block font-semibold text-gray-700">Vehicle Type</label>
-                    {vehicleType && (
-                      <Check className="w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                  <div className="relative">
-                    <select
-                      value={vehicleType}
-                      onChange={(e) => setVehicleType(e.target.value)}
-                      className="w-full border-2 border-gray-300 rounded-[6px] px-[16px] py-[12px] pr-[40px] focus:outline-none"
-                      onFocus={(e) => e.target.style.borderColor = '#224380'}
-                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                      required
-                    >
-                      <option value="">Select vehicle type</option>
-                      <option value="Car or Van">Car or Van</option>
-                      <option value="Electric Vehicle EV Extended Warranty">Electric Vehicle EV Extended Warranty</option>
-                      <option value="Motorbike Extended Warranty">Motorbike Extended Warranty</option>
-                      <option value="PHEV Hybrid Extended Warranty">PHEV Hybrid Extended Warranty</option>
-                    </select>
-                    {vehicleType && (
-                      <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
-                    )}
-                  </div>
-                </div>
+...
               </div>
+              
+              {yearError && (
+                <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-orange-700">{yearError}</p>
+                </div>
+              )}
             </div>
           )}
 
+          {/* Mileage */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <label className="block font-semibold text-gray-700">Approximate mileage</label>
+              {mileage && !mileageError && (
+                <Check className="w-5 h-5 text-green-500" />
+              )}
+            </div>
+            
+            <input
+              type="text"
+              value={mileage}
+              onChange={handleMileageChange}
+              placeholder="e.g. 45,000"
+              className={`w-full px-3 py-3 border-2 rounded-[6px] text-lg focus:outline-none focus:ring-0 ${
+                mileageError 
+                  ? 'border-red-400 focus:border-red-500' 
+                  : 'border-gray-300 focus:border-blue-400'
+              }`}
+            />
+            
+            {mileageError && (
+              <p className="text-sm text-red-600 mt-1">{mileageError}</p>
+            )}
+          </div>
+
+          {/* Quote Button */}
           {(vehicleFound || showManualEntry) && (
             <>
-              <div className="flex items-center gap-2 mb-2">
-                <label htmlFor="mileage" className="block font-semibold text-gray-700 text-lg sm:text-xl">
-                  What's your approximate mileage?
-                </label>
-                {mileage.trim() && !mileageError && (
-                  <Check className="w-5 h-5 text-green-500" />
-                )}
-              </div>
-              <div className="relative">
-                <input
-                  type="text"
-                  id="mileage"
-                  value={mileage}
-                  onChange={handleMileageChange}
-                  placeholder="e.g. 32,000"
-                  className={`w-full border-2 rounded-[6px] px-[16px] py-[12px] pr-[50px] mb-1 focus:outline-none ${
-                    mileageError ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  onFocus={(e) => {
-                    if (!mileageError) {
-                      e.target.style.borderColor = '#224380';
-                    }
-                  }}
-                  onBlur={(e) => {
-                    if (!mileageError) {
-                      e.target.style.borderColor = '#d1d5db';
-                    }
-                  }}
-                />
-                {mileage.trim() && !mileageError && (
-                  <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
-                )}
-              </div>
-              {mileageError && (
-                <div className="bg-red-50 border border-red-200 rounded-[4px] p-3 mb-1">
-                  <p className="text-sm text-red-800 font-semibold">{mileageError}</p>
-                </div>
-              )}
-              {!mileageError && (
-                <p className="text-sm text-black mb-2">We can only provide warranty for vehicles with a maximum mileage of 150,000</p>
-              )}
-
-
-              <div className="relative">
+              <div className="mb-6">
                 <button 
                   type="submit"
-                  disabled={showManualEntry ? !isManualFormValid : !isAutoFormValid}
-                  className="w-full text-white text-[15px] font-bold px-[20px] py-[12px] sm:py-[18px] rounded-[6px] border-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!(showManualEntry ? isManualFormValid : isAutoFormValid)}
+                  className="w-full text-white text-xl font-bold py-4 px-6 rounded-[6px] border-2 transition-all duration-200 disabled:cursor-not-allowed"
                   style={{
                     backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
                     borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
@@ -627,23 +495,23 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                   Get my quote →
                 </button>
               </div>
+              
+              {/* Back button moved inside the main container */}
+              <div className="flex justify-center">
+                <a 
+                  href="https://buyawarranty.co.uk/" 
+                  className="inline-flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  Back
+                </a>
+              </div>
             </>
           )}
           </form>
         </div>
-      </div>
-      
-      {/* Back button to buyawarranty.co.uk */}
-      <div className="max-w-3xl mx-auto mt-4">
-        <a 
-          href="https://buyawarranty.co.uk/" 
-          className="inline-flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back
-        </a>
       </div>
     </section>
   );
