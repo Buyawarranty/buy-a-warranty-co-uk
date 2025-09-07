@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Eye, Download, MessageSquare, Calendar, User, Mail, Phone, Paperclip } from 'lucide-react';
+import { Eye, Download, MessageSquare, Calendar, User, Mail, Phone, Paperclip, Forward } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ClaimSubmission {
@@ -142,6 +142,36 @@ export const ClaimsTab = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const forwardClaimEmail = async (claimId: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('forward-claim-email', {
+        body: { claimId }
+      });
+
+      if (error) {
+        console.error('Error forwarding claim email:', error);
+        toast({
+          title: "Error",
+          description: "Failed to forward claim email",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Claim email forwarded successfully to claims@buyawarranty.co.uk",
+      });
+    } catch (error) {
+      console.error('Error forwarding claim email:', error);
+      toast({
+        title: "Error",
+        description: "Failed to forward claim email",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -344,17 +374,18 @@ export const ClaimsTab = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => setSelectedClaim(claim)}
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View
-                          </Button>
-                        </DialogTrigger>
+                      <div className="flex gap-1">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => setSelectedClaim(claim)}
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              View
+                            </Button>
+                          </DialogTrigger>
                         <DialogContent className="max-w-2xl">
                           <DialogHeader>
                             <DialogTitle>Claim Details</DialogTitle>
@@ -436,7 +467,17 @@ export const ClaimsTab = () => {
                             </div>
                           )}
                         </DialogContent>
-                      </Dialog>
+                        </Dialog>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => forwardClaimEmail(claim.id)}
+                          title="Forward email to claims@buyawarranty.co.uk"
+                        >
+                          <Forward className="h-4 w-4 mr-1" />
+                          Forward
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
-import { Search, Download, Eye, FileText, Phone, Mail } from 'lucide-react';
+import { Search, Download, Eye, FileText, Phone, Mail, Forward } from 'lucide-react';
 
 interface ContactSubmission {
   id: string;
@@ -107,6 +107,36 @@ const ContactSubmissionsTab = () => {
     if (bytes === 0) return '0 Byte';
     const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)).toString());
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+  };
+
+  const forwardContactEmail = async (submissionId: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('forward-contact-email', {
+        body: { submissionId }
+      });
+
+      if (error) {
+        console.error('Error forwarding contact email:', error);
+        toast({
+          title: "Error",
+          description: "Failed to forward contact email",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Contact email forwarded successfully to support@buyawarranty.co.uk",
+      });
+    } catch (error) {
+      console.error('Error forwarding contact email:', error);
+      toast({
+        title: "Error",
+        description: "Failed to forward contact email",
+        variant: "destructive",
+      });
+    }
   };
 
   const filteredSubmissions = submissions.filter(submission => {
@@ -289,6 +319,15 @@ const ContactSubmissionsTab = () => {
                     >
                       <Mail className="w-4 h-4 mr-1" />
                       Reply
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => forwardContactEmail(submission.id)}
+                      title="Forward email to support@buyawarranty.co.uk"
+                    >
+                      <Forward className="w-4 h-4 mr-1" />
+                      Forward
                     </Button>
                   </div>
                 </div>
