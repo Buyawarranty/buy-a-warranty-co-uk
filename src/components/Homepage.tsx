@@ -368,7 +368,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <div className="space-y-3 max-w-lg">
                 <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black">
                   {/* UK Section with flag */}
-                  <div className="bg-blue-600 text-white font-bold px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[60px] sm:min-w-[80px] h-[56px] sm:h-[64px]">
+                  <div className="bg-blue-600 text-white font-bold px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[60px] sm:min-w-[80px] h-[56px] sm:h-[66px]">
                     <div className="flex flex-col items-center">
                       <div className="text-base sm:text-lg leading-tight mb-1">🇬🇧</div>
                       <div className="text-sm sm:text-base font-bold leading-none">UK</div>
