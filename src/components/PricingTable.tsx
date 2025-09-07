@@ -613,7 +613,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
                 1
               </div>
-              <h2 className="text-xl font-semibold text-foreground">🚗 Vehicle Information</h2>
+              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                <Car className="h-5 w-5" />
+                Vehicle Information
+              </h2>
             </div>
             <Button
               onClick={onBack}
