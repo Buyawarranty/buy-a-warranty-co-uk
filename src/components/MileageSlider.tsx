@@ -87,13 +87,15 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
   }, [isDragging]);
 
   const percentage = ((value - min) / (max - min)) * 100;
+  // Constrain panda position to stay within visible area (5% to 95%)
+  const pandaPosition = Math.max(5, Math.min(95, percentage));
 
   return (
     <div className="py-2 px-4">
       {/* Slider Track */}
       <div 
         ref={sliderRef}
-        className="relative h-6 bg-white rounded-lg cursor-pointer border-2 border-primary/25"
+        className="relative h-6 bg-white rounded-lg cursor-pointer border-2 border-primary/25 w-full"
         onClick={handleSliderClick}
       >
         {/* Selected Area (Brand Orange) */}
@@ -107,7 +109,7 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
           className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-grab ${
             isDragging ? 'cursor-grabbing scale-110' : ''
           } transition-all duration-150 ease-out`}
-          style={{ left: `${percentage}%` }}
+          style={{ left: `${pandaPosition}%` }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
         >
