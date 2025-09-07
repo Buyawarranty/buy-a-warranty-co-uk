@@ -204,7 +204,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white shadow-sm py-3 sm:py-4">
+      <header className="bg-white shadow-sm py-1 sm:py-2">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -335,14 +335,14 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-white py-4 sm:py-4 lg:py-6">
+      <section className="bg-white py-2 sm:py-2 lg:py-3">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
             <div className="space-y-4">
 
               {/* Main Headline */}
-              <div className="space-y-3 mb-6 sm:mb-6">
+              <div className="space-y-2 mb-3 sm:mb-4">
                 <h1 className="text-4xl sm:text-4xl lg:text-6xl font-black text-gray-900 leading-tight">
                   We{"'"}ve got you
                   <br className="hidden sm:block" />
@@ -353,7 +353,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Benefits */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6 text-gray-700 text-sm sm:text-base">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-3 sm:mb-4 text-gray-700 text-sm sm:text-base">
                 <div className="flex items-center">
                   <Check className="w-5 h-5 text-green-500 mr-2" />
                   <span className="font-medium">From just 80p a day</span>
@@ -506,7 +506,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Extended Warranty Video Section */}
-      <section className="py-12 md:py-20 bg-brand-gray-bg">
+      <section className="py-6 md:py-10 bg-brand-gray-bg">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Video */}
@@ -543,7 +543,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Step 1 - Enter Your Reg Plate */}
-      <section className="py-12 md:py-20 bg-white">
+      <section className="py-6 md:py-10 bg-white">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}
@@ -595,7 +595,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Step 2 - Choose Your Plan */}
-      <section className="py-12 md:py-20 bg-brand-gray-bg">
+      <section className="py-6 md:py-10 bg-brand-gray-bg">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Panda with plan badges */}
@@ -697,7 +697,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* What's Included Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-r from-blue-50 to-orange-50">
+      <section className="py-6 md:py-10 bg-gradient-to-r from-blue-50 to-orange-50">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 text-center">
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
@@ -741,7 +741,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
 
       {/* Coverage Showcase Section */}
-      <section className="py-12 md:py-20 bg-brand-gray-bg text-center">
+      <section className="py-6 md:py-10 bg-brand-gray-bg text-center">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           {/* Trustpilot Rating */}
           <div className="flex justify-center items-center mb-6 md:mb-8">
@@ -770,7 +770,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Additional Cover Options Section */}
-      <section className="py-12 md:py-20 bg-white">
+      <section className="py-6 md:py-10 bg-white">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 text-center">
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
