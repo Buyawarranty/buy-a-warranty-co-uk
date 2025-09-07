@@ -686,9 +686,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 }`}
               >
                 <div className="text-2xl font-bold text-black mb-2">£{amount}</div>
-                <p className="text-sm font-medium text-foreground">
-                  {amount === 0 ? 'No excess' : `£${amount} excess`}
-                </p>
               </button>
             ))}
           </div>
