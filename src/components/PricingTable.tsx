@@ -1018,9 +1018,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 if (!platinumPlan) return null;
                 
                 const oneYearPrice = (() => {
-                  // Use the new pricing calculation that respects claim limit
-                  const currentPrice = calculatePlanPrice();
-                  return { total: currentPrice, monthly: Math.round(currentPrice / 12) };
+                  // Calculate 1-year price specifically
+                  const selectedPlan = getSelectedPlan();
+                  if (!selectedPlan) return { total: 348, monthly: 29 };
+                  
+                  let totalPrice = 348; // fallback
+                  if (selectedPlan.pricing_matrix) {
+                    const matrix = selectedPlan.pricing_matrix as any;
+                    const periodData = matrix['12'];
+                    if (periodData && periodData[voluntaryExcess.toString()]) {
+                      totalPrice = periodData[voluntaryExcess.toString()].price || 348;
+                    }
+                  }
+                  
+                  return { total: totalPrice, monthly: Math.round(totalPrice / 12) };
                 })();
                 
                  return (
@@ -1080,24 +1091,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 if (!platinumPlan) return null;
                 
                 const twoYearPrice = (() => {
-                  // Calculate using the selected plan and payment period
+                  // Calculate 2-year price specifically
                   const selectedPlan = getSelectedPlan();
                   if (!selectedPlan) return { total: 786, monthly: 65, save: 87 };
                   
-                  // Temporarily set payment type to get 24-month pricing
-                  const originalPaymentType = paymentType;
-                  // Calculate 24-month price using the pricing matrix
                   let totalPrice = 786; // fallback
+                  let savings = 87; // fallback
                   if (selectedPlan.pricing_matrix) {
                     const matrix = selectedPlan.pricing_matrix as any;
                     const periodData = matrix['24'];
                     if (periodData && periodData[voluntaryExcess.toString()]) {
                       totalPrice = periodData[voluntaryExcess.toString()].price || 786;
+                      savings = periodData[voluntaryExcess.toString()].save || 87;
                     }
                   }
                   
                   const monthlyEquivalent = Math.round(totalPrice / 12);
-                  const savings = 87; // Fixed savings for now
                   return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
                 })();
                 
@@ -1163,22 +1172,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 if (!platinumPlan) return null;
                 
                 const threeYearPrice = (() => {
-                  // Calculate using the selected plan and payment period
+                  // Calculate 3-year price specifically
                   const selectedPlan = getSelectedPlan();
                   if (!selectedPlan) return { total: 1153, monthly: 96, save: 157 };
                   
-                  // Calculate 36-month price using the pricing matrix
                   let totalPrice = 1153; // fallback
+                  let savings = 157; // fallback
                   if (selectedPlan.pricing_matrix) {
                     const matrix = selectedPlan.pricing_matrix as any;
                     const periodData = matrix['36'];
                     if (periodData && periodData[voluntaryExcess.toString()]) {
                       totalPrice = periodData[voluntaryExcess.toString()].price || 1153;
+                      savings = periodData[voluntaryExcess.toString()].save || 157;
                     }
                   }
                   
                   const monthlyEquivalent = Math.round(totalPrice / 12);
-                  const savings = 157; // Fixed savings for now
                   return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
                 })();
                 
