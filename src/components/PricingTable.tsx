@@ -740,7 +740,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipTrigger>
                   <TooltipContent side="left" className="w-80 p-4">
                     <div className="space-y-3">
-                      <p className="text-sm text-foreground">
+                      <p className="text-sm text-foreground font-medium">
+                        Confidence for the everyday drive.
+                      </p>
+                      <p className="text-sm text-muted-foreground">
                         Designed for everyday motoring peace of mind, this plan covers the most common and affordable mechanical and electrical faults—not wear and tear or consumables.
                       </p>
                       <div>
@@ -790,7 +793,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipTrigger>
                   <TooltipContent side="left" className="w-80 p-4">
                     <div className="space-y-3">
-                      <p className="text-sm text-foreground">
+                      <p className="text-sm text-foreground font-medium">
+                        Balanced protection for life's bigger bumps.
+                      </p>
+                      <p className="text-sm text-muted-foreground">
                         A comprehensive option that balances cost and coverage, ideal for drivers who want broader protection.
                       </p>
                       <div>
@@ -837,7 +843,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </TooltipTrigger>
                   <TooltipContent side="left" className="w-80 p-4">
                     <div className="space-y-3">
-                      <p className="text-sm text-foreground">
+                      <p className="text-sm text-foreground font-medium">
+                        Top-tier cover for total peace of mind.
+                      </p>
+                      <p className="text-sm text-muted-foreground">
                         Premium-level protection for high-value repairs, including major gearbox work.
                       </p>
                       <div>
