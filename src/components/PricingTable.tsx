@@ -738,7 +738,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="left" className="w-80 p-4">
+                  <TooltipContent side="top" className="w-72 md:w-80 p-4 max-w-[90vw]">
                     <div className="space-y-3">
                       <p className="text-sm text-foreground font-medium">
                         Confidence for the everyday drive.
@@ -791,7 +791,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="left" className="w-80 p-4">
+                  <TooltipContent side="top" className="w-72 md:w-80 p-4 max-w-[90vw]">
                     <div className="space-y-3">
                       <p className="text-sm text-foreground font-medium">
                         Balanced protection for life's bigger bumps.
@@ -841,7 +841,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="left" className="w-80 p-4">
+                  <TooltipContent side="top" className="w-72 md:w-80 p-4 max-w-[90vw]">
                     <div className="space-y-3">
                       <p className="text-sm text-foreground font-medium">
                         Top-tier cover for total peace of mind.
