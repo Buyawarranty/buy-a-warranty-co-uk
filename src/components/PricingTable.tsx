@@ -1267,6 +1267,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             {/* Add-On Protection Packages Section */}
             <AddOnProtectionPackages 
               selectedAddOns={selectedProtectionAddOns}
+              paymentType={paymentType}
               onAddOnChange={(addOnKey, selected) => 
                 setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
               }

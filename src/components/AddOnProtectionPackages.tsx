@@ -6,6 +6,7 @@ import { ChevronDown, ChevronUp, Check } from 'lucide-react';
 interface AddOnProtectionPackagesProps {
   selectedAddOns: {[key: string]: boolean};
   onAddOnChange: (addOnKey: string, selected: boolean) => void;
+  paymentType: '12months' | '24months' | '36months';
 }
 
 const addOnPackages = [
@@ -103,7 +104,8 @@ const addOnPackages = [
 
 const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
   selectedAddOns,
-  onAddOnChange
+  onAddOnChange,
+  paymentType
 }) => {
   const [expandedItems, setExpandedItems] = useState<{[key: string]: boolean}>({});
 
@@ -122,6 +124,18 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
     });
   };
 
+  // Calculate the number of months based on payment type
+  const getMonthsFromPaymentType = (paymentType: string) => {
+    switch (paymentType) {
+      case '12months': return 12;
+      case '24months': return 24;
+      case '36months': return 36;
+      default: return 12;
+    }
+  };
+
+  const months = getMonthsFromPaymentType(paymentType);
+
   return (
     <div className="mt-8 mb-8">
       <div className="max-w-6xl mx-auto px-4">
@@ -132,60 +146,68 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {addOnPackages.map((addon) => (
-              <div 
-                key={addon.key}
-                className={`p-3 rounded-lg transition-all duration-200 bg-white ${
-                  selectedAddOns[addon.key] 
-                    ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                    : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
-                }`}
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-start gap-3 flex-1">
-                    <div className="text-lg mt-1">{addon.icon}</div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
-                      <p className="text-xs text-muted-foreground mb-2">{addon.shortDescription}</p>
-                      <div className="text-lg font-bold text-black">
-                        £{addon.price}{addon.priceType === 'monthly' ? '/mo' : ''}
-                        {addon.priceType === 'one-off' && (
-                          <span className="text-xs font-normal text-muted-foreground ml-1">one-time fee</span>
-                        )}
+            {addOnPackages.map((addon) => {
+              // Calculate total price based on duration for monthly add-ons
+              const totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
+              const priceDisplay = addon.priceType === 'monthly' 
+                ? `£${totalPrice} (£${addon.price}/mo × ${months} months)`
+                : `£${addon.price}`;
+              
+              return (
+                <div 
+                  key={addon.key}
+                  className={`p-3 rounded-lg transition-all duration-200 bg-white ${
+                    selectedAddOns[addon.key] 
+                      ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                      : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="text-lg mt-1">{addon.icon}</div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
+                        <p className="text-xs text-muted-foreground mb-2">{addon.shortDescription}</p>
+                        <div className="text-lg font-bold text-black">
+                          {priceDisplay}
+                          {addon.priceType === 'one-off' && (
+                            <span className="text-xs font-normal text-muted-foreground ml-1">one-time fee</span>
+                          )}
+                        </div>
                       </div>
                     </div>
+                    <Checkbox 
+                      checked={selectedAddOns[addon.key] || false}
+                      onCheckedChange={(checked) => onAddOnChange(addon.key, !!checked)}
+                      className="h-5 w-5 border-2 border-black data-[state=checked]:bg-black data-[state=checked]:border-black"
+                    />
                   </div>
-                  <Checkbox 
-                    checked={selectedAddOns[addon.key] || false}
-                    onCheckedChange={(checked) => onAddOnChange(addon.key, !!checked)}
-                    className="h-5 w-5 border-2 border-black data-[state=checked]:bg-black data-[state=checked]:border-black"
-                  />
-                </div>
 
-                <Collapsible open={expandedItems[addon.key]} onOpenChange={() => toggleExpanded(addon.key)}>
-                  <div className="flex justify-end">
-                    <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors">
-                      <span>Read more</span>
-                      {expandedItems[addon.key] ? (
-                        <ChevronUp className="h-4 w-4" strokeWidth={3} />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" strokeWidth={3} />
-                      )}
-                    </CollapsibleTrigger>
-                  </div>
-                  <CollapsibleContent className="mt-3">
-                    <div className="space-y-2">
-                      {addon.bulletPoints.map((point, index) => (
-                        <div key={index} className="flex items-start gap-2">
-                          <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" strokeWidth={3} />
-                          <span className="text-sm text-muted-foreground">{point}</span>
-                        </div>
-                      ))}
+                  <Collapsible open={expandedItems[addon.key]} onOpenChange={() => toggleExpanded(addon.key)}>
+                    <div className="flex justify-end">
+                      <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors">
+                        <span>Read more</span>
+                        {expandedItems[addon.key] ? (
+                          <ChevronUp className="h-4 w-4" strokeWidth={3} />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" strokeWidth={3} />
+                        )}
+                      </CollapsibleTrigger>
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              </div>
-            ))}
+                    <CollapsibleContent className="mt-3">
+                      <div className="space-y-2">
+                        {addon.bulletPoints.map((point, index) => (
+                          <div key={index} className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" strokeWidth={3} />
+                            <span className="text-sm text-muted-foreground">{point}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
