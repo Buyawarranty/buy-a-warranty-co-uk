@@ -89,7 +89,7 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
   const percentage = ((value - min) / (max - min)) * 100;
 
   return (
-    <div className="py-2">
+    <div className="py-2 px-4">
       {/* Slider Track */}
       <div 
         ref={sliderRef}
