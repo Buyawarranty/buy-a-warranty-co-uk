@@ -83,33 +83,33 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
           <p className="text-muted-foreground">Enhance your warranty with optional protection covers</p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {addOnPackages.map((addon) => (
             <div 
               key={addon.key}
-              className={`p-6 rounded-lg border-2 transition-all duration-200 ${
+              className={`p-4 rounded-lg transition-all duration-200 ${
                 selectedAddOns[addon.key] 
-                  ? 'border-primary bg-primary/5 shadow-lg' 
-                  : 'border-border bg-card hover:border-primary/50 hover:shadow-md'
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="text-2xl">{addon.icon}</div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-xl">{addon.icon}</div>
                 <Checkbox 
                   checked={selectedAddOns[addon.key] || false}
                   onCheckedChange={(checked) => onAddOnChange(addon.key, !!checked)}
-                  className="h-5 w-5"
+                  className="h-4 w-4"
                 />
               </div>
               
-              <h4 className="font-semibold text-lg text-foreground mb-2">{addon.title}</h4>
-              <p className="text-sm text-muted-foreground mb-4">{addon.shortDescription}</p>
+              <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
+              <p className="text-xs text-muted-foreground mb-3">{addon.shortDescription}</p>
               
-              <div className="mb-4">
-                <div className="text-xl font-bold text-primary">
+              <div className="mb-3">
+                <div className="text-lg font-bold text-primary">
                   £{addon.price}{addon.priceType === 'monthly' ? '/mo' : ''}
                   {addon.priceType === 'one-off' && (
-                    <span className="text-sm font-normal text-muted-foreground ml-1">one-time fee</span>
+                    <span className="text-xs font-normal text-muted-foreground ml-1">one-time fee</span>
                   )}
                 </div>
               </div>
