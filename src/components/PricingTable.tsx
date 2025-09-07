@@ -1273,7 +1273,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             />
             
             {/* Pricing Summary and CTA */}
-            <div className="flex flex-col lg:flex-row items-center justify-center gap-6 mt-8">
+            <div className="flex justify-end mt-8">
               {/* Prominent Pricing Display */}
               <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border-2 border-orange-200 shadow-lg">
                 <div className="flex items-center justify-between gap-6">
