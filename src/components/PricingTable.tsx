@@ -577,8 +577,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
-            
-            <TrustpilotHeader className="flex-1 justify-center" />
           </div>
         </div>
       </div>
@@ -595,15 +593,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
               <h2 className="text-xl font-semibold text-foreground">🚗 Vehicle Information</h2>
             </div>
-            <Button
-              onClick={onBack}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-            >
-              <Edit className="h-4 w-4" />
-              Change vehicle
-            </Button>
+            <div className="flex items-center gap-4">
+              <TrustpilotHeader className="h-8 sm:h-10" />
+              <Button
+                onClick={onBack}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+              >
+                <Edit className="h-4 w-4" />
+                Change vehicle
+              </Button>
+            </div>
           </div>
            
             {vehicleData && (
