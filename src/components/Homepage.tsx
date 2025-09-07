@@ -331,7 +331,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-white py-4 sm:py-6 lg:py-8">
+      <section className="bg-white py-2 sm:py-4 lg:py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
@@ -467,19 +467,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 />
               </div>
               
-              {/* Trustpilot Logo positioned between hybrid icon and panda's feet */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2" style={{transform: 'translateX(-50%) translateY(40px)'}}>
-                <div className="text-center mb-4">
-                  <img 
-                    src="/lovable-uploads/39555042-4eb1-436c-a0b8-910fb79ac11c.png" 
-                    alt="Trustpilot with 5 star rating" 
-                    className="h-6 sm:h-8 mx-auto"
-                  />
-                </div>
-              </div>
-
               {/* Vehicle Types positioned underneath the panda's feet */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-20">
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-8">
                 <div className="flex items-center justify-center gap-6">
                   <div className="flex items-center space-x-1">
                     <Car className="w-5 h-5 text-green-500" />
@@ -507,8 +496,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           </div>
         </div>
       </section>
-
-
 
       {/* Extended Warranty Video Section */}
       <section className="py-12 md:py-20 bg-brand-gray-bg">
