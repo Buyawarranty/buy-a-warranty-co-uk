@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle } from 'lucide-react';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
@@ -629,7 +629,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <div className="space-y-6">
                     {/* Order Summary Card */}
                     <div className="bg-white rounded-lg shadow-sm p-6 border">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-gray-900">Order Summary</h2>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={onBack}
+                          className="flex items-center gap-2"
+                        >
+                          <Edit className="w-4 h-4" />
+                          Edit
+                        </Button>
+                      </div>
                       
                       {/* Confidence Message */}
                       <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -641,10 +652,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
                        {/* Plan Details */}
                        <div className="space-y-4 mb-6">
-                         <div className="flex justify-between">
-                           <span className="text-gray-600">Plan:</span>
-                           <span className="font-semibold">{planName}</span>
-                         </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Plan:</span>
+                            <span className="font-semibold">Platinum</span>
+                          </div>
                          <div className="flex justify-between">
                            <span className="text-gray-600">Claim Limit:</span>
                            <span className="font-semibold">£{getClaimLimitAmount(selectedClaimLimit).toLocaleString()}</span>
@@ -655,33 +666,39 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                              {getWarrantyDurationDisplay(paymentType)}
                            </span>
                          </div>
-                         <div className="flex justify-between">
-                           <span className="text-gray-600">Voluntary Excess:</span>
-                           <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
-                         </div>
-                       </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Voluntary Excess:</span>
+                            <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
+                          </div>
+                        </div>
 
-                        {/* Protection Add-ons */}
+                        {/* Optional Add-On Protection Summary */}
                         {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
                           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                            <h4 className="font-semibold text-blue-800 mb-3">Protection Add-ons</h4>
+                            <h4 className="font-semibold text-blue-800 mb-3">Optional Add-On Protection</h4>
                             <div className="space-y-2">
+                              {pricingData.protectionAddOns.breakdown && (
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-blue-700">🚨 24/7 Breakdown Recovery</span>
+                                  <span className="font-medium text-blue-800">£5/mo</span>
+                                </div>
+                              )}
                               {pricingData.protectionAddOns.motRepair && (
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-blue-700">🔧 MOT Repair Cover (yearly)</span>
-                                  <span className="font-medium text-blue-800">£89</span>
+                                  <span className="text-blue-700">🔧 MOT Repair Cover</span>
+                                  <span className="font-medium text-blue-800">£6/mo</span>
                                 </div>
                               )}
                               {pricingData.protectionAddOns.wearTear && (
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-blue-700">🛠️ Wear & Tear Cover (yearly)</span>
-                                  <span className="font-medium text-blue-800">£89</span>
+                                  <span className="text-blue-700">🛠️ Wear & Tear Cover</span>
+                                  <span className="font-medium text-blue-800">£89/year</span>
                                 </div>
                               )}
                               {pricingData.protectionAddOns.transfer && (
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-blue-700">🔁 Transfer Cover (one-time)</span>
-                                  <span className="font-medium text-blue-800">£30</span>
+                                  <span className="text-blue-700">🔁 Transfer Cover</span>
+                                  <span className="font-medium text-blue-800">£30 one-time</span>
                                 </div>
                               )}
                             </div>
