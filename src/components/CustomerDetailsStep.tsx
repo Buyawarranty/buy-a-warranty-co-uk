@@ -825,8 +825,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                               <p className="text-sm text-gray-600">
                                 {pricingData.installmentBreakdown?.hasTransfer ? (
                                   <>
-                                    1st payment: £{Math.round((pricingData.installmentBreakdown.firstInstallment || 0) * (discountValidation?.isValid ? (discountValidation.finalAmount / pricingData.totalPrice) : hasAutoDiscount ? 0.9 : 1) * 100) / 100}, 
-                                    then £{Math.round((pricingData.installmentBreakdown.standardInstallment || 0) * (discountValidation?.isValid ? (discountValidation.finalAmount / pricingData.totalPrice) : hasAutoDiscount ? 0.9 : 1) * 100) / 100} × 11 payments = £{Math.round(discountedBumperPrice)} total
+                                    Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
                                   </>
                                 ) : (
                                   <>

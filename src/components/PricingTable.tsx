@@ -1327,29 +1327,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         // Calculate monthly amounts
                         const monthlyBasePrice = Math.round(basePrice / 12 * 100) / 100;
                         const monthlyRecurringAddons = Math.round(recurringAddonTotal / 12 * 100) / 100;
-                        const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons;
-                        const firstInstallment = hasTransfer ? standardMonthlyInstallment + 30 : standardMonthlyInstallment;
+                        const monthlyTransferFee = hasTransfer ? Math.round(30 / 12 * 100) / 100 : 0;
+                        const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons + monthlyTransferFee;
                         
-                        if (hasTransfer && firstInstallment !== standardMonthlyInstallment) {
-                          return (
-                            <>
-                              <div className="text-xl font-semibold text-gray-800">
-                                <div>1st payment: £{Math.round(firstInstallment * 100) / 100}</div>
-                                <div>Payments 2-12: £{Math.round(standardMonthlyInstallment * 100) / 100} each</div>
-                              </div>
-                              <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
-                            </>
-                          );
-                        } else {
-                          return (
-                            <>
-                              <div className="text-xl font-semibold text-gray-800">
-                                £{Math.round(standardMonthlyInstallment * 100) / 100} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
-                              </div>
-                              <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
-                            </>
-                          );
-                        }
+                        return (
+                          <>
+                            <div className="text-xl font-semibold text-gray-800">
+                              £{Math.round(standardMonthlyInstallment * 100) / 100} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
+                          </>
+                        );
                       })()}
                     </div>
                   </div>
