@@ -679,13 +679,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <button
                 key={amount}
                 onClick={() => toggleVoluntaryExcess(amount)}
-                className={`p-6 rounded-lg transition-all duration-200 text-center relative ${
+                className={`p-4 rounded-lg transition-all duration-200 text-center relative ${
                   voluntaryExcess === amount
                     ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                     : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                 }`}
               >
-                <div className="text-2xl font-bold text-black mb-2">£{amount}</div>
+                <div className="text-xl font-bold text-black">£{amount}</div>
               </button>
             ))}
           </div>
