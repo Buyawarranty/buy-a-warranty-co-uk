@@ -447,31 +447,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Warranty Quote</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">You're almost covered</h1>
         </div>
 
-        {/* Section 1: What's covered & Checkout */}
-        <Collapsible defaultOpen={true} className="mb-6">
-          <Card className="border border-gray-200">
-            <CollapsibleTrigger className="w-full">
-              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                     <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                       5
-                     </div>
-                    <CardTitle className="text-lg font-semibold">What's covered</CardTitle>
-                  </div>
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
-                </div>
-              </CardHeader>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <CardContent className="pt-0">
-                <div className="grid lg:grid-cols-2 gap-8">
+        {/* Customer Details Form */}
+        <Card className="border border-gray-200">
+          <CardContent className="pt-6">
+            <div className="grid lg:grid-cols-2 gap-8">
                   {/* Left Column - Personal Details Form */}
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-6">Complete Your Details</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-6">Tell us about yourself</h3>
                     
                     <form onSubmit={handleSubmit} className="space-y-6">
                       {/* Name Fields */}
@@ -541,7 +526,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
                       {/* Address Details */}
                       <div className="pt-4">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">Address Details</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Where should we send your documents?</h3>
                         
                         <div className="space-y-4">
                           <div>
@@ -893,9 +878,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   </div>
                 </div>
               </CardContent>
-            </CollapsibleContent>
-          </Card>
-        </Collapsible>
+            </Card>
       </div>
     </div>
   );
