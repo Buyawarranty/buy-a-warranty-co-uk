@@ -98,7 +98,7 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
       >
         {/* Selected Area (Brand Orange) */}
         <div 
-          className="absolute top-0 left-0 h-full bg-brand-orange rounded-lg transition-all duration-150"
+          className="absolute top-0 left-0 h-full bg-primary rounded-lg transition-all duration-150"
           style={{ width: `${percentage}%` }}
         />
         
