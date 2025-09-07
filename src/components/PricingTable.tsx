@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
 
@@ -82,8 +83,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   
   // Add-ons state
   const [selectedProtectionAddOns, setSelectedProtectionAddOns] = useState<{[key: string]: boolean}>({
+    breakdown: false,
     motRepair: false,
+    tyre: false,
     wearTear: false,
+    european: false,
     transfer: false
   });
   
@@ -416,11 +420,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     const selectedAddOnCount = Object.values(selectedAddOns[planId] || {}).filter(Boolean).length;
     const planAddOnPrice = selectedAddOnCount * 2; // £2 per add-on per month
     
-    // Protection package add-on prices
+    // Protection package add-on prices (convert monthly to yearly for total)
     let protectionPrice = 0;
-    if (selectedProtectionAddOns.motRepair) protectionPrice += 89;
-    if (selectedProtectionAddOns.wearTear) protectionPrice += 89;
-    if (selectedProtectionAddOns.transfer) protectionPrice += 30;
+    if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * 12; // £5/mo = £60/year
+    if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * 12; // £6/mo = £72/year
+    if (selectedProtectionAddOns.tyre) protectionPrice += 5 * 12; // £5/mo = £60/year
+    if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * 12; // £5/mo = £60/year
+    if (selectedProtectionAddOns.european) protectionPrice += 3 * 12; // £3/mo = £36/year
+    if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
     
     return planAddOnPrice + protectionPrice;
   };
@@ -461,11 +468,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
       
       // Protection add-ons: MOT and Wear&Tear are yearly (spread over 12 months), Transfer is one-time
-      let recurringAddonTotal = 0; // MOT + Wear&Tear (spread monthly)
+      let recurringAddonTotal = 0; // Monthly add-ons (spread monthly)
       let oneTimeAddonTotal = 0;   // Transfer (added to first installment only)
       
-      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 89;
-      if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 89;
+      if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * 12; // £5/mo
+      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * 12; // £6/mo
+      if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * 12; // £5/mo
+      if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * 12; // £5/mo
+      if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * 12; // £3/mo
       if (selectedProtectionAddOns.transfer) oneTimeAddonTotal += 30;
       
       // Calculate monthly amounts
@@ -1249,81 +1259,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
             
             {/* Add-On Protection Packages Section */}
-            <div className="mt-12 mb-8">
-              <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-foreground mb-2">Add-On Protection Packages</h3>
-                  <p className="text-gray-600">Enhance your warranty with optional protection covers</p>
-                </div>
-                
-                <div className="grid md:grid-cols-3 gap-6">
-                  {/* MOT Repair Cover */}
-                  <div 
-                    className={`p-6 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-                      selectedProtectionAddOns.motRepair 
-                        ? 'border-orange-500 bg-orange-50 shadow-lg' 
-                        : 'border-gray-200 bg-white hover:border-orange-300 hover:shadow-md'
-                    }`}
-                    onClick={() => setSelectedProtectionAddOns(prev => ({ ...prev, motRepair: !prev.motRepair }))}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="text-2xl">🔧</div>
-                      <Checkbox 
-                        checked={selectedProtectionAddOns.motRepair}
-                        className="h-5 w-5"
-                      />
-                    </div>
-                    <h4 className="font-semibold text-lg text-foreground mb-2">MOT Repair Cover</h4>
-                    <p className="text-sm text-gray-600 mb-4">Avoid unexpected costs during your MOT. This cover helps with repairs that could otherwise fail your test. Stay roadworthy without the worry.</p>
-                    <div className="text-xl font-bold text-orange-600">£89/year</div>
-                    <div className="text-sm text-gray-500">or £7.42/mo (12 interest-free payments)</div>
-                  </div>
-                  
-                  {/* Wear & Tear Cover */}
-                  <div 
-                    className={`p-6 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-                      selectedProtectionAddOns.wearTear 
-                        ? 'border-orange-500 bg-orange-50 shadow-lg' 
-                        : 'border-gray-200 bg-white hover:border-orange-300 hover:shadow-md'
-                    }`}
-                    onClick={() => setSelectedProtectionAddOns(prev => ({ ...prev, wearTear: !prev.wearTear }))}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="text-2xl">🛠️</div>
-                      <Checkbox 
-                        checked={selectedProtectionAddOns.wearTear}
-                        className="h-5 w-5"
-                      />
-                    </div>
-                    <h4 className="font-semibold text-lg text-foreground mb-2">Wear & Tear Cover</h4>
-                    <p className="text-sm text-gray-600 mb-4">Parts wear out — that's a fact. This cover protects you against the natural ageing of your vehicle's components, so you're not left footing the bill.</p>
-                    <div className="text-xl font-bold text-orange-600">£89/year</div>
-                    <div className="text-sm text-gray-500">or £7.42/mo (12 interest-free payments)</div>
-                  </div>
-                  
-                  {/* Transfer Cover */}
-                  <div 
-                    className={`p-6 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-                      selectedProtectionAddOns.transfer 
-                        ? 'border-orange-500 bg-orange-50 shadow-lg' 
-                        : 'border-gray-200 bg-white hover:border-orange-300 hover:shadow-md'
-                    }`}
-                    onClick={() => setSelectedProtectionAddOns(prev => ({ ...prev, transfer: !prev.transfer }))}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="text-2xl">🔁</div>
-                      <Checkbox 
-                        checked={selectedProtectionAddOns.transfer}
-                        className="h-5 w-5"
-                      />
-                    </div>
-                    <h4 className="font-semibold text-lg text-foreground mb-2">Transfer Cover</h4>
-                    <p className="text-sm text-gray-600 mb-4">Selling your vehicle? No problem. Transfer your warranty to the new owner and boost your resale value. It's a small price for a big perk.</p>
-                    <div className="text-xl font-bold text-orange-600">£30 <span className="text-sm font-normal text-gray-500">one-time fee</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <AddOnProtectionPackages 
+              selectedAddOns={selectedProtectionAddOns}
+              onAddOnChange={(addOnKey, selected) => 
+                setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
+              }
+            />
             
             {/* Pricing Summary and CTA */}
             <div className="flex flex-col lg:flex-row items-end justify-between gap-6 mt-8">
@@ -1356,11 +1297,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
                       const planAddOnPrice = planAddOnCount * 2 * 12; // £2 per add-on per month * 12 months
                       
-                      // Protection addon prices: £89 addons + £30 one-time
+                      // Protection addon prices: monthly add-ons converted to yearly + one-time
                       let protectionPrice = 0;
-                      if (selectedProtectionAddOns.motRepair) protectionPrice += 89;
-                      if (selectedProtectionAddOns.wearTear) protectionPrice += 89;
-                      if (selectedProtectionAddOns.transfer) protectionPrice += 30;
+                      if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * 12; // £5/mo = £60/year
+                      if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * 12; // £6/mo = £72/year
+                      if (selectedProtectionAddOns.tyre) protectionPrice += 5 * 12; // £5/mo = £60/year
+                      if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * 12; // £5/mo = £60/year
+                      if (selectedProtectionAddOns.european) protectionPrice += 3 * 12; // £3/mo = £36/year
+                      if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
                       
                       return basePrice + planAddOnPrice + protectionPrice;
                     })()}
@@ -1377,12 +1321,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
                       const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
                       
-                      // Protection add-ons: MOT and Wear&Tear are yearly (spread over 12 months), Transfer is one-time
+                      // Protection add-ons: Monthly add-ons are yearly (spread over 12 months), Transfer is one-time
                       let recurringAddonTotal = 0;
                       let hasTransfer = false;
                       
-                      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 89;
-                      if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 89;
+                      if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
+                      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * 12; // £6/mo = £72/year
+                      if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
+                      if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
+                      if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * 12; // £3/mo = £36/year
                       if (selectedProtectionAddOns.transfer) hasTransfer = true;
                       
                       // Calculate monthly amounts
