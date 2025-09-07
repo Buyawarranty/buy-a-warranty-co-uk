@@ -204,8 +204,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white shadow-sm py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="bg-white shadow-sm py-3 sm:py-4">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center">
@@ -249,10 +249,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
-                  size="sm"
-                  className="lg:hidden p-2"
+                  size="lg"
+                  className="lg:hidden p-3 min-w-[48px] min-h-[48px]"
                 >
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-7 w-7" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
@@ -272,35 +272,35 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <nav className="flex flex-col space-y-6 flex-1">
                     <a 
                       href="#" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Warranty Plans
                     </a>
                     <a 
                       href="/protected" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       How You're Protected
                     </a>
                     <a 
                       href="/make-a-claim" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Make a Claim
                     </a>
                     <a 
                       href="#" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       FAQ
                     </a>
                     <a 
                       href="/contact-us" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Contact Us
@@ -311,13 +311,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <div className="space-y-4 pt-6 mt-auto">
                     <Button 
                       variant="outline" 
-                      className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                      className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-xl py-4 min-h-[48px]"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       WhatsApp Us
                     </Button>
                     <Button 
-                      className="w-full bg-primary text-white hover:bg-primary/90 text-lg py-3"
+                      className="w-full bg-primary text-white hover:bg-primary/90 text-xl py-4 min-h-[48px]"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Get my quote
@@ -331,15 +331,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-white py-2 sm:py-4 lg:py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-4 sm:py-4 lg:py-6">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
             <div className="space-y-4">
 
               {/* Main Headline */}
-              <div className="space-y-3 mb-4 sm:mb-6">
-                <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-gray-900 leading-tight">
+              <div className="space-y-3 mb-6 sm:mb-6">
+                <h1 className="text-4xl sm:text-4xl lg:text-6xl font-black text-gray-900 leading-tight">
                   We{"'"}ve got you
                   <br className="hidden sm:block" />
                   <span className="sm:hidden"> </span>covered
@@ -368,7 +368,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <div className="space-y-3 max-w-lg">
                 <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black">
                   {/* UK Section with flag */}
-                  <div className="bg-blue-600 text-white font-bold px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[60px] sm:min-w-[80px] h-[56px] sm:h-[66px]">
+                  <div className="bg-blue-600 text-white font-bold px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[70px] sm:min-w-[80px] h-[60px] sm:h-[66px]">
                     <div className="flex flex-col items-center">
                       <div className="text-base sm:text-lg leading-tight mb-1">🇬🇧</div>
                       <div className="text-sm sm:text-base font-bold leading-none">UK</div>
@@ -380,7 +380,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     value={regNumber}
                     onChange={handleRegChange}
                     placeholder="Enter reg"
-                    className="bg-yellow-400 border-none outline-none text-lg sm:text-xl text-black flex-1 font-bold placeholder:text-black/70 px-3 sm:px-4 py-3 sm:py-4 uppercase tracking-wider h-[56px] sm:h-[66px]"
+                    className="bg-yellow-400 border-none outline-none text-lg sm:text-xl text-black flex-1 font-bold placeholder:text-black/70 px-4 sm:px-4 py-3 sm:py-4 uppercase tracking-wider h-[60px] sm:h-[66px]"
                     maxLength={8}
                   />
                 </div>
@@ -432,7 +432,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="space-y-2">
                   <Button 
                     onClick={handleGetQuote}
-                    className={`w-full px-6 sm:px-12 h-[56px] sm:h-[66px] text-lg sm:text-xl font-bold rounded-lg transition-all ${
+                    className={`w-full px-6 sm:px-12 h-[60px] sm:h-[66px] text-lg sm:text-xl font-bold rounded-lg transition-all ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-brand-orange hover:bg-orange-600 text-white btn-slow-pulsate'
@@ -499,7 +499,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Extended Warranty Video Section */}
       <section className="py-12 md:py-20 bg-brand-gray-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Video */}
             <div className="relative aspect-video">
@@ -536,7 +536,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Step 1 - Enter Your Reg Plate */}
       <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}
             <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
@@ -588,7 +588,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Step 2 - Choose Your Plan */}
       <section className="py-12 md:py-20 bg-brand-gray-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Panda with plan badges */}
             <div className="relative text-center">
@@ -649,7 +649,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Step 3 - Drive With Confidence */}
       <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}
             <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
@@ -690,7 +690,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* What's Included Section */}
       <section className="py-12 md:py-20 bg-gradient-to-r from-blue-50 to-orange-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 text-center">
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
               What's <span className="text-brand-orange">Included?</span>
@@ -734,7 +734,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Coverage Showcase Section */}
       <section className="py-12 md:py-20 bg-brand-gray-bg text-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           {/* Trustpilot Rating */}
           <div className="flex justify-center items-center mb-6 md:mb-8">
             <div className="flex items-center space-x-2">
@@ -763,7 +763,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Additional Cover Options Section */}
       <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 text-center">
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
               Additional Cover <span className="text-brand-orange">Options</span>

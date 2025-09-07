@@ -7,7 +7,7 @@ const WebsiteFooter = () => {
     <div className="relative">
       {/* Trustpilot-style customer rating section */}
       <section className="bg-gray-50 py-12 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <span className="text-gray-700 font-medium">Excellent</span>
             <div className="flex space-x-1">
@@ -29,7 +29,7 @@ const WebsiteFooter = () => {
 
       {/* Main Footer */}
       <footer className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
               Get help when you need it most
