@@ -1267,98 +1267,100 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             />
             
             {/* Pricing Summary and CTA */}
-            <div className="flex flex-col lg:flex-row items-end justify-between gap-6 mt-8">
-              {/* Animated CTA Button */}
-              <div className="animate-bounce">
-                <Button 
-                  size="lg"
-                  onClick={() => {
-                    // Use the selected plan based on claim limit
-                    handleSelectPlan();
-                  }}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group min-w-[180px]"
-                >
-                  Confirm & Pay
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
-                </Button>
-              </div>
-
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-6 mt-8">
               {/* Prominent Pricing Display */}
               <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border-2 border-orange-200 shadow-lg">
-                <div className="space-y-2">
-                  {/* Current Price Display */}
-                  <div className="text-3xl font-bold text-orange-600">
-                    £{(() => {
-                      const selectedPlan = getSelectedPlan();
-                      if (!selectedPlan) return calculatePlanPrice();
-                      const basePrice = calculatePlanPrice();
-                      
-                      // Calculate add-on prices correctly
-                      const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                      const planAddOnPrice = planAddOnCount * 2 * 12; // £2 per add-on per month * 12 months
-                      
-                      // Protection addon prices: monthly add-ons converted to yearly + one-time
-                      let protectionPrice = 0;
-                      if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * 12; // £5/mo = £60/year
-                      if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * 12; // £6/mo = £72/year
-                      if (selectedProtectionAddOns.tyre) protectionPrice += 5 * 12; // £5/mo = £60/year
-                      if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * 12; // £5/mo = £60/year
-                      if (selectedProtectionAddOns.european) protectionPrice += 3 * 12; // £3/mo = £36/year
-                      if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
-                      
-                      return basePrice + planAddOnPrice + protectionPrice;
-                    })()}
-                    <span className="text-sm font-normal text-gray-600 ml-2">total</span>
+                <div className="flex items-center justify-between gap-6">
+                  <div className="space-y-2">
+                    {/* Current Price Display */}
+                    <div className="text-3xl font-bold text-orange-600">
+                      £{(() => {
+                        const selectedPlan = getSelectedPlan();
+                        if (!selectedPlan) return calculatePlanPrice();
+                        const basePrice = calculatePlanPrice();
+                        
+                        // Calculate add-on prices correctly
+                        const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
+                        const planAddOnPrice = planAddOnCount * 2 * 12; // £2 per add-on per month * 12 months
+                        
+                        // Protection addon prices: monthly add-ons converted to yearly + one-time
+                        let protectionPrice = 0;
+                        if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * 12; // £5/mo = £60/year
+                        if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * 12; // £6/mo = £72/year
+                        if (selectedProtectionAddOns.tyre) protectionPrice += 5 * 12; // £5/mo = £60/year
+                        if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * 12; // £5/mo = £60/year
+                        if (selectedProtectionAddOns.european) protectionPrice += 3 * 12; // £3/mo = £36/year
+                        if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
+                        
+                        return basePrice + planAddOnPrice + protectionPrice;
+                      })()}
+                      <span className="text-sm font-normal text-gray-600 ml-2">total</span>
+                    </div>
+                    
+                    {/* Monthly Instalments */}
+                    <div className="border-t border-orange-200 pt-2">
+                      {(() => {
+                        const selectedPlan = getSelectedPlan();
+                        if (!selectedPlan) return null;
+                        
+                        const basePrice = calculatePlanPrice();
+                        const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
+                        const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
+                        
+                        // Protection add-ons: Monthly add-ons are yearly (spread over 12 months), Transfer is one-time
+                        let recurringAddonTotal = 0;
+                        let hasTransfer = false;
+                        
+                        if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
+                        if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * 12; // £6/mo = £72/year
+                        if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
+                        if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
+                        if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * 12; // £3/mo = £36/year
+                        if (selectedProtectionAddOns.transfer) hasTransfer = true;
+                        
+                        // Calculate monthly amounts
+                        const monthlyBasePrice = Math.round(basePrice / 12 * 100) / 100;
+                        const monthlyRecurringAddons = Math.round(recurringAddonTotal / 12 * 100) / 100;
+                        const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons;
+                        const firstInstallment = hasTransfer ? standardMonthlyInstallment + 30 : standardMonthlyInstallment;
+                        
+                        if (hasTransfer && firstInstallment !== standardMonthlyInstallment) {
+                          return (
+                            <>
+                              <div className="text-xl font-semibold text-gray-800">
+                                <div>1st payment: £{Math.round(firstInstallment * 100) / 100}</div>
+                                <div>Payments 2-12: £{Math.round(standardMonthlyInstallment * 100) / 100} each</div>
+                              </div>
+                              <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
+                            </>
+                          );
+                        } else {
+                          return (
+                            <>
+                              <div className="text-xl font-semibold text-gray-800">
+                                £{Math.round(standardMonthlyInstallment * 100) / 100} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
+                              </div>
+                              <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
+                            </>
+                          );
+                        }
+                      })()}
+                    </div>
                   </div>
                   
-                  {/* Monthly Instalments */}
-                  <div className="border-t border-orange-200 pt-2">
-                    {(() => {
-                      const selectedPlan = getSelectedPlan();
-                      if (!selectedPlan) return null;
-                      
-                      const basePrice = calculatePlanPrice();
-                      const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                      const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
-                      
-                      // Protection add-ons: Monthly add-ons are yearly (spread over 12 months), Transfer is one-time
-                      let recurringAddonTotal = 0;
-                      let hasTransfer = false;
-                      
-                      if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
-                      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * 12; // £6/mo = £72/year
-                      if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
-                      if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
-                      if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * 12; // £3/mo = £36/year
-                      if (selectedProtectionAddOns.transfer) hasTransfer = true;
-                      
-                      // Calculate monthly amounts
-                      const monthlyBasePrice = Math.round(basePrice / 12 * 100) / 100;
-                      const monthlyRecurringAddons = Math.round(recurringAddonTotal / 12 * 100) / 100;
-                      const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons;
-                      const firstInstallment = hasTransfer ? standardMonthlyInstallment + 30 : standardMonthlyInstallment;
-                      
-                      if (hasTransfer && firstInstallment !== standardMonthlyInstallment) {
-                        return (
-                          <>
-                            <div className="text-xl font-semibold text-gray-800">
-                              <div>1st payment: £{Math.round(firstInstallment * 100) / 100}</div>
-                              <div>Payments 2-12: £{Math.round(standardMonthlyInstallment * 100) / 100} each</div>
-                            </div>
-                            <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
-                          </>
-                        );
-                      } else {
-                        return (
-                          <>
-                            <div className="text-xl font-semibold text-gray-800">
-                              £{Math.round(standardMonthlyInstallment * 100) / 100} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
-                            </div>
-                            <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
-                          </>
-                        );
-                      }
-                    })()}
+                  {/* Animated CTA Button on the right */}
+                  <div className="animate-[bounce_4s_ease-in-out_infinite]">
+                    <Button 
+                      size="lg"
+                      onClick={() => {
+                        // Use the selected plan based on claim limit
+                        handleSelectPlan();
+                      }}
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group min-w-[180px]"
+                    >
+                      Confirm & Pay
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                    </Button>
                   </div>
                 </div>
               </div>
