@@ -910,17 +910,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
           {/* Payment Duration Selection */}
           <div className="section-header rounded-lg p-6 mt-8 relative">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  4
-                </div>
-                <h3 className="text-xl font-semibold text-foreground">📅 Choose Warranty Duration</h3>
-              </div>
-              
-              {/* What's Included button in top right corner */}
+            {/* Complete Protection section on separate line for mobile */}
+            <div className="flex items-center justify-center sm:justify-end mb-4 sm:mb-0 sm:absolute sm:top-6 sm:right-6">
               <div className="flex items-center gap-4">
-                <span className="text-lg font-medium text-gray-600">Complete Protection</span>
+                <span className="text-lg font-medium text-gray-600 hidden sm:block">Complete Protection</span>
                 <Accordion type="single" collapsible className="w-auto">
                   <AccordionItem value="whats-included" className="border-none">
                     <AccordionTrigger className="hover:no-underline pb-0 pt-0 [&>svg]:hidden">
@@ -928,100 +921,109 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         <div className="w-4 h-4 border border-orange-500 rounded-full flex items-center justify-center text-xs font-bold">
                           i
                         </div>
-                        <span className="font-medium">What's Included?</span>
+                        <span className="font-medium">
+                          <span className="sm:hidden">Complete Protection. </span>What's Included?
+                        </span>
                       </div>
                     </AccordionTrigger>
                   
-                  <AccordionContent className="pb-0">
-                    <div className="mt-4">
-                      {/* Core Coverage Items */}
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-foreground mb-4">Comprehensive Coverage</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {[
-                            { item: 'Unlimited Claims', icon: Infinity },
-                            { item: "'ALL' Mechanical & Electrical Components", icon: Zap },
-                            { item: 'Petrol/Diesel Car Coverage', icon: Car },
-                            { item: 'Engine, Gearbox, Clutch, Turbo & Drivetrain', icon: Cog },
-                            { item: 'Suspension, Steering & Braking Systems', icon: Settings },
-                            { item: 'Fuel, Cooling & Emissions Systems', icon: Droplets },
-                            { item: 'ECUs, Sensors & Driver Assistance Tech', icon: Cpu },
-                            { item: 'Air Conditioning, Airbags & Multimedia Systems', icon: Snowflake },
-                            { item: 'Diagnostics & Fault-Finding', icon: Search },
-                            { item: 'Labour Costs', icon: Users },
-                            { item: 'Recovery Claim-back', icon: RotateCcw }
-                          ].map(({ item, icon: Icon }, index) => (
-                            <div key={index} className="flex items-center gap-3">
-                              <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center flex-shrink-0">
-                                <Icon className="h-3.5 w-3.5 text-success-foreground" />
+                    <AccordionContent className="pb-0">
+                      <div className="mt-4">
+                        {/* Core Coverage Items */}
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold text-foreground mb-4">Comprehensive Coverage</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                              { item: 'Unlimited Claims', icon: Infinity },
+                              { item: "'ALL' Mechanical & Electrical Components", icon: Zap },
+                              { item: 'Petrol/Diesel Car Coverage', icon: Car },
+                              { item: 'Engine, Gearbox, Clutch, Turbo & Drivetrain', icon: Cog },
+                              { item: 'Suspension, Steering & Braking Systems', icon: Settings },
+                              { item: 'Fuel, Cooling & Emissions Systems', icon: Droplets },
+                              { item: 'ECUs, Sensors & Driver Assistance Tech', icon: Cpu },
+                              { item: 'Air Conditioning, Airbags & Multimedia Systems', icon: Snowflake },
+                              { item: 'Diagnostics & Fault-Finding', icon: Search },
+                              { item: 'Labour Costs', icon: Users },
+                              { item: 'Recovery Claim-back', icon: RotateCcw }
+                            ].map(({ item, icon: Icon }, index) => (
+                              <div key={index} className="flex items-center gap-3">
+                                <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center flex-shrink-0">
+                                  <Icon className="h-3.5 w-3.5 text-success-foreground" />
+                                </div>
+                                <span className="text-foreground font-medium">{item}</span>
                               </div>
-                              <span className="text-foreground font-medium">{item}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Additional Benefits */}
-                      <div className="bg-white rounded-lg p-4 mb-6 shadow-lg shadow-black/10">
-                        <h4 className="font-semibold text-foreground mb-3">Additional Benefits</h4>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-3">
-                            <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                              <Infinity className="h-3 w-3 text-primary-foreground" />
-                            </div>
-                            <span className="text-foreground">Claim as many times as needed</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                              <MapPin className="h-3 w-3 text-primary-foreground" />
-                            </div>
-                            <span className="text-foreground">Approved garages or choose your own</span>
+                            ))}
                           </div>
                         </div>
-                      </div>
 
-                      {/* What's Not Included */}
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                        <h4 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
-                          <X className="h-4 w-4" />
-                          What's not included:
-                        </h4>
-                        <div className="space-y-2">
-                          {[
-                            'Items related to routine servicing, such as tyres, brake pads and discs',
-                            'Pre-existing faults or issues',
-                            'Vehicles used for hire & reward (e.g. Taxis, Couriers, rentals etc.)'
-                          ].map((item, index) => (
-                            <div key={index} className="flex items-start gap-3">
-                              <div className="w-4 h-4 mt-0.5 flex items-center justify-center flex-shrink-0">
-                                <X className="h-3 w-3 text-red-500" />
+                        {/* Additional Benefits */}
+                        <div className="bg-white rounded-lg p-4 mb-6 shadow-lg shadow-black/10">
+                          <h4 className="font-semibold text-foreground mb-3">Additional Benefits</h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <Infinity className="h-3 w-3 text-primary-foreground" />
                               </div>
-                              <span className="text-red-700 text-sm">{item}</span>
+                              <span className="text-foreground">Claim as many times as needed</span>
                             </div>
-                          ))}
+                            <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <MapPin className="h-3 w-3 text-primary-foreground" />
+                              </div>
+                              <span className="text-foreground">Approved garages or choose your own</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* What's Not Included */}
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                          <h4 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
+                            <X className="h-4 w-4" />
+                            What's not included:
+                          </h4>
+                          <div className="space-y-2">
+                            {[
+                              'Items related to routine servicing, such as tyres, brake pads and discs',
+                              'Pre-existing faults or issues',
+                              'Vehicles used for hire & reward (e.g. Taxis, Couriers, rentals etc.)'
+                            ].map((item, index) => (
+                              <div key={index} className="flex items-start gap-3">
+                                <div className="w-4 h-4 mt-0.5 flex items-center justify-center flex-shrink-0">
+                                  <X className="h-3 w-3 text-red-500" />
+                                </div>
+                                <span className="text-red-700 text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Mobile Close Button */}
+                        <div className="md:hidden mt-6 pt-4 border-t border-border">
+                          <Button 
+                            variant="outline" 
+                            className="w-full"
+                            onClick={() => {
+                              // This will close the accordion by triggering it
+                              const accordionTrigger = document.querySelector('[data-state="open"] button[data-radix-collection-item]') as HTMLElement;
+                              accordionTrigger?.click();
+                            }}
+                          >
+                            <ChevronUp className="h-4 w-4 mr-2" />
+                            Close Coverage Details
+                          </Button>
                         </div>
                       </div>
-                      
-                      {/* Mobile Close Button */}
-                      <div className="md:hidden mt-6 pt-4 border-t border-border">
-                        <Button 
-                          variant="outline" 
-                          className="w-full"
-                          onClick={() => {
-                            // This will close the accordion by triggering it
-                            const accordionTrigger = document.querySelector('[data-state="open"] button[data-radix-collection-item]') as HTMLElement;
-                            accordionTrigger?.click();
-                          }}
-                        >
-                          <ChevronUp className="h-4 w-4 mr-2" />
-                          Close Coverage Details
-                        </Button>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </div>
+            </div>
+            
+            <div className="flex items-center gap-3 mt-4 sm:mt-6">
+              <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                4
+              </div>
+              <h3 className="text-xl font-semibold text-foreground">📅 Choose Warranty Duration</h3>
             </div>
             
             
