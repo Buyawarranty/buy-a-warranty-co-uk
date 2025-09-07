@@ -348,7 +348,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <br className="hidden sm:block" />
                   <span className="sm:hidden"> </span>covered
                   <br className="hidden sm:block" />
-                  <span className="sm:hidden"> </span><span className="text-primary">in 60 seconds!</span>
+                  <span className="sm:hidden"> </span><span className="text-brand-orange">in 60 seconds!</span>
                 </h1>
               </div>
 
