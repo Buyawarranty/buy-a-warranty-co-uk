@@ -670,69 +670,37 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <span className="text-gray-600">Voluntary Excess:</span>
                             <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
                           </div>
-                        </div>
 
-                        {/* Optional Add-On Protection Summary */}
-                        {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                            <h4 className="font-semibold text-blue-800 mb-3">Optional Add-On Protection</h4>
-                            <div className="space-y-2">
+                          {/* Add-ons integrated into main list */}
+                          {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
+                            <>
                               {pricingData.protectionAddOns.breakdown && (
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-blue-700">🚨 24/7 Breakdown Recovery</span>
-                                  <span className="font-medium text-blue-800">£5/mo</span>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">🚨 24/7 Breakdown Recovery:</span>
+                                  <span className="font-semibold">£5/mo</span>
                                 </div>
                               )}
                               {pricingData.protectionAddOns.motRepair && (
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-blue-700">🔧 MOT Repair Cover</span>
-                                  <span className="font-medium text-blue-800">£6/mo</span>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">🔧 MOT Repair Cover:</span>
+                                  <span className="font-semibold">£6/mo</span>
                                 </div>
                               )}
                               {pricingData.protectionAddOns.wearTear && (
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-blue-700">🛠️ Wear & Tear Cover</span>
-                                  <span className="font-medium text-blue-800">£89/year</span>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">🛠️ Wear & Tear Cover:</span>
+                                  <span className="font-semibold">£89/year</span>
                                 </div>
                               )}
                               {pricingData.protectionAddOns.transfer && (
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-blue-700">🔁 Transfer Cover</span>
-                                  <span className="font-medium text-blue-800">£30 one-time</span>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">🔁 Transfer Cover:</span>
+                                  <span className="font-semibold">£30 one-time</span>
                                 </div>
                               )}
-                            </div>
-                            
-                            {/* Installment Breakdown */}
-                            {pricingData.installmentBreakdown && (
-                              <div className="mt-4 pt-3 border-t border-blue-300">
-                                <h5 className="font-semibold text-blue-800 mb-2">Payment Schedule:</h5>
-                                {pricingData.installmentBreakdown.hasTransfer ? (
-                                  <div className="space-y-1 text-sm">
-                                    <div className="flex justify-between">
-                                      <span className="text-blue-700">1st installment:</span>
-                                      <span className="font-medium text-blue-800">£{Math.round(pricingData.installmentBreakdown.firstInstallment * 100) / 100}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                      <span className="text-blue-700">Installments 2-12:</span>
-                                      <span className="font-medium text-blue-800">£{Math.round(pricingData.installmentBreakdown.standardInstallment * 100) / 100} each</span>
-                                    </div>
-                                    <div className="text-xs text-blue-600 mt-2 italic">
-                                      *Transfer fee (£30) added to 1st installment only
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="text-sm">
-                                    <div className="flex justify-between">
-                                      <span className="text-blue-700">All 12 installments:</span>
-                                      <span className="font-medium text-blue-800">£{Math.round(pricingData.installmentBreakdown.standardInstallment * 100) / 100} each</span>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
+                            </>
+                          )}
+                        </div>
 
                         {/* Payment Summary */}
                         <div className="border-t border-gray-200 pt-4 mb-6">
