@@ -229,13 +229,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
             {/* Desktop CTA Buttons - Show on desktop */}
             <div className="hidden lg:flex items-center space-x-3">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
-              >
-                WhatsApp Us
-              </Button>
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-[#25D366] text-white border-[#25D366] hover:bg-[#1da851] hover:border-[#1da851] px-3 text-sm"
+                >
+                  WhatsApp Us
+                </Button>
+              </a>
               <Button 
                 size="sm"
                 className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
@@ -309,13 +311,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
                   {/* CTA Buttons */}
                   <div className="space-y-4 pt-6 mt-auto">
-                    <Button 
-                      variant="outline" 
-                      className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-xl py-4 min-h-[48px]"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      WhatsApp Us
-                    </Button>
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" className="block">
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-[#25D366] text-white border-[#25D366] hover:bg-[#1da851] hover:border-[#1da851] text-xl py-4 min-h-[48px]"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                    </a>
                     <Button 
                       className="w-full bg-primary text-white hover:bg-primary/90 text-xl py-4 min-h-[48px]"
                       onClick={() => setIsMobileMenuOpen(false)}
