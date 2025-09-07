@@ -72,7 +72,18 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
   const [expandedItems, setExpandedItems] = useState<{[key: string]: boolean}>({});
 
   const toggleExpanded = (key: string) => {
-    setExpandedItems(prev => ({ ...prev, [key]: !prev[key] }));
+    setExpandedItems(prev => {
+      const isCurrentlyOpen = prev[key];
+      // Close all items first, then open the clicked one if it wasn't open
+      const newState: {[key: string]: boolean} = {};
+      addOnPackages.forEach(addon => {
+        newState[addon.key] = false;
+      });
+      if (!isCurrentlyOpen) {
+        newState[key] = true;
+      }
+      return newState;
+    });
   };
 
   return (
