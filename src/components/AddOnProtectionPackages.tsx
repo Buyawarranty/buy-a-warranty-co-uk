@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, AlertTriangle, Wrench, Settings, RotateCcw, Flag, CircleDot } from 'lucide-react';
 
 interface AddOnProtectionPackagesProps {
   selectedAddOns: {[key: string]: boolean};
@@ -12,7 +12,7 @@ interface AddOnProtectionPackagesProps {
 const addOnPackages = [
   {
     key: 'breakdown',
-    icon: '🚨',
+    icon: <AlertTriangle className="w-5 h-5 text-red-500" />,
     title: '24/7 Breakdown Recovery',
     shortDescription: 'Help whenever you need it.',
     price: 5,
@@ -27,7 +27,7 @@ const addOnPackages = [
   },
   {
     key: 'motRepair',
-    icon: '🔧',
+    icon: <Wrench className="w-5 h-5 text-blue-500" />,
     title: 'MOT Repair Cover',
     shortDescription: 'Stay road-legal for just £6/mo',
     price: 6,
@@ -42,7 +42,7 @@ const addOnPackages = [
   },
   {
     key: 'tyre',
-    icon: '🛞',
+    icon: <CircleDot className="w-5 h-5 text-gray-700" />,
     title: 'Tyre Cover',
     shortDescription: 'Cheaper than a single tyre repair £5/mo',
     price: 5,
@@ -57,7 +57,7 @@ const addOnPackages = [
   },
   {
     key: 'wearTear',
-    icon: '🛠️',
+    icon: <Settings className="w-5 h-5 text-gray-600" />,
     title: 'Wear & Tear',
     shortDescription: 'Extra peace of mind for ageing parts just £5/mo',
     price: 5,
@@ -72,7 +72,7 @@ const addOnPackages = [
   },
   {
     key: 'european',
-    icon: '🇪🇺',
+    icon: <Flag className="w-5 h-5 text-blue-600" />,
     title: 'European Cover',
     shortDescription: 'Drive with confidence across Europe just £3/mo',
     price: 3,
@@ -87,7 +87,7 @@ const addOnPackages = [
   },
   {
     key: 'transfer',
-    icon: '🔁',
+    icon: <RotateCcw className="w-5 h-5 text-purple-500" />,
     title: 'Transfer Cover',
     shortDescription: 'Transfer to a new owner - One-off fee £30',
     price: 30,
@@ -164,7 +164,7 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-start gap-3 flex-1">
-                      <div className="text-lg mt-1">{addon.icon}</div>
+                      <div className="mt-1">{addon.icon}</div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
                         <p className="text-xs text-muted-foreground mb-2">{addon.shortDescription}</p>

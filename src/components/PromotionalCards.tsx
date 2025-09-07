@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 
 const PromotionalCards = () => {
   return (
@@ -11,11 +11,11 @@ const PromotionalCards = () => {
             <div className="aspect-[4/3] bg-gradient-to-br from-green-400 to-cyan-400 relative overflow-hidden">
               {/* Decorative stars */}
               <div className="absolute inset-0 opacity-80">
-                <div className="absolute top-4 left-6 text-white text-2xl">✨</div>
-                <div className="absolute top-8 right-8 text-white text-xl">✨</div>
-                <div className="absolute bottom-12 left-4 text-white text-lg">✨</div>
-                <div className="absolute bottom-6 right-12 text-white text-xl">✨</div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-3xl">✨</div>
+                <Star className="absolute top-4 left-6 text-white w-6 h-6" />
+                <Star className="absolute top-8 right-8 text-white w-5 h-5" />
+                <Star className="absolute bottom-12 left-4 text-white w-4 h-4" />
+                <Star className="absolute bottom-6 right-12 text-white w-5 h-5" />
+                <Star className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white w-8 h-8" />
               </div>
               
               {/* Woman with car image */}
@@ -55,11 +55,11 @@ const PromotionalCards = () => {
             <div className="aspect-[4/3] bg-gradient-to-br from-cyan-400 to-blue-400 relative overflow-hidden">
               {/* Decorative stars */}
               <div className="absolute inset-0 opacity-80">
-                <div className="absolute top-4 left-6 text-white text-2xl">✨</div>
-                <div className="absolute top-8 right-8 text-white text-xl">✨</div>
-                <div className="absolute bottom-12 left-4 text-white text-lg">✨</div>
-                <div className="absolute bottom-6 right-12 text-white text-xl">✨</div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-3xl">✨</div>
+                <Star className="absolute top-4 left-6 text-white w-6 h-6" />
+                <Star className="absolute top-8 right-8 text-white w-5 h-5" />
+                <Star className="absolute bottom-12 left-4 text-white w-4 h-4" />
+                <Star className="absolute bottom-6 right-12 text-white w-5 h-5" />
+                <Star className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white w-8 h-8" />
               </div>
               
               {/* Man with money and gifts */}

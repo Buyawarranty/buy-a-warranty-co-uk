@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, CheckCircle, AlertCircle, Plus, Flame } from 'lucide-react';
+import { ArrowLeft, CreditCard, CheckCircle, AlertCircle, Plus, Flame, PartyPopper, Lock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CartItem } from '@/contexts/CartContext';
@@ -542,7 +542,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               {discountValidation && discountValidation.valid && (
                 <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <div className="text-green-600 text-2xl">🎉</div>
+                    <PartyPopper className="w-6 h-6 text-green-500" />
                     <div>
                       <h4 className="text-green-800 font-bold text-lg">
                         10% Discount Applied!
@@ -559,7 +559,10 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
                 <p className="text-sm text-green-800">
-                  Shop with confidence - cancel anytime within 14 days for a full refund ✅
+                  <span className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    Shop with confidence - cancel anytime within 14 days for a full refund
+                  </span>
                 </p>
               </div>
               
@@ -760,7 +763,10 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               </Button>
               
               <div className="text-xs text-gray-500 text-center mt-3">
-                <p>🔒 Secure checkout powered by Stripe</p>
+                <p className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-gray-600" />
+                  Secure checkout powered by Stripe
+                </p>
                 <p>All major cards accepted</p>
               </div>
             </div>

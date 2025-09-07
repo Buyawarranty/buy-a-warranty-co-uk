@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit } from 'lucide-react';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit, AlertTriangle, Wrench, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
@@ -675,22 +675,31 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                           {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
                             <>
                               {pricingData.protectionAddOns.breakdown && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🚨 24/7 Breakdown Recovery:</span>
-                                  <span className="font-semibold">£5/mo</span>
-                                </div>
+                                 <div className="flex justify-between">
+                                   <span className="text-gray-600 flex items-center gap-2">
+                                     <AlertTriangle className="w-4 h-4 text-red-500" />
+                                     24/7 Breakdown Recovery:
+                                   </span>
+                                   <span className="font-semibold">£5/mo</span>
+                                 </div>
                               )}
                               {pricingData.protectionAddOns.motRepair && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🔧 MOT Repair Cover:</span>
-                                  <span className="font-semibold">£6/mo</span>
-                                </div>
+                                 <div className="flex justify-between">
+                                   <span className="text-gray-600 flex items-center gap-2">
+                                     <Wrench className="w-4 h-4 text-blue-500" />
+                                     MOT Repair Cover:
+                                   </span>
+                                   <span className="font-semibold">£6/mo</span>
+                                 </div>
                               )}
                               {pricingData.protectionAddOns.wearTear && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🛠️ Wear & Tear Cover:</span>
-                                  <span className="font-semibold">£89/year</span>
-                                </div>
+                                 <div className="flex justify-between">
+                                   <span className="text-gray-600 flex items-center gap-2">
+                                     <Settings className="w-4 h-4 text-gray-600" />
+                                     Wear & Tear Cover:
+                                   </span>
+                                   <span className="font-semibold">£89/year</span>
+                                 </div>
                               )}
                               {pricingData.protectionAddOns.transfer && (
                                 <div className="flex justify-between">
