@@ -593,7 +593,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
               <h2 className="text-xl font-semibold text-foreground">🚗 Vehicle Information</h2>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end gap-2">
               <TrustpilotHeader className="h-8 sm:h-10" />
               <Button
                 onClick={onBack}
