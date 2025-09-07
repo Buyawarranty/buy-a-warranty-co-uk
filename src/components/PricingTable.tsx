@@ -821,14 +821,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <TooltipContent side="left" className="w-80 p-4">
                     <div className="space-y-3">
                       <p className="text-sm text-foreground">
-                        Premium-level protection for high-value repairs.
+                        Premium-level protection for high-value repairs, including major gearbox work.
                       </p>
                       <div>
                         <h4 className="font-semibold text-sm mb-2">Example Repairs Covered:</h4>
                         <ul className="text-xs text-muted-foreground space-y-1">
-                          <li>• Engine control unit (ECU) failure</li>
+                          <li>• Engine control unit (ECU) failure (avg. £800-1,200)</li>
+                          <li>• Complete gearbox replacement (avg. £1,500-2,500)</li>
                           <li>• Gearbox or clutch actuator replacement</li>
-                          <li>• Turbocharger faults</li>
+                          <li>• Turbocharger faults (avg. £1,000-1,800)</li>
                           <li>• Hybrid or electric drive system issues</li>
                           <li>• Advanced infotainment or navigation system faults</li>
                         </ul>
