@@ -217,8 +217,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     : baseDiscountedPrice;
   
   const discountedStripePrice = discountValidation?.isValid 
-    ? Math.round(discountValidation.finalAmount * 0.95)
-    : Math.round(baseDiscountedPrice * 0.95);
+    ? Math.round(discountValidation.finalAmount * 0.9)
+    : Math.round(baseDiscountedPrice * 0.9);
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -823,7 +823,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
                                  <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                                   Save a further 5% (£{Math.round(baseDiscountedPrice * 0.05)})
+                                   Save a further 10% (£{Math.round(baseDiscountedPrice * 0.1)})
                                  </div>
                               </div>
                                <p className="text-sm text-gray-600">
@@ -831,12 +831,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                 {(discountValidation?.isValid || hasAutoDiscount) && (
                                   <span className="text-green-600">
                                     {hasAutoDiscount && !discountValidation?.isValid 
-                                      ? " (10% multi-warranty discount + 5% upfront discount)" 
+                                      ? " (10% multi-warranty discount + 10% upfront discount)" 
                                       : " (discount applied)"}
                                   </span>
                                 )}
                                 {hasAutoDiscount && !discountValidation?.isValid && (
-                                  <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.95)}</span>
+                                  <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.9)}</span>
                                 )}
                               </p>
                             </div>
@@ -848,7 +848,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <Button
                         onClick={handleSubmit}
                         disabled={loading}
-                        className="w-full mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-4 text-lg rounded-lg"
+                        className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 text-lg rounded-lg"
                         size="lg"
                       >
                         {loading ? 'Processing...' : 'Complete Purchase'}

@@ -414,11 +414,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-semibold text-gray-900">Pay Full Amount</span>
                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save 5% (£{Math.round((getMonthlyDisplayPrice() * 12) * 0.05)})
+                          Save 10% (£{Math.round((getMonthlyDisplayPrice() * 12) * 0.1)})
                         </div>
                       </div>
                       <div className="text-xl font-bold text-blue-600">
-                        £{Math.round((getMonthlyDisplayPrice() * 12) * 0.95)} upfront
+                        £{Math.round((getMonthlyDisplayPrice() * 12) * 0.9)} upfront
                       </div>
                       <div className="text-sm text-gray-600">
                         Instead of £{Math.round(getMonthlyDisplayPrice() * 12)} over 12 months
