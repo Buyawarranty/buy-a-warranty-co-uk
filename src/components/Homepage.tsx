@@ -435,7 +435,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     className={`w-full px-6 sm:px-12 h-[56px] sm:h-[66px] text-lg sm:text-xl font-bold rounded-lg transition-all ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-primary hover:bg-primary/90 text-white btn-slow-pulsate'
+                        : 'bg-brand-orange hover:bg-orange-600 text-white btn-slow-pulsate'
                     }`}
                     disabled={isLookingUp}
                   >
@@ -744,17 +744,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </section>
 
-      {/* Get Instant Quote CTA */}
-      <section className="py-8 md:py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Button 
-            className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-8 md:px-12 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors"
-            onClick={handleGetQuote}
-          >
-            Get Instant Quote
-          </Button>
-        </div>
-      </section>
 
       {/* Coverage Showcase Section */}
       <section className="py-12 md:py-20 bg-brand-gray-bg text-center">
@@ -769,19 +758,19 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             </div>
           </div>
 
-          {/* CTA Button */}
-          <button className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors mb-8 md:mb-16 w-full sm:w-auto">
-            Get Instant Quote
-          </button>
-
           {/* Warranty Quote Mockup */}
-          <div className="relative max-w-2xl md:max-w-3xl mx-auto">
+          <div className="relative max-w-2xl md:max-w-3xl mx-auto mb-8 md:mb-12">
             <img 
               src="/lovable-uploads/7fe5ce8a-d5a6-422c-b391-f67e26229445.png" 
               alt="Warranty quote interface with panda mascot and car" 
               className="w-full h-auto rounded-lg"
             />
           </div>
+
+          {/* CTA Button */}
+          <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors w-full sm:w-auto">
+            Get Instant Quote
+          </button>
         </div>
       </section>
 
