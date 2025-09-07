@@ -439,7 +439,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     className={`w-full px-6 sm:px-12 h-[60px] sm:h-[66px] text-lg sm:text-xl font-bold rounded-lg transition-all ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-brand-orange hover:bg-orange-600 text-white btn-slow-pulsate'
+                        : 'bg-brand-orange hover:bg-brand-orange/90 text-white btn-slow-pulsate'
                     }`}
                     disabled={isLookingUp}
                   >
