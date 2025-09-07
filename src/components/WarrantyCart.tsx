@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Trash2, Plus, ShoppingCart, ArrowRight, ArrowLeft, CheckCircle, Info, AlertCircle, PartyPopper, Flame } from 'lucide-react';
+import { Trash2, Plus, ShoppingCart, ArrowRight, ArrowLeft, CheckCircle, Info, AlertCircle } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { getWarrantyDurationDisplay } from '@/lib/warrantyDurationUtils';
@@ -179,7 +179,7 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
             {getItemCount() >= 2 && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                 <div className="flex items-center">
-                  <PartyPopper className="w-6 h-6 text-green-500 mr-3" />
+                  <div className="text-2xl mr-3">🎉</div>
                   <div>
                     <div className="font-bold text-green-800">Multi-Warranty Discount Applied!</div>
                     <div className="text-green-700">You're saving 10% by purchasing multiple warranties together. Smart choice!</div>
@@ -279,13 +279,12 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                 <div className="flex items-start gap-4">
                   <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
                     <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                      <Flame className="w-5 h-5 text-white" />
+                      <span className="text-white font-bold text-lg">🔥</span>
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-                      <Flame className="w-5 h-5 text-orange-500" />
-                      Save 10% Instantly — Today Only!
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      🔥 Save 10% Instantly — Today Only!
                     </h3>
                     <p className="text-gray-700 mb-3">
                       Add another warranty to your order and get an extra 10% off right away.

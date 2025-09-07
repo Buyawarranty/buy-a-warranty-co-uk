@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe, Flag, Wrench } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
@@ -378,7 +378,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   {/* UK Section with flag */}
                   <div className="bg-blue-600 text-white font-bold px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[70px] sm:min-w-[80px] h-[60px] sm:h-[66px]">
                     <div className="flex flex-col items-center">
-                      <Flag className="w-4 h-4 sm:w-5 sm:h-5 text-white mb-1" />
+                      <div className="text-base sm:text-lg leading-tight mb-1">🇬🇧</div>
                       <div className="text-sm sm:text-base font-bold leading-none">UK</div>
                     </div>
                   </div>
@@ -527,7 +527,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight mb-4 md:mb-6">
                   Reliable extended warranty
                   <br />
-                  <span className="text-brand-orange flex items-center gap-2">If it breaks, we{"'"}ll fix it <Wrench className="w-4 h-4" /></span>
+                  <span className="text-brand-orange">If it breaks, we{"'"}ll fix it 🔧</span>
                 </h2>
                 <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
                   Enjoy complete peace of mind with our comprehensive cover. From vital mechanical components to essential electrical parts, we{"'"}ve got it all covered.

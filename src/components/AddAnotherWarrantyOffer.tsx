@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Trash2, Flame, CheckCircle } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 
 interface AddAnotherWarrantyOfferProps {
   onAddAnotherWarranty: () => void;
@@ -29,7 +29,7 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
         {!showSuccess ? (
           <>
             <div className="flex items-center gap-3 mb-4">
-              <Flame className="w-6 h-6 text-orange-500" />
+              <div className="text-2xl">🔥</div>
               <h3 className="text-xl font-bold text-gray-900">
                 Save 10% Instantly — Today Only!
               </h3>
@@ -70,7 +70,7 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
               <Trash2 className="w-4 h-4" />
             </Button>
             
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+            <div className="text-4xl mb-4">✅</div>
             <div className="text-green-700 font-semibold text-lg mb-2">
               Awesome! Your 10% discount is live.
             </div>

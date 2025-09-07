@@ -169,7 +169,7 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
                 </>
               ) : (
                 <>
-                  <Gift className="w-16 h-16 text-green-500 mx-auto mb-3" />
+                  <div className="text-4xl mb-3">🎁</div>
                   <h2 className="text-2xl font-bold text-green-600 mb-2">
                     Your discount code is ready!
                   </h2>

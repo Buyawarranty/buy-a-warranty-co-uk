@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Check, Search, Zap, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Check, Search, Zap, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -367,10 +367,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                {/* Warning for invalid MOT */}
                {vehicleData.motVerified === 'invalid' && (
                  <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-md">
-                    <p className="text-xs text-red-700 font-medium flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4" />
-                      This vehicle has an invalid or expired MOT. You may not be able to purchase warranty coverage.
-                    </p>
+                   <p className="text-xs text-red-700 font-medium">
+                     ⚠️ This vehicle has an invalid or expired MOT. You may not be able to purchase warranty coverage.
+                   </p>
                  </div>
                )}
 
@@ -420,9 +419,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
           {vehicleData && !vehicleData.found && (!vehicleData.error || !vehicleData.error.includes('15 years')) && (
             <div className="bg-blue-50 border border-blue-200 rounded-[4px] p-4 mb-4">
-              <p className="text-sm text-blue-800 mb-2 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" />
-                Vehicle not found -
+              <p className="text-sm text-blue-800 mb-2">
+                ⚠️ Vehicle not found -
               </p>
               <p className="text-sm text-blue-700 font-bold mb-2">
                 Please double-check your number plate and try again.
