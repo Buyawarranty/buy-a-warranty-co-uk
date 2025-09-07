@@ -674,18 +674,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <h2 className="text-xl font-semibold text-foreground">💰 Choose your excess amount</h2>
           </div>
           
-          <div className="flex gap-3 flex-wrap">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[0, 50, 100, 150].map((amount) => (
               <button
                 key={amount}
                 onClick={() => toggleVoluntaryExcess(amount)}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                className={`p-6 rounded-lg transition-all duration-200 text-center relative ${
                   voluntaryExcess === amount
-                    ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
-                    : 'neutral-container text-foreground shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                    ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                    : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                 }`}
               >
-                <span className="font-semibold">£{amount}</span>
+                <div className="text-2xl font-bold text-black mb-2">£{amount}</div>
+                <p className="text-sm font-medium text-foreground">
+                  {amount === 0 ? 'No excess' : `£${amount} excess`}
+                </p>
               </button>
             ))}
           </div>
