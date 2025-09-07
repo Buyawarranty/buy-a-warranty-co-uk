@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check } from 'lucide-react';
 
 interface AddOnProtectionPackagesProps {
   selectedAddOns: {[key: string]: boolean};
@@ -16,7 +16,13 @@ const addOnPackages = [
     shortDescription: 'Help whenever you need it.',
     price: 5,
     priceType: 'monthly',
-    longDescription: 'Our nationwide 24/7 breakdown recovery service ensures you\'re never stranded. Whether it\'s a flat battery, punctured tyre, or mechanical failure, our qualified technicians will get you back on the road or arrange safe recovery to a garage. Includes roadside assistance, home start, and onward travel if repairs take longer than expected.'
+    bulletPoints: [
+      'Nationwide 24/7 breakdown recovery service',
+      'Qualified technicians for roadside assistance',
+      'Safe recovery to garage when needed',
+      'Home start service included',
+      'Onward travel if repairs take longer than expected'
+    ]
   },
   {
     key: 'motRepair',
@@ -25,7 +31,13 @@ const addOnPackages = [
     shortDescription: 'Stay road-legal for just £6/mo',
     price: 6,
     priceType: 'monthly',
-    longDescription: 'Covers the cost of repairs needed to pass your MOT test, up to £500 per year. This includes essential safety items like brakes, lights, tyres, and emissions issues that could cause your vehicle to fail. Pre-MOT inspection service included to identify potential failures before your test date.'
+    bulletPoints: [
+      'Covers repairs needed to pass MOT test',
+      'Up to £500 per year coverage',
+      'Essential safety items: brakes, lights, tyres',
+      'Emissions issues covered',
+      'Pre-MOT inspection service included'
+    ]
   },
   {
     key: 'tyre',
@@ -34,7 +46,13 @@ const addOnPackages = [
     shortDescription: 'Cheaper than a single tyre repair £5/mo',
     price: 5,
     priceType: 'monthly',
-    longDescription: 'Comprehensive tyre protection covering puncture repairs, replacement due to accidental damage, and emergency roadside tyre fitting. Includes coverage for alloy wheel damage and valve replacements. With average tyre costs exceeding £100, this cover pays for itself with just one claim.'
+    bulletPoints: [
+      'Puncture repairs covered',
+      'Replacement due to accidental damage',
+      'Emergency roadside tyre fitting',
+      'Alloy wheel damage coverage',
+      'Valve replacements included'
+    ]
   },
   {
     key: 'wearTear',
@@ -43,7 +61,13 @@ const addOnPackages = [
     shortDescription: 'Extra peace of mind for ageing parts just £5/mo',
     price: 5,
     priceType: 'monthly',
-    longDescription: 'Covers the natural deterioration of vehicle components that standard warranties exclude. Includes brake pads, clutch wear, suspension bushes, and other high-wear items that fail through normal use. Essential protection for vehicles over 5 years old where wear and tear becomes more common.'
+    bulletPoints: [
+      'Natural deterioration of vehicle components',
+      'Brake pads and clutch wear covered',
+      'Suspension bushes included',
+      'High-wear items protection',
+      'Essential for vehicles over 5 years old'
+    ]
   },
   {
     key: 'european',
@@ -52,7 +76,13 @@ const addOnPackages = [
     shortDescription: 'Drive with confidence across Europe just £3/mo',
     price: 3,
     priceType: 'monthly',
-    longDescription: 'Extends your warranty coverage to all EU countries plus Switzerland, Norway, and Iceland. Includes emergency accommodation, vehicle repatriation, and hire car if repairs take more than 24 hours. Also covers additional costs for parts and labour in European garages, plus 24/7 multilingual helpline.'
+    bulletPoints: [
+      'Coverage in all EU countries plus Switzerland, Norway, Iceland',
+      'Emergency accommodation provided',
+      'Vehicle repatriation service',
+      'Hire car if repairs take more than 24 hours',
+      '24/7 multilingual helpline'
+    ]
   },
   {
     key: 'transfer',
@@ -61,7 +91,13 @@ const addOnPackages = [
     shortDescription: 'Transfer to a new owner - One-off fee £30',
     price: 30,
     priceType: 'one-off',
-    longDescription: 'Transfer your remaining warranty to the new owner when you sell your vehicle. This valuable benefit can increase your vehicle\'s resale value and makes it more attractive to potential buyers. Simple online transfer process with immediate confirmation and updated documentation for the new owner.'
+    bulletPoints: [
+      'Transfer remaining warranty to new owner',
+      'Increases vehicle resale value',
+      'Makes vehicle more attractive to buyers',
+      'Simple online transfer process',
+      'Immediate confirmation and updated documentation'
+    ]
   }
 ];
 
@@ -137,9 +173,14 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                       )}
                     </CollapsibleTrigger>
                     <CollapsibleContent className="mt-3">
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {addon.longDescription}
-                      </p>
+                      <div className="space-y-2">
+                        {addon.bulletPoints.map((point, index) => (
+                          <div key={index} className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" strokeWidth={3} />
+                            <span className="text-sm text-muted-foreground">{point}</span>
+                          </div>
+                        ))}
+                      </div>
                     </CollapsibleContent>
                   </Collapsible>
                 </div>
