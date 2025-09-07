@@ -116,8 +116,8 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
               <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
               <p className="text-xs text-muted-foreground mb-3">{addon.shortDescription}</p>
               
-              <div className="mb-3">
-                <div className="text-lg font-bold text-primary">
+              <div className="mb-3 text-right">
+                <div className="text-lg font-bold text-black">
                   £{addon.price}{addon.priceType === 'monthly' ? '/mo' : ''}
                   {addon.priceType === 'one-off' && (
                     <span className="text-xs font-normal text-muted-foreground ml-1">one-time fee</span>
@@ -126,12 +126,12 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
               </div>
 
               <Collapsible open={expandedItems[addon.key]} onOpenChange={() => toggleExpanded(addon.key)}>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-sm text-primary hover:text-primary/80 transition-colors">
+                <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors">
                   <span>Read more</span>
                   {expandedItems[addon.key] ? (
-                    <ChevronUp className="h-4 w-4" />
+                    <ChevronUp className="h-5 w-5" strokeWidth={3} />
                   ) : (
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-5 w-5" strokeWidth={3} />
                   )}
                 </CollapsibleTrigger>
                 <CollapsibleContent className="mt-3">
