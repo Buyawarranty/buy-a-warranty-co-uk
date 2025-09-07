@@ -467,13 +467,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 />
               </div>
               
-              {/* Trustpilot Logo positioned between panda's feet and vehicle icons */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2" style={{transform: 'translateX(-50%) translateY(100px)'}}>
+              {/* Trustpilot Logo positioned between hybrid icon and panda's feet */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2" style={{transform: 'translateX(-50%) translateY(40px)'}}>
                 <div className="text-center mb-4">
                   <img 
                     src="/lovable-uploads/39555042-4eb1-436c-a0b8-910fb79ac11c.png" 
                     alt="Trustpilot with 5 star rating" 
-                    className="h-4 sm:h-5 mx-auto"
+                    className="h-6 sm:h-8 mx-auto"
                   />
                 </div>
               </div>
