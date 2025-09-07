@@ -1,7 +1,12 @@
-import { CheckCircle, Shield, Clock, Wrench, Car, Zap, Battery, Bike, Phone, Mail, AlertTriangle, X, Check, Star, FileText, Users, Heart } from "lucide-react";
+import { CheckCircle, Shield, Clock, Wrench, Car, Zap, Battery, Bike, Phone, Mail, AlertTriangle, X, Check, Star, FileText, Users, Heart, Menu } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
 
 const Protected = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <>
       <SEOHead
@@ -10,6 +15,128 @@ const Protected = () => {
       />
       
       <div className="min-h-screen bg-gray-50">
+        {/* Header with Navigation */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16 sm:h-20">
+              {/* Logo */}
+              <div className="flex items-center">
+                <a href="/" className="hover:opacity-80 transition-opacity">
+                  <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+                </a>
+              </div>
+              
+              {/* Navigation - Hidden on mobile, visible on lg+ */}
+              <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+                <a href="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</a>
+                <a href="/protected" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</a>
+                <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</a>
+                <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
+                <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</a>
+              </nav>
+
+              {/* Desktop CTA Buttons - Show on desktop */}
+              <div className="hidden lg:flex items-center space-x-3">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
+                >
+                  WhatsApp Us
+                </Button>
+                <Button 
+                  size="sm"
+                  className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
+                >
+                  Get Quote
+                </Button>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="lg:hidden p-2"
+                  >
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <div className="flex flex-col h-full">
+                    {/* Header with logo */}
+                    <div className="flex items-center justify-between pb-6">
+                      <a href="/" className="hover:opacity-80 transition-opacity">
+                        <img 
+                          src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                          alt="Buy a Warranty" 
+                          className="h-8 w-auto"
+                        />
+                      </a>
+                    </div>
+
+                    {/* Navigation Links */}
+                    <nav className="flex flex-col space-y-6 flex-1">
+                      <a 
+                        href="/" 
+                        className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Warranty Plans
+                      </a>
+                      <a 
+                        href="/protected" 
+                        className="text-orange-500 hover:text-orange-600 font-medium text-lg py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        How You're Protected
+                      </a>
+                      <a 
+                        href="/make-a-claim" 
+                        className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Make a Claim
+                      </a>
+                      <a 
+                        href="/faq" 
+                        className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        FAQ
+                      </a>
+                      <a 
+                        href="/contact-us" 
+                        className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Contact Us
+                      </a>
+                    </nav>
+
+                    {/* Mobile CTA Buttons */}
+                    <div className="flex flex-col space-y-3 pt-6 border-t border-gray-200">
+                      <Button 
+                        variant="outline" 
+                        className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 w-full"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                      <Button 
+                        className="bg-orange-500 text-white hover:bg-orange-600 w-full"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Get Quote
+                      </Button>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+        </header>
         {/* Hero Section */}
         <div className="bg-gradient-to-br from-[#eb4b00] to-orange-600 text-white">
           <div className="max-w-4xl mx-auto px-4 py-16">
