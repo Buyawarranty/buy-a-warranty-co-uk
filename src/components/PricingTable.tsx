@@ -827,7 +827,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         <h4 className="font-semibold text-sm mb-2">Example Repairs Covered:</h4>
                         <ul className="text-xs text-muted-foreground space-y-1">
                           <li>• Engine control unit (ECU) failure (avg. £800-1,200)</li>
-                          <li>• Complete gearbox replacement (avg. £1,500-2,500)</li>
+                          <li>• Complete gearbox replacement (from £1500 to 2000)</li>
                           <li>• Gearbox or clutch actuator replacement</li>
                           <li>• Turbocharger faults (avg. £1,000-1,800)</li>
                           <li>• Hybrid or electric drive system issues</li>
