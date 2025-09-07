@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check, Menu } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -16,6 +17,7 @@ const Claims = () => {
     vehicleReg: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -107,24 +109,105 @@ const Claims = () => {
               <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</a>
             </nav>
 
-            {/* CTA Buttons - Responsive */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Desktop CTA Buttons - Show on desktop */}
+            <div className="hidden lg:flex items-center space-x-3">
               <Button 
                 variant="outline" 
                 size="sm"
-                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-2 sm:px-3 text-xs sm:text-sm"
+                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
               >
-                <span className="hidden sm:inline">WhatsApp</span>
-                <span className="sm:hidden">WhatsApp</span>
+                WhatsApp Us
               </Button>
               <Button 
                 size="sm"
-                className="bg-orange-500 text-white hover:bg-orange-600 px-2 sm:px-3 text-xs sm:text-sm"
+                className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
               >
-                <span className="hidden sm:inline">Get Quote</span>
-                <span className="sm:hidden">Quote</span>
+                Get Quote
               </Button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="lg:hidden p-2"
+                >
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <div className="flex flex-col h-full">
+                  {/* Header with logo */}
+                  <div className="flex items-center justify-between pb-6">
+                    <a href="/" className="hover:opacity-80 transition-opacity">
+                      <img 
+                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                        alt="Buy a Warranty" 
+                        className="h-8 w-auto"
+                      />
+                    </a>
+                  </div>
+
+                  {/* Navigation Links */}
+                  <nav className="flex flex-col space-y-6 flex-1">
+                    <a 
+                      href="#" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Warranty Plans
+                    </a>
+                    <a 
+                      href="/protected" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      How You're Protected
+                    </a>
+                    <a 
+                      href="/make-a-claim" 
+                      className="text-orange-500 hover:text-orange-600 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Make a Claim
+                    </a>
+                    <a 
+                      href="/faq" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      FAQ
+                    </a>
+                    <a 
+                      href="/contact-us" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Contact Us
+                    </a>
+                  </nav>
+
+                  {/* CTA Buttons */}
+                  <div className="space-y-4 pt-6 mt-auto">
+                    <Button 
+                      variant="outline" 
+                      className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      WhatsApp Us
+                    </Button>
+                    <Button 
+                      className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Get Quote
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
