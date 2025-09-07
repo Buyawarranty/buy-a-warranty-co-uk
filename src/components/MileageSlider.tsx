@@ -132,7 +132,7 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
       {/* Validation Message */}
       {value > 150000 && (
         <div className="text-center text-sm text-blue-600 font-medium mt-2">
-          We can only cover vehicles up to 150,000 miles
+          Sorry, we can only provide coverage for vehicles with up to 150,000 miles
         </div>
       )}
     </div>
