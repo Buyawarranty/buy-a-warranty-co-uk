@@ -584,6 +584,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {/* Configuration Sections */}
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         
+        {/* Trustpilot positioned outside grey box */}
+        <div className="flex justify-end">
+          <TrustpilotHeader className="h-8 sm:h-10" />
+        </div>
+        
         {/* Vehicle Information */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
@@ -593,18 +598,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
               <h2 className="text-xl font-semibold text-foreground">🚗 Vehicle Information</h2>
             </div>
-            <div className="flex flex-col items-end gap-2">
-              <TrustpilotHeader className="h-8 sm:h-10" />
-              <Button
-                onClick={onBack}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-              >
-                <Edit className="h-4 w-4" />
-                Change vehicle
-              </Button>
-            </div>
+            <Button
+              onClick={onBack}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <Edit className="h-4 w-4" />
+              Change vehicle
+            </Button>
           </div>
            
             {vehicleData && (
