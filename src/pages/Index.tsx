@@ -109,39 +109,14 @@ const Index = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    // Show discount popup right after homepage loads in new session
-    if (currentStep === 1) {
-      // Check if already seen popup in this session
-      const hasSeenPopup = sessionStorage.getItem('hasSeenDiscountPopup');
-      if (hasSeenPopup) return;
-      
-      // Show popup after 22 seconds on homepage
-      const timer = setTimeout(() => {
-        setShowDiscountPopup(true);
-      }, 22000);
-      
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-    
-    // Handle browser back/forward navigation
-    const handlePopState = () => {
-      const stepFromUrl = getStepFromUrl();
-      setCurrentStep(stepFromUrl);
-    };
-    
-    window.addEventListener('popstate', handlePopState);
-    
-    // Load saved state on initial load
-    const savedState = loadStateFromLocalStorage();
-    const stepFromUrl = getStepFromUrl();
-
-    // Check for quote parameter from email links
+    // Check for quote parameter from email links FIRST
     const quoteParam = searchParams.get('quote');
     const emailParam = searchParams.get('email');
     
+    console.log('URL params check:', { quoteParam, emailParam, currentUrl: window.location.href });
+    
     if (quoteParam && emailParam) {
+      console.log('Quote params found, fetching quote data...');
       // User is returning from a quote email - fetch the stored quote data
       const fetchQuoteData = async () => {
         try {
@@ -205,6 +180,34 @@ const Index = () => {
       fetchQuoteData();
       return;
     }
+
+    // Show discount popup right after homepage loads in new session
+    if (currentStep === 1) {
+      // Check if already seen popup in this session
+      const hasSeenPopup = sessionStorage.getItem('hasSeenDiscountPopup');
+      if (hasSeenPopup) return;
+      
+      // Show popup after 22 seconds on homepage
+      const timer = setTimeout(() => {
+        setShowDiscountPopup(true);
+      }, 22000);
+      
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+    
+    // Handle browser back/forward navigation
+    const handlePopState = () => {
+      const stepFromUrl = getStepFromUrl();
+      setCurrentStep(stepFromUrl);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    
+    // Load saved state on initial load
+    const savedState = loadStateFromLocalStorage();
+    const stepFromUrl = getStepFromUrl();
     
     // Check for restore parameter from email links
     const restoreParam = searchParams.get('restore');
