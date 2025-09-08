@@ -247,19 +247,42 @@ const Index = () => {
       return;
     }
 
-    // Show discount popup right after homepage loads in new session
-    if (currentStep === 1) {
+    // Show discount popup after 20 seconds of scrolling (not on homepage)
+    if (currentStep !== 1) {
       // Check if already seen popup in this session
       const hasSeenPopup = sessionStorage.getItem('hasSeenDiscountPopup');
       if (hasSeenPopup) return;
       
-      // Show popup after 22 seconds on homepage
-      const timer = setTimeout(() => {
-        setShowDiscountPopup(true);
-      }, 22000);
+      let scrollTime = 0;
+      let scrollTimer: NodeJS.Timeout;
+      let isScrolling = false;
+      
+      const handleScroll = () => {
+        if (!isScrolling) {
+          isScrolling = true;
+          scrollTimer = setInterval(() => {
+            scrollTime += 100; // Increment by 100ms
+            if (scrollTime >= 20000) { // 20 seconds
+              setShowDiscountPopup(true);
+              clearInterval(scrollTimer);
+              window.removeEventListener('scroll', handleScroll);
+            }
+          }, 100);
+        }
+        
+        // Reset scrolling flag after a brief pause
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          isScrolling = false;
+          clearInterval(scrollTimer);
+        }, 150);
+      };
+      
+      window.addEventListener('scroll', handleScroll);
       
       return () => {
-        clearTimeout(timer);
+        window.removeEventListener('scroll', handleScroll);
+        clearInterval(scrollTimer);
       };
     }
     
