@@ -108,6 +108,8 @@ const Index = () => {
   
   useEffect(() => {
     console.log('useEffect triggered, current URL:', window.location.href);
+    console.log('searchParams:', Object.fromEntries(searchParams.entries()));
+    console.log('currentStep:', currentStep);
     window.scrollTo(0, 0);
     
     // Check for quote parameter from email links FIRST
@@ -118,6 +120,7 @@ const Index = () => {
     
     if (quoteParam && emailParam) {
       console.log('Quote params found, fetching quote data...');
+      // User is returning from a quote email - fetch the stored quote data
       // User is returning from a quote email - fetch the stored quote data
       const fetchQuoteData = async () => {
         try {
