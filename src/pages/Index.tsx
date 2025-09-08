@@ -32,6 +32,7 @@ interface VehicleData {
 }
 
 const Index = () => {
+  console.log('Index component rendering, URL:', window.location.href);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   
