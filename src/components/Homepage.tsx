@@ -4,6 +4,7 @@ import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike,
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
+import { VoucherBanner } from './VoucherBanner';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
@@ -203,6 +204,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Voucher Banner */}
+      <VoucherBanner placement="homepage" />
+      
       {/* Header */}
       <header className="bg-white shadow-sm py-1 sm:py-2">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
