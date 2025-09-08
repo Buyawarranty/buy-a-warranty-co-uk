@@ -35,6 +35,11 @@ const Index = () => {
   console.log('Index component rendering, URL:', window.location.href);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  // Check for quote restoration immediately
+  const quoteParam = searchParams.get('quote');
+  const emailParam = searchParams.get('email');
+  console.log('Immediate quote check:', { quoteParam, emailParam });
   
   // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
@@ -67,6 +72,62 @@ const Index = () => {
   
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
+  
+  // Quote restoration effect - runs immediately when component loads
+  useEffect(() => {
+    if (quoteParam && emailParam) {
+      console.log('QUOTE RESTORATION: Found quote params, fetching data...');
+      
+      const fetchQuoteData = async () => {
+        try {
+          console.log('QUOTE RESTORATION: Fetching from database...');
+          
+          const { data, error } = await supabase
+            .from('quote_data')
+            .select('*')
+            .eq('quote_id', quoteParam)
+            .eq('customer_email', emailParam)
+            .maybeSingle();
+
+          console.log('QUOTE RESTORATION: Database response:', { data, error });
+
+          if (error || !data) {
+            console.error('QUOTE RESTORATION: Failed to fetch quote data:', error);
+            return;
+          }
+
+          // Restore the vehicle data from the stored quote
+          const vehicleDataJson = data.vehicle_data as any;
+          const restoredVehicleData = {
+            regNumber: vehicleDataJson.regNumber || '',
+            mileage: vehicleDataJson.mileage || '',
+            email: emailParam,
+            phone: '',
+            firstName: '',
+            lastName: '',
+            address: '',
+            make: vehicleDataJson.make || '',
+            model: vehicleDataJson.model || '',
+            year: vehicleDataJson.year || '',
+            vehicleType: vehicleDataJson.vehicleType || 'car',
+            fuelType: vehicleDataJson.fuelType || '',
+            transmission: vehicleDataJson.transmission || ''
+          };
+          
+          console.log('QUOTE RESTORATION: Restoring vehicle data and going to step 3:', restoredVehicleData);
+          setVehicleData(restoredVehicleData);
+          setFormData(prev => ({ ...prev, ...restoredVehicleData }));
+          setCurrentStep(3);
+          updateStepInUrl(3);
+          
+        } catch (error) {
+          console.error('QUOTE RESTORATION: Error in fetchQuoteData:', error);
+        }
+      };
+
+      fetchQuoteData();
+    }
+  }, [quoteParam, emailParam]);
   
   // Save state to localStorage
   const saveStateToLocalStorage = (step?: number) => {
