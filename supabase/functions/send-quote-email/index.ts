@@ -31,6 +31,7 @@ interface QuoteEmailRequest {
     price: number;
     paymentType: string;
   };
+  quoteId?: string;
 }
 
 const formatPaymentType = (paymentType: string): string => {
@@ -44,7 +45,7 @@ const formatPaymentType = (paymentType: string): string => {
 };
 
 const generateQuoteEmail = (data: QuoteEmailRequest): string => {
-  const { vehicleData, firstName, lastName, selectedPlan } = data;
+  const { vehicleData, firstName, lastName, selectedPlan, quoteId } = data;
   const customerName = firstName || 'Valued Customer';
   
   return `
@@ -129,14 +130,21 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
         <p>Click the link below to resume your quote and complete your warranty purchase:</p>
         
         <div style="margin: 20px 0;">
+          ${quoteId ? `
+          <a href="https://buyawarranty.co.uk/?quote=${quoteId}&email=${data.email}" 
+             style="background: #ea580c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+            Continue My Quote
+          </a>
+          ` : `
           <a href="https://buyawarranty.co.uk/?regNumber=${vehicleData.regNumber}&mileage=${vehicleData.mileage}" 
              style="background: #ea580c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
             Complete My Purchase
           </a>
+          `}
         </div>
         
         <p style="font-size: 14px; color: #64748b; margin-top: 20px;">
-          This link will take you back to get your quote with your vehicle details pre-filled.
+          ${quoteId ? 'This link will restore your vehicle details and take you directly to choose your plan.' : 'This link will take you back to get your quote with your vehicle details pre-filled.'}
         </p>
       </div>
       
@@ -180,7 +188,32 @@ const handler = async (req: Request): Promise<Response> => {
     logStep('Sending quote email', { email: data.email, vehicle: data.vehicleData.regNumber });
 
     const resend = new Resend(resendApiKey);
-    const htmlContent = generateQuoteEmail(data);
+    
+    // Generate unique quote ID
+    const quoteId = `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+    
+    // Store quote data in database for restoration
+    try {
+      const { error: insertError } = await supabase
+        .from('quote_data')
+        .insert({
+          quote_id: quoteId,
+          customer_email: data.email,
+          vehicle_data: data.vehicleData,
+          plan_data: data.selectedPlan || null,
+          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days from now
+        });
+
+      if (insertError) {
+        console.error('Error storing quote data:', insertError);
+      } else {
+        logStep('Quote data stored successfully', { quoteId });
+      }
+    } catch (error) {
+      console.error('Error storing quote data:', error);
+    }
+
+    const htmlContent = generateQuoteEmail({ ...data, quoteId });
 
     const emailResponse = await resend.emails.send({
       from: "BuyaWarranty <noreply@buyawarranty.co.uk>",
@@ -190,8 +223,6 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     logStep('Email sent successfully', emailResponse);
-
-    // Log email activity (skip database operations for now as tables may not exist)
     logStep('Quote email sent and logged successfully');
 
     return new Response(JSON.stringify({ success: true, emailId: emailResponse.data?.id }), {
