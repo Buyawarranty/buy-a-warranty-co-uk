@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -700,7 +700,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
               2
             </div>
-            <h2 className="text-xl font-semibold text-foreground">💰 Choose your excess amount</h2>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Choose your excess amount
+            </h2>
           </div>
           
           <div className="flex gap-1.5 flex-wrap justify-start ml-11">
@@ -726,7 +729,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
               3
             </div>
-            <h2 className="text-xl font-semibold text-foreground">🛡️ Choose Your Claim Limit</h2>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5" />
+              Choose Your Claim Limit
+            </h2>
           </div>
           
           <TooltipProvider>
@@ -1058,7 +1064,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                 4
               </div>
-              <h3 className="text-xl font-semibold text-foreground">📅 Choose Warranty Duration</h3>
+              <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                Choose Warranty Duration
+              </h3>
             </div>
             
             

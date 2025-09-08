@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, Package } from 'lucide-react';
 
 interface AddOnProtectionPackagesProps {
   selectedAddOns: {[key: string]: boolean};
@@ -141,7 +141,10 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
       <div className="max-w-6xl mx-auto px-4">
         <div className="bg-white rounded-lg p-6 border border-border shadow-lg">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-foreground mb-2">Add-On Protection Packages</h3>
+            <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+              <Package className="w-6 h-6" />
+              Add-On Protection Packages
+            </h3>
             <p className="text-muted-foreground">Enhance your warranty with optional protection covers</p>
           </div>
           
