@@ -174,17 +174,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {/* Vehicle Details Section */}
-        <div className="bg-gray-50 rounded-lg p-3 sm:p-6 mb-4 sm:mb-8">
+        <div className="bg-gray-50 rounded-lg p-3 sm:p-6 mb-2 sm:mb-4">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Car className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Your vehicle details</h3>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <Car className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" />
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900">Your vehicle details</h3>
             </div>
             <button
               onClick={onBack}
-              className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors duration-200 py-1 px-2 rounded"
+              className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base font-medium text-orange-600 hover:text-orange-700 transition-colors duration-200 py-1 px-2 rounded"
             >
-              <Edit3 className="w-3 h-3 sm:w-4 sm:h-4" />
+              <Edit3 className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="hidden xs:inline">Change Vehicle</span>
               <span className="xs:hidden">Change</span>
             </button>
@@ -192,47 +192,47 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
           
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
             <div className="flex flex-col p-2 sm:p-0">
-              <span className="text-xs sm:text-sm text-gray-500 font-medium">Registration</span>
-              <span className="text-sm sm:text-base font-semibold text-gray-900 break-all">{vehicleData.regNumber}</span>
+              <span className="text-sm sm:text-base text-gray-500 font-medium">Registration</span>
+              <span className="text-base sm:text-lg font-semibold text-gray-900 break-all">{vehicleData.regNumber}</span>
             </div>
             
             {vehicleData.make && (
               <div className="flex flex-col p-2 sm:p-0">
-                <span className="text-xs sm:text-sm text-gray-500 font-medium">Make</span>
-                <span className="text-sm sm:text-base font-semibold text-gray-900">{vehicleData.make}</span>
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Make</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.make}</span>
               </div>
             )}
             
             {vehicleData.model && (
               <div className="flex flex-col p-2 sm:p-0">
-                <span className="text-xs sm:text-sm text-gray-500 font-medium">Model</span>
-                <span className="text-sm sm:text-base font-semibold text-gray-900">{vehicleData.model}</span>
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Model</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.model}</span>
               </div>
             )}
             
             {vehicleData.year && (
               <div className="flex flex-col p-2 sm:p-0">
-                <span className="text-xs sm:text-sm text-gray-500 font-medium">Year</span>
-                <span className="text-sm sm:text-base font-semibold text-gray-900">{vehicleData.year}</span>
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Year</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.year}</span>
               </div>
             )}
             
             <div className="flex flex-col p-2 sm:p-0">
-              <span className="text-xs sm:text-sm text-gray-500 font-medium">Mileage</span>
-              <span className="text-sm sm:text-base font-semibold text-gray-900">{vehicleData.mileage}</span>
+              <span className="text-sm sm:text-base text-gray-500 font-medium">Mileage</span>
+              <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.mileage}</span>
             </div>
             
             {vehicleData.fuelType && (
               <div className="flex flex-col p-2 sm:p-0">
-                <span className="text-xs sm:text-sm text-gray-500 font-medium">Fuel Type</span>
-                <span className="text-sm sm:text-base font-semibold text-gray-900">{vehicleData.fuelType}</span>
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Fuel Type</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.fuelType}</span>
               </div>
             )}
             
             {vehicleData.transmission && (
               <div className="flex flex-col p-2 sm:p-0">
-                <span className="text-xs sm:text-sm text-gray-500 font-medium">Transmission</span>
-                <span className="text-sm sm:text-base font-semibold text-gray-900">{vehicleData.transmission}</span>
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Transmission</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.transmission}</span>
               </div>
             )}
           </div>
