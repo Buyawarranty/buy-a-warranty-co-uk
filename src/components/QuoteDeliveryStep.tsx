@@ -86,9 +86,11 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
     try {
       // Send quote email
-      console.log('Sending quote email with data:', {
+      console.log('QUOTE EMAIL: Sending quote email with data:', {
         email: email.trim(),
-        vehicleData
+        vehicleData,
+        currentUrl: window.location.href,
+        origin: window.location.origin
       });
 
       const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-quote-email', {
@@ -111,10 +113,10 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       });
 
       if (emailError) {
-        console.error('Error sending quote email:', emailError);
+        console.error('QUOTE EMAIL: Error sending quote email:', emailError);
         // Still proceed with the flow even if email fails
       } else {
-        console.log('Quote email sent successfully:', emailResponse);
+        console.log('QUOTE EMAIL: Quote email sent successfully:', emailResponse);
       }
 
       // Track abandoned cart if email is provided

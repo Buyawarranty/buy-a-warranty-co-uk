@@ -40,6 +40,7 @@ const Index = () => {
   const quoteParam = searchParams.get('quote');
   const emailParam = searchParams.get('email');
   console.log('Immediate quote check:', { quoteParam, emailParam });
+  console.log('All URL params:', Object.fromEntries(searchParams.entries()));
   
   // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
@@ -75,12 +76,14 @@ const Index = () => {
   
   // Quote restoration effect - runs immediately when component loads
   useEffect(() => {
+    console.log('QUOTE RESTORATION: useEffect triggered', { quoteParam, emailParam });
+    
     if (quoteParam && emailParam) {
-      console.log('QUOTE RESTORATION: Found quote params, fetching data...');
+      console.log('QUOTE RESTORATION: Found quote params, fetching data...', { quoteParam, emailParam });
       
       const fetchQuoteData = async () => {
         try {
-          console.log('QUOTE RESTORATION: Fetching from database...');
+          console.log('QUOTE RESTORATION: Fetching from database with params:', { quoteParam, emailParam });
           
           const { data, error } = await supabase
             .from('quote_data')
@@ -89,15 +92,22 @@ const Index = () => {
             .eq('customer_email', emailParam)
             .maybeSingle();
 
-          console.log('QUOTE RESTORATION: Database response:', { data, error });
+          console.log('QUOTE RESTORATION: Database response:', { data, error, quoteParam, emailParam });
 
-          if (error || !data) {
-            console.error('QUOTE RESTORATION: Failed to fetch quote data:', error);
+          if (error) {
+            console.error('QUOTE RESTORATION: Database error:', error);
+            return;
+          }
+
+          if (!data) {
+            console.warn('QUOTE RESTORATION: No quote data found for:', { quoteParam, emailParam });
             return;
           }
 
           // Restore the vehicle data from the stored quote
           const vehicleDataJson = data.vehicle_data as any;
+          console.log('QUOTE RESTORATION: Raw vehicle data from DB:', vehicleDataJson);
+          
           const restoredVehicleData = {
             regNumber: vehicleDataJson.regNumber || '',
             mileage: vehicleDataJson.mileage || '',
@@ -117,8 +127,16 @@ const Index = () => {
           console.log('QUOTE RESTORATION: Restoring vehicle data and going to step 3:', restoredVehicleData);
           setVehicleData(restoredVehicleData);
           setFormData(prev => ({ ...prev, ...restoredVehicleData }));
+          
+          // Save to localStorage for persistence
+          localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(restoredVehicleData));
+          localStorage.setItem('buyawarranty_formData', JSON.stringify(restoredVehicleData));
+          localStorage.setItem('buyawarranty_currentStep', '3');
+          
           setCurrentStep(3);
           updateStepInUrl(3);
+          
+          console.log('QUOTE RESTORATION: Successfully restored quote and set step to 3');
           
         } catch (error) {
           console.error('QUOTE RESTORATION: Error in fetchQuoteData:', error);
@@ -126,6 +144,8 @@ const Index = () => {
       };
 
       fetchQuoteData();
+    } else {
+      console.log('QUOTE RESTORATION: No quote params found, skipping restoration');
     }
   }, [quoteParam, emailParam]);
   

@@ -44,7 +44,7 @@ const formatPaymentType = (paymentType: string): string => {
   }
 };
 
-const generateQuoteEmail = (data: QuoteEmailRequest): string => {
+const generateQuoteEmail = (data: QuoteEmailRequest, baseUrl: string): string => {
   const { vehicleData, firstName, lastName, selectedPlan, quoteId } = data;
   const customerName = firstName || 'Valued Customer';
   
@@ -131,12 +131,12 @@ const generateQuoteEmail = (data: QuoteEmailRequest): string => {
         
         <div style="margin: 20px 0;">
           ${quoteId ? `
-          <a href="https://buyawarranty.co.uk/?quote=${quoteId}&email=${data.email}" 
+          <a href="${baseUrl}/?quote=${quoteId}&email=${data.email}" 
              style="background: #ea580c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
             Continue My Quote
           </a>
           ` : `
-          <a href="https://buyawarranty.co.uk/?regNumber=${vehicleData.regNumber}&mileage=${vehicleData.mileage}" 
+          <a href="${baseUrl}/?regNumber=${vehicleData.regNumber}&mileage=${vehicleData.mileage}" 
              style="background: #ea580c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
             Complete My Purchase
           </a>
@@ -185,12 +185,30 @@ const handler = async (req: Request): Promise<Response> => {
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
     const data: QuoteEmailRequest = await req.json();
     
-    logStep('Sending quote email', { email: data.email, vehicle: data.vehicleData.regNumber });
+    logStep('Sending quote email', { email: data.email, vehicle: data.vehicleData.regNumber, requestHeaders: Object.fromEntries(req.headers.entries()) });
 
     const resend = new Resend(resendApiKey);
     
     // Generate unique quote ID
     const quoteId = `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+    
+    // Determine the base URL from the request origin or use production URL as fallback
+    const origin = req.headers.get('origin');
+    const referer = req.headers.get('referer');
+    let baseUrl = 'https://buyawarranty.co.uk';
+    
+    if (origin) {
+      baseUrl = origin;
+    } else if (referer) {
+      try {
+        const refererUrl = new URL(referer);
+        baseUrl = refererUrl.origin;
+      } catch (e) {
+        logStep('Failed to parse referer URL', { referer });
+      }
+    }
+    
+    logStep('Email URL generation', { origin, referer, baseUrl, quoteId });
     
     // Store quote data in database for restoration
     try {
@@ -206,14 +224,16 @@ const handler = async (req: Request): Promise<Response> => {
 
       if (insertError) {
         console.error('Error storing quote data:', insertError);
+        logStep('Error storing quote data', insertError);
       } else {
         logStep('Quote data stored successfully', { quoteId });
       }
     } catch (error) {
       console.error('Error storing quote data:', error);
+      logStep('Exception storing quote data', error);
     }
 
-    const htmlContent = generateQuoteEmail({ ...data, quoteId });
+    const htmlContent = generateQuoteEmail({ ...data, quoteId }, baseUrl);
 
     const emailResponse = await resend.emails.send({
       from: "BuyaWarranty <noreply@buyawarranty.co.uk>",
