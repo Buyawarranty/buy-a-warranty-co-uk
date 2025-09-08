@@ -107,6 +107,7 @@ const Index = () => {
   };
   
   useEffect(() => {
+    console.log('useEffect triggered, current URL:', window.location.href);
     window.scrollTo(0, 0);
     
     // Check for quote parameter from email links FIRST
@@ -244,7 +245,7 @@ const Index = () => {
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, []);
+  }, [searchParams]);
   
   const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Review & Confirm'];
 
