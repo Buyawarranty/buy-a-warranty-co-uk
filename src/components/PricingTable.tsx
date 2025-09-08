@@ -1403,90 +1403,54 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       )}
 
-      {/* Floating Summary */}
+      {/* Thin Summary Bar */}
       {isFloatingBarVisible && !summaryDismissed && getSelectedPlan() && (
-        <div className="fixed bottom-6 left-6 right-6 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-w-md mx-auto">
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900">Summary</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSummaryDismissed(true)}
-                className="h-6 w-6 p-0 hover:bg-gray-100"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <div className="space-y-2 text-sm">
-              {(() => {
-                const selectedPlan = getSelectedPlan();
-                const planPrice = calculatePlanPrice();
-                const addOnPrice = calculateAddOnPrice(selectedPlan?.id || '');
-                const totalPrice = planPrice + addOnPrice;
-                const monthlyEquivalent = Math.round(totalPrice / (paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36));
-                
-                return (
-                  <>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Plan:</span>
-                      <span className="font-medium">{selectedPlan?.name || 'None'} - £{selectedClaimLimit.toLocaleString()} limit</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Duration:</span>
-                      <span className="font-medium">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+          <div className="max-w-7xl mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-6 text-sm">
+                {(() => {
+                  const selectedPlan = getSelectedPlan();
+                  const planPrice = calculatePlanPrice();
+                  const addOnPrice = calculateAddOnPrice(selectedPlan?.id || '');
+                  const totalPrice = planPrice + addOnPrice;
+                  const monthlyEquivalent = Math.round(totalPrice / (paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36));
+                  
+                  return (
+                    <>
+                      <span className="font-medium text-gray-900">
+                        {selectedPlan?.name || 'None'} - £{selectedClaimLimit.toLocaleString()}
+                      </span>
+                      <span className="text-gray-600">
                         {paymentType === '12months' ? '12 months' : 
                          paymentType === '24months' ? '24 months' : '36 months'}
                       </span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Excess:</span>
-                      <span className="font-medium">£{voluntaryExcess}</span>
-                    </div>
-                    
-                    {Object.values(selectedProtectionAddOns).some(Boolean) && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Add-ons:</span>
-                        <span className="font-medium text-blue-600">
-                          {Object.entries(selectedProtectionAddOns)
-                            .filter(([_, selected]) => selected)
-                            .map(([key, _]) => {
-                              if (key === 'breakdown') return '24/7 Breakdown';
-                              if (key === 'motRepair') return 'MOT Repair';
-                              if (key === 'wearTear') return 'Wear & Tear';
-                              if (key === 'transfer') return 'Transfer';
-                              return key;
-                            })
-                            .join(', ')}
-                        </span>
-                      </div>
-                    )}
-                    
-                    <div className="border-t border-gray-200 pt-2 mt-2">
-                      <div className="flex justify-between items-center">
-                        <span className="font-semibold text-gray-900">Total:</span>
-                        <div className="text-right">
-                          <div className="font-bold text-orange-600">£{totalPrice}</div>
-                          <div className="text-xs text-gray-500">£{monthlyEquivalent}/mo</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <Button
-                      onClick={() => {
-                        handleSelectPlan();
-                      }}
-                      className="w-full mt-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold"
-                      size="sm"
-                    >
-                      Continue to Payment
-                    </Button>
-                  </>
-                );
-              })()}
+                      <span className="text-gray-600">£{voluntaryExcess} excess</span>
+                      <div className="font-bold text-orange-600">£{totalPrice} (£{monthlyEquivalent}/mo)</div>
+                    </>
+                  );
+                })()}
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <Button
+                  onClick={() => {
+                    handleSelectPlan();
+                  }}
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-semibold"
+                  size="sm"
+                >
+                  Continue to Payment
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSummaryDismissed(true)}
+                  className="h-8 w-8 p-0 hover:bg-gray-100"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
