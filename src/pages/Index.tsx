@@ -145,15 +145,26 @@ const Index = () => {
       // User is returning from a quote email - fetch the stored quote data
       const fetchQuoteData = async () => {
         try {
+          console.log('Fetching quote data:', { quoteParam, emailParam });
+          
           const { data, error } = await supabase
             .from('quote_data')
             .select('*')
             .eq('quote_id', quoteParam)
             .eq('customer_email', emailParam)
-            .single();
+            .maybeSingle();
 
-          if (error || !data) {
-            console.error('Quote not found or expired:', error);
+          console.log('Quote data response:', { data, error });
+
+          if (error) {
+            console.error('Error fetching quote data:', error);
+            setCurrentStep(1);
+            updateStepInUrl(1);
+            return;
+          }
+
+          if (!data) {
+            console.error('Quote not found or expired');
             // Show error message and redirect to step 1
             setCurrentStep(1);
             updateStepInUrl(1);
