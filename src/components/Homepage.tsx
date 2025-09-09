@@ -476,8 +476,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 />
               </div>
               
-              {/* Voucher Banner positioned above vehicle types */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 sm:translate-y-16 z-20">
+              {/* Voucher Banner positioned below vehicle types */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-24 sm:translate-y-28 z-20">
                 <VoucherBanner placement="homepage" />
               </div>
               
