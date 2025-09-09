@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Link } from 'react-router-dom';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
 import { VoucherBanner } from './VoucherBanner';
@@ -210,22 +211,22 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center">
-              <a href="/" className="hover:opacity-80 transition-opacity">
+              <Link to="/" className="hover:opacity-80 transition-opacity">
                 <img 
                   src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
                   alt="Buy a Warranty" 
                   className="h-6 sm:h-8 w-auto"
                 />
-              </a>
+              </Link>
             </div>
 
             {/* Navigation - Hidden on mobile */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
               <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</a>
-              <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">How You're Protected</a>
-              <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</a>
-              <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
-              <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</a>
+              <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">How You're Protected</Link>
+              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</Link>
+              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
             </nav>
 
             {/* Desktop CTA Buttons - Show on desktop */}
@@ -262,13 +263,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="flex flex-col h-full">
                   {/* Header with logo */}
                   <div className="flex items-center justify-between pb-6">
-                    <a href="/" className="hover:opacity-80 transition-opacity">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
                       <img 
                         src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
                         alt="Buy a Warranty" 
                         className="h-8 w-auto"
                       />
-                    </a>
+                    </Link>
                   </div>
 
                   {/* Navigation Links */}
@@ -280,34 +281,34 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     >
                       Warranty Plans
                     </a>
-                    <a 
-                      href="/protected" 
+                    <Link 
+                      to="/protected" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       How You're Protected
-                    </a>
-                    <a 
-                      href="/make-a-claim" 
+                    </Link>
+                    <Link 
+                      to="/make-a-claim" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Make a Claim
-                    </a>
-                    <a 
-                      href="#" 
+                    </Link>
+                    <Link 
+                      to="/faq" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       FAQ
-                    </a>
-                    <a 
-                      href="/contact-us" 
+                    </Link>
+                    <Link 
+                      to="/contact-us" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Contact Us
-                    </a>
+                    </Link>
                   </nav>
 
                   {/* CTA Buttons */}

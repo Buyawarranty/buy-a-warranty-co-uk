@@ -1,4 +1,5 @@
 import { CheckCircle, Shield, Clock, Wrench, Car, Zap, Battery, Bike, Phone, Mail, AlertTriangle, X, Check, Star, FileText, Users, Heart, Menu } from "lucide-react";
+import { Link } from "react-router-dom";
 import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -28,11 +29,11 @@ const Protected = () => {
               
               {/* Navigation - Hidden on mobile, visible on lg+ */}
               <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-                <a href="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</a>
-                <a href="/protected" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</a>
-                <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</a>
-                <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
-                <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</a>
+                <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</Link>
+                <Link to="/protected" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</Link>
+                <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</Link>
+                <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</Link>
+                <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</Link>
               </nav>
 
               {/* Desktop CTA Buttons - Show on desktop */}

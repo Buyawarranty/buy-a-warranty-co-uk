@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MessageCircle, Mail, Clock, Upload, Menu } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -129,11 +130,11 @@ const ContactUs = () => {
             
             {/* Navigation - Hidden on mobile, visible on lg+ */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</a>
-              <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">How You're Protected</a>
-              <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</a>
-              <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
-              <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</a>
+              <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</Link>
+              <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">How You're Protected</Link>
+              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</Link>
+              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
             </nav>
 
             {/* Desktop CTA Buttons - Show on desktop */}

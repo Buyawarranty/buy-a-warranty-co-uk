@@ -247,11 +247,11 @@ const FAQ = () => {
               
               {/* Navigation - Hidden on mobile, visible on lg+ */}
               <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-                <a href="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</a>
-                <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</a>
-                <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</a>
-                <a href="/faq" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">FAQ</a>
-                <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</a>
+                <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</Link>
+                <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</Link>
+                <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</Link>
+                <Link to="/faq" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">FAQ</Link>
+                <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</Link>
               </nav>
 
               {/* Desktop CTA Buttons - Show on desktop */}
@@ -297,41 +297,41 @@ const FAQ = () => {
 
                     {/* Navigation Links */}
                     <nav className="flex flex-col space-y-6 flex-1">
-                      <a 
-                        href="/" 
+                      <Link 
+                        to="/" 
                         className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Warranty Plans
-                      </a>
-                      <a 
-                        href="/protected" 
+                      </Link>
+                      <Link 
+                        to="/protected" 
                         className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         How You're Protected
-                      </a>
-                      <a 
-                        href="/make-a-claim" 
+                      </Link>
+                      <Link 
+                        to="/make-a-claim" 
                         className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Make a Claim
-                      </a>
-                      <a 
-                        href="/faq" 
+                      </Link>
+                      <Link 
+                        to="/faq" 
                         className="text-orange-500 hover:text-orange-600 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         FAQ
-                      </a>
-                      <a 
-                        href="/contact-us" 
+                      </Link>
+                      <Link 
+                        to="/contact-us" 
                         className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Contact Us
-                      </a>
+                      </Link>
                     </nav>
 
                     {/* CTA Buttons */}
