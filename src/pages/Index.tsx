@@ -451,7 +451,7 @@ const Index = () => {
   const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden w-full">
       <SEOHead 
         title={
           currentStep === 1 ? "Car Warranty Prices | Affordable UK Vehicle Warranties" :

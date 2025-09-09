@@ -203,13 +203,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const isFormValid = regNumber.trim() && mileage.trim() && !mileageError && !vehicleAgeError;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Voucher Banner */}
       <VoucherBanner placement="homepage" />
       
       {/* Header */}
       <header className="bg-white shadow-sm py-1 sm:py-2">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center">
@@ -340,7 +340,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Hero Section */}
       <section className="bg-white py-2 sm:py-2 lg:py-3">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
             <div className="space-y-4">
@@ -480,27 +480,27 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
               
               {/* Vehicle Types positioned underneath the panda's feet */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-8">
-                <div className="flex items-center justify-center gap-6">
-                  <div className="flex items-center space-x-1">
-                    <Car className="w-5 h-5 text-green-500" />
-                    <span className="font-medium text-gray-700 text-base">Cars</span>
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4 sm:translate-y-8 w-full px-2">
+                <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-6 flex-wrap">
+                  <div className="flex items-center space-x-1 min-w-0">
+                    <Car className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Cars</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Truck className="w-5 h-5 text-green-500" />
-                    <span className="font-medium text-gray-700 text-base">Vans</span>
+                  <div className="flex items-center space-x-1 min-w-0">
+                    <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Vans</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Zap className="w-5 h-5 text-green-500" />
-                    <span className="font-medium text-gray-700 text-base">Hybrid</span>
+                  <div className="flex items-center space-x-1 min-w-0">
+                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Hybrid</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Battery className="w-5 h-5 text-green-500" />
-                    <span className="font-medium text-gray-700 text-base">EV</span>
+                  <div className="flex items-center space-x-1 min-w-0">
+                    <Battery className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">EV</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Bike className="w-5 h-5 text-green-500" />
-                    <span className="font-medium text-gray-700 text-base">Motorbikes</span>
+                  <div className="flex items-center space-x-1 min-w-0">
+                    <Bike className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Motorbikes</span>
                   </div>
                 </div>
               </div>
@@ -511,7 +511,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Extended Warranty Video Section */}
       <section className="py-6 md:py-10 bg-brand-gray-bg">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Video */}
             <div className="relative aspect-video">
@@ -548,7 +548,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Step 1 - Enter Your Reg Plate */}
       <section className="py-6 md:py-10 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}
             <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
@@ -600,7 +600,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Step 2 - Choose Your Plan */}
       <section className="py-6 md:py-10 bg-brand-gray-bg">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Panda with plan badges */}
             <div className="relative text-center">
@@ -661,7 +661,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Step 3 - Drive With Confidence */}
       <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}
             <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
@@ -702,7 +702,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* What's Included Section */}
       <section className="py-6 md:py-10 bg-gradient-to-r from-blue-50 to-orange-50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
               What's <span className="text-brand-orange">Included?</span>
@@ -746,7 +746,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Coverage Showcase Section */}
       <section className="py-6 md:py-10 bg-brand-gray-bg text-center">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Trustpilot Rating */}
           <div className="flex justify-center items-center mb-6 md:mb-8">
             <div className="flex items-center space-x-2">
@@ -775,7 +775,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Additional Cover Options Section */}
       <section className="py-6 md:py-10 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
               Additional Cover <span className="text-brand-orange">Options</span>

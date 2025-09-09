@@ -41,8 +41,8 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
-            <div className="min-h-screen flex flex-col">
-              <main className="flex-1 pb-32">
+            <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
+              <main className="flex-1 pb-32 w-full">
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/faq" element={<FAQ />} />
