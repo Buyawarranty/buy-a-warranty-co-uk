@@ -204,9 +204,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
-      {/* Voucher Banner */}
-      <VoucherBanner placement="homepage" />
-      
       {/* Header */}
       <header className="bg-white shadow-sm py-1 sm:py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -505,6 +502,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
               </div>
             </div>
+          </div>
+          
+          {/* Voucher Banner - positioned below vehicle types */}
+          <div className="flex justify-center mt-8">
+            <VoucherBanner placement="homepage" />
           </div>
         </div>
       </section>

@@ -37,7 +37,7 @@ export const VoucherBanner: React.FC<VoucherBannerProps> = ({
 
   if (placement === 'homepage') {
     return (
-      <div className={`bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-2 rounded-lg shadow-sm max-w-fit ${className}`}>
+      <div className={`bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-2 rounded-lg shadow-sm max-w-fit ${className}`}>
         <div className="flex items-center gap-2">
           <Tag className="h-3 w-3" />
           <span className="text-xs font-medium">£25 OFF</span>
