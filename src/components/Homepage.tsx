@@ -488,9 +488,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Vans</span>
                 </div>
                 
-                {/* Voucher Banner positioned between Vans and Hybrid */}
-                <div className="mx-2">
-                  <VoucherBanner placement="homepage" />
+                {/* Motorbikes with integrated voucher */}
+                <div className="flex items-center space-x-1 min-w-0 relative">
+                  <Bike className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                  <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Motorbikes</span>
+                  <div className="ml-2">
+                    <VoucherBanner placement="homepage" />
+                  </div>
                 </div>
                 
                 <div className="flex items-center space-x-1 min-w-0">
@@ -501,10 +505,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <Battery className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                   <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">EV</span>
                 </div>
-                <div className="flex items-center space-x-1 min-w-0">
-                  <Bike className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
-                  <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Motorbikes</span>
-                </div>
+              </div>
+              
+              {/* Separate voucher banner below */}
+              <div className="flex justify-center mt-4">
+                <VoucherBanner placement="homepage" />
               </div>
               </div>
             </div>
