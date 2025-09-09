@@ -37,30 +37,20 @@ export const VoucherBanner: React.FC<VoucherBannerProps> = ({
 
   if (placement === 'homepage') {
     return (
-      <div className={`bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 ${className}`}>
-        <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-3">
-            <Tag className="h-5 w-5 animate-pulse" />
-            <div>
-              <span className="font-bold text-lg">£25 OFF</span>
-              <span className="ml-2 text-sm opacity-90">Use code:</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 px-3 py-1 rounded-lg border border-white/30">
-              <code className="font-mono font-bold text-sm tracking-wider">{voucherCode}</code>
-            </div>
-            
-            <Button
-              onClick={copyToClipboard}
-              variant="outline"
-              size="sm"
-              className="bg-white/10 border-white/30 text-white hover:bg-white/20 h-8"
-            >
-              {hasCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            </Button>
-          </div>
+      <div className={`bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-2 rounded-lg shadow-sm ${className}`}>
+        <div className="flex items-center gap-2">
+          <Tag className="h-3 w-3" />
+          <span className="text-xs font-medium">£25 OFF</span>
+          <span className="text-xs opacity-90">•</span>
+          <code className="text-xs font-mono font-bold">{voucherCode}</code>
+          <Button
+            onClick={copyToClipboard}
+            variant="ghost"
+            size="sm"
+            className="h-5 w-5 p-0 text-white hover:bg-white/20"
+          >
+            {hasCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+          </Button>
         </div>
       </div>
     );
