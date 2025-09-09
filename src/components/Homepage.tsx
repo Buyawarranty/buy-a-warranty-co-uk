@@ -487,12 +487,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                   <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Vans</span>
                 </div>
-                
-                {/* Voucher Banner positioned between Vans and Hybrid */}
-                <div className="mx-2">
-                  <VoucherBanner placement="homepage" />
-                </div>
-                
                 <div className="flex items-center space-x-1 min-w-0">
                   <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                   <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Hybrid</span>
@@ -515,6 +509,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Extended Warranty Video Section */}
       <section className="py-6 md:py-10 bg-brand-gray-bg">
+        {/* Voucher Banner */}
+        <div className="flex justify-center pb-4">
+          <VoucherBanner placement="homepage" />
+        </div>
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Video */}
