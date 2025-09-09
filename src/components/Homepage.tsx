@@ -449,7 +449,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     disabled={isLookingUp}
                   >
                     <span className="hidden sm:inline">{isLookingUp ? 'Looking up vehicle...' : 'Get my quote'}</span>
-                    <span className="sm:hidden">{isLookingUp ? 'Looking up...' : 'Get quote'}</span>
+                    <span className="sm:hidden">{isLookingUp ? 'Looking up...' : 'Get my quote'}</span>
                   </Button>
                   {!mileageError && !vehicleAgeError && (
                     <p className="text-sm text-gray-400 text-center">

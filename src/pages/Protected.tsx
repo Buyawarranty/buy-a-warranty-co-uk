@@ -48,7 +48,7 @@ const Protected = () => {
                   size="sm"
                   className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
                 >
-                  Get Quote
+                  Get my quote
                 </Button>
               </div>
 
@@ -128,7 +128,7 @@ const Protected = () => {
                         className="bg-orange-500 text-white hover:bg-orange-600 w-full"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        Get Quote
+                        Get my quote
                       </Button>
                     </div>
                   </div>

@@ -282,7 +282,7 @@ const Auth = () => {
                 size="sm"
                 className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
               >
-                Get Quote
+                Get my quote
               </Button>
             </div>
 
@@ -362,7 +362,7 @@ const Auth = () => {
                       className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Get Quote
+                      Get my quote
                     </Button>
                   </div>
                 </div>
