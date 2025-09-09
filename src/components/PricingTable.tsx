@@ -1062,7 +1062,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             <div className="flex items-center gap-3 mt-4 sm:mt-6">
               <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                4
+                5
               </div>
               <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
                 <Calendar className="w-5 h-5" />

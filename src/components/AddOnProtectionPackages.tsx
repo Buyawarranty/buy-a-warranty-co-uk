@@ -110,11 +110,16 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
     <div className="mt-8 mb-8">
       <div className="max-w-6xl mx-auto px-4">
         <div className="bg-white rounded-lg p-6 border border-border shadow-lg">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              4
+            </div>
+            <h3 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Package className="w-6 h-6" />
               Add-On Protection Packages
             </h3>
+          </div>
+          <div className="text-center mb-8">
             <p className="text-muted-foreground">Enhance your warranty with optional protection covers</p>
           </div>
           
