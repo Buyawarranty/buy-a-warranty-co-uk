@@ -68,21 +68,21 @@ const HomepageFAQ = () => {
   ];
 
   const FAQItem = ({ faq }: { faq: { id: string; question: string; answer: string } }) => (
-    <div className="bg-white rounded-lg overflow-hidden shadow-lg border border-gray-200">
+    <div className="bg-brand-orange rounded-lg overflow-hidden shadow-lg border border-orange-400">
       <button
         onClick={() => toggleItem(faq.id)}
-        className="w-full px-6 py-5 text-left flex items-center justify-between text-brand-dark-text hover:bg-brand-orange hover:text-white transition-colors"
+        className="w-full px-6 py-5 text-left flex items-center justify-between text-white hover:bg-orange-600 transition-colors"
       >
         <span className="font-bold text-lg pr-4">{faq.question}</span>
         <ChevronDown 
-          className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
+          className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 text-white ${
             openItems[faq.id] ? 'rotate-180' : ''
           }`}
         />
       </button>
       
       {openItems[faq.id] && (
-        <div className="px-6 pb-5 text-brand-dark-text bg-gray-50 border-t border-gray-200 animate-accordion-down">
+        <div className="px-6 pb-5 text-white bg-orange-600 border-t border-orange-400 animate-accordion-down">
           <p className="text-base leading-relaxed">{faq.answer}</p>
         </div>
       )}
