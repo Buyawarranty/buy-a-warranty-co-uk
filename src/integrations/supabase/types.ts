@@ -453,7 +453,9 @@ export type Database = {
           email: string
           email_sent_at: string | null
           email_sent_status: string | null
+          europe_cover: boolean | null
           id: string
+          mot_fee: boolean | null
           payment_amount: number | null
           payment_currency: string | null
           payment_type: string
@@ -468,12 +470,15 @@ export type Database = {
           status: string
           stripe_session_id: string | null
           stripe_subscription_id: string | null
+          transfer_cover: boolean | null
+          tyre_cover: boolean | null
           updated_at: string
           user_id: string | null
           warranties_2000_response: Json | null
           warranties_2000_sent_at: string | null
           warranties_2000_status: string | null
           warranty_number: string | null
+          wear_tear: boolean | null
         }
         Insert: {
           address?: Json | null
@@ -485,7 +490,9 @@ export type Database = {
           email: string
           email_sent_at?: string | null
           email_sent_status?: string | null
+          europe_cover?: boolean | null
           id?: string
+          mot_fee?: boolean | null
           payment_amount?: number | null
           payment_currency?: string | null
           payment_type: string
@@ -500,12 +507,15 @@ export type Database = {
           status?: string
           stripe_session_id?: string | null
           stripe_subscription_id?: string | null
+          transfer_cover?: boolean | null
+          tyre_cover?: boolean | null
           updated_at?: string
           user_id?: string | null
           warranties_2000_response?: Json | null
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
           warranty_number?: string | null
+          wear_tear?: boolean | null
         }
         Update: {
           address?: Json | null
@@ -517,7 +527,9 @@ export type Database = {
           email?: string
           email_sent_at?: string | null
           email_sent_status?: string | null
+          europe_cover?: boolean | null
           id?: string
+          mot_fee?: boolean | null
           payment_amount?: number | null
           payment_currency?: string | null
           payment_type?: string
@@ -532,12 +544,15 @@ export type Database = {
           status?: string
           stripe_session_id?: string | null
           stripe_subscription_id?: string | null
+          transfer_cover?: boolean | null
+          tyre_cover?: boolean | null
           updated_at?: string
           user_id?: string | null
           warranties_2000_response?: Json | null
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
           warranty_number?: string | null
+          wear_tear?: boolean | null
         }
         Relationships: [
           {

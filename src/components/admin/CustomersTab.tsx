@@ -2251,11 +2251,11 @@ export const CustomersTab = () => {
                                 <div className="space-y-4">
                                   <h3 className="text-lg font-semibold">Coverage Details</h3>
                                   <CoverageDetailsDisplay
-                                    mot_fee={selectedCustomer.customer_policies[0].mot_fee}
-                                    tyre_cover={selectedCustomer.customer_policies[0].tyre_cover}
-                                    wear_tear={selectedCustomer.customer_policies[0].wear_tear}
-                                    europe_cover={selectedCustomer.customer_policies[0].europe_cover}
-                                    transfer_cover={selectedCustomer.customer_policies[0].transfer_cover}
+                                    mot_fee={(selectedCustomer.customer_policies[0] as any).mot_fee}
+                                    tyre_cover={(selectedCustomer.customer_policies[0] as any).tyre_cover}
+                                    wear_tear={(selectedCustomer.customer_policies[0] as any).wear_tear}
+                                    europe_cover={(selectedCustomer.customer_policies[0] as any).europe_cover}
+                                    transfer_cover={(selectedCustomer.customer_policies[0] as any).transfer_cover}
                                   />
                                 </div>
                               )}
