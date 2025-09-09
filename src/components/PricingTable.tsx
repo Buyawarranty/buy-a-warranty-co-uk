@@ -1060,6 +1060,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
             </div>
             
+            {/* Add-On Protection Packages Section */}
+            <AddOnProtectionPackages 
+              selectedAddOns={selectedProtectionAddOns}
+              paymentType={paymentType}
+              onAddOnChange={(addOnKey, selected) => 
+                setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
+              }
+            />
+
             <div className="flex items-center gap-3 mt-4 sm:mt-6">
               <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                 5
@@ -1076,246 +1085,211 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               {(() => {
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                 if (!platinumPlan) return null;
-                
-                const oneYearPrice = (() => {
-                  // Calculate 1-year price specifically
-                  const selectedPlan = getSelectedPlan();
-                  if (!selectedPlan) return { total: 348, monthly: 29 };
-                  
-                  let totalPrice = 348; // fallback
-                  if (selectedPlan.pricing_matrix) {
-                    const matrix = selectedPlan.pricing_matrix as any;
-                    const periodData = matrix['12'];
-                    if (periodData && periodData[voluntaryExcess.toString()]) {
-                      totalPrice = periodData[voluntaryExcess.toString()].price || 348;
-                    }
-                  }
-                  
-                  return { total: totalPrice, monthly: Math.round(totalPrice / 12) };
-                })();
-                
-                 return (
+
+                const pricing = getPricingData(voluntaryExcess, '12months');
+                const planType = 'platinum' as const;
+                const monthlyPrice = pricing[planType]?.monthly || 0;
+                const totalPrice = monthlyPrice * 12;
+
+                return (
                    <div 
-                     onClick={() => setPaymentType('12months')}
-                       className={`rounded-lg p-6 transition-all duration-200 cursor-pointer relative ${
-                         paymentType === '12months'
-                           ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                           : 'bg-white shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                       }`}>
-                      <div className="flex items-center justify-between">
-                       <div className="flex flex-col">
-                         <h3 className="text-2xl font-bold text-foreground mb-1">1 Year</h3>
-                         <p className="text-gray-600">Comprehensive coverage</p>
-                         
-                          {/* Bullet points with ticks */}
-                          <div className="mt-3 space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Drive now, pay later</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">12 interest-free payments</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Complete coverage</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Claim payouts in 90 minutes 🕒</span>
-                            </div>
-                          </div>
-                       </div>
-                        <div className="text-right">
-                          <div className="text-3xl font-bold text-foreground">£{oneYearPrice.total}</div>
-                          <div className="text-lg text-gray-500">or £{oneYearPrice.monthly}/mo</div>
+                      key="12months"
+                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 ${
+                        paymentType === '12months' 
+                          ? 'border-2 border-orange-500 shadow-lg' 
+                          : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-bold text-foreground">1 Year</h4>
+                      </div>
+                      <p className="text-muted-foreground mb-4 text-sm">Comprehensive coverage</p>
+                      
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Drive now, pay later
                         </div>
-                     </div>
-                       <button
-                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                           paymentType === '12months'
-                             ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
-                             : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                         }`}
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          12 interest-free payments
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Complete coverage
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Claim payouts in 90 minutes
+                        </div>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-black">£{totalPrice}</div>
+                          <div className="text-sm text-muted-foreground">or</div>
+                          <div className="text-lg text-muted-foreground">£{monthlyPrice}/mo</div>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => setPaymentType('12months')}
+                        className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
+                          paymentType === '12months' 
+                            ? 'bg-orange-500 text-white' 
+                            : 'bg-white text-black border border-gray-300 hover:border-orange-300'
+                        }`}
                       >
                         {paymentType === '12months' ? 'Selected' : 'Select'}
                       </button>
                    </div>
-                 );
+                );
               })()}
-
+              
               {/* 2 Years Option */}
               {(() => {
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                 if (!platinumPlan) return null;
-                
-                const twoYearPrice = (() => {
-                  // Calculate 2-year price specifically
-                  const selectedPlan = getSelectedPlan();
-                  if (!selectedPlan) return { total: 786, monthly: 65, save: 87 };
-                  
-                  let totalPrice = 786; // fallback
-                  let savings = 87; // fallback
-                  if (selectedPlan.pricing_matrix) {
-                    const matrix = selectedPlan.pricing_matrix as any;
-                    const periodData = matrix['24'];
-                    if (periodData && periodData[voluntaryExcess.toString()]) {
-                      totalPrice = periodData[voluntaryExcess.toString()].price || 786;
-                      savings = periodData[voluntaryExcess.toString()].save || 87;
-                    }
-                  }
-                  
-                  const monthlyEquivalent = Math.round(totalPrice / 12);
-                  return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
-                })();
-                
-                 return (
+
+                const pricing = getPricingData(voluntaryExcess, 'two_yearly');
+                const planType = 'platinum' as const;
+                const monthlyPrice = pricing[planType]?.monthly || 0;
+                const savings = pricing[planType]?.save || 0;
+                const totalPrice = monthlyPrice * 24;
+
+                return (
                    <div 
-                     onClick={() => setPaymentType('24months')}
-                       className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
-                         paymentType === '24months'
-                           ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                           : 'bg-white shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                       }`}>
-                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                       <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                         Save £{twoYearPrice.save}
-                       </div>
-                     </div>
-                     <div className="flex items-center justify-between">
-                       <div className="flex flex-col">
-                         <h3 className="text-2xl font-bold text-foreground mb-1">2 Years</h3>
-                         <p className="text-gray-600">Comprehensive coverage</p>
-                         
-                          {/* Bullet points with ticks */}
-                          <div className="mt-3 space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Drive now, pay later</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">12 interest-free payments</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Complete coverage</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Claim payouts in 90 minutes 🕒</span>
-                            </div>
-                          </div>
-                       </div>
-                        <div className="text-right">
-                          <div className="text-3xl font-bold text-foreground">£{twoYearPrice.total}</div>
-                          <div className="text-lg text-gray-500">or £{twoYearPrice.monthly}/mo</div>
+                      key="24months"
+                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 relative ${
+                        paymentType === '24months' 
+                          ? 'border-2 border-orange-500 shadow-lg' 
+                          : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
+                      }`}
+                    >
+                      {savings > 0 && (
+                        <div className="absolute -top-2 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                          Save £{savings}
                         </div>
-                     </div>
-                       <button
-                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                           paymentType === '24months'
-                             ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
-                             : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                         }`}
+                      )}
+                      
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-bold text-foreground">2 Years</h4>
+                      </div>
+                      <p className="text-muted-foreground mb-4 text-sm">Comprehensive coverage</p>
+                      
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Drive now, pay later
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          12 interest-free payments
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Complete coverage
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Claim payouts in 90 minutes
+                        </div>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-black">£{totalPrice}</div>
+                          <div className="text-sm text-muted-foreground">or</div>
+                          <div className="text-lg text-muted-foreground">£{monthlyPrice}/mo</div>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => setPaymentType('24months')}
+                        className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
+                          paymentType === '24months' 
+                            ? 'bg-orange-500 text-white' 
+                            : 'bg-white text-black border border-gray-300 hover:border-orange-300'
+                        }`}
                       >
                         {paymentType === '24months' ? 'Selected' : 'Select'}
                       </button>
                    </div>
-                 );
+                );
               })()}
-
+              
               {/* 3 Years Option */}
               {(() => {
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                 if (!platinumPlan) return null;
-                
-                const threeYearPrice = (() => {
-                  // Calculate 3-year price specifically
-                  const selectedPlan = getSelectedPlan();
-                  if (!selectedPlan) return { total: 1153, monthly: 96, save: 157 };
-                  
-                  let totalPrice = 1153; // fallback
-                  let savings = 157; // fallback
-                  if (selectedPlan.pricing_matrix) {
-                    const matrix = selectedPlan.pricing_matrix as any;
-                    const periodData = matrix['36'];
-                    if (periodData && periodData[voluntaryExcess.toString()]) {
-                      totalPrice = periodData[voluntaryExcess.toString()].price || 1153;
-                      savings = periodData[voluntaryExcess.toString()].save || 157;
-                    }
-                  }
-                  
-                  const monthlyEquivalent = Math.round(totalPrice / 12);
-                  return { total: totalPrice, monthly: monthlyEquivalent, save: savings };
-                })();
-                
-                 return (
+
+                const pricing = getPricingData(voluntaryExcess, 'three_yearly');
+                const planType = 'platinum' as const;
+                const monthlyPrice = pricing[planType]?.monthly || 0;
+                const savings = pricing[planType]?.save || 0;
+                const totalPrice = monthlyPrice * 36;
+
+                return (
                    <div 
-                     onClick={() => setPaymentType('36months')}
-                       className={`rounded-lg p-6 transition-all duration-200 relative cursor-pointer ${
-                         paymentType === '36months'
-                           ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                           : 'bg-white shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                       }`}>
-                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                       <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                         Save £{threeYearPrice.save}
-                       </div>
-                     </div>
-                     <div className="flex items-center justify-between">
-                       <div className="flex flex-col">
-                         <h3 className="text-2xl font-bold text-foreground mb-1">3 Years</h3>
-                         <p className="text-gray-600">Comprehensive coverage</p>
-                         
-                          {/* Bullet points with ticks */}
-                          <div className="mt-3 space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Drive now, pay later</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">12 interest-free payments</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Complete coverage</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Check className="h-4 w-4 text-black flex-shrink-0" />
-                              <span className="text-sm text-gray-600">Claim payouts in 90 minutes 🕒</span>
-                            </div>
-                          </div>
-                       </div>
-                        <div className="text-right">
-                          <div className="text-3xl font-bold text-foreground">£{threeYearPrice.total}</div>
-                          <div className="text-lg text-gray-500">or £{threeYearPrice.monthly}/mo</div>
+                      key="36months"
+                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 relative ${
+                        paymentType === '36months' 
+                          ? 'border-2 border-orange-500 shadow-lg' 
+                          : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
+                      }`}
+                    >
+                      {savings > 0 && (
+                        <div className="absolute -top-2 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                          Save £{savings}
                         </div>
-                     </div>
-                       <button
-                         className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mt-6 ${
-                           paymentType === '36months'
-                             ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
-                             : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                         }`}
+                      )}
+                      
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-bold text-foreground">3 Years</h4>
+                      </div>
+                      <p className="text-muted-foreground mb-4 text-sm">Comprehensive coverage</p>
+                      
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Drive now, pay later
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          12 interest-free payments
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Complete coverage
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          Claim payouts in 90 minutes
+                        </div>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-black">£{totalPrice}</div>
+                          <div className="text-sm text-muted-foreground">or</div>
+                          <div className="text-lg text-muted-foreground">£{monthlyPrice}/mo</div>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => setPaymentType('36months')}
+                        className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
+                          paymentType === '36months' 
+                            ? 'bg-orange-500 text-white' 
+                            : 'bg-white text-black border border-gray-300 hover:border-orange-300'
+                        }`}
                       >
                         {paymentType === '36months' ? 'Selected' : 'Select'}
                       </button>
                    </div>
-                 );
+                );
               })()}
-            </div>
-            
-            {/* Add-On Protection Packages Section */}
-            <AddOnProtectionPackages 
-              selectedAddOns={selectedProtectionAddOns}
-              paymentType={paymentType}
-              onAddOnChange={(addOnKey, selected) => 
-                setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
-              }
-            />
+             </div>
             
             {/* Pricing Summary and CTA */}
             <div className="flex justify-end mt-8">
