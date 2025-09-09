@@ -19,6 +19,7 @@ import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { MOTHistorySection } from './MOTHistorySection';
+import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
@@ -2244,6 +2245,20 @@ export const CustomersTab = () => {
                                   onActionComplete={fetchCustomers}
                                 />
                               </div>
+
+                              {/* Coverage Details Section */}
+                              {selectedCustomer.customer_policies?.[0] && (
+                                <div className="space-y-4">
+                                  <h3 className="text-lg font-semibold">Coverage Details</h3>
+                                  <CoverageDetailsDisplay
+                                    mot_fee={selectedCustomer.customer_policies[0].mot_fee}
+                                    tyre_cover={selectedCustomer.customer_policies[0].tyre_cover}
+                                    wear_tear={selectedCustomer.customer_policies[0].wear_tear}
+                                    europe_cover={selectedCustomer.customer_policies[0].europe_cover}
+                                    transfer_cover={selectedCustomer.customer_policies[0].transfer_cover}
+                                  />
+                                </div>
+                              )}
 
                               {/* Notes Section */}
                               <div className="space-y-4">
