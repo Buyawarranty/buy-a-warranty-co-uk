@@ -476,6 +476,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 />
               </div>
               
+              {/* Voucher Banner positioned above vehicle types */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 sm:translate-y-16 z-20">
+                <VoucherBanner placement="homepage" />
+              </div>
+              
               {/* Vehicle Types positioned underneath the panda's feet */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4 sm:translate-y-8 w-full px-2">
               <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-6 flex-wrap">
@@ -509,11 +514,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Extended Warranty Video Section */}
       <section className="py-6 md:py-10 bg-brand-gray-bg">
-        {/* Voucher Banner */}
-        <div className="flex justify-center pb-4">
-          <VoucherBanner placement="homepage" />
-        </div>
-        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Video */}
