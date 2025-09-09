@@ -31,6 +31,11 @@ interface RegistrationData {
   Notes?: string;
   Ref?: string; // Your reference
   MOTDue?: string; // yyyy-mm-dd
+  MOTFee?: string; // MOT fee coverage
+  TyreCover?: string; // Tyre cover
+  WearTear?: string; // Wear & tear coverage
+  EuropeCover?: string; // Europe cover
+  TransferCover?: string; // Transfer cover
 }
 
 const logStep = (step: string, details?: any) => {

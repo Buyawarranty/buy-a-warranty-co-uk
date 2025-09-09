@@ -37,13 +37,25 @@ const TestWarranties2000 = () => {
       MaxClm: "500", // Use valid claim amount
       Notes: "Test registration",
       Ref: "BAW-2501-400001",
-      MOTDue: "2025-12-31"
+      MOTDue: "2025-12-31",
+      // New coverage fields
+      MOTFee: "Yes",
+      TyreCover: "No",
+      WearTear: "Yes", 
+      EuropeCover: "No",
+      TransferCover: "Yes"
     };
     
     console.log('=== FIXING VALIDATION ERRORS ===');
     console.log('EngSize:', testData.EngSize);
     console.log('WarType:', testData.WarType);
     console.log('MaxClm:', testData.MaxClm);
+    console.log('New Coverage Fields:');
+    console.log('MOTFee:', testData.MOTFee);
+    console.log('TyreCover:', testData.TyreCover);
+    console.log('WearTear:', testData.WearTear);
+    console.log('EuropeCover:', testData.EuropeCover);
+    console.log('TransferCover:', testData.TransferCover);
 
     try {
       console.log('Testing Warranties 2000 API with data:', testData);
@@ -87,7 +99,7 @@ const TestWarranties2000 = () => {
       <CardHeader>
         <CardTitle>Test Warranties 2000 API</CardTitle>
         <CardDescription>
-          Test the integration with Warranties 2000 registration system
+          Test the integration with Warranties 2000 registration system. Now includes new coverage fields: MOT Fee, Tyre Cover, Wear & Tear, Europe Cover, and Transfer Cover.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
