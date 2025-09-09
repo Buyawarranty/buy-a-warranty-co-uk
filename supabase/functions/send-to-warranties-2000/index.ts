@@ -42,11 +42,6 @@ interface Warranties2000Registration {
   Notes?: string;
   Ref?: string; // Your reference
   MOTDue?: string; // yyyy-mm-dd
-  MOTFee?: string; // MOT fee coverage
-  TyreCover?: string; // Tyre cover
-  WearTear?: string; // Wear & tear coverage
-  EuropeCover?: string; // Europe cover
-  TransferCover?: string; // Transfer cover
 }
 
 // Timeout wrapper for fetch
@@ -321,13 +316,7 @@ serve(async (req) => {
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: (customer.voluntary_excess || 0).toString(),
-      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`,
-      // New coverage fields with default values based on plan type
-      MOTFee: planType.includes('platinum') || planType.includes('gold') ? 'Yes' : 'No',
-      TyreCover: planType.includes('platinum') ? 'Yes' : 'No',
-      WearTear: planType.includes('platinum') || planType.includes('gold') ? 'Yes' : 'No',
-      EuropeCover: planType.includes('platinum') ? 'Yes' : 'No',
-      TransferCover: 'Yes' // Available for all plans
+      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`
     };
 
     console.log(`[WARRANTIES-2000] Sending registration data:`, {

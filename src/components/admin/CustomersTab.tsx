@@ -1894,7 +1894,7 @@ export const CustomersTab = () => {
                           
                           {editingCustomer && (
                             <>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">{/* Customer Details */}
                                 <div className="space-y-4">
                                   <h3 className="text-lg font-semibold">Customer Details</h3>
                                 
@@ -2090,111 +2090,34 @@ export const CustomersTab = () => {
                                     </div>
                                   </div>
 
-                                   {/* Vehicle Details */}
-                                   <div className="space-y-3 border-t pt-4">
-                                     <h4 className="font-medium text-gray-900">Vehicle Details</h4>
-                                     
-                                     <div className="grid grid-cols-2 gap-3">
-                                       <div>
-                                         <Label htmlFor="vehicle_make">Vehicle Make</Label>
-                                         <Input
-                                           id="vehicle_make"
-                                           value={editingCustomer.vehicle_make || ''}
-                                           onChange={(e) => setEditingCustomer({
-                                             ...editingCustomer,
-                                             vehicle_make: e.target.value
-                                           })}
-                                         />
-                                       </div>
-                                       <div>
-                                         <Label htmlFor="vehicle_model">Vehicle Model</Label>
-                                         <Input
-                                           id="vehicle_model"
-                                           value={editingCustomer.vehicle_model || ''}
-                                           onChange={(e) => setEditingCustomer({
-                                             ...editingCustomer,
-                                             vehicle_model: e.target.value
-                                           })}
-                                         />
-                                       </div>
-                                     </div>
-
-                                     <div className="grid grid-cols-3 gap-3">
-                                       <div>
-                                         <Label htmlFor="vehicle_year">Year</Label>
-                                         <Input
-                                           id="vehicle_year"
-                                           value={editingCustomer.vehicle_year || ''}
-                                           onChange={(e) => setEditingCustomer({
-                                             ...editingCustomer,
-                                             vehicle_year: e.target.value
-                                           })}
-                                         />
-                                       </div>
-                                       <div>
-                                         <Label htmlFor="vehicle_fuel_type">Fuel Type</Label>
-                                         <Input
-                                           id="vehicle_fuel_type"
-                                           value={editingCustomer.vehicle_fuel_type || ''}
-                                           onChange={(e) => setEditingCustomer({
-                                             ...editingCustomer,
-                                             vehicle_fuel_type: e.target.value
-                                           })}
-                                         />
-                                       </div>
-                                       <div>
-                                         <Label htmlFor="mileage">Mileage</Label>
-                                         <Input
-                                           id="mileage"
-                                           value={editingCustomer.mileage || ''}
-                                           onChange={(e) => setEditingCustomer({
-                                             ...editingCustomer,
-                                             mileage: e.target.value
-                                           })}
-                                         />
-                                       </div>
-                                     </div>
-
-                                     {/* Coverage Options - Based on Plan Type */}
-                                     <div className="border-t pt-4">
-                                       <h4 className="font-medium text-gray-900 mb-3">Coverage Details</h4>
-                                       <div className="bg-blue-50 p-4 rounded-lg">
-                                         <p className="text-sm text-blue-800 font-medium mb-3">
-                                           Plan Type: {editingCustomer.plan_type || 'N/A'}
-                                         </p>
-                                         <div className="grid grid-cols-2 gap-4 text-sm">
-                                           <div className="flex items-center justify-between">
-                                             <span className="text-gray-700">MOT Fee Coverage:</span>
-                                             <Badge variant={editingCustomer.plan_type?.toLowerCase().includes('platinum') || editingCustomer.plan_type?.toLowerCase().includes('gold') ? 'default' : 'secondary'}>
-                                               {editingCustomer.plan_type?.toLowerCase().includes('platinum') || editingCustomer.plan_type?.toLowerCase().includes('gold') ? 'Yes' : 'No'}
-                                             </Badge>
-                                           </div>
-                                           <div className="flex items-center justify-between">
-                                             <span className="text-gray-700">Tyre Cover:</span>
-                                             <Badge variant={editingCustomer.plan_type?.toLowerCase().includes('platinum') ? 'default' : 'secondary'}>
-                                               {editingCustomer.plan_type?.toLowerCase().includes('platinum') ? 'Yes' : 'No'}
-                                             </Badge>
-                                           </div>
-                                           <div className="flex items-center justify-between">
-                                             <span className="text-gray-700">Wear & Tear:</span>
-                                             <Badge variant={editingCustomer.plan_type?.toLowerCase().includes('platinum') || editingCustomer.plan_type?.toLowerCase().includes('gold') ? 'default' : 'secondary'}>
-                                               {editingCustomer.plan_type?.toLowerCase().includes('platinum') || editingCustomer.plan_type?.toLowerCase().includes('gold') ? 'Yes' : 'No'}
-                                             </Badge>
-                                           </div>
-                                           <div className="flex items-center justify-between">
-                                             <span className="text-gray-700">Europe Cover:</span>
-                                             <Badge variant={editingCustomer.plan_type?.toLowerCase().includes('platinum') ? 'default' : 'secondary'}>
-                                               {editingCustomer.plan_type?.toLowerCase().includes('platinum') ? 'Yes' : 'No'}
-                                             </Badge>
-                                           </div>
-                                           <div className="flex items-center justify-between col-span-2">
-                                             <span className="text-gray-700">Transfer Cover:</span>
-                                             <Badge variant="default">Yes</Badge>
-                                           </div>
-                                         </div>
-                                       </div>
-                                     </div>
-                                   </div>
+                                  {/* Vehicle Details */}
+                                  <div className="space-y-3 border-t pt-4">
+                                    <h4 className="font-medium text-gray-900">Vehicle Details</h4>
+                                    
+                                    <div className="grid grid-cols-2 gap-3">
+                                      <div>
+                                        <Label htmlFor="vehicle_make">Vehicle Make</Label>
+                                        <Input
+                                          id="vehicle_make"
+                                          value={editingCustomer.vehicle_make || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            vehicle_make: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="vehicle_model">Vehicle Model</Label>
+                                        <Input
+                                          id="vehicle_model"
+                                          value={editingCustomer.vehicle_model || ''}
+                                          onChange={(e) => setEditingCustomer({
+                                            ...editingCustomer,
+                                            vehicle_model: e.target.value
+                                          })}
+                                        />
+                                      </div>
+                                    </div>
 
                                     <div className="grid grid-cols-3 gap-3">
                                       <div>
@@ -2340,28 +2263,30 @@ export const CustomersTab = () => {
                                 customerId={selectedCustomer.id}
                               />
                             </div>
-                          </>
+                            </>
+                          )}
+                        </DialogContent>
+                      </Dialog>
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => resetCustomerPassword(customer.id, customer.email)}
+                        disabled={passwordResetLoading[customer.id]}
+                        title="Generate New Password"
+                        className="hover:bg-orange-50 hover:text-orange-600"
+                      >
+                        {passwordResetLoading[customer.id] ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
+                        ) : (
+                          <Key className="h-4 w-4" />
                         )}
-                      </DialogContent>
-                    </Dialog>
-                    
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => resetCustomerPassword(customer.id, customer.email)}
-                      disabled={passwordResetLoading[customer.id]}
-                      title="Generate New Password"
-                      className="hover:bg-orange-50 hover:text-orange-600"
-                    >
-                      {passwordResetLoading[customer.id] ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
-                      ) : (
-                        <Key className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
+                      </Button>
+                      
+                      
+                    </div>
+                  </TableCell>
+                </TableRow>
               ))
             )}
           </TableBody>
@@ -2547,5 +2472,3 @@ export const CustomersTab = () => {
     </div>
   );
 };
-
-export { CustomersTab };
