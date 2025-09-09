@@ -11,36 +11,6 @@ interface AddOnProtectionPackagesProps {
 
 const addOnPackages = [
   {
-    key: 'breakdown',
-    icon: '🚨',
-    title: '24/7 Breakdown Recovery',
-    shortDescription: 'Help whenever you need it.',
-    price: 5,
-    priceType: 'monthly',
-    bulletPoints: [
-      'Nationwide 24/7 breakdown recovery service',
-      'Qualified technicians for roadside assistance',
-      'Safe recovery to garage when needed',
-      'Home start service included',
-      'Onward travel if repairs take longer than expected'
-    ]
-  },
-  {
-    key: 'motRepair',
-    icon: '🔧',
-    title: 'MOT Repair Cover',
-    shortDescription: 'Stay road-legal for just £6/mo',
-    price: 6,
-    priceType: 'monthly',
-    bulletPoints: [
-      'Covers repairs needed to pass MOT test',
-      'Up to £500 per year coverage',
-      'Essential safety items: brakes, lights, tyres',
-      'Emissions issues covered',
-      'Pre-MOT inspection service included'
-    ]
-  },
-  {
     key: 'tyre',
     icon: '🛞',
     title: 'Tyre Cover',
@@ -148,7 +118,7 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
             <p className="text-muted-foreground">Enhance your warranty with optional protection covers</p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
             {addOnPackages.map((addon) => {
               // Calculate total price based on duration for monthly add-ons
               const totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
@@ -159,19 +129,19 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
               return (
                 <div 
                   key={addon.key}
-                  className={`p-3 rounded-lg transition-all duration-200 bg-white ${
+                  className={`p-4 rounded-lg transition-all duration-200 bg-white ${
                     selectedAddOns[addon.key] 
                       ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
                       : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
                   }`}
                 >
-                  <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-start justify-between mb-3">
                     <div className="flex items-start gap-3 flex-1">
-                      <div className="text-lg mt-1">{addon.icon}</div>
+                      <div className="text-xl mt-1">{addon.icon}</div>
                       <div className="flex-1">
-                        <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
-                        <p className="text-xs text-muted-foreground mb-2">{addon.shortDescription}</p>
-                        <div className="text-lg font-bold text-black">
+                        <h4 className="font-semibold text-sm text-foreground mb-1">{addon.title}</h4>
+                        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{addon.shortDescription}</p>
+                        <div className="text-sm font-bold text-black">
                           {priceDisplay}
                           {addon.priceType === 'one-off' && (
                             <span className="text-xs font-normal text-muted-foreground ml-1">one-time fee</span>
@@ -182,27 +152,27 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                     <Checkbox 
                       checked={selectedAddOns[addon.key] || false}
                       onCheckedChange={(checked) => onAddOnChange(addon.key, !!checked)}
-                      className="h-5 w-5 border-2 border-black data-[state=checked]:bg-black data-[state=checked]:border-black"
+                      className="h-4 w-4 border-2 border-black data-[state=checked]:bg-black data-[state=checked]:border-black flex-shrink-0"
                     />
                   </div>
 
                   <Collapsible open={expandedItems[addon.key]} onOpenChange={() => toggleExpanded(addon.key)}>
                     <div className="flex justify-end">
-                      <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors">
+                      <CollapsibleTrigger className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors">
                         <span>Read more</span>
                         {expandedItems[addon.key] ? (
-                          <ChevronUp className="h-4 w-4" strokeWidth={3} />
+                          <ChevronUp className="h-3 w-3" strokeWidth={3} />
                         ) : (
-                          <ChevronDown className="h-4 w-4" strokeWidth={3} />
+                          <ChevronDown className="h-3 w-3" strokeWidth={3} />
                         )}
                       </CollapsibleTrigger>
                     </div>
-                    <CollapsibleContent className="mt-3">
-                      <div className="space-y-2">
+                    <CollapsibleContent className="mt-2">
+                      <div className="space-y-1">
                         {addon.bulletPoints.map((point, index) => (
                           <div key={index} className="flex items-start gap-2">
-                            <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" strokeWidth={3} />
-                            <span className="text-sm text-muted-foreground">{point}</span>
+                            <Check className="h-3 w-3 text-green-500 mt-1 flex-shrink-0" strokeWidth={3} />
+                            <span className="text-xs text-muted-foreground">{point}</span>
                           </div>
                         ))}
                       </div>
