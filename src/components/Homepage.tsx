@@ -478,36 +478,38 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               
               {/* Vehicle Types positioned underneath the panda's feet */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4 sm:translate-y-8 w-full px-2">
-                <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-6 flex-wrap">
-                  <div className="flex items-center space-x-1 min-w-0">
-                    <Car className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
-                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Cars</span>
-                  </div>
-                  <div className="flex items-center space-x-1 min-w-0">
-                    <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
-                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Vans</span>
-                  </div>
-                  <div className="flex items-center space-x-1 min-w-0">
-                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
-                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Hybrid</span>
-                  </div>
-                  <div className="flex items-center space-x-1 min-w-0">
-                    <Battery className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
-                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">EV</span>
-                  </div>
-                  <div className="flex items-center space-x-1 min-w-0">
-                    <Bike className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
-                    <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Motorbikes</span>
-                  </div>
+              <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-6 flex-wrap">
+                <div className="flex items-center space-x-1 min-w-0">
+                  <Car className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                  <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Cars</span>
                 </div>
+                <div className="flex items-center space-x-1 min-w-0">
+                  <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                  <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Vans</span>
+                </div>
+                
+                {/* Voucher Banner positioned between Vans and Hybrid */}
+                <div className="mx-2">
+                  <VoucherBanner placement="homepage" />
+                </div>
+                
+                <div className="flex items-center space-x-1 min-w-0">
+                  <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                  <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Hybrid</span>
+                </div>
+                <div className="flex items-center space-x-1 min-w-0">
+                  <Battery className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                  <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">EV</span>
+                </div>
+                <div className="flex items-center space-x-1 min-w-0">
+                  <Bike className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
+                  <span className="font-medium text-gray-700 text-xs sm:text-sm lg:text-base whitespace-nowrap">Motorbikes</span>
+                </div>
+              </div>
               </div>
             </div>
           </div>
           
-          {/* Voucher Banner - positioned below vehicle types */}
-          <div className="flex justify-center mt-8">
-            <VoucherBanner placement="homepage" />
-          </div>
         </div>
       </section>
 
