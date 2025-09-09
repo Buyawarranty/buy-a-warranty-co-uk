@@ -447,30 +447,30 @@ const FAQ = () => {
                   
                   <div className="space-y-4">
                     {category.questions.map((faq) => (
-                      <div key={faq.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                      <div key={faq.id} className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg overflow-hidden">
                         <button
                           onClick={() => toggleItem(faq.id)}
-                          className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                          className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-orange-600/20 transition-colors"
                         >
                           <div className="flex items-center">
-                            <span className="font-semibold text-lg text-brand-dark-text pr-4">
+                            <span className="font-semibold text-lg text-white pr-4">
                               {faq.question}
                             </span>
                             {faq.popular && (
-                              <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">
+                              <span className="bg-white text-orange-600 text-xs px-2 py-1 rounded-full font-medium">
                                 Popular
                               </span>
                             )}
                           </div>
                           <ChevronDown 
-                            className={`w-6 h-6 flex-shrink-0 text-primary transition-transform duration-300 ${
+                            className={`w-6 h-6 flex-shrink-0 text-white transition-transform duration-300 ${
                               openItems[faq.id] ? 'rotate-180' : ''
                             }`}
                           />
                         </button>
                         
                         {openItems[faq.id] && (
-                          <div className="px-6 pb-5 border-t border-gray-100 animate-accordion-down">
+                          <div className="px-6 pb-5 bg-white border-t border-orange-200 animate-accordion-down">
                             <div className="pt-4">
                               <p className="text-brand-dark-text leading-relaxed">
                                 {faq.answer}
