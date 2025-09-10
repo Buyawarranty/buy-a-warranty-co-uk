@@ -132,14 +132,15 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                 : `£${addon.price}`;
               
               return (
-                <div 
-                  key={addon.key}
-                  className={`p-4 rounded-lg transition-all duration-200 bg-white ${
-                    selectedAddOns[addon.key] 
-                      ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                      : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
-                  }`}
-                >
+                 <div 
+                   key={addon.key}
+                   onClick={() => onAddOnChange(addon.key, !selectedAddOns[addon.key])}
+                   className={`p-4 rounded-lg transition-all duration-200 bg-white cursor-pointer ${
+                     selectedAddOns[addon.key] 
+                       ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                       : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300 hover:bg-gray-50'
+                   }`}
+                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-start gap-3 flex-1">
                       <div className="text-xl mt-1">{addon.icon}</div>
@@ -163,7 +164,10 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
 
                   <Collapsible open={expandedItems[addon.key]} onOpenChange={() => toggleExpanded(addon.key)}>
                     <div className="flex justify-end">
-                      <CollapsibleTrigger className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors">
+                      <CollapsibleTrigger 
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+                      >
                         <span>Read more</span>
                         {expandedItems[addon.key] ? (
                           <ChevronUp className="h-3 w-3" strokeWidth={3} />
