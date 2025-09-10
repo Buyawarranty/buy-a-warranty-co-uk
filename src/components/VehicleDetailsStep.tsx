@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Check, Search, Zap, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { ProtectedButton } from '@/components/ui/protected-button';
 
 
 interface VehicleDetailsStepProps {
@@ -323,8 +324,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
            )}
           
           {!showManualEntry && !vehicleFound && (
-             <button 
-               type="button"
+             <ProtectedButton 
+               actionType="vehicle_lookup"
                onClick={handleFindCar}
                disabled={!regNumber || isLookingUp || regError !== ''}
                className="w-full max-w-[520px] block text-white text-[21px] font-bold py-[20px] sm:py-[24px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
@@ -335,8 +336,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                  opacity: regNumber && !isLookingUp && !regError ? 1 : 0.5
                }}
              >
-               {isLookingUp ? 'Looking up...' : 'Find my vehicle'}
-             </button>
+               Find my vehicle
+             </ProtectedButton>
           )}
 
            {vehicleFound && vehicleData?.found && !showManualEntry && (
@@ -481,8 +482,9 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           {(vehicleFound || showManualEntry) && (
             <>
               <div className="mb-6">
-                <button 
-                  type="submit"
+                <ProtectedButton 
+                  actionType="quote_generation"
+                  onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent)}
                   disabled={!(showManualEntry ? isManualFormValid : isAutoFormValid)}
                   className="w-full text-white text-xl font-bold py-4 px-6 rounded-[6px] border-2 transition-all duration-200 disabled:cursor-not-allowed"
                   style={{
@@ -493,7 +495,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
                   }}
                 >
                   Get my quote →
-                </button>
+                </ProtectedButton>
               </div>
               
               {/* Back button moved inside the main container */}

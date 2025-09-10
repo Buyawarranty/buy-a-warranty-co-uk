@@ -265,6 +265,33 @@ export type Database = {
         }
         Relationships: []
       }
+      blocked_ips: {
+        Row: {
+          blocked_at: string
+          blocked_until: string | null
+          created_by: string | null
+          id: string
+          ip_address: unknown
+          reason: string
+        }
+        Insert: {
+          blocked_at?: string
+          blocked_until?: string | null
+          created_by?: string | null
+          id?: string
+          ip_address: unknown
+          reason: string
+        }
+        Update: {
+          blocked_at?: string
+          blocked_until?: string | null
+          created_by?: string | null
+          id?: string
+          ip_address?: unknown
+          reason?: string
+        }
+        Relationships: []
+      }
       claims_submissions: {
         Row: {
           assigned_to: string | null
@@ -307,6 +334,48 @@ export type Database = {
           phone?: string | null
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      click_fraud_protection: {
+        Row: {
+          action_type: string
+          blocked_reason: string | null
+          click_count: number
+          created_at: string
+          id: string
+          ip_address: unknown
+          is_suspicious: boolean
+          risk_score: number
+          session_id: string | null
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          action_type: string
+          blocked_reason?: string | null
+          click_count?: number
+          created_at?: string
+          id?: string
+          ip_address: unknown
+          is_suspicious?: boolean
+          risk_score?: number
+          session_id?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          action_type?: string
+          blocked_reason?: string | null
+          click_count?: number
+          created_at?: string
+          id?: string
+          ip_address?: unknown
+          is_suspicious?: boolean
+          risk_score?: number
+          session_id?: string | null
+          updated_at?: string
+          user_agent?: string | null
         }
         Relationships: []
       }
@@ -1170,6 +1239,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          identifier: string
+          request_count: number
+          window_start: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          id?: string
+          identifier: string
+          request_count?: number
+          window_start?: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          identifier?: string
+          request_count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       sales_targets: {
         Row: {
           achieved_amount: number
@@ -1504,6 +1600,20 @@ export type Database = {
       }
       is_admin: {
         Args: { _user_id: string }
+        Returns: boolean
+      }
+      is_ip_blocked: {
+        Args: { check_ip: unknown }
+        Returns: boolean
+      }
+      log_click_activity: {
+        Args: {
+          p_action_type: string
+          p_ip_address: unknown
+          p_risk_score?: number
+          p_session_id: string
+          p_user_agent: string
+        }
         Returns: boolean
       }
       log_warranty_event: {

@@ -29,6 +29,7 @@ import { TestAutomatedEmail } from '@/components/admin/TestAutomatedEmail';
 import { SimpleEmailTest } from '@/components/admin/SimpleEmailTest';
 import { TestEmailFunctionDirect } from '@/components/admin/TestEmailFunctionDirect';
 import { EmailFunctionDiagnostics } from '@/components/admin/EmailFunctionDiagnostics';
+import { ClickFraudTab } from '@/components/admin/ClickFraudTab';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -111,6 +112,8 @@ const AdminDashboard = () => {
         return <EmailMarketingTab />;
       case 'analytics':
         return <AnalyticsTab />;
+      case 'security':
+        return <ClickFraudTab />;
       case 'user-permissions':
         return <UserPermissionsTab />;
       case 'document-mapping':
