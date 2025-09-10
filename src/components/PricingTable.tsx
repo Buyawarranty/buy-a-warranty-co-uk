@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
+import { ProtectedButton } from '@/components/ui/protected-button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -1132,8 +1133,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </div>
                       </div>
                       
-                      <button 
+                      <ProtectedButton 
                         onClick={() => setPaymentType('12months')}
+                        actionType="select_warranty_duration_12months"
                         className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
                           paymentType === '12months' 
                             ? 'bg-orange-500 text-white' 
@@ -1141,7 +1143,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         }`}
                       >
                         {paymentType === '12months' ? 'Selected' : 'Select'}
-                      </button>
+                      </ProtectedButton>
                    </div>
                 );
               })()}
@@ -1204,8 +1206,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </div>
                       </div>
                       
-                      <button 
+                      <ProtectedButton 
                         onClick={() => setPaymentType('24months')}
+                        actionType="select_warranty_duration_24months"
                         className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
                           paymentType === '24months' 
                             ? 'bg-orange-500 text-white' 
@@ -1213,7 +1216,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         }`}
                       >
                         {paymentType === '24months' ? 'Selected' : 'Select'}
-                      </button>
+                      </ProtectedButton>
                    </div>
                 );
               })()}
@@ -1276,8 +1279,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </div>
                       </div>
                       
-                      <button 
+                      <ProtectedButton 
                         onClick={() => setPaymentType('36months')}
+                        actionType="select_warranty_duration_36months"
                         className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
                           paymentType === '36months' 
                             ? 'bg-orange-500 text-white' 
@@ -1285,7 +1289,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         }`}
                       >
                         {paymentType === '36months' ? 'Selected' : 'Select'}
-                      </button>
+                      </ProtectedButton>
                    </div>
                 );
               })()}
