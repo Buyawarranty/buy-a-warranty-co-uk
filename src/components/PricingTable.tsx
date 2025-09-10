@@ -298,21 +298,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const getPricingData = (excess: number, paymentPeriod: string) => {
     // Fallback pricing table if database is not available
     const fallbackPricingTable = {
-      yearly: {
+      '12months': {
         0: { basic: { monthly: 31, total: 372, save: 0 }, gold: { monthly: 34, total: 408, save: 0 }, platinum: { monthly: 36, total: 437, save: 0 } },
         50: { basic: { monthly: 29, total: 348, save: 0 }, gold: { monthly: 31, total: 372, save: 0 }, platinum: { monthly: 32, total: 384, save: 0 } },
         100: { basic: { monthly: 25, total: 300, save: 0 }, gold: { monthly: 27, total: 324, save: 0 }, platinum: { monthly: 29, total: 348, save: 0 } },
         150: { basic: { monthly: 23, total: 276, save: 0 }, gold: { monthly: 26, total: 312, save: 0 }, platinum: { monthly: 27, total: 324, save: 0 } },
         200: { basic: { monthly: 20, total: 240, save: 0 }, gold: { monthly: 23, total: 276, save: 0 }, platinum: { monthly: 25, total: 300, save: 0 } }
       },
-      two_yearly: {
+      '24months': {
         0: { basic: { monthly: 56, total: 670, save: 74 }, gold: { monthly: 61, total: 734, save: 82 }, platinum: { monthly: 65, total: 786, save: 87 } },
         50: { basic: { monthly: 52, total: 626, save: 70 }, gold: { monthly: 56, total: 670, save: 74 }, platinum: { monthly: 58, total: 691, save: 77 } },
         100: { basic: { monthly: 45, total: 540, save: 60 }, gold: { monthly: 49, total: 583, save: 65 }, platinum: { monthly: 52, total: 626, save: 70 } },
         150: { basic: { monthly: 41, total: 497, save: 55 }, gold: { monthly: 47, total: 562, save: 62 }, platinum: { monthly: 49, total: 583, save: 65 } },
         200: { basic: { monthly: 38, total: 456, save: 50 }, gold: { monthly: 44, total: 528, save: 58 }, platinum: { monthly: 46, total: 552, save: 61 } }
       },
-      three_yearly: {
+      '36months': {
         0: { basic: { monthly: 82, total: 982, save: 134 }, gold: { monthly: 90, total: 1077, save: 147 }, platinum: { monthly: 96, total: 1153, save: 157 } },
         50: { basic: { monthly: 77, total: 919, save: 125 }, gold: { monthly: 82, total: 982, save: 134 }, platinum: { monthly: 84, total: 1014, save: 138 } },
         100: { basic: { monthly: 66, total: 792, save: 108 }, gold: { monthly: 71, total: 855, save: 117 }, platinum: { monthly: 77, total: 919, save: 125 } },
@@ -321,7 +321,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       }
     };
     
-    const periodData = fallbackPricingTable[paymentPeriod as keyof typeof fallbackPricingTable] || fallbackPricingTable.yearly;
+    // Map legacy period names to new format
+    const periodKey = paymentPeriod === 'yearly' ? '12months' : 
+                     paymentPeriod === 'two_yearly' ? '24months' :
+                     paymentPeriod === 'three_yearly' ? '36months' :
+                     paymentPeriod;
+    
+    const periodData = fallbackPricingTable[periodKey as keyof typeof fallbackPricingTable] || fallbackPricingTable['12months'];
     return periodData[excess as keyof typeof periodData] || periodData[0];
   };
 
@@ -337,6 +343,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       selectedClaimLimit,
       pricingMatrix: selectedPlan?.pricing_matrix
     });
+    
+    // Get duration multiplier
+    const durationMonths = paymentType === '12months' ? 12 : 
+                          paymentType === '24months' ? 24 : 
+                          paymentType === '36months' ? 36 : 12;
     
     // FIRST: Try to use database pricing matrix (this has the exact prices we want)
     if (selectedPlan.pricing_matrix && typeof selectedPlan.pricing_matrix === 'object') {
@@ -355,8 +366,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         
         console.log('Found price in matrix:', { fullPrice, priceData });
         
-        // Database pricing matrix stores the correct price for each period
-        // No conversion needed since keys are '12', '24', '36' representing months
+        // Database pricing matrix stores the correct total price for each period
         return fullPrice;
       } else {
         console.log('No price found in matrix for:', { dbKey, voluntaryExcess: voluntaryExcess.toString() });
@@ -389,10 +399,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Safety check: ensure planType exists in pricing object
     if (!pricing[planType]) {
       console.warn(`Plan type "${planType}" not found in pricing data, defaulting to basic`);
-      return pricing.basic?.monthly || 0;
+      return pricing.basic?.monthly * durationMonths || 0;
     }
     
-    return pricing[planType].monthly || 0;
+    // Return total price for the selected duration
+    return (pricing[planType].monthly || 0) * durationMonths;
   };
 
   // Get the plan that matches the selected claim limit
@@ -1153,7 +1164,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                 if (!platinumPlan) return null;
 
-                const pricing = getPricingData(voluntaryExcess, 'two_yearly');
+                const pricing = getPricingData(voluntaryExcess, '24months');
                 const planType = 'platinum' as const;
                 const monthlyPrice = pricing[planType]?.monthly || 0;
                 const savings = pricing[planType]?.save || 0;
@@ -1226,7 +1237,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                 if (!platinumPlan) return null;
 
-                const pricing = getPricingData(voluntaryExcess, 'three_yearly');
+                const pricing = getPricingData(voluntaryExcess, '36months');
                 const planType = 'platinum' as const;
                 const monthlyPrice = pricing[planType]?.monthly || 0;
                 const savings = pricing[planType]?.save || 0;
@@ -1303,65 +1314,76 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <div className="space-y-2">
                     {/* Current Price Display */}
                     <div className="text-3xl font-bold text-orange-600">
-                      £{(() => {
-                        const selectedPlan = getSelectedPlan();
-                        if (!selectedPlan) return calculatePlanPrice();
-                        const basePrice = calculatePlanPrice();
-                        
-                        // Calculate add-on prices correctly
-                        const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                        const planAddOnPrice = planAddOnCount * 2 * 12; // £2 per add-on per month * 12 months
-                        
-                        // Protection addon prices: monthly add-ons converted to yearly + one-time
-                        let protectionPrice = 0;
-                        if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * 12; // £5/mo = £60/year
-                        if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * 12; // £6/mo = £72/year
-                        if (selectedProtectionAddOns.tyre) protectionPrice += 5 * 12; // £5/mo = £60/year
-                        if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * 12; // £5/mo = £60/year
-                        if (selectedProtectionAddOns.european) protectionPrice += 3 * 12; // £3/mo = £36/year
-                        if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
-                        
-                        return basePrice + planAddOnPrice + protectionPrice;
-                      })()}
+                       £{(() => {
+                         const selectedPlan = getSelectedPlan();
+                         if (!selectedPlan) return calculatePlanPrice();
+                         const basePrice = calculatePlanPrice();
+                         
+                         // Get duration for add-on calculations
+                         const durationMonths = paymentType === '12months' ? 12 : 
+                                               paymentType === '24months' ? 24 : 
+                                               paymentType === '36months' ? 36 : 12;
+                         
+                         // Calculate add-on prices correctly for selected duration
+                         const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
+                         const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
+                         
+                         // Protection addon prices: monthly add-ons converted to selected duration + one-time
+                         let protectionPrice = 0;
+                         if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                         if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * durationMonths; // £6/mo * duration
+                         if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                         if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                         if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
+                         if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
+                         
+                         return basePrice + planAddOnPrice + protectionPrice;
+                       })()}
                       <span className="text-sm font-normal text-gray-600 ml-2">total</span>
                     </div>
                     
                     {/* Monthly Instalments */}
                     <div className="border-t border-orange-200 pt-2">
-                      {(() => {
-                        const selectedPlan = getSelectedPlan();
-                        if (!selectedPlan) return null;
-                        
-                        const basePrice = calculatePlanPrice();
-                        const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                        const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
-                        
-                        // Protection add-ons: Monthly add-ons are yearly (spread over 12 months), Transfer is one-time
-                        let recurringAddonTotal = 0;
-                        let hasTransfer = false;
-                        
-                        if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
-                        if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * 12; // £6/mo = £72/year
-                        if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
-                        if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * 12; // £5/mo = £60/year
-                        if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * 12; // £3/mo = £36/year
-                        if (selectedProtectionAddOns.transfer) hasTransfer = true;
-                        
-                        // Calculate monthly amounts
-                        const monthlyBasePrice = Math.round(basePrice / 12 * 100) / 100;
-                        const monthlyRecurringAddons = Math.round(recurringAddonTotal / 12 * 100) / 100;
-                        const monthlyTransferFee = hasTransfer ? Math.round(30 / 12 * 100) / 100 : 0;
-                        const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons + monthlyTransferFee;
-                        
-                        return (
-                          <>
-                            <div className="text-xl font-semibold text-gray-800">
-                              £{Math.round(standardMonthlyInstallment * 100) / 100} <span className="text-sm font-normal text-gray-600">x 12 monthly instalments</span>
-                            </div>
-                            <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
-                          </>
-                        );
-                      })()}
+                       {(() => {
+                         const selectedPlan = getSelectedPlan();
+                         if (!selectedPlan) return null;
+                         
+                         const basePrice = calculatePlanPrice();
+                         const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
+                         
+                         // Get duration for calculations
+                         const durationMonths = paymentType === '12months' ? 12 : 
+                                               paymentType === '24months' ? 24 : 
+                                               paymentType === '36months' ? 36 : 12;
+                         
+                         const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
+                         
+                         // Protection add-ons: Monthly add-ons calculated for duration, Transfer is one-time
+                         let recurringAddonTotal = 0;
+                         let hasTransfer = false;
+                         
+                         if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                         if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
+                         if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                         if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                         if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
+                         if (selectedProtectionAddOns.transfer) hasTransfer = true;
+                         
+                         // Calculate monthly amounts
+                         const monthlyBasePrice = Math.round(basePrice / durationMonths * 100) / 100;
+                         const monthlyRecurringAddons = Math.round(recurringAddonTotal / durationMonths * 100) / 100;
+                         const monthlyTransferFee = hasTransfer ? Math.round(30 / durationMonths * 100) / 100 : 0;
+                         const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons + monthlyTransferFee;
+                         
+                         return (
+                           <>
+                             <div className="text-xl font-semibold text-gray-800">
+                               £{Math.round(standardMonthlyInstallment * 100) / 100} <span className="text-sm font-normal text-gray-600">x {durationMonths} monthly instalments</span>
+                             </div>
+                             <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
+                           </>
+                         );
+                       })()}
                     </div>
                   </div>
                   
@@ -1402,27 +1424,28 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6 text-sm">
-                {(() => {
-                  const selectedPlan = getSelectedPlan();
-                  const planPrice = calculatePlanPrice();
-                  const addOnPrice = calculateAddOnPrice(selectedPlan?.id || '');
-                  const totalPrice = planPrice + addOnPrice;
-                  const monthlyEquivalent = Math.round(totalPrice / (paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36));
-                  
-                  return (
-                    <>
-                      <span className="font-medium text-gray-900">
-                        {selectedPlan?.name || 'None'} - £{selectedClaimLimit.toLocaleString()}
-                      </span>
-                      <span className="text-gray-600">
-                        {paymentType === '12months' ? '12 months' : 
-                         paymentType === '24months' ? '24 months' : '36 months'}
-                      </span>
-                      <span className="text-gray-600">£{voluntaryExcess} excess</span>
-                      <div className="font-bold text-orange-600">£{totalPrice} (£{monthlyEquivalent}/mo)</div>
-                    </>
-                  );
-                })()}
+                 {(() => {
+                   const selectedPlan = getSelectedPlan();
+                   const planPrice = calculatePlanPrice();
+                   const addOnPrice = calculateAddOnPrice(selectedPlan?.id || '');
+                   const totalPrice = planPrice + addOnPrice;
+                   const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+                   const monthlyEquivalent = Math.round(totalPrice / durationMonths);
+                   
+                   return (
+                     <>
+                       <span className="font-medium text-gray-900">
+                         {selectedPlan?.name || 'None'} - £{selectedClaimLimit.toLocaleString()}
+                       </span>
+                       <span className="text-gray-600">
+                         {paymentType === '12months' ? '12 months' : 
+                          paymentType === '24months' ? '24 months' : '36 months'}
+                       </span>
+                       <span className="text-gray-600">£{voluntaryExcess} excess</span>
+                       <div className="font-bold text-orange-600">£{totalPrice} (£{monthlyEquivalent}/mo)</div>
+                     </>
+                   );
+                 })()}
               </div>
               
               <div className="flex items-center space-x-3">
