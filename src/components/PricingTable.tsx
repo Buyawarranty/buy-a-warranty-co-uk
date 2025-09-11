@@ -597,7 +597,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     <div className="min-h-screen bg-white">
       {/* Voucher Banner */}
       <div className="max-w-6xl mx-auto px-4 pt-6">
-        <VoucherBanner placement="pricing" className="mb-6" />
+        <VoucherBanner placement="pricing" animate={true} className="mb-6" />
       </div>
       
       {/* Header */}

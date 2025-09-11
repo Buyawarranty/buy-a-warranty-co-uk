@@ -6,11 +6,13 @@ import { useToast } from '@/hooks/use-toast';
 interface VoucherBannerProps {
   placement?: 'homepage' | 'pricing';
   className?: string;
+  animate?: boolean;
 }
 
 export const VoucherBanner: React.FC<VoucherBannerProps> = ({ 
   placement = 'homepage',
-  className = '' 
+  className = '',
+  animate = false
 }) => {
   const [hasCopied, setHasCopied] = useState(false);
   const { toast } = useToast();
@@ -35,21 +37,19 @@ export const VoucherBanner: React.FC<VoucherBannerProps> = ({
     }
   };
 
-  // Use compact style for both placements
+  // Compact minimal style with animation option
   return (
-    <div className={`bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-2 rounded-lg shadow-sm max-w-fit ${className}`}>
-      <div className="flex items-center gap-2">
-        <Tag className="h-3 w-3" />
-        <span className="text-xs font-medium">£25 OFF</span>
-        <span className="text-xs opacity-90">•</span>
-        <code className="text-xs font-mono font-bold">{voucherCode}</code>
+    <div className={`bg-gradient-to-r from-green-500 to-emerald-600 text-white px-2 py-1 rounded-lg shadow-sm max-w-fit ${animate ? 'animate-float' : ''} ${className}`}>
+      <div className="flex items-center gap-1.5">
+        <Tag className="h-2.5 w-2.5" />
+        <span className="text-[10px] font-medium">£25 OFF</span>
         <Button
           onClick={copyToClipboard}
           variant="ghost"
           size="sm"
-          className="h-5 w-5 p-0 text-white hover:bg-white/20"
+          className="h-4 w-4 p-0 text-white hover:bg-white/20"
         >
-          {hasCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+          {hasCopied ? <Check className="h-2.5 w-2.5" /> : <Copy className="h-2.5 w-2.5" />}
         </Button>
       </div>
     </div>
