@@ -51,11 +51,8 @@ function validateVehicleEligibility(vehicleData: any): { isValid: boolean; error
   const make = vehicleData.make?.toLowerCase().trim() || '';
   const model = vehicleData.model?.toLowerCase().trim() || '';
   
-  console.log(`Validating vehicle eligibility - Make: "${make}", Model: "${model}"`);
-  
   // Check excluded makes
   if (EXCLUDED_MAKES.includes(make)) {
-    console.log(`Vehicle blocked - excluded make: ${make}`);
     return {
       isValid: false,
       errorMessage: EXCLUSION_ERROR_MESSAGE
@@ -65,30 +62,19 @@ function validateVehicleEligibility(vehicleData: any): { isValid: boolean; error
   // Check specific model exclusions
   if (MODEL_EXCLUSIONS[make]) {
     const excludedModels = MODEL_EXCLUSIONS[make];
-    console.log(`Checking model exclusions for ${make}:`, excludedModels);
-    
     const isExcluded = excludedModels.some(excludedModel => {
       // Normalize both model strings for comparison
       const normalizedModel = model.replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
       const normalizedExcludedModel = excludedModel.replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
       
-      console.log(`Comparing "${normalizedModel}" with "${normalizedExcludedModel}"`);
-      
       // Check for exact match or if the model starts with the excluded model
-      const matches = normalizedModel === normalizedExcludedModel || 
+      return normalizedModel === normalizedExcludedModel || 
              normalizedModel.startsWith(normalizedExcludedModel + ' ') ||
              normalizedModel.includes(' ' + normalizedExcludedModel + ' ') ||
              normalizedModel.includes(' ' + normalizedExcludedModel);
-             
-      if (matches) {
-        console.log(`Match found! "${normalizedModel}" matches "${normalizedExcludedModel}"`);
-      }
-      
-      return matches;
     });
     
     if (isExcluded) {
-      console.log(`Vehicle blocked - excluded model: ${model}`);
       return {
         isValid: false,
         errorMessage: EXCLUSION_ERROR_MESSAGE
@@ -96,7 +82,6 @@ function validateVehicleEligibility(vehicleData: any): { isValid: boolean; error
     }
   }
   
-  console.log(`Vehicle passed validation - ${make} ${model}`);
   return { isValid: true };
 }
 
@@ -262,8 +247,6 @@ serve(async (req) => {
     const model = vehicleData.model;
     const fuelType = vehicleData.fuelType;
     const colour = vehicleData.primaryColour || vehicleData.colour;
-    
-    console.log(`Extracted vehicle info - Make: "${make}", Model: "${model}"`);
     
     // Calculate year of manufacture from registration or manufacture date
     let yearOfManufacture;
