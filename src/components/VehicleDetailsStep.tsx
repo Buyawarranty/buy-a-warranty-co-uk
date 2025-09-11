@@ -179,7 +179,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         }
         setVehicleFound(true);
       } else {
-        // If vehicle not found, show manual entry
+        // Check if this is a blocked vehicle (has error message but not found)
+        if (data.error && (data.error.includes('Warranty Coverage Not Available') || data.error.includes('15 years'))) {
+          // Don't show manual entry for blocked vehicles, just show the error
+          return;
+        }
+        // If vehicle not found and not blocked, show manual entry
         setShowManualEntry(true);
       }
     } catch (error: any) {
