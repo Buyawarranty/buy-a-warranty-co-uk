@@ -262,15 +262,20 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
             <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
               <button 
                 onClick={handleSkipClick}
+                disabled={vehicleData.blocked}
                 className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg ${
-                  areRequiredFieldsFilled ? '' : 'opacity-50'
+                  vehicleData.blocked ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
-                style={{ backgroundColor: '#eb4b00' }}
+                style={{ backgroundColor: vehicleData.blocked ? '#9ca3af' : '#eb4b00' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#d43f00';
+                  if (!vehicleData.blocked) {
+                    e.currentTarget.style.backgroundColor = '#d43f00';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#eb4b00';
+                  if (!vehicleData.blocked) {
+                    e.currentTarget.style.backgroundColor = '#eb4b00';
+                  }
                 }}
               >
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
@@ -296,13 +301,20 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               <div>
                 <button 
                   onClick={handleEmailQuoteClick}
-                  className="w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg"
-                  style={{ backgroundColor: '#224380' }}
+                  disabled={vehicleData.blocked}
+                  className={`w-full flex items-center justify-center text-white font-bold py-4 sm:py-5 px-4 sm:px-8 rounded-xl transition-all duration-200 relative shadow-lg ${
+                    vehicleData.blocked ? 'cursor-not-allowed' : ''
+                  }`}
+                  style={{ backgroundColor: vehicleData.blocked ? '#9ca3af' : '#224380' }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#1e3a70';
+                    if (!vehicleData.blocked) {
+                      e.currentTarget.style.backgroundColor = '#1e3a70';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#224380';
+                    if (!vehicleData.blocked) {
+                      e.currentTarget.style.backgroundColor = '#224380';
+                    }
                   }}
                 >
                   <Mail className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
