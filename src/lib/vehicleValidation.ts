@@ -41,7 +41,7 @@ const MODEL_EXCLUSIONS = {
   'mercedes': ['amg', 'mercedes-amg']
 };
 
-const EXCLUSION_ERROR_MESSAGE = "The following vehicle manufacturers are not eligible for our warranty coverage due to specialist parts, high repair costs, or limited repair network availability.";
+const EXCLUSION_ERROR_MESSAGE = "⚠️ Warranty Coverage Not Available\nSorry about this - this vehicle isn't eligible due to specialist parts and a limited repair network 🙏";
 
 /**
  * Check if a vehicle is excluded from coverage
