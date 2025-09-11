@@ -18,7 +18,7 @@ export interface PriceAdjustment {
   }[];
 }
 
-// Excluded vehicle makes
+// Excluded vehicle makes (entire brands)
 const EXCLUDED_MAKES = [
   'aston martin',
   'bentley', 
@@ -34,11 +34,32 @@ const EXCLUDED_MAKES = [
   'tvr'
 ];
 
-// Specific model exclusions
+// Specific model exclusions by make
 const MODEL_EXCLUSIONS = {
-  'audi': ['rs', 'r8', 's series'],
-  'bmw': ['m series'],
-  'mercedes': ['amg', 'mercedes-amg']
+  'audi': [
+    'rs2 avant', 'rs3', 'rs4 avant', 'rs5', 'rs6 avant', 'rs7 sportback',
+    'rs q3', 'rs q5', 'rs q8', 'rs e-tron gt', 'tt rs', 'r8 v8', 'r8 v10',
+    'r8 v10 plus', 'r8 spyder', 'r8 gt', 'r8 lms', 's2 coupé', 's2 avant',
+    's2 sedan', 's3', 's4', 's5', 's6', 's7', 's8', 'sq5', 'sq7', 'sq8',
+    'tts', 's e-tron gt'
+  ],
+  'bmw': [
+    'm1', '1m coupé', 'm2', 'm2 competition', 'm2 cs', 'm3', 'm4',
+    'm4 competition', 'm4 csl', 'm4 gts', 'm5', 'm6', 'm8',
+    'm roadster', 'm coupe', 'm3 csl', 'm3 crt', 'm3 gts',
+    'm4 kith edition', 'm5 cs', '3.0 csl', 'x3 m', 'x4 m', 'x5 m',
+    'x6 m', 'xm'
+  ],
+  'mercedes': [
+    'c 36 amg', 'c 43 amg', 'c 55 amg', 'c 63 amg', 'e 36 amg',
+    'e 50 amg', 'e 55 amg', 'e 63 amg', 's 55 amg', 's 63 amg',
+    's 65 amg', 's 70 amg', 'cl 55 amg', 'cl 63 amg', 'cl 65 amg',
+    'sl 55 amg', 'sl 60 amg', 'sl 63 amg', 'sl 65 amg', 'sl 73 amg',
+    'clk 55 amg', 'clk 63 amg', 'clk dtm amg', 'cls 55 amg', 'cls 63 amg',
+    'amg gt', 'amg sl', 'amg one', 'ml 55 amg', 'ml 63 amg', 'g 36 amg',
+    'g 55 amg', 'g 63 amg', 'g 65 amg', 'gl 63 amg', 'gle 63 amg',
+    'gls 63 amg', 'r 63 amg', 'e-class amg estates'
+  ]
 };
 
 const EXCLUSION_ERROR_MESSAGE = "⚠️ Warranty Coverage Not Available\nSorry about this - this vehicle isn't eligible due to specialist parts and a limited repair network 🙏";
@@ -62,14 +83,15 @@ export function validateVehicleEligibility(vehicleData: VehicleData): { isValid:
   if (MODEL_EXCLUSIONS[make]) {
     const excludedModels = MODEL_EXCLUSIONS[make];
     const isExcluded = excludedModels.some(excludedModel => {
-      if (excludedModel.includes('series')) {
-        // Handle series exclusions (e.g., "M Series", "S Series")
-        const seriesLetter = excludedModel.replace(' series', '').trim();
-        return model.startsWith(seriesLetter.toLowerCase()) || 
-               model.includes(`${seriesLetter.toLowerCase()} `) ||
-               model.includes(`${seriesLetter.toLowerCase()}-`);
-      }
-      return model.includes(excludedModel);
+      // Normalize both model strings for comparison
+      const normalizedModel = model.replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
+      const normalizedExcludedModel = excludedModel.replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
+      
+      // Check for exact match or if the model starts with the excluded model
+      return normalizedModel === normalizedExcludedModel || 
+             normalizedModel.startsWith(normalizedExcludedModel + ' ') ||
+             normalizedModel.includes(' ' + normalizedExcludedModel + ' ') ||
+             normalizedModel.includes(' ' + normalizedExcludedModel);
     });
     
     if (isExcluded) {
