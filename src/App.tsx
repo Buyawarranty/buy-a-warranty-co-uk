@@ -29,6 +29,7 @@ import Terms from "./pages/Terms";
 import Protected from "./pages/Protected";
 import Claims from "./pages/Claims";
 import ContactUs from "./pages/ContactUs";
+import Blog from "./pages/Blog";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
                   <Route path="/protected" element={<Protected />} />
                   <Route path="/make-a-claim" element={<Claims />} />
                   <Route path="/contact-us" element={<ContactUs />} />
+                  <Route path="/blog" element={<Blog />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

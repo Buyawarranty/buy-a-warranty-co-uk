@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { Phone, Mail } from 'lucide-react';
+import { Phone, Mail, BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const NewFooter = () => {
   return (
@@ -29,6 +30,14 @@ const NewFooter = () => {
               <Mail size={18} />
               Email us: info@warrantywise.co.uk
             </a>
+
+            <Link 
+              to="/blog" 
+              className="flex items-center gap-2 text-[#eb4b00] hover:text-orange-400 transition-colors font-medium"
+            >
+              <BookOpen size={18} />
+              Drive Smarter
+            </Link>
           </div>
         </div>
       </div>
