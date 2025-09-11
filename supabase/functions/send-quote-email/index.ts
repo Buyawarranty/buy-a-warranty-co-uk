@@ -1,317 +1,264 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.2';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+const logStep = (step: string, data?: any) => {
+  console.log(`[SEND-QUOTE-EMAIL] ${step}`, data ? JSON.stringify(data) : '');
 };
 
 interface QuoteEmailRequest {
   email: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   vehicleData: {
     regNumber: string;
     make?: string;
     model?: string;
     year?: string;
     mileage: string;
+    fuelType?: string;
+    transmission?: string;
     vehicleType?: string;
   };
-  planData: {
-    planName: string;
-    totalPrice: number;
-    monthlyPrice: number;
-    voluntaryExcess: number;
+  isInitialQuote?: boolean;
+  selectedPlan?: {
+    name: string;
+    price: number;
     paymentType: string;
-    selectedAddOns: { [addon: string]: boolean };
   };
-  quoteId: string;
-  isInitialQuote?: boolean; // Flag for pre-plan-selection emails
+  quoteId?: string;
 }
 
 const formatPaymentType = (paymentType: string): string => {
   switch (paymentType) {
-    case '12months': return '12 months';
-    case '24months': return '24 months';
-    case '36months': return '36 months';
-    case 'yearly': return '12 months'; // Legacy compatibility
-    case 'two_yearly': return '24 months'; // Legacy compatibility
-    case 'three_yearly': return '36 months'; // Legacy compatibility
+    case 'monthly': return 'Monthly';
+    case 'yearly': return 'Annual';
+    case 'twoYear': return '2 Year';
+    case 'threeYear': return '3 Year';
     default: return paymentType;
   }
 };
 
-const generateQuoteEmail = (data: QuoteEmailRequest): string => {
-  const { firstName, lastName, vehicleData, planData, quoteId, isInitialQuote } = data;
-  const { regNumber, make, model, year, mileage } = vehicleData;
-  const { planName, totalPrice, monthlyPrice, voluntaryExcess, paymentType, selectedAddOns } = planData;
+const generateQuoteEmail = (data: QuoteEmailRequest, baseUrl: string): string => {
+  const { vehicleData, firstName, lastName, selectedPlan, quoteId } = data;
+  const customerName = firstName || 'Valued Customer';
   
-    // Generate purchase URL with quote ID - use the correct domain and step 3
-    const baseUrl = 'https://pricing.buyawarranty.co.uk';
-    const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(data.email)}&step=3`;
-  
-  const addOnsList = Object.entries(selectedAddOns || {})
-    .filter(([_, selected]) => selected)
-    .map(([addon]) => `<li style="margin: 5px 0;">✓ ${addon}</li>`)
-    .join('');
-  
-  // Use your new email template
   return `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your ${make || 'Vehicle'} Warranty Quote</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5;">
-    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 0;">
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Your Warranty Quote</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #2563eb; margin: 0;">buya<span style="color: #ea580c;">warranty</span></h1>
+        <p style="color: #64748b; margin: 5px 0 0 0;">Your Warranty Quote</p>
+      </div>
+      
+      <div style="background: #f8fafc; border-radius: 8px; padding: 30px; margin-bottom: 20px;">
+        <h2 style="color: #1e293b; margin-top: 0;">Hello ${customerName}!</h2>
         
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 30px 20px; text-align: center;">
-            <img src="https://pricing.buyawarranty.co.uk/lovable-uploads/1f952eca-5edd-4379-bc82-d921613c047d.png" alt="Buy A Warranty" style="max-width: 300px; height: auto; margin-bottom: 20px;">
-            <h1 style="margin: 0; font-size: 28px; font-weight: bold;">🚗 Your ${make || 'Vehicle'}'s Warranty Quote</h1>
-            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Lock In Your Price Today</p>
+        <p style="font-size: 16px; margin-bottom: 20px;">
+          Thank you for requesting a warranty quote. Here are your details:
+        </p>
+        
+        <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0;">
+          <h3 style="color: #1e293b; margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Vehicle Details</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Registration:</strong></td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.regNumber}</td>
+            </tr>
+            ${vehicleData.make ? `
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Make & Model:</strong></td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.make || ''} ${vehicleData.model || ''}</td>
+            </tr>
+            ` : ''}
+            ${vehicleData.year ? `
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Year:</strong></td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.year}</td>
+            </tr>
+            ` : ''}
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Mileage:</strong></td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.mileage} miles</td>
+            </tr>
+            ${vehicleData.fuelType ? `
+            <tr>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Fuel Type:</strong></td>
+              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.fuelType}</td>
+            </tr>
+            ` : ''}
+            ${vehicleData.transmission ? `
+            <tr>
+              <td style="padding: 8px 0;"><strong>Transmission:</strong></td>
+              <td style="padding: 8px 0;">${vehicleData.transmission}</td>
+            </tr>
+            ` : ''}
+          </table>
         </div>
-
-        <!-- Main Content -->
-        <div style="padding: 30px 20px;">
-            <h2 style="color: #1e40af; margin: 0 0 20px 0; font-size: 22px;">Hello Valued Customer</h2>
-            
-            <p style="margin: 0 0 20px 0; font-size: 16px;">
-                Your ${make || 'vehicle'} is just one step away from being fully protected against unexpected repair bills.<br>
-                We've secured your exclusive warranty quote – starting from just £19.99/month – and saved it for the next 48 hours.
-            </p>
-
-            <!-- Vehicle Details -->
-            <div style="background-color: #f8fafc; border-left: 4px solid #1e40af; padding: 20px; margin: 20px 0; border-radius: 6px;">
-                <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 18px;">Your Vehicle Details</h3>
-                <div style="font-size: 16px; line-height: 1.8;">
-                    <div><strong>Registration:</strong> ${regNumber}</div>
-                    <div><strong>Make:</strong> ${make || 'N/A'}</div>
-                    <div><strong>Year:</strong> ${year || 'N/A'}</div>
-                    <div><strong>Mileage:</strong> ${mileage}</div>
-                </div>
+        
+        ${selectedPlan ? `
+        <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0; border: 2px solid #22c55e;">
+          <h3 style="color: #16a34a; margin-top: 0; border-bottom: 2px solid #dcfce7; padding-bottom: 10px;">Selected Plan</h3>
+          <div style="text-align: center;">
+            <div style="font-size: 20px; font-weight: bold; color: #16a34a; margin-bottom: 10px;">
+              ${selectedPlan.name}
             </div>
-
-            <!-- Coverage Options -->
-            <div style="margin: 30px 0;">
-                <h3 style="color: #1e40af; margin: 0 0 20px 0; font-size: 20px;">💡 Choose Your Perfect Level of Cover:</h3>
-                
-                <div style="background-color: #f0f9ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
-                    <div style="font-weight: bold; color: #1e40af; margin-bottom: 8px; font-size: 16px;">✅ Basic Coverage</div>
-                    <div style="color: #374151;">Essential protection for key mechanical components</div>
-                </div>
-                
-                <div style="background-color: #f0f9ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
-                    <div style="font-weight: bold; color: #1e40af; margin-bottom: 8px; font-size: 16px;">✅ Comprehensive Coverage</div>
-                    <div style="color: #374151;">Mechanical + electrical protection for peace of mind</div>
-                </div>
-                
-                <div style="background-color: #f0f9ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
-                    <div style="font-weight: bold; color: #1e40af; margin-bottom: 8px; font-size: 16px;">✅ Premium Coverage</div>
-                    <div style="color: #374151;">Maximum cover with added benefits & extras</div>
-                </div>
+            <div style="font-size: 24px; font-weight: bold; color: #1e293b; margin-bottom: 5px;">
+              £${selectedPlan.price}
             </div>
-
-            <!-- Why Choose Us -->
-            <div style="background-color: #fef3c7; border: 1px solid #fbbf24; padding: 20px; margin: 20px 0; border-radius: 6px;">
-                <h3 style="color: #92400e; margin: 0 0 15px 0; font-size: 18px;">Why Choose Buy A Warranty?</h3>
-                <div style="color: #92400e; font-size: 16px; line-height: 1.8;">
-                    <div style="margin-bottom: 8px;">⭐ 5-Star Rated on Trustpilot</div>
-                    <div style="margin-bottom: 8px;">💳 Flexible Monthly Payments</div>
-                    <div style="margin-bottom: 8px;">Interest free options</div>
-                    <div style="margin-bottom: 8px;">Best value and service</div>
-                    <div style="margin-bottom: 8px;">⚡ Lightning-Fast Claims Approval</div>
-                </div>
+            <div style="color: #64748b; font-size: 14px;">
+              ${formatPaymentType(selectedPlan.paymentType)} Payment
             </div>
-
-            <!-- Urgency Message -->
-            <div style="background-color: #fee2e2; border: 1px solid #fca5a5; padding: 20px; margin: 20px 0; border-radius: 6px; text-align: center;">
-                <p style="margin: 0 0 10px 0; font-size: 16px; color: #dc2626; font-weight: bold;">⚡ Don't wait until it's too late.</p>
-                <p style="margin: 0; font-size: 14px; color: #991b1b;">
-                    Every day without cover puts you at risk of costly repairs – even a small fault could cost £1,000+.
-                </p>
-            </div>
+          </div>
         </div>
-
-        <!-- CTA Button -->
-        <div style="padding: 0 20px 30px 20px; text-align: center;">
-            <a href="${purchaseUrl}" style="display: inline-block; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; text-decoration: none; padding: 18px 40px; border-radius: 8px; font-size: 20px; font-weight: bold; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); margin-bottom: 20px;">
-                🔒 Complete My Quote & See My Price
-            </a>
-            
-            <p style="margin: 15px 0; font-size: 16px; color: #374151;">
-                Or call us on <a href="tel:+443302295040" style="color: #1e40af; font-weight: bold;">0330 229 5040</a> and we'll walk you through the options in minutes.
-            </p>
+        ` : ''}
+      </div>
+      
+      <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; text-align: center;">
+        <h3 style="color: #1e293b; margin-top: 0;">Ready to Complete Your Purchase?</h3>
+        <p>Click the link below to resume your quote and complete your warranty purchase:</p>
+        
+        <div style="margin: 20px 0;">
+          ${quoteId ? `
+          <a href="${baseUrl}/?quote=${quoteId}&email=${data.email}" 
+             style="background: #ea580c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+            Continue My Quote
+          </a>
+          ` : `
+          <a href="${baseUrl}/?regNumber=${vehicleData.regNumber}&mileage=${vehicleData.mileage}" 
+             style="background: #ea580c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+            Complete My Purchase
+          </a>
+          `}
         </div>
-
-        <!-- Footer Message -->
-        <div style="background-color: #1f2937; color: #d1d5db; padding: 25px 20px; text-align: center;">
-            <p style="margin: 0 0 15px 0; font-size: 14px; font-weight: bold; color: #fbbf24;">
-                P.S. This quote is only valid for the next 48 hours – secure your plan now and lock in today's low rate.
-            </p>
-            
-            <div style="border-top: 1px solid #374151; padding-top: 20px; margin-top: 20px;">
-                <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">Kind regards</p>
-                <p style="margin: 0 0 5px 0; font-size: 16px; font-weight: bold;">Buy A Warranty</p>
-                <p style="margin: 0 0 15px 0; font-size: 14px;">Customer Service & Sales Team</p>
-                
-                <p style="margin: 0; font-size: 14px;">
-                    📞 <a href="tel:+443302295040" style="color: #60a5fa;">0330 229 5040</a> | 
-                    📧 <a href="mailto:support@buyawarranty.co.uk" style="color: #60a5fa;">support@buyawarranty.co.uk</a>
-                </p>
-            </div>
-            
-            <div style="border-top: 1px solid #374151; padding-top: 15px; margin-top: 20px; font-size: 12px; color: #9ca3af;">
-                <p style="margin: 0 0 5px 0;">© Buy A Warranty. All rights reserved.</p>
-                <p style="margin: 0;">You received this email because you requested a quote on our website.</p>
-            </div>
-        </div>
-    </div>
-</body>
-</html>`;
+        
+        <p style="font-size: 14px; color: #64748b; margin-top: 20px;">
+          ${quoteId ? 'This link will restore your vehicle details and take you directly to choose your plan.' : 'This link will take you back to get your quote with your vehicle details pre-filled.'}
+        </p>
+      </div>
+      
+      <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+        <p style="font-size: 12px; color: #64748b;">
+          Questions? Contact us at info@buyawarranty.co.uk or call us at 0800 123 4567
+        </p>
+        <p style="font-size: 12px; color: #64748b; margin-top: 10px;">
+          BuyaWarranty - Protecting your peace of mind
+        </p>
+      </div>
+    </body>
+    </html>
+  `;
 };
 
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const emailRequest: QuoteEmailRequest = await req.json();
-    console.log('Sending quote email:', emailRequest);
-
-    // Validate required fields
-    if (!emailRequest.email || !emailRequest.firstName || !emailRequest.vehicleData) {
-      throw new Error("Missing required fields: email, firstName, or vehicleData");
-    }
-
-    // Ensure planData exists with defaults if not provided
-    if (!emailRequest.planData) {
-      emailRequest.planData = {
-        planName: "Vehicle Protection Plans",
-        totalPrice: 0,
-        monthlyPrice: 19.99,
-        voluntaryExcess: 50,
-        paymentType: "12months",
-        selectedAddOns: {}
-      };
-    }
-
-    // Generate unique quote ID if not provided
-    const quoteId = emailRequest.quoteId || `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+    logStep('Function started');
     
-    // Generate purchase URL with quote ID - use the correct domain and step 3
-    const baseUrl = 'https://pricing.buyawarranty.co.uk';
-    const purchaseUrl = `${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}&step=3`;
-
-    // Generate the email HTML
-    const emailHtml = generateQuoteEmail({
-      ...emailRequest,
-      quoteId
-    });
-
-    // Send email using Resend with enhanced deliverability settings
-    const emailResponse = await resend.emails.send({
-      from: "Buy A Warranty <support@buyawarranty.co.uk>",
-      reply_to: "info@buyawarranty.co.uk",
-      to: [emailRequest.email],
-      subject: `Your vehicle warranty quote - ${emailRequest.vehicleData.regNumber}`,
-      html: emailHtml,
-      text: `Your ${emailRequest.vehicleData.make || 'Vehicle'}'s Warranty Quote
-
-Hello,
-
-Your ${emailRequest.vehicleData.make || 'vehicle'} quote is ready for review.
-
-Vehicle Details:
-- Registration: ${emailRequest.vehicleData.regNumber}
-- Make: ${emailRequest.vehicleData.make || 'N/A'}
-- Year: ${emailRequest.vehicleData.year || 'N/A'} 
-- Mileage: ${emailRequest.vehicleData.mileage}
-
-Complete your quote: ${baseUrl}/?quote=${quoteId}&email=${encodeURIComponent(emailRequest.email)}&step=3
-
-Questions? Call us on 0330 229 5040
-
-Buy A Warranty Customer Service Team`,
-      headers: {
-        'X-Entity-Ref-ID': quoteId,
-        'Auto-Submitted': 'auto-generated',
-      },
-      tags: [
-        { name: 'category', value: 'quote-confirmation' },
-        { name: 'vehicle-reg', value: emailRequest.vehicleData.regNumber }
-      ]
-    });
-
-    console.log('Quote email sent successfully:', emailResponse);
-
-    // Store quote data and log the email in Supabase
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
-    // Store the quote data for restoration
-    const { error: quoteError } = await supabase
-      .from('quote_data')
-      .insert({
-        quote_id: quoteId,
-        vehicle_data: emailRequest.vehicleData,
-        plan_data: emailRequest.planData,
-        customer_email: emailRequest.email
-      });
-
-    if (quoteError) {
-      console.error('Error storing quote data:', quoteError);
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendApiKey) {
+      throw new Error('RESEND_API_KEY environment variable is not set');
     }
 
-    // Log the email for tracking
-    const { error: logError } = await supabase
-      .from('email_logs')
-      .insert({
-        recipient_email: emailRequest.email,
-        subject: `Your Vehicle Warranty Quote - ${emailRequest.planData.planName} Plan`,
-        status: 'sent',
-        metadata: {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      throw new Error('Missing Supabase environment variables');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const data: QuoteEmailRequest = await req.json();
+    
+    logStep('Sending quote email', { email: data.email, vehicle: data.vehicleData.regNumber, requestHeaders: Object.fromEntries(req.headers.entries()) });
+
+    const resend = new Resend(resendApiKey);
+    
+    // Generate unique quote ID
+    const quoteId = `QUO-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+    
+    // Determine the base URL from the request origin or use production URL as fallback
+    const origin = req.headers.get('origin');
+    const referer = req.headers.get('referer');
+    let baseUrl = 'https://buyawarranty.co.uk';
+    
+    if (origin) {
+      baseUrl = origin;
+    } else if (referer) {
+      try {
+        const refererUrl = new URL(referer);
+        baseUrl = refererUrl.origin;
+      } catch (e) {
+        logStep('Failed to parse referer URL', { referer });
+      }
+    }
+    
+    logStep('Email URL generation', { origin, referer, baseUrl, quoteId });
+    
+    // Store quote data in database for restoration
+    try {
+      const { error: insertError } = await supabase
+        .from('quote_data')
+        .insert({
           quote_id: quoteId,
-          plan_name: emailRequest.planData.planName,
-          vehicle_reg: emailRequest.vehicleData.regNumber,
-          email_type: 'quote'
-        }
-      });
+          customer_email: data.email,
+          vehicle_data: data.vehicleData,
+          plan_data: data.selectedPlan || null,
+          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days from now
+        });
 
-    if (logError) {
-      console.error('Error logging email:', logError);
+      if (insertError) {
+        console.error('Error storing quote data:', insertError);
+        logStep('Error storing quote data', insertError);
+      } else {
+        logStep('Quote data stored successfully', { quoteId });
+      }
+    } catch (error) {
+      console.error('Error storing quote data:', error);
+      logStep('Exception storing quote data', error);
     }
 
-    return new Response(JSON.stringify({
-      success: true,
-      message: "Quote email sent successfully",
-      quoteId,
-      emailId: emailResponse.data?.id
-    }), {
+    const htmlContent = generateQuoteEmail({ ...data, quoteId }, baseUrl);
+
+    const emailResponse = await resend.emails.send({
+      from: "BuyaWarranty <noreply@buyawarranty.co.uk>",
+      to: [data.email],
+      subject: `Your Warranty Quote - ${data.vehicleData.regNumber}`,
+      html: htmlContent,
+    });
+
+    logStep('Email sent successfully', emailResponse);
+    logStep('Quote email sent and logged successfully');
+
+    return new Response(JSON.stringify({ success: true, emailId: emailResponse.data?.id }), {
       status: 200,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...corsHeaders,
       },
     });
   } catch (error: any) {
-    console.error("Error in send-quote-email function:", error);
+    console.error('Error in send-quote-email function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
       }
     );
   }

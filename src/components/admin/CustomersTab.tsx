@@ -19,6 +19,7 @@ import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { MOTHistorySection } from './MOTHistorySection';
+import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
@@ -1894,7 +1895,7 @@ export const CustomersTab = () => {
                           
                           {editingCustomer && (
                             <>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">{/* Customer Details */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> {/* Customer Details */}
                                 <div className="space-y-4">
                                   <h3 className="text-lg font-semibold">Customer Details</h3>
                                 
@@ -2244,6 +2245,20 @@ export const CustomersTab = () => {
                                   onActionComplete={fetchCustomers}
                                 />
                               </div>
+
+                              {/* Coverage Details Section */}
+                              {selectedCustomer.customer_policies?.[0] && (
+                                <div className="space-y-4">
+                                  <h3 className="text-lg font-semibold">Coverage Details</h3>
+                                  <CoverageDetailsDisplay
+                                    mot_fee={(selectedCustomer.customer_policies[0] as any).mot_fee}
+                                    tyre_cover={(selectedCustomer.customer_policies[0] as any).tyre_cover}
+                                    wear_tear={(selectedCustomer.customer_policies[0] as any).wear_tear}
+                                    europe_cover={(selectedCustomer.customer_policies[0] as any).europe_cover}
+                                    transfer_cover={(selectedCustomer.customer_policies[0] as any).transfer_cover}
+                                  />
+                                </div>
+                              )}
 
                               {/* Notes Section */}
                               <div className="space-y-4">

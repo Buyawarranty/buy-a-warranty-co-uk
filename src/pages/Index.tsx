@@ -10,6 +10,7 @@ import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
 import { DiscountPopup } from '@/components/DiscountPopup';
+import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
 
 
@@ -31,8 +32,15 @@ interface VehicleData {
 }
 
 const Index = () => {
+  console.log('Index component rendering, URL:', window.location.href);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  // Check for quote restoration immediately
+  const quoteParam = searchParams.get('quote');
+  const emailParam = searchParams.get('email');
+  console.log('Immediate quote check:', { quoteParam, emailParam });
+  console.log('All URL params:', Object.fromEntries(searchParams.entries()));
   
   // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
@@ -65,6 +73,81 @@ const Index = () => {
   
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
+  
+  // Quote restoration effect - runs immediately when component loads
+  useEffect(() => {
+    console.log('QUOTE RESTORATION: useEffect triggered', { quoteParam, emailParam });
+    
+    if (quoteParam && emailParam) {
+      console.log('QUOTE RESTORATION: Found quote params, fetching data...', { quoteParam, emailParam });
+      
+      const fetchQuoteData = async () => {
+        try {
+          console.log('QUOTE RESTORATION: Fetching from database with params:', { quoteParam, emailParam });
+          
+          const { data, error } = await supabase
+            .from('quote_data')
+            .select('*')
+            .eq('quote_id', quoteParam)
+            .eq('customer_email', emailParam)
+            .maybeSingle();
+
+          console.log('QUOTE RESTORATION: Database response:', { data, error, quoteParam, emailParam });
+
+          if (error) {
+            console.error('QUOTE RESTORATION: Database error:', error);
+            return;
+          }
+
+          if (!data) {
+            console.warn('QUOTE RESTORATION: No quote data found for:', { quoteParam, emailParam });
+            return;
+          }
+
+          // Restore the vehicle data from the stored quote
+          const vehicleDataJson = data.vehicle_data as any;
+          console.log('QUOTE RESTORATION: Raw vehicle data from DB:', vehicleDataJson);
+          
+          const restoredVehicleData = {
+            regNumber: vehicleDataJson.regNumber || '',
+            mileage: vehicleDataJson.mileage || '',
+            email: emailParam,
+            phone: '',
+            firstName: '',
+            lastName: '',
+            address: '',
+            make: vehicleDataJson.make || '',
+            model: vehicleDataJson.model || '',
+            year: vehicleDataJson.year || '',
+            vehicleType: vehicleDataJson.vehicleType || 'car',
+            fuelType: vehicleDataJson.fuelType || '',
+            transmission: vehicleDataJson.transmission || ''
+          };
+          
+          console.log('QUOTE RESTORATION: Restoring vehicle data and going to step 3:', restoredVehicleData);
+          setVehicleData(restoredVehicleData);
+          setFormData(prev => ({ ...prev, ...restoredVehicleData }));
+          
+          // Save to localStorage for persistence
+          localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(restoredVehicleData));
+          localStorage.setItem('buyawarranty_formData', JSON.stringify(restoredVehicleData));
+          localStorage.setItem('buyawarranty_currentStep', '3');
+          
+          setCurrentStep(3);
+          updateStepInUrl(3);
+          
+          console.log('QUOTE RESTORATION: Successfully restored quote and set step to 3');
+          
+        } catch (error) {
+          console.error('QUOTE RESTORATION: Error in fetchQuoteData:', error);
+        }
+      };
+
+      fetchQuoteData();
+    } else {
+      console.log('QUOTE RESTORATION: No quote params found, skipping restoration');
+    }
+  }, [quoteParam, emailParam]);
   
   // Save state to localStorage
   const saveStateToLocalStorage = (step?: number) => {
@@ -106,43 +189,43 @@ const Index = () => {
   };
   
   useEffect(() => {
+    console.log('useEffect triggered, current URL:', window.location.href);
+    console.log('searchParams:', Object.fromEntries(searchParams.entries()));
+    console.log('currentStep:', currentStep);
     window.scrollTo(0, 0);
     
-    // Check if we should show discount popup (only on first visit to homepage)
-    const hasSeenPopup = localStorage.getItem('hasSeenDiscountPopup');
-    if (!hasSeenPopup && currentStep === 1) {
-      setTimeout(() => setShowDiscountPopup(true), 2000); // Show after 2 seconds
-    }
-    
-    // Handle browser back/forward navigation
-    const handlePopState = () => {
-      const stepFromUrl = getStepFromUrl();
-      setCurrentStep(stepFromUrl);
-    };
-    
-    window.addEventListener('popstate', handlePopState);
-    
-    // Load saved state on initial load
-    const savedState = loadStateFromLocalStorage();
-    const stepFromUrl = getStepFromUrl();
-
-    // Check for quote parameter from email links
+    // Check for quote parameter from email links FIRST
     const quoteParam = searchParams.get('quote');
     const emailParam = searchParams.get('email');
     
+    console.log('URL params check:', { quoteParam, emailParam, currentUrl: window.location.href });
+    
     if (quoteParam && emailParam) {
+      console.log('Quote params found, fetching quote data...');
+      // User is returning from a quote email - fetch the stored quote data
       // User is returning from a quote email - fetch the stored quote data
       const fetchQuoteData = async () => {
         try {
+          console.log('Fetching quote data:', { quoteParam, emailParam });
+          
           const { data, error } = await supabase
             .from('quote_data')
             .select('*')
             .eq('quote_id', quoteParam)
             .eq('customer_email', emailParam)
-            .single();
+            .maybeSingle();
 
-          if (error || !data) {
-            console.error('Quote not found or expired:', error);
+          console.log('Quote data response:', { data, error });
+
+          if (error) {
+            console.error('Error fetching quote data:', error);
+            setCurrentStep(1);
+            updateStepInUrl(1);
+            return;
+          }
+
+          if (!data) {
+            console.error('Quote not found or expired');
             // Show error message and redirect to step 1
             setCurrentStep(1);
             updateStepInUrl(1);
@@ -183,6 +266,57 @@ const Index = () => {
       fetchQuoteData();
       return;
     }
+
+    // Show discount popup after 20 seconds of scrolling (not on homepage)
+    if (currentStep !== 1) {
+      // Check if already seen popup in this session
+      const hasSeenPopup = sessionStorage.getItem('hasSeenDiscountPopup');
+      if (hasSeenPopup) return;
+      
+      let scrollTime = 0;
+      let scrollTimer: NodeJS.Timeout;
+      let isScrolling = false;
+      
+      const handleScroll = () => {
+        if (!isScrolling) {
+          isScrolling = true;
+          scrollTimer = setInterval(() => {
+            scrollTime += 100; // Increment by 100ms
+            if (scrollTime >= 20000) { // 20 seconds
+              setShowDiscountPopup(true);
+              clearInterval(scrollTimer);
+              window.removeEventListener('scroll', handleScroll);
+            }
+          }, 100);
+        }
+        
+        // Reset scrolling flag after a brief pause
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          isScrolling = false;
+          clearInterval(scrollTimer);
+        }, 150);
+      };
+      
+      window.addEventListener('scroll', handleScroll);
+      
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        clearInterval(scrollTimer);
+      };
+    }
+    
+    // Handle browser back/forward navigation
+    const handlePopState = () => {
+      const stepFromUrl = getStepFromUrl();
+      setCurrentStep(stepFromUrl);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    
+    // Load saved state on initial load
+    const savedState = loadStateFromLocalStorage();
+    const stepFromUrl = getStepFromUrl();
     
     // Check for restore parameter from email links
     const restoreParam = searchParams.get('restore');
@@ -219,7 +353,7 @@ const Index = () => {
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, []);
+  }, [searchParams]);
   
   const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Review & Confirm'];
 
@@ -313,11 +447,27 @@ const Index = () => {
     }
   };
 
-  // Check if vehicle is a special type
-  const isSpecialVehicle = vehicleData?.vehicleType && ['EV', 'PHEV', 'MOTORBIKE'].includes(vehicleData.vehicleType);
+  // Check if vehicle is a special type - only motorbikes use the special pricing interface
+  const isSpecialVehicle = vehicleData?.vehicleType && ['MOTORBIKE'].includes(vehicleData.vehicleType);
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden w-full">
+      <SEOHead 
+        title={
+          currentStep === 1 ? "Car Warranty Prices | Affordable UK Vehicle Warranties" :
+          currentStep === 2 ? "Get Your Car Warranty Quote | Instant Online Quotes" :
+          currentStep === 3 ? "Choose Your Car Warranty Plan | Compare Prices" :
+          "Complete Your Car Warranty Purchase | Secure Checkout"
+        }
+        description={
+          currentStep === 1 ? "Compare our car warranty prices and choose the perfect plan for your vehicle. Flexible, affordable UK coverage with no hidden fees. Instant online quotes available." :
+          currentStep === 2 ? "Get an instant quote for your car warranty. Enter your vehicle details and receive competitive pricing for comprehensive coverage in the UK." :
+          currentStep === 3 ? "Compare car warranty plans and choose the best coverage for your vehicle. Basic, Gold, and Platinum options available with flexible payment terms." :
+          "Complete your car warranty purchase with our secure checkout. Instant activation and immediate coverage for your vehicle."
+        }
+        keywords="car warranty, vehicle warranty, UK warranty, car insurance, breakdown cover, warranty prices, vehicle protection, extended warranty"
+        canonical={`${window.location.origin}/?step=${currentStep}`}
+      />
       {currentStep !== 1 && (
         <div className="bg-[#e8f4fb]">
           <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
@@ -329,7 +479,7 @@ const Index = () => {
       )}
 
       {currentStep === 2 && vehicleData && (
-        <div className="bg-[#e8f4fb] w-full px-4 py-4 sm:py-8">
+        <div className="bg-[#e8f4fb] w-full px-4 py-2 sm:py-4">
           <div className="max-w-4xl mx-auto">
             <QuoteDeliveryStep 
               vehicleData={vehicleData}
@@ -403,13 +553,14 @@ const Index = () => {
         </div>
       )}
       
+
       {/* Discount Popup */}
       <DiscountPopup 
         isOpen={showDiscountPopup} 
         onClose={() => {
           setShowDiscountPopup(false);
-          localStorage.setItem('hasSeenDiscountPopup', 'true');
-        }} 
+          sessionStorage.setItem('hasSeenDiscountPopup', 'true');
+        }}
       />
     </div>
   );

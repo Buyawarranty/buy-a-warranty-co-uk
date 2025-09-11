@@ -68,34 +68,34 @@ const HomepageFAQ = () => {
   ];
 
   const FAQItem = ({ faq }: { faq: { id: string; question: string; answer: string } }) => (
-    <div className="bg-brand-orange-light rounded-lg overflow-hidden shadow-lg">
+    <div className="bg-brand-orange rounded-lg overflow-hidden shadow-lg border border-orange-400">
       <button
         onClick={() => toggleItem(faq.id)}
-        className="w-full px-6 py-5 text-left flex items-center justify-between text-white hover:bg-brand-orange transition-colors"
+        className="w-full px-6 py-5 text-left flex items-center justify-between text-white hover:bg-orange-600 transition-colors"
       >
         <span className="font-bold text-lg pr-4">{faq.question}</span>
         <ChevronDown 
-          className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
+          className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 text-white ${
             openItems[faq.id] ? 'rotate-180' : ''
           }`}
         />
       </button>
       
       {openItems[faq.id] && (
-        <div className="px-6 pb-5 text-white bg-brand-orange animate-accordion-down">
-          <p className="text-base leading-relaxed opacity-95">{faq.answer}</p>
+        <div className="px-6 pb-5 text-white bg-orange-600 border-t border-orange-400 animate-accordion-down">
+          <p className="text-base leading-relaxed">{faq.answer}</p>
         </div>
       )}
     </div>
   );
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-16 sm:py-20 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-brand-dark-text mb-6 leading-tight">
-            Frequently Asked <span className="text-brand-orange">Questions</span>
+            <span className="text-brand-orange">FAQ's</span>
           </h2>
           <p className="text-lg text-brand-dark-text max-w-3xl mx-auto leading-relaxed">
             Find answers to the most common questions about our warranty services.

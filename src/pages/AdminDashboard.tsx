@@ -1,6 +1,9 @@
+import { ClaimsTab } from '@/components/admin/ClaimsTab';
+import ContactSubmissionsTab from '@/components/admin/ContactSubmissionsTab';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { SEOHead } from '@/components/SEOHead';
 import { CustomersTab } from '@/components/admin/CustomersTab';
 import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
@@ -26,6 +29,7 @@ import { TestAutomatedEmail } from '@/components/admin/TestAutomatedEmail';
 import { SimpleEmailTest } from '@/components/admin/SimpleEmailTest';
 import { TestEmailFunctionDirect } from '@/components/admin/TestEmailFunctionDirect';
 import { EmailFunctionDiagnostics } from '@/components/admin/EmailFunctionDiagnostics';
+import { ClickFraudTab } from '@/components/admin/ClickFraudTab';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -98,12 +102,18 @@ const AdminDashboard = () => {
         return <SpecialVehiclePlansTab />;
       case 'discount-codes':
         return <DiscountCodesTab />;
+      case 'claims':
+        return <ClaimsTab />;
+      case 'contact':
+        return <ContactSubmissionsTab />;
       case 'emails':
         return <EmailManagementTab />;
       case 'email-marketing':
         return <EmailMarketingTab />;
       case 'analytics':
         return <AnalyticsTab />;
+      case 'security':
+        return <ClickFraudTab />;
       case 'user-permissions':
         return <UserPermissionsTab />;
       case 'document-mapping':
@@ -173,6 +183,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+      <SEOHead 
+        title="Admin Dashboard | BuyAWarranty Management"
+        description="Administrative dashboard for managing warranties, customers, and business operations. Secure access for authorized personnel only."
+        keywords="admin, dashboard, warranty management, customer management"
+      />
       <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       
       <div className="flex-1 lg:ml-64">

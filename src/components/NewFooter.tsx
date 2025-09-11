@@ -1,26 +1,11 @@
 
 import React from 'react';
-import { Phone, Mail } from 'lucide-react';
+import { Phone, Mail, BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const NewFooter = () => {
   return (
     <div className="bg-white border-t border-gray-200">
-      {/* Trustpilot-style section */}
-      <div className="bg-gray-50 py-4">
-        <div className="max-w-6xl mx-auto px-4 flex items-center justify-center gap-4 text-sm">
-          <span className="text-gray-600">Our customers say</span>
-          <span className="font-bold text-gray-800">Excellent</span>
-          <div className="flex gap-1">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="w-5 h-5 bg-green-500 text-white flex items-center justify-center text-xs font-bold">
-                ★
-              </div>
-            ))}
-          </div>
-          <span className="text-sm text-gray-600">4.5 out of 5 based on 11,967 reviews</span>
-          <span className="text-sm text-gray-600">★ Trustpilot</span>
-        </div>
-      </div>
 
       {/* Main footer section */}
       <div className="bg-[#224380] text-white py-8">
@@ -45,6 +30,14 @@ const NewFooter = () => {
               <Mail size={18} />
               Email us: info@warrantywise.co.uk
             </a>
+
+            <Link 
+              to="/blog" 
+              className="flex items-center gap-2 text-[#eb4b00] hover:text-orange-400 transition-colors font-medium"
+            >
+              <BookOpen size={18} />
+              Drive Smarter
+            </Link>
           </div>
         </div>
       </div>

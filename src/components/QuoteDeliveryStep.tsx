@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, Zap, Mail } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Zap, Mail, Car, Edit3 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -12,6 +12,7 @@ interface QuoteDeliveryStepProps {
     fuelType?: string;
     transmission?: string;
     year?: string;
+    vehicleType?: string;
   };
   onNext: (data: { email: string; phone: string; firstName: string; lastName: string; sendQuoteEmail?: boolean }) => void;
   onBack: () => void;
@@ -77,39 +78,89 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const handleSubmitContactForm = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Track abandoned cart if email is provided
-    if (email.trim()) {
-      try {
-        await supabase.functions.invoke('track-abandoned-cart', {
-          body: {
-            full_name: email, // Using email as the name since we don't have separate fields
-            email: email,
-            phone: '',
-            vehicle_reg: vehicleData?.regNumber,
-            vehicle_make: vehicleData?.make,
-            vehicle_model: vehicleData?.model,
-            vehicle_year: vehicleData?.year,
-            mileage: vehicleData?.mileage,
-            step_abandoned: 2
-          }
-        });
-      } catch (error) {
-        console.error('Error tracking abandoned cart:', error);
-        // Don't block the flow if tracking fails
-      }
+    if (!validateForm()) {
+      return;
     }
-    
-    // Trigger confetti
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
-    
-    // Small delay to let confetti start before navigating
-    setTimeout(() => {
-      onNext({ firstName: '', lastName: '', email: email.trim(), phone: '', sendQuoteEmail: !!email.trim() });
-    }, 300);
+
+    setSendingEmail(true);
+
+    try {
+      // Send quote email
+      console.log('QUOTE EMAIL: Sending quote email with data:', {
+        email: email.trim(),
+        vehicleData,
+        currentUrl: window.location.href,
+        origin: window.location.origin
+      });
+
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-quote-email', {
+        body: {
+          email: email.trim(),
+          firstName: firstName.trim() || 'Valued Customer',
+          lastName: lastName.trim() || '',
+          vehicleData: {
+            regNumber: vehicleData.regNumber,
+            make: vehicleData.make,
+            model: vehicleData.model,
+            year: vehicleData.year,
+            mileage: vehicleData.mileage,
+            vehicleType: vehicleData.vehicleType || 'car',
+            fuelType: vehicleData.fuelType,
+            transmission: vehicleData.transmission
+          },
+          isInitialQuote: true
+        }
+      });
+
+      if (emailError) {
+        console.error('QUOTE EMAIL: Error sending quote email:', emailError);
+        // Still proceed with the flow even if email fails
+      } else {
+        console.log('QUOTE EMAIL: Quote email sent successfully:', emailResponse);
+      }
+
+      // Track abandoned cart if email is provided
+      if (email.trim()) {
+        try {
+          await supabase.functions.invoke('track-abandoned-cart', {
+            body: {
+              full_name: email,
+              email: email,
+              phone: '',
+              vehicle_reg: vehicleData?.regNumber,
+              vehicle_make: vehicleData?.make,
+              vehicle_model: vehicleData?.model,
+              vehicle_year: vehicleData?.year,
+              mileage: vehicleData?.mileage,
+              step_abandoned: 2
+            }
+          });
+        } catch (error) {
+          console.error('Error tracking abandoned cart:', error);
+        }
+      }
+      
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      
+      // Small delay to let confetti start before navigating
+      setTimeout(() => {
+        onNext({ firstName: '', lastName: '', email: email.trim(), phone: '', sendQuoteEmail: true });
+      }, 300);
+
+    } catch (error) {
+      console.error('Error in quote submission:', error);
+      // Still proceed with the flow
+      setTimeout(() => {
+        onNext({ firstName: '', lastName: '', email: email.trim(), phone: '', sendQuoteEmail: true });
+      }, 300);
+    } finally {
+      setSendingEmail(false);
+    }
   };
 
   const handleFieldBlur = (field: 'firstName' | 'lastName' | 'email' | 'phone') => {
@@ -122,19 +173,73 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
 
   return (
     <section className="bg-[#e8f4fb] py-4 sm:py-10 min-h-screen px-3 sm:px-0">
-      {/* Back button above the content box for both views */}
-      <div className="max-w-4xl mx-auto mb-4">
-        <button 
-          type="button" 
-          onClick={onBack}
-          className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </button>
-      </div>
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
+        {/* Vehicle Details Section */}
+        <div className="bg-gray-100 rounded-lg p-3 sm:p-6 mb-2 sm:mb-4 border border-gray-300">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <Car className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" />
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900">Your vehicle details</h3>
+            </div>
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base font-medium text-orange-600 hover:text-orange-700 transition-colors duration-200 py-1 px-2 rounded"
+            >
+              <Edit3 className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden xs:inline">Change Vehicle</span>
+              <span className="xs:hidden">Change</span>
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+            <div className="flex flex-col p-2 sm:p-0">
+              <span className="text-sm sm:text-base text-gray-500 font-medium">Registration</span>
+              <span className="text-base sm:text-lg font-semibold text-gray-900 break-all">{vehicleData.regNumber}</span>
+            </div>
+            
+            {vehicleData.make && (
+              <div className="flex flex-col p-2 sm:p-0">
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Make</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.make}</span>
+              </div>
+            )}
+            
+            {vehicleData.model && (
+              <div className="flex flex-col p-2 sm:p-0">
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Model</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.model}</span>
+              </div>
+            )}
+            
+            {vehicleData.year && (
+              <div className="flex flex-col p-2 sm:p-0">
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Year</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.year}</span>
+              </div>
+            )}
+            
+            <div className="flex flex-col p-2 sm:p-0">
+              <span className="text-sm sm:text-base text-gray-500 font-medium">Mileage</span>
+              <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.mileage}</span>
+            </div>
+            
+            {vehicleData.fuelType && (
+              <div className="flex flex-col p-2 sm:p-0">
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Fuel Type</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.fuelType}</span>
+              </div>
+            )}
+            
+            {vehicleData.transmission && (
+              <div className="flex flex-col p-2 sm:p-0">
+                <span className="text-sm sm:text-base text-gray-500 font-medium">Transmission</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.transmission}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
         {!showContactForm ? (
           <>
             <div className="text-center mb-8 sm:mb-12">
@@ -202,6 +307,18 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   Unsubscribe at any time
                 </p>
               </div>
+            </div>
+
+            {/* Back button moved to bottom */}
+            <div className="max-w-4xl mx-auto mt-6">
+              <button 
+                type="button" 
+                onClick={onBack}
+                className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </button>
             </div>
 
           </>

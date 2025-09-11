@@ -166,25 +166,22 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     // Fallback to hardcoded pricing (Gold plan equivalent)
     const fallbackPricingTable = {
       yearly: {
-        0: { monthly: 34 },
-        50: { monthly: 31 },
-        100: { monthly: 27 },
-        150: { monthly: 26 },
-        200: { monthly: 23 }
+        0: { monthly: 41 },
+        50: { monthly: 38 },
+        100: { monthly: 35 },
+        150: { monthly: 32 }
       },
       two_yearly: {
-        0: { monthly: 61 },
-        50: { monthly: 56 },
-        100: { monthly: 49 },
-        150: { monthly: 47 },
-        200: { monthly: 44 }
+        0: { monthly: 39 },
+        50: { monthly: 37 },
+        100: { monthly: 33 },
+        150: { monthly: 31 }
       },
       three_yearly: {
-        0: { monthly: 90 },
-        50: { monthly: 82 },
-        100: { monthly: 71 },
-        150: { monthly: 69 },
-        200: { monthly: 66 }
+        0: { monthly: 39 },
+        50: { monthly: 36 },
+        100: { monthly: 33 },
+        150: { monthly: 30 }
       }
     };
     
@@ -414,11 +411,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-semibold text-gray-900">Pay Full Amount</span>
                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save 5% (£{Math.round((getMonthlyDisplayPrice() * 12) * 0.05)})
+                          Save 10% (£{Math.round((getMonthlyDisplayPrice() * 12) * 0.1)})
                         </div>
                       </div>
                       <div className="text-xl font-bold text-blue-600">
-                        £{Math.round((getMonthlyDisplayPrice() * 12) * 0.95)} upfront
+                        £{Math.round((getMonthlyDisplayPrice() * 12) * 0.9)} upfront
                       </div>
                       <div className="text-sm text-gray-600">
                         Instead of £{Math.round(getMonthlyDisplayPrice() * 12)} over 12 months

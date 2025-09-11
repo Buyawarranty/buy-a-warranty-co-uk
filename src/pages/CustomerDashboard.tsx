@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -490,6 +491,11 @@ const CustomerDashboard = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <SEOHead 
+          title="Customer Dashboard | BuyAWarranty Account Portal"
+          description="Access your warranty policies, download documents, manage your account details, and get support for your vehicle warranty coverage."
+          keywords="customer dashboard, warranty portal, policy documents, account management, vehicle warranty"
+        />
         <div className="bg-white shadow">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4">

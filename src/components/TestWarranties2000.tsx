@@ -37,7 +37,13 @@ const TestWarranties2000 = () => {
       MaxClm: "500", // Use valid claim amount
       Notes: "Test registration",
       Ref: "BAW-2501-400001",
-      MOTDue: "2025-12-31"
+      MOTDue: "2025-12-31",
+      // New coverage fields
+      mot_fee: true,
+      tyre_cover: true,
+      wear_tear: true,
+      europe_cover: false,
+      transfer_cover: true
     };
     
     console.log('=== FIXING VALIDATION ERRORS ===');
