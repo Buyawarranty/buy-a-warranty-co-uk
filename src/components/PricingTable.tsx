@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ProtectedButton } from '@/components/ui/protected-button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck, PartyPopper } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -1434,15 +1434,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    
                    return (
                      <>
-                        <span className="font-medium text-gray-900 flex items-center gap-2">
-                          <Zap className="w-4 h-4 text-orange-500" />
-                          Free upgrade to premium plan
-                        </span>
-                        <span className="text-gray-600">
+                        <div className="flex flex-col gap-1">
+                          <span className="font-medium text-gray-900 flex items-center gap-2">
+                            <PartyPopper className="w-4 h-4 text-orange-500" />
+                            Upgraded to premium plan
+                            <HelpCircle className="w-4 h-4 text-gray-400" />
+                          </span>
+                          <span className="text-sm text-gray-600">- Halfords MOT fee cover included</span>
+                        </div>
+                        <span className="font-bold text-gray-600">
                           Duration: {paymentType === '12months' ? '12 Months' : 
                            paymentType === '24months' ? '24 Months' : '36 Months'}
                         </span>
-                        <div className="font-bold text-orange-600">£{monthlyEquivalent}/mo (£{totalPrice})</div>
+                        <div className="text-xl font-bold text-green-600">£{monthlyEquivalent}/mo (£{totalPrice})</div>
                      </>
                    );
                  })()}
