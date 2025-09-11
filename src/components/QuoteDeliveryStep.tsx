@@ -176,7 +176,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {/* Vehicle Details Section */}
-        <div className="bg-gray-100 rounded-lg p-3 sm:p-6 mb-2 sm:mb-4 border border-gray-200">
+        <div className="bg-gray-100 rounded-lg p-3 sm:p-6 mb-2 sm:mb-4 border border-gray-300">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="flex items-center gap-3 sm:gap-4">
               <Car className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" />
