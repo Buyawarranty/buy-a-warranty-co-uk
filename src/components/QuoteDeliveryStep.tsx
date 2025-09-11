@@ -193,46 +193,46 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
           </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
-            <div className="flex flex-col p-4 sm:p-3">
+            <div className="flex flex-col p-2 sm:p-0">
               <span className="text-sm sm:text-base text-gray-500 font-medium">Registration</span>
               <span className="text-base sm:text-lg font-semibold text-gray-900 break-all">{vehicleData.regNumber}</span>
             </div>
             
             {vehicleData.make && (
-              <div className="flex flex-col p-4 sm:p-3">
+              <div className="flex flex-col p-2 sm:p-0">
                 <span className="text-sm sm:text-base text-gray-500 font-medium">Make</span>
                 <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.make}</span>
               </div>
             )}
             
             {vehicleData.model && (
-              <div className="flex flex-col p-4 sm:p-3">
+              <div className="flex flex-col p-2 sm:p-0">
                 <span className="text-sm sm:text-base text-gray-500 font-medium">Model</span>
                 <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.model}</span>
               </div>
             )}
             
             {vehicleData.year && (
-              <div className="flex flex-col p-4 sm:p-3">
+              <div className="flex flex-col p-2 sm:p-0">
                 <span className="text-sm sm:text-base text-gray-500 font-medium">Year</span>
                 <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.year}</span>
               </div>
             )}
             
-            <div className="flex flex-col p-4 sm:p-3">
+            <div className="flex flex-col p-2 sm:p-0">
               <span className="text-sm sm:text-base text-gray-500 font-medium">Mileage</span>
               <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.mileage}</span>
             </div>
             
             {vehicleData.fuelType && (
-              <div className="flex flex-col p-4 sm:p-3">
+              <div className="flex flex-col p-2 sm:p-0">
                 <span className="text-sm sm:text-base text-gray-500 font-medium">Fuel Type</span>
                 <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.fuelType}</span>
               </div>
             )}
             
             {vehicleData.transmission && (
-              <div className="flex flex-col p-4 sm:p-3">
+              <div className="flex flex-col p-2 sm:p-0">
                 <span className="text-sm sm:text-base text-gray-500 font-medium">Transmission</span>
                 <span className="text-base sm:text-lg font-semibold text-gray-900">{vehicleData.transmission}</span>
               </div>
