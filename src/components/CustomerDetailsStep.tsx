@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit } from 'lucide-react';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,13 +37,6 @@ interface CustomerDetailsStepProps {
     monthlyPrice: number;
     voluntaryExcess: number;
     selectedAddOns: {[addon: string]: boolean};
-    protectionAddOns?: {[key: string]: boolean};
-    installmentBreakdown?: {
-      firstInstallment: number;
-      standardInstallment: number;
-      hasTransfer: boolean;
-      transferAmount: number;
-    };
   };
   onBack: () => void;
   onNext: (customerData: any) => void;
@@ -90,14 +83,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [quoteSent, setQuoteSent] = useState(false);
   const [addAnotherWarrantyEnabled, setAddAnotherWarrantyEnabled] = useState(false);
   const [selectedClaimLimit, setSelectedClaimLimit] = useState('plus'); // Default to Plus Cover
-
-  // Debug logging for pricing
-  console.log('CustomerDetailsStep - Pricing Debug:', {
-    monthlyPrice: pricingData.monthlyPrice,
-    totalPrice: pricingData.totalPrice,
-    protectionAddOns: pricingData.protectionAddOns,
-    voluntaryExcess: pricingData.voluntaryExcess
-  });
 
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
@@ -193,17 +178,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     }
   };
 
-  // Calculate prices based on pricing data passed from PricingTable
-  // The pricingData.totalPrice already includes base price + all addons
-  const monthlyBumperPrice = pricingData.monthlyPrice; // Monthly amount for display
-  const bumperTotalPrice = pricingData.totalPrice; // Total already includes all addons
-  const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount for Stripe
-  
-  // Calculate protection addons total for display purposes only
-  let protectionAddonsTotal = 0;
-  if (pricingData.protectionAddOns?.motRepair) protectionAddonsTotal += 89;
-  if (pricingData.protectionAddOns?.wearTear) protectionAddonsTotal += 89;
-  if (pricingData.protectionAddOns?.transfer) protectionAddonsTotal += 30;
+  // Calculate prices based on pricing data
+  // For Bumper: always use the original monthly price shown on pricing page
+  // This ensures users pay the same monthly amount (e.g., £56) for 12 payments regardless of warranty duration
+  const monthlyBumperPrice = pricingData.monthlyPrice; // Use the original monthly price from pricing page
+  const bumperTotalPrice = monthlyBumperPrice * 12; // Always 12 payments with Bumper
+  const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount based on order summary total
   
   // Check for automatic 10% discount (add another warranty)
   const hasAutoDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
@@ -217,8 +197,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     : baseDiscountedPrice;
   
   const discountedStripePrice = discountValidation?.isValid 
-    ? Math.round(discountValidation.finalAmount * 0.9)
-    : Math.round(baseDiscountedPrice * 0.9);
+    ? Math.round(discountValidation.finalAmount * 0.95)
+    : Math.round(baseDiscountedPrice * 0.95);
 
   const handleInputChange = (field: string, value: string) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -447,16 +427,295 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">You're almost covered</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Warranty Quote</h1>
         </div>
 
-        {/* Customer Details Form */}
-        <Card className="border border-gray-200">
-          <CardContent className="pt-6">
-            <div className="grid lg:grid-cols-2 gap-8">
+        {/* Section 1: Your Vehicle */}
+        <Collapsible defaultOpen={true} className="mb-4">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                      1
+                    </div>
+                    <CardTitle className="text-lg font-semibold">Your vehicle</CardTitle>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="inline-flex items-center bg-[#ffdb00] text-gray-900 font-bold text-sm px-3 py-2 rounded-[6px] shadow-sm leading-tight border-2 border-black">
+                      <img 
+                        src="/lovable-uploads/5fdb1e2d-a10b-4cce-b083-307d56060fc8.png" 
+                        alt="GB Flag" 
+                        className="w-[20px] h-[15px] mr-2 object-cover rounded-[2px]"
+                      />
+                      <div className="font-bold font-sans tracking-normal">
+                        {vehicleData.regNumber}
+                      </div>
+                    </div>
+                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                  </div>
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p><strong>Make & Model:</strong> {vehicleData.make} {vehicleData.model}</p>
+                  <p><strong>Fuel Type:</strong> {vehicleData.fuelType}</p>
+                  <p><strong>Year:</strong> {vehicleData.year}</p>
+                  <p><strong>Mileage:</strong> {vehicleData.mileage} miles</p>
+                  {vehicleData.vehicleType && !['car', 'van'].includes(vehicleData.vehicleType) && (
+                    <p className="text-blue-600 font-semibold">
+                      <strong>Special Vehicle Type:</strong> {vehicleData.vehicleType}
+                    </p>
+                  )}
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => window.location.href = window.location.pathname + '?step=1'}
+                  className="mt-3 text-sm bg-white border-2 px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-50"
+                  style={{
+                    borderColor: '#224380',
+                    color: '#224380'
+                  }}
+                >
+                  Change vehicle
+                </button>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        {/* Section 2: Choose Your Claim Limit */}
+        <Collapsible defaultOpen={true} className="mb-4">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                      2
+                    </div>
+                    <CardTitle className="text-lg font-semibold">Choose your claim limit</CardTitle>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                 <div className="text-center mb-1">
+                   <p className="text-gray-600 text-sm">Choose the claim limit that's right for you</p>
+                 </div>
+                 
+                 <TooltipProvider>
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                     {['essential', 'plus', 'premium'].map((limit) => {
+                       const details = getClaimLimitDetails(limit);
+                       return (
+                         <div
+                           key={limit}
+                           onClick={() => setSelectedClaimLimit(limit)}
+                           className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                             selectedClaimLimit === limit 
+                               ? 'border-orange-500 bg-orange-50' 
+                               : 'border-gray-200 hover:border-gray-300'
+                           }`}
+                         >
+                           {/* Badge for Plus Cover */}
+                           {limit === 'plus' && (
+                             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                               <div className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">
+                                 MOST POPULAR
+                               </div>
+                             </div>
+                           )}
+                           
+                           {/* Icon */}
+                           <div className="flex justify-center mb-3">
+                             {limit === 'essential' && (
+                               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                 <CheckCircle className="w-6 h-6 text-green-600" />
+                               </div>
+                             )}
+                             {limit === 'plus' && (
+                               <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                 <div className="text-2xl">⭐</div>
+                               </div>
+                             )}
+                             {limit === 'premium' && (
+                               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                 <div className="text-2xl">🔒</div>
+                               </div>
+                             )}
+                           </div>
+                           
+                           {/* Title */}
+                           <h3 className="text-lg font-bold text-gray-900 text-center mb-1">
+                             {getClaimLimitTitle(limit)}
+                           </h3>
+                           
+                           {/* Claims Info */}
+                           <p className="text-xs text-gray-500 text-center mb-3">
+                             ({details.claims})
+                           </p>
+                           
+                           {/* Amount */}
+                           <div className="text-center mb-3">
+                             <div className={`text-2xl font-bold ${
+                               limit === 'essential' ? 'text-green-600' :
+                               limit === 'plus' ? 'text-yellow-600' :
+                               'text-orange-600'
+                             }`}>
+                               £{getClaimLimitAmount(limit).toLocaleString()}
+                             </div>
+                             <p className="text-xs text-gray-500">Claim Limit</p>
+                           </div>
+                           
+                           {/* Tagline */}
+                           <p className="text-sm font-medium text-gray-700 text-center mb-2">
+                             {getClaimLimitTagline(limit)}
+                           </p>
+                           
+                           {/* Description */}
+                           <p className="text-xs text-gray-600 text-center mb-4">
+                             {getClaimLimitDescription(limit)}
+                           </p>
+                           
+                           {/* Question Mark Tooltips */}
+                           <div className="flex justify-center gap-3">
+                             {/* Example Repairs Tooltip */}
+                             <Tooltip>
+                               <TooltipTrigger asChild>
+                                 <button className="flex items-center text-blue-600 hover:text-blue-800 text-xs">
+                                   <HelpCircle className="w-4 h-4 mr-1" />
+                                   Example Repairs
+                                 </button>
+                               </TooltipTrigger>
+                               <TooltipContent className="max-w-xs">
+                                 <div className="p-2">
+                                   <p className="font-semibold mb-2">Example Repairs Covered:</p>
+                                   <ul className="text-sm space-y-1">
+                                     {details.exampleRepairs.map((repair, index) => (
+                                       <li key={index} className="flex items-start">
+                                         <span className="text-green-600 mr-2">•</span>
+                                         {repair}
+                                       </li>
+                                     ))}
+                                   </ul>
+                                 </div>
+                               </TooltipContent>
+                             </Tooltip>
+                             
+                             {/* What If Tooltip */}
+                             <Tooltip>
+                               <TooltipTrigger asChild>
+                                 <button className="flex items-center text-orange-600 hover:text-orange-800 text-xs">
+                                   <HelpCircle className="w-4 h-4 mr-1" />
+                                   What if more?
+                                 </button>
+                               </TooltipTrigger>
+                               <TooltipContent className="max-w-xs">
+                                 <div className="p-2">
+                                   <p className="font-semibold mb-2">What if the repair costs more?</p>
+                                   <p className="text-sm">{details.whatIf}</p>
+                                 </div>
+                               </TooltipContent>
+                             </Tooltip>
+                           </div>
+                         </div>
+                       );
+                     })}
+                   </div>
+                 </TooltipProvider>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        {/* Section 3: Select excess amount */}
+        <Collapsible defaultOpen={true} className="mb-4">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                       3
+                     </div>
+                    <CardTitle className="text-lg font-semibold">Select excess amount</CardTitle>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Voluntary Excess Amount</h4>
+                  <div className="text-2xl font-bold text-blue-600">
+                    £{pricingData.voluntaryExcess}
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">Selected excess amount</p>
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        {/* Section 4: Select period of cover */}
+        <Collapsible defaultOpen={true} className="mb-4">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                       4
+                     </div>
+                     <CardTitle className="text-lg font-semibold">Select period of cover</CardTitle>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Warranty Duration</h4>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {getWarrantyDurationDisplay(paymentType)}
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">Selected coverage period</p>
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        {/* Section 5: What's covered & Checkout */}
+        <Collapsible defaultOpen={true} className="mb-6">
+          <Card className="border border-gray-200">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="pb-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                     <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                       5
+                     </div>
+                    <CardTitle className="text-lg font-semibold">What's covered</CardTitle>
+                  </div>
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="pt-0">
+                <div className="grid lg:grid-cols-2 gap-8">
                   {/* Left Column - Personal Details Form */}
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-6">Tell us about yourself</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-6">Complete Your Details</h3>
                     
                     <form onSubmit={handleSubmit} className="space-y-6">
                       {/* Name Fields */}
@@ -526,7 +785,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
                       {/* Address Details */}
                       <div className="pt-4">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">Where should we send your documents?</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Address Details</h3>
                         
                         <div className="space-y-4">
                           <div>
@@ -629,18 +888,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <div className="space-y-6">
                     {/* Order Summary Card */}
                     <div className="bg-white rounded-lg shadow-sm p-6 border">
-                      <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-gray-900">Order Summary</h2>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={onBack}
-                          className="flex items-center gap-2"
-                        >
-                          <Edit className="w-4 h-4" />
-                          Edit
-                        </Button>
-                      </div>
+                      <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
                       
                       {/* Confidence Message */}
                       <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -652,10 +900,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
                        {/* Plan Details */}
                        <div className="space-y-4 mb-6">
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Plan:</span>
-                            <span className="font-semibold">Platinum</span>
-                          </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Plan:</span>
+                           <span className="font-semibold">{planName}</span>
+                         </div>
                          <div className="flex justify-between">
                            <span className="text-gray-600">Claim Limit:</span>
                            <span className="font-semibold">£{getClaimLimitAmount(selectedClaimLimit).toLocaleString()}</span>
@@ -666,60 +914,30 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                              {getWarrantyDurationDisplay(paymentType)}
                            </span>
                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Voluntary Excess:</span>
-                            <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
-                          </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Voluntary Excess:</span>
+                           <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
+                         </div>
+                       </div>
 
-                          {/* Add-ons integrated into main list */}
-                          {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
-                            <>
-                              {pricingData.protectionAddOns.breakdown && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🚨 24/7 Breakdown Recovery:</span>
-                                  <span className="font-semibold">£5/mo</span>
-                                </div>
-                              )}
-                              {pricingData.protectionAddOns.motRepair && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🔧 MOT Repair Cover:</span>
-                                  <span className="font-semibold">£6/mo</span>
-                                </div>
-                              )}
-                              {pricingData.protectionAddOns.wearTear && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🛠️ Wear & Tear Cover:</span>
-                                  <span className="font-semibold">£89/year</span>
-                                </div>
-                              )}
-                              {pricingData.protectionAddOns.transfer && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🔁 Transfer Cover:</span>
-                                  <span className="font-semibold">£30 one-time</span>
-                                </div>
-                              )}
-                            </>
-                          )}
+                      {/* Payment Summary */}
+                      <div className="border-t border-gray-200 pt-4 mb-6">
+                        <div className="text-green-600 font-semibold text-lg mb-2">
+                          Payment: £{Math.round(monthlyBumperPrice)} x 12 easy payments
                         </div>
-
-                        {/* Payment Summary */}
-                        <div className="border-t border-gray-200 pt-4 mb-6">
-                          <div className="text-green-600 font-semibold text-lg mb-2">
-                            Payment: £{Math.round(bumperTotalPrice / 12)} x 12 easy payments
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="font-semibold text-gray-900">Total Price:</span>
-                            <div className="text-right">
-                              <div className="font-semibold text-gray-900">
-                                £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
-                                {discountValidation?.isValid && (
-                                  <span className="text-green-600 text-sm ml-2">
-                                    (Discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
-                                  </span>
-                                )}
-                              </div>
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold text-gray-900">Total Price:</span>
+                          <div className="text-right">
+                            <div className="font-semibold text-gray-900">
+                              £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
+                              {discountValidation?.isValid && (
+                                <span className="text-green-600 text-sm ml-2">
+                                  (5% discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
+                                </span>
+                              )}
                             </div>
                           </div>
+                        </div>
 
                         {/* Discount Code Section */}
                         <div className="pt-4 border-t border-gray-200">
@@ -791,15 +1009,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                 </div>
                               </div>
                               <p className="text-sm text-gray-600">
-                                {pricingData.installmentBreakdown?.hasTransfer ? (
-                                  <>
-                                    Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
-                                  </>
-                                ) : (
-                                  <>
-                                    Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
-                                  </>
-                                )}
+                                Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
                                 {(discountValidation?.isValid || hasAutoDiscount) && (
                                   <span className="text-green-600">
                                     {hasAutoDiscount && !discountValidation?.isValid 
@@ -823,7 +1033,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
                                  <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                                   Save a further 10% (£{Math.round(baseDiscountedPrice * 0.1)})
+                                   Save a further 5% (£{Math.round(baseDiscountedPrice * 0.05)})
                                  </div>
                               </div>
                                <p className="text-sm text-gray-600">
@@ -831,12 +1041,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                 {(discountValidation?.isValid || hasAutoDiscount) && (
                                   <span className="text-green-600">
                                     {hasAutoDiscount && !discountValidation?.isValid 
-                                      ? " (10% multi-warranty discount + 10% upfront discount)" 
+                                      ? " (10% multi-warranty discount + 5% upfront discount)" 
                                       : " (discount applied)"}
                                   </span>
                                 )}
                                 {hasAutoDiscount && !discountValidation?.isValid && (
-                                  <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.9)}</span>
+                                  <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.95)}</span>
                                 )}
                               </p>
                             </div>
@@ -848,7 +1058,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <Button
                         onClick={handleSubmit}
                         disabled={loading}
-                        className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 text-lg rounded-lg"
+                        className="w-full mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-4 text-lg rounded-lg"
                         size="lg"
                       >
                         {loading ? 'Processing...' : 'Complete Purchase'}
@@ -862,7 +1072,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       </div>
     </div>
   );

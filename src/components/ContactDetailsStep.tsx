@@ -275,7 +275,7 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
                 }
               }}
             >
-              Get my quote →
+              Get My Quote →
             </button>
           </div>
         </form>

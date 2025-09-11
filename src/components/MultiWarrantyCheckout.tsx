@@ -735,11 +735,11 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-medium text-gray-900">Pay Full Amount</span>
                         <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save a further 10% (£{Math.round(finalPrice * 0.1)})
+                          Save a further 5% (£{Math.round(finalPrice * 0.05)})
                         </div>
                       </div>
                       <p className="text-xs text-gray-600 mt-1">
-                        Pay £{Math.round(finalPrice * 0.9)} upfront via card (was £{finalPrice})
+                        Pay £{Math.round(finalPrice * 0.95)} upfront via card (was £{finalPrice})
                       </p>
                     </label>
                   </div>

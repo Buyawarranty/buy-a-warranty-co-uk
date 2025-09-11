@@ -31,12 +31,6 @@ interface RegistrationData {
   Notes?: string;
   Ref?: string; // Your reference
   MOTDue?: string; // yyyy-mm-dd
-  // New coverage fields
-  mot_fee?: boolean;
-  tyre_cover?: boolean;
-  wear_tear?: boolean;
-  europe_cover?: boolean;
-  transfer_cover?: boolean;
 }
 
 const logStep = (step: string, details?: any) => {

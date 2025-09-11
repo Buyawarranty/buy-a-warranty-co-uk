@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Menu } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -23,7 +19,6 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [isInviteFlow, setIsInviteFlow] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Handle invitation flow
   const handleInvitation = async (token: string) => {
@@ -244,135 +239,6 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex flex-col">
-      <SEOHead 
-        title="Sign In | BuyAWarranty Customer Portal"
-        description="Access your warranty account or create a new one. Manage your policies, view documents, and get support for your vehicle warranty."
-        keywords="sign in, login, customer portal, warranty account, vehicle warranty"
-      />
-      
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Logo */}
-            <div className="flex items-center">
-              <a href="/" className="hover:opacity-80 transition-opacity">
-                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
-              </a>
-            </div>
-            
-            {/* Navigation - Hidden on mobile, visible on lg+ */}
-            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-              <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</Link>
-              <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</Link>
-              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</Link>
-              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</Link>
-              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</Link>
-            </nav>
-
-            {/* Desktop CTA Buttons - Show on desktop */}
-            <div className="hidden lg:flex items-center space-x-3">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
-              >
-                WhatsApp Us
-              </Button>
-              <Button 
-                size="sm"
-                className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
-              >
-                Get my quote
-              </Button>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="lg:hidden p-2"
-                >
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <div className="flex flex-col h-full">
-                  {/* Header with logo */}
-                  <div className="flex items-center justify-between pb-6">
-                    <a href="/" className="hover:opacity-80 transition-opacity">
-                      <img 
-                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                        alt="Buy a Warranty" 
-                        className="h-8 w-auto"
-                      />
-                    </a>
-                  </div>
-
-                  {/* Navigation Links */}
-                  <nav className="flex flex-col space-y-6 flex-1">
-                    <a 
-                      href="/" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Warranty Plans
-                    </a>
-                    <a 
-                      href="/protected" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      How You're Protected
-                    </a>
-                    <a 
-                      href="/make-a-claim" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Make a Claim
-                    </a>
-                    <a 
-                      href="/faq" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      FAQ
-                    </a>
-                    <a 
-                      href="/contact-us" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Contact Us
-                    </a>
-                  </nav>
-
-                  {/* CTA Buttons */}
-                  <div className="space-y-4 pt-6 mt-auto">
-                    <Button 
-                      variant="outline" 
-                      className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      WhatsApp Us
-                    </Button>
-                    <Button 
-                      className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Get my quote
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-      </header>
-      
       {/* Trustpilot header */}
       <div className="w-full px-4 pt-4">
         <div className="max-w-6xl mx-auto">

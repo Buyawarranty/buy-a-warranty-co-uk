@@ -1,6 +1,5 @@
 import React from 'react';
 import { Star, Phone, Mail } from 'lucide-react';
-import companyRegistrationImage from '@/assets/company-registration.webp';
 
 const WebsiteFooter = () => {
   return (
@@ -58,8 +57,7 @@ const WebsiteFooter = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-6">Quick Links</h3>
               <ul className="space-y-3 text-gray-600">
                 <li><a href="/" className="hover:text-[#eb4b00] transition-colors">Home</a></li>
-                <li><a href="/make-a-claim" className="hover:text-[#eb4b00] transition-colors">Make a Claim</a></li>
-                <li><a href="/contact-us" className="hover:text-[#eb4b00] transition-colors">Contact Us</a></li>
+                <li><a href="/claim" className="hover:text-[#eb4b00] transition-colors">Make a Claim</a></li>
                 <li><a href="/warranty-car-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Car</a></li>
                 <li><a href="/warranty-van-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for Van</a></li>
                 <li><a href="/warranty-ev-uk" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs</a></li>
@@ -83,11 +81,6 @@ const WebsiteFooter = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-6">Help</h3>
               <div className="space-y-3 text-gray-600">
                 <div>
-                  <a href="/faq" className="text-[#eb4b00] hover:text-[#d63f00] transition-colors font-semibold">
-                    FAQ's
-                  </a>
-                </div>
-                <div>
                   <p className="font-semibold text-gray-900">Sales Enquiries:</p>
                   <p className="text-lg font-bold text-[#eb4b00]">0330 229 5040</p>
                 </div>
@@ -97,7 +90,7 @@ const WebsiteFooter = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">Email Support:</p>
-                  <p className="text-[#eb4b00]">support@buyawarranty.co.uk</p>
+                  <p className="text-[#eb4b00]">info@buyawarranty.co.uk</p>
                 </div>
               </div>
             </div>
@@ -111,21 +104,19 @@ const WebsiteFooter = () => {
                 old and has less than 150,000 miles, we've got you covered.
               </p>
               <div className="flex items-center">
-                <a href="/" className="hover:opacity-80 transition-opacity">
-                  <img 
-                    src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                    alt="Buy a Warranty Logo" 
-                    className="h-8 w-auto"
-                  />
-                </a>
+                <img 
+                  src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                  alt="Buy a Warranty Logo" 
+                  className="h-8 w-auto"
+                />
               </div>
             </div>
           </div>
 
           {/* Legal Footer */}
-          <div className="border-t border-gray-200 pt-6">
-            <div className="text-center space-y-3">
-              <p className="text-xs text-gray-500">© 2025 Buy A Warranty. All rights reserved.</p>
+          <div className="border-t border-gray-200 pt-8">
+            <div className="text-center text-sm text-gray-500">
+              <p>© 2025 Buy A Warranty Ltd. All rights reserved.</p>
             </div>
           </div>
         </div>

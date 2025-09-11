@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ProtectedButton } from "@/components/ui/protected-button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -25,7 +25,8 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!registrationNumber.trim()) return;
     
     setIsLoading(true);
@@ -45,7 +46,7 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
 
   return (
     <div className={`w-full max-w-md mx-auto space-y-4 ${className}`}>
-      <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         {/* Registration Number Input */}
         <div className="relative">
           <div className="flex items-center bg-yellow-400 border-2 border-black rounded-lg p-3">
@@ -66,9 +67,8 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
         </div>
 
         {/* Get My Quote Button */}
-        <ProtectedButton 
-          actionType="widget_quote_request"
-          onClick={handleSubmit}
+        <Button 
+          type="submit"
           disabled={!registrationNumber.trim() || isLoading}
           className="w-full text-white font-semibold p-3 text-lg rounded-lg border-2 border-black disabled:opacity-50"
           style={{
@@ -86,9 +86,9 @@ export function VehicleWidget({ redirectUrl = window.location.origin, className 
             }
           }}
         >
-          Get my quote
-        </ProtectedButton>
-      </div>
+          {isLoading ? 'Loading...' : 'Get My Quote'}
+        </Button>
+      </form>
     </div>
   );
 }

@@ -116,7 +116,7 @@ const PaymentFallback = () => {
           
           <Button 
             variant="outline"
-            onClick={() => window.location.href = '/'}
+            onClick={() => window.location.href = 'https://pricing.buyawarranty.co.uk/'}
             className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
           >
             Back to Home

@@ -13,20 +13,11 @@ const logStep = (step: string, details?: any) => {
 
 const generateRandomCode = (): string => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let firstPart = '';
-  let secondPart = '';
-  
-  // Generate first 3 characters
-  for (let i = 0; i < 3; i++) {
-    firstPart += chars.charAt(Math.floor(Math.random() * chars.length));
+  let result = 'MULTI';
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  
-  // Generate second 3 characters
-  for (let i = 0; i < 3; i++) {
-    secondPart += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  
-  return `${firstPart}-${secondPart}`;
+  return result;
 };
 
 serve(async (req) => {
@@ -80,7 +71,7 @@ serve(async (req) => {
       .insert({
         code: discountCode,
         type: 'percentage',
-        value: 25,
+        value: 10,
         valid_from: validFrom.toISOString(),
         valid_to: validTo.toISOString(),
         usage_limit: 1,
@@ -97,7 +88,7 @@ serve(async (req) => {
     }
 
     // Calculate discount amount
-    const discountAmount = (orderAmount * 25) / 100;
+    const discountAmount = (orderAmount * 10) / 100;
     const finalAmount = orderAmount - discountAmount;
 
     logStep("Auto-generated discount code successfully", {

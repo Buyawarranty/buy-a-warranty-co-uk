@@ -24,42 +24,6 @@ html {
   font-family: 'Helvetica Neue', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* Mobile optimization for better responsive behavior */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
-/* Ensure content doesn't exceed viewport width */
-.w-full {
-  max-width: 100%;
-}
-
-/* Better mobile container behavior */
-@media (max-width: 640px) {
-  .container {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  
-  /* Prevent horizontal scroll on mobile */
-  iframe, video, img {
-    max-width: 100% !important;
-    height: auto;
-  }
-  
-  /* Better touch targets on mobile */
-  button, .clickable {
-    min-height: 44px;
-    min-width: 44px;
-  }
 }
 
 /* Swinton Design System Implementation */
@@ -232,27 +196,11 @@ body {
   }
 }
 
-/* Slow pulsate animation for the Get My Quote button */
-@keyframes slow-pulsate {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.03);
-    opacity: 0.9;
-  }
-}
-
 .btn-breathing {
   animation: breathe 3s ease-in-out infinite;
 }
 
-.btn-slow-pulsate {
-  animation: slow-pulsate 4s ease-in-out infinite;
-}
-
-.btn-breathing:hover, .btn-slow-pulsate:hover {
+.btn-breathing:hover {
   animation: none;
 }
 
