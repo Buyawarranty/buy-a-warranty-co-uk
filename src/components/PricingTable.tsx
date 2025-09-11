@@ -450,16 +450,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     const selectedAddOnCount = Object.values(selectedAddOns[planId] || {}).filter(Boolean).length;
     const planAddOnPrice = selectedAddOnCount * 2; // £2 per add-on per month
     
-    // Protection package add-on prices (convert monthly to yearly for total)
+    // Get duration for calculations
+    const durationMonths = paymentType === '12months' ? 12 : 
+                          paymentType === '24months' ? 24 : 
+                          paymentType === '36months' ? 36 : 12;
+    
+    // Protection package add-on prices (convert monthly to selected duration)
     let protectionPrice = 0;
-    if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * 12; // £5/mo = £60/year
-    if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * 12; // £6/mo = £72/year
-    if (selectedProtectionAddOns.tyre) protectionPrice += 5 * 12; // £5/mo = £60/year
-    if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * 12; // £5/mo = £60/year
-    if (selectedProtectionAddOns.european) protectionPrice += 3 * 12; // £3/mo = £36/year
+    if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * durationMonths; // £5/mo
+    if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * durationMonths; // £6/mo
+    if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo
+    if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo
+    if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo
     if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
     
-    return planAddOnPrice + protectionPrice;
+    return (planAddOnPrice * durationMonths) + protectionPrice;
   };
 
   const toggleAddOn = (planId: string, addon: string) => {
@@ -497,30 +502,35 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
       const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
       
-      // Protection add-ons: MOT and Wear&Tear are yearly (spread over 12 months), Transfer is one-time
-      let recurringAddonTotal = 0; // Monthly add-ons (spread monthly)
+      // Get duration for calculations
+      const durationMonths = paymentType === '12months' ? 12 : 
+                            paymentType === '24months' ? 24 : 
+                            paymentType === '36months' ? 36 : 12;
+      
+      // Protection add-ons: Calculate correctly for selected duration
+      let recurringAddonTotal = 0; // Monthly add-ons (calculated for full duration)
       let oneTimeAddonTotal = 0;   // Transfer (added to first installment only)
       
-      if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * 12; // £5/mo
-      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * 12; // £6/mo
-      if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * 12; // £5/mo
-      if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * 12; // £5/mo
-      if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * 12; // £3/mo
+      if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * durationMonths; // £5/mo
+      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * durationMonths; // £6/mo
+      if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo
+      if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo
+      if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo
       if (selectedProtectionAddOns.transfer) oneTimeAddonTotal += 30;
       
       // Calculate monthly amounts
-      const monthlyBasePrice = Math.round(basePrice / 12 * 100) / 100; // Base warranty spread over 12 months
+      const monthlyBasePrice = Math.round(basePrice / durationMonths * 100) / 100; // Base warranty spread over duration
       const monthlyPlanAddons = planAddOnPrice; // Plan-specific addons (already monthly)
-      const monthlyRecurringAddons = Math.round(recurringAddonTotal / 12 * 100) / 100; // MOT/Wear&Tear spread over 12 months
+      const monthlyRecurringAddons = Math.round(recurringAddonTotal / durationMonths * 100) / 100; // Protection addons spread over duration
       
-      // Standard monthly installment (installments 2-12, or all if no transfer)
+      // Standard monthly installment (all installments, or all if no transfer)
       const standardMonthlyInstallment = monthlyBasePrice + monthlyPlanAddons + monthlyRecurringAddons;
       
       // First installment (includes one-time transfer fee if selected)
       const firstInstallment = standardMonthlyInstallment + oneTimeAddonTotal;
       
       // Total price calculation
-      const totalPrice = basePrice + (planAddOnPrice * 12) + recurringAddonTotal + oneTimeAddonTotal;
+      const totalPrice = basePrice + (planAddOnPrice * durationMonths) + recurringAddonTotal + oneTimeAddonTotal;
       
       // Don't allow progression if vehicle is too old
       if (vehicleAgeError) {
@@ -1137,18 +1147,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               }
             />
 
-            <div className="flex items-center gap-3 mt-4 sm:mt-6">
-              <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                5
+            {/* Step 5: Warranty Duration - White Border Section */}
+            <div className="bg-white border-2 border-white rounded-xl p-6 shadow-lg mt-4 sm:mt-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  5
+                </div>
+                <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Choose Warranty Duration
+                </h3>
               </div>
-              <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                Choose Warranty Duration
-              </h3>
-            </div>
-            
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* 1 Year Option */}
               {(() => {
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
@@ -1358,9 +1369,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         {paymentType === '36months' ? 'Selected' : 'Select'}
                       </ProtectedButton>
                    </div>
-                );
-              })()}
-             </div>
+                 );
+               })()}
+              </div>
+            </div>
             
             {/* Pricing Summary and CTA */}
             <div className="flex justify-end mt-8">
