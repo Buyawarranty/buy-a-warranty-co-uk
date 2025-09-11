@@ -4,6 +4,17 @@ import { Check, Search, Zap, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedButton } from '@/components/ui/protected-button';
+import { validateVehicleEligibility } from '@/lib/vehicleValidation';
+
+// Client-side validation function as backup
+const validateVehicleEligibilityClient = (vehicleData: any) => {
+  return validateVehicleEligibility({
+    make: vehicleData.make,
+    model: vehicleData.model,
+    vehicleType: vehicleData.vehicleType,
+    regNumber: ''
+  });
+};
 
 
 interface VehicleDetailsStepProps {
@@ -157,6 +168,15 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       setVehicleData(data);
       
       if (data.found) {
+        // Check if vehicle should be blocked client-side as backup
+        const clientValidation = validateVehicleEligibilityClient(data);
+        if (!clientValidation.isValid) {
+          setVehicleData({
+            found: false,
+            error: clientValidation.errorMessage
+          });
+          return;
+        }
         setVehicleFound(true);
       } else {
         // If vehicle not found, show manual entry

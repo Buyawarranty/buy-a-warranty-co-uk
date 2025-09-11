@@ -263,6 +263,8 @@ serve(async (req) => {
     const fuelType = vehicleData.fuelType;
     const colour = vehicleData.primaryColour || vehicleData.colour;
     
+    console.log(`Extracted vehicle info - Make: "${make}", Model: "${model}"`);
+    
     // Calculate year of manufacture from registration or manufacture date
     let yearOfManufacture;
     if (vehicleData.manufactureDate) {
