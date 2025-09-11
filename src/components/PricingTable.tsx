@@ -1197,11 +1197,29 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                 if (!platinumPlan) return null;
 
-                const pricing = getPricingData(voluntaryExcess, '12months');
-                const planType = 'platinum' as const;
-                const monthlyPrice = pricing[planType]?.monthly || 0;
-                const baseTotalPrice = monthlyPrice * 12;
-                const totalPrice = calculateAdjustedPriceForDisplay(baseTotalPrice);
+                // Use the same calculation as the main function
+                const selectedPlanBackup = getSelectedPlan();
+                if (!selectedPlanBackup) return null;
+                
+                let basePrice = 0;
+                // Try database pricing matrix first
+                if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
+                  const matrix = selectedPlanBackup.pricing_matrix as any;
+                  const periodData = matrix['12'];
+                  if (periodData && periodData[voluntaryExcess.toString()]) {
+                    basePrice = periodData[voluntaryExcess.toString()].price || 0;
+                  }
+                }
+                
+                // Fallback to hardcoded pricing if database pricing not available
+                if (basePrice === 0) {
+                  const pricing = getPricingData(voluntaryExcess, '12months');
+                  const planType = 'platinum' as const;
+                  const monthlyPrice = pricing[planType]?.monthly || 0;
+                  basePrice = monthlyPrice * 12;
+                }
+                
+                const totalPrice = calculateAdjustedPriceForDisplay(basePrice);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 12) * 100) / 100;
 
                 return (
@@ -1265,12 +1283,33 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                 if (!platinumPlan) return null;
 
-                const pricing = getPricingData(voluntaryExcess, '24months');
-                const planType = 'platinum' as const;
-                const monthlyPrice = pricing[planType]?.monthly || 0;
-                const savings = pricing[planType]?.save || 0;
-                const baseTotalPrice = monthlyPrice * 24;
-                const totalPrice = calculateAdjustedPriceForDisplay(baseTotalPrice);
+                // Use the same calculation as the main function
+                const selectedPlanBackup = getSelectedPlan();
+                if (!selectedPlanBackup) return null;
+                
+                let basePrice = 0;
+                let savings = 0;
+                
+                // Try database pricing matrix first
+                if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
+                  const matrix = selectedPlanBackup.pricing_matrix as any;
+                  const periodData = matrix['24'];
+                  if (periodData && periodData[voluntaryExcess.toString()]) {
+                    basePrice = periodData[voluntaryExcess.toString()].price || 0;
+                    savings = periodData[voluntaryExcess.toString()].save || 0;
+                  }
+                }
+                
+                // Fallback to hardcoded pricing if database pricing not available
+                if (basePrice === 0) {
+                  const pricing = getPricingData(voluntaryExcess, '24months');
+                  const planType = 'platinum' as const;
+                  const monthlyPrice = pricing[planType]?.monthly || 0;
+                  savings = pricing[planType]?.save || 0;
+                  basePrice = monthlyPrice * 24;
+                }
+                
+                const totalPrice = calculateAdjustedPriceForDisplay(basePrice);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 24) * 100) / 100;
 
                 return (
@@ -1340,12 +1379,33 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
                 if (!platinumPlan) return null;
 
-                const pricing = getPricingData(voluntaryExcess, '36months');
-                const planType = 'platinum' as const;
-                const monthlyPrice = pricing[planType]?.monthly || 0;
-                const savings = pricing[planType]?.save || 0;
-                const baseTotalPrice = monthlyPrice * 36;
-                const totalPrice = calculateAdjustedPriceForDisplay(baseTotalPrice);
+                // Use the same calculation as the main function
+                const selectedPlanBackup = getSelectedPlan();
+                if (!selectedPlanBackup) return null;
+                
+                let basePrice = 0;
+                let savings = 0;
+                
+                // Try database pricing matrix first
+                if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
+                  const matrix = selectedPlanBackup.pricing_matrix as any;
+                  const periodData = matrix['36'];
+                  if (periodData && periodData[voluntaryExcess.toString()]) {
+                    basePrice = periodData[voluntaryExcess.toString()].price || 0;
+                    savings = periodData[voluntaryExcess.toString()].save || 0;
+                  }
+                }
+                
+                // Fallback to hardcoded pricing if database pricing not available
+                if (basePrice === 0) {
+                  const pricing = getPricingData(voluntaryExcess, '36months');
+                  const planType = 'platinum' as const;
+                  const monthlyPrice = pricing[planType]?.monthly || 0;
+                  savings = pricing[planType]?.save || 0;
+                  basePrice = monthlyPrice * 36;
+                }
+                
+                const totalPrice = calculateAdjustedPriceForDisplay(basePrice);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 36) * 100) / 100;
 
                 return (
