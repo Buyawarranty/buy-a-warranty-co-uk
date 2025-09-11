@@ -86,6 +86,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
     }
   };
 
+  const scrollToQuoteForm = () => {
+    const quoteSection = document.getElementById('quote-form');
+    if (quoteSection) {
+      quoteSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   const handleEnterReg = () => {
     if (regNumber.trim()) {
       // This function is not used in the current flow
@@ -242,6 +249,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </a>
               <Button 
                 size="sm"
+                onClick={scrollToQuoteForm}
                 className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
               >
                 Get my quote
@@ -324,7 +332,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     </a>
                     <Button 
                       className="w-full bg-primary text-white hover:bg-primary/90 text-xl py-4 min-h-[48px]"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        scrollToQuoteForm();
+                      }}
                     >
                       Get my quote
                     </Button>
@@ -337,7 +348,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-white py-2 sm:py-2 lg:py-3">
+      <section id="quote-form" className="bg-white py-2 sm:py-2 lg:py-3">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
