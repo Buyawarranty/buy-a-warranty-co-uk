@@ -1434,15 +1434,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    
                    return (
                      <>
-                       <span className="font-medium text-gray-900">
-                         {selectedPlan?.name || 'None'} - £{selectedClaimLimit.toLocaleString()}
-                       </span>
-                       <span className="text-gray-600">
-                         {paymentType === '12months' ? '12 months' : 
-                          paymentType === '24months' ? '24 months' : '36 months'}
-                       </span>
-                       <span className="text-gray-600">£{voluntaryExcess} excess</span>
-                       <div className="font-bold text-orange-600">£{totalPrice} (£{monthlyEquivalent}/mo)</div>
+                        <span className="font-medium text-gray-900 flex items-center gap-2">
+                          <Zap className="w-4 h-4 text-orange-500" />
+                          Free upgrade to premium plan
+                        </span>
+                        <span className="text-gray-600">
+                          Duration: {paymentType === '12months' ? '12 Months' : 
+                           paymentType === '24months' ? '24 Months' : '36 Months'}
+                        </span>
+                        <div className="font-bold text-orange-600">£{monthlyEquivalent}/mo (£{totalPrice})</div>
                      </>
                    );
                  })()}
