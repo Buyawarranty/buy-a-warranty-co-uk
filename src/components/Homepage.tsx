@@ -19,6 +19,8 @@ interface VehicleData {
   transmission?: string;
   year?: string;
   vehicleType?: string;
+  blocked?: boolean;
+  blockReason?: string;
 }
 
 interface HomepageProps {
@@ -182,6 +184,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         vehicleData.transmission = data.transmission;
         vehicleData.year = data.yearOfManufacture;
         vehicleData.vehicleType = data.vehicleType || 'car';
+        if (data.blocked) {
+          vehicleData.blocked = true;
+          vehicleData.blockReason = data.blockReason;
+        }
       }
 
       // Submit to parent component

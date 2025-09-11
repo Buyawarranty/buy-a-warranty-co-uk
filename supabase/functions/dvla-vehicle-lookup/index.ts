@@ -327,16 +327,10 @@ serve(async (req) => {
       vehicleType: vehicleType,
       regNumber: registrationNumber
     });
-
-    if (!vehicleValidation.isValid) {
-      console.log(`Vehicle ${registrationNumber} blocked - ${vehicleValidation.errorMessage}`);
-      return new Response(JSON.stringify({
-        found: false,
-        error: vehicleValidation.errorMessage
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+    const isBlocked = !vehicleValidation.isValid;
+    const blockReason = vehicleValidation.errorMessage;
+    if (isBlocked) {
+      console.log(`Vehicle ${registrationNumber} blocked - ${blockReason} (returning details with notice)`);
     }
 
     // Check vehicle age (must be 15 years or newer)
@@ -489,6 +483,8 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({
       found: true,
+      blocked: typeof isBlocked !== 'undefined' ? isBlocked : false,
+      blockReason: (typeof isBlocked !== 'undefined' && isBlocked) ? blockReason : undefined,
       make: make,
       model: model || null,
       fuelType: fuelType,

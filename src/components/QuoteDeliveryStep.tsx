@@ -13,6 +13,8 @@ interface QuoteDeliveryStepProps {
     transmission?: string;
     year?: string;
     vehicleType?: string;
+    blocked?: boolean;
+    blockReason?: string;
   };
   onNext: (data: { email: string; phone: string; firstName: string; lastName: string; sendQuoteEmail?: boolean }) => void;
   onBack: () => void;
@@ -238,6 +240,15 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               </div>
             )}
           </div>
+
+          {vehicleData.blocked && (
+            <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm sm:text-base text-red-800 font-bold mb-1">Warranty Coverage Not Available</p>
+              <p className="text-xs sm:text-sm text-red-700">
+                {vehicleData.blockReason || "Sorry about this - this vehicle isn't eligible due to specialist parts and a limited repair network."}
+              </p>
+            </div>
+          )}
         </div>
 
         {!showContactForm ? (

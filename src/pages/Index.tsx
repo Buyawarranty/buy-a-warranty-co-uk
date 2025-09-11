@@ -29,6 +29,8 @@ interface VehicleData {
   year?: string;
   vehicleType?: string;
   isManualEntry?: boolean;
+  blocked?: boolean;
+  blockReason?: string;
 }
 
 const Index = () => {

@@ -7,7 +7,7 @@ import { ProtectedButton } from '@/components/ui/protected-button';
 
 
 interface VehicleDetailsStepProps {
-  onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string; vehicleType?: string; isManualEntry?: boolean }) => void;
+  onNext: (data: { regNumber: string; mileage: string; make?: string; model?: string; fuelType?: string; transmission?: string; year?: string; vehicleType?: string; isManualEntry?: boolean; blocked?: boolean; blockReason?: string }) => void;
   onBack?: () => void;
   onFormDataUpdate?: (data: any) => void;
   currentStep?: number;
@@ -22,6 +22,8 @@ interface VehicleDetailsStepProps {
 
 interface DVLAVehicleData {
   found: boolean;
+  blocked?: boolean;
+  blockReason?: string;
   make?: string;
   model?: string;
   fuelType?: string;
@@ -249,6 +251,10 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           submitData.transmission = vehicleData.transmission;
           submitData.year = vehicleData.yearOfManufacture;
           submitData.vehicleType = vehicleData.vehicleType || 'Car or Van';
+          if (vehicleData.blocked) {
+            submitData.blocked = true;
+            submitData.blockReason = vehicleData.blockReason;
+          }
         }
         
         onNext(submitData);
