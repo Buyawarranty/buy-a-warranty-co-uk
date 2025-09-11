@@ -314,22 +314,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         0: { basic: { monthly: 39, total: 467, save: 0 }, gold: { monthly: 41, total: 497, save: 0 }, platinum: { monthly: 49, total: 587, save: 0 } },
         50: { basic: { monthly: 36, total: 437, save: 0 }, gold: { monthly: 38, total: 457, save: 0 }, platinum: { monthly: 46, total: 547, save: 0 } },
         100: { basic: { monthly: 32, total: 387, save: 0 }, gold: { monthly: 35, total: 417, save: 0 }, platinum: { monthly: 42, total: 507, save: 0 } },
-        150: { basic: { monthly: 31, total: 367, save: 0 }, gold: { monthly: 32, total: 387, save: 0 }, platinum: { monthly: 40, total: 477, save: 0 } },
-        200: { basic: { monthly: 20, total: 240, save: 0 }, gold: { monthly: 23, total: 276, save: 0 }, platinum: { monthly: 25, total: 300, save: 0 } }
+        150: { basic: { monthly: 31, total: 367, save: 0 }, gold: { monthly: 32, total: 387, save: 0 }, platinum: { monthly: 40, total: 477, save: 0 } }
       },
       '24months': {
         0: { basic: { monthly: 37, total: 897, save: 37 }, gold: { monthly: 39, total: 937, save: 57 }, platinum: { monthly: 43, total: 1027, save: 147 } },
         50: { basic: { monthly: 34, total: 827, save: 47 }, gold: { monthly: 37, total: 877, save: 37 }, platinum: { monthly: 40, total: 957, save: 137 } },
         100: { basic: { monthly: 31, total: 737, save: 37 }, gold: { monthly: 33, total: 787, save: 43 }, platinum: { monthly: 37, total: 877, save: 137 } },
-        150: { basic: { monthly: 29, total: 697, save: 37 }, gold: { monthly: 31, total: 737, save: 37 }, platinum: { monthly: 34, total: 827, save: 127 } },
-        200: { basic: { monthly: 38, total: 456, save: 50 }, gold: { monthly: 44, total: 528, save: 58 }, platinum: { monthly: 46, total: 552, save: 61 } }
+        150: { basic: { monthly: 29, total: 697, save: 37 }, gold: { monthly: 31, total: 737, save: 37 }, platinum: { monthly: 34, total: 827, save: 127 } }
       },
       '36months': {
         0: { basic: { monthly: 37, total: 1347, save: 54 }, gold: { monthly: 39, total: 1397, save: 94 }, platinum: { monthly: 42, total: 1497, save: 264 } },
         50: { basic: { monthly: 35, total: 1247, save: 77 }, gold: { monthly: 36, total: 1297, save: 74 }, platinum: { monthly: 39, total: 1397, save: 244 } },
         100: { basic: { monthly: 30, total: 1097, save: 67 }, gold: { monthly: 33, total: 1177, save: 73 }, platinum: { monthly: 35, total: 1277, save: 247 } },
-        150: { basic: { monthly: 29, total: 1047, save: 57 }, gold: { monthly: 31, total: 1097, save: 67 }, platinum: { monthly: 33, total: 1197, save: 234 } },
-        200: { basic: { monthly: 56, total: 672, save: 92 }, gold: { monthly: 66, total: 792, save: 108 }, platinum: { monthly: 69, total: 828, save: 113 } }
+        150: { basic: { monthly: 29, total: 1047, save: 57 }, gold: { monthly: 31, total: 1097, save: 67 }, platinum: { monthly: 33, total: 1197, save: 234 } }
       }
     };
     
