@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { VoucherBanner } from './VoucherBanner';
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
+import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
 
@@ -77,6 +78,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [plansLoading, setPlansLoading] = useState(true);
   const [plansError, setPlansError] = useState<string | null>(null);
+  
+  // Vehicle validation
+  const vehicleValidation = useMemo(() => {
+    return validateVehicleEligibility(vehicleData);
+  }, [vehicleData]);
+  
+  const vehiclePriceAdjustment = useMemo(() => {
+    const warrantyYears = paymentType === '12months' ? 1 : 
+                         paymentType === '24months' ? 2 : 3;
+    return calculateVehiclePriceAdjustment(vehicleData, warrantyYears);
+  }, [vehicleData, paymentType]);
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -418,6 +430,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return plans.find(p => p.name === 'Platinum') || plans[0] || null; // Default to Platinum
   };
 
+  const calculateAdjustedPriceForDisplay = (basePrice: number) => {
+    return applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+  };
+
   const getPlanSavings = (plan: Plan) => {
     if (paymentType === '12months') return null;
     
@@ -586,6 +602,24 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const ensureCarOnly = () => plans;
   const displayPlans = ensureCarOnly();
 
+  // Check for vehicle exclusions first
+  if (!vehicleValidation.isValid) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        <div className="text-center">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-8 max-w-md mx-auto">
+            <h2 className="text-2xl font-bold text-red-800 mb-4">Vehicle Not Eligible</h2>
+            <p className="text-red-600 mb-6">{vehicleValidation.errorMessage}</p>
+            <Button onClick={onBack} variant="outline" className="mr-4">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Go Back
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (vehicleAgeError) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-16">
@@ -713,8 +747,57 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </div>
                 </div>
               </>
-            )}
+             )}
         </div>
+
+        {/* Price Adjustment Notification */}
+        {vehiclePriceAdjustment.isValid && vehiclePriceAdjustment.adjustmentAmount !== 0 && (
+          <div className="section-header rounded-lg p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                vehiclePriceAdjustment.adjustmentType === 'motorbike_discount' 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-blue-500 text-white'
+              }`}>
+                <Info className="h-4 w-4" />
+              </div>
+              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                <DollarSign className="w-5 h-5" />
+                {vehiclePriceAdjustment.adjustmentType === 'motorbike_discount' 
+                  ? 'Special Discount Applied' 
+                  : 'Pricing Adjustment Applied'}
+              </h2>
+            </div>
+            
+            <div className={`ml-11 p-4 rounded-lg border ${
+              vehiclePriceAdjustment.adjustmentType === 'motorbike_discount' 
+                ? 'bg-green-50 border-green-200' 
+                : 'bg-blue-50 border-blue-200'
+            }`}>
+              <div className="space-y-2">
+                {vehiclePriceAdjustment.breakdown.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between text-sm">
+                    <span className="text-gray-700">{item.adjustmentReason}</span>
+                    <span className={`font-semibold ${
+                      item.baseAdjustment < 0 ? 'text-green-600' : 'text-blue-600'
+                    }`}>
+                      {item.baseAdjustment < 0 && item.baseAdjustment > -1 
+                        ? `${Math.abs(item.baseAdjustment * 100)}% discount` 
+                        : item.baseAdjustment === 0 
+                        ? 'Standard pricing' 
+                        : `+£${item.baseAdjustment}`}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-600">
+                  This adjustment has been automatically applied to all pricing options below.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Voluntary Excess */}
         <div className="section-header rounded-lg p-6">
@@ -1168,7 +1251,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const pricing = getPricingData(voluntaryExcess, '12months');
                 const planType = 'platinum' as const;
                 const monthlyPrice = pricing[planType]?.monthly || 0;
-                const totalPrice = monthlyPrice * 12;
+                const baseTotalPrice = monthlyPrice * 12;
+                const totalPrice = calculateAdjustedPriceForDisplay(baseTotalPrice);
+                const adjustedMonthlyPrice = Math.round((totalPrice / 12) * 100) / 100;
 
                 return (
                    <div 
@@ -1207,7 +1292,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         <div className="text-right">
                           <div className="text-2xl font-bold text-black">£{totalPrice}</div>
                           <div className="text-sm text-muted-foreground">or</div>
-                          <div className="text-lg text-muted-foreground">£{monthlyPrice}/mo</div>
+                          <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
                         </div>
                       </div>
                       
@@ -1235,7 +1320,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const planType = 'platinum' as const;
                 const monthlyPrice = pricing[planType]?.monthly || 0;
                 const savings = pricing[planType]?.save || 0;
-                const totalPrice = monthlyPrice * 24;
+                const baseTotalPrice = monthlyPrice * 24;
+                const totalPrice = calculateAdjustedPriceForDisplay(baseTotalPrice);
+                const adjustedMonthlyPrice = Math.round((totalPrice / 24) * 100) / 100;
 
                 return (
                    <div 
@@ -1280,7 +1367,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         <div className="text-right">
                           <div className="text-2xl font-bold text-black">£{totalPrice}</div>
                           <div className="text-sm text-muted-foreground">or</div>
-                          <div className="text-lg text-muted-foreground">£{monthlyPrice}/mo</div>
+                          <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
                         </div>
                       </div>
                       
@@ -1308,7 +1395,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const planType = 'platinum' as const;
                 const monthlyPrice = pricing[planType]?.monthly || 0;
                 const savings = pricing[planType]?.save || 0;
-                const totalPrice = monthlyPrice * 36;
+                const baseTotalPrice = monthlyPrice * 36;
+                const totalPrice = calculateAdjustedPriceForDisplay(baseTotalPrice);
+                const adjustedMonthlyPrice = Math.round((totalPrice / 36) * 100) / 100;
 
                 return (
                    <div 
@@ -1353,7 +1442,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         <div className="text-right">
                           <div className="text-2xl font-bold text-black">£{totalPrice}</div>
                           <div className="text-sm text-muted-foreground">or</div>
-                          <div className="text-lg text-muted-foreground">£{monthlyPrice}/mo</div>
+                          <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
                         </div>
                       </div>
                       
