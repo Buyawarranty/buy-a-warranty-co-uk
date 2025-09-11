@@ -750,54 +750,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
              )}
         </div>
 
-        {/* Price Adjustment Notification */}
-        {vehiclePriceAdjustment.isValid && vehiclePriceAdjustment.adjustmentAmount !== 0 && (
-          <div className="section-header rounded-lg p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                vehiclePriceAdjustment.adjustmentType === 'motorbike_discount' 
-                  ? 'bg-green-500 text-white' 
-                  : 'bg-blue-500 text-white'
-              }`}>
-                <Info className="h-4 w-4" />
-              </div>
-              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
-                {vehiclePriceAdjustment.adjustmentType === 'motorbike_discount' 
-                  ? 'Special Discount Applied' 
-                  : 'Pricing Adjustment Applied'}
-              </h2>
-            </div>
-            
-            <div className={`ml-11 p-4 rounded-lg border ${
-              vehiclePriceAdjustment.adjustmentType === 'motorbike_discount' 
-                ? 'bg-green-50 border-green-200' 
-                : 'bg-blue-50 border-blue-200'
-            }`}>
-              <div className="space-y-2">
-                {vehiclePriceAdjustment.breakdown.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-700">{item.adjustmentReason}</span>
-                    <span className={`font-semibold ${
-                      item.baseAdjustment < 0 ? 'text-green-600' : 'text-blue-600'
-                    }`}>
-                      {item.baseAdjustment < 0 && item.baseAdjustment > -1 
-                        ? `${Math.abs(item.baseAdjustment * 100)}% discount` 
-                        : item.baseAdjustment === 0 
-                        ? 'Standard pricing' 
-                        : `+£${item.baseAdjustment}`}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <p className="text-xs text-gray-600">
-                  This adjustment has been automatically applied to all pricing options below.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Voluntary Excess */}
         <div className="section-header rounded-lg p-6">
