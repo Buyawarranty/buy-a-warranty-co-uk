@@ -542,8 +542,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       // First installment (includes one-time transfer fee if selected)
       const firstInstallment = standardMonthlyInstallment + oneTimeAddonTotal;
       
-      // Total price calculation
-      const totalPrice = basePrice + (planAddOnPrice * durationMonths) + recurringAddonTotal + oneTimeAddonTotal;
+      // Total price calculation with vehicle adjustments applied
+      const adjustedBasePrice = calculateAdjustedPriceForDisplay(basePrice);
+      const totalPrice = adjustedBasePrice + (planAddOnPrice * durationMonths) + recurringAddonTotal + oneTimeAddonTotal;
       
       // Don't allow progression if vehicle is too old
       if (vehicleAgeError) {
@@ -556,6 +557,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         planName: selectedPlan.name,
         paymentType,
         basePrice,
+        adjustedBasePrice,
         monthlyBasePrice,
         recurringAddonTotal,
         oneTimeAddonTotal,
