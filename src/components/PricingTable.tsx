@@ -19,9 +19,8 @@ const normalizeVehicleType = (raw?: string): VehicleType => {
   const v = (raw ?? '').toLowerCase().trim();
   if (['car','saloon','hatchback','estate','suv'].includes(v)) return 'car';
   if (v.includes('motor') || v.includes('bike')) return 'motorbike';
-  if (v === 'phev') return 'phev';
-  if (v.includes('hybrid')) return 'hybrid';
-  if (['ev','electric'].includes(v)) return 'ev';
+  // Treat hybrid, phev, and electric vehicles the same as regular cars
+  if (v === 'phev' || v.includes('hybrid') || ['ev','electric'].includes(v)) return 'car';
   return 'car'; // safe default
 };
 
