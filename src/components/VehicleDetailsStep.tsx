@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Check, Search, Zap, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { isVehicleBlocked } from '@/lib/vehicleEligibility';
 
 
 interface VehicleDetailsStepProps {
@@ -156,6 +157,18 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       setVehicleData(data);
       
       if (data.found) {
+        // Check if vehicle is blocked before allowing user to proceed
+        const vehicleBlocked = isVehicleBlocked(data.make, data.model);
+        if (vehicleBlocked.blocked) {
+          // Show blocked vehicle UI instead of found vehicle
+          setVehicleFound(false);
+          setVehicleData({
+            ...data,
+            found: false,
+            error: vehicleBlocked.reason
+          });
+          return;
+        }
         setVehicleFound(true);
       } else {
         // If vehicle not found, show manual entry
@@ -223,8 +236,19 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     }
     
     if (showManualEntry) {
-      // Manual entry validation
+      // Manual entry validation - check for blocked vehicles
       if (regNumber && mileage && make && model && year && vehicleType && numericMileage <= 150000 && mileageError === '' && yearError === '') {
+        // Check if manually entered vehicle is blocked
+        const vehicleBlocked = isVehicleBlocked(make, model);
+        if (vehicleBlocked.blocked) {
+          toast({
+            title: "Vehicle Not Eligible",
+            description: vehicleBlocked.reason,
+            variant: "destructive",
+          });
+          return;
+        }
+        
         onNext({ 
           regNumber, 
           mileage: rawMileage,
@@ -403,19 +427,33 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
              </div>
            )}
 
-          {vehicleData && !vehicleData.found && vehicleData.error && vehicleData.error.includes('15 years') && (
-            <div className="bg-orange-50 border border-orange-200 rounded-[4px] p-4 mb-4">
-              <h3 className="text-lg font-bold text-orange-800 mb-2">
-                Sorry, We Can't Cover This Vehicle
-              </h3>
-              <p className="text-sm text-orange-700 mb-2">
-                We can't provide a warranty for vehicles that are more than 15 years old.
-              </p>
-              <p className="text-sm text-orange-700">
-                If your car is newer than that, feel free to try again. We may just need to run a couple of extra checks 🔍 before we can confirm your cover.
-              </p>
-            </div>
-          )}
+           {vehicleData && !vehicleData.found && vehicleData.error && vehicleData.error.includes('15 years') && (
+             <div className="bg-orange-50 border border-orange-200 rounded-[4px] p-4 mb-4">
+               <h3 className="text-lg font-bold text-orange-800 mb-2">
+                 Sorry, We Can't Cover This Vehicle
+               </h3>
+               <p className="text-sm text-orange-700 mb-2">
+                 We can't provide a warranty for vehicles that are more than 15 years old.
+               </p>
+               <p className="text-sm text-orange-700">
+                 If your car is newer than that, feel free to try again. We may just need to run a couple of extra checks 🔍 before we can confirm your cover.
+               </p>
+             </div>
+           )}
+
+           {vehicleData && !vehicleData.found && vehicleData.error && (vehicleData.error.includes('specialized parts') || vehicleData.error.includes('excluded from our coverage')) && (
+             <div className="bg-red-50 border border-red-200 rounded-[4px] p-4 mb-4">
+               <h3 className="text-lg font-bold text-red-800 mb-2">
+                 🚫 Vehicle Not Eligible for Coverage
+               </h3>
+               <p className="text-sm text-red-700 mb-2">
+                 {vehicleData.error}
+               </p>
+               <p className="text-sm text-red-600 font-medium">
+                 We specialize in standard passenger vehicles and unfortunately cannot provide coverage for high-performance, luxury, or specialty vehicles at this time.
+               </p>
+             </div>
+           )}
 
           {vehicleData && !vehicleData.found && (!vehicleData.error || !vehicleData.error.includes('15 years')) && (
             <div className="bg-blue-50 border border-blue-200 rounded-[4px] p-4 mb-4">
