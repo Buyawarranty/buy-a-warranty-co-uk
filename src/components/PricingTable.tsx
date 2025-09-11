@@ -1481,9 +1481,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     {/* Current Price Display */}
                     <div className="text-3xl font-bold text-orange-600">
                        £{(() => {
-                         const selectedPlan = getSelectedPlan();
-                         if (!selectedPlan) return calculatePlanPrice();
-                         const basePrice = calculatePlanPrice();
+                          const selectedPlan = getSelectedPlan();
+                          if (!selectedPlan) return calculatePlanPrice();
+                          const basePrice = calculatePlanPrice();
+                          const adjustedBasePrice = calculateAdjustedPriceForDisplay(basePrice); // Apply vehicle adjustments
                          
                          // Get duration for add-on calculations
                          const durationMonths = paymentType === '12months' ? 12 : 
@@ -1503,7 +1504,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
                          if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
                          
-                         return basePrice + planAddOnPrice + protectionPrice;
+                         return adjustedBasePrice + planAddOnPrice + protectionPrice;
                        })()}
                       <span className="text-sm font-normal text-gray-600 ml-2">total</span>
                     </div>
@@ -1511,32 +1512,33 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     {/* Monthly Instalments */}
                     <div className="border-t border-orange-200 pt-2">
                        {(() => {
-                         const selectedPlan = getSelectedPlan();
-                         if (!selectedPlan) return null;
-                         
-                         const basePrice = calculatePlanPrice();
-                         const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                         
-                         // Get duration for calculations
-                         const durationMonths = paymentType === '12months' ? 12 : 
-                                               paymentType === '24months' ? 24 : 
-                                               paymentType === '36months' ? 36 : 12;
-                         
-                         const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
-                         
-                         // Protection add-ons: Monthly add-ons calculated for duration, Transfer is one-time
-                         let recurringAddonTotal = 0;
-                         let hasTransfer = false;
-                         
-                         if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                         if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
-                         if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                         if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                         if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
-                         if (selectedProtectionAddOns.transfer) hasTransfer = true;
-                         
-                         // Calculate monthly amounts
-                         const monthlyBasePrice = Math.round(basePrice / durationMonths * 100) / 100;
+                          const selectedPlan = getSelectedPlan();
+                          if (!selectedPlan) return null;
+                          
+                          const basePrice = calculatePlanPrice();
+                          const adjustedBasePrice = calculateAdjustedPriceForDisplay(basePrice); // Apply vehicle adjustments
+                          const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
+                          
+                          // Get duration for calculations
+                          const durationMonths = paymentType === '12months' ? 12 : 
+                                                paymentType === '24months' ? 24 : 
+                                                paymentType === '36months' ? 36 : 12;
+                          
+                          const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
+                          
+                          // Protection add-ons: Monthly add-ons calculated for duration, Transfer is one-time
+                          let recurringAddonTotal = 0;
+                          let hasTransfer = false;
+                          
+                          if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                          if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
+                          if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                          if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                          if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
+                          if (selectedProtectionAddOns.transfer) hasTransfer = true;
+                          
+                          // Calculate monthly amounts
+                          const monthlyBasePrice = Math.round(adjustedBasePrice / durationMonths * 100) / 100;
                          const monthlyRecurringAddons = Math.round(recurringAddonTotal / durationMonths * 100) / 100;
                          const monthlyTransferFee = hasTransfer ? Math.round(30 / durationMonths * 100) / 100 : 0;
                          const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons + monthlyTransferFee;
@@ -1591,12 +1593,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6 text-sm">
                  {(() => {
-                   const selectedPlan = getSelectedPlan();
-                   const planPrice = calculatePlanPrice();
-                   const addOnPrice = calculateAddOnPrice(selectedPlan?.id || '');
-                   const totalPrice = planPrice + addOnPrice;
-                   const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                   const monthlyEquivalent = Math.round(totalPrice / durationMonths);
+                    const selectedPlan = getSelectedPlan();
+                    const basePlanPrice = calculatePlanPrice();
+                    const planPrice = calculateAdjustedPriceForDisplay(basePlanPrice); // Apply vehicle adjustments
+                    const addOnPrice = calculateAddOnPrice(selectedPlan?.id || '');
+                    const totalPrice = planPrice + addOnPrice;
+                    const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+                    const monthlyEquivalent = Math.round(totalPrice / durationMonths);
                    
                    return (
                      <>
