@@ -133,7 +133,7 @@ const ContactUs = () => {
               <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</Link>
               <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
               <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
-              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</Link>
+              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
               <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
             </nav>
 
@@ -206,7 +206,7 @@ const ContactUs = () => {
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      FAQ
+                       FAQs
                     </a>
                     <a 
                       href="/contact-us" 
