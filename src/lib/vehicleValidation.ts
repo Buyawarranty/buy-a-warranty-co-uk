@@ -44,11 +44,11 @@ const MODEL_EXCLUSIONS = {
     'tts', 's e-tron gt'
   ],
   'bmw': [
-    'm1', '1m coupé', 'm2', 'm2 competition', 'm2 cs', 'm3', 'm4',
+    'm1', '1m coupé', '1m coupe', 'm2', 'm2 competition', 'm2 cs', 'm3', 'm4',
     'm4 competition', 'm4 csl', 'm4 gts', 'm5', 'm6', 'm8',
     'm roadster', 'm coupe', 'm3 csl', 'm3 crt', 'm3 gts',
     'm4 kith edition', 'm5 cs', '3.0 csl', 'x3 m', 'x4 m', 'x5 m',
-    'x6 m', 'xm'
+    'x6 m', 'xm', 'z3 m roadster', 'z3 m coupe', 'z4 m roadster', 'z4 m coupe'
   ],
   'mercedes': [
     'c 36 amg', 'c 43 amg', 'c 55 amg', 'c 63 amg', 'e 36 amg',
