@@ -42,12 +42,10 @@ interface Warranties2000Registration {
   Notes?: string;
   Ref?: string; // Your reference
   MOTDue?: string; // yyyy-mm-dd
-  // New coverage fields
-  mot_fee?: boolean;
-  tyre_cover?: boolean;
-  wear_tear?: boolean;
-  europe_cover?: boolean;
-  transfer_cover?: boolean;
+  // Add-ons (using w2000 API field names)
+  TyreCover?: string; // Y/N
+  WearTear?: string; // Y/N
+  EuroCover?: string; // Y/N
 }
 
 // Timeout wrapper for fetch
@@ -323,12 +321,10 @@ serve(async (req) => {
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: (customer.voluntary_excess || 0).toString(),
       Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`,
-      // Include add-ons from policy data
-      mot_fee: policy?.mot_fee || false,
-      tyre_cover: policy?.tyre_cover || false,
-      wear_tear: policy?.wear_tear || false,
-      europe_cover: policy?.europe_cover || false,
-      transfer_cover: policy?.transfer_cover || false
+      // Add-ons using w2000 API field names
+      TyreCover: policy?.tyre_cover ? 'Y' : 'N',
+      WearTear: policy?.wear_tear ? 'Y' : 'N',
+      EuroCover: policy?.europe_cover ? 'Y' : 'N'
     };
 
     console.log(`[WARRANTIES-2000] Sending registration data:`, {
