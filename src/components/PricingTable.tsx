@@ -780,15 +780,276 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
 
-        {/* Voluntary Excess */}
-        <div className="section-header rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-4">
+        {/* Choose Warranty Duration and Price */}
+        <div className="bg-white border-2 border-white rounded-xl p-6 shadow-lg section-header mt-6">
+          <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
               2
             </div>
+            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Calendar className="w-5 h-5" />
+              Choose Warranty Duration and Price
+            </h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* 1 Year Option */}
+          {(() => {
+            const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+            if (!platinumPlan) return null;
+
+            // Use the same calculation as the main function
+            const selectedPlanBackup = getSelectedPlan();
+            if (!selectedPlanBackup) return null;
+            
+            let basePrice = 0;
+            let isFromDatabase = false;
+            // Try database pricing matrix first
+            if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
+              const matrix = selectedPlanBackup.pricing_matrix as any;
+              const periodData = matrix['12'];
+              if (periodData && periodData[voluntaryExcess.toString()]) {
+                basePrice = periodData[voluntaryExcess.toString()].price || 0;
+                isFromDatabase = true;
+              }
+            }
+            
+            // Fallback to hardcoded pricing if database pricing not available
+            if (basePrice === 0) {
+              const pricing = getPricingData(voluntaryExcess, '12months');
+              const planType = 'platinum' as const;
+              const monthlyPrice = pricing[planType]?.monthly || 0;
+              basePrice = monthlyPrice * 12;
+            }
+            
+            // Apply vehicle adjustments to base price (database values are generic)
+            const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+            const adjustedMonthlyPrice = Math.round((totalPrice / 12) * 100) / 100;
+
+             return (
+                <button 
+                  key="12months"
+                  onClick={() => setPaymentType('12months')}
+                  className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
+                    paymentType === '12months' 
+                      ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                      : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-bold text-foreground">1 Year</h4>
+                  </div>
+                  <p className="text-muted-foreground mb-4 text-sm">Comprehensive coverage</p>
+                  
+                  <div className="space-y-2 mb-6">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      Drive now, pay later
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      12 interest-free payments
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      Complete coverage
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      Claim payouts in 90 minutes
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-black">£{totalPrice}</div>
+                      <div className="text-sm text-muted-foreground">or</div>
+                      <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
+                    </div>
+                  </div>
+                  
+               </button>
+            );
+          })()}
+          
+          {/* 2 Years Option */}
+          {(() => {
+            const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+            if (!platinumPlan) return null;
+
+            // Use the same calculation as the main function
+            const selectedPlanBackup = getSelectedPlan();
+            if (!selectedPlanBackup) return null;
+            
+            let basePrice = 0;
+            let savings = 0;
+            let isFromDatabase = false;
+            
+            // Try database pricing matrix first
+            if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
+              const matrix = selectedPlanBackup.pricing_matrix as any;
+              const periodData = matrix['24'];
+              if (periodData && periodData[voluntaryExcess.toString()]) {
+                basePrice = periodData[voluntaryExcess.toString()].price || 0;
+                savings = periodData[voluntaryExcess.toString()].save || 0;
+                isFromDatabase = true;
+              }
+            }
+            
+            // Fallback to hardcoded pricing if database pricing not available
+            if (basePrice === 0) {
+              const pricing = getPricingData(voluntaryExcess, '24months');
+              const planType = 'platinum' as const;
+              const monthlyPrice = pricing[planType]?.monthly || 0;
+              basePrice = monthlyPrice * 24;
+              savings = pricing[planType]?.save || 0;
+            }
+            
+            // Apply vehicle adjustments to base price (database values are generic)
+            const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+            const adjustedMonthlyPrice = Math.round((totalPrice / 24) * 100) / 100;
+
+             return (
+                <button 
+                  key="24months"
+                  onClick={() => setPaymentType('24months')}
+                  className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full relative ${
+                    paymentType === '24months' 
+                      ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                      : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                  }`}
+                >
+                  <div className="absolute -top-2 left-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                    MOST POPULAR
+                  </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-bold text-foreground">2 Years</h4>
+                  </div>
+                  <p className="text-muted-foreground mb-4 text-sm">Extended protection</p>
+                  
+                  <div className="space-y-2 mb-6">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      Drive now, pay later
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      24 interest-free payments
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      Complete coverage
+                    </div>
+                    <div className="flex items-center text-sm text-green-foreground">
+                      <PartyPopper className="w-4 h-4 text-green-500 mr-2" />
+                      Save £{savings} vs annual
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-black">£{totalPrice}</div>
+                      <div className="text-sm text-muted-foreground">or</div>
+                      <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
+                    </div>
+                  </div>
+                  
+               </button>
+            );
+          })()}
+          
+          {/* 3 Years Option */}
+          {(() => {
+            const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+            if (!platinumPlan) return null;
+
+            // Use the same calculation as the main function
+            const selectedPlanBackup = getSelectedPlan();
+            if (!selectedPlanBackup) return null;
+            
+            let basePrice = 0;
+            let savings = 0;
+            let isFromDatabase = false;
+            
+            // Try database pricing matrix first
+            if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
+              const matrix = selectedPlanBackup.pricing_matrix as any;
+              const periodData = matrix['36'];
+              if (periodData && periodData[voluntaryExcess.toString()]) {
+                basePrice = periodData[voluntaryExcess.toString()].price || 0;
+                savings = periodData[voluntaryExcess.toString()].save || 0;
+                isFromDatabase = true;
+              }
+            }
+            
+            // Fallback to hardcoded pricing if database pricing not available
+            if (basePrice === 0) {
+              const pricing = getPricingData(voluntaryExcess, '36months');
+              const planType = 'platinum' as const;
+              const monthlyPrice = pricing[planType]?.monthly || 0;
+              basePrice = monthlyPrice * 36;
+              savings = pricing[planType]?.save || 0;
+            }
+            
+            // Apply vehicle adjustments to base price (database values are generic)
+            const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+            const adjustedMonthlyPrice = Math.round((totalPrice / 36) * 100) / 100;
+
+             return (
+                <button 
+                  key="36months"
+                  onClick={() => setPaymentType('36months')}
+                  className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
+                    paymentType === '36months' 
+                      ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                      : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-bold text-foreground">3 Years</h4>
+                  </div>
+                  <p className="text-muted-foreground mb-4 text-sm">Maximum protection</p>
+                  
+                  <div className="space-y-2 mb-6">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      Drive now, pay later
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      36 interest-free payments
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      Complete coverage
+                    </div>
+                    <div className="flex items-center text-sm text-green-foreground">
+                      <Gift className="w-4 h-4 text-green-500 mr-2" />
+                      Save £{savings} vs annual
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-black">£{totalPrice}</div>
+                      <div className="text-sm text-muted-foreground">or</div>
+                      <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
+                    </div>
+                  </div>
+                  
+               </button>
+            );
+          })()}
+          </div>
+        </div>
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              4
+            </div>
             <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
               <DollarSign className="w-5 h-5" />
-              Choose your excess amount
+              Choose Your Excess Amount
             </h2>
           </div>
           
@@ -1202,287 +1463,24 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
             </div>
             
-            {/* Add-On Protection Packages Section */}
-            <AddOnProtectionPackages 
-              selectedAddOns={selectedProtectionAddOns}
-              paymentType={paymentType}
-              onAddOnChange={(addOnKey, selected) => 
-                setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
-              }
-            />
-
-            {/* Step 5: Warranty Duration - White Border Section */}
-            <div className="bg-white border-2 border-white rounded-xl p-6 shadow-lg mt-4 sm:mt-6">
+            {/* Step 5: Add-On Protection Packages Section */}
+            <div className="section-header rounded-lg p-6 mt-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   5
                 </div>
                 <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Choose Warranty Duration
+                  <Shield className="w-5 h-5" />
+                  Add-On Protection Packages
                 </h3>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* 1 Year Option */}
-              {(() => {
-                const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
-                if (!platinumPlan) return null;
-
-                // Use the same calculation as the main function
-                const selectedPlanBackup = getSelectedPlan();
-                if (!selectedPlanBackup) return null;
-                
-                let basePrice = 0;
-                let isFromDatabase = false;
-                // Try database pricing matrix first
-                if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
-                  const matrix = selectedPlanBackup.pricing_matrix as any;
-                  const periodData = matrix['12'];
-                  if (periodData && periodData[voluntaryExcess.toString()]) {
-                    basePrice = periodData[voluntaryExcess.toString()].price || 0;
-                    isFromDatabase = true;
-                  }
+              <AddOnProtectionPackages 
+                selectedAddOns={selectedProtectionAddOns}
+                paymentType={paymentType}
+                onAddOnChange={(addOnKey, selected) => 
+                  setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
                 }
-                
-                // Fallback to hardcoded pricing if database pricing not available
-                if (basePrice === 0) {
-                  const pricing = getPricingData(voluntaryExcess, '12months');
-                  const planType = 'platinum' as const;
-                  const monthlyPrice = pricing[planType]?.monthly || 0;
-                  basePrice = monthlyPrice * 12;
-                }
-                
-                // Apply vehicle adjustments to base price (database values are generic)
-                const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
-                const adjustedMonthlyPrice = Math.round((totalPrice / 12) * 100) / 100;
-
-                 return (
-                    <button 
-                      key="12months"
-                      onClick={() => setPaymentType('12months')}
-                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
-                        paymentType === '12months' 
-                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                          : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-lg font-bold text-foreground">1 Year</h4>
-                      </div>
-                      <p className="text-muted-foreground mb-4 text-sm">Comprehensive coverage</p>
-                      
-                      <div className="space-y-2 mb-6">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Drive now, pay later
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          12 interest-free payments
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Complete coverage
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Claim payouts in 90 minutes
-                        </div>
-                      </div>
-                      
-                      <div className="mb-6">
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-black">£{totalPrice}</div>
-                          <div className="text-sm text-muted-foreground">or</div>
-                          <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
-                        </div>
-                      </div>
-                      
-                   </button>
-                );
-              })()}
-              
-              {/* 2 Years Option */}
-              {(() => {
-                const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
-                if (!platinumPlan) return null;
-
-                // Use the same calculation as the main function
-                const selectedPlanBackup = getSelectedPlan();
-                if (!selectedPlanBackup) return null;
-                
-                let basePrice = 0;
-                let savings = 0;
-                let isFromDatabase = false;
-                
-                // Try database pricing matrix first
-                if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
-                  const matrix = selectedPlanBackup.pricing_matrix as any;
-                  const periodData = matrix['24'];
-                  if (periodData && periodData[voluntaryExcess.toString()]) {
-                    const priceData = periodData[voluntaryExcess.toString()];
-                    basePrice = priceData.price || 0;
-                    savings = priceData.save || 0;
-                    isFromDatabase = true;
-                  }
-                }
-                
-                // Fallback to hardcoded pricing if database pricing not available
-                if (basePrice === 0) {
-                  const pricing = getPricingData(voluntaryExcess, '24months');
-                  const planType = 'platinum' as const;
-                  const monthlyPrice = pricing[planType]?.monthly || 0;
-                  savings = pricing[planType]?.save || 0;
-                  basePrice = monthlyPrice * 24;
-                }
-                
-                // Apply vehicle adjustments to base price (database values are generic)
-                const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
-                const adjustedMonthlyPrice = Math.round((totalPrice / 24) * 100) / 100;
-
-                 return (
-                    <button 
-                      key="24months"
-                      onClick={() => setPaymentType('24months')}
-                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 relative text-left w-full ${
-                        paymentType === '24months' 
-                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                          : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                      }`}
-                    >
-                      {savings > 0 && (
-                        <div className="absolute -top-2 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                          Save £{savings}
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-lg font-bold text-foreground">2 Years</h4>
-                      </div>
-                      <p className="text-muted-foreground mb-4 text-sm">Comprehensive coverage</p>
-                      
-                      <div className="space-y-2 mb-6">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Drive now, pay later
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          12 interest-free payments
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Complete coverage
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Claim payouts in 90 minutes
-                        </div>
-                      </div>
-                      
-                      <div className="mb-6">
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-black">£{totalPrice}</div>
-                          <div className="text-sm text-muted-foreground">or</div>
-                          <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
-                        </div>
-                      </div>
-                      
-                   </button>
-                );
-              })()}
-              
-              {/* 3 Years Option */}
-              {(() => {
-                const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
-                if (!platinumPlan) return null;
-
-                // Use the same calculation as the main function
-                const selectedPlanBackup = getSelectedPlan();
-                if (!selectedPlanBackup) return null;
-                
-                let basePrice = 0;
-                let savings = 0;
-                let isFromDatabase = false;
-                
-                // Try database pricing matrix first
-                if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
-                  const matrix = selectedPlanBackup.pricing_matrix as any;
-                  const periodData = matrix['36'];
-                  if (periodData && periodData[voluntaryExcess.toString()]) {
-                    const priceData = periodData[voluntaryExcess.toString()];
-                    basePrice = priceData.price || 0;
-                    savings = priceData.save || 0;
-                    isFromDatabase = true;
-                  }
-                }
-                
-                // Fallback to hardcoded pricing if database pricing not available
-                if (basePrice === 0) {
-                  const pricing = getPricingData(voluntaryExcess, '36months');
-                  const planType = 'platinum' as const;
-                  const monthlyPrice = pricing[planType]?.monthly || 0;
-                  savings = pricing[planType]?.save || 0;
-                  basePrice = monthlyPrice * 36;
-                }
-                
-                // Apply vehicle adjustments to base price (database values are generic)
-                const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
-                const adjustedMonthlyPrice = Math.round((totalPrice / 36) * 100) / 100;
-
-                 return (
-                    <button 
-                      key="36months"
-                      onClick={() => setPaymentType('36months')}
-                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 relative text-left w-full ${
-                        paymentType === '36months' 
-                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                          : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                      }`}
-                    >
-                      {savings > 0 && (
-                        <div className="absolute -top-2 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                          Save £{savings}
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-lg font-bold text-foreground">3 Years</h4>
-                      </div>
-                      <p className="text-muted-foreground mb-4 text-sm">Comprehensive coverage</p>
-                      
-                      <div className="space-y-2 mb-6">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Drive now, pay later
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          12 interest-free payments
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Complete coverage
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          Claim payouts in 90 minutes
-                        </div>
-                      </div>
-                      
-                      <div className="mb-6">
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-black">£{totalPrice}</div>
-                          <div className="text-sm text-muted-foreground">or</div>
-                          <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
-                        </div>
-                      </div>
-                      
-                   </button>
-                 );
-               })()}
-              </div>
+              />
             </div>
             
             {/* Pricing Summary and CTA */}
