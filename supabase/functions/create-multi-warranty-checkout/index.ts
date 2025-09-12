@@ -26,23 +26,37 @@ serve(async (req) => {
       }
     );
 
-    // Get user from auth header
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
-    const user = data.user;
+    // Get user from auth header (optional)
+    let user: any = null;
+    const authHeader = req.headers.get("Authorization");
+    if (authHeader) {
+      try {
+        const token = authHeader.replace("Bearer ", "");
+        const { data } = await supabaseClient.auth.getUser(token);
+        user = data.user;
+      } catch (e) {
+        console.log("Auth header present but failed to parse user:", e);
+      }
+    }
 
     // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2023-10-16",
     });
 
-    // Check if customer exists in Stripe
-    let customerId;
-    if (user?.email) {
-      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    let customerId: string | undefined;
+    const lookupEmail = user?.email || customerData?.email;
+    if (lookupEmail) {
+      const customers = await stripe.customers.list({ email: lookupEmail, limit: 1 });
       if (customers.data.length > 0) {
         customerId = customers.data[0].id;
+      } else {
+        const created = await stripe.customers.create({
+          email: lookupEmail,
+          name: `${customerData.first_name || ''} ${customerData.last_name || ''}`.trim(),
+          phone: customerData.mobile || undefined,
+        });
+        customerId = created.id;
       }
     }
 
@@ -103,8 +117,8 @@ serve(async (req) => {
       customer_email: customerId ? undefined : customerData.email,
       line_items: lineItems,
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/?step=cart`,
+      success_url: `${req.headers.get("origin") || 'https://buyawarranty.co.uk'}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin") || 'https://buyawarranty.co.uk'}/?step=cart`,
       discounts: coupon ? [{ coupon }] : undefined,
       metadata: {
         customer_email: customerData.email,
