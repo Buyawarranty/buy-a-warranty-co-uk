@@ -4,6 +4,7 @@ import { Check, Search, Zap, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedButton } from '@/components/ui/protected-button';
+import { validateVehicleEligibility } from '@/lib/vehicleValidation';
 
 
 interface VehicleDetailsStepProps {
@@ -180,7 +181,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         }
       } else {
         console.log('Vehicle not found in DVLA database for registration:', regNumber);
-        // If vehicle not found, show manual entry
+        // Show specific error message and offer manual entry
+        toast({
+          title: "Oops! We couldn't find that registration. 🚗💨",
+          description: "Double-check the number and try again. If it's still not working, the vehicle might be over 15 years old or not supported in our cover.",
+          variant: "destructive",
+        });
         setShowManualEntry(true);
       }
     } catch (error: any) {
@@ -195,8 +201,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         });
       } else {
         toast({
-          title: "Lookup Failed",
-          description: "Unable to find vehicle details. You can enter them manually below.",
+          title: "Oops! We couldn't find that registration. 🚗💨",
+          description: "Double-check the number and try again. If it's still not working, the vehicle might be over 15 years old or not supported in our cover.",
           variant: "destructive",
         });
       }
@@ -247,6 +253,25 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     if (showManualEntry) {
       // Manual entry validation
       if (regNumber && mileage && make && model && year && vehicleType && numericMileage <= 150000 && mileageError === '' && yearError === '') {
+        // Check vehicle eligibility for manual entries
+        const vehicleEligibility = validateVehicleEligibility({
+          make: make.toLowerCase().trim(),
+          model: model.toLowerCase().trim(), 
+          vehicleType: vehicleType.toLowerCase().trim(),
+          regNumber
+        });
+        
+        if (!vehicleEligibility.isValid) {
+          // Vehicle is blocked - show error and don't proceed
+          toast({
+            title: "Vehicle Not Eligible",
+            description: vehicleEligibility.errorMessage || "This vehicle is not eligible for warranty coverage.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Vehicle is eligible - proceed
         onNext({ 
           regNumber, 
           mileage: rawMileage,
@@ -457,39 +482,86 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
              </div>
            )}
 
-           {vehicleData && !vehicleData.found && (!vehicleData.error || (!vehicleData.error.includes('15 years') && !vehicleData.error.includes('Warranty Coverage Not Available'))) && (
-            <div className="bg-blue-50 border border-blue-200 rounded-[4px] p-4 mb-4">
-              <p className="text-sm text-blue-800 mb-2">
-                ⚠️ Vehicle not found -
-              </p>
-              <p className="text-sm text-blue-700 font-bold mb-2">
-                Please double-check your number plate and try again.
-              </p>
-              <p className="text-sm text-blue-700 mb-2">
-                We couldn't verify this registration with the DVSA database.
-              </p>
-              <p className="text-sm text-blue-700">
-                If you'd still like to proceed, we may need to run some additional checks 🔍 before confirming your warranty.
-              </p>
-            </div>
-          )}
+            {vehicleData && !vehicleData.found && (!vehicleData.error || (!vehicleData.error.includes('15 years') && !vehicleData.error.includes('Warranty Coverage Not Available'))) && (
+             <div className="bg-orange-50 border border-orange-200 rounded-[4px] p-4 mb-4">
+               <p className="text-lg font-bold text-orange-800 mb-2">
+                 Oops! We couldn't find that registration. 🚗💨
+               </p>
+               <p className="text-sm text-orange-700 mb-2">
+                 Double-check the number and try again. If it's still not working, the vehicle might be over 15 years old or not supported in our cover.
+               </p>
+               <p className="text-sm text-orange-700">
+                 You can enter your vehicle details manually below to get a quote.
+               </p>
+             </div>
+           )}
 
-          {showManualEntry && (
-            <div className="mb-4 p-3 sm:p-4 border-2 border-gray-200 rounded-[6px]">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-700">Enter your vehicle details manually</h3>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-...
-              </div>
-              
-              {yearError && (
-                <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-orange-700">{yearError}</p>
-                </div>
-              )}
-            </div>
-          )}
+           {showManualEntry && (
+             <div className="mb-4 p-3 sm:p-4 border-2 border-gray-200 rounded-[6px]">
+               <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-700">Enter your vehicle details manually</h3>
+               
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-2">Make *</label>
+                   <input
+                     type="text"
+                     value={make}
+                     onChange={(e) => setMake(e.target.value)}
+                     placeholder="e.g. Ford"
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   />
+                 </div>
+                 
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-2">Model *</label>
+                   <input
+                     type="text"
+                     value={model}
+                     onChange={(e) => setModel(e.target.value)}
+                     placeholder="e.g. Focus"
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   />
+                 </div>
+                 
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-2">Year *</label>
+                   <input
+                     type="number"
+                     value={year}
+                     onChange={handleYearChange}
+                     placeholder="e.g. 2020"
+                     min="2000"
+                     max="2025"
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   />
+                 </div>
+                 
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Type *</label>
+                   <select
+                     value={vehicleType}
+                     onChange={(e) => setVehicleType(e.target.value)}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   >
+                     <option value="">Select vehicle type</option>
+                     <option value="car">Car</option>
+                     <option value="van">Van</option>
+                     <option value="suv">SUV</option>
+                     <option value="motorbike">Motorbike</option>
+                     <option value="phev">Hybrid (PHEV)</option>
+                     <option value="ev">Electric (EV)</option>
+                   </select>
+                 </div>
+               </div>
+               
+               {yearError && (
+                 <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg flex items-start gap-2">
+                   <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                   <p className="text-sm text-orange-700">{yearError}</p>
+                 </div>
+               )}
+             </div>
+           )}
 
           {/* Mileage */}
           <div className="mb-4">
