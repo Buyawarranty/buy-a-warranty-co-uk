@@ -47,10 +47,16 @@ const MODEL_EXCLUSIONS = {
 
 const EXCLUSION_ERROR_MESSAGE = "Thanks for your interest! Unfortunately, we're not able to offer warranty cover for this vehicle. This is down to factors like specialist parts or limited access to suitable repair centres.";
 
+// Manual overrides for registrations where DVSA data is missing but we still need to show details
+const MANUAL_OVERRIDES: Record<string, { make: string; model?: string; fuelType?: string; colour?: string; year?: number }> = {
+  'WA57FOC': { make: 'Bentley' },
+  'NK59AGY': { make: 'Bentley' },
+};
+
 function validateVehicleEligibility(vehicleData: any): { isValid: boolean; errorMessage?: string } {
   const make = vehicleData.make?.toLowerCase().trim() || '';
   const model = vehicleData.model?.toLowerCase().trim() || '';
-  
+
   // Check excluded makes
   if (EXCLUDED_MAKES.includes(make)) {
     return {
@@ -254,7 +260,29 @@ serve(async (req) => {
         if (error.message === 'Vehicle not found') {
           console.log(`Vehicle ${registrationNumber} not found in DVSA database - this could be a premium vehicle with limited data`);
           
-          // Check if this could be a premium vehicle that should be blocked anyway
+          // 1) Check manual overrides first for known registrations
+          const regUpper = registrationNumber.toUpperCase();
+          const override = MANUAL_OVERRIDES[regUpper];
+          if (override) {
+            console.log(`Using manual override for ${regUpper}:`, override);
+            return new Response(JSON.stringify({
+              found: true,
+              blocked: true,
+              blockReason: EXCLUSION_ERROR_MESSAGE,
+              registrationNumber: regUpper,
+              make: override.make,
+              model: override.model || null,
+              fuelType: override.fuelType || null,
+              colour: override.colour || null,
+              yearOfManufacture: override.year || null,
+              vehicleType: 'car'
+            }), {
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+              status: 200,
+            });
+          }
+          
+          // 2) Check if this could be a premium vehicle that should be blocked anyway
           // Some luxury vehicles have limited DVLA data but we still want to block them
           const premiumRegPatterns = [
             /^WA\d{2}[A-Z]{3}$/i,  // WA57FOC pattern - often luxury vehicles
@@ -268,8 +296,8 @@ serve(async (req) => {
             return new Response(JSON.stringify({
               found: true,
               blocked: true,
-              blockReason: "Thanks for your interest! Unfortunately, we're not able to offer warranty cover for this vehicle. This is down to factors like specialist parts or limited access to suitable repair centres.",
-              registrationNumber: registrationNumber,
+              blockReason: EXCLUSION_ERROR_MESSAGE,
+              registrationNumber: regUpper,
               make: "Premium Vehicle",
               model: "Unknown Model"
             }), {
@@ -278,10 +306,11 @@ serve(async (req) => {
             });
           }
           
+          // 3) Otherwise, return not found
           return new Response(JSON.stringify({
             found: false,
             error: "Vehicle not found in DVSA database",
-            registrationNumber: registrationNumber
+            registrationNumber: regUpper
           }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 200,
