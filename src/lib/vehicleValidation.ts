@@ -62,7 +62,7 @@ const MODEL_EXCLUSIONS = {
   ]
 };
 
-const EXCLUSION_ERROR_MESSAGE = "⚠️ Warranty Coverage Not Available\nSorry about this - this vehicle isn't eligible due to specialist parts and a limited repair network 🙏";
+const EXCLUSION_ERROR_MESSAGE = "Thanks for your interest! Unfortunately, we're not able to offer warranty cover for this vehicle. This is down to factors like specialist parts or limited access to suitable repair centres.";
 
 /**
  * Check if a vehicle is excluded from coverage
