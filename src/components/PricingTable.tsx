@@ -1082,6 +1082,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </h2>
           </div>
           
+          {/* Apology Banner */}
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center gap-2 text-blue-800">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <p className="text-sm font-medium">
+                We're upgrading our systems to serve you better. Back online in a few days. Thanks for your patience!
+              </p>
+            </div>
+          </div>
+          
           <TooltipProvider>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* AutoCare Essential */}
