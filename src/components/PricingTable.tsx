@@ -86,7 +86,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const vehiclePriceAdjustment = useMemo(() => {
     const warrantyYears = paymentType === '12months' ? 1 : 
                          paymentType === '24months' ? 2 : 3;
-    return calculateVehiclePriceAdjustment(vehicleData, warrantyYears);
+    const adjustment = calculateVehiclePriceAdjustment(vehicleData, warrantyYears);
+    console.log('🚗 Vehicle Price Adjustment Calculation:', {
+      vehicleData,
+      warrantyYears,
+      paymentType,
+      adjustment
+    });
+    return adjustment;
   }, [vehicleData, paymentType]);
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
@@ -344,12 +351,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     const selectedPlan = getSelectedPlan();
     if (!selectedPlan) return 0;
     
-    console.log('calculatePlanPrice:', {
+    console.log('💰 calculatePlanPrice Debug:', {
       paymentType,
       selectedPlan: selectedPlan?.name,
       voluntaryExcess,
       selectedClaimLimit,
-      pricingMatrix: selectedPlan?.pricing_matrix
+      pricingMatrix: selectedPlan?.pricing_matrix,
+      vehicleData,
+      vehiclePriceAdjustment
     });
     
     // Get duration multiplier

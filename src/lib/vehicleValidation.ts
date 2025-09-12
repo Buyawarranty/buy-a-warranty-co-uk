@@ -113,33 +113,47 @@ function getVehicleCategory(vehicleData: VehicleData): string {
   const model = vehicleData.model?.toLowerCase().trim() || '';
   const vehicleType = vehicleData.vehicleType?.toLowerCase().trim() || '';
   
+  console.log('🔍 Vehicle Category Debug:', {
+    originalVehicleData: vehicleData,
+    make,
+    model,
+    vehicleType
+  });
+  
   // Check for motorbike first (highest priority discount)
   if (vehicleType.includes('motor') || vehicleType.includes('bike')) {
+    console.log('🏍️ Detected: Motorbike');
     return 'motorbike';
   }
   
   // Check for Range Rover (highest price adjustment)
   if (make === 'land rover' && model.includes('range rover')) {
+    console.log('🚗 Detected: Range Rover');
     return 'range_rover';
   }
   
   // Check for special variants (same as SUV pricing)
   if (make === 'audi' && (model.includes('s-line') || model.includes('sline'))) {
+    console.log('🚗 Detected: Audi S-Line');
     return 'special_variant';
   }
   if (make === 'bmw' && (model.includes('m-sport') || model.includes('msport'))) {
+    console.log('🚗 Detected: BMW M-Sport');
     return 'special_variant';
   }
   if (make === 'mercedes' && (model.includes('amg-line') || model.includes('amgline'))) {
+    console.log('🚗 Detected: Mercedes AMG-Line');
     return 'special_variant';
   }
   
   // Check for SUV/Van
   if (vehicleType === 'suv' || vehicleType === 'van' || 
       model.includes('suv') || model.includes('van')) {
+    console.log('🚙 Detected: SUV/Van');
     return 'suv_van';
   }
   
+  console.log('🚗 Detected: Standard vehicle');
   return 'standard';
 }
 
@@ -166,6 +180,12 @@ export function calculateVehiclePriceAdjustment(
   let adjustmentAmount = 0;
   let adjustmentType = 'standard';
   const breakdown: { baseAdjustment: number; adjustmentReason: string }[] = [];
+  
+  console.log('💸 Price Adjustment Calculation:', {
+    vehicleData,
+    warrantyDurationYears,
+    category
+  });
   
   switch (category) {
     case 'motorbike':
@@ -210,12 +230,16 @@ export function calculateVehiclePriceAdjustment(
       });
   }
   
-  return {
+  const result = {
     isValid: true,
     adjustmentAmount,
     adjustmentType,
     breakdown
   };
+  
+  console.log('✅ Final Price Adjustment Result:', result);
+  
+  return result;
 }
 
 /**
