@@ -51,6 +51,7 @@ const EXCLUSION_ERROR_MESSAGE = "Thanks for your interest! Unfortunately, we're 
 const MANUAL_OVERRIDES: Record<string, { make: string; model?: string; fuelType?: string; colour?: string; year?: number }> = {
   'WA57FOC': { make: 'Bentley' },
   'NK59AGY': { make: 'Bentley' },
+  'KM68HLD': { make: 'Audi', model: 'S8' },
 };
 
 function validateVehicleEligibility(vehicleData: any): { isValid: boolean; errorMessage?: string } {
@@ -411,6 +412,20 @@ serve(async (req) => {
         fuelType = dvla.fuelType || fuelType;
         colour = dvla.colour || colour;
         yearOfManufacture = dvla.yearOfManufacture || yearOfManufacture;
+      }
+    }
+
+    // Apply manual overrides by registration (ensures correct make/model, e.g., Audi S8 cases)
+    {
+      const regUpper = registrationNumber.toUpperCase();
+      const overrideFinal = MANUAL_OVERRIDES[regUpper];
+      if (overrideFinal) {
+        console.log(`Applying manual override after lookup for ${regUpper}:`, overrideFinal);
+        make = overrideFinal.make || make;
+        model = overrideFinal.model || model;
+        fuelType = overrideFinal.fuelType || fuelType;
+        colour = overrideFinal.colour || colour;
+        if (overrideFinal.year) yearOfManufacture = overrideFinal.year;
       }
     }
 
