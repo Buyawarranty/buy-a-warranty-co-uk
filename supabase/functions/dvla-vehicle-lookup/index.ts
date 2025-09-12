@@ -220,6 +220,40 @@ async function fetchDVSAVehicleData(registration: string, accessToken: string): 
   return await response.json();
 }
 
+// DVLA Vehicle Enquiry Service fallback - fetch minimal details when DVSA is missing data
+async function fetchDVLAFallback(registration: string): Promise<{ make?: string; model?: string; fuelType?: string; colour?: string; yearOfManufacture?: number } | null> {
+  const dvlaKey = Deno.env.get('DVLA_API_KEY');
+  if (!dvlaKey) {
+    console.warn('DVLA_API_KEY not set - skipping DVLA fallback');
+    return null;
+  }
+  try {
+    const res = await fetch('https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles', {
+      method: 'POST',
+      headers: {
+        'x-api-key': dvlaKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ registrationNumber: registration.toUpperCase() })
+    });
+    if (!res.ok) {
+      console.error('DVLA VES request failed:', res.status, await res.text());
+      return null;
+    }
+    const dvla: any = await res.json();
+    return {
+      make: dvla.make,
+      model: dvla.model,
+      fuelType: dvla.fuelType || dvla.fueltype,
+      colour: dvla.colour || dvla.color,
+      yearOfManufacture: dvla.yearOfManufacture || dvla.yearofmanufacture
+    };
+  } catch (e) {
+    console.error('DVLA VES fallback error:', e);
+    return null;
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -258,10 +292,34 @@ serve(async (req) => {
         console.error(`DVSA API attempt ${attempt} failed:`, error.message);
         
         if (error.message === 'Vehicle not found') {
-          console.log(`Vehicle ${registrationNumber} not found in DVSA database - this could be a premium vehicle with limited data`);
-          
-          // 1) Check manual overrides first for known registrations
+          console.log(`Vehicle ${registrationNumber} not found in DVSA database - attempting DVLA fallback`);
+
           const regUpper = registrationNumber.toUpperCase();
+
+          // 1) Try DVLA VES fallback to fetch at least make/model
+          const dvla = await fetchDVLAFallback(registrationNumber);
+          if (dvla?.make) {
+            console.log('DVLA fallback returned data:', { make: dvla.make, model: dvla.model });
+            const validation = validateVehicleEligibility({ make: dvla.make, model: dvla.model || '', regNumber: registrationNumber });
+            const blocked = !validation.isValid;
+            return new Response(JSON.stringify({
+              found: true,
+              blocked,
+              blockReason: blocked ? validation.errorMessage : undefined,
+              registrationNumber: regUpper,
+              make: dvla.make,
+              model: dvla.model || null,
+              fuelType: dvla.fuelType || null,
+              colour: dvla.colour || null,
+              yearOfManufacture: dvla.yearOfManufacture || null,
+              vehicleType: 'car'
+            }), {
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+              status: 200,
+            });
+          }
+
+          // 2) Check manual overrides for known registrations
           const override = MANUAL_OVERRIDES[regUpper];
           if (override) {
             console.log(`Using manual override for ${regUpper}:`, override);
@@ -282,15 +340,12 @@ serve(async (req) => {
             });
           }
           
-          // 2) Check if this could be a premium vehicle that should be blocked anyway
-          // Some luxury vehicles have limited DVLA data but we still want to block them
+          // 3) Pattern-based precautionary block for premium vehicles
           const premiumRegPatterns = [
-            /^WA\d{2}[A-Z]{3}$/i,  // WA57FOC pattern - often luxury vehicles
-            /^[A-Z]{2}0[0-9][A-Z]{3}$/i,  // Low number registrations often premium
+            /^WA\d{2}[A-Z]{3}$/i,
+            /^[A-Z]{2}0[0-9][A-Z]{3}$/i,
           ];
-          
           const isPotentialPremium = premiumRegPatterns.some(pattern => pattern.test(registrationNumber));
-          
           if (isPotentialPremium) {
             console.log(`Registration ${registrationNumber} matches premium vehicle pattern - blocking as precaution`);
             return new Response(JSON.stringify({
@@ -305,8 +360,8 @@ serve(async (req) => {
               status: 200,
             });
           }
-          
-          // 3) Otherwise, return not found
+
+          // 4) Otherwise, return not found
           return new Response(JSON.stringify({
             found: false,
             error: "Vehicle not found in DVSA database",
@@ -333,10 +388,10 @@ serve(async (req) => {
     console.log('DVSA API response:', vehicleData);
 
     // Extract vehicle information from DVSA response
-    const make = vehicleData.make;
-    const model = vehicleData.model;
-    const fuelType = vehicleData.fuelType;
-    const colour = vehicleData.primaryColour || vehicleData.colour;
+    let make = vehicleData.make;
+    let model = vehicleData.model;
+    let fuelType = vehicleData.fuelType;
+    let colour = vehicleData.primaryColour || vehicleData.colour;
     
     // Calculate year of manufacture from registration or manufacture date
     let yearOfManufacture;
@@ -344,6 +399,19 @@ serve(async (req) => {
       yearOfManufacture = new Date(vehicleData.manufactureDate).getFullYear();
     } else if (vehicleData.registrationDate) {
       yearOfManufacture = new Date(vehicleData.registrationDate).getFullYear();
+    }
+
+    // DVLA fallback for missing/incorrect make/model data
+    if (!make || !model) {
+      console.log('Primary DVSA data missing make/model - attempting DVLA fallback');
+      const dvla = await fetchDVLAFallback(registrationNumber);
+      if (dvla?.make) {
+        make = dvla.make;
+        model = dvla.model || model;
+        fuelType = dvla.fuelType || fuelType;
+        colour = dvla.colour || colour;
+        yearOfManufacture = dvla.yearOfManufacture || yearOfManufacture;
+      }
     }
 
     // Determine vehicle type based on DVSA data
