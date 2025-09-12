@@ -12,6 +12,7 @@ import CustomerDetailsStep from '@/components/CustomerDetailsStep';
 import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
+import MaintenanceBanner from '@/components/MaintenanceBanner';
 
 
 interface VehicleData {
@@ -495,6 +496,7 @@ const Index = () => {
 
       {currentStep === 3 && (
         <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
+          <MaintenanceBanner />
           {vehicleData && (
             <>
               

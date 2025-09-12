@@ -205,6 +205,14 @@ export default {
 					'50%': {
 						transform: 'translateY(-4px)'
 					}
+				},
+				'bounce-slow': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-8px)'
+					}
 				}
 			},
 			animation: {
@@ -221,7 +229,8 @@ export default {
 				'fade-drift': 'fade-drift 2s ease-out infinite',
 				'float-slow': 'float-slow 6s ease-in-out infinite',
 				'slide': 'slide 12s ease-in-out infinite',
-				'float': 'float 2s ease-in-out infinite'
+				'float': 'float 2s ease-in-out infinite',
+				'bounce-slow': 'bounce-slow 3s ease-in-out infinite'
 			}
 		}
 	},
