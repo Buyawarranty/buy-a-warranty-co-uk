@@ -38,7 +38,7 @@ const EXCLUDED_MAKES = [
 const MODEL_EXCLUSIONS = {
   'audi': [
     'rs2 avant', 'rs3', 'rs4 avant', 'rs5', 'rs6 avant', 'rs7 sportback',
-    'rs q3', 'rs q5', 'rs q8', 'rs e-tron gt', 'tt rs', 'r8 v8', 'r8 v10',
+    'rs q3', 'rs q5', 'rs q8', 'rs e-tron gt', 'tt rs', 'r8', 'r8 v8', 'r8 v10',
     'r8 v10 plus', 'r8 spyder', 'r8 gt', 'r8 lms', 's2 coupé', 's2 avant',
     's2 sedan', 's3', 's4', 's5', 's6', 's7', 's8', 'sq5', 'sq7', 'sq8',
     'tts', 's e-tron gt'
