@@ -819,6 +819,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               Choose Warranty Duration and Price
             </h3>
           </div>
+
+          {/* Complete Protection Button */}
+          <div className="mb-6">
+            <button className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-orange-500 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors duration-200 font-medium">
+              <span>Complete Protection</span>
+              <div className="bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                i
+              </div>
+              <span className="text-sm">What's Included?</span>
+            </button>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* 1 Year Option */}
