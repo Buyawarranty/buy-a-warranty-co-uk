@@ -37,11 +37,11 @@ const EXCLUDED_MAKES = [
 // Specific model exclusions by make
 const MODEL_EXCLUSIONS = {
   'audi': [
-    'rs2 avant', 'rs3', 'rs4 avant', 'rs5', 'rs6 avant', 'rs7 sportback',
-    'rs q3', 'rs q5', 'rs q8', 'rs e-tron gt', 'tt rs', 'r8', 'r8 v8', 'r8 v10',
-    'r8 v10 plus', 'r8 spyder', 'r8 gt', 'r8 lms', 's2 coupé', 's2 avant',
-    's2 sedan', 's3', 's4', 's5', 's6', 's7', 's8', 'sq5', 'sq7', 'sq8',
-    'tts', 's e-tron gt'
+    'rs2', 'rs2 avant', 'rs3', 'rs4', 'rs4 avant', 'rs5', 'rs6', 'rs6 avant', 
+    'rs7', 'rs7 sportback', 'rs q3', 'rs q5', 'rs q8', 'rs e-tron', 'rs e-tron gt', 
+    'tt rs', 'tts', 'r8', 'r8 v8', 'r8 v10', 'r8 v10 plus', 'r8 spyder', 'r8 gt', 'r8 lms',
+    's2', 's2 coupé', 's2 coupe', 's2 avant', 's2 sedan', 's3', 's4', 's5', 's6', 's7', 's8',
+    'sq5', 'sq7', 'sq8', 's e-tron', 's e-tron gt'
   ],
   'bmw': [
     'm1', '1m coupé', '1m coupe', 'm2', 'm2 competition', 'm2 cs', 'm3', 'm4',
