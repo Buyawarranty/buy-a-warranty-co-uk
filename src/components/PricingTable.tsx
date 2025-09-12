@@ -86,9 +86,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const vehiclePriceAdjustment = useMemo(() => {
     const warrantyYears = paymentType === '12months' ? 1 : 
                          paymentType === '24months' ? 2 : 3;
-    const adjustment = calculateVehiclePriceAdjustment(vehicleData, warrantyYears);
+    // Ensure vehicleType is normalized for adjustment logic (fixes motorbike detection)
+    const vtLocal = normalizeVehicleType(vehicleData?.vehicleType);
+    const adjustedVehicleData = { ...vehicleData, vehicleType: vtLocal } as typeof vehicleData;
+    const adjustment = calculateVehiclePriceAdjustment(adjustedVehicleData as any, warrantyYears);
     console.log('🚗 Vehicle Price Adjustment Calculation:', {
-      vehicleData,
+      vehicleData: adjustedVehicleData,
+      originalVehicleType: vehicleData?.vehicleType,
+      normalizedVehicleType: vtLocal,
       warrantyYears,
       paymentType,
       adjustment
