@@ -82,7 +82,7 @@ const HomepageFAQ = () => {
       </button>
       
       {openItems[faq.id] && (
-        <div className="px-6 pb-5 text-white bg-orange-600 border-t border-orange-400 animate-accordion-down">
+        <div className="px-6 pb-5 text-gray-800 bg-white border-t border-orange-400 animate-accordion-down">
           <p className="text-base leading-relaxed">{faq.answer}</p>
         </div>
       )}
