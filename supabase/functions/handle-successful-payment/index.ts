@@ -26,8 +26,8 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { planId, paymentType, userEmail, userId, stripeSessionId, vehicleData, customerData, skipEmail } = await req.json();
-    logStep("Request data", { planId, paymentType, userEmail, userId, stripeSessionId, skipEmail });
+    const { planId, paymentType, userEmail, userId, stripeSessionId, vehicleData, customerData, skipEmail, metadata } = await req.json();
+    logStep("Request data", { planId, paymentType, userEmail, userId, stripeSessionId, skipEmail, hasMetadata: !!metadata });
 
     if (!planId || !paymentType || !userEmail) {
       throw new Error("Missing required parameters");
@@ -90,13 +90,13 @@ serve(async (req) => {
     } else {
       logStep("Customer record created successfully", { customerId: customerData2.id });
       
-      // Extract add-ons data from metadata
+      // Extract add-ons data from metadata (with safe fallback)
       const addOnsData = {
-        tyre_cover: metadata.addon_tyre_cover === 'true',
-        wear_tear: metadata.addon_wear_tear === 'true',
-        europe_cover: metadata.addon_europe_cover === 'true', 
-        transfer_cover: metadata.addon_transfer_cover === 'true',
-        mot_fee: metadata.addon_mot_cover === 'true'
+        tyre_cover: metadata?.addon_tyre_cover === 'true',
+        wear_tear: metadata?.addon_wear_tear === 'true',
+        europe_cover: metadata?.addon_europe_cover === 'true', 
+        transfer_cover: metadata?.addon_transfer_cover === 'true',
+        mot_fee: metadata?.addon_mot_cover === 'true'
       };
 
       // Create policy record

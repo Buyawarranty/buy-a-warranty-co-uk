@@ -112,7 +112,8 @@ serve(async (req) => {
         userId: session.metadata?.user_id || null,
         stripeSessionId: sessionId,
         vehicleData: vehicleData,
-        customerData: customerData
+        customerData: customerData,
+        metadata: session.metadata || {}
         // Removed skipEmail: true to allow emails to be sent
       }
     });
