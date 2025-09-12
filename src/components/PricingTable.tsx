@@ -907,7 +907,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   
                   <div className="mb-6">
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-black">£{totalPrice}</div>
+                      <div className="text-2xl font-bold text-black">£{totalPrice} cover</div>
                       <div className="text-sm text-muted-foreground">or</div>
                       <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
                     </div>
@@ -997,13 +997,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </div>
                   </div>
                   
-                  <div className="mb-6">
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-black">£{totalPrice}</div>
-                      <div className="text-sm text-muted-foreground">or</div>
-                      <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
-                    </div>
-                  </div>
+                   <div className="mb-6">
+                     <div className="text-right">
+                       <div className="text-2xl font-bold text-black">£{totalPrice} cover</div>
+                       <div className="text-sm text-muted-foreground">or</div>
+                       <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
+                     </div>
+                   </div>
                   
                </button>
             );
@@ -1086,13 +1086,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </div>
                   </div>
                   
-                  <div className="mb-6">
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-black">£{totalPrice}</div>
-                      <div className="text-sm text-muted-foreground">or</div>
-                      <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
-                    </div>
-                  </div>
+                   <div className="mb-6">
+                     <div className="text-right">
+                       <div className="text-2xl font-bold text-black">£{totalPrice} cover</div>
+                       <div className="text-sm text-muted-foreground">or</div>
+                       <div className="text-lg text-muted-foreground">£{adjustedMonthlyPrice}/mo</div>
+                     </div>
+                   </div>
                   
                </button>
             );
@@ -1187,9 +1187,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-black mb-2">£750</div>
+              <div className="text-2xl font-bold text-black mb-2">£750 cover</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Essential</h4>
-              <p className="text-sm text-muted-foreground mb-2">(10 claims per year)</p>
+              <p className="text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg mb-2 inline-block">10 claims per year</p>
               <p className="text-sm font-medium text-foreground">Confidence for the everyday drive.</p>
             </button>
             
@@ -1259,9 +1259,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-black mb-2">£1,250</div>
+              <div className="text-2xl font-bold text-black mb-2">£1,250 cover</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Advantage</h4>
-              <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
+              <p className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg mb-2 inline-block">Unlimited claims</p>
               <p className="text-sm font-medium text-foreground">Balanced protection for life's bigger bumps.</p>
             </button>
             
@@ -1328,9 +1328,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="text-2xl font-bold text-black mb-2">£2,000</div>
+              <div className="text-2xl font-bold text-black mb-2">£2,000 cover</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Elite</h4>
-              <p className="text-sm text-muted-foreground mb-2">(Unlimited claims)</p>
+              <p className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg mb-2 inline-block">Unlimited claims</p>
               <p className="text-sm font-medium text-foreground">Top-tier cover for total peace of mind.</p>
             </button>
             </div>
