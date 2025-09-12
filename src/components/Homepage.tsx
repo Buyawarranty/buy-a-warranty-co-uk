@@ -781,8 +781,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           {/* Warranty Quote Mockup */}
           <div className="relative max-w-2xl md:max-w-3xl mx-auto mb-8 md:mb-12">
             <img 
-              src="/lovable-uploads/7fe5ce8a-d5a6-422c-b391-f67e26229445.png" 
-              alt="Warranty quote interface with panda mascot and car" 
+              src="/lovable-uploads/76de7f62-85f4-4aaa-aff6-2832fed2be9b.png" 
+              alt="Complete vehicle protection with panda mascot and various vehicles" 
               className="w-full h-auto rounded-lg"
             />
           </div>
