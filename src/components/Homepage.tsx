@@ -354,7 +354,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </header>
 
       {/* Hero Section */}
-      <section id="quote-form" className="bg-white py-2 sm:py-2 lg:py-3">
+      <section id="quote-form" className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
@@ -531,7 +531,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Extended Warranty Video Section */}
-      <section className="py-6 md:py-10 bg-brand-gray-bg">
+      <section className="py-12 md:py-20 bg-brand-gray-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Video */}
@@ -568,7 +568,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Step 1 - Enter Your Reg Plate */}
-      <section className="py-6 md:py-10 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}
@@ -620,7 +620,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Step 2 - Choose Your Plan */}
-      <section className="py-6 md:py-10 bg-brand-gray-bg">
+      <section className="py-12 md:py-20 bg-brand-gray-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Panda with plan badges */}
@@ -681,7 +681,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Step 3 - Drive With Confidence */}
-      <section className="py-12 md:py-20 bg-white">
+      <section className="py-16 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}
@@ -722,7 +722,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* What's Included Section */}
-      <section className="py-6 md:py-10 bg-gradient-to-r from-blue-50 to-orange-50">
+      <section className="py-12 md:py-20 bg-gradient-to-r from-blue-50 to-orange-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
@@ -766,7 +766,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
 
       {/* Coverage Showcase Section */}
-      <section className="py-6 md:py-10 bg-brand-gray-bg text-center">
+      <section className="py-12 md:py-20 bg-brand-gray-bg text-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Trustpilot Rating */}
           <div className="flex justify-center items-center mb-6 md:mb-8">
@@ -786,7 +786,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Additional Cover Options Section */}
-      <section className="py-6 md:py-10 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="space-y-6 md:space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
