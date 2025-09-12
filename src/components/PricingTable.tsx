@@ -779,12 +779,40 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
              )}
         </div>
 
+        {/* Choose Your Excess Amount */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              2
+            </div>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Choose Your Excess Amount
+            </h2>
+          </div>
+          
+          <div className="flex gap-1.5 flex-wrap justify-start ml-11">
+            {[0, 50, 100, 150].map((amount) => (
+              <button
+                key={amount}
+                onClick={() => toggleVoluntaryExcess(amount)}
+                className={`px-2.5 py-2 rounded-lg transition-all duration-200 text-center relative min-w-[50px] text-sm ${
+                  voluntaryExcess === amount
+                    ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                    : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                }`}
+              >
+                <div className="text-base font-bold text-black">£{amount}</div>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Choose Warranty Duration and Price */}
         <div className="bg-white border-2 border-white rounded-xl p-6 shadow-lg section-header mt-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-              2
+              3
             </div>
             <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
               <Calendar className="w-5 h-5" />
@@ -1042,39 +1070,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           })()}
           </div>
         </div>
-        <div className="section-header rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-              4
-            </div>
-            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
-              Choose Your Excess Amount
-            </h2>
-          </div>
-          
-          <div className="flex gap-1.5 flex-wrap justify-start ml-11">
-            {[0, 50, 100, 150].map((amount) => (
-              <button
-                key={amount}
-                onClick={() => toggleVoluntaryExcess(amount)}
-                className={`px-2.5 py-2 rounded-lg transition-all duration-200 text-center relative min-w-[50px] text-sm ${
-                  voluntaryExcess === amount
-                    ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                    : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                }`}
-              >
-                <div className="text-base font-bold text-black">£{amount}</div>
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Claim Limit Selection */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
-              3
+              4
             </div>
             <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
               <ShieldCheck className="w-5 h-5" />
