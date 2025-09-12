@@ -20,18 +20,18 @@ const EXCLUDED_MAKES = [
 
 const MODEL_EXCLUSIONS = {
   'audi': [
-    'rs2 avant', 'rs3', 'rs4 avant', 'rs5', 'rs6 avant', 'rs7 sportback',
-    'rs q3', 'rs q5', 'rs q8', 'rs e-tron gt', 'tt rs', 'r8 v8', 'r8 v10',
-    'r8 v10 plus', 'r8 spyder', 'r8 gt', 'r8 lms', 's2 coupé', 's2 avant',
-    's2 sedan', 's3', 's4', 's5', 's6', 's7', 's8', 'sq5', 'sq7', 'sq8',
-    'tts', 's e-tron gt'
+    'rs2', 'rs2 avant', 'rs3', 'rs4', 'rs4 avant', 'rs5', 'rs6', 'rs6 avant', 
+    'rs7', 'rs7 sportback', 'rs q3', 'rs q5', 'rs q8', 'rs e-tron', 'rs e-tron gt', 
+    'tt rs', 'tts', 'r8', 'r8 v8', 'r8 v10', 'r8 v10 plus', 'r8 spyder', 'r8 gt', 'r8 lms',
+    's2', 's2 coupé', 's2 coupe', 's2 avant', 's2 sedan', 's3', 's4', 's5', 's6', 's7', 's8',
+    'sq5', 'sq7', 'sq8', 's e-tron', 's e-tron gt'
   ],
   'bmw': [
-    'm1', '1m coupé', 'm2', 'm2 competition', 'm2 cs', 'm3', 'm4',
+    'm1', '1m coupé', '1m coupe', 'm2', 'm2 competition', 'm2 cs', 'm3', 'm4',
     'm4 competition', 'm4 csl', 'm4 gts', 'm5', 'm6', 'm8',
     'm roadster', 'm coupe', 'm3 csl', 'm3 crt', 'm3 gts',
     'm4 kith edition', 'm5 cs', '3.0 csl', 'x3 m', 'x4 m', 'x5 m',
-    'x6 m', 'xm'
+    'x6 m', 'xm', 'z3 m roadster', 'z3 m coupe', 'z4 m roadster', 'z4 m coupe'
   ],
   'mercedes': [
     'c 36 amg', 'c 43 amg', 'c 55 amg', 'c 63 amg', 'e 36 amg',
@@ -41,11 +41,11 @@ const MODEL_EXCLUSIONS = {
     'clk 55 amg', 'clk 63 amg', 'clk dtm amg', 'cls 55 amg', 'cls 63 amg',
     'amg gt', 'amg sl', 'amg one', 'ml 55 amg', 'ml 63 amg', 'g 36 amg',
     'g 55 amg', 'g 63 amg', 'g 65 amg', 'gl 63 amg', 'gle 63 amg',
-    'gls 63 amg', 'r 63 amg', 'e-class amg estates'
+    'gls 63 amg', 'r 63 amg', 'e-class amg estates', 'amg', 'mercedes-amg'
   ]
 };
 
-const EXCLUSION_ERROR_MESSAGE = "⚠️ Warranty Coverage Not Available\nSorry about this - this vehicle isn't eligible due to specialist parts and a limited repair network 🙏";
+const EXCLUSION_ERROR_MESSAGE = "Thanks for your interest! Unfortunately, we're not able to offer warranty cover for this vehicle. This is down to factors like specialist parts or limited access to suitable repair centres.";
 
 function validateVehicleEligibility(vehicleData: any): { isValid: boolean; errorMessage?: string } {
   const make = vehicleData.make?.toLowerCase().trim() || '';
