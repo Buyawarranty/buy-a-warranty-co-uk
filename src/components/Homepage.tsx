@@ -778,15 +778,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             </div>
           </div>
 
-          {/* Warranty Quote Mockup */}
-          <div className="relative max-w-2xl md:max-w-3xl mx-auto mb-8 md:mb-12">
-            <img 
-              src="/lovable-uploads/76de7f62-85f4-4aaa-aff6-2832fed2be9b.png" 
-              alt="Complete vehicle protection with panda mascot and various vehicles" 
-              className="w-full h-auto rounded-lg"
-            />
-          </div>
-
           {/* CTA Button */}
           <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors w-full sm:w-auto">
             Get Instant Quote
