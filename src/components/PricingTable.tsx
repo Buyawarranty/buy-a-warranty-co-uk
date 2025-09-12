@@ -1257,13 +1257,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 12) * 100) / 100;
 
-                return (
-                   <div 
+                 return (
+                    <button 
                       key="12months"
-                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 ${
+                      onClick={() => setPaymentType('12months')}
+                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
                         paymentType === '12months' 
-                          ? 'border-2 border-orange-500 shadow-lg' 
-                          : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                          : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-4">
@@ -1298,18 +1299,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </div>
                       </div>
                       
-                      <ProtectedButton 
-                        onClick={() => setPaymentType('12months')}
-                        actionType="select_warranty_duration_12months"
-                        className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
-                          paymentType === '12months' 
-                            ? 'bg-orange-500 text-white' 
-                            : 'bg-white text-black border border-gray-300 hover:border-orange-300'
-                        }`}
-                      >
-                        {paymentType === '12months' ? 'Selected' : 'Select'}
-                      </ProtectedButton>
-                   </div>
+                   </button>
                 );
               })()}
               
@@ -1351,13 +1341,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 24) * 100) / 100;
 
-                return (
-                   <div 
+                 return (
+                    <button 
                       key="24months"
-                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 relative ${
+                      onClick={() => setPaymentType('24months')}
+                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 relative text-left w-full ${
                         paymentType === '24months' 
-                          ? 'border-2 border-orange-500 shadow-lg' 
-                          : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                          : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                       }`}
                     >
                       {savings > 0 && (
@@ -1398,18 +1389,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </div>
                       </div>
                       
-                      <ProtectedButton 
-                        onClick={() => setPaymentType('24months')}
-                        actionType="select_warranty_duration_24months"
-                        className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
-                          paymentType === '24months' 
-                            ? 'bg-orange-500 text-white' 
-                            : 'bg-white text-black border border-gray-300 hover:border-orange-300'
-                        }`}
-                      >
-                        {paymentType === '24months' ? 'Selected' : 'Select'}
-                      </ProtectedButton>
-                   </div>
+                   </button>
                 );
               })()}
               
@@ -1451,13 +1431,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 36) * 100) / 100;
 
-                return (
-                   <div 
+                 return (
+                    <button 
                       key="36months"
-                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 relative ${
+                      onClick={() => setPaymentType('36months')}
+                      className={`p-4 sm:p-6 rounded-lg transition-all duration-200 relative text-left w-full ${
                         paymentType === '36months' 
-                          ? 'border-2 border-orange-500 shadow-lg' 
-                          : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300'
+                          ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                          : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                       }`}
                     >
                       {savings > 0 && (
@@ -1498,18 +1479,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                         </div>
                       </div>
                       
-                      <ProtectedButton 
-                        onClick={() => setPaymentType('36months')}
-                        actionType="select_warranty_duration_36months"
-                        className={`w-full py-2 px-4 rounded transition-all duration-200 font-medium ${
-                          paymentType === '36months' 
-                            ? 'bg-orange-500 text-white' 
-                            : 'bg-white text-black border border-gray-300 hover:border-orange-300'
-                        }`}
-                      >
-                        {paymentType === '36months' ? 'Selected' : 'Select'}
-                      </ProtectedButton>
-                   </div>
+                   </button>
                  );
                })()}
               </div>
