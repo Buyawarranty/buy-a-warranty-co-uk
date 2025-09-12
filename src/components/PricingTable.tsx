@@ -413,8 +413,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                             voluntaryExcess === 150 ? 0.25 : 0;
         basePrice = Math.round(basePrice * (1 - discountRate));
       }
-      
-      return basePrice;
+      const adjustedBasePrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+      return adjustedBasePrice;
     }
     
     // Final fallback to hardcoded pricing
@@ -424,11 +424,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Safety check: ensure planType exists in pricing object
     if (!pricing[planType]) {
       console.warn(`Plan type "${planType}" not found in pricing data, defaulting to basic`);
-      return pricing.basic?.monthly * durationMonths || 0;
+      const total = (pricing.basic?.monthly || 0) * durationMonths;
+      return applyPriceAdjustment(total, vehiclePriceAdjustment);
     }
     
-    // Return total price for the selected duration
-    return (pricing[planType].monthly || 0) * durationMonths;
+    // Return total price for the selected duration (with vehicle adjustment)
+    return applyPriceAdjustment((pricing[planType].monthly || 0) * durationMonths, vehiclePriceAdjustment);
   };
 
   // Get the plan that matches the selected claim limit
@@ -1237,8 +1238,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   basePrice = monthlyPrice * 12;
                 }
                 
-                // Only apply vehicle adjustments if using hardcoded pricing (database pricing already includes adjustments)
-                const totalPrice = isFromDatabase ? basePrice : calculateAdjustedPriceForDisplay(basePrice);
+                // Apply vehicle adjustments to base price (database values are generic)
+                const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 12) * 100) / 100;
 
                 return (
@@ -1331,8 +1332,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   basePrice = monthlyPrice * 24;
                 }
                 
-                // Only apply vehicle adjustments if using hardcoded pricing (database pricing already includes adjustments)
-                const totalPrice = isFromDatabase ? basePrice : calculateAdjustedPriceForDisplay(basePrice);
+                // Apply vehicle adjustments to base price (database values are generic)
+                const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 24) * 100) / 100;
 
                 return (
@@ -1431,8 +1432,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   basePrice = monthlyPrice * 36;
                 }
                 
-                // Only apply vehicle adjustments if using hardcoded pricing (database pricing already includes adjustments)
-                const totalPrice = isFromDatabase ? basePrice : calculateAdjustedPriceForDisplay(basePrice);
+                // Apply vehicle adjustments to base price (database values are generic)
+                const totalPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 36) * 100) / 100;
 
                 return (

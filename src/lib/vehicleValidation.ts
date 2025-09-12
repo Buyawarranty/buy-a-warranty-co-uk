@@ -147,7 +147,7 @@ function getVehicleCategory(vehicleData: VehicleData): string {
   }
   
   // Check for SUV/Van
-  if (vehicleType === 'suv' || vehicleType === 'van' || 
+  if (vehicleType.includes('suv') || vehicleType.includes('van') || 
       model.includes('suv') || model.includes('van')) {
     console.log('🚙 Detected: SUV/Van');
     return 'suv_van';
