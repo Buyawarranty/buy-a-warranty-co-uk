@@ -221,11 +221,10 @@ const Claims = () => {
               {/* Left Side - Content */}
               <div className="text-center lg:text-left space-y-6">
                 <h1 className="text-4xl lg:text-6xl font-bold text-gray-900">
-                  Make A Claim - Fast, Simple, Hassle-Free{' '}
-                  <span className="text-orange-500">We've Got You Covered!</span>
+                  Make A Claim
                 </h1>
                 <p className="text-gray-600 text-lg lg:text-xl">
-                  Get in touch with our team to start your claim today. Fast and hassle-free!
+                  Quick, simple repair process – we're here to help.
                 </p>
                 <Button 
                   className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-full"
@@ -297,7 +296,7 @@ const Claims = () => {
                       id="vehicleReg"
                       name="vehicleReg"
                       type="text"
-                      placeholder="Vehicle Registration/Make/Model"
+                      placeholder="Enter Vehicle Registration"
                       value={formData.vehicleReg}
                       onChange={handleInputChange}
                       className="mt-1 h-12"
@@ -342,199 +341,103 @@ const Claims = () => {
           </div>
         </section>
 
-        {/* Step 1: Vehicle Diagnosis */}
-        <section className="py-12 lg:py-16 px-4 bg-gray-50">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              {/* Left Side - Content */}
-              <div className="space-y-6">
-                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                  Step 1: Vehicle <span className="text-orange-500">Diagnosis</span>
-                </h2>
-                <p className="text-gray-600 text-lg">
-                  One of our technical experts will conduct a detailed diagnosis to assess the issue
-                </p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">We PICK your Car up</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Our EXPERT MECHANIC does a COMPREHENSIVE diagnosis from the car</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">We DROP your vehicle home or at an alternate convenient location</span>
-                  </div>
+        {/* Repair Process */}
+        <section className="py-12 lg:py-20 px-4 bg-gray-50">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-8">
+              Repair Process
+            </h2>
+            <p className="text-gray-600 text-lg text-center mb-12">
+              If something goes wrong, we're here to help - quickly and efficiently. Just follow these simple steps to ensure your claim is processed smoothly:
+            </p>
+            
+            <div className="space-y-8">
+              {/* Step 1 */}
+              <div className="flex items-start gap-4">
+                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+                  1
                 </div>
+                <p className="text-gray-700 text-lg">
+                  Report the fault to us at <span className="font-semibold text-orange-500">0330 229 5045</span> (Mon-Fri 9am to 5:30pm) or complete the form below
+                </p>
               </div>
               
-              {/* Right Side - Illustration */}
-              <div className="flex justify-center">
-                <img 
-                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
-                  alt="Vehicle diagnosis illustration" 
-                  className="w-full max-w-md h-auto"
-                />
+              {/* Step 2 */}
+              <div className="flex items-start gap-4">
+                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+                  2
+                </div>
+                <p className="text-gray-700 text-lg">
+                  Choose your own VAT-registered garage or use an approved repairer
+                </p>
+              </div>
+              
+              {/* Step 3 */}
+              <div className="flex items-start gap-4">
+                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+                  3
+                </div>
+                <p className="text-gray-700 text-lg">
+                  Wait for written approval before any repairs begin
+                </p>
+              </div>
+              
+              {/* Step 4 */}
+              <div className="flex items-start gap-4">
+                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+                  4
+                </div>
+                <p className="text-gray-700 text-lg">
+                  Proceed with the repair (once approved)
+                </p>
+              </div>
+              
+              {/* Step 5 */}
+              <div className="flex items-start gap-4">
+                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+                  5
+                </div>
+                <p className="text-gray-700 text-lg">
+                  Submit the final invoice and proof of repair
+                </p>
+              </div>
+            </div>
+            
+            <p className="text-gray-600 text-lg mt-8 text-center">
+              If approved, we will pay the repairer directly. In some cases, we will make the pay-out to you after we have made our checks.
+            </p>
+            
+            {/* Payout Time Box */}
+            <div className="bg-white border-2 border-orange-200 rounded-lg p-6 mt-8 text-center">
+              <div className="flex items-center justify-center gap-3">
+                <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12,6 12,12 16,14"></polyline>
+                </svg>
+                <p className="text-lg font-semibold text-gray-900">
+                  We aim to pay out within 90 minutes of final approval
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Step 2: Claim Review & Authorisation */}
-        <section className="py-12 lg:py-16 px-4 bg-white">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              {/* Left Side - Illustration */}
-              <div className="flex justify-center order-2 lg:order-1">
-                <img 
-                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
-                  alt="Claim review illustration" 
-                  className="w-full max-w-md h-auto"
-                />
-              </div>
-              
-              {/* Right Side - Content */}
-              <div className="space-y-6 order-1 lg:order-2">
-                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                  Step 2: Claim Review & <span className="text-orange-500">Authorisation</span>
-                </h2>
-                <p className="text-gray-600 text-lg">
-                  We'll review the claim
-                </p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Expert Commissioned conducts your CLAIM check</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Once Reviewed and claim is COVERED in your policy, you get</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">FULL REPAIR OR REPLACEMENT AUTHORIZED with our</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">AUTHORISED MECHANICS USING ONLY</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">THE BEST PARTS to GET YOU READY! 100% authorised you for your car</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Step 3: Authorisation & Payment */}
-        <section className="py-12 lg:py-16 px-4 bg-gray-50">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              {/* Left Side - Content */}
-              <div className="space-y-6">
-                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                  Step 3: Authorisation & <span className="text-orange-500">Payment</span>
-                </h2>
-                <p className="text-gray-600 text-lg">
-                  Once approved
-                </p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">You'll receive an INSTANT confirmation of your claim</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">We pay your MECHANIC directly so there's no upfront cost for you</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Right Side - Illustration */}
-              <div className="flex justify-center">
-                <img 
-                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
-                  alt="Payment illustration" 
-                  className="w-full max-w-md h-auto"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Why Choose Us */}
-        <section className="py-12 lg:py-16 px-4 bg-white">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              {/* Left Side - Illustration */}
-              <div className="flex justify-center order-2 lg:order-1">
-                <img 
-                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
-                  alt="Why choose us illustration" 
-                  className="w-full max-w-md h-auto"
-                />
-              </div>
-              
-              {/* Right Side - Content */}
-              <div className="space-y-6 order-1 lg:order-2">
-                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                  Why <span className="text-orange-500">Choose</span> Us?
-                </h2>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Quick Response</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">We pick up your vehicle from your place</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">Expert mechanics</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-500 rounded-full p-1">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-gray-700">24/7 breakdown cover</span>
-                  </div>
-                </div>
-              </div>
+        {/* Your Repair Limit Explained */}
+        <section className="py-12 lg:py-20 px-4 bg-white">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8">
+              Your Repair Limit Explained
+            </h2>
+            <div className="space-y-6 text-lg text-gray-600">
+              <p>
+                Your maximum repair limit is clearly outlined in your warranty email and in your online account. If a repair goes over your limit, you can simply top it up.
+              </p>
+              <p>
+                In our experience, that's very rare, especially if you've chosen a claim limit that suits your vehicle and driving habits.
+              </p>
+              <p className="text-gray-900 font-semibold text-xl">
+                We cover what we promise - no hidden surprises.
+              </p>
             </div>
           </div>
         </section>
