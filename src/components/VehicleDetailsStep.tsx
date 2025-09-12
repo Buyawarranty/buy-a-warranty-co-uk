@@ -156,11 +156,30 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       }
 
       console.log('DVSA lookup result:', data);
+      
+      // Debug logging for blocked vehicles
+      if (data?.blocked) {
+        console.log('Vehicle blocked:', data.blockReason);
+      }
+      
       setVehicleData(data);
       
       if (data.found) {
         setVehicleFound(true);
+        
+        // Check if this is a blocked vehicle
+        if (data.blocked) {
+          console.log('Blocked vehicle detected:', data.blockReason);
+          toast({
+            title: "Vehicle Not Eligible",
+            description: data.blockReason || "This vehicle is not eligible for warranty coverage.",
+            variant: "destructive",
+          });
+          setShowManualEntry(false);
+          return;
+        }
       } else {
+        console.log('Vehicle not found in DVLA database for registration:', regNumber);
         // If vehicle not found, show manual entry
         setShowManualEntry(true);
       }

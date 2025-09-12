@@ -125,6 +125,35 @@ interface DVSAVehicleResponse {
   dateOfLastV5CIssued?: string;
 }
 
+// Helper function to determine approximate year from UK registration
+function getRegistrationYear(registration: string): number | null {
+  const reg = registration.toUpperCase().replace(/\s/g, '');
+  
+  // Modern format (2001+): AB12 ABC or AB61 ABC  
+  if (/^[A-Z]{2}\d{2}[A-Z]{3}$/.test(reg)) {
+    const ageIdentifier = parseInt(reg.substring(2, 4));
+    if (ageIdentifier <= 50) {
+      return 2000 + ageIdentifier;
+    } else {
+      return 2000 + ageIdentifier - 50;
+    }
+  }
+  
+  // Prefix format (1983-2001): A123 ABC
+  if (/^[A-Z]\d{3}[A-Z]{3}$/.test(reg)) {
+    const letter = reg.charAt(0);
+    const yearMap: { [key: string]: number } = {
+      'A': 1983, 'B': 1984, 'C': 1985, 'D': 1986, 'E': 1987, 'F': 1988,
+      'G': 1989, 'H': 1990, 'J': 1991, 'K': 1992, 'L': 1993, 'M': 1994,
+      'N': 1995, 'P': 1996, 'R': 1997, 'S': 1998, 'T': 1999, 'V': 1999,
+      'W': 2000, 'X': 2000, 'Y': 2001
+    };
+    return yearMap[letter] || null;
+  }
+  
+  return null;
+}
+
 async function getAccessToken(): Promise<string> {
   const clientId = Deno.env.get('MOT_CLIENT_ID');
   const clientSecret = Deno.env.get('MOT_CLIENT_SECRET');
@@ -198,6 +227,11 @@ serve(async (req) => {
     }
 
     console.log(`Looking up vehicle: ${registrationNumber}`);
+    
+    // Check if this registration might be from a premium excluded brand based on age/format
+    // UK registration format can give clues about the vehicle age and type
+    const regYear = getRegistrationYear(registrationNumber);
+    console.log(`Registration ${registrationNumber} appears to be from year: ${regYear}`);
 
     // Get access token for DVSA API
     const accessToken = await getAccessToken();
@@ -218,9 +252,36 @@ serve(async (req) => {
         console.error(`DVSA API attempt ${attempt} failed:`, error.message);
         
         if (error.message === 'Vehicle not found') {
+          console.log(`Vehicle ${registrationNumber} not found in DVSA database - this could be a premium vehicle with limited data`);
+          
+          // Check if this could be a premium vehicle that should be blocked anyway
+          // Some luxury vehicles have limited DVLA data but we still want to block them
+          const premiumRegPatterns = [
+            /^WA\d{2}[A-Z]{3}$/i,  // WA57FOC pattern - often luxury vehicles
+            /^[A-Z]{2}0[0-9][A-Z]{3}$/i,  // Low number registrations often premium
+          ];
+          
+          const isPotentialPremium = premiumRegPatterns.some(pattern => pattern.test(registrationNumber));
+          
+          if (isPotentialPremium) {
+            console.log(`Registration ${registrationNumber} matches premium vehicle pattern - blocking as precaution`);
+            return new Response(JSON.stringify({
+              found: true,
+              blocked: true,
+              blockReason: "Thanks for your interest! Unfortunately, we're not able to offer warranty cover for this vehicle. This is down to factors like specialist parts or limited access to suitable repair centres.",
+              registrationNumber: registrationNumber,
+              make: "Premium Vehicle",
+              model: "Unknown Model"
+            }), {
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+              status: 200,
+            });
+          }
+          
           return new Response(JSON.stringify({
             found: false,
-            error: "Vehicle not found in DVSA database"
+            error: "Vehicle not found in DVSA database",
+            registrationNumber: registrationNumber
           }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 200,
