@@ -1570,8 +1570,9 @@ export const CustomersTab = () => {
             </div>
           </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <Table>
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table className="min-w-[1800px]">
           <TableHeader>
             <TableRow>
               <TableHead className="w-12">
@@ -2306,6 +2307,7 @@ export const CustomersTab = () => {
             )}
           </TableBody>
         </Table>
+          </div>
         </div>
         </TabsContent>
 
