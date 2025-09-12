@@ -370,12 +370,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       
       if (periodData && periodData[voluntaryExcess.toString()]) {
         const priceData = periodData[voluntaryExcess.toString()];
-        let fullPrice = priceData.price || 0;
+        let basePrice = priceData.price || 0;
         
-        console.log('Found price in matrix:', { fullPrice, priceData });
+        console.log('Found price in matrix:', { basePrice, priceData });
         
-        // Database pricing matrix stores the correct total price for each period
-        return fullPrice;
+        // Apply vehicle adjustments (SUV/van, Range Rover, etc.) to the base price
+        const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+        
+        console.log('Vehicle adjustment applied:', { 
+          basePrice, 
+          adjustedPrice, 
+          adjustment: vehiclePriceAdjustment 
+        });
+        
+        return adjustedPrice;
       } else {
         console.log('No price found in matrix for:', { dbKey, voluntaryExcess: voluntaryExcess.toString() });
       }
@@ -542,8 +550,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const firstInstallment = standardMonthlyInstallment + oneTimeAddonTotal;
       
       // Total price calculation with vehicle adjustments applied
-      const adjustedBasePrice = calculateAdjustedPriceForDisplay(basePrice);
-      const totalPrice = adjustedBasePrice + (planAddOnPrice * durationMonths) + recurringAddonTotal + oneTimeAddonTotal;
+      const totalPrice = basePrice + (planAddOnPrice * durationMonths) + recurringAddonTotal + oneTimeAddonTotal;
       
       // Don't allow progression if vehicle is too old
       if (vehicleAgeError) {
@@ -556,7 +563,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         planName: selectedPlan.name,
         paymentType,
         basePrice,
-        adjustedBasePrice,
         monthlyBasePrice,
         recurringAddonTotal,
         oneTimeAddonTotal,
@@ -1203,12 +1209,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 if (!selectedPlanBackup) return null;
                 
                 let basePrice = 0;
+                let isFromDatabase = false;
                 // Try database pricing matrix first
                 if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
                   const matrix = selectedPlanBackup.pricing_matrix as any;
                   const periodData = matrix['12'];
                   if (periodData && periodData[voluntaryExcess.toString()]) {
                     basePrice = periodData[voluntaryExcess.toString()].price || 0;
+                    isFromDatabase = true;
                   }
                 }
                 
@@ -1220,7 +1228,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   basePrice = monthlyPrice * 12;
                 }
                 
-                const totalPrice = calculateAdjustedPriceForDisplay(basePrice);
+                // Only apply vehicle adjustments if using hardcoded pricing (database pricing already includes adjustments)
+                const totalPrice = isFromDatabase ? basePrice : calculateAdjustedPriceForDisplay(basePrice);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 12) * 100) / 100;
 
                 return (
@@ -1290,14 +1299,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 
                 let basePrice = 0;
                 let savings = 0;
+                let isFromDatabase = false;
                 
                 // Try database pricing matrix first
                 if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
                   const matrix = selectedPlanBackup.pricing_matrix as any;
                   const periodData = matrix['24'];
                   if (periodData && periodData[voluntaryExcess.toString()]) {
-                    basePrice = periodData[voluntaryExcess.toString()].price || 0;
-                    savings = periodData[voluntaryExcess.toString()].save || 0;
+                    const priceData = periodData[voluntaryExcess.toString()];
+                    basePrice = priceData.price || 0;
+                    savings = priceData.save || 0;
+                    isFromDatabase = true;
                   }
                 }
                 
@@ -1310,7 +1322,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   basePrice = monthlyPrice * 24;
                 }
                 
-                const totalPrice = calculateAdjustedPriceForDisplay(basePrice);
+                // Only apply vehicle adjustments if using hardcoded pricing (database pricing already includes adjustments)
+                const totalPrice = isFromDatabase ? basePrice : calculateAdjustedPriceForDisplay(basePrice);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 24) * 100) / 100;
 
                 return (
@@ -1386,14 +1399,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 
                 let basePrice = 0;
                 let savings = 0;
+                let isFromDatabase = false;
                 
                 // Try database pricing matrix first
                 if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
                   const matrix = selectedPlanBackup.pricing_matrix as any;
                   const periodData = matrix['36'];
                   if (periodData && periodData[voluntaryExcess.toString()]) {
-                    basePrice = periodData[voluntaryExcess.toString()].price || 0;
-                    savings = periodData[voluntaryExcess.toString()].save || 0;
+                    const priceData = periodData[voluntaryExcess.toString()];
+                    basePrice = priceData.price || 0;
+                    savings = priceData.save || 0;
+                    isFromDatabase = true;
                   }
                 }
                 
@@ -1406,7 +1422,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   basePrice = monthlyPrice * 36;
                 }
                 
-                const totalPrice = calculateAdjustedPriceForDisplay(basePrice);
+                // Only apply vehicle adjustments if using hardcoded pricing (database pricing already includes adjustments)
+                const totalPrice = isFromDatabase ? basePrice : calculateAdjustedPriceForDisplay(basePrice);
                 const adjustedMonthlyPrice = Math.round((totalPrice / 36) * 100) / 100;
 
                 return (
@@ -1481,32 +1498,31 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <div className="space-y-2">
                     {/* Current Price Display */}
                     <div className="text-3xl font-bold text-orange-600">
-                       £{(() => {
-                          const selectedPlan = getSelectedPlan();
-                          if (!selectedPlan) return calculatePlanPrice();
-                          const basePrice = calculatePlanPrice();
-                          const adjustedBasePrice = calculateAdjustedPriceForDisplay(basePrice); // Apply vehicle adjustments
-                         
-                         // Get duration for add-on calculations
-                         const durationMonths = paymentType === '12months' ? 12 : 
-                                               paymentType === '24months' ? 24 : 
-                                               paymentType === '36months' ? 36 : 12;
-                         
-                         // Calculate add-on prices correctly for selected duration
-                         const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                         const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
-                         
-                         // Protection addon prices: monthly add-ons converted to selected duration + one-time
-                         let protectionPrice = 0;
-                         if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                         if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * durationMonths; // £6/mo * duration
-                         if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                         if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                         if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
-                         if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
-                         
-                         return adjustedBasePrice + planAddOnPrice + protectionPrice;
-                       })()}
+                        £{(() => {
+                           const selectedPlan = getSelectedPlan();
+                           if (!selectedPlan) return calculatePlanPrice();
+                           const basePrice = calculatePlanPrice();
+                          
+                          // Get duration for add-on calculations
+                          const durationMonths = paymentType === '12months' ? 12 : 
+                                                paymentType === '24months' ? 24 : 
+                                                paymentType === '36months' ? 36 : 12;
+                          
+                          // Calculate add-on prices correctly for selected duration
+                          const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
+                          const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
+                          
+                          // Protection addon prices: monthly add-ons converted to selected duration + one-time
+                          let protectionPrice = 0;
+                          if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                          if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * durationMonths; // £6/mo * duration
+                          if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                          if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                          if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
+                          if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
+                          
+                          return basePrice + planAddOnPrice + protectionPrice;
+                        })()}
                       <span className="text-sm font-normal text-gray-600 ml-2">total</span>
                     </div>
                     
@@ -1516,30 +1532,29 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           const selectedPlan = getSelectedPlan();
                           if (!selectedPlan) return null;
                           
-                          const basePrice = calculatePlanPrice();
-                          const adjustedBasePrice = calculateAdjustedPriceForDisplay(basePrice); // Apply vehicle adjustments
-                          const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                          
-                          // Get duration for calculations
-                          const durationMonths = paymentType === '12months' ? 12 : 
-                                                paymentType === '24months' ? 24 : 
-                                                paymentType === '36months' ? 36 : 12;
-                          
-                          const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
-                          
-                          // Protection add-ons: Monthly add-ons calculated for duration, Transfer is one-time
-                          let recurringAddonTotal = 0;
-                          let hasTransfer = false;
-                          
-                          if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                          if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
-                          if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                          if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                          if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
-                          if (selectedProtectionAddOns.transfer) hasTransfer = true;
-                          
-                          // Calculate monthly amounts
-                          const monthlyBasePrice = Math.round(adjustedBasePrice / durationMonths * 100) / 100;
+                           const basePrice = calculatePlanPrice();
+                           const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
+                           
+                           // Get duration for calculations
+                           const durationMonths = paymentType === '12months' ? 12 : 
+                                                 paymentType === '24months' ? 24 : 
+                                                 paymentType === '36months' ? 36 : 12;
+                           
+                           const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
+                           
+                           // Protection add-ons: Monthly add-ons calculated for duration, Transfer is one-time
+                           let recurringAddonTotal = 0;
+                           let hasTransfer = false;
+                           
+                           if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                           if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
+                           if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                           if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                           if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
+                           if (selectedProtectionAddOns.transfer) hasTransfer = true;
+                           
+                           // Calculate monthly amounts
+                           const monthlyBasePrice = Math.round(basePrice / durationMonths * 100) / 100;
                          const monthlyRecurringAddons = Math.round(recurringAddonTotal / durationMonths * 100) / 100;
                          const monthlyTransferFee = hasTransfer ? Math.round(30 / durationMonths * 100) / 100 : 0;
                          const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons + monthlyTransferFee;
@@ -1595,8 +1610,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <div className="flex items-center space-x-6 text-sm">
                  {(() => {
                     const selectedPlan = getSelectedPlan();
-                    const basePlanPrice = calculatePlanPrice();
-                    const planPrice = calculateAdjustedPriceForDisplay(basePlanPrice); // Apply vehicle adjustments
+                    const planPrice = calculatePlanPrice(); // Price already includes vehicle adjustments
                     const addOnPrice = calculateAddOnPrice(selectedPlan?.id || '');
                     const totalPrice = planPrice + addOnPrice;
                     const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
