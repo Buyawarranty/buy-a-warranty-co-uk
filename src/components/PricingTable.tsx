@@ -89,7 +89,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Ensure vehicleType is normalized for adjustment logic (fixes motorbike detection)
     const vtLocal = normalizeVehicleType(vehicleData?.vehicleType);
     const adjustedVehicleData = { ...vehicleData, vehicleType: vtLocal } as typeof vehicleData;
-    const adjustment = calculateVehiclePriceAdjustment(adjustedVehicleData as any, warrantyYears);
+    let adjustment = calculateVehiclePriceAdjustment(adjustedVehicleData as any, warrantyYears);
+
+    // Safety: if normalized type is motorbike but adjustment didn't apply, enforce 50% discount
+    if (vtLocal === 'motorbike' && !(adjustment.adjustmentAmount < 0 && adjustment.adjustmentAmount > -1)) {
+      adjustment = {
+        isValid: true,
+        adjustmentAmount: -0.5,
+        adjustmentType: 'motorbike_discount',
+        breakdown: [{ baseAdjustment: -0.5, adjustmentReason: 'Motorbike 50% discount enforced (fallback)' }]
+      } as any;
+    }
+
     console.log('🚗 Vehicle Price Adjustment Calculation:', {
       vehicleData: adjustedVehicleData,
       originalVehicleType: vehicleData?.vehicleType,
