@@ -325,7 +325,7 @@ const Auth = () => {
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      How You're Protected
+                      What's Covered
                     </a>
                     <a 
                       href="/make-a-claim" 
