@@ -90,6 +90,15 @@ serve(async (req) => {
     } else {
       logStep("Customer record created successfully", { customerId: customerData2.id });
       
+      // Extract add-ons data from metadata
+      const addOnsData = {
+        tyre_cover: metadata.addon_tyre_cover === 'true',
+        wear_tear: metadata.addon_wear_tear === 'true',
+        europe_cover: metadata.addon_europe_cover === 'true', 
+        transfer_cover: metadata.addon_transfer_cover === 'true',
+        mot_fee: metadata.addon_mot_cover === 'true'
+      };
+
       // Create policy record
       const policyRecord = {
         customer_id: customerData2.id,
@@ -100,7 +109,9 @@ serve(async (req) => {
         policy_number: warrantyReference,
         policy_start_date: new Date().toISOString(),
         policy_end_date: calculatePolicyEndDate(paymentType),
-        status: 'active'
+        status: 'active',
+        // Include add-ons
+        ...addOnsData
       };
 
       const { error: policyError } = await supabaseClient

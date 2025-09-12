@@ -33,8 +33,8 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { planName, paymentType, voluntaryExcess = 0, vehicleData, customerData, discountCode, finalAmount, addAnotherWarrantyEnabled } = body;
-    logStep("Request data", { planName, paymentType, voluntaryExcess, discountCode, finalAmount });
+    const { planName, paymentType, voluntaryExcess = 0, vehicleData, customerData, discountCode, finalAmount, addAnotherWarrantyEnabled, protectionAddOns } = body;
+    logStep("Request data", { planName, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns });
     
     // Use planName for pricing lookup (basic, gold, platinum)
     const planType = planName?.toLowerCase() || 'basic';
@@ -193,7 +193,14 @@ serve(async (req) => {
         vehicle_type: vehicleData?.vehicleType || 'standard',
         discount_code: discountCode || '',
         voluntary_excess: voluntaryExcess?.toString() || '0',
-        final_amount: finalAmount?.toString() || totalAmount?.toString()
+        final_amount: finalAmount?.toString() || totalAmount?.toString(),
+        // Add-ons data
+        addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
+        addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
+        addon_europe_cover: protectionAddOns?.european ? 'true' : 'false',
+        addon_transfer_cover: protectionAddOns?.transfer ? 'true' : 'false',
+        addon_breakdown_cover: protectionAddOns?.breakdown ? 'true' : 'false',
+        addon_mot_cover: protectionAddOns?.motRepair ? 'true' : 'false'
       },
       automatic_tax: { enabled: false },
       billing_address_collection: 'required',

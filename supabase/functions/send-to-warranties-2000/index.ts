@@ -322,7 +322,13 @@ serve(async (req) => {
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: (customer.voluntary_excess || 0).toString(),
-      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`
+      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`,
+      // Include add-ons from policy data
+      mot_fee: policy?.mot_fee || false,
+      tyre_cover: policy?.tyre_cover || false,
+      wear_tear: policy?.wear_tear || false,
+      europe_cover: policy?.europe_cover || false,
+      transfer_cover: policy?.transfer_cover || false
     };
 
     console.log(`[WARRANTIES-2000] Sending registration data:`, {

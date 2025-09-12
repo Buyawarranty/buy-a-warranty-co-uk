@@ -65,7 +65,17 @@ serve(async (req) => {
     const finalAmount = parseFloat(url.searchParams.get('final_amount') || '0');
     const originalPaymentType = url.searchParams.get('original_payment_type');
     const sessionId = `bumper_${Date.now()}`; // Generate session ID for Bumper orders
-    logStep("Processing Bumper payment", { planId, paymentType, hasCustomerData: !!customerData, hasVehicleData: !!vehicleData });
+    
+    // Extract add-ons data from URL parameters
+    const addOnsData = {
+      tyre_cover: url.searchParams.get('addon_tyre_cover') === 'true',
+      wear_tear: url.searchParams.get('addon_wear_tear') === 'true',
+      europe_cover: url.searchParams.get('addon_europe_cover') === 'true',
+      transfer_cover: url.searchParams.get('addon_transfer_cover') === 'true',
+      mot_fee: url.searchParams.get('addon_mot_cover') === 'true'
+    };
+    
+    logStep("Processing Bumper payment", { planId, paymentType, hasCustomerData: !!customerData, hasVehicleData: !!vehicleData, addOnsData });
 
     if (!planId) {
       throw new Error("Plan ID is required");
@@ -258,7 +268,9 @@ serve(async (req) => {
         bumper_order_id: sessionId,
         policy_start_date: startDate.toISOString(),
         policy_end_date: endDate.toISOString(),
-        status: 'active'
+        status: 'active',
+        // Include add-ons
+        ...addOnsData
       })
       .select()
       .single();
