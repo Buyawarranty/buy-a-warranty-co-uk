@@ -11,7 +11,7 @@ const Protected = () => {
   return (
     <>
       <SEOHead
-        title="What's Covered - Buy A Warranty"
+        title="How You're Protected - Buy A Warranty"
         description="Discover comprehensive vehicle protection with fair, transparent warranty coverage. Quick repairs, trusted service centers, and stress-free claims process."
       />
       
@@ -32,7 +32,7 @@ const Protected = () => {
                 <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</Link>
                 <Link to="/protected" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</Link>
                 <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</Link>
-                <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
+                <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</Link>
                 <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</Link>
               </nav>
 
@@ -91,7 +91,7 @@ const Protected = () => {
                         className="text-orange-500 hover:text-orange-600 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        What's Covered
+                        How You're Protected
                       </a>
                       <a 
                         href="/make-a-claim" 
@@ -105,7 +105,7 @@ const Protected = () => {
                         className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                         FAQs
+                        FAQ
                       </a>
                       <a 
                         href="/contact-us" 
