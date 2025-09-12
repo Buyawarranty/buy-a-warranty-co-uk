@@ -31,7 +31,7 @@ const Terms = () => {
                 <a href="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</a>
                 <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</a>
                 <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</a>
-                <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQ</a>
+                <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</a>
                 <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</a>
               </nav>
 
@@ -90,7 +90,7 @@ const Terms = () => {
                         className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        How You're Protected
+                        What's Covered
                       </a>
                       <a 
                         href="/make-a-claim" 
@@ -104,7 +104,7 @@ const Terms = () => {
                         className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        FAQ
+                         FAQs
                       </a>
                       <a 
                         href="/contact-us" 
