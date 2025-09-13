@@ -475,7 +475,8 @@ const Index = () => {
   };
 
   // Check if vehicle is a special type - only motorbikes use the special pricing interface
-  const isSpecialVehicle = vehicleData?.vehicleType && ['MOTORBIKE'].includes(vehicleData.vehicleType);
+  const isSpecialVehicle = vehicleData?.vehicleType && 
+    ['MOTORBIKE', 'motorbike', 'motorcycle', 'moped', 'scooter'].includes(vehicleData.vehicleType);
 
   return (
     <div className="min-h-screen overflow-x-hidden w-full">
