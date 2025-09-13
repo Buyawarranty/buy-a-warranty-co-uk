@@ -266,6 +266,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                 tyre: item.pricingData.selectedAddOns?.tyre || false,
                 wearTear: item.pricingData.selectedAddOns?.wearTear || false,
                 european: item.pricingData.selectedAddOns?.european || false,
+                breakdown: item.pricingData.selectedAddOns?.breakdown || false,
+                rental: item.pricingData.selectedAddOns?.rental || false,
                 transfer: item.pricingData.selectedAddOns?.transfer || false
               },
               totalPrice: item.pricingData.totalPrice
@@ -295,6 +297,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                   tyre: item.pricingData.selectedAddOns?.tyre || false,
                   wearTear: item.pricingData.selectedAddOns?.wearTear || false,
                   european: item.pricingData.selectedAddOns?.european || false,
+                  breakdown: item.pricingData.selectedAddOns?.breakdown || false,
+                  rental: item.pricingData.selectedAddOns?.rental || false,
                   transfer: item.pricingData.selectedAddOns?.transfer || false
                 },
                 totalPrice: item.pricingData.totalPrice
@@ -327,12 +331,14 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               voluntaryExcess: item.pricingData.voluntaryExcess,
               vehicleData: item.vehicleData,
               selectedAddOns: item.pricingData.selectedAddOns,
-              protectionAddOns: {
-                tyre: item.pricingData.selectedAddOns?.tyre || false,
-                wearTear: item.pricingData.selectedAddOns?.wearTear || false,
-                european: item.pricingData.selectedAddOns?.european || false,
-                transfer: item.pricingData.selectedAddOns?.transfer || false
-              },
+            protectionAddOns: {
+              tyre: item.pricingData.selectedAddOns?.tyre || false,
+              wearTear: item.pricingData.selectedAddOns?.wearTear || false,
+              european: item.pricingData.selectedAddOns?.european || false,
+              breakdown: item.pricingData.selectedAddOns?.breakdown || false,
+              rental: item.pricingData.selectedAddOns?.rental || false,
+              transfer: item.pricingData.selectedAddOns?.transfer || false
+            },
               totalPrice: item.pricingData.totalPrice
             })),
             customerData: customerData,
@@ -622,6 +628,53 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                         <span className="text-gray-600">Voluntary Excess:</span>
                         <span className="text-gray-900 font-medium">£{item.pricingData.voluntaryExcess}</span>
                       </div>
+
+                      {/* Add-ons Display */}
+                      {item.pricingData.selectedAddOns && Object.values(item.pricingData.selectedAddOns).some(Boolean) && (
+                        <div className="pt-4 border-t border-gray-100">
+                          <div className="mb-2">
+                            <span className="text-gray-600 font-medium">Add-on Protection:</span>
+                          </div>
+                          <div className="space-y-1">
+                            {item.pricingData.selectedAddOns.tyre && (
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <span className="text-green-600">✓</span>
+                                <span>Tyre Cover</span>
+                              </div>
+                            )}
+                            {item.pricingData.selectedAddOns.wearTear && (
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <span className="text-green-600">✓</span>
+                                <span>Wear & Tear</span>
+                              </div>
+                            )}
+                            {item.pricingData.selectedAddOns.european && (
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <span className="text-green-600">✓</span>
+                                <span>European Cover</span>
+                              </div>
+                            )}
+                            {item.pricingData.selectedAddOns.breakdown && (
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <span className="text-green-600">✓</span>
+                                <span>Breakdown Recovery</span>
+                              </div>
+                            )}
+                            {item.pricingData.selectedAddOns.rental && (
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <span className="text-green-600">✓</span>
+                                <span>Vehicle Rental</span>
+                              </div>
+                            )}
+                            {item.pricingData.selectedAddOns.transfer && (
+                              <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <span className="text-green-600">✓</span>
+                                <span>Transfer Cover</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Separator line between warranties */}
