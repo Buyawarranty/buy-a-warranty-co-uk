@@ -219,17 +219,55 @@ serve(async (req) => {
       'basic': 'B-BASIC',
       'gold': 'B-GOLD', 
       'platinum': 'B-PLATINUM',
+      'premium': 'B-GOLD', // Premium plan maps to B-GOLD
       'electric': 'B-EV',
       'ev': 'B-EV',
+      'electric vehicle ev extended warranty': 'B-EV',
       'phev': 'B-PHEV',
       'hybrid': 'B-PHEV',
+      'phev hybrid extended warranty': 'B-PHEV',
       'motorbike': 'B-MOTORBIKE',
-      'motorcycle': 'B-MOTORBIKE'
+      'motorcycle': 'B-MOTORBIKE',
+      'motorbike extended warranty': 'B-MOTORBIKE'
     };
 
     // Use policy data if available, otherwise fall back to customer data
-    const planType = (policy?.plan_type || customer.plan_type || 'basic').toLowerCase();
-    const warrantyType = warrantyTypeMapping[planType] || 'B-BASIC';
+    let planType = (policy?.plan_type || customer.plan_type || 'basic').toLowerCase();
+    
+    // CRITICAL FIX: Override incorrect plan types based on actual vehicle type
+    // If plan type says "motorbike" but vehicle is clearly not a motorbike, correct it
+    const vehicleMake = customer.vehicle_make?.toLowerCase() || '';
+    const vehicleModel = customer.vehicle_model?.toLowerCase() || '';
+    
+    // Check if this is actually a motorbike/motorcycle
+    const isActualMotorbike = vehicleMake.includes('yamaha') || vehicleMake.includes('honda') || 
+                             vehicleMake.includes('kawasaki') || vehicleMake.includes('suzuki') ||
+                             vehicleMake.includes('ducati') || vehicleMake.includes('bmw') ||
+                             vehicleMake.includes('harley') || vehicleMake.includes('triumph') ||
+                             vehicleModel.includes('bike') || vehicleModel.includes('scooter');
+    
+    // Check if this is a commercial vehicle (should use premium/gold)
+    const isCommercialVehicle = vehicleMake.includes('mercedes') || vehicleMake.includes('ford') ||
+                               vehicleMake.includes('transit') || vehicleMake.includes('sprinter') ||
+                               vehicleModel.includes('transit') || vehicleModel.includes('sprinter') ||
+                               vehicleModel.includes('van') || vehicleModel.includes('commercial');
+    
+    // Override incorrect plan types
+    if (planType.includes('motorbike') && !isActualMotorbike) {
+      console.log(`[WARRANTIES-2000] CORRECTING: Vehicle ${vehicleMake} ${vehicleModel} incorrectly classified as motorbike, changing to premium`);
+      planType = 'premium'; // Default commercial vehicles to premium plan
+    }
+    
+    console.log(`[WARRANTIES-2000] Plan type determination:`, {
+      originalPlanType: policy?.plan_type || customer.plan_type,
+      correctedPlanType: planType,
+      vehicleMake: vehicleMake,
+      vehicleModel: vehicleModel,
+      isActualMotorbike,
+      isCommercialVehicle
+    });
+
+    const warrantyType = warrantyTypeMapping[planType] || 'B-GOLD'; // Default to B-GOLD for commercial vehicles
 
     // Calculate coverage months using the master function from warrantyDurationUtils
     const paymentType = policy?.payment_type || customer.payment_type || 'yearly';
