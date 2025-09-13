@@ -223,13 +223,24 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                         <div className="mt-4">
                           <div className="text-sm font-medium text-gray-700 mb-2">Add-ons:</div>
                           <div className="flex flex-wrap gap-2">
-                            {Object.entries(item.pricingData.selectedAddOns).map(([addon, selected]) => 
-                              selected && (
+                            {Object.entries(item.pricingData.selectedAddOns).map(([addon, selected]) => {
+                              if (!selected) return null;
+                              
+                              const addOnNames: {[key: string]: string} = {
+                                'tyre': 'Tyre Cover',
+                                'wearTear': 'Wear & Tear',
+                                'european': 'European Cover',
+                                'breakdown': 'Breakdown Recovery',
+                                'rental': 'Vehicle Rental',
+                                'transfer': 'Transfer Cover'
+                              };
+                              
+                              return (
                                 <Badge key={addon} variant="secondary" className="text-xs">
-                                  {addon.replace(/([A-Z])/g, ' $1').trim()}
+                                  {addOnNames[addon] || addon}
                                 </Badge>
-                              )
-                            )}
+                              );
+                            })}
                           </div>
                         </div>
                       )}
