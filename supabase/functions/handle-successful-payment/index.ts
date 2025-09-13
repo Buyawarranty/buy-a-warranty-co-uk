@@ -74,6 +74,7 @@ serve(async (req) => {
       original_amount: customerData?.original_amount || null,
       final_amount: customerData?.final_amount || null,
       voluntary_excess: vehicleData?.voluntaryExcess || 0,
+      claim_limit: metadata?.claim_limit || customerData?.claimLimit || metadata?.claimLimit || '1250', // Add claim limit
       warranty_reference_number: warrantyReference
     };
 
@@ -96,6 +97,8 @@ serve(async (req) => {
         wear_tear: metadata?.addon_wear_tear === 'true',
         europe_cover: metadata?.addon_europe_cover === 'true', 
         transfer_cover: metadata?.addon_transfer_cover === 'true',
+        breakdown_recovery: metadata?.addon_breakdown_recovery === 'true', // Add new add-ons
+        vehicle_rental: metadata?.addon_vehicle_rental === 'true',
         mot_fee: metadata?.addon_mot_cover === 'true'
       };
 
@@ -110,6 +113,7 @@ serve(async (req) => {
         policy_start_date: new Date().toISOString(),
         policy_end_date: calculatePolicyEndDate(paymentType),
         status: 'active',
+        max_claim_amount: metadata?.claim_limit || customerData?.claimLimit || '1250', // Add claim limit to policy
         // Include add-ons
         ...addOnsData
       };

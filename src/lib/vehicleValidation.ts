@@ -106,11 +106,12 @@ function checkIfMotorbike(make: string, model: string, vehicleType: string): boo
   const commercialPatterns = [
     /\btransit\b/i, /\bsprinter\b/i, /\bcrafter\b/i, /\bmaster\b/i, /\bmovano\b/i,
     /\bvivaro\b/i, /\btrafic\b/i, /\bducato\b/i, /\bberlingo\b/i, /\bpartner\b/i,
-    /\bdaily\b/i, /\bconnect\b/i, /\bcourrier\b/i, /\bcaddy\b/i, /\bamarok\b/i
+    /\bdaily\b/i, /\bconnect\b/i, /\bcourrier\b/i, /\bcaddy\b/i, /\bamarok\b/i,
+    /\bcustom\b/i // Add "custom" pattern for Ford Transit Custom
   ];
   
   if (commercialPatterns.some(pattern => pattern.test(modelLC))) {
-    console.log('Commercial vehicle model pattern detected:', modelLC);
+    console.log('Commercial vehicle model pattern detected (NOT MOTORBIKE):', modelLC);
     return false;
   }
 

@@ -38,6 +38,7 @@ interface CustomerDetailsStepProps {
     voluntaryExcess: number;
     selectedAddOns: {[addon: string]: boolean};
     protectionAddOns?: {[key: string]: boolean};
+    claimLimit?: number;
     installmentBreakdown?: {
       firstInstallment: number;
       standardInstallment: number;
@@ -657,10 +658,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <span className="text-gray-600">Plan:</span>
                             <span className="font-semibold">Platinum</span>
                           </div>
-                         <div className="flex justify-between">
-                           <span className="text-gray-600">Claim Limit:</span>
-                           <span className="font-semibold">£{getClaimLimitAmount(selectedClaimLimit).toLocaleString()}</span>
-                         </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Claim Limit:</span>
+                            <span className="font-semibold">£{pricingData?.claimLimit?.toLocaleString() || getClaimLimitAmount(selectedClaimLimit).toLocaleString()}</span>
+                          </div>
                          <div className="flex justify-between">
                            <span className="text-gray-600">Cover period:</span>
                            <span className="font-semibold">

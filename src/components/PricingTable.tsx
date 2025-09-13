@@ -61,6 +61,7 @@ interface PricingTableProps {
     voluntaryExcess: number, 
     selectedAddOns: {[addon: string]: boolean}, 
     protectionAddOns?: {[key: string]: boolean},
+    claimLimit?: number,
     installmentBreakdown?: {
       firstInstallment: number,
       standardInstallment: number,
@@ -520,6 +521,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           voluntaryExcess,
           selectedAddOns: selectedAddOns[selectedPlan.id] || {},
           protectionAddOns: selectedProtectionAddOns,
+          claimLimit: selectedClaimLimit, // Add the selected claim limit
           // Add installment breakdown for step 3
           installmentBreakdown: {
             firstInstallment: firstInstallment,

@@ -276,19 +276,11 @@ serve(async (req) => {
     
     const coverageMonths = getWarrantyDurationInMonths(paymentType).toString();
 
-    // Calculate max claim amount based on plan type
-    const maxClaimMapping: Record<string, string> = {
-      'basic': '500',
-      'gold': '1000', 
-      'platinum': '1200',
-      'electric': '1500',
-      'phev': '1500',
-      'hybrid': '1500',
-      'motorbike': '750',
-      'motorcycle': '750'
-    };
-
-    const maxClaimAmount = maxClaimMapping[planType] || '500';
+    // Get claim limit from policy data (frontend sends the actual claim amount)
+    // The frontend claim limits are 750, 1250, 2000 - use the exact amount sent from frontend
+    const maxClaimAmount = policy?.max_claim_amount || customer?.claim_limit || '1250';
+    
+    console.log(`[WARRANTIES-2000] Using claim limit: ${maxClaimAmount}`);
 
     console.log(`[WARRANTIES-2000] Add-on debug:`, {
       policyAddOns: {

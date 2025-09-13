@@ -47,7 +47,19 @@ const Index = () => {
   
   // Initialize state variables first
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<{id: string, paymentType: string, name?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}}} | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<{
+    id: string, 
+    paymentType: string, 
+    name?: string, 
+    pricingData?: {
+      totalPrice: number, 
+      monthlyPrice: number, 
+      voluntaryExcess: number, 
+      selectedAddOns: {[addon: string]: boolean},
+      protectionAddOns?: {[key: string]: boolean},
+      claimLimit?: number
+    }
+  } | null>(null);
   const [formData, setFormData] = useState({
     regNumber: '',
     mileage: '',
@@ -407,7 +419,19 @@ const Index = () => {
     trackAbandonedCart(updatedData as VehicleData, 3);
   };
 
-  const handlePlanSelected = (planId: string, paymentType: string, planName?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}, protectionAddOns?: {[key: string]: boolean}}) => {
+  const handlePlanSelected = (
+    planId: string, 
+    paymentType: string, 
+    planName?: string, 
+    pricingData?: {
+      totalPrice: number, 
+      monthlyPrice: number, 
+      voluntaryExcess: number, 
+      selectedAddOns: {[addon: string]: boolean}, 
+      protectionAddOns?: {[key: string]: boolean},
+      claimLimit?: number
+    }
+  ) => {
     setSelectedPlan({ id: planId, paymentType, name: planName, pricingData });
     setCurrentStep(4); // Back to step 4 for customer details
     updateStepInUrl(4);
