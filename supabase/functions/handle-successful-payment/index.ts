@@ -75,7 +75,15 @@ serve(async (req) => {
       final_amount: customerData?.final_amount || null,
       voluntary_excess: vehicleData?.voluntaryExcess || 0,
       claim_limit: metadata?.claim_limit || customerData?.claimLimit || metadata?.claimLimit || '1250', // Add claim limit
-      warranty_reference_number: warrantyReference
+      warranty_reference_number: warrantyReference,
+      // Add addon data to customer record too
+      tyre_cover: metadata?.addon_tyre_cover === 'true',
+      wear_tear: metadata?.addon_wear_tear === 'true',
+      europe_cover: metadata?.addon_europe_cover === 'true', 
+      transfer_cover: metadata?.addon_transfer_cover === 'true',
+      breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
+      vehicle_rental: metadata?.addon_vehicle_rental === 'true',
+      mot_fee: metadata?.addon_mot_cover === 'true'
     };
 
     logStep("Creating customer record", customerRecord);
