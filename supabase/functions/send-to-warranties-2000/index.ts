@@ -342,11 +342,11 @@ serve(async (req) => {
         vehicle_rental: customer?.vehicle_rental
       },
       finalAddOns: {
-        TyreCover: (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'N',
-        WearTear: (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'N',
-        EuroCover: (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'N',
-        Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'N',
-        Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'N'
+        TyreCover: (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'Not sent',
+        WearTear: (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'Not sent',
+        EuroCover: (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'Not sent',
+        Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'Not sent',
+        Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'Not sent'
       }
     });
 
@@ -386,28 +386,25 @@ serve(async (req) => {
       // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
 
-    // Only add add-on fields if they are actually selected (Y) - omit when false to avoid API validation errors
-    if (policy?.tyre_cover === true || customer?.tyre_cover === true) {
-      registrationData.TyreCover = 'Y';
-    }
-    if (policy?.wear_tear === true || customer?.wear_tear === true) {
-      registrationData.WearTear = 'Y';
-    }
-    if (policy?.europe_cover === true || customer?.europe_cover === true) {
-      registrationData.EuroCover = 'Y';
-    }
-    if (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) {
-      registrationData.Recovery = 'Y';
-    }
-    if (policy?.vehicle_rental === true || customer?.vehicle_rental === true) {
-      registrationData.Rental = 'Y';
-    }
+    // W2000 API requires ALL add-on fields to be present with explicit Y/N values
+    registrationData.TyreCover = (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'N';
+    registrationData.WearTear = (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'N';
+    registrationData.EuroCover = (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'N';
+    registrationData.Recovery = (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'N';
+    registrationData.Rental = (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'N';
 
-    console.log(`[WARRANTIES-2000] Sending registration data:`, {
+    console.log(`[WARRANTIES-2000] Final registration data with add-ons:`, {
       regNum: registrationData.RegNum,
       warType: registrationData.WarType,
       customerEmail: registrationData.EMail,
-      ref: registrationData.Ref
+      ref: registrationData.Ref,
+      addOns: {
+        TyreCover: registrationData.TyreCover,
+        WearTear: registrationData.WearTear, 
+        EuroCover: registrationData.EuroCover,
+        Recovery: registrationData.Recovery,
+        Rental: registrationData.Rental
+      }
     });
 
     // Create basic auth header (same as working warranties-2000-registration function)
