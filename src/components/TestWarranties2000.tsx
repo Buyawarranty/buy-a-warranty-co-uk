@@ -38,12 +38,11 @@ const TestWarranties2000 = () => {
       Notes: "Test registration",
       Ref: "BAW-2501-400001",
       MOTDue: "2025-12-31",
-      // New coverage fields
-      mot_fee: true,
-      tyre_cover: true,
-      wear_tear: true,
-      europe_cover: false,
-      transfer_cover: true
+      // Add-ons using correct W2000 API field names and format
+      TyreCover: "Y", // Y/N format as expected by API
+      WearTear: "Y", // Y/N format as expected by API  
+      EuroCover: "N" // Y/N format as expected by API
+      // Note: Transfer cover excluded as per requirements
     };
     
     console.log('=== FIXING VALIDATION ERRORS ===');

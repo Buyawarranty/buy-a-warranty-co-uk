@@ -88,39 +88,62 @@ const MOTORBIKE_MODEL_PATTERNS = [
  * Enhanced motorbike detection using make, model, and vehicle type
  */
 function checkIfMotorbike(make: string, model: string, vehicleType: string): boolean {
-  // First check if it's explicitly NOT a motorbike
-  if (vehicleType.includes('car') || vehicleType.includes('van') || vehicleType.includes('truck') || 
-      vehicleType.includes('suv') || vehicleType.includes('estate') || vehicleType.includes('hatchback') ||
-      vehicleType.includes('saloon') || vehicleType.includes('coupe') || vehicleType.includes('convertible')) {
+  const makeLC = make?.toLowerCase().trim() || '';
+  const modelLC = model?.toLowerCase().trim() || '';
+  const vehicleTypeLC = vehicleType?.toLowerCase().trim() || '';
+  
+  console.log('=== MOTORBIKE DETECTION ===');
+  console.log('Input values:', { make, model, vehicleType });
+  console.log('Lowercase values:', { makeLC, modelLC, vehicleTypeLC });
+
+  // First check: If vehicleType explicitly indicates it's NOT a motorbike
+  if (vehicleTypeLC && ['van', 'truck', 'lorry', 'bus', 'coach', 'trailer', 'caravan', 'car'].includes(vehicleTypeLC)) {
+    console.log('Vehicle type indicates non-motorbike:', vehicleTypeLC);
     return false;
   }
+
+  // Second check: Explicit exclusion for commercial vehicles by model patterns
+  const commercialPatterns = [
+    /\btransit\b/i, /\bsprinter\b/i, /\bcrafter\b/i, /\bmaster\b/i, /\bmovano\b/i,
+    /\bvivaro\b/i, /\btrafic\b/i, /\bducato\b/i, /\bberlingo\b/i, /\bpartner\b/i,
+    /\bdaily\b/i, /\bconnect\b/i, /\bcourrier\b/i, /\bcaddy\b/i, /\bamarok\b/i
+  ];
   
-  // Check vehicle type for explicit motorbike indicators
-  if (vehicleType.includes('motor') || vehicleType.includes('bike') || vehicleType.includes('motorcycle')) {
+  if (commercialPatterns.some(pattern => pattern.test(modelLC))) {
+    console.log('Commercial vehicle model pattern detected:', modelLC);
+    return false;
+  }
+
+  // Third check: If vehicleType explicitly indicates it IS a motorbike
+  if (vehicleTypeLC && ['motorbike', 'motorcycle', 'moped', 'scooter', 'bike'].includes(vehicleTypeLC)) {
+    console.log('Vehicle type indicates motorbike:', vehicleTypeLC);
     return true;
   }
   
   // Only check make for motorbike-only manufacturers (exclude BMW as they make both cars and bikes)
   const motorbikeOnlyMakes = [
-    'yamaha', 'suzuki', 'kawasaki', 'ducati', 'ktm', 
+    'yamaha', 'kawasaki', 'ducati', 'ktm', 
     'harley-davidson', 'harley davidson', 'triumph', 'aprilia', 'mv agusta',
     'benelli', 'moto guzzi', 'indian', 'husqvarna', 'beta', 'sherco',
     'gas gas', 'royal enfield', 'norton', 'zero', 'energica'
   ];
   
   // For Honda and BMW, only check if model patterns strongly suggest motorbike
-  if (motorbikeOnlyMakes.includes(make)) {
+  if (motorbikeOnlyMakes.includes(makeLC)) {
+    console.log('Motorbike-only manufacturer detected:', makeLC);
     return true;
   }
   
   // For makes that produce both cars and bikes (Honda, BMW), require strong model evidence
-  if ((make === 'honda' || make === 'bmw') && vehicleType !== 'car' && vehicleType !== 'van') {
+  if ((makeLC === 'honda' || makeLC === 'bmw' || makeLC === 'suzuki') && vehicleTypeLC !== 'car' && vehicleTypeLC !== 'van') {
     const hasStrongMotorbikeModel = MOTORBIKE_MODEL_PATTERNS.some(pattern => 
-      model.toLowerCase().startsWith(pattern) || model.toLowerCase() === pattern
+      modelLC.startsWith(pattern) || modelLC === pattern
     );
+    console.log('Mixed manufacturer model check result:', hasStrongMotorbikeModel);
     return hasStrongMotorbikeModel;
   }
   
+  console.log('No motorbike indicators found, returning false');
   return false;
 }
 
