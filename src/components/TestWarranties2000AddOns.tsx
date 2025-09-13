@@ -39,6 +39,7 @@ const TestWarranties2000AddOns = () => {
         final_amount: 299,
         warranty_reference_number: `TEST-${Date.now()}`,
         status: 'Active',
+        claim_limit: 1250, // Test with 1250 claim limit
         // Add-ons - ALL SET TO TRUE for testing
         tyre_cover: true,
         wear_tear: true,
@@ -73,6 +74,7 @@ const TestWarranties2000AddOns = () => {
           policy_number: `POL-${Date.now()}`,
           status: 'active',
           policy_end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+          claim_limit: 1250, // Test with 1250 claim limit
           // Add-ons - ALL SET TO TRUE for testing
           tyre_cover: true,
           wear_tear: true,

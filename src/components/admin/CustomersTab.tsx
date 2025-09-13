@@ -472,7 +472,8 @@ export const CustomersTab = () => {
           transfer_cover: false,
           breakdown_recovery: false,
           vehicle_rental: false,
-          mot_fee: false
+          mot_fee: false,
+          claim_limit: 1250
         }));
         
         directData = [...directData, ...orphanedAsCustomers];

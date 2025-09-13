@@ -276,11 +276,17 @@ serve(async (req) => {
     
     const coverageMonths = getWarrantyDurationInMonths(paymentType).toString();
 
-    // Get claim limit from policy data (frontend sends the actual claim amount)
-    // The frontend claim limits are 750, 1250, 2000 - use the exact amount sent from frontend
-    const maxClaimAmount = policy?.max_claim_amount || customer?.claim_limit || '1250';
+    // Get claim limit from policy or customer data
+    // Valid claim limits are 750, 1250, 2000
+    const policyClaimLimit = policy?.claim_limit;
+    const customerClaimLimit = customer?.claim_limit;
+    const claimLimit = policyClaimLimit || customerClaimLimit || 1250;
     
-    console.log(`[WARRANTIES-2000] Using claim limit: ${maxClaimAmount}`);
+    // Ensure claim limit is one of the valid values, default to 1250 if invalid
+    const validClaimLimits = [750, 1250, 2000];
+    const maxClaimAmount = validClaimLimits.includes(claimLimit) ? claimLimit.toString() : '1250';
+    
+    console.log(`[WARRANTIES-2000] Using claim limit: ${maxClaimAmount} (Policy: ${policyClaimLimit}, Customer: ${customerClaimLimit})`);
 
     console.log(`[WARRANTIES-2000] Add-on debug:`, {
       policyAddOns: {

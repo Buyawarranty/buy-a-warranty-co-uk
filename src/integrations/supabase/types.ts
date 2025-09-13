@@ -516,6 +516,7 @@ export type Database = {
           address: Json | null
           breakdown_recovery: boolean | null
           bumper_order_id: string | null
+          claim_limit: number | null
           created_at: string
           customer_full_name: string | null
           customer_id: string | null
@@ -555,6 +556,7 @@ export type Database = {
           address?: Json | null
           breakdown_recovery?: boolean | null
           bumper_order_id?: string | null
+          claim_limit?: number | null
           created_at?: string
           customer_full_name?: string | null
           customer_id?: string | null
@@ -594,6 +596,7 @@ export type Database = {
           address?: Json | null
           breakdown_recovery?: boolean | null
           bumper_order_id?: string | null
+          claim_limit?: number | null
           created_at?: string
           customer_full_name?: string | null
           customer_id?: string | null
@@ -646,6 +649,7 @@ export type Database = {
           building_name: string | null
           building_number: string | null
           bumper_order_id: string | null
+          claim_limit: number | null
           country: string | null
           county: string | null
           created_at: string
@@ -693,6 +697,7 @@ export type Database = {
           building_name?: string | null
           building_number?: string | null
           bumper_order_id?: string | null
+          claim_limit?: number | null
           country?: string | null
           county?: string | null
           created_at?: string
@@ -740,6 +745,7 @@ export type Database = {
           building_name?: string | null
           building_number?: string | null
           bumper_order_id?: string | null
+          claim_limit?: number | null
           country?: string | null
           county?: string | null
           created_at?: string
