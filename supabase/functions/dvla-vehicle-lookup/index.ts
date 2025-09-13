@@ -436,48 +436,76 @@ serve(async (req) => {
     const wheelplan = vehicleData.wheelplan?.toLowerCase() || '';
     const engineCapacity = vehicleData.engineCapacity || 0;
     const revenueWeight = vehicleData.revenueWeight || 0;
+    const makeLower = make?.toLowerCase() || '';
+    const modelLower = model?.toLowerCase() || '';
     
-    console.log(`Vehicle classification data - Type Approval: ${typeApproval}, Wheelplan: ${wheelplan}, Fuel: ${fuelTypeLower}, Engine: ${engineCapacity}, Weight: ${revenueWeight}`);
+    console.log(`🔍 Vehicle classification data:`, {
+      make: makeLower,
+      model: modelLower,
+      typeApproval,
+      wheelplan,
+      fuelType: fuelTypeLower,
+      engineCapacity,
+      revenueWeight
+    });
     
     // First check for electric/hybrid vehicles (these can be cars, vans, or motorbikes)
     const isElectric = fuelTypeLower.includes('electricity') || fuelTypeLower === 'electric';
     const isHybrid = fuelTypeLower.includes('hybrid') || fuelTypeLower.includes('petrol/electric') || fuelTypeLower.includes('plug-in hybrid');
     
-    // Motorcycle detection - L category type approval is the most reliable indicator
-    if (typeApproval.startsWith('l') || 
-        typeApproval.includes('motorcycle') ||
-        wheelplan.includes('2 wheels') ||
-        wheelplan.includes('motorcycle') ||
-        // Additional motorcycle indicators
-        (engineCapacity > 0 && engineCapacity <= 1500 && 
-         ['suzuki', 'honda', 'yamaha', 'kawasaki', 'ducati', 'bmw', 'ktm', 'triumph', 'harley-davidson', 'aprilia', 'husqvarna', 'mv agusta', 'piaggio'].includes(make?.toLowerCase()))) {
-      
-      if (isElectric) {
-        vehicleType = 'EV'; // Electric motorcycle
-      } else if (isHybrid) {
-        vehicleType = 'PHEV'; // Hybrid motorcycle (rare but possible)
-      } else {
-        vehicleType = 'MOTORBIKE';
-      }
-    }
-    // Van detection - N1 category (light commercial vehicles) and weight indicators
-    else if (typeApproval.startsWith('n1') || 
-             typeApproval.includes('commercial') ||
-             wheelplan.includes('van') ||
-             wheelplan.includes('commercial') ||
-             // Weight-based detection for vans (typically heavier than cars)
-             (revenueWeight > 2000 && revenueWeight <= 3500) ||
-             // Make/model based detection for common van manufacturers
-             (['ford', 'mercedes', 'volkswagen', 'renault', 'peugeot', 'citroen', 'fiat', 'iveco', 'nissan'].includes(make?.toLowerCase()) &&
-              ['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'nv200', 'nv300', 'nv400'].some(model => 
-                (vehicleData.model?.toLowerCase() || '').includes(model)))) {
-      
+    // CRITICAL FIX: Explicit commercial vehicle detection FIRST (before motorcycle check)
+    const isCommercialVehicle = (
+      // Type approval based
+      typeApproval.startsWith('n1') || 
+      typeApproval.includes('commercial') ||
+      wheelplan.includes('van') ||
+      wheelplan.includes('commercial') ||
+      // Weight-based detection for vans (typically heavier than cars)
+      (revenueWeight > 2000 && revenueWeight <= 3500) ||
+      // Make/model based detection for common van manufacturers
+      (['ford', 'mercedes', 'mercedes-benz', 'volkswagen', 'renault', 'peugeot', 'citroen', 'fiat', 'iveco', 'nissan'].includes(makeLower) &&
+       ['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'nv200', 'nv300', 'nv400'].some(vanModel => 
+         modelLower.includes(vanModel))) ||
+      // Explicit model pattern matching for common commercial vehicles
+      /\btransit\b/i.test(modelLower) ||
+      /\bsprinter\b/i.test(modelLower) ||
+      /\bcrafter\b/i.test(modelLower) ||
+      /\bmaster\b/i.test(modelLower) ||
+      /\bmovano\b/i.test(modelLower) ||
+      /\bvivaro\b/i.test(modelLower) ||
+      /\bducato\b/i.test(modelLower) ||
+      /\bconnect\b/i.test(modelLower) ||
+      /\bcustom\b/i.test(modelLower)
+    );
+    
+    if (isCommercialVehicle) {
+      console.log('🚐 DETECTED: Commercial vehicle (van)');
       if (isElectric) {
         vehicleType = 'EV'; // Electric van
       } else if (isHybrid) {
         vehicleType = 'PHEV'; // Hybrid van
       } else {
         vehicleType = 'van';
+      }
+    }
+    // Motorcycle detection - ONLY after excluding commercial vehicles
+    else if (typeApproval.startsWith('l') || 
+        typeApproval.includes('motorcycle') ||
+        wheelplan.includes('2 wheels') ||
+        wheelplan.includes('motorcycle') ||
+        // Additional motorcycle indicators - but ONLY for actual motorcycle manufacturers
+        (engineCapacity > 0 && engineCapacity <= 1500 && 
+         ['suzuki', 'honda', 'yamaha', 'kawasaki', 'ducati', 'bmw', 'ktm', 'triumph', 'harley-davidson', 'aprilia', 'husqvarna', 'mv agusta', 'piaggio'].includes(makeLower) &&
+         // Additional safety check - make sure it's not a commercial vehicle model
+         !['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'connect', 'custom'].some(commercial => modelLower.includes(commercial)))) {
+      
+      console.log('🏍️ DETECTED: Motorcycle');
+      if (isElectric) {
+        vehicleType = 'EV'; // Electric motorcycle
+      } else if (isHybrid) {
+        vehicleType = 'PHEV'; // Hybrid motorcycle (rare but possible)
+      } else {
+        vehicleType = 'MOTORBIKE';
       }
     }
     // Car detection - M1 category (passenger cars) or default case

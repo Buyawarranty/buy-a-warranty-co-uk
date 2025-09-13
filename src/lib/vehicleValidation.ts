@@ -92,13 +92,28 @@ function checkIfMotorbike(make: string, model: string, vehicleType: string): boo
   const modelLC = model?.toLowerCase().trim() || '';
   const vehicleTypeLC = vehicleType?.toLowerCase().trim() || '';
   
-  console.log('=== MOTORBIKE DETECTION ===');
-  console.log('Input values:', { make, model, vehicleType });
-  console.log('Lowercase values:', { makeLC, modelLC, vehicleTypeLC });
+  console.log('=== MOTORBIKE DETECTION DEBUG ===');
+  console.log('🔍 Input values:', { make, model, vehicleType });
+  console.log('🔍 Lowercase values:', { makeLC, modelLC, vehicleTypeLC });
+
+  // CRITICAL FIX: Explicit exclusion for Mercedes and Ford commercial vehicles FIRST
+  if (makeLC === 'mercedes-benz' || makeLC === 'mercedes') {
+    if (modelLC.includes('sprinter') || modelLC.includes('vito') || modelLC.includes('citan')) {
+      console.log('🚐 Mercedes commercial vehicle detected (NOT MOTORBIKE):', makeLC, modelLC);
+      return false;
+    }
+  }
+  
+  if (makeLC === 'ford') {
+    if (modelLC.includes('transit') || modelLC.includes('connect') || modelLC.includes('courier')) {
+      console.log('🚐 Ford commercial vehicle detected (NOT MOTORBIKE):', makeLC, modelLC);
+      return false;
+    }
+  }
 
   // First check: If vehicleType explicitly indicates it's NOT a motorbike
   if (vehicleTypeLC && ['van', 'truck', 'lorry', 'bus', 'coach', 'trailer', 'caravan', 'car'].includes(vehicleTypeLC)) {
-    console.log('Vehicle type indicates non-motorbike:', vehicleTypeLC);
+    console.log('🚗 Vehicle type indicates non-motorbike:', vehicleTypeLC);
     return false;
   }
 
@@ -111,7 +126,7 @@ function checkIfMotorbike(make: string, model: string, vehicleType: string): boo
   ];
   
   if (commercialPatterns.some(pattern => pattern.test(modelLC))) {
-    console.log('Commercial vehicle model pattern detected (NOT MOTORBIKE):', modelLC);
+    console.log('🚐 Commercial vehicle model pattern detected (NOT MOTORBIKE):', modelLC);
     return false;
   }
 
