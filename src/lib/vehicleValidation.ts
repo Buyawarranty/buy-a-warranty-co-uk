@@ -64,6 +64,60 @@ const MODEL_EXCLUSIONS = {
 
 const EXCLUSION_ERROR_MESSAGE = "The following vehicle manufacturers are not eligible for our warranty coverage due to specialist parts, high repair costs, or limited repair network availability.";
 
+// Motorbike detection - known motorbike manufacturers
+const MOTORBIKE_MAKES = [
+  'honda', 'yamaha', 'suzuki', 'kawasaki', 'ducati', 'bmw', 'ktm', 
+  'harley-davidson', 'harley davidson', 'triumph', 'aprilia', 'mv agusta',
+  'benelli', 'moto guzzi', 'indian', 'husqvarna', 'beta', 'sherco',
+  'gas gas', 'royal enfield', 'norton', 'zero', 'energica'
+];
+
+// Motorbike model identifiers
+const MOTORBIKE_MODEL_PATTERNS = [
+  'gsx', 'gsxr', 'cbr', 'cb', 'yzf', 'r1', 'r6', 'r3', 'r125', 'mt', 'fz',
+  'ninja', 'zx', 'z', 'er', 'klx', 'kx', 'versys', 'vulcan', 'w',
+  'panigale', 'monster', 'multistrada', 'streetfighter', 'supersport',
+  'street', 'sportster', 'road', 'touring', 'softail', 'dyna',
+  'bonneville', 'tiger', 'speed', 'rocket', 'scrambler', 'thruxton',
+  'rsv', 'tuono', 'sr', 'shiver', 'dorsoduro', 'caponord',
+  'duke', 'rc', 'adventure', 'super duke', 'enduro', 'sx', 'exc',
+  'continental', 'interceptor', 'himalayan', 'meteor', 'classic'
+];
+
+/**
+ * Enhanced motorbike detection using make, model, and vehicle type
+ */
+function checkIfMotorbike(make: string, model: string, vehicleType: string): boolean {
+  // Check vehicle type first
+  if (vehicleType.includes('motor') || vehicleType.includes('bike') || vehicleType.includes('motorcycle')) {
+    return true;
+  }
+  
+  // Check if make is a known motorbike manufacturer
+  if (MOTORBIKE_MAKES.includes(make)) {
+    return true;
+  }
+  
+  // Check if model contains motorbike patterns
+  const hasMotorbikeModel = MOTORBIKE_MODEL_PATTERNS.some(pattern => 
+    model.includes(pattern) || model.startsWith(pattern + ' ') || model.includes(' ' + pattern)
+  );
+  
+  if (hasMotorbikeModel) {
+    return true;
+  }
+  
+  // Additional specific checks for common motorbike models
+  if (model.includes('gsx') || model.includes('cbr') || model.includes('yzf') || 
+      model.includes('ninja') || model.includes('duke') || model.includes('r1') ||
+      model.includes('r6') || model.includes('mt-') || model.includes('fz') ||
+      model.includes('z1000') || model.includes('z900') || model.includes('z650')) {
+    return true;
+  }
+  
+  return false;
+}
+
 /**
  * Check if a vehicle is excluded from coverage
  */
@@ -120,8 +174,9 @@ function getVehicleCategory(vehicleData: VehicleData): string {
     vehicleType
   });
   
-  // Check for motorbike first (highest priority discount)
-  if (vehicleType.includes('motor') || vehicleType.includes('bike')) {
+  // Enhanced motorbike detection
+  const isMotorbike = checkIfMotorbike(make, model, vehicleType);
+  if (isMotorbike) {
     console.log('🏍️ Detected: Motorbike');
     return 'motorbike';
   }
