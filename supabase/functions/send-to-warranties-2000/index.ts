@@ -288,6 +288,24 @@ serve(async (req) => {
 
     const maxClaimAmount = maxClaimMapping[planType] || '500';
 
+    console.log(`[WARRANTIES-2000] Add-on debug:`, {
+      policyAddOns: {
+        tyre_cover: policy?.tyre_cover,
+        wear_tear: policy?.wear_tear,
+        europe_cover: policy?.europe_cover
+      },
+      customerAddOns: {
+        tyre_cover: customer?.tyre_cover,
+        wear_tear: customer?.wear_tear,
+        europe_cover: customer?.europe_cover
+      },
+      finalAddOns: {
+        TyreCover: (policy?.tyre_cover || customer?.tyre_cover) ? 'Y' : 'N',
+        WearTear: (policy?.wear_tear || customer?.wear_tear) ? 'Y' : 'N',
+        EuroCover: (policy?.europe_cover || customer?.europe_cover) ? 'Y' : 'N'
+      }
+    });
+
     // Build the registration data with validation (using same format as working manual function)
     const registrationData: Warranties2000Registration = {
       Title: "Mr",
@@ -321,24 +339,6 @@ serve(async (req) => {
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: (customer.voluntary_excess || 0).toString(),
       Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`,
-      console.log(`[WARRANTIES-2000] Add-on debug:`, {
-        policyAddOns: {
-          tyre_cover: policy?.tyre_cover,
-          wear_tear: policy?.wear_tear,
-          europe_cover: policy?.europe_cover
-        },
-        customerAddOns: {
-          tyre_cover: customer?.tyre_cover,
-          wear_tear: customer?.wear_tear,
-          europe_cover: customer?.europe_cover
-        },
-        finalAddOns: {
-          TyreCover: (policy?.tyre_cover || customer?.tyre_cover) ? 'Y' : 'N',
-          WearTear: (policy?.wear_tear || customer?.wear_tear) ? 'Y' : 'N',
-          EuroCover: (policy?.europe_cover || customer?.europe_cover) ? 'Y' : 'N'
-        }
-      });
-
       // Add-ons using w2000 API field names (exclude transfer cover as requested)
       // Check both policy and customer records for add-on data
       TyreCover: (policy?.tyre_cover || customer?.tyre_cover) ? 'Y' : 'N',
