@@ -86,24 +86,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const vehiclePriceAdjustment = useMemo(() => {
     const warrantyYears = paymentType === '12months' ? 1 : 
                          paymentType === '24months' ? 2 : 3;
-    // Normalize ONLY for plan fetching; keep original vehicleData for adjustments (preserves van/SUV detection)
-    const vtLocal = normalizeVehicleType(vehicleData?.vehicleType);
+    
+    // Use ORIGINAL vehicleData for price adjustments to preserve motorbike detection
     let adjustment = calculateVehiclePriceAdjustment(vehicleData as any, warrantyYears);
-
-    // Safety: if normalized type is motorbike but adjustment didn't apply, enforce 50% discount
-    if (vtLocal === 'motorbike' && !(adjustment.adjustmentAmount < 0 && adjustment.adjustmentAmount > -1)) {
-      adjustment = {
-        isValid: true,
-        adjustmentAmount: -0.5,
-        adjustmentType: 'motorbike_discount',
-        breakdown: [{ baseAdjustment: -0.5, adjustmentReason: 'Motorbike 50% discount enforced (fallback)' }]
-      } as any;
-    }
 
     console.log('🚗 Vehicle Price Adjustment Calculation:', {
       vehicleData,
       originalVehicleType: vehicleData?.vehicleType,
-      normalizedVehicleType: vtLocal,
       warrantyYears,
       paymentType,
       adjustment
@@ -369,13 +358,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     
     console.log('Found price in exact table:', { basePrice, voluntaryExcess, selectedClaimLimit, paymentType });
     
-    // Apply vehicle adjustments (SUV/van, Range Rover, etc.) to the base price
+    // Apply vehicle adjustments (SUV/van, Range Rover, motorbike discount, etc.) to the base price
     const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
     
-    console.log('Vehicle adjustment applied:', { 
+    console.log('🏍️ Motorbike/Vehicle adjustment applied:', { 
       basePrice, 
       adjustedPrice, 
-      adjustment: vehiclePriceAdjustment 
+      adjustment: vehiclePriceAdjustment,
+      vehicleType: vehicleData?.vehicleType,
+      isMotorbike: vehiclePriceAdjustment.adjustmentType === 'motorbike_discount',
+      discountApplied: basePrice !== adjustedPrice
     });
     
     return adjustedPrice;
