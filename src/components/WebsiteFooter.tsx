@@ -105,11 +105,9 @@ const WebsiteFooter = () => {
 
             {/* About Our Service */}
             <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-6">Looking for a new warranty provider?</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-6">Get fast, affordable cover tailored to your needs</h3>
               <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                We make vehicle warranty simple, fast, and affordable to get vehicle warranty coverage 
-                that suits your needs. Whether you drive a car, van, SUV, or motorbike — if it's under 15 years 
-                old and has less than 150,000 miles, we've got you covered.
+                Get fast, affordable cover tailored to your car, van, SUV or motorbike. Our vehicle warranty plans are designed to suit your driving needs - with simple online quotes, flexible options, and reliable protection. If your vehicle is under 15 years old and has fewer than 150,000 miles, you're eligible for comprehensive warranty cover today.
               </p>
               <div className="flex items-center">
                 <a href="/" className="hover:opacity-80 transition-opacity">
