@@ -224,7 +224,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         .from('plans')
         .select('*')
         .eq('is_active', true)
-        .in('name', ['Basic', 'Gold', 'Platinum'])
         .order('monthly_price');
       
       if (error) {
@@ -390,11 +389,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     paymentType === '36months' ? '36' : '12';
       
       const periodData = matrix[dbKey];
-      console.log('Period data lookup:', { dbKey, periodData, voluntaryExcess: voluntaryExcess.toString() });
+      const claimKey = (selectedClaimLimit ?? 1250).toString();
+      const claimData = periodData ? periodData[claimKey] : undefined;
+      console.log('Period data lookup:', { dbKey, claimKey, claimData, voluntaryExcess: voluntaryExcess.toString() });
       
-      if (periodData && periodData[voluntaryExcess.toString()]) {
-        const priceData = periodData[voluntaryExcess.toString()];
-        let basePrice = priceData.price || 0;
+      if (claimData && claimData[voluntaryExcess.toString()]) {
+        const priceData = claimData[voluntaryExcess.toString()];
+        const basePrice = Number(priceData.price || 0);
         
         console.log('Found price in matrix:', { basePrice, priceData });
         
@@ -409,7 +410,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         
         return adjustedPrice;
       } else {
-        console.log('No price found in matrix for:', { dbKey, voluntaryExcess: voluntaryExcess.toString() });
+        console.log('No price found in matrix for:', { dbKey, claimKey, voluntaryExcess: voluntaryExcess.toString() });
       }
     }
     
@@ -449,14 +450,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   // Get the plan that matches the selected claim limit
   const getSelectedPlan = (): Plan | null => {
-    if (selectedClaimLimit === 750) {
-      return plans.find(p => p.name === 'Basic') || plans[0] || null;
-    } else if (selectedClaimLimit === 1250) {
-      return plans.find(p => p.name === 'Gold') || plans[0] || null;
-    } else if (selectedClaimLimit === 2000) {
-      return plans.find(p => p.name === 'Platinum') || plans[0] || null;
-    }
-    return plans.find(p => p.name === 'Platinum') || plans[0] || null; // Default to Platinum
+    // Single Premium plan drives all claim limits; just return the first active plan
+    return plans[0] || null;
   };
 
   const calculateAdjustedPriceForDisplay = (basePrice: number) => {
@@ -471,9 +466,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const matrix = plan.pricing_matrix as any;
       // Map payment types to database keys
       const dbKey = paymentType === '24months' ? '24' : '36';
+      const claimKey = (selectedClaimLimit ?? 1250).toString();
       const periodData = matrix[dbKey];
-      if (periodData && periodData[voluntaryExcess.toString()]) {
-        return periodData[voluntaryExcess.toString()].save || 0;
+      const claimData = periodData ? periodData[claimKey] : undefined;
+      if (claimData && claimData[voluntaryExcess.toString()]) {
+        return claimData[voluntaryExcess.toString()].save || 0;
       }
     }
     
@@ -834,7 +831,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* 1 Year Option */}
           {(() => {
-            const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+            const platinumPlan = displayPlans[0] || displayPlans.find(p => p.name === 'Platinum');
             if (!platinumPlan) return null;
 
             // Use the same calculation as the main function
@@ -919,7 +916,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           
           {/* 2 Years Option */}
           {(() => {
-            const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+            const platinumPlan = displayPlans[0] || displayPlans.find(p => p.name === 'Platinum');
             if (!platinumPlan) return null;
 
             // Use the same calculation as the main function
@@ -1011,7 +1008,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           
           {/* 3 Years Option */}
           {(() => {
-            const platinumPlan = displayPlans.find(p => p.name === 'Platinum');
+            const platinumPlan = displayPlans[0] || displayPlans.find(p => p.name === 'Platinum');
             if (!platinumPlan) return null;
 
             // Use the same calculation as the main function

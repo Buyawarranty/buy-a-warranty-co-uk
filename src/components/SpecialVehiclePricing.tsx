@@ -72,12 +72,13 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
 
   const fetchSpecialPlan = async () => {
     try {
+      const typeKey = (vehicleData.vehicleType || '').toLowerCase();
       const { data, error } = await supabase
         .from('special_vehicle_plans')
         .select('*')
-        .eq('vehicle_type', vehicleData.vehicleType)
+        .eq('vehicle_type', typeKey)
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
