@@ -844,8 +844,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
               const matrix = selectedPlanBackup.pricing_matrix as any;
               const periodData = matrix['12'];
-              if (periodData && periodData[voluntaryExcess.toString()]) {
-                basePrice = periodData[voluntaryExcess.toString()].price || 0;
+              const claimKey = (selectedClaimLimit ?? 1250).toString();
+              const claimData = periodData ? periodData[claimKey] : undefined;
+              if (claimData && claimData[voluntaryExcess.toString()]) {
+                basePrice = claimData[voluntaryExcess.toString()].price || 0;
                 isFromDatabase = true;
               }
             }
@@ -931,9 +933,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
               const matrix = selectedPlanBackup.pricing_matrix as any;
               const periodData = matrix['24'];
-              if (periodData && periodData[voluntaryExcess.toString()]) {
-                basePrice = periodData[voluntaryExcess.toString()].price || 0;
-                savings = periodData[voluntaryExcess.toString()].save || 0;
+              const claimKey = (selectedClaimLimit ?? 1250).toString();
+              const claimData = periodData ? periodData[claimKey] : undefined;
+              if (claimData && claimData[voluntaryExcess.toString()]) {
+                basePrice = claimData[voluntaryExcess.toString()].price || 0;
+                savings = claimData[voluntaryExcess.toString()].save || 0;
                 isFromDatabase = true;
               }
             }
@@ -1023,9 +1027,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             if (selectedPlanBackup.pricing_matrix && typeof selectedPlanBackup.pricing_matrix === 'object') {
               const matrix = selectedPlanBackup.pricing_matrix as any;
               const periodData = matrix['36'];
-              if (periodData && periodData[voluntaryExcess.toString()]) {
-                basePrice = periodData[voluntaryExcess.toString()].price || 0;
-                savings = periodData[voluntaryExcess.toString()].save || 0;
+              const claimKey = (selectedClaimLimit ?? 1250).toString();
+              const claimData = periodData ? periodData[claimKey] : undefined;
+              if (claimData && claimData[voluntaryExcess.toString()]) {
+                basePrice = claimData[voluntaryExcess.toString()].price || 0;
+                savings = claimData[voluntaryExcess.toString()].save || 0;
                 isFromDatabase = true;
               }
             }

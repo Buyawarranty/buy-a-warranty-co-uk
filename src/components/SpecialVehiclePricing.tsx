@@ -156,39 +156,26 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     // Try to use database pricing matrix first, fallback to hardcoded
     if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
       const matrix = plan.pricing_matrix as any;
-      // Map payment types to database keys  
+      // Map payment types to database keys
       const dbKey = paymentType === 'yearly' ? '12' : paymentType === 'two_yearly' ? '24' : '36';
+      const months = paymentType === 'yearly' ? 12 : paymentType === 'two_yearly' ? 24 : 36;
+      const claimKey = '1250'; // default claim limit for special vehicle display
       const periodData = matrix[dbKey];
-      if (periodData && periodData[voluntaryExcess.toString()]) {
-        return periodData[voluntaryExcess.toString()].price || 0;
+      const claimData = periodData ? periodData[claimKey] : undefined;
+      if (claimData && claimData[voluntaryExcess.toString()]) {
+        const total = Number(claimData[voluntaryExcess.toString()].price || 0);
+        return Math.round(total / months);
       }
     }
     
-    // Fallback to hardcoded pricing (Gold plan equivalent)
+    // Fallback monthly approximations if matrix missing
     const fallbackPricingTable = {
-      yearly: {
-        0: { monthly: 41 },
-        50: { monthly: 38 },
-        100: { monthly: 35 },
-        150: { monthly: 32 }
-      },
-      two_yearly: {
-        0: { monthly: 39 },
-        50: { monthly: 37 },
-        100: { monthly: 33 },
-        150: { monthly: 31 }
-      },
-      three_yearly: {
-        0: { monthly: 39 },
-        50: { monthly: 36 },
-        100: { monthly: 33 },
-        150: { monthly: 30 }
-      }
-    };
-    
+      yearly: { 0: { monthly: 41 }, 50: { monthly: 38 }, 100: { monthly: 35 }, 150: { monthly: 32 } },
+      two_yearly: { 0: { monthly: 39 }, 50: { monthly: 37 }, 100: { monthly: 33 }, 150: { monthly: 31 } },
+      three_yearly: { 0: { monthly: 39 }, 50: { monthly: 36 }, 100: { monthly: 33 }, 150: { monthly: 30 } },
+    } as const;
     const periodData = fallbackPricingTable[paymentType as keyof typeof fallbackPricingTable] || fallbackPricingTable.yearly;
     const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[0];
-    
     return excessData.monthly;
   };
 
