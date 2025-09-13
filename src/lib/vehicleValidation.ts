@@ -62,7 +62,7 @@ const MODEL_EXCLUSIONS = {
   ]
 };
 
-const EXCLUSION_ERROR_MESSAGE = "Thanks for your interest! Unfortunately, we're not able to offer warranty cover for this vehicle. This is down to factors like specialist parts or limited access to suitable repair centres.";
+const EXCLUSION_ERROR_MESSAGE = "The following vehicle manufacturers are not eligible for our warranty coverage due to specialist parts, high repair costs, or limited repair network availability.";
 
 /**
  * Check if a vehicle is excluded from coverage
