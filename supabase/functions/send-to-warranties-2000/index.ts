@@ -382,16 +382,26 @@ serve(async (req) => {
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: (customer.voluntary_excess || 0).toString(),
-      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`,
-      // Add-ons using w2000 API field names (exclude transfer cover as requested)
-      // Check both policy and customer records for add-on data - ensure boolean conversion
-      TyreCover: (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'N',
-      WearTear: (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'N', 
-      EuroCover: (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'N',
-      Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'N',
-      Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'N'
-      // Note: Transfer cover is not sent to W2000 as per requirements
+      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`
+      // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
+
+    // Only add add-on fields if they are actually selected (Y) - omit when false to avoid API validation errors
+    if (policy?.tyre_cover === true || customer?.tyre_cover === true) {
+      registrationData.TyreCover = 'Y';
+    }
+    if (policy?.wear_tear === true || customer?.wear_tear === true) {
+      registrationData.WearTear = 'Y';
+    }
+    if (policy?.europe_cover === true || customer?.europe_cover === true) {
+      registrationData.EuroCover = 'Y';
+    }
+    if (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) {
+      registrationData.Recovery = 'Y';
+    }
+    if (policy?.vehicle_rental === true || customer?.vehicle_rental === true) {
+      registrationData.Rental = 'Y';
+    }
 
     console.log(`[WARRANTIES-2000] Sending registration data:`, {
       regNum: registrationData.RegNum,
