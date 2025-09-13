@@ -514,6 +514,7 @@ export type Database = {
       customer_policies: {
         Row: {
           address: Json | null
+          breakdown_recovery: boolean | null
           bumper_order_id: string | null
           created_at: string
           customer_full_name: string | null
@@ -543,6 +544,7 @@ export type Database = {
           tyre_cover: boolean | null
           updated_at: string
           user_id: string | null
+          vehicle_rental: boolean | null
           warranties_2000_response: Json | null
           warranties_2000_sent_at: string | null
           warranties_2000_status: string | null
@@ -551,6 +553,7 @@ export type Database = {
         }
         Insert: {
           address?: Json | null
+          breakdown_recovery?: boolean | null
           bumper_order_id?: string | null
           created_at?: string
           customer_full_name?: string | null
@@ -580,6 +583,7 @@ export type Database = {
           tyre_cover?: boolean | null
           updated_at?: string
           user_id?: string | null
+          vehicle_rental?: boolean | null
           warranties_2000_response?: Json | null
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
@@ -588,6 +592,7 @@ export type Database = {
         }
         Update: {
           address?: Json | null
+          breakdown_recovery?: boolean | null
           bumper_order_id?: string | null
           created_at?: string
           customer_full_name?: string | null
@@ -617,6 +622,7 @@ export type Database = {
           tyre_cover?: boolean | null
           updated_at?: string
           user_id?: string | null
+          vehicle_rental?: boolean | null
           warranties_2000_response?: Json | null
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
@@ -636,6 +642,7 @@ export type Database = {
       customers: {
         Row: {
           assigned_to: string | null
+          breakdown_recovery: boolean | null
           building_name: string | null
           building_number: string | null
           bumper_order_id: string | null
@@ -645,12 +652,14 @@ export type Database = {
           discount_amount: number | null
           discount_code: string | null
           email: string
+          europe_cover: boolean | null
           final_amount: number | null
           first_name: string | null
           flat_number: string | null
           id: string
           last_name: string | null
           mileage: string | null
+          mot_fee: boolean | null
           name: string
           original_amount: number | null
           payment_type: string | null
@@ -664,18 +673,23 @@ export type Database = {
           stripe_customer_id: string | null
           stripe_session_id: string | null
           town: string | null
+          transfer_cover: boolean | null
+          tyre_cover: boolean | null
           updated_at: string
           vehicle_fuel_type: string | null
           vehicle_make: string | null
           vehicle_model: string | null
+          vehicle_rental: boolean | null
           vehicle_transmission: string | null
           vehicle_year: string | null
           voluntary_excess: number | null
           warranty_number: string | null
           warranty_reference_number: string | null
+          wear_tear: boolean | null
         }
         Insert: {
           assigned_to?: string | null
+          breakdown_recovery?: boolean | null
           building_name?: string | null
           building_number?: string | null
           bumper_order_id?: string | null
@@ -685,12 +699,14 @@ export type Database = {
           discount_amount?: number | null
           discount_code?: string | null
           email: string
+          europe_cover?: boolean | null
           final_amount?: number | null
           first_name?: string | null
           flat_number?: string | null
           id?: string
           last_name?: string | null
           mileage?: string | null
+          mot_fee?: boolean | null
           name: string
           original_amount?: number | null
           payment_type?: string | null
@@ -704,18 +720,23 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
           town?: string | null
+          transfer_cover?: boolean | null
+          tyre_cover?: boolean | null
           updated_at?: string
           vehicle_fuel_type?: string | null
           vehicle_make?: string | null
           vehicle_model?: string | null
+          vehicle_rental?: boolean | null
           vehicle_transmission?: string | null
           vehicle_year?: string | null
           voluntary_excess?: number | null
           warranty_number?: string | null
           warranty_reference_number?: string | null
+          wear_tear?: boolean | null
         }
         Update: {
           assigned_to?: string | null
+          breakdown_recovery?: boolean | null
           building_name?: string | null
           building_number?: string | null
           bumper_order_id?: string | null
@@ -725,12 +746,14 @@ export type Database = {
           discount_amount?: number | null
           discount_code?: string | null
           email?: string
+          europe_cover?: boolean | null
           final_amount?: number | null
           first_name?: string | null
           flat_number?: string | null
           id?: string
           last_name?: string | null
           mileage?: string | null
+          mot_fee?: boolean | null
           name?: string
           original_amount?: number | null
           payment_type?: string | null
@@ -744,15 +767,19 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
           town?: string | null
+          transfer_cover?: boolean | null
+          tyre_cover?: boolean | null
           updated_at?: string
           vehicle_fuel_type?: string | null
           vehicle_make?: string | null
           vehicle_model?: string | null
+          vehicle_rental?: boolean | null
           vehicle_transmission?: string | null
           vehicle_year?: string | null
           voluntary_excess?: number | null
           warranty_number?: string | null
           warranty_reference_number?: string | null
+          wear_tear?: boolean | null
         }
         Relationships: [
           {

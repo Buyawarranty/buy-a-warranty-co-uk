@@ -464,7 +464,15 @@ export const CustomersTab = () => {
           updated_at: policy.updated_at,
           stripe_customer_id: null,
           warranty_number: null,
-          admin_users: null
+          admin_users: null,
+          // Add missing add-on columns
+          tyre_cover: false,
+          wear_tear: false,
+          europe_cover: false,
+          transfer_cover: false,
+          breakdown_recovery: false,
+          vehicle_rental: false,
+          mot_fee: false
         }));
         
         directData = [...directData, ...orphanedAsCustomers];

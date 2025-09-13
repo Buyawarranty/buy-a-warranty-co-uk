@@ -18,6 +18,7 @@ import CreateTestAdmin from '@/components/admin/CreateTestAdmin';
 import ResetAdminPassword from '@/components/admin/ResetAdminPassword';
 import SetAdminPassword from '@/components/admin/SetAdminPassword';
 import TestWarranties2000 from '@/components/TestWarranties2000';
+import TestWarranties2000AddOns from '@/components/TestWarranties2000AddOns';
 import TestBumper from '@/components/TestBumper';
 import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
 import { UserPermissionsTab } from '@/components/admin/UserPermissionsTab';
@@ -169,6 +170,8 @@ const AdminDashboard = () => {
               </Card>
               
               <TestWarranties2000 />
+              
+              <TestWarranties2000AddOns />
               
               <TestBumper />
             </div>
