@@ -326,126 +326,62 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     }
   };
 
-  // Get pricing data from database pricing matrix or fallback to hardcoded values
-  const getPricingData = (excess: number, paymentPeriod: string) => {
-    // Fallback pricing table if database is not available
-    const fallbackPricingTable = {
+  // Get pricing data using your exact pricing structure
+  const getPricingData = (excess: number, claimLimit: number, paymentPeriod: string) => {
+    // Your exact pricing structure
+    const pricingTable = {
       '12months': {
-        0: { basic: { monthly: 39, total: 467, save: 0 }, gold: { monthly: 41, total: 497, save: 0 }, platinum: { monthly: 49, total: 587, save: 0 } },
-        50: { basic: { monthly: 36, total: 437, save: 0 }, gold: { monthly: 38, total: 457, save: 0 }, platinum: { monthly: 46, total: 547, save: 0 } },
-        100: { basic: { monthly: 32, total: 387, save: 0 }, gold: { monthly: 35, total: 417, save: 0 }, platinum: { monthly: 42, total: 507, save: 0 } },
-        150: { basic: { monthly: 31, total: 367, save: 0 }, gold: { monthly: 32, total: 387, save: 0 }, platinum: { monthly: 40, total: 477, save: 0 } }
+        0: { 750: 467, 1250: 497, 2000: 587 },
+        50: { 750: 437, 1250: 457, 2000: 547 },
+        100: { 750: 387, 1250: 417, 2000: 507 },
+        150: { 750: 367, 1250: 387, 2000: 477 }
       },
       '24months': {
-        0: { basic: { monthly: 37, total: 897, save: 37 }, gold: { monthly: 39, total: 937, save: 57 }, platinum: { monthly: 43, total: 1027, save: 147 } },
-        50: { basic: { monthly: 34, total: 827, save: 47 }, gold: { monthly: 37, total: 877, save: 37 }, platinum: { monthly: 40, total: 957, save: 137 } },
-        100: { basic: { monthly: 31, total: 737, save: 37 }, gold: { monthly: 33, total: 787, save: 43 }, platinum: { monthly: 37, total: 877, save: 137 } },
-        150: { basic: { monthly: 29, total: 697, save: 37 }, gold: { monthly: 31, total: 737, save: 37 }, platinum: { monthly: 34, total: 827, save: 127 } }
+        0: { 750: 897, 1250: 937, 2000: 1027 },
+        50: { 750: 827, 1250: 877, 2000: 957 },
+        100: { 750: 737, 1250: 787, 2000: 877 },
+        150: { 750: 697, 1250: 737, 2000: 827 }
       },
       '36months': {
-        0: { basic: { monthly: 37, total: 1347, save: 54 }, gold: { monthly: 39, total: 1397, save: 94 }, platinum: { monthly: 42, total: 1497, save: 264 } },
-        50: { basic: { monthly: 35, total: 1247, save: 77 }, gold: { monthly: 36, total: 1297, save: 74 }, platinum: { monthly: 39, total: 1397, save: 244 } },
-        100: { basic: { monthly: 30, total: 1097, save: 67 }, gold: { monthly: 33, total: 1177, save: 73 }, platinum: { monthly: 35, total: 1277, save: 247 } },
-        150: { basic: { monthly: 29, total: 1047, save: 57 }, gold: { monthly: 31, total: 1097, save: 67 }, platinum: { monthly: 33, total: 1197, save: 234 } }
+        0: { 750: 1347, 1250: 1397, 2000: 1497 },
+        50: { 750: 1247, 1250: 1297, 2000: 1397 },
+        100: { 750: 1097, 1250: 1177, 2000: 1277 },
+        150: { 750: 1047, 1250: 1097, 2000: 1197 }
       }
     };
     
-    // Map legacy period names to new format
-    const periodKey = paymentPeriod === 'yearly' ? '12months' : 
-                     paymentPeriod === 'two_yearly' ? '24months' :
-                     paymentPeriod === 'three_yearly' ? '36months' :
-                     paymentPeriod;
-    
-    const periodData = fallbackPricingTable[periodKey as keyof typeof fallbackPricingTable] || fallbackPricingTable['12months'];
-    return periodData[excess as keyof typeof periodData] || periodData[0];
+    const periodData = pricingTable[paymentPeriod as keyof typeof pricingTable] || pricingTable['12months'];
+    const excessData = periodData[excess as keyof typeof periodData] || periodData[0];
+    return excessData[claimLimit as keyof typeof excessData] || excessData[1250];
   };
 
   const calculatePlanPrice = () => {
-    // Get the correct plan based on selected claim limit
-    const selectedPlan = getSelectedPlan();
-    if (!selectedPlan) return 0;
-    
     console.log('💰 calculatePlanPrice Debug:', {
       paymentType,
-      selectedPlan: selectedPlan?.name,
       voluntaryExcess,
       selectedClaimLimit,
-      pricingMatrix: selectedPlan?.pricing_matrix,
       vehicleData,
       vehiclePriceAdjustment
     });
     
-    // Get duration multiplier
-    const durationMonths = paymentType === '12months' ? 12 : 
-                          paymentType === '24months' ? 24 : 
-                          paymentType === '36months' ? 36 : 12;
+    // Use your exact pricing structure
+    const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, paymentType);
     
-    // FIRST: Try to use database pricing matrix (this has the exact prices we want)
-    if (selectedPlan.pricing_matrix && typeof selectedPlan.pricing_matrix === 'object') {
-      const matrix = selectedPlan.pricing_matrix as any;
-      // Map payment types to database keys correctly - align with migration keys
-      const dbKey = paymentType === '12months' ? '12' : 
-                    paymentType === '24months' ? '24' : 
-                    paymentType === '36months' ? '36' : '12';
-      
-      const periodData = matrix[dbKey];
-      const claimKey = (selectedClaimLimit ?? 1250).toString();
-      const claimData = periodData ? periodData[claimKey] : undefined;
-      console.log('Period data lookup:', { dbKey, claimKey, claimData, voluntaryExcess: voluntaryExcess.toString() });
-      
-      if (claimData && claimData[voluntaryExcess.toString()]) {
-        const priceData = claimData[voluntaryExcess.toString()];
-        const basePrice = Number(priceData.price || 0);
-        
-        console.log('Found price in matrix:', { basePrice, priceData });
-        
-        // Apply vehicle adjustments (SUV/van, Range Rover, etc.) to the base price
-        const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
-        
-        console.log('Vehicle adjustment applied:', { 
-          basePrice, 
-          adjustedPrice, 
-          adjustment: vehiclePriceAdjustment 
-        });
-        
-        return adjustedPrice;
-      } else {
-        console.log('No price found in matrix for:', { dbKey, claimKey, voluntaryExcess: voluntaryExcess.toString() });
-      }
-    }
+    console.log('Found price in exact table:', { basePrice, voluntaryExcess, selectedClaimLimit, paymentType });
     
-    // FALLBACK: Use reliability-based pricing if database pricing is not available
-    if (vt === 'car' && reliabilityScore?.pricing) {
-      const periodKey = paymentType === '12months' ? '12months' : 
-                       paymentType === '24months' ? '24months' : 
-                       paymentType === '36months' ? '36months' : '12months';
-      
-      let basePrice = reliabilityScore.pricing[periodKey] || 0;
-      
-      // Apply voluntary excess discount
-      if (voluntaryExcess > 0) {
-        const discountRate = voluntaryExcess === 50 ? 0.1 : 
-                            voluntaryExcess === 100 ? 0.2 : 
-                            voluntaryExcess === 150 ? 0.25 : 0;
-        basePrice = Math.round(basePrice * (1 - discountRate));
-      }
-      const adjustedBasePrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
-      return adjustedBasePrice;
-    }
+    // Apply vehicle adjustments (SUV/van, Range Rover, etc.) to the base price
+    const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
     
-    // Final fallback to hardcoded pricing
-    const pricing = getPricingData(voluntaryExcess, paymentType);
-    const planType = selectedPlan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
+    console.log('Vehicle adjustment applied:', { 
+      basePrice, 
+      adjustedPrice, 
+      adjustment: vehiclePriceAdjustment 
+    });
     
-    // Safety check: ensure planType exists in pricing object
-    if (!pricing[planType]) {
-      console.warn(`Plan type "${planType}" not found in pricing data, defaulting to basic`);
-      const total = (pricing.basic?.monthly || 0) * durationMonths;
-      return applyPriceAdjustment(total, vehiclePriceAdjustment);
-    }
+    return adjustedPrice;
     
-    // Return total price for the selected duration (with vehicle adjustment)
-    return applyPriceAdjustment((pricing[planType].monthly || 0) * durationMonths, vehiclePriceAdjustment);
+    // This should not be reached since we're using the exact pricing table above
+    return basePrice;
   };
 
   // Get the plan that matches the selected claim limit
@@ -461,30 +397,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const getPlanSavings = (plan: Plan) => {
     if (paymentType === '12months') return null;
     
-    // Try to use database pricing matrix first, fallback to hardcoded
-    if (plan.pricing_matrix && typeof plan.pricing_matrix === 'object') {
-      const matrix = plan.pricing_matrix as any;
-      // Map payment types to database keys
-      const dbKey = paymentType === '24months' ? '24' : '36';
-      const claimKey = (selectedClaimLimit ?? 1250).toString();
-      const periodData = matrix[dbKey];
-      const claimData = periodData ? periodData[claimKey] : undefined;
-      if (claimData && claimData[voluntaryExcess.toString()]) {
-        return claimData[voluntaryExcess.toString()].save || 0;
-      }
-    }
+    // Calculate savings compared to 12-month pricing
+    const twelveMonthPrice = getPricingData(voluntaryExcess, selectedClaimLimit, '12months');
+    const currentPrice = calculatePlanPrice();
+    const monthlyEquivalent = currentPrice / (paymentType === '24months' ? 24 : 36);
+    const monthlyTwelve = twelveMonthPrice / 12;
     
-    // Fallback to hardcoded pricing
-    const pricing = getPricingData(voluntaryExcess, paymentType);
-    const planType = plan.name.toLowerCase() as 'basic' | 'gold' | 'platinum';
-    
-    // Safety check: ensure planType exists in pricing object
-    if (!pricing[planType]) {
-      console.warn(`Plan type "${planType}" not found in pricing data for savings, defaulting to basic`);
-      return pricing.basic?.save || 0;
-    }
-    
-    return pricing[planType].save || 0;
+    const savings = Math.round((monthlyTwelve - monthlyEquivalent) * (paymentType === '24months' ? 24 : 36));
+    return savings > 0 ? savings : 0;
   };
 
   const calculateAddOnPrice = (planId: string) => {
@@ -1082,10 +1002,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             // Fallback to hardcoded pricing if database pricing not available
             if (basePrice === 0) {
-              const pricing = getPricingData(voluntaryExcess, '12months');
-              const planType = 'platinum' as const;
-              const monthlyPrice = pricing[planType]?.monthly || 0;
-              basePrice = monthlyPrice * 12;
+              basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, '12months');
             }
             
             // Apply vehicle adjustments to base price (database values are generic)
@@ -1172,11 +1089,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             // Fallback to hardcoded pricing if database pricing not available
             if (basePrice === 0) {
-              const pricing = getPricingData(voluntaryExcess, '24months');
-              const planType = 'platinum' as const;
-              const monthlyPrice = pricing[planType]?.monthly || 0;
-              basePrice = monthlyPrice * 24;
-              savings = pricing[planType]?.save || 0;
+              basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, '24months');
+              const twelveMonthPrice = getPricingData(voluntaryExcess, selectedClaimLimit, '12months');
+              savings = Math.round((twelveMonthPrice / 12 - basePrice / 24) * 24);
             }
             
             // Apply vehicle adjustments to base price (database values are generic)
@@ -1266,11 +1181,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             // Fallback to hardcoded pricing if database pricing not available
             if (basePrice === 0) {
-              const pricing = getPricingData(voluntaryExcess, '36months');
-              const planType = 'platinum' as const;
-              const monthlyPrice = pricing[planType]?.monthly || 0;
-              basePrice = monthlyPrice * 36;
-              savings = pricing[planType]?.save || 0;
+              basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, '36months');
+              const twelveMonthPrice = getPricingData(voluntaryExcess, selectedClaimLimit, '12months');
+              savings = Math.round((twelveMonthPrice / 12 - basePrice / 36) * 36);
             }
             
             // Apply vehicle adjustments to base price (database values are generic)
