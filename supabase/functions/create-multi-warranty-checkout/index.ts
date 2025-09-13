@@ -79,6 +79,11 @@ serve(async (req) => {
             vehicle_mileage: item.vehicleData.mileage || '',
             vehicle_type: item.vehicleData.vehicleType || 'standard',
             voluntary_excess: item.voluntaryExcess?.toString() || '0',
+            // Add-on metadata
+            addon_tyre_cover: item.protectionAddOns?.tyre ? 'true' : 'false',
+            addon_wear_tear: item.protectionAddOns?.wearTear ? 'true' : 'false',
+            addon_europe_cover: item.protectionAddOns?.european ? 'true' : 'false',
+            addon_transfer_cover: item.protectionAddOns?.transfer ? 'true' : 'false'
           },
         },
         unit_amount: Math.round(item.totalPrice * 100), // Convert to pence

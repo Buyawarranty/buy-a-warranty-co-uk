@@ -321,10 +321,11 @@ serve(async (req) => {
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: (customer.voluntary_excess || 0).toString(),
       Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`,
-      // Add-ons using w2000 API field names
+      // Add-ons using w2000 API field names (exclude transfer cover as requested)
       TyreCover: policy?.tyre_cover ? 'Y' : 'N',
       WearTear: policy?.wear_tear ? 'Y' : 'N',
       EuroCover: policy?.europe_cover ? 'Y' : 'N'
+      // Note: Transfer cover is not sent to W2000 as per requirements
     };
 
     console.log(`[WARRANTIES-2000] Sending registration data:`, {

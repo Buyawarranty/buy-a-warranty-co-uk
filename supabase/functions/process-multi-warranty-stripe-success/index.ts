@@ -151,6 +151,13 @@ serve(async (req) => {
               ...commonCustomerData,
               vehicle_reg: vehicleReg,
               final_amount: totalPrice
+            },
+            // Extract add-on data from product metadata
+            metadata: {
+              addon_tyre_cover: product?.metadata?.addon_tyre_cover || 'false',
+              addon_wear_tear: product?.metadata?.addon_wear_tear || 'false',
+              addon_europe_cover: product?.metadata?.addon_europe_cover || 'false',
+              addon_transfer_cover: product?.metadata?.addon_transfer_cover || 'false'
             }
             // Don't skip email - we want individual emails for each warranty
           }

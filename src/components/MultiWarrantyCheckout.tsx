@@ -262,6 +262,12 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               voluntaryExcess: item.pricingData.voluntaryExcess,
               vehicleData: item.vehicleData,
               selectedAddOns: item.pricingData.selectedAddOns,
+              protectionAddOns: {
+                tyre: item.pricingData.selectedAddOns?.tyre || false,
+                wearTear: item.pricingData.selectedAddOns?.wearTear || false,
+                european: item.pricingData.selectedAddOns?.european || false,
+                transfer: item.pricingData.selectedAddOns?.transfer || false
+              },
               totalPrice: item.pricingData.totalPrice
             })),
             customerData: customerData,
@@ -285,6 +291,12 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                 voluntaryExcess: item.pricingData.voluntaryExcess,
                 vehicleData: item.vehicleData,
                 selectedAddOns: item.pricingData.selectedAddOns,
+                protectionAddOns: {
+                  tyre: item.pricingData.selectedAddOns?.tyre || false,
+                  wearTear: item.pricingData.selectedAddOns?.wearTear || false,
+                  european: item.pricingData.selectedAddOns?.european || false,
+                  transfer: item.pricingData.selectedAddOns?.transfer || false
+                },
                 totalPrice: item.pricingData.totalPrice
               })),
               customerData: customerData,
@@ -315,6 +327,12 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               voluntaryExcess: item.pricingData.voluntaryExcess,
               vehicleData: item.vehicleData,
               selectedAddOns: item.pricingData.selectedAddOns,
+              protectionAddOns: {
+                tyre: item.pricingData.selectedAddOns?.tyre || false,
+                wearTear: item.pricingData.selectedAddOns?.wearTear || false,
+                european: item.pricingData.selectedAddOns?.european || false,
+                transfer: item.pricingData.selectedAddOns?.transfer || false
+              },
               totalPrice: item.pricingData.totalPrice
             })),
             customerData: customerData,

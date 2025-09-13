@@ -85,7 +85,12 @@ serve(async (req) => {
             payment_status: 'completed',
             policy_start_date: new Date().toISOString(),
             policy_end_date: calculatePolicyEndDate('yearly'), // Default to yearly for warranties
-            status: 'active'
+            status: 'active',
+            // Add-on coverage mapping
+            tyre_cover: item.protectionAddOns?.tyre || false,
+            wear_tear: item.protectionAddOns?.wearTear || false,
+            europe_cover: item.protectionAddOns?.european || false,
+            transfer_cover: item.protectionAddOns?.transfer || false
           })
           .select()
           .single();
