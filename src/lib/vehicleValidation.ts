@@ -88,31 +88,37 @@ const MOTORBIKE_MODEL_PATTERNS = [
  * Enhanced motorbike detection using make, model, and vehicle type
  */
 function checkIfMotorbike(make: string, model: string, vehicleType: string): boolean {
-  // Check vehicle type first
+  // First check if it's explicitly NOT a motorbike
+  if (vehicleType.includes('car') || vehicleType.includes('van') || vehicleType.includes('truck') || 
+      vehicleType.includes('suv') || vehicleType.includes('estate') || vehicleType.includes('hatchback') ||
+      vehicleType.includes('saloon') || vehicleType.includes('coupe') || vehicleType.includes('convertible')) {
+    return false;
+  }
+  
+  // Check vehicle type for explicit motorbike indicators
   if (vehicleType.includes('motor') || vehicleType.includes('bike') || vehicleType.includes('motorcycle')) {
     return true;
   }
   
-  // Check if make is a known motorbike manufacturer
-  if (MOTORBIKE_MAKES.includes(make)) {
+  // Only check make for motorbike-only manufacturers (exclude BMW as they make both cars and bikes)
+  const motorbikeOnlyMakes = [
+    'yamaha', 'suzuki', 'kawasaki', 'ducati', 'ktm', 
+    'harley-davidson', 'harley davidson', 'triumph', 'aprilia', 'mv agusta',
+    'benelli', 'moto guzzi', 'indian', 'husqvarna', 'beta', 'sherco',
+    'gas gas', 'royal enfield', 'norton', 'zero', 'energica'
+  ];
+  
+  // For Honda and BMW, only check if model patterns strongly suggest motorbike
+  if (motorbikeOnlyMakes.includes(make)) {
     return true;
   }
   
-  // Check if model contains motorbike patterns
-  const hasMotorbikeModel = MOTORBIKE_MODEL_PATTERNS.some(pattern => 
-    model.includes(pattern) || model.startsWith(pattern + ' ') || model.includes(' ' + pattern)
-  );
-  
-  if (hasMotorbikeModel) {
-    return true;
-  }
-  
-  // Additional specific checks for common motorbike models
-  if (model.includes('gsx') || model.includes('cbr') || model.includes('yzf') || 
-      model.includes('ninja') || model.includes('duke') || model.includes('r1') ||
-      model.includes('r6') || model.includes('mt-') || model.includes('fz') ||
-      model.includes('z1000') || model.includes('z900') || model.includes('z650')) {
-    return true;
+  // For makes that produce both cars and bikes (Honda, BMW), require strong model evidence
+  if ((make === 'honda' || make === 'bmw') && vehicleType !== 'car' && vehicleType !== 'van') {
+    const hasStrongMotorbikeModel = MOTORBIKE_MODEL_PATTERNS.some(pattern => 
+      model.toLowerCase().startsWith(pattern) || model.toLowerCase() === pattern
+    );
+    return hasStrongMotorbikeModel;
   }
   
   return false;
