@@ -474,9 +474,16 @@ const Index = () => {
     }
   };
 
-  // Check if vehicle is a special type - only motorbikes use the special pricing interface
+  // Check if vehicle is a special type - STRICT criteria to prevent normal cars/vans being treated as special
   const isSpecialVehicle = vehicleData?.vehicleType && 
-    ['MOTORBIKE', 'motorbike', 'motorcycle', 'moped', 'scooter'].includes(vehicleData.vehicleType);
+    ['MOTORBIKE', 'EV', 'PHEV'].includes(vehicleData.vehicleType) &&
+    // Additional safety check - if it's marked as MOTORBIKE but has commercial vehicle indicators, treat as normal car
+    !(vehicleData.vehicleType === 'MOTORBIKE' && 
+      (vehicleData.make?.toLowerCase().includes('mercedes') || 
+       vehicleData.make?.toLowerCase().includes('ford') ||
+       vehicleData.model?.toLowerCase().includes('sprinter') ||
+       vehicleData.model?.toLowerCase().includes('transit') ||
+       vehicleData.model?.toLowerCase().includes('van')));
 
   return (
     <div className="min-h-screen overflow-x-hidden w-full">

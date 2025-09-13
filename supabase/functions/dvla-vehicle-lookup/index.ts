@@ -502,18 +502,32 @@ serve(async (req) => {
         vehicleType = 'van';
       }
     }
-    // Motorcycle detection - ONLY after excluding commercial vehicles
-    else if (typeApproval.startsWith('l') || 
-        typeApproval.includes('motorcycle') ||
-        wheelplan.includes('2 wheels') ||
-        wheelplan.includes('motorcycle') ||
-        // Additional motorcycle indicators - but ONLY for actual motorcycle manufacturers
-        (engineCapacity > 0 && engineCapacity <= 1500 && 
-         ['suzuki', 'honda', 'yamaha', 'kawasaki', 'ducati', 'bmw', 'ktm', 'triumph', 'harley-davidson', 'aprilia', 'husqvarna', 'mv agusta', 'piaggio'].includes(makeLower) &&
-         // Additional safety check - make sure it's not a commercial vehicle model
-         !['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'connect', 'custom'].some(commercial => modelLower.includes(commercial)))) {
+    // STRICT Motorcycle detection - ONLY classify as motorcycle with explicit indicators
+    else if (
+      // Must have explicit motorcycle type approval (L category for motorcycles in EU)
+      (typeApproval.startsWith('l') && (typeApproval.includes('motorcycle') || typeApproval.includes('moped'))) ||
+      // OR explicit motorcycle wheelplan
+      (wheelplan.includes('2 wheels') && wheelplan.includes('motorcycle')) ||
+      // OR very specific engine + manufacturer + model combination for actual motorcycles
+      (engineCapacity > 0 && engineCapacity <= 800 && // Much stricter engine limit
+       ['yamaha', 'kawasaki', 'ducati', 'ktm', 'harley-davidson', 'triumph', 'aprilia', 'husqvarna', 'mv agusta'].includes(makeLower) && // Only pure motorcycle brands
+       // AND must have motorcycle model indicators
+       (/\bbike\b/i.test(modelLower) || /\bmoto\b/i.test(modelLower) || /\bscooter\b/i.test(modelLower) || 
+        /\bcbr\b/i.test(modelLower) || /\bgsxr\b/i.test(modelLower) || /\byzf\b/i.test(modelLower) ||
+        /\bninja\b/i.test(modelLower) || /\bpanigale\b/i.test(modelLower)) &&
+       // Additional safety check - make sure it's not a commercial vehicle model
+       !['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'connect', 'custom', 'van', 'commercial'].some(commercial => modelLower.includes(commercial)))
+    ) {
       
-      console.log('🏍️ DETECTED: Motorcycle');
+      console.log('🏍️ DETECTED: Motorcycle with strict criteria');
+      console.log('🏍️ Motorcycle detection details:', {
+        typeApproval,
+        wheelplan,
+        engineCapacity,
+        make: makeLower,
+        model: modelLower
+      });
+      
       if (isElectric) {
         vehicleType = 'EV'; // Electric motorcycle
       } else if (isHybrid) {
@@ -533,7 +547,17 @@ serve(async (req) => {
       }
     }
     
-    console.log(`Determined vehicle type: ${vehicleType}`);
+    console.log(`🔧 FINAL vehicle type determination: ${vehicleType} for ${makeLower} ${modelLower}`);
+    console.log(`🔧 Detection summary:`, {
+      isCommercialVehicle: isCommercialVehicle,
+      passedMotorcycleChecks: (
+        (typeApproval.startsWith('l') && (typeApproval.includes('motorcycle') || typeApproval.includes('moped'))) ||
+        (wheelplan.includes('2 wheels') && wheelplan.includes('motorcycle')) ||
+        (engineCapacity > 0 && engineCapacity <= 800 && 
+         ['yamaha', 'kawasaki', 'ducati', 'ktm', 'harley-davidson', 'triumph', 'aprilia', 'husqvarna', 'mv agusta'].includes(makeLower))
+      ),
+      finalVehicleType: vehicleType
+    });
 
     // Validate vehicle eligibility (check blocked makes/models)
     const vehicleValidation = validateVehicleEligibility({
