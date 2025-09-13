@@ -304,11 +304,11 @@ serve(async (req) => {
         vehicle_rental: customer?.vehicle_rental
       },
       finalAddOns: {
-        TyreCover: (policy?.tyre_cover || customer?.tyre_cover) ? 'Y' : 'N',
-        WearTear: (policy?.wear_tear || customer?.wear_tear) ? 'Y' : 'N',
-        EuroCover: (policy?.europe_cover || customer?.europe_cover) ? 'Y' : 'N',
-        Recovery: (policy?.breakdown_recovery || customer?.breakdown_recovery) ? 'Y' : 'N',
-        Rental: (policy?.vehicle_rental || customer?.vehicle_rental) ? 'Y' : 'N'
+        TyreCover: (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'N',
+        WearTear: (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'N',
+        EuroCover: (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'N',
+        Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'N',
+        Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'N'
       }
     });
 
@@ -346,12 +346,12 @@ serve(async (req) => {
       VolEx: (customer.voluntary_excess || 0).toString(),
       Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`,
       // Add-ons using w2000 API field names (exclude transfer cover as requested)
-      // Check both policy and customer records for add-on data
-      TyreCover: (policy?.tyre_cover || customer?.tyre_cover) ? 'Y' : 'N',
-      WearTear: (policy?.wear_tear || customer?.wear_tear) ? 'Y' : 'N', 
-      EuroCover: (policy?.europe_cover || customer?.europe_cover) ? 'Y' : 'N',
-      Recovery: (policy?.breakdown_recovery || customer?.breakdown_recovery) ? 'Y' : 'N',
-      Rental: (policy?.vehicle_rental || customer?.vehicle_rental) ? 'Y' : 'N'
+      // Check both policy and customer records for add-on data - ensure boolean conversion
+      TyreCover: (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'N',
+      WearTear: (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'N', 
+      EuroCover: (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'N',
+      Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'N',
+      Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'N'
       // Note: Transfer cover is not sent to W2000 as per requirements
     };
 
