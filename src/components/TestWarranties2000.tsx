@@ -41,7 +41,9 @@ const TestWarranties2000 = () => {
       // Add-ons using correct W2000 API field names and format
       TyreCover: "Y", // Y/N format as expected by API
       WearTear: "Y", // Y/N format as expected by API  
-      EuroCover: "N" // Y/N format as expected by API
+      EuroCover: "N", // Y/N format as expected by API
+      Recovery: "Y", // Y/N format - 24/7 Recovery/Breakdown
+      Rental: "N" // Y/N format - Vehicle Rental
       // Note: Transfer cover excluded as per requirements
     };
     

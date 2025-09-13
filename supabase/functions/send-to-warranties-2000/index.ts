@@ -46,6 +46,8 @@ interface Warranties2000Registration {
   TyreCover?: string; // Y/N
   WearTear?: string; // Y/N
   EuroCover?: string; // Y/N
+  Recovery?: string; // Y/N - 24/7 Recovery/Breakdown
+  Rental?: string; // Y/N - Vehicle Rental
 }
 
 // Timeout wrapper for fetch
@@ -292,17 +294,23 @@ serve(async (req) => {
       policyAddOns: {
         tyre_cover: policy?.tyre_cover,
         wear_tear: policy?.wear_tear,
-        europe_cover: policy?.europe_cover
+        europe_cover: policy?.europe_cover,
+        breakdown_recovery: policy?.breakdown_recovery,
+        vehicle_rental: policy?.vehicle_rental
       },
       customerAddOns: {
         tyre_cover: customer?.tyre_cover,
         wear_tear: customer?.wear_tear,
-        europe_cover: customer?.europe_cover
+        europe_cover: customer?.europe_cover,
+        breakdown_recovery: customer?.breakdown_recovery,
+        vehicle_rental: customer?.vehicle_rental
       },
       finalAddOns: {
         TyreCover: (policy?.tyre_cover || customer?.tyre_cover) ? 'Y' : 'N',
         WearTear: (policy?.wear_tear || customer?.wear_tear) ? 'Y' : 'N',
-        EuroCover: (policy?.europe_cover || customer?.europe_cover) ? 'Y' : 'N'
+        EuroCover: (policy?.europe_cover || customer?.europe_cover) ? 'Y' : 'N',
+        Recovery: (policy?.breakdown_recovery || customer?.breakdown_recovery) ? 'Y' : 'N',
+        Rental: (policy?.vehicle_rental || customer?.vehicle_rental) ? 'Y' : 'N'
       }
     });
 
@@ -343,7 +351,9 @@ serve(async (req) => {
       // Check both policy and customer records for add-on data
       TyreCover: (policy?.tyre_cover || customer?.tyre_cover) ? 'Y' : 'N',
       WearTear: (policy?.wear_tear || customer?.wear_tear) ? 'Y' : 'N', 
-      EuroCover: (policy?.europe_cover || customer?.europe_cover) ? 'Y' : 'N'
+      EuroCover: (policy?.europe_cover || customer?.europe_cover) ? 'Y' : 'N',
+      Recovery: (policy?.breakdown_recovery || customer?.breakdown_recovery) ? 'Y' : 'N',
+      Rental: (policy?.vehicle_rental || customer?.vehicle_rental) ? 'Y' : 'N'
       // Note: Transfer cover is not sent to W2000 as per requirements
     };
 
