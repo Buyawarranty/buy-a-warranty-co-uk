@@ -56,6 +56,38 @@ const addOnPackages = [
     ]
   },
   {
+    key: 'breakdown',
+    icon: '🚗',
+    title: 'Breakdown Recovery',
+    shortDescription: '24/7 roadside assistance and recovery service £6/mo',
+    price: 6,
+    priceType: 'monthly',
+    bulletPoints: [
+      '24/7 roadside assistance coverage',
+      'Vehicle recovery to nearest garage',
+      'Emergency fuel delivery',
+      'Battery jump start service',
+      'Flat tyre change assistance',
+      'Key lockout service'
+    ]
+  },
+  {
+    key: 'rental',
+    icon: '🚙',
+    title: 'Vehicle Rental',
+    shortDescription: 'Replacement vehicle while yours is being repaired £4/mo',
+    price: 4,
+    priceType: 'monthly',
+    bulletPoints: [
+      'Replacement vehicle for up to 14 days',
+      'Available while your car is being repaired',
+      'Similar category vehicle provided',
+      'Comprehensive insurance included',
+      'Collection and delivery service',
+      'Emergency rental available 24/7'
+    ]
+  },
+  {
     key: 'transfer',
     icon: '🔁',
     title: 'Transfer Cover',
