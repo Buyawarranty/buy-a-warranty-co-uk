@@ -30,6 +30,7 @@ import Protected from "./pages/Protected";
 import Claims from "./pages/Claims";
 import ContactUs from "./pages/ContactUs";
 import Blog from "./pages/Blog";
+import BlogArticle from "./pages/BlogArticle";
 
 const queryClient = new QueryClient();
 
@@ -67,7 +68,8 @@ const App = () => (
                   <Route path="/protected" element={<Protected />} />
                   <Route path="/make-a-claim" element={<Claims />} />
                   <Route path="/contact-us" element={<ContactUs />} />
-                  <Route path="/thewarrantyhub" element={<Blog />} />
+        <Route path="/thewarrantyhub" element={<Blog />} />
+        <Route path="/thewarrantyhub/article/:id" element={<BlogArticle />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
