@@ -155,7 +155,7 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
             <p className="text-muted-foreground">Enhance your warranty with optional protection covers</p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid md:grid-cols-3 gap-3">
             {addOnPackages.map((addon) => {
               // Calculate total price based on duration for monthly add-ons
               const totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
