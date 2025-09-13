@@ -453,7 +453,7 @@ serve(async (req) => {
     const isElectric = fuelTypeLower.includes('electricity') || fuelTypeLower === 'electric';
     const isHybrid = fuelTypeLower.includes('hybrid') || fuelTypeLower.includes('petrol/electric') || fuelTypeLower.includes('plug-in hybrid');
     
-    // CRITICAL FIX: Explicit commercial vehicle detection FIRST (before motorcycle check)
+    // CRITICAL: Enhanced commercial vehicle detection with explicit logging
     const isCommercialVehicle = (
       // Type approval based
       typeApproval.startsWith('n1') || 
@@ -462,10 +462,13 @@ serve(async (req) => {
       wheelplan.includes('commercial') ||
       // Weight-based detection for vans (typically heavier than cars)
       (revenueWeight > 2000 && revenueWeight <= 3500) ||
-      // Make/model based detection for common van manufacturers
+      // Make/model based detection for common van manufacturers - ENHANCED LOGGING
       (['ford', 'mercedes', 'mercedes-benz', 'volkswagen', 'renault', 'peugeot', 'citroen', 'fiat', 'iveco', 'nissan'].includes(makeLower) &&
-       ['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'nv200', 'nv300', 'nv400'].some(vanModel => 
-         modelLower.includes(vanModel))) ||
+       ['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'nv200', 'nv300', 'nv400'].some(vanModel => {
+         const modelContains = modelLower.includes(vanModel);
+         console.log(`🔍 Checking van model '${vanModel}' in '${modelLower}': ${modelContains}`);
+         return modelContains;
+       })) ||
       // Explicit model pattern matching for common commercial vehicles
       /\btransit\b/i.test(modelLower) ||
       /\bsprinter\b/i.test(modelLower) ||
@@ -477,6 +480,17 @@ serve(async (req) => {
       /\bconnect\b/i.test(modelLower) ||
       /\bcustom\b/i.test(modelLower)
     );
+    
+    console.log(`🔍 Commercial vehicle detection for ${makeLower} ${modelLower}:`, {
+      makeInList: ['ford', 'mercedes', 'mercedes-benz', 'volkswagen', 'renault', 'peugeot', 'citroen', 'fiat', 'iveco', 'nissan'].includes(makeLower),
+      modelHasVanPattern: ['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'nv200', 'nv300', 'nv400'].some(vanModel => modelLower.includes(vanModel)),
+      regexTests: {
+        transit: /\btransit\b/i.test(modelLower),
+        sprinter: /\bsprinter\b/i.test(modelLower),
+        crafter: /\bcrafter\b/i.test(modelLower)
+      },
+      isCommercialVehicle
+    });
     
     if (isCommercialVehicle) {
       console.log('🚐 DETECTED: Commercial vehicle (van)');
