@@ -142,9 +142,9 @@ const TestWarranties2000AddOns = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle>Test Warranties 2000 Add-Ons Integration</CardTitle>
+        <CardTitle>🧪 Test Warranties 2000 Add-Ons Integration</CardTitle>
         <CardDescription>
           This creates a test customer and policy with ALL add-ons enabled and sends it to W2000 API to see exactly what data is being sent and rejected.
         </CardDescription>
