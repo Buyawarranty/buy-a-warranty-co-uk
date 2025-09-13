@@ -104,10 +104,10 @@ const Blog = () => {
   return (
     <>
       <SEOHead 
-        title="Drive Smarter - Expert Car Warranty Advice & Tips | Buy a Warranty"
+        title="The Warranty Hub - Expert Car Warranty Advice & Tips | Buy a Warranty"
         description="Get expert advice on car warranties, maintenance tips, and driving guides. Learn how to protect your vehicle and save money on repairs with our UK car warranty experts."
         keywords="UK car warranty, vehicle repair costs, car protection plans, affordable car cover, driving tips, car maintenance"
-        canonical="https://buyawarranty.co.uk/blog"
+        canonical="https://buyawarranty.co.uk/thewarrantyhub"
       />
       
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -116,7 +116,7 @@ const Blog = () => {
           <div className="max-w-6xl mx-auto px-4">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Drive Smarter
+                The Warranty Hub
               </h1>
               <p className="text-xl md:text-2xl mb-6 text-blue-100">
                 Your trusted source for car warranty advice and driving tips
@@ -175,9 +175,14 @@ const Blog = () => {
                       </div>
                     </div>
                     
-                    <Button className="bg-[#224380] hover:bg-[#1a3464] text-white">
-                      Read Full Article
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                    <Button 
+                      asChild
+                      className="bg-[#224380] hover:bg-[#1a3464] text-white"
+                    >
+                      <Link to={`/thewarrantyhub/article/${featuredPost.id}`}>
+                        Read Full Article
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Link>
                     </Button>
                   </div>
                 </div>
@@ -227,8 +232,14 @@ const Blog = () => {
                             </div>
                           </div>
                           
-                          <Button variant="outline" size="sm">
-                            Read More
+                          <Button 
+                            asChild
+                            variant="outline" 
+                            size="sm"
+                          >
+                            <Link to={`/thewarrantyhub/article/${post.id}`}>
+                              Read More
+                            </Link>
                           </Button>
                         </div>
                       </div>

@@ -67,7 +67,7 @@ const App = () => (
                   <Route path="/protected" element={<Protected />} />
                   <Route path="/make-a-claim" element={<Claims />} />
                   <Route path="/contact-us" element={<ContactUs />} />
-                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/thewarrantyhub" element={<Blog />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
