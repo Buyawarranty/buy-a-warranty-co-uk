@@ -247,25 +247,27 @@ const FAQ = () => {
               
               {/* Navigation - Hidden on mobile, visible on lg+ */}
               <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-                <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</Link>
-                <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</Link>
-                <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</Link>
+                <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</a>
+                <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+                <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
                 <Link to="/faq" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">FAQs</Link>
-                <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</Link>
+                <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
               </nav>
 
               {/* Desktop CTA Buttons - Show on desktop */}
               <div className="hidden lg:flex items-center space-x-3">
+                <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-[#25D366] text-white border-[#25D366] hover:bg-[#1da851] hover:border-[#1da851] px-3 text-sm"
+                  >
+                    WhatsApp Us
+                  </Button>
+                </a>
                 <Button 
-                  variant="outline" 
                   size="sm"
-                  className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
-                >
-                  WhatsApp Us
-                </Button>
-                <Button 
-                  size="sm"
-                  className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
+                  className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
                 >
                   Get my quote
                 </Button>
@@ -297,37 +299,37 @@ const FAQ = () => {
 
                     {/* Navigation Links */}
                     <nav className="flex flex-col space-y-6 flex-1">
-                      <Link 
-                        to="/" 
-                        className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      <a 
+                        href="#" 
+                        className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Warranty Plans
-                      </Link>
+                      </a>
                       <Link 
                         to="/protected" 
-                        className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                        className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         What's Covered
                       </Link>
                       <Link 
                         to="/make-a-claim" 
-                        className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                        className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Make a Claim
                       </Link>
                       <Link 
                         to="/faq" 
-                        className="text-orange-500 hover:text-orange-600 font-medium text-lg py-2 border-b border-gray-200"
+                        className="text-orange-500 hover:text-orange-600 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                          FAQs
                       </Link>
                       <Link 
                         to="/contact-us" 
-                        className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                        className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Contact Us
@@ -336,15 +338,17 @@ const FAQ = () => {
 
                     {/* CTA Buttons */}
                     <div className="space-y-4 pt-6 mt-auto">
+                      <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" className="block">
+                        <Button 
+                          variant="outline" 
+                          className="w-full bg-[#25D366] text-white border-[#25D366] hover:bg-[#1da851] hover:border-[#1da851] text-xl py-4 min-h-[48px]"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          WhatsApp Us
+                        </Button>
+                      </a>
                       <Button 
-                        variant="outline" 
-                        className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        WhatsApp Us
-                      </Button>
-                      <Button 
-                        className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
+                        className="w-full bg-primary text-white hover:bg-primary/90 text-xl py-4 min-h-[48px]"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Get my quote
