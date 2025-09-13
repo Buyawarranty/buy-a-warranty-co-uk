@@ -18,7 +18,8 @@ type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
 const normalizeVehicleType = (raw?: string): VehicleType => {
   const v = (raw ?? '').toLowerCase().trim();
   if (['car','saloon','hatchback','estate','suv'].includes(v)) return 'car';
-  if (v.includes('motor') || v.includes('bike')) return 'motorbike';
+  // Only treat as motorbike if explicitly a motorbike/motorcycle, not if it just contains 'motor'
+  if (['motorbike', 'motorcycle', 'moped', 'scooter'].includes(v) || v === 'bike') return 'motorbike';
   // Treat hybrid, phev, and electric vehicles the same as regular cars
   if (v === 'phev' || v.includes('hybrid') || ['ev','electric'].includes(v)) return 'car';
   return 'car'; // safe default
@@ -462,11 +463,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                             paymentType === '36months' ? 36 : 12;
       
       // Protection add-ons: Calculate correctly for selected duration
-      let recurringAddonTotal = 0; // Monthly add-ons (calculated for full duration)
+      let recurringAddonTotal = 0; // Monthly add-ons (calculated for full duration)  
       let oneTimeAddonTotal = 0;   // Transfer (added to first installment only)
       
-      if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * durationMonths; // £5/mo
-      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * durationMonths; // £6/mo
+      if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 6 * durationMonths; // £6/mo
+      if (selectedProtectionAddOns.rental) recurringAddonTotal += 4 * durationMonths; // £4/mo
       if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo
       if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo
       if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo
@@ -1445,14 +1446,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
                           const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
                           
-                          // Protection addon prices: monthly add-ons converted to selected duration + one-time
-                          let protectionPrice = 0;
-                          if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                          if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * durationMonths; // £6/mo * duration
-                          if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                          if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                          if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
-                          if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
+                           // Protection addon prices: monthly add-ons converted to selected duration + one-time
+                           let protectionPrice = 0;
+                           if (selectedProtectionAddOns.breakdown) protectionPrice += 6 * durationMonths; // £6/mo * duration
+                           if (selectedProtectionAddOns.rental) protectionPrice += 4 * durationMonths; // £4/mo * duration
+                           if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                           if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                           if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
+                           if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
                           
                           return basePrice + planAddOnPrice + protectionPrice;
                         })()}
@@ -1475,16 +1476,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                            
                            const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
                            
-                           // Protection add-ons: Monthly add-ons calculated for duration, Transfer is one-time
-                           let recurringAddonTotal = 0;
-                           let hasTransfer = false;
-                           
-                           if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                           if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
-                           if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                           if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                           if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
-                           if (selectedProtectionAddOns.transfer) hasTransfer = true;
+                            // Protection add-ons: Monthly add-ons calculated for duration, Transfer is one-time
+                            let recurringAddonTotal = 0;
+                            let hasTransfer = false;
+                            
+                            if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
+                            if (selectedProtectionAddOns.rental) recurringAddonTotal += 4 * durationMonths; // £4/mo * duration
+                            if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                            if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                            if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
+                            if (selectedProtectionAddOns.transfer) hasTransfer = true;
                            
                            // Calculate monthly amounts
                            const monthlyBasePrice = Math.round(basePrice / durationMonths * 100) / 100;

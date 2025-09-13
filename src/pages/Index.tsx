@@ -407,7 +407,7 @@ const Index = () => {
     trackAbandonedCart(updatedData as VehicleData, 3);
   };
 
-  const handlePlanSelected = (planId: string, paymentType: string, planName?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}}) => {
+  const handlePlanSelected = (planId: string, paymentType: string, planName?: string, pricingData?: {totalPrice: number, monthlyPrice: number, voluntaryExcess: number, selectedAddOns: {[addon: string]: boolean}, protectionAddOns?: {[key: string]: boolean}}) => {
     setSelectedPlan({ id: planId, paymentType, name: planName, pricingData });
     setCurrentStep(4); // Back to step 4 for customer details
     updateStepInUrl(4);

@@ -201,7 +201,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   
   // Calculate protection addons total for display purposes only
   let protectionAddonsTotal = 0;
-  if (pricingData.protectionAddOns?.motRepair) protectionAddonsTotal += 89;
+  if (pricingData.protectionAddOns?.breakdown) protectionAddonsTotal += 89;
+  if (pricingData.protectionAddOns?.rental) protectionAddonsTotal += 89;
   if (pricingData.protectionAddOns?.wearTear) protectionAddonsTotal += 89;
   if (pricingData.protectionAddOns?.transfer) protectionAddonsTotal += 30;
   
@@ -680,11 +681,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                   <span className="font-semibold">£5/mo</span>
                                 </div>
                               )}
-                              {pricingData.protectionAddOns.motRepair && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🔧 MOT Repair Cover:</span>
-                                  <span className="font-semibold">£6/mo</span>
-                                </div>
+                              {pricingData.protectionAddOns.rental && (
+                                 <div className="flex justify-between">
+                                   <span className="text-gray-600">🚙 Vehicle Rental:</span>
+                                   <span className="font-semibold">£4/mo</span>
+                                 </div>
                               )}
                               {pricingData.protectionAddOns.wearTear && (
                                 <div className="flex justify-between">
