@@ -672,35 +672,47 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
                           </div>
 
-                          {/* Add-ons integrated into main list */}
-                          {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
-                            <>
-                              {pricingData.protectionAddOns.breakdown && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🚨 24/7 Breakdown Recovery:</span>
-                                  <span className="font-semibold">£5/mo</span>
-                                </div>
-                              )}
-                              {pricingData.protectionAddOns.rental && (
+                           {/* Add-ons integrated into main list */}
+                           {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
+                             <>
+                               {pricingData.protectionAddOns.breakdown && (
                                  <div className="flex justify-between">
-                                   <span className="text-gray-600">🚙 Vehicle Rental:</span>
-                                   <span className="font-semibold">£4/mo</span>
+                                   <span className="text-gray-600">🚨 24/7 Breakdown Recovery:</span>
+                                   <span className="font-semibold">£6/mo</span>
                                  </div>
-                              )}
-                              {pricingData.protectionAddOns.wearTear && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🛠️ Wear & Tear Cover:</span>
-                                  <span className="font-semibold">£89/year</span>
-                                </div>
-                              )}
-                              {pricingData.protectionAddOns.transfer && (
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">🔁 Transfer Cover:</span>
-                                  <span className="font-semibold">£30 one-time</span>
-                                </div>
-                              )}
-                            </>
-                          )}
+                               )}
+                               {pricingData.protectionAddOns.rental && (
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">🚙 Vehicle Rental:</span>
+                                    <span className="font-semibold">£4/mo</span>
+                                  </div>
+                               )}
+                               {pricingData.protectionAddOns.tyre && (
+                                 <div className="flex justify-between">
+                                   <span className="text-gray-600">🛞 Tyre Cover:</span>
+                                   <span className="font-semibold">£60/year</span>
+                                 </div>
+                               )}
+                               {pricingData.protectionAddOns.wearTear && (
+                                 <div className="flex justify-between">
+                                   <span className="text-gray-600">🛠️ Wear & Tear Cover:</span>
+                                   <span className="font-semibold">£60/year</span>
+                                 </div>
+                               )}
+                               {pricingData.protectionAddOns.european && (
+                                 <div className="flex justify-between">
+                                   <span className="text-gray-600">🌍 European Cover:</span>
+                                   <span className="font-semibold">£36/year</span>
+                                 </div>
+                               )}
+                               {pricingData.protectionAddOns.transfer && (
+                                 <div className="flex justify-between">
+                                   <span className="text-gray-600">🔁 Transfer Cover:</span>
+                                   <span className="font-semibold">£30 one-time</span>
+                                 </div>
+                               )}
+                             </>
+                           )}
                         </div>
 
                         {/* Payment Summary */}
