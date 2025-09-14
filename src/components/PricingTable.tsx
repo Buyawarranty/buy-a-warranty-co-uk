@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
-import { VoucherBanner } from './VoucherBanner';
+
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
 
@@ -580,10 +580,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Voucher Banner */}
-      <div className="max-w-6xl mx-auto px-4 pt-6">
-        <VoucherBanner placement="pricing" animate={true} className="mb-6" />
-      </div>
       
       {/* Header */}
       <div className="bg-white border-b">

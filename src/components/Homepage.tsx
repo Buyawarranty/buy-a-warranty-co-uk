@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
-import { VoucherBanner } from './VoucherBanner';
+
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
@@ -492,11 +492,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
                   className="h-16 w-auto"
                 />
-              </div>
-              
-              {/* Voucher Banner positioned below vehicle types */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-20 sm:translate-y-24 z-20">
-                <VoucherBanner placement="homepage" />
               </div>
               
               {/* Vehicle Types positioned underneath the panda's feet */}
