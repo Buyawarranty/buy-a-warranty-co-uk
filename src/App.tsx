@@ -65,7 +65,7 @@ const App = () => (
                   <Route path="/car-preview" element={<CarSpinnerPreview />} />
                   <Route path="/original-pricing" element={<OriginalPricing />} />
                   <Route path="/terms" element={<Terms />} />
-                  <Route path="/protected" element={<Protected />} />
+                  <Route path="/what-is-covered" element={<Protected />} />
                   <Route path="/make-a-claim" element={<Claims />} />
                   <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/thewarrantyhub" element={<Blog />} />

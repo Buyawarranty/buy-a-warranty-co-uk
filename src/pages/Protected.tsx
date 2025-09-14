@@ -37,7 +37,7 @@ const Protected = () => {
               
               <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
                 <Link to="/" className="text-gray-700 hover:text-primary font-medium">Warranty Plans</Link>
-                <Link to="/protected" className="text-primary font-medium">What's Covered</Link>
+                <Link to="/what-is-covered" className="text-primary font-medium">What's Covered</Link>
                 <Link to="/claims" className="text-gray-700 hover:text-primary font-medium">Make a Claim</Link>
                 <Link to="/faq" className="text-gray-700 hover:text-primary font-medium">FAQs</Link>
                 <Link to="/contact-us" className="text-gray-700 hover:text-primary font-medium">Contact Us</Link>
@@ -65,7 +65,7 @@ const Protected = () => {
                 <SheetContent side="right" className="w-[300px]">
                   <nav className="flex flex-col space-y-6 pt-6">
                     <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Warranty Plans</Link>
-                    <Link to="/protected" onClick={() => setIsMobileMenuOpen(false)}>What's Covered</Link>
+                    <Link to="/what-is-covered" onClick={() => setIsMobileMenuOpen(false)}>What's Covered</Link>
                     <Link to="/claims" onClick={() => setIsMobileMenuOpen(false)}>Make a Claim</Link>
                     <Link to="/faq" onClick={() => setIsMobileMenuOpen(false)}>FAQs</Link>
                     <Link to="/contact-us" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</Link>

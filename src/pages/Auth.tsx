@@ -264,7 +264,7 @@ const Auth = () => {
             {/* Navigation - Hidden on mobile, visible on lg+ */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
               <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</Link>
-              <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</Link>
+              <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</Link>
               <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</Link>
               <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
               <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</Link>
@@ -321,7 +321,7 @@ const Auth = () => {
                       Warranty Plans
                     </a>
                     <a 
-                      href="/protected" 
+                      href="/what-is-covered" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >

@@ -29,7 +29,7 @@ const Terms = () => {
               {/* Navigation - Hidden on mobile, visible on lg+ */}
               <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
                 <a href="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">BUY PROTECTION</a>
-                <a href="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</a>
+                <a href="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">SERVICE A COMPLAINT</a>
                 <a href="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">MAKE A CLAIM</a>
                 <a href="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</a>
                 <a href="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">CONTACT US</a>
@@ -86,7 +86,7 @@ const Terms = () => {
                         Warranty Plans
                       </a>
                       <a 
-                        href="/protected" 
+                        href="/what-is-covered" 
                         className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >

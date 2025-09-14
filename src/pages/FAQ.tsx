@@ -248,7 +248,7 @@ const FAQ = () => {
               {/* Navigation - Hidden on mobile, visible on lg+ */}
               <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
                 <a href="#" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</a>
-                <Link to="/protected" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+                <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
                 <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
                 <Link to="/faq" className="text-orange-500 hover:text-orange-600 font-medium text-sm xl:text-base">FAQs</Link>
                 <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
@@ -307,7 +307,7 @@ const FAQ = () => {
                         Warranty Plans
                       </a>
                       <Link 
-                        to="/protected" 
+                        to="/what-is-covered" 
                         className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
