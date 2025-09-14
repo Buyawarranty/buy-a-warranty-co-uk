@@ -207,52 +207,62 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     setSummaryDismissed(false);
   }, [selectedClaimLimit, paymentType, voluntaryExcess, selectedProtectionAddOns]);
 
-  // Server-side filtering function
+  // Server-side filtering function - now gets correct plan based on actual vehicle type
   async function fetchPlansFor(vt: VehicleType): Promise<Plan[]> {
-    if (vt === 'car') {
-      console.log('🚗 Fetching standard car plans: All plans for claim limits');
-      const { data, error } = await supabase
-        .from('plans')
-        .select('*')
-        .eq('is_active', true)
-        .order('monthly_price');
-      
-      if (error) {
-        console.error('❌ Error fetching car plans:', error);
-        throw error;
-      }
-      
-      console.log('✅ Car plans fetched:', data?.length || 0);
-      return (data || []).map(plan => ({
-        ...plan,
-        coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
-        add_ons: Array.isArray(plan.add_ons) ? plan.add_ons.map(item => String(item)) : [],
-        two_monthly_price: plan.two_yearly_price || null,
-        three_monthly_price: plan.three_yearly_price || null
-      }));
+    // Determine the correct vehicle type for the database query
+    let dbVehicleType: string;
+    
+    // Map the normalized vehicle type to the actual vehicle characteristics
+    const actualVehicleType = vehicleData?.vehicleType?.toLowerCase() || '';
+    const vehicleMake = vehicleData?.make?.toLowerCase() || '';
+    const vehicleModel = vehicleData?.model?.toLowerCase() || '';
+    
+    console.log('🔍 Vehicle Type Mapping:', {
+      normalizedVt: vt,
+      actualVehicleType,
+      vehicleMake,
+      vehicleModel,
+      vehicleData
+    });
+    
+    // Determine correct plan type based on actual vehicle characteristics
+    if (actualVehicleType.includes('motorbike') || actualVehicleType.includes('motorcycle') || actualVehicleType === 'bike') {
+      dbVehicleType = 'motorbike';
+    } else if (actualVehicleType.includes('van') || vehicleModel?.includes('transit') || vehicleModel?.includes('sprinter') || vehicleModel?.includes('crafter')) {
+      dbVehicleType = 'van';
+    } else if (actualVehicleType.includes('suv')) {
+      dbVehicleType = 'suv';
+    } else if (actualVehicleType.includes('electric') || actualVehicleType === 'ev') {
+      dbVehicleType = 'electric';
+    } else if (actualVehicleType.includes('hybrid') || actualVehicleType === 'phev') {
+      dbVehicleType = 'hybrid';
     } else {
-      console.log(`🛵 Fetching special vehicle plans for: ${vt}`);
-      const { data, error } = await supabase
-        .from('special_vehicle_plans')
-        .select('*')
-        .eq('is_active', true)
-        .eq('vehicle_type', vt === 'ev' ? 'electric' : vt)
-        .order('monthly_price');
-      
-      if (error) {
-        console.error('❌ Error fetching special vehicle plans:', error);
-        throw error;
-      }
-      
-      console.log('✅ Special vehicle plans fetched:', data?.length || 0);
-      return (data || []).map(plan => ({
-        ...plan,
-        coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
-        add_ons: [], // Special vehicle plans don't have add-ons
-        two_monthly_price: plan.two_yearly_price || null,
-        three_monthly_price: plan.three_yearly_price || null
-      }));
+      // Default to car for cars, saloons, hatchbacks, estates, etc.
+      dbVehicleType = 'car';
     }
+    
+    console.log(`🚗 Fetching plans for vehicle type: ${dbVehicleType}`);
+    
+    const { data, error } = await supabase
+      .from('special_vehicle_plans')
+      .select('*')
+      .eq('is_active', true)
+      .eq('vehicle_type', dbVehicleType)
+      .order('monthly_price');
+    
+    if (error) {
+      console.error('❌ Error fetching vehicle plans:', error);
+      throw error;
+    }
+    
+    console.log('✅ Vehicle plans fetched:', data?.length || 0, 'for type:', dbVehicleType);
+    return (data || []).map(plan => ({
+      ...plan,
+      coverage: Array.isArray(plan.coverage) ? plan.coverage.map(item => String(item)) : [],
+      add_ons: [], // Plans don't have add-ons in this structure
+      two_monthly_price: plan.two_yearly_price || null,
+      three_monthly_price: plan.three_yearly_price || null
+    }));
   }
 
   const fetchPdfUrls = async () => {
