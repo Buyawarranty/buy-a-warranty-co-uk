@@ -770,11 +770,20 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Trustpilot Rating */}
           <div className="flex justify-center items-center mb-6 md:mb-8">
-            <div className="flex items-center space-x-2">
-              <span className="text-green-600 text-base md:text-lg font-bold">★ Trustpilot</span>
-              <div className="flex text-green-500">
-                <span>★★★★★</span>
-              </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-700 text-xl md:text-2xl font-semibold">Excellent</span>
+              <a 
+                href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="transition-opacity hover:opacity-80"
+              >
+                <img 
+                  src="/lovable-uploads/4e4faf8a-b202-4101-a858-9c58ad0a28c5.png" 
+                  alt="Trustpilot 5 stars" 
+                  className="h-12 sm:h-16 w-auto"
+                />
+              </a>
             </div>
           </div>
 
