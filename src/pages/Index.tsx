@@ -4,7 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Homepage from '@/components/Homepage';
 import RegistrationForm from '@/components/RegistrationForm';
-import UnifiedWarrantySteps from '@/components/UnifiedWarrantySteps';
+import PricingTable from '@/components/PricingTable';
+import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
@@ -526,11 +527,27 @@ const Index = () => {
       )}
 
       {currentStep === 3 && (
-        <UnifiedWarrantySteps 
-          vehicleData={vehicleData}
-          onBack={() => handleStepChange(2)}
-          onPlanSelected={handlePlanSelected}
-        />
+        <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
+          <MaintenanceBanner />
+          {vehicleData && (
+            <>
+              
+              {isSpecialVehicle ? (
+                <SpecialVehiclePricing 
+                  vehicleData={vehicleData as any}
+                  onBack={() => handleBackToStep(2)} 
+                  onPlanSelected={handlePlanSelected}
+                />
+              ) : (
+                <PricingTable 
+                  vehicleData={vehicleData} 
+                  onBack={() => handleBackToStep(2)} 
+                  onPlanSelected={handlePlanSelected}
+                />
+              )}
+            </>
+          )}
+        </div>
       )}
 
       {currentStep === 4 && (
