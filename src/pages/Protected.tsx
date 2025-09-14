@@ -153,36 +153,36 @@ const Protected = () => {
           </div>
         </header>
         {/* Hero Section */}
-        <section className="relative py-20 bg-background">
+        <section className="relative py-16 bg-background">
           <div className="container mx-auto px-6">
-            <div className="text-center max-w-6xl mx-auto relative">
+            <div className="text-center max-w-5xl mx-auto relative">
               {/* Trustpilot Logo - positioned in top right */}
               <div className="absolute top-0 right-0 hidden md:block">
-                <TrustpilotHeader className="h-8 sm:h-12" />
+                <TrustpilotHeader className="h-7 sm:h-10" />
               </div>
               
-              <h1 className="text-5xl font-bold mb-6 text-foreground">
+              <h1 className="text-4xl md:text-[2.8rem] font-bold mb-5 text-foreground leading-tight">
                 What's covered in my warranty
               </h1>
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-lg text-muted-foreground mb-7 leading-relaxed">
                 At Buy-a-Warranty, we like to keep things straightforward. One solid plan that works for cars, vans, and motorbikes - whether you're driving electric, hybrid, petrol or diesel.
               </p>
               
-              <div className="grid md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border/50">
-                  <h3 className="font-semibold text-lg mb-3 text-foreground">No confusing packages</h3>
+              <div className="grid md:grid-cols-3 gap-5 mb-7">
+                <div className="bg-card/50 backdrop-blur-sm rounded-lg p-5 border border-border/50">
+                  <h3 className="font-semibold text-base mb-2 text-foreground">No confusing packages</h3>
                 </div>
-                <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border/50">
-                  <h3 className="font-semibold text-lg mb-3 text-foreground">No sneaky rejections</h3>
+                <div className="bg-card/50 backdrop-blur-sm rounded-lg p-5 border border-border/50">
+                  <h3 className="font-semibold text-base mb-2 text-foreground">No sneaky rejections</h3>
                 </div>
-                <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border/50">
-                  <h3 className="font-semibold text-lg mb-3 text-foreground">Just hassle-free cover</h3>
+                <div className="bg-card/50 backdrop-blur-sm rounded-lg p-5 border border-border/50">
+                  <h3 className="font-semibold text-base mb-2 text-foreground">Just hassle-free cover</h3>
                 </div>
               </div>
               
-              <div className="flex items-center justify-center gap-2 mb-6">
-                <Check className="h-5 w-5 text-green-500" />
-                <span className="text-lg font-medium text-foreground">Clear, easy-to-understand protection</span>
+              <div className="flex items-center justify-center gap-2 mb-5">
+                <Check className="h-4 w-4 text-green-500" />
+                <span className="text-base font-medium text-foreground">Clear, easy-to-understand protection</span>
               </div>
               
               <p className="text-muted-foreground italic">
