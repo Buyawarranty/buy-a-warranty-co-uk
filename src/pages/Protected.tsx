@@ -352,24 +352,72 @@ const Protected = () => {
                   <AccordionContent className="pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                         <p>Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</p>
-                         <p>Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</p>
-                         <p>Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</p>
-                         <p>Turbocharger & Supercharger Units</p>
-                         <p>Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</p>
-                         <p>Cooling & Heating Systems (radiators, thermostats, water pumps, cooling fans, heater matrix)</p>
-                         <p>Exhaust & Emissions Systems (catalytic converters, DPFs, OPFs, EGR valves, NOx sensors, AdBlue/Eolys systems)</p>
-                         <p>Braking Systems (ABS, calipers, cylinders, master cylinders)</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Engine & Internal Components</strong> (pistons, valves, camshafts, timing chains, seals, gaskets)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Gearbox / Transmission Systems</strong> (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Drivetrain & Clutch Assemblies</strong> (flywheel, driveshafts, differentials)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Turbocharger & Supercharger Units</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Fuel Delivery Systems</strong> (tanks, pumps, injectors, fuel rails, fuel control electronics)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Cooling & Heating Systems</strong> (radiators, thermostats, water pumps, cooling fans, heater matrix)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Exhaust & Emissions Systems</strong> (catalytic converters, DPFs, OPFs, EGR valves, NOx sensors, AdBlue/Eolys systems)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Braking Systems</strong> (ABS, calipers, cylinders, master cylinders)</p>
+                         </div>
                        </div>
                        <div className="space-y-2">
-                         <p>Suspension & Steering Systems (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)</p>
-                         <p>Air Conditioning & Climate Control Systems</p>
-                         <p>Electrical Components & Charging Systems (alternators, starter motors, wiring looms, connectors, relays)</p>
-                         <p>Electronic Control Units (ECUs) & Sensors (engine management, ABS, traction control, emissions sensors)</p>
-                         <p>Lighting & Ignition Systems (headlights, indicators, ignition coils, switches, control modules)</p>
-                         <p>Factory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)</p>
-                         <p>Driver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)</p>
-                         <p>Safety Systems (airbags, seatbelts, pretensioners, safety restraint modules)</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Suspension & Steering Systems</strong> (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Air Conditioning & Climate Control Systems</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Electrical Components & Charging Systems</strong> (alternators, starter motors, wiring looms, connectors, relays)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Electronic Control Units (ECUs) & Sensors</strong> (engine management, ABS, traction control, emissions sensors)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Lighting & Ignition Systems</strong> (headlights, indicators, ignition coils, switches, control modules)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Factory-Fitted Multimedia & Infotainment Systems</strong> (screens, sat nav, audio, digital displays)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Driver Assistance Systems</strong> (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)</p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Safety Systems</strong> (airbags, seatbelts, pretensioners, safety restraint modules)</p>
+                         </div>
                       </div>
                     </div>
                   </AccordionContent>
@@ -383,16 +431,40 @@ const Protected = () => {
                     <p className="mb-4">All petrol/diesel engine parts and labour plus:</p>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                         <p>Hybrid Drive Motors & ECUs</p>
-                         <p>Hybrid Battery Failure</p>
-                         <p>Power Control Units, Inverters & DC-DC Converters</p>
-                         <p>Regenerative Braking Systems</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Hybrid Drive Motors & ECUs</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Hybrid Battery Failure</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Power Control Units, Inverters & DC-DC Converters</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Regenerative Braking Systems</strong></p>
+                         </div>
                        </div>
                        <div className="space-y-2">
-                         <p>High-Voltage Cables & Connectors</p>
-                         <p>Cooling Systems for Hybrid Components</p>
-                         <p>Charging Ports & On-Board Charging Modules</p>
-                         <p>Hybrid Transmission Components</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>High-Voltage Cables & Connectors</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Cooling Systems for Hybrid Components</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Charging Ports & On-Board Charging Modules</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Hybrid Transmission Components</strong></p>
+                         </div>
                       </div>
                     </div>
                   </AccordionContent>
@@ -405,18 +477,48 @@ const Protected = () => {
                   <AccordionContent className="pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                         <p>EV Drive Motors & Reduction Gear</p>
-                         <p>EV Transmission & Reduction Gearbox Assemblies</p>
-                         <p>High-Voltage Battery Failure</p>
-                         <p>Power Control Units & Inverters</p>
-                         <p>On-Board Charger (OBC) & Charging Ports</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>EV Drive Motors & Reduction Gear</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>EV Transmission & Reduction Gearbox Assemblies</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>High-Voltage Battery Failure</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Power Control Units & Inverters</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>On-Board Charger (OBC) & Charging Ports</strong></p>
+                         </div>
                        </div>
                        <div className="space-y-2">
-                         <p>DC-DC Converters</p>
-                         <p>Thermal Management Systems</p>
-                         <p>High-Voltage Cables & Connectors</p>
-                         <p>EV-Specific Control Electronics</p>
-                         <p>Regenerative Braking System Components</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>DC-DC Converters</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Thermal Management Systems</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>High-Voltage Cables & Connectors</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>EV-Specific Control Electronics</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Regenerative Braking System Components</strong></p>
+                         </div>
                       </div>
                     </div>
                   </AccordionContent>
@@ -429,18 +531,48 @@ const Protected = () => {
                   <AccordionContent className="pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                         <p>Engine / Motor & Drivetrain Components</p>
-                         <p>Gearbox / Transmission Systems</p>
-                         <p>ECUs, Sensors & Control Modules</p>
-                         <p>Electrical Systems & Wiring</p>
-                         <p>High-Voltage Battery Failure (Hybrid & EV)</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Engine / Motor & Drivetrain Components</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Gearbox / Transmission Systems</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>ECUs, Sensors & Control Modules</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Electrical Systems & Wiring</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>High-Voltage Battery Failure</strong> (Hybrid & EV)</p>
+                         </div>
                        </div>
                        <div className="space-y-2">
-                         <p>Suspension & Steering Systems</p>
-                         <p>Braking Systems</p>
-                         <p>Cooling & Thermal Systems</p>
-                         <p>Lighting & Ignition Systems</p>
-                         <p>Instrumentation & Rider Controls</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Suspension & Steering Systems</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Braking Systems</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Cooling & Thermal Systems</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Lighting & Ignition Systems</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Instrumentation & Rider Controls</strong></p>
+                         </div>
                       </div>
                     </div>
                   </AccordionContent>
@@ -453,14 +585,32 @@ const Protected = () => {
                   <AccordionContent className="pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                         <p>Vehicle rental</p>
-                         <p>Wear & tear cover</p>
-                         <p>Tyre replacement cover</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Vehicle rental</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Wear & tear cover</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Tyre replacement cover</strong></p>
+                         </div>
                        </div>
                        <div className="space-y-2">
-                         <p>European repair cover</p>
-                         <p>Breakdown recovery</p>
-                         <p>Transferable warranty</p>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>European repair cover</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Breakdown recovery</strong></p>
+                         </div>
+                         <div className="flex items-start gap-3">
+                           <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
+                           <p><strong>Transferable warranty</strong></p>
+                         </div>
                       </div>
                     </div>
                   </AccordionContent>
