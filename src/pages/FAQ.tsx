@@ -43,7 +43,7 @@ const FAQ = () => {
         {
           id: 'vehicle-eligibility',
           question: 'What vehicles are eligible at the start of the plan?',
-          answer: '✔ Vehicles up to 15 years old\n✔ Vehicles up to 150,000 miles\n✔ Plans for 12, 24, or 36 months'
+          answer: 'Vehicles up to 15 years old\nVehicles up to 150,000 miles\nPlans for 12, 24, or 36 months'
         }
       ]
     },
@@ -66,12 +66,12 @@ const FAQ = () => {
         {
           id: 'easy-claim-repair',
           question: 'Is it easy to make a claim and get my repair done?',
-          answer: 'Yes, absolutely – we\'ve made it simple and hassle-free.\n\n• Follow a few quick steps to start your claim\n• We guide you through the process\n• Repairs handled quickly and professionally\n• Choose your own garage or use our trusted network\n• Payouts usually processed within 90 minutes of approval\n\nSteps:\n1. Contact Us – Call 0330 229 5045 or use our online claims form\n2. Fast Repairs – Same-day claim review during office hours\n3. Payment – We pay the garage directly or reimburse you with a valid invoice\n\nFast Repairs:\n✔ We will review your claim the same day (during office hours)\n✔ Our goal is to get you back on the road promptly and with minimal fuss\n✔ No stress, no hassle – just quick and smooth authorisation\n\nOnce your repair is approved:\n✔ We\'ll handle payment directly with the garage so you\'re not out of pocket\n✔ Or, if you\'ve already paid, we\'ll reimburse you promptly with a valid invoice – no delays or complications'
+          answer: 'Yes, absolutely – we\'ve made it simple and hassle-free.\n\n• Follow a few quick steps to start your claim\n• We guide you through the process\n• Repairs handled quickly and professionally\n• Choose your own garage or use our trusted network\n• Payouts usually processed within 90 minutes of approval\n\nSteps:\n1. Contact Us – Call 0330 229 5045 or use our online claims form\n2. Fast Repairs – Same-day claim review during office hours\n3. Payment – We pay the garage directly or reimburse you with a valid invoice\n\nFast Repairs:\nWe will review your claim the same day (during office hours)\nOur goal is to get you back on the road promptly and with minimal fuss\nNo stress, no hassle – just quick and smooth authorisation\n\nOnce your repair is approved:\nWe\'ll handle payment directly with the garage so you\'re not out of pocket\nOr, if you\'ve already paid, we\'ll reimburse you promptly with a valid invoice – no delays or complications'
         },
         {
           id: 'do-you-pay-claims',
           question: 'Do you actually pay out claims?',
-          answer: 'Yes, we do – and we\'re proud of it.\n\n✔ No confusing small print\n✔ Straightforward, honest cover\n✔ Excellent Trustpilot reviews\n✔ Confidence your vehicle is covered when you need it most'
+          answer: 'Yes, we do – and we\'re proud of it.\n\nNo confusing small print\nStraightforward, honest cover\nExcellent Trustpilot reviews\nConfidence your vehicle is covered when you need it most'
         },
         {
           id: 'pay-upfront',
@@ -87,6 +87,16 @@ const FAQ = () => {
           id: 'vehicle-inspection',
           question: 'Is a vehicle inspection necessary before I can make a claim?',
           answer: 'In certain situations, we may need to inspect your vehicle before validating your claim.'
+        },
+        {
+          id: 'first-claim-timing',
+          question: 'When can I make my first claim?',
+          answer: 'You can make your first claim 30 days after you buy your plan, unless you already had an active warranty with us. If you are renewing or moving from one of our plans to another with continuous cover, you can claim straight away. For example, you buy your plan today. A warning light appears after one week. You can make the claim once 30 days have passed.'
+        },
+        {
+          id: 'thirty-day-wait',
+          question: 'Why there is a 30 day wait for new customers?',
+          answer: 'The 30 day period helps protect everyone by stopping claims for problems that existed before the plan started. It makes sure the warranty is being used for genuine unexpected faults rather than known issues. For example "Your car shows a fault on day 15 and a garage diagnoses it on day 20. You can proceed with the covered repair once the 30 days have passed and the claim is approved."'
         }
       ]
     },
@@ -97,7 +107,7 @@ const FAQ = () => {
         {
           id: 'whats-covered-warranty',
           question: 'What\'s covered in my warranty?',
-          answer: 'At Buy-a-Warranty, we like to keep things simple. One solid plan that works for cars, vans, and motorbikes, whether you\'re driving electric, hybrid, petrol, or diesel.\n\n✔ We keep things simple with no confusing packages\n✔ You won\'t encounter any unexpected rejections\n✔ We offer straightforward cover without the hassle\n✔ Clear, easy-to-understand protection\n\nBecause maintaining your vehicle shouldn\'t be a headache.',
+          answer: 'At Buy-a-Warranty, we like to keep things simple. One solid plan that works for cars, vans, and motorbikes, whether you\'re driving electric, hybrid, petrol, or diesel.\n\nWe keep things simple with no confusing packages\nYou won\'t encounter any unexpected rejections\nWe offer straightforward cover without the hassle\nClear, easy-to-understand protection\n\nBecause maintaining your vehicle shouldn\'t be a headache.',
           popular: true
         },
         {
@@ -113,32 +123,32 @@ const FAQ = () => {
         {
           id: 'petrol-diesel-parts',
           question: 'What parts are covered for my petrol or diesel car or van?',
-          answer: '**Petrol & Diesel (Combustion Engine) Vehicles**\n\n✔ Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)\n✔ Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)\n✔ Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)\n✔ Turbocharger & Supercharger Units\n✔ Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)\n✔ Cooling & Heating Systems (radiators, thermostats, water pumps, cooling fans, heater matrix)\n✔ Exhaust & Emissions Systems (catalytic converters, DPFs, OPFs, EGR valves, NOx)'
+          answer: '**Petrol & Diesel (Combustion Engine) Vehicles**\n\nEngine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)\nGearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)\nDrivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)\nTurbocharger & Supercharger Units\nFuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)\nCooling & Heating Systems (radiators, thermostats, water pumps, cooling fans, heater matrix)\nExhaust & Emissions Systems (catalytic converters, DPFs, OPFs, EGR valves, NOx)'
         },
         {
           id: 'hybrid-phev-parts',
           question: 'What parts are covered for Hybrid & PHEV Vehicle?',
-          answer: '**Hybrid & PHEV Vehicles**\n\n✔ All petrol/diesel engine parts and labour plus:\n✔ Hybrid Drive Motors & ECUs\n✔ Hybrid Battery Failure\n✔ Power Control Units, Inverters & DC-DC Converters\n✔ Regenerative Braking Systems\n✔ High-Voltage Cables & Connectors\n✔ Cooling Systems for Hybrid Components\n✔ Charging Ports & On-Board Charging Modules\n✔ Hybrid Transmission Components\n\n**Other Covered Systems**\n✔ Braking Systems (ABS, calipers, cylinders, master cylinders)\n✔ Suspension & Steering Systems (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)\n✔ Air Conditioning & Climate Control Systems\n✔ Electrical Components & Charging Systems (alternators, starter motors, wiring looms, connectors, relays)\n✔ Electronic Control Units (ECUs) & Sensors (engine management, ABS, traction control, emissions sensors)\n✔ Lighting & Ignition Systems (headlights, indicators, ignition coils, switches, control modules)\n✔ Factory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)\n✔ Driver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)\n✔ Safety Systems (airbags, seatbelts, pretensioners, safety restraint modules)\n\nFor full details, please see visit our \'What\'s covered\' section\nhttps://buyawarranty.co.uk/what-is-covered'
+          answer: '**Hybrid & PHEV Vehicles**\n\nAll petrol/diesel engine parts and labour plus:\nHybrid Drive Motors & ECUs\nHybrid Battery Failure\nPower Control Units, Inverters & DC-DC Converters\nRegenerative Braking Systems\nHigh-Voltage Cables & Connectors\nCooling Systems for Hybrid Components\nCharging Ports & On-Board Charging Modules\nHybrid Transmission Components\n\n**Other Covered Systems**\nBraking Systems (ABS, calipers, cylinders, master cylinders)\nSuspension & Steering Systems (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)\nAir Conditioning & Climate Control Systems\nElectrical Components & Charging Systems (alternators, starter motors, wiring looms, connectors, relays)\nElectronic Control Units (ECUs) & Sensors (engine management, ABS, traction control, emissions sensors)\nLighting & Ignition Systems (headlights, indicators, ignition coils, switches, control modules)\nFactory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)\nDriver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)\nSafety Systems (airbags, seatbelts, pretensioners, safety restraint modules)\n\nFor full details, please see visit our \'What\'s covered\' section\nhttps://buyawarranty.co.uk/what-is-covered'
         },
         {
           id: 'electric-vehicle-parts',
           question: 'What parts are covered for my Electric Vehicle (EV) - car or van?',
-          answer: '**Electric Vehicles (EVs)**\n\n✔ EV Drive Motors & Reduction Gear\n✔ EV Transmission & Reduction Gearbox Assemblies\n✔ High-Voltage Battery Failure\n✔ Power Control Units & Inverters\n✔ On-Board Charger (OBC) & Charging Ports\n✔ DC-DC Converters\n✔ Thermal Management Systems\n✔ High-Voltage Cables & Connectors\n✔ EV-Specific Control Electronics\n✔ Regenerative Braking System Components\n\nFor full details, please see visit our \'What\'s covered\' section\nhttps://buyawarranty.co.uk/what-is-covered'
+          answer: '**Electric Vehicles (EVs)**\n\nEV Drive Motors & Reduction Gear\nEV Transmission & Reduction Gearbox Assemblies\nHigh-Voltage Battery Failure\nPower Control Units & Inverters\nOn-Board Charger (OBC) & Charging Ports\nDC-DC Converters\nThermal Management Systems\nHigh-Voltage Cables & Connectors\nEV-Specific Control Electronics\nRegenerative Braking System Components\n\nFor full details, please see visit our \'What\'s covered\' section\nhttps://buyawarranty.co.uk/what-is-covered'
         },
         {
           id: 'motorbike-parts',
           question: 'What parts are covered for my motorbike?',
-          answer: '**Motorcycles (Petrol, Hybrid, EV)**\n\n✔ Engine / Motor & Drivetrain Components\n✔ Gearbox / Transmission Systems\n✔ ECUs, Sensors & Control Modules\n✔ Electrical Systems & Wiring\n✔ High-Voltage Battery Failure (Hybrid & EV)\n✔ Suspension & Steering Systems\n✔ Braking Systems\n✔ Cooling & Thermal Systems\n✔ Lighting & Ignition Systems\n✔ Instrumentation & Rider Controls\n\nFor more details please visit our \'What\'s covered\' page here.'
+          answer: '**Motorcycles (Petrol, Hybrid, EV)**\n\nEngine / Motor & Drivetrain Components\nGearbox / Transmission Systems\nECUs, Sensors & Control Modules\nElectrical Systems & Wiring\nHigh-Voltage Battery Failure (Hybrid & EV)\nSuspension & Steering Systems\nBraking Systems\nCooling & Thermal Systems\nLighting & Ignition Systems\nInstrumentation & Rider Controls\n\nFor more details please visit our \'What\'s covered\' page here.'
         },
         {
           id: 'optional-extras',
           question: 'What optional extras do you offer?',
-          answer: '✔ Vehicle rental\n✔ Wear & tear cover\n✔ Tyre replacement cover\n✔ European repair cover\n✔ Breakdown recovery\n✔ Transferable warranty'
+          answer: 'Vehicle rental\nWear & tear cover\nTyre replacement cover\nEuropean repair cover\nBreakdown recovery\nTransferable warranty'
         },
         {
           id: 'what-not-covered',
           question: 'What\'s not covered?',
-          answer: '✔ We believe in clarity. Here\'s what isn\'t included:\n✔ Pre-existing faults\n✔ Routine servicing & maintenance (e.g., tyres, brake pads) unless added as add-ons\n✔ Accident or collision damage\n✔ Vehicles used for hire or reward (e.g., courier, taxi or rental)'
+          answer: 'We believe in clarity. Here\'s what isn\'t included:\nPre-existing faults\nRoutine servicing & maintenance (e.g., tyres, brake pads) unless added as add-ons\nAccident or collision damage\nVehicles used for hire or reward (e.g., courier, taxi or rental)'
         },
         {
           id: 'what-covered',
@@ -165,6 +175,36 @@ const FAQ = () => {
           id: 'mechanical-electrical',
           question: 'What counts as mechanical or electrical parts?',
           answer: 'Mechanical parts are things like your engine, gearbox and suspension. Electrical parts include your car\'s wiring, sensors, and tech systems. We\'ll explain exactly what\'s covered in your plan.'
+        },
+        {
+          id: 'repair-limits',
+          question: 'What are the repair limits?',
+          answer: 'We\'ll cover repairs up to the claim limit you chose when you signed up.'
+        },
+        {
+          id: 'increase-claim-limit',
+          question: 'How can I increase my claim limit?',
+          answer: 'You may upgrade your claim limit by calling us on 0330 229 5040 or emailing us at support@buyawarranty.co.uk'
+        },
+        {
+          id: 'increase-claim-limit-for-claim',
+          question: 'Can I increase my claim limit for a claim?',
+          answer: 'If you decide you want a higher claim limit. You can call 0330 229 5040 or email support@buyawarranty.co.uk to upgrade. The higher limit will apply to any future approved claims after the upgrade is confirmed.'
+        },
+        {
+          id: 'unlimited-repairs',
+          question: 'Are repairs unlimited?',
+          answer: 'We\'ll keep covering repairs up to the original purchase price of your vehicle.'
+        },
+        {
+          id: 'whats-not-covered-indirect',
+          question: 'What\'s not covered?',
+          answer: 'We can\'t cover indirect or knock-on financial losses i.e hotel booking, lose earnings from work'
+        },
+        {
+          id: 'outside-terms',
+          question: 'What if something falls outside these terms?',
+          answer: 'We get that life isn\'t always black and white. If something falls outside these terms, we\'ll still look at it fairly and help where we can.'
         }
       ]
     },
@@ -227,6 +267,16 @@ const FAQ = () => {
           id: 'inspection-required',
           question: 'Do I need an inspection before buying a plan?',
           answer: 'No – we don\'t require a vehicle inspection. Just make sure your car meets the basic eligibility criteria.'
+        },
+        {
+          id: 'mileage-limit',
+          question: 'What mileage limit applies?',
+          answer: 'Your vehicle should not exceed 2,000 miles per month.'
+        },
+        {
+          id: 'servicing-requirements',
+          question: 'What are the servicing requirements?',
+          answer: 'A full service history is needed, if you don\'t have that simply get a full service within 30 days of starting your plan e.g You book a full service within 30 days because you do not have a full service history. Once the service is done and the 30 days have passed, you can make your first claim if needed.'
         }
       ]
     },
@@ -258,6 +308,16 @@ const FAQ = () => {
           id: 'transferable',
           question: 'Is the warranty transferable?',
           answer: 'The cover is transferable to a new owner if sold privately. Most of our warranties can be transferred to the new owner – it\'s a great selling point and adds value to your car. There is a £30 fee for transferring the warranty to a new owner. Please contact us on the contact form to transfer your warranty to a new owner.'
+        },
+        {
+          id: 'transfer-warranty-new-vehicle',
+          question: 'Can I transfer my warranty to another vehicle?',
+          answer: 'Got a new car or selling your car? Your warranty plan may be transferred with a small fee if a replacement vehicle is of a vehicle type that we provide warranty for i.e most vehicles. You may check eligibility by entering the registration plate into our homepage. Please email support@buyawarranty.co.uk to transfer your warranty or choose the option from the pricing page when you purchase your warranty.'
+        },
+        {
+          id: 'cancel-warranty-detailed',
+          question: 'Can I cancel my warranty?',
+          answer: 'You have 14 days to cancel for a full refund (if no repairs have been paid).'
         }
       ]
      },
