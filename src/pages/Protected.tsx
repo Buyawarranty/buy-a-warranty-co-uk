@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Check, Shield, Clock, FileText, Phone, Mail } from 'lucide-react';
+import { Check, Shield, Clock, FileText, Phone, Mail, Car, Zap } from 'lucide-react';
 import { SEOHead } from "@/components/SEOHead";
 import { Link } from 'react-router-dom';
 import pandaFastClaims from "@/assets/panda-fast-claims.png";
@@ -18,9 +18,9 @@ const Protected = () => {
         description="Discover what's covered in your Buy-a-Warranty protection plan. Comprehensive coverage for cars, vans, and motorbikes with clear terms and no hidden surprises."
         keywords="warranty coverage, what's covered, vehicle protection, car warranty, van warranty, motorbike warranty"
       />
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
+        <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="relative py-20">
+        <section className="relative py-20 bg-background">
           <div className="container mx-auto px-6">
             <div className="text-center max-w-6xl mx-auto">
               <h1 className="text-5xl font-bold mb-6 text-foreground">
@@ -32,19 +32,19 @@ const Protected = () => {
               
               <div className="grid md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border/50">
-                  <h3 className="font-semibold text-lg mb-3 text-foreground">• No confusing packages</h3>
+                  <h3 className="font-semibold text-lg mb-3 text-foreground">No confusing packages</h3>
                 </div>
                 <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border/50">
-                  <h3 className="font-semibold text-lg mb-3 text-foreground">• No sneaky rejections</h3>
+                  <h3 className="font-semibold text-lg mb-3 text-foreground">No sneaky rejections</h3>
                 </div>
                 <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border/50">
-                  <h3 className="font-semibold text-lg mb-3 text-foreground">• Just hassle-free cover</h3>
+                  <h3 className="font-semibold text-lg mb-3 text-foreground">Just hassle-free cover</h3>
                 </div>
               </div>
               
               <div className="flex items-center justify-center gap-2 mb-6">
                 <Check className="h-5 w-5 text-green-500" />
-                <span className="text-lg font-medium text-foreground">✔ Clear, easy-to-understand protection</span>
+                <span className="text-lg font-medium text-foreground">Clear, easy-to-understand protection</span>
               </div>
               
               <p className="text-muted-foreground italic">
@@ -55,40 +55,40 @@ const Protected = () => {
         </section>
 
         {/* Eligibility Section */}
-        <section className="py-16 bg-card/30">
+        <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
                 Eligibility at plan start
               </h2>
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                <Card className="border-border/50 bg-white backdrop-blur-sm">
                   <CardContent className="p-6 text-center">
                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Clock className="h-8 w-8 text-primary" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">Vehicle Age</h3>
-                    <p className="text-muted-foreground">• Vehicles up to 15 years old</p>
+                    <p className="text-muted-foreground">Vehicles up to 15 years old</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                <Card className="border-border/50 bg-white backdrop-blur-sm">
                   <CardContent className="p-6 text-center">
                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                       <FileText className="h-8 w-8 text-primary" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">Mileage</h3>
-                    <p className="text-muted-foreground">• Vehicles up to 150,000 miles</p>
+                    <p className="text-muted-foreground">Vehicles up to 150,000 miles</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                <Card className="border-border/50 bg-white backdrop-blur-sm">
                   <CardContent className="p-6 text-center">
                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Shield className="h-8 w-8 text-primary" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">Plan Duration</h3>
-                    <p className="text-muted-foreground">• Plans for 12, 24, or 36 months</p>
+                    <p className="text-muted-foreground">Plans for 12, 24, or 36 months</p>
                   </CardContent>
                 </Card>
               </div>
@@ -97,7 +97,7 @@ const Protected = () => {
         </section>
 
         {/* Claims Process Section */}
-        <section className="py-16">
+        <section className="py-16 bg-background">
           <div className="container mx-auto px-6">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
@@ -116,27 +116,27 @@ const Protected = () => {
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• Just follow a few quick steps to start your claim</span>
+                      <span>Just follow a few quick steps to start your claim</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• We'll guide you through the process so you know exactly what to do</span>
+                      <span>We'll guide you through the process so you know exactly what to do</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• Repairs are handled quickly and professionally</span>
+                      <span>Repairs are handled quickly and professionally</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• Our support team is here if you need help at any stage</span>
+                      <span>Our support team is here if you need help at any stage</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• You're free to choose your own garage, or we can recommend a trusted one</span>
+                      <span>You're free to choose your own garage, or we can recommend a trusted one</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• We aim to process pay-outs within 90 minutes of approval</span>
+                      <span>We aim to process pay-outs within 90 minutes of approval</span>
                     </div>
                   </div>
                 </div>
@@ -144,7 +144,7 @@ const Protected = () => {
                   <img 
                     src={pandaFastClaims} 
                     alt="Fast claims processing with panda mascot holding a stopwatch" 
-                    className="w-full max-w-md mx-auto"
+                    className="w-full max-w-[280px] mx-auto"
                   />
                 </div>
               </div>
@@ -154,7 +154,7 @@ const Protected = () => {
               </h3>
 
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                <Card className="border-border/50 bg-white backdrop-blur-sm">
                   <CardHeader>
                     <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-4">
                       <span className="text-xl font-bold">1</span>
@@ -164,15 +164,15 @@ const Protected = () => {
                   <CardContent className="text-center space-y-3">
                     <div className="flex items-center justify-center gap-2">
                       <Phone className="h-4 w-4" />
-                      <span>• Call 0330 229 5045</span>
+                      <span>Call 0330 229 5045</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      • Or complete our quick online form in the 'Make a claim' section
+                      Or complete our quick online form in the <Link to="/claims" className="text-primary hover:underline">'Make a claim'</Link> section
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                <Card className="border-border/50 bg-white backdrop-blur-sm">
                   <CardHeader>
                     <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-4">
                       <span className="text-xl font-bold">2</span>
@@ -181,14 +181,14 @@ const Protected = () => {
                   </CardHeader>
                   <CardContent className="text-center space-y-3">
                     <div className="space-y-2 text-sm">
-                      <p>• We will review your claim the same day (during office hours)</p>
-                      <p>• Our goal is to get you back on the road promptly and with minimal fuss</p>
-                      <p className="font-medium">• No stress. No hassle. Fast authorisation</p>
+                      <p>We will review your claim the same day (during office hours)</p>
+                      <p>Our goal is to get you back on the road promptly and with minimal fuss</p>
+                      <p className="font-medium">No stress. No hassle. Fast authorisation</p>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                <Card className="border-border/50 bg-white backdrop-blur-sm">
                   <CardHeader>
                     <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-4">
                       <span className="text-xl font-bold">3</span>
@@ -197,8 +197,8 @@ const Protected = () => {
                   </CardHeader>
                   <CardContent className="text-center space-y-3">
                     <div className="space-y-2 text-sm">
-                      <p>• We'll pay the garage directly so you're not left out of pocket</p>
-                      <p>• - Or- in some cases if you've already paid, we can reimburse you quickly with a valid invoice. No delays, no drama.</p>
+                      <p>We'll pay the garage directly so you're not left out of pocket</p>
+                      <p>- Or- in some cases if you've already paid, we can reimburse you quickly with a valid invoice. No delays, no drama.</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -208,7 +208,7 @@ const Protected = () => {
         </section>
 
         {/* Trust Section */}
-        <section className="py-16 bg-card/30">
+        <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-6">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
@@ -227,27 +227,27 @@ const Protected = () => {
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• ✔ Yes, we do pay out – and we're proud of it</span>
+                      <span>Yes, we do pay out – and we're proud of it</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• ✔ No confusing small print or hoops to jump through</span>
+                      <span>No confusing small print or hoops to jump through</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• ✔ Straightforward, honest cover that makes sense</span>
+                      <span>Straightforward, honest cover that makes sense</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• ✔ Trusted by real drivers who've seen it work</span>
+                      <span>Trusted by real drivers who've seen it work</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• ✔ No-nonsense protection you can rely on</span>
+                      <span>No-nonsense protection you can rely on</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• ✔ Confidence that your vehicle's covered when you need it most</span>
+                      <span>Confidence that your vehicle's covered when you need it most</span>
                     </div>
                   </div>
                 </div>
@@ -255,7 +255,7 @@ const Protected = () => {
                   <img 
                     src={pandaHappyCar} 
                     alt="Happy panda mascot with car showing warranty satisfaction" 
-                    className="w-full max-w-md mx-auto"
+                    className="w-full max-w-[280px] mx-auto"
                   />
                 </div>
               </div>
@@ -264,7 +264,7 @@ const Protected = () => {
         </section>
 
         {/* Coverage Details */}
-        <section className="py-16">
+        <section className="py-16 bg-background">
           <div className="container mx-auto px-6">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
@@ -280,27 +280,27 @@ const Protected = () => {
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• All mechanical and electrical parts covered - from engine to electrics (see full list)</span>
+                      <span>All mechanical and electrical parts covered - from engine to electrics (see full list)</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• Labour costs included - no surprise bills at the garage</span>
+                      <span>Labour costs included - no surprise bills at the garage</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• Fault diagnostics</span>
+                      <span>Fault diagnostics</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• Consequential damage cover - if one part breaks another, we'll fix it</span>
+                      <span>Consequential damage cover - if one part breaks another, we'll fix it</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• Access to trusted repair centres or choose your own</span>
+                      <span>Access to trusted repair centres or choose your own</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                      <span>• Flexible 0% APR payment options</span>
+                      <span>Flexible 0% APR payment options</span>
                     </div>
                   </div>
                 </div>
@@ -308,7 +308,7 @@ const Protected = () => {
                   <img 
                     src={pandaEvWarranty} 
                     alt="Panda mascot with electric vehicle and warranty active badge" 
-                    className="w-full max-w-md mx-auto"
+                    className="w-full max-w-[280px] mx-auto"
                   />
                 </div>
               </div>
@@ -316,6 +316,33 @@ const Protected = () => {
               <h3 className="text-2xl font-bold text-center mb-8 text-foreground">
                 Full list of covered components
               </h3>
+
+              {/* FAQ-style component boxes */}
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <Card className="bg-primary/10 border-primary/20 hover:bg-primary/15 transition-colors cursor-pointer group">
+                  <CardContent className="p-6 text-center">
+                    <Car className="h-12 w-12 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
+                    <h4 className="font-semibold text-lg mb-2 text-primary">Petrol & Diesel Vehicles</h4>
+                    <p className="text-sm text-muted-foreground">Comprehensive coverage for all combustion engine components</p>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-primary/10 border-primary/20 hover:bg-primary/15 transition-colors cursor-pointer group">
+                  <CardContent className="p-6 text-center">
+                    <Zap className="h-12 w-12 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
+                    <h4 className="font-semibold text-lg mb-2 text-primary">Hybrid & Electric Vehicles</h4>
+                    <p className="text-sm text-muted-foreground">Specialized protection for modern green technology</p>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-primary/10 border-primary/20 hover:bg-primary/15 transition-colors cursor-pointer group">
+                  <CardContent className="p-6 text-center">
+                    <Shield className="h-12 w-12 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
+                    <h4 className="font-semibold text-lg mb-2 text-primary">Motorcycles</h4>
+                    <p className="text-sm text-muted-foreground">Complete coverage for two-wheeled vehicles</p>
+                  </CardContent>
+                </Card>
+              </div>
 
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="petrol-diesel" className="border-border/50">
@@ -325,24 +352,24 @@ const Protected = () => {
                   <AccordionContent className="pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <p>• Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</p>
-                        <p>• Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</p>
-                        <p>• Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</p>
-                        <p>• Turbocharger & Supercharger Units</p>
-                        <p>• Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</p>
-                        <p>• Cooling & Heating Systems (radiators, thermostats, water pumps, cooling fans, heater matrix)</p>
-                        <p>• Exhaust & Emissions Systems (catalytic converters, DPFs, OPFs, EGR valves, NOx sensors, AdBlue/Eolys systems)</p>
-                        <p>• Braking Systems (ABS, calipers, cylinders, master cylinders)</p>
-                      </div>
-                      <div className="space-y-2">
-                        <p>• Suspension & Steering Systems (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)</p>
-                        <p>• Air Conditioning & Climate Control Systems</p>
-                        <p>• Electrical Components & Charging Systems (alternators, starter motors, wiring looms, connectors, relays)</p>
-                        <p>• Electronic Control Units (ECUs) & Sensors (engine management, ABS, traction control, emissions sensors)</p>
-                        <p>• Lighting & Ignition Systems (headlights, indicators, ignition coils, switches, control modules)</p>
-                        <p>• Factory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)</p>
-                        <p>• Driver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)</p>
-                        <p>• Safety Systems (airbags, seatbelts, pretensioners, safety restraint modules)</p>
+                         <p>Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</p>
+                         <p>Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</p>
+                         <p>Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</p>
+                         <p>Turbocharger & Supercharger Units</p>
+                         <p>Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</p>
+                         <p>Cooling & Heating Systems (radiators, thermostats, water pumps, cooling fans, heater matrix)</p>
+                         <p>Exhaust & Emissions Systems (catalytic converters, DPFs, OPFs, EGR valves, NOx sensors, AdBlue/Eolys systems)</p>
+                         <p>Braking Systems (ABS, calipers, cylinders, master cylinders)</p>
+                       </div>
+                       <div className="space-y-2">
+                         <p>Suspension & Steering Systems (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)</p>
+                         <p>Air Conditioning & Climate Control Systems</p>
+                         <p>Electrical Components & Charging Systems (alternators, starter motors, wiring looms, connectors, relays)</p>
+                         <p>Electronic Control Units (ECUs) & Sensors (engine management, ABS, traction control, emissions sensors)</p>
+                         <p>Lighting & Ignition Systems (headlights, indicators, ignition coils, switches, control modules)</p>
+                         <p>Factory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)</p>
+                         <p>Driver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)</p>
+                         <p>Safety Systems (airbags, seatbelts, pretensioners, safety restraint modules)</p>
                       </div>
                     </div>
                   </AccordionContent>
@@ -356,16 +383,16 @@ const Protected = () => {
                     <p className="mb-4">All petrol/diesel engine parts and labour plus:</p>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <p>• Hybrid Drive Motors & ECUs</p>
-                        <p>• Hybrid Battery Failure</p>
-                        <p>• Power Control Units, Inverters & DC-DC Converters</p>
-                        <p>• Regenerative Braking Systems</p>
-                      </div>
-                      <div className="space-y-2">
-                        <p>• High-Voltage Cables & Connectors</p>
-                        <p>• Cooling Systems for Hybrid Components</p>
-                        <p>• Charging Ports & On-Board Charging Modules</p>
-                        <p>• Hybrid Transmission Components</p>
+                         <p>Hybrid Drive Motors & ECUs</p>
+                         <p>Hybrid Battery Failure</p>
+                         <p>Power Control Units, Inverters & DC-DC Converters</p>
+                         <p>Regenerative Braking Systems</p>
+                       </div>
+                       <div className="space-y-2">
+                         <p>High-Voltage Cables & Connectors</p>
+                         <p>Cooling Systems for Hybrid Components</p>
+                         <p>Charging Ports & On-Board Charging Modules</p>
+                         <p>Hybrid Transmission Components</p>
                       </div>
                     </div>
                   </AccordionContent>
@@ -378,18 +405,18 @@ const Protected = () => {
                   <AccordionContent className="pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <p>• EV Drive Motors & Reduction Gear</p>
-                        <p>• EV Transmission & Reduction Gearbox Assemblies</p>
-                        <p>• High-Voltage Battery Failure</p>
-                        <p>• Power Control Units & Inverters</p>
-                        <p>• On-Board Charger (OBC) & Charging Ports</p>
-                      </div>
-                      <div className="space-y-2">
-                        <p>• DC-DC Converters</p>
-                        <p>• Thermal Management Systems</p>
-                        <p>• High-Voltage Cables & Connectors</p>
-                        <p>• EV-Specific Control Electronics</p>
-                        <p>• Regenerative Braking System Components</p>
+                         <p>EV Drive Motors & Reduction Gear</p>
+                         <p>EV Transmission & Reduction Gearbox Assemblies</p>
+                         <p>High-Voltage Battery Failure</p>
+                         <p>Power Control Units & Inverters</p>
+                         <p>On-Board Charger (OBC) & Charging Ports</p>
+                       </div>
+                       <div className="space-y-2">
+                         <p>DC-DC Converters</p>
+                         <p>Thermal Management Systems</p>
+                         <p>High-Voltage Cables & Connectors</p>
+                         <p>EV-Specific Control Electronics</p>
+                         <p>Regenerative Braking System Components</p>
                       </div>
                     </div>
                   </AccordionContent>
@@ -402,18 +429,18 @@ const Protected = () => {
                   <AccordionContent className="pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <p>• Engine / Motor & Drivetrain Components</p>
-                        <p>• Gearbox / Transmission Systems</p>
-                        <p>• ECUs, Sensors & Control Modules</p>
-                        <p>• Electrical Systems & Wiring</p>
-                        <p>• High-Voltage Battery Failure (Hybrid & EV)</p>
-                      </div>
-                      <div className="space-y-2">
-                        <p>• Suspension & Steering Systems</p>
-                        <p>• Braking Systems</p>
-                        <p>• Cooling & Thermal Systems</p>
-                        <p>• Lighting & Ignition Systems</p>
-                        <p>• Instrumentation & Rider Controls</p>
+                         <p>Engine / Motor & Drivetrain Components</p>
+                         <p>Gearbox / Transmission Systems</p>
+                         <p>ECUs, Sensors & Control Modules</p>
+                         <p>Electrical Systems & Wiring</p>
+                         <p>High-Voltage Battery Failure (Hybrid & EV)</p>
+                       </div>
+                       <div className="space-y-2">
+                         <p>Suspension & Steering Systems</p>
+                         <p>Braking Systems</p>
+                         <p>Cooling & Thermal Systems</p>
+                         <p>Lighting & Ignition Systems</p>
+                         <p>Instrumentation & Rider Controls</p>
                       </div>
                     </div>
                   </AccordionContent>
@@ -426,14 +453,14 @@ const Protected = () => {
                   <AccordionContent className="pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <p>• Vehicle rental</p>
-                        <p>• Wear & tear cover</p>
-                        <p>• Tyre replacement cover</p>
-                      </div>
-                      <div className="space-y-2">
-                        <p>• European repair cover</p>
-                        <p>• Breakdown recovery</p>
-                        <p>• Transferable warranty</p>
+                         <p>Vehicle rental</p>
+                         <p>Wear & tear cover</p>
+                         <p>Tyre replacement cover</p>
+                       </div>
+                       <div className="space-y-2">
+                         <p>European repair cover</p>
+                         <p>Breakdown recovery</p>
+                         <p>Transferable warranty</p>
                       </div>
                     </div>
                   </AccordionContent>
@@ -531,26 +558,26 @@ const Protected = () => {
         </section>
 
         {/* Cancellation Rights */}
-        <section className="py-16 bg-card/30">
+        <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
                 Cancellation rights
               </h2>
               
-              <div className="bg-card/50 backdrop-blur-sm rounded-lg p-8 border border-border/50">
+              <div className="bg-white backdrop-blur-sm rounded-lg p-8 border border-border/50">
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                    <span>• You can cancel within 14 days of purchase for a full refund (if no repairs have been made)</span>
+                    <span>You can cancel within 14 days of purchase for a full refund (if no repairs have been made)</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                    <span>• After this period, our standard cancellation policy applies</span>
+                    <span>After this period, our standard cancellation policy applies</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                    <span>• No pressure - you have time to change your mind</span>
+                    <span>No pressure - you have time to change your mind</span>
                   </div>
                 </div>
               </div>
@@ -566,7 +593,7 @@ const Protected = () => {
                 Contact us
               </h2>
               
-              <div className="bg-card/50 backdrop-blur-sm rounded-lg p-8 border border-border/50">
+              <div className="bg-white backdrop-blur-sm rounded-lg p-8 border border-border/50">
                 <p className="text-lg mb-8 text-muted-foreground">
                   Have questions? We're here to help:
                 </p>
