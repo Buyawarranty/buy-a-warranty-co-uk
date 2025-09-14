@@ -739,7 +739,7 @@ const Protected = () => {
         <section className="py-16">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-12 text-foreground">
+              <h2 className="text-3xl font-bold mb-8 text-foreground">
                 Contact us
               </h2>
               
@@ -748,19 +748,40 @@ const Protected = () => {
                   Have questions? We're here to help:
                 </p>
                 
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="flex items-center justify-center gap-3">
-                    <Mail className="h-5 w-5 text-primary" />
-                    <span>• Email: support@buyawarranty.co.uk</span>
+                <div className="grid md:grid-cols-2 gap-8 mb-8">
+                  {/* Customer Sales and Support */}
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-foreground">Customer sales and support</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-center gap-3">
+                        <Mail className="h-5 w-5 text-primary" />
+                        <span>Email: support@buyawarranty.co.uk</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-3">
+                        <Phone className="h-5 w-5 text-primary" />
+                        <span>Phone: 0330 229 5040</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-center gap-3">
-                    <Phone className="h-5 w-5 text-primary" />
-                    <span>• Phone: 0330 229 5040</span>
+                  
+                  {/* Claims and Repairs */}
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-foreground">Claims and repairs</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-center gap-3">
+                        <Mail className="h-5 w-5 text-primary" />
+                        <span>Email: claims@buyawarranty.co.uk</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-3">
+                        <Phone className="h-5 w-5 text-primary" />
+                        <span>Phone: 0330 229 5045</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 
-                <p className="mt-6 text-muted-foreground">
-                  • Friendly support whenever you need us
+                <p className="text-muted-foreground italic">
+                  Friendly support whenever you need us
                 </p>
               </div>
             </div>
