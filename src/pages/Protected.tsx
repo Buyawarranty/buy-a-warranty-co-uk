@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Check, Shield, Clock, FileText, Phone, Mail, Car, Zap, X, Menu } from 'lucide-react';
 import { SEOHead } from "@/components/SEOHead";
 import { Link } from 'react-router-dom';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 import pandaFastClaims from "@/assets/panda-fast-claims.png";
 import pandaHappyCar from "@/assets/panda-happy-car.png";
 import pandaEvWarranty from "@/assets/panda-ev-warranty.png";
@@ -154,7 +155,12 @@ const Protected = () => {
         {/* Hero Section */}
         <section className="relative py-20 bg-background">
           <div className="container mx-auto px-6">
-            <div className="text-center max-w-6xl mx-auto">
+            <div className="text-center max-w-6xl mx-auto relative">
+              {/* Trustpilot Logo - positioned in top right */}
+              <div className="absolute top-0 right-0 hidden md:block">
+                <TrustpilotHeader className="h-8 sm:h-12" />
+              </div>
+              
               <h1 className="text-5xl font-bold mb-6 text-foreground">
                 What's covered in my warranty
               </h1>
