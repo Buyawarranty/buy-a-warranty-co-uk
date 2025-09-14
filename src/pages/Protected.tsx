@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Check, Shield, Clock, FileText, Phone, Mail, Car, Zap } from 'lucide-react';
+import { Check, Shield, Clock, FileText, Phone, Mail, Car, Zap, X } from 'lucide-react';
 import { SEOHead } from "@/components/SEOHead";
 import { Link } from 'react-router-dom';
 import pandaFastClaims from "@/assets/panda-fast-claims.png";
@@ -636,20 +636,20 @@ const Protected = () => {
                   
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></span>
-                      <span>• Pre-existing faults</span>
+                      <X className="h-4 w-4 text-red-500 mt-1 flex-shrink-0" />
+                      <span>Pre-existing faults</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></span>
-                      <span>• Routine servicing & maintenance (e.g., tyres, brake pads) unless added as add-ons</span>
+                      <X className="h-4 w-4 text-red-500 mt-1 flex-shrink-0" />
+                      <span>Routine servicing & maintenance (e.g., tyres, brake pads) unless added as add-ons</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></span>
-                      <span>• Accident or collision damage</span>
+                      <X className="h-4 w-4 text-red-500 mt-1 flex-shrink-0" />
+                      <span>Accident or collision damage</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></span>
-                      <span>• Vehicles used for hire or reward (e.g., courier, taxi or rental)</span>
+                      <X className="h-4 w-4 text-red-500 mt-1 flex-shrink-0" />
+                      <span>Vehicles used for hire or reward (e.g., courier, taxi or rental)</span>
                     </div>
                   </div>
                 </div>
