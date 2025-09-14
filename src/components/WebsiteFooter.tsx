@@ -124,12 +124,11 @@ const WebsiteFooter = () => {
           {/* Legal Footer */}
           <div className="border-t border-gray-200 pt-6">
             <div className="text-center space-y-3">
-              <p className="text-xs text-gray-500">© 2025 Buy A Warranty. All rights reserved.</p>
-              <div className="mt-4 flex justify-center">
+              <div className="flex justify-center">
                 <img 
-                  src="/src/assets/company-registration.png" 
-                  alt="Company registration information" 
-                  className="max-w-full h-auto opacity-80"
+                  src="/lovable-uploads/baw-address-2-lines.png" 
+                  alt="Buyawarranty.co.uk trading information and registered address" 
+                  className="max-w-full h-auto"
                 />
               </div>
             </div>
