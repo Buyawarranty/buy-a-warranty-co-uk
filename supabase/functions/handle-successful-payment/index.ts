@@ -76,13 +76,13 @@ serve(async (req) => {
       voluntary_excess: vehicleData?.voluntaryExcess || 0,
       claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || metadata?.claimLimit || '1250'), // Add claim limit
       warranty_reference_number: warrantyReference,
-      // Add addon data to customer record too
+      // Add addon data to customer record too - fixed field names to match create-checkout
       tyre_cover: metadata?.addon_tyre_cover === 'true',
       wear_tear: metadata?.addon_wear_tear === 'true',
       europe_cover: metadata?.addon_europe_cover === 'true', 
       transfer_cover: metadata?.addon_transfer_cover === 'true',
-      breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
-      vehicle_rental: metadata?.addon_vehicle_rental === 'true',
+      breakdown_recovery: metadata?.addon_breakdown_recovery === 'true', // Now matches create-checkout
+      vehicle_rental: metadata?.addon_vehicle_rental === 'true', // Now matches create-checkout
       mot_fee: metadata?.addon_mot_cover === 'true'
     };
 
@@ -99,14 +99,14 @@ serve(async (req) => {
     } else {
       logStep("Customer record created successfully", { customerId: customerData2.id });
       
-      // Extract add-ons data from metadata (with safe fallback)
+      // Extract add-ons data from metadata (with safe fallback) - fixed field names
       const addOnsData = {
         tyre_cover: metadata?.addon_tyre_cover === 'true',
         wear_tear: metadata?.addon_wear_tear === 'true',
         europe_cover: metadata?.addon_europe_cover === 'true', 
         transfer_cover: metadata?.addon_transfer_cover === 'true',
-        breakdown_recovery: metadata?.addon_breakdown_recovery === 'true', // Add new add-ons
-        vehicle_rental: metadata?.addon_vehicle_rental === 'true',
+        breakdown_recovery: metadata?.addon_breakdown_recovery === 'true', // Now matches create-checkout
+        vehicle_rental: metadata?.addon_vehicle_rental === 'true', // Now matches create-checkout
         mot_fee: metadata?.addon_mot_cover === 'true'
       };
 

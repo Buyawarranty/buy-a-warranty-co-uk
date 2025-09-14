@@ -194,12 +194,13 @@ serve(async (req) => {
         discount_code: discountCode || '',
         voluntary_excess: voluntaryExcess?.toString() || '0',
         final_amount: finalAmount?.toString() || totalAmount?.toString(),
-        // Add-ons data
+        // Add-ons data - using correct field names that match handle-successful-payment
         addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
         addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
         addon_europe_cover: protectionAddOns?.european ? 'true' : 'false',
         addon_transfer_cover: protectionAddOns?.transfer ? 'true' : 'false',
-        addon_breakdown_cover: protectionAddOns?.breakdown ? 'true' : 'false',
+        addon_breakdown_recovery: protectionAddOns?.breakdown ? 'true' : 'false', // Fixed field name
+        addon_vehicle_rental: protectionAddOns?.rental ? 'true' : 'false', // Fixed to use 'rental' not 'vehicleRental'
         addon_mot_cover: protectionAddOns?.motRepair ? 'true' : 'false'
       },
       automatic_tax: { enabled: false },
