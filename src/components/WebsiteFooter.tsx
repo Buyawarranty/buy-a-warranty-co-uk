@@ -43,11 +43,11 @@ const WebsiteFooter = () => {
                 Call us: 0330 229 5040
               </a>
               <a 
-                href="mailto:info@buyawarranty.co.uk" 
+                href="mailto:support@buyawarranty.co.uk" 
                 className="flex items-center text-lg font-semibold text-[#eb4b00] hover:text-[#d63f00] transition-colors"
               >
                 <Mail className="w-5 h-5 mr-2" />
-                info@buyawarranty.co.uk
+                support@buyawarranty.co.uk
               </a>
             </div>
           </div>
