@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Check, Shield, Clock, FileText, Phone, Mail, Car, Zap, X } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Check, Shield, Clock, FileText, Phone, Mail, Car, Zap, X, Menu } from 'lucide-react';
 import { SEOHead } from "@/components/SEOHead";
 import { Link } from 'react-router-dom';
 import pandaFastClaims from "@/assets/panda-fast-claims.png";
@@ -11,6 +12,8 @@ import pandaEvWarranty from "@/assets/panda-ev-warranty.png";
 import pandaGarageService from "@/assets/panda-garage-service.png";
 
 const Protected = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <>
       <SEOHead 
@@ -18,7 +21,136 @@ const Protected = () => {
         description="Discover what's covered in your Buy-a-Warranty protection plan. Comprehensive coverage for cars, vans, and motorbikes with clear terms and no hidden surprises."
         keywords="warranty coverage, what's covered, vehicle protection, car warranty, van warranty, motorbike warranty"
       />
-        <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <header className="bg-background shadow-sm py-1 sm:py-2 border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+              {/* Logo */}
+              <div className="flex items-center">
+                <Link to="/" className="hover:opacity-80 transition-opacity">
+                  <img 
+                    src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                    alt="Buy a Warranty" 
+                    className="h-6 sm:h-8 w-auto"
+                  />
+                </Link>
+              </div>
+
+              {/* Navigation - Hidden on mobile */}
+              <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+                <Link to="/" className="text-foreground hover:text-primary font-medium text-sm xl:text-base">Warranty Plans</Link>
+                <Link to="/what-is-covered" className="text-primary hover:text-primary/80 font-medium text-sm xl:text-base">What's Covered</Link>
+                <Link to="/claims" className="text-foreground hover:text-primary font-medium text-sm xl:text-base">Make a Claim</Link>
+                <Link to="/faq" className="text-foreground hover:text-primary font-medium text-sm xl:text-base">FAQs</Link>
+                <Link to="/contact-us" className="text-foreground hover:text-primary font-medium text-sm xl:text-base">Contact Us</Link>
+              </nav>
+
+              {/* Desktop CTA Buttons - Show on desktop */}
+              <div className="hidden lg:flex items-center space-x-3">
+                <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-[#25D366] text-white border-[#25D366] hover:bg-[#1da851] hover:border-[#1da851] px-3 text-sm"
+                  >
+                    WhatsApp Us
+                  </Button>
+                </a>
+                <Link to="/">
+                  <Button 
+                    size="sm"
+                    className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
+                  >
+                    Get my quote
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="lg:hidden p-2"
+                  >
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-full sm:w-96">
+                  <div className="flex flex-col h-full">
+                    {/* Header with logo */}
+                    <div className="flex items-center mb-8">
+                      <img 
+                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                        alt="Buy a Warranty" 
+                        className="h-8 w-auto"
+                      />
+                    </div>
+                    
+                    {/* Navigation Links */}
+                    <nav className="flex flex-col space-y-6 flex-1">
+                      <Link 
+                        to="/" 
+                        className="text-foreground hover:text-primary font-medium text-lg transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Warranty Plans
+                      </Link>
+                      <Link 
+                        to="/what-is-covered" 
+                        className="text-primary hover:text-primary/80 font-medium text-lg transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        What's Covered
+                      </Link>
+                      <Link 
+                        to="/claims" 
+                        className="text-foreground hover:text-primary font-medium text-lg transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Make a Claim
+                      </Link>
+                      <Link 
+                        to="/faq" 
+                        className="text-foreground hover:text-primary font-medium text-lg transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        FAQs
+                      </Link>
+                      <Link 
+                        to="/contact-us" 
+                        className="text-foreground hover:text-primary font-medium text-lg transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Contact Us
+                      </Link>
+                    </nav>
+
+                    {/* Mobile CTA Buttons */}
+                    <div className="space-y-4 mt-8">
+                      <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" className="block">
+                        <Button 
+                          variant="outline" 
+                          className="w-full bg-[#25D366] text-white border-[#25D366] hover:bg-[#1da851] hover:border-[#1da851]"
+                        >
+                          WhatsApp Us
+                        </Button>
+                      </a>
+                      <Link to="/" className="block" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Button className="w-full bg-primary text-white hover:bg-primary/90">
+                          Get my quote
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+        </header>
         {/* Hero Section */}
         <section className="relative py-20 bg-background">
           <div className="container mx-auto px-6">
