@@ -96,9 +96,9 @@ const Claims = () => {
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
             <div className="flex items-center">
-              <a href="/" className="hover:opacity-80 transition-opacity">
+              <Link to="/" className="hover:opacity-80 transition-opacity">
                 <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
-              </a>
+              </Link>
             </div>
             
             {/* Navigation - Hidden on mobile, visible on lg+ */}
@@ -142,52 +142,52 @@ const Claims = () => {
                 <div className="flex flex-col h-full">
                   {/* Header with logo */}
                   <div className="flex items-center justify-between pb-6">
-                    <a href="/" className="hover:opacity-80 transition-opacity">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
                       <img 
                         src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
                         alt="Buy a Warranty" 
                         className="h-8 w-auto"
                       />
-                    </a>
+                    </Link>
                   </div>
 
-                  {/* Navigation Links */}
+                   {/* Navigation Links */}
                   <nav className="flex flex-col space-y-6 flex-1">
-                    <a 
-                      href="#" 
+                    <Link 
+                      to="/" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Warranty Plans
-                    </a>
-                    <a 
-                      href="/what-is-covered" 
+                    </Link>
+                    <Link 
+                      to="/what-is-covered" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       What's Covered
-                    </a>
-                    <a 
-                      href="/make-a-claim" 
+                    </Link>
+                    <Link 
+                      to="/make-a-claim" 
                       className="text-orange-500 hover:text-orange-600 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Make a Claim
-                    </a>
-                    <a 
-                      href="/faq" 
+                    </Link>
+                    <Link 
+                      to="/faq" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                        FAQs
-                    </a>
-                    <a 
-                      href="/contact-us" 
+                    </Link>
+                    <Link 
+                      to="/contact-us" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Contact Us
-                    </a>
+                    </Link>
                   </nav>
 
                   {/* CTA Buttons */}
