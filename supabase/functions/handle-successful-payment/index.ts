@@ -86,6 +86,29 @@ serve(async (req) => {
       mot_fee: metadata?.addon_mot_cover === 'true'
     };
 
+    // Debug addon metadata parsing
+    logStep("Addon metadata debug", {
+      rawMetadata: metadata,
+      addonFields: {
+        addon_tyre_cover: metadata?.addon_tyre_cover,
+        addon_wear_tear: metadata?.addon_wear_tear,
+        addon_europe_cover: metadata?.addon_europe_cover,
+        addon_transfer_cover: metadata?.addon_transfer_cover,
+        addon_breakdown_recovery: metadata?.addon_breakdown_recovery,
+        addon_vehicle_rental: metadata?.addon_vehicle_rental,
+        addon_mot_cover: metadata?.addon_mot_cover
+      },
+      parsedValues: {
+        tyre_cover: metadata?.addon_tyre_cover === 'true',
+        wear_tear: metadata?.addon_wear_tear === 'true',
+        europe_cover: metadata?.addon_europe_cover === 'true',
+        transfer_cover: metadata?.addon_transfer_cover === 'true',
+        breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
+        vehicle_rental: metadata?.addon_vehicle_rental === 'true',
+        mot_fee: metadata?.addon_mot_cover === 'true'
+      }
+    });
+
     logStep("Creating customer record", customerRecord);
 
     const { data: customerData2, error: customerError } = await supabaseClient

@@ -363,6 +363,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             customerData: customerData,
             discountCode: customerData.discount_code || null,
             finalAmount: discountedStripePrice, // Pass the final calculated amount
+            protectionAddOns: pricingData.protectionAddOns || {}, // Add protection addons data
             addAnotherWarrantyEnabled
           }
         });

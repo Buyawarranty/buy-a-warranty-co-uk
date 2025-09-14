@@ -326,27 +326,34 @@ serve(async (req) => {
     
     console.log(`[WARRANTIES-2000] Using claim limit: ${maxClaimAmount} (Policy: ${policyClaimLimit}, Customer: ${customerClaimLimit})`);
 
-    console.log(`[WARRANTIES-2000] Add-on debug:`, {
-      policyAddOns: {
-        tyre_cover: policy?.tyre_cover,
-        wear_tear: policy?.wear_tear,
-        europe_cover: policy?.europe_cover,
-        breakdown_recovery: policy?.breakdown_recovery,
-        vehicle_rental: policy?.vehicle_rental
+    // Enhanced addon debugging - check both policy and customer tables
+    console.log(`[WARRANTIES-2000] Enhanced add-on debug:`, {
+      policyData: policy ? {
+        id: policy.id,
+        tyre_cover: policy.tyre_cover,
+        wear_tear: policy.wear_tear,
+        europe_cover: policy.europe_cover,
+        transfer_cover: policy.transfer_cover,
+        breakdown_recovery: policy.breakdown_recovery,
+        vehicle_rental: policy.vehicle_rental,
+        mot_fee: policy.mot_fee
+      } : null,
+      customerData: {
+        id: customer.id,
+        tyre_cover: customer.tyre_cover,
+        wear_tear: customer.wear_tear,
+        europe_cover: customer.europe_cover,
+        transfer_cover: customer.transfer_cover,
+        breakdown_recovery: customer.breakdown_recovery,
+        vehicle_rental: customer.vehicle_rental,
+        mot_fee: customer.mot_fee
       },
-      customerAddOns: {
-        tyre_cover: customer?.tyre_cover,
-        wear_tear: customer?.wear_tear,
-        europe_cover: customer?.europe_cover,
-        breakdown_recovery: customer?.breakdown_recovery,
-        vehicle_rental: customer?.vehicle_rental
-      },
-      finalAddOns: {
-        TyreCover: (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'Not sent',
-        WearTear: (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'Not sent',
-        EuroCover: (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'Not sent',
-        Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'Not sent',
-        Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'Not sent'
+      finalAddonDecisions: {
+        TyreCover: (policy?.tyre_cover === true || customer?.tyre_cover === true),
+        WearTear: (policy?.wear_tear === true || customer?.wear_tear === true),
+        EuroCover: (policy?.europe_cover === true || customer?.europe_cover === true),
+        Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true),
+        Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true)
       }
     });
 
