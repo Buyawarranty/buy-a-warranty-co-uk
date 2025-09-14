@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import Homepage from '@/components/Homepage';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
-import SpecialVehiclePricing from '@/components/SpecialVehiclePricing';
+
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
@@ -474,16 +474,7 @@ const Index = () => {
     }
   };
 
-  // Check if vehicle is a special type - STRICT criteria to prevent normal cars/vans being treated as special
-  const isSpecialVehicle = vehicleData?.vehicleType && 
-    ['MOTORBIKE', 'EV', 'PHEV'].includes(vehicleData.vehicleType) &&
-    // Additional safety check - if it's marked as MOTORBIKE but has commercial vehicle indicators, treat as normal car
-    !(vehicleData.vehicleType === 'MOTORBIKE' && 
-      (vehicleData.make?.toLowerCase().includes('mercedes') || 
-       vehicleData.make?.toLowerCase().includes('ford') ||
-       vehicleData.model?.toLowerCase().includes('sprinter') ||
-       vehicleData.model?.toLowerCase().includes('transit') ||
-       vehicleData.model?.toLowerCase().includes('van')));
+  // All vehicles now use the modern PricingTable layout
 
   return (
     <div className="min-h-screen overflow-x-hidden w-full">
@@ -532,19 +523,11 @@ const Index = () => {
           {vehicleData && (
             <>
               
-              {isSpecialVehicle ? (
-                <SpecialVehiclePricing 
-                  vehicleData={vehicleData as any}
-                  onBack={() => handleBackToStep(2)} 
-                  onPlanSelected={handlePlanSelected}
-                />
-              ) : (
-                <PricingTable 
-                  vehicleData={vehicleData} 
-                  onBack={() => handleBackToStep(2)} 
-                  onPlanSelected={handlePlanSelected}
-                />
-              )}
+              <PricingTable 
+                vehicleData={vehicleData} 
+                onBack={() => handleBackToStep(2)} 
+                onPlanSelected={handlePlanSelected}
+              />
             </>
           )}
         </div>
