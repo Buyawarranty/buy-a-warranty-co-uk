@@ -13,7 +13,6 @@ import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
 import MaintenanceBanner from '@/components/MaintenanceBanner';
-import { PandaLoadingSpinner } from '@/components/ui/panda-loading-spinner';
 import confetti from 'canvas-confetti';
 
 
@@ -90,7 +89,6 @@ const Index = () => {
   
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
-  const [showLoadingAnimation, setShowLoadingAnimation] = useState(false);
   
   // Quote restoration effect - runs immediately when component loads
   useEffect(() => {
@@ -398,45 +396,23 @@ const Index = () => {
   const handleRegistrationComplete = (data: VehicleData) => {
     const nextStep = data.isManualEntry ? 3 : 2;
     
-    if (nextStep === 2) {
-      // Show loading animation for step 2
-      setShowLoadingAnimation(true);
-      setTimeout(() => {
-        setVehicleData(data);
-        setFormData({ ...formData, ...data });
-        setCurrentStep(nextStep);
-        updateStepInUrl(nextStep);
-        saveStateToLocalStorage(nextStep);
-        setShowLoadingAnimation(false);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 3000);
-    } else {
-      // Direct to step 3 without loading animation
-      setVehicleData(data);
-      setFormData({ ...formData, ...data });
-      setCurrentStep(nextStep);
-      updateStepInUrl(nextStep);
-      saveStateToLocalStorage(nextStep);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    setVehicleData(data);
+    setFormData({ ...formData, ...data });
+    setCurrentStep(nextStep);
+    updateStepInUrl(nextStep);
+    saveStateToLocalStorage(nextStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleHomepageRegistration = (vehicleData: VehicleData) => {
     console.log('Homepage registration submitted:', vehicleData);
     
-    // Show loading animation first
-    setShowLoadingAnimation(true);
-    
-    // Set the vehicle data after a delay to show the loading animation
-    setTimeout(() => {
-      setVehicleData(vehicleData);
-      setFormData({ ...formData, ...vehicleData });
-      setCurrentStep(2); // Go to quote delivery step
-      updateStepInUrl(2);
-      saveStateToLocalStorage(2);
-      setShowLoadingAnimation(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 3000); // Show loading for 3 seconds
+    setVehicleData(vehicleData);
+    setFormData({ ...formData, ...vehicleData });
+    setCurrentStep(2); // Go to quote delivery step
+    updateStepInUrl(2);
+    saveStateToLocalStorage(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToStep = (step: number) => {
@@ -519,11 +495,6 @@ const Index = () => {
   };
 
   // All vehicles now use the modern PricingTable layout
-
-  // Show loading animation when transitioning to step 2
-  if (showLoadingAnimation) {
-    return <PandaLoadingSpinner />;
-  }
 
   return (
     <div className="min-h-screen overflow-x-hidden w-full">
