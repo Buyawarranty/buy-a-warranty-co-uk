@@ -13,6 +13,7 @@ import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
 import MaintenanceBanner from '@/components/MaintenanceBanner';
+import { PandaLoadingSpinner } from '@/components/ui/panda-loading-spinner';
 
 
 interface VehicleData {
@@ -88,6 +89,7 @@ const Index = () => {
   
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
+  const [showLoadingAnimation, setShowLoadingAnimation] = useState(false);
   
   // Quote restoration effect - runs immediately when component loads
   useEffect(() => {
@@ -373,26 +375,47 @@ const Index = () => {
   const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Review & Confirm'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
-    setVehicleData(data);
-    setFormData({ ...formData, ...data });
-    // If manual entry was used, skip step 2 and go directly to pricing
     const nextStep = data.isManualEntry ? 3 : 2;
-    setCurrentStep(nextStep);
-    updateStepInUrl(nextStep);
-    saveStateToLocalStorage(nextStep);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    if (nextStep === 2) {
+      // Show loading animation for step 2
+      setShowLoadingAnimation(true);
+      setTimeout(() => {
+        setVehicleData(data);
+        setFormData({ ...formData, ...data });
+        setCurrentStep(nextStep);
+        updateStepInUrl(nextStep);
+        saveStateToLocalStorage(nextStep);
+        setShowLoadingAnimation(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 3000);
+    } else {
+      // Direct to step 3 without loading animation
+      setVehicleData(data);
+      setFormData({ ...formData, ...data });
+      setCurrentStep(nextStep);
+      updateStepInUrl(nextStep);
+      saveStateToLocalStorage(nextStep);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleHomepageRegistration = (vehicleData: VehicleData) => {
     console.log('Homepage registration submitted:', vehicleData);
     
-    // Set the vehicle data and go to quote delivery step (step 2)
-    setVehicleData(vehicleData);
-    setFormData({ ...formData, ...vehicleData });
-    setCurrentStep(2); // Go to quote delivery step
-    updateStepInUrl(2);
-    saveStateToLocalStorage(2);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Show loading animation first
+    setShowLoadingAnimation(true);
+    
+    // Set the vehicle data after a delay to show the loading animation
+    setTimeout(() => {
+      setVehicleData(vehicleData);
+      setFormData({ ...formData, ...vehicleData });
+      setCurrentStep(2); // Go to quote delivery step
+      updateStepInUrl(2);
+      saveStateToLocalStorage(2);
+      setShowLoadingAnimation(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 3000); // Show loading for 3 seconds
   };
 
   const handleBackToStep = (step: number) => {
@@ -475,6 +498,11 @@ const Index = () => {
   };
 
   // All vehicles now use the modern PricingTable layout
+
+  // Show loading animation when transitioning to step 2
+  if (showLoadingAnimation) {
+    return <PandaLoadingSpinner />;
+  }
 
   return (
     <div className="min-h-screen overflow-x-hidden w-full">
