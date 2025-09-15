@@ -9,6 +9,7 @@ import WebsiteFooter from './WebsiteFooter';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
+import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 
 interface VehicleData {
   regNumber: string;
@@ -484,6 +485,22 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
                   className="h-16 w-auto"
                 />
+              </div>
+              
+              {/* Trustpilot Logo positioned below Halfords */}
+              <div className="absolute top-24 right-0 z-10">
+                <a 
+                  href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  <img 
+                    src={trustpilotLogo} 
+                    alt="Trustpilot Excellent Rating" 
+                    className="h-12 w-auto"
+                  />
+                </a>
               </div>
               
               {/* Vehicle Types positioned underneath the panda's feet */}
