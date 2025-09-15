@@ -129,7 +129,7 @@ const WebsiteFooter = () => {
                 <img 
                   src="/lovable-uploads/baw-address-2-lines.png" 
                   alt="Buyawarranty.co.uk trading information and registered address" 
-                  className="max-w-full h-auto"
+                  className="max-w-full h-auto scale-50"
                 />
               </div>
             </div>
