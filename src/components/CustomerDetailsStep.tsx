@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit } from 'lucide-react';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit, Check, Crown } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
@@ -451,6 +451,167 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">You're almost covered</h1>
+        </div>
+
+        {/* Choose Warranty Duration and Price */}
+        <div className="bg-white border-2 border-white rounded-xl p-6 shadow-lg mb-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              4
+            </div>
+            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Calendar className="w-5 h-5" />
+              Choose Warranty Duration and Price
+            </h3>
+          </div>
+
+          {/* Complete Protection Button */}
+          <div className="mb-6">
+            <button className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-orange-500 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors duration-200 font-medium">
+              <span>Complete Protection</span>
+              <div className="bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                i
+              </div>
+              <span className="text-sm">What's Included?</span>
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* 1 Year Option */}
+            <div className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
+              paymentType === 'yearly' 
+                ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-gray-900">1 Year</h4>
+                  <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
+                    <Crown className="w-3 h-3" />
+                    Premium Plan
+                  </span>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4 text-sm">Comprehensive coverage</p>
+              
+              <div className="space-y-2 mb-6">
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Drive now, pay later
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  12 interest-free payments
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Complete coverage
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Claim payouts in 90 minutes
+                </div>
+              </div>
+              
+              <div className="mb-6">
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-black">£{Math.round(pricingData.totalPrice)} cover</div>
+                  <div className="text-sm text-gray-600">or</div>
+                  <div className="text-lg text-gray-600">£{Math.round(pricingData.monthlyPrice)}/mo</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 2 Years Option */}
+            <div className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
+              paymentType === 'two_yearly' 
+                ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-gray-900">2 Years</h4>
+                  <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
+                    <Crown className="w-3 h-3" />
+                    Most Popular
+                  </span>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4 text-sm">Extended protection</p>
+              
+              <div className="space-y-2 mb-6">
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Drive now, pay later
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  24 interest-free payments
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Extended coverage
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Better value per month
+                </div>
+              </div>
+              
+              <div className="mb-6">
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-black">£{Math.round(pricingData.totalPrice)} cover</div>
+                  <div className="text-sm text-gray-600">or</div>
+                  <div className="text-lg text-gray-600">£{Math.round(pricingData.monthlyPrice)}/mo</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3 Years Option */}
+            <div className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
+              paymentType === 'three_yearly' 
+                ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-gray-900">3 Years</h4>
+                  <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
+                    <Crown className="w-3 h-3" />
+                    Best Value
+                  </span>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4 text-sm">Maximum protection</p>
+              
+              <div className="space-y-2 mb-6">
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Drive now, pay later
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  36 interest-free payments
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Maximum coverage
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 mr-2" />
+                  Lowest monthly cost
+                </div>
+              </div>
+              
+              <div className="mb-6">
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-black">£{Math.round(pricingData.totalPrice)} cover</div>
+                  <div className="text-sm text-gray-600">or</div>
+                  <div className="text-lg text-gray-600">£{Math.round(pricingData.monthlyPrice)}/mo</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Customer Details Form */}
