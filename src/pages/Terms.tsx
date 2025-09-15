@@ -183,9 +183,20 @@ const Terms = () => {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center bg-brand-orange text-white px-6 py-3 rounded-full font-semibold">
+          <div className="inline-flex items-center bg-brand-orange text-white px-6 py-3 rounded-full font-semibold mb-4">
             <FileText className="w-5 h-5 mr-2" />
             Your Extended Warranty Guide
+          </div>
+          <div className="mt-4">
+            <a 
+              href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-2.pdf" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-brand-orange hover:text-orange-600 font-semibold transition-colors"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              See full conditions (PDF)
+            </a>
           </div>
         </div>
 
