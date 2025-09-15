@@ -1,503 +1,274 @@
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Check, Shield, Clock, FileText, Phone, Mail, Car, Zap, X, Menu } from 'lucide-react';
-import { SEOHead } from "@/components/SEOHead";
+import { Button } from '@/components/ui/button';
+import { Menu, ChevronDown, CheckCircle, Phone, Mail, Shield, Clock, Users, Wrench, FileText, Star, X } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
-import TrustpilotHeader from '@/components/TrustpilotHeader';
-import pandaFastClaims from "@/assets/panda-fast-claims.png";
-import pandaEvWarranty from "@/assets/panda-ev-warranty.png";
+import { SEOHead } from '@/components/SEOHead';
 
 const Protected = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({});
+
+  const toggleSection = (id: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  const vehicleTypes = [
+    {
+      id: 'petrol-diesel',
+      title: 'Petrol & Diesel (Combustion Engine) Vehicles',
+      components: [
+        'Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)',
+        'Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)',
+        'Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)',
+        'Turbocharger & Supercharger Units',
+        'Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)',
+        'Cooling & Heating Systems (radiators, thermostats, water pumps, cooling fans, heater matrix)',
+        'Exhaust & Emissions Systems (catalytic converters, DPFs, OPFs, EGR valves, NOx sensors, AdBlue/Eolys systems)',
+        'Braking Systems (ABS, calipers, cylinders, master cylinders)',
+        'Suspension & Steering Systems (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)',
+        'Air Conditioning & Climate Control Systems',
+        'Electrical Components & Charging Systems (alternators, starter motors, wiring looms, connectors, relays)',
+        'Electronic Control Units (ECUs) & Sensors (engine management, ABS, traction control, emissions sensors)',
+        'Lighting & Ignition Systems (headlights, indicators, ignition coils, switches, control modules)',
+        'Factory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)',
+        'Driver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)',
+        'Safety Systems (airbags, seatbelts, pretensioners, safety restraint modules)'
+      ]
+    },
+    {
+      id: 'hybrid-phev',
+      title: 'Hybrid & PHEV Vehicles',
+      subtitle: 'All petrol/diesel engine parts and labour plus:',
+      components: [
+        'Hybrid Drive Motors & ECUs',
+        'Hybrid Battery Failure',
+        'Power Control Units, Inverters & DC-DC Converters',
+        'Regenerative Braking Systems',
+        'High-Voltage Cables & Connectors',
+        'Cooling Systems for Hybrid Components',
+        'Charging Ports & On-Board Charging Modules',
+        'Hybrid Transmission Components'
+      ]
+    },
+    {
+      id: 'electric-vehicles',
+      title: 'Electric vehicles (EVs)',
+      components: [
+        'EV Drive Motors & Reduction Gear',
+        'EV Transmission & Reduction Gearbox Assemblies',
+        'High-Voltage Battery Failure',
+        'Power Control Units & Inverters',
+        'On-Board Charger (OBC) & Charging Ports',
+        'DC-DC Converters',
+        'Thermal Management Systems',
+        'High-Voltage Cables & Connectors',
+        'EV-Specific Control Electronics',
+        'Regenerative Braking System Components'
+      ]
+    },
+    {
+      id: 'motorcycles',
+      title: 'Motorcycles (Petrol, Hybrid, EV)',
+      components: [
+        'Engine / Motor & Drivetrain Components',
+        'Gearbox / Transmission Systems',
+        'ECUs, Sensors & Control Modules',
+        'Electrical Systems & Wiring',
+        'High-Voltage Battery Failure (Hybrid & EV)',
+        'Suspension & Steering Systems',
+        'Braking Systems',
+        'Cooling & Thermal Systems',
+        'Lighting & Ignition Systems',
+        'Instrumentation & Rider Controls'
+      ]
+    }
+  ];
+
+  const VehicleSection = ({ vehicleType }: { vehicleType: typeof vehicleTypes[0] }) => (
+    <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+      <button
+        onClick={() => toggleSection(vehicleType.id)}
+        className="w-full px-6 py-4 text-left flex items-center justify-between bg-primary text-white hover:bg-primary/90 transition-colors"
+      >
+        <div>
+          <span className="font-bold text-lg">{vehicleType.title}</span>
+          {vehicleType.subtitle && (
+            <p className="text-sm text-white/90 mt-1">{vehicleType.subtitle}</p>
+          )}
+        </div>
+        <ChevronDown 
+          className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
+            openSections[vehicleType.id] ? 'rotate-180' : ''
+          }`}
+        />
+      </button>
+      
+      {openSections[vehicleType.id] && (
+        <div className="px-6 py-4 bg-white">
+          <ul className="space-y-2">
+            {vehicleType.components.map((component, index) => (
+              <li key={index} className="flex items-start text-gray-700">
+                <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                <span className="text-sm leading-relaxed">{component}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 
   return (
-    <>
+    <div className="min-h-screen bg-white">
       <SEOHead 
-        title="What's Covered in My Warranty | Buy-a-Warranty"
-        description="Discover what's covered in your Buy-a-Warranty protection plan. Comprehensive coverage for cars, vans, and motorbikes with clear terms and no hidden surprises."
-        keywords="warranty coverage, what's covered, vehicle protection, car warranty, van warranty, motorbike warranty"
+        title="What's Covered in My Car Warranty | Comprehensive UK Vehicle Protection"
+        description="Discover what's covered in your Buy-a-Warranty plan. Full mechanical and electrical protection for petrol, diesel, hybrid, and electric vehicles. No hidden exclusions."
       />
-      <div className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="bg-background shadow-sm py-2 border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Link to="/" className="hover:opacity-80 transition-opacity">
-                  <img 
-                    src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                    alt="Buy a Warranty" 
-                    className="h-6 sm:h-8 w-auto"
-                  />
-                </Link>
-              </div>
 
-              <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-                <Link to="/" className="text-foreground hover:text-primary font-medium text-sm xl:text-base">Warranty Plans</Link>
-                <Link to="/what-is-covered" className="text-primary hover:text-primary/80 font-medium text-sm xl:text-base">What's Covered</Link>
-                <Link to="/claims" className="text-foreground hover:text-primary font-medium text-sm xl:text-base">Make a Claim</Link>
-                <Link to="/faq" className="text-foreground hover:text-primary font-medium text-sm xl:text-base">FAQs</Link>
-                <Link to="/contact-us" className="text-foreground hover:text-primary font-medium text-sm xl:text-base">Contact Us</Link>
-              </nav>
-
-              <div className="hidden lg:flex items-center space-x-3">
-                <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="bg-[#25D366] text-white border-[#25D366] hover:bg-[#1da851] hover:border-[#1da851] px-3 text-sm"
-                  >
-                    WhatsApp Us
-                  </Button>
-                </a>
-                <Link to="/">
-                  <Button 
-                    size="sm"
-                    className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
-                  >
-                    Get my quote
-                  </Button>
-                </Link>
-              </div>
-
-              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="lg" className="lg:hidden p-2">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-full sm:w-96">
-                  <div className="flex flex-col h-full">
-                    <div className="flex items-center mb-8">
-                      <img 
-                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                        alt="Buy a Warranty" 
-                        className="h-8 w-auto"
-                      />
-                    </div>
-                    
-                    <nav className="flex flex-col space-y-6 flex-1">
-                      <Link to="/" className="text-foreground hover:text-primary font-medium text-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                        Warranty Plans
-                      </Link>
-                      <Link to="/what-is-covered" className="text-primary hover:text-primary/80 font-medium text-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                        What's Covered
-                      </Link>
-                      <Link to="/claims" className="text-foreground hover:text-primary font-medium text-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                        Make a Claim
-                      </Link>
-                      <Link to="/faq" className="text-foreground hover:text-primary font-medium text-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                        FAQs
-                      </Link>
-                      <Link to="/contact-us" className="text-foreground hover:text-primary font-medium text-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                        Contact Us
-                      </Link>
-                    </nav>
-
-                    <div className="space-y-4 mt-8">
-                      <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" className="block">
-                        <Button variant="outline" className="w-full bg-[#25D366] text-white border-[#25D366] hover:bg-[#1da851] hover:border-[#1da851]">
-                          WhatsApp Us
-                        </Button>
-                      </a>
-                      <Link to="/" className="block" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Button className="w-full bg-primary text-white hover:bg-primary/90">
-                          Get my quote
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Link to="/" className="hover:opacity-80 transition-opacity">
+                <img 
+                  src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                  alt="Buy a Warranty" 
+                  className="h-6 sm:h-8 w-auto"
+                />
+              </Link>
             </div>
-          </div>
-        </header>
 
-        {/* Compact Hero Section */}
-        <section className="py-8 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="text-center max-w-4xl mx-auto relative">
-              <div className="absolute top-0 right-0 hidden md:block">
-                <TrustpilotHeader className="h-7" />
-              </div>
-              
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-                What's covered in my warranty
-              </h1>
-              <p className="text-lg text-muted-foreground mb-6">
-                One solid plan for cars, vans, and motorbikes - electric, hybrid, petrol or diesel.
-              </p>
-              
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-card/50 rounded-lg p-4 border border-border/50">
-                  <h3 className="font-semibold text-sm text-foreground">No confusing packages</h3>
-                </div>
-                <div className="bg-card/50 rounded-lg p-4 border border-border/50">
-                  <h3 className="font-semibold text-sm text-foreground">No sneaky rejections</h3>
-                </div>
-                <div className="bg-card/50 rounded-lg p-4 border border-border/50">
-                  <h3 className="font-semibold text-sm text-foreground">Just hassle-free cover</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+            <nav className="hidden md:flex space-x-8">
+              <Link to="/" className="text-gray-700 hover:text-primary transition-colors">Warranty Plans</Link>
+              <Link to="/what-is-covered" className="text-primary font-medium">What's Covered</Link>
+              <Link to="/make-a-claim" className="text-gray-700 hover:text-primary transition-colors">Make a Claim</Link>
+              <Link to="/faq" className="text-gray-700 hover:text-primary transition-colors">FAQs</Link>
+              <Link to="/contact-us" className="text-gray-700 hover:text-primary transition-colors">Contact Us</Link>
+            </nav>
 
-        {/* Compact Eligibility & Claims Process */}
-        <section className="py-8 bg-gray-50">
-          <div className="container mx-auto px-6">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8">
-                
-                {/* Eligibility */}
-                <div>
-                  <h2 className="text-2xl font-bold mb-6 text-foreground">Eligibility & Claims</h2>
-                  <div className="grid md:grid-cols-3 gap-4 mb-6">
-                    <div className="bg-white rounded-lg p-4 text-center border">
-                      <Clock className="h-6 w-6 text-primary mx-auto mb-2" />
-                      <h3 className="font-semibold text-sm mb-1">Vehicle Age</h3>
-                      <p className="text-xs text-muted-foreground">Up to 15 years</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-4 text-center border">
-                      <FileText className="h-6 w-6 text-primary mx-auto mb-2" />
-                      <h3 className="font-semibold text-sm mb-1">Mileage</h3>
-                      <p className="text-xs text-muted-foreground">Up to 150k miles</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-4 text-center border">
-                      <Shield className="h-6 w-6 text-primary mx-auto mb-2" />
-                      <h3 className="font-semibold text-sm mb-1">Duration</h3>
-                      <p className="text-xs text-muted-foreground">12-36 months</p>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-white rounded-lg p-4 border">
-                    <h3 className="font-semibold mb-3">Making a claim:</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs">1</span>
-                        <span>Call 0330 229 5045 or use online form</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs">2</span>
-                        <span>Same-day review during office hours</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs">3</span>
-                        <span>Direct garage payment or quick reimbursement</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Claims Image */}
-                <div className="flex items-center justify-center">
-                  <img 
-                    src={pandaFastClaims} 
-                    alt="Fast claims processing" 
-                    className="w-full max-w-[250px]"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Compact Coverage Overview */}
-        <section className="py-8 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8 items-center mb-8">
-                <div>
-                  <h2 className="text-2xl font-bold mb-4 text-foreground">Platinum Plan Coverage</h2>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">All mechanical and electrical parts covered</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Labour costs included (up to £100/hour)</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Fault diagnostics & consequential damage</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Choose your garage or use trusted partners</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Pay-outs within 90 minutes of approval</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <img 
-                    src={pandaEvWarranty} 
-                    alt="Warranty coverage" 
-                    className="w-full max-w-[200px] mx-auto"
-                  />
-                </div>
-              </div>
-
-              {/* Compact Coverage Types */}
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
-                <Card className="bg-primary/10 border-primary/20">
-                  <CardContent className="p-4 text-center">
-                    <Car className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <h4 className="font-semibold text-sm mb-1">Petrol & Diesel</h4>
-                    <p className="text-xs text-muted-foreground">All combustion engine components</p>
-                  </CardContent>
-                </Card>
-                
-                <Card className="bg-primary/10 border-primary/20">
-                  <CardContent className="p-4 text-center">
-                    <Zap className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <h4 className="font-semibold text-sm mb-1">Hybrid & Electric</h4>
-                    <p className="text-xs text-muted-foreground">Green technology protection</p>
-                  </CardContent>
-                </Card>
-                
-                <Card className="bg-primary/10 border-primary/20">
-                  <CardContent className="p-4 text-center">
-                    <Shield className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <h4 className="font-semibold text-sm mb-1">Motorcycles</h4>
-                    <p className="text-xs text-muted-foreground">Two-wheeled coverage</p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Detailed Coverage Accordion - More Compact */}
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="petrol-diesel" className="border-border/50">
-                  <AccordionTrigger className="text-left font-semibold">
-                    Petrol & Diesel Vehicle Components
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2">
-                    <div className="grid md:grid-cols-2 gap-3 text-sm">
-                      <div className="space-y-1">
-                        <p><strong>Engine & Internal:</strong> pistons, valves, camshafts, timing chains, seals, gaskets</p>
-                        <p><strong>Transmission:</strong> manual, automatic, DSG, CVT, dual-clutch, transfer boxes</p>
-                        <p><strong>Drivetrain:</strong> flywheel, driveshafts, differentials, clutch assemblies</p>
-                        <p><strong>Turbo/Supercharger:</strong> complete units</p>
-                        <p><strong>Fuel Systems:</strong> tanks, pumps, injectors, fuel rails, control electronics</p>
-                        <p><strong>Cooling/Heating:</strong> radiators, thermostats, water pumps, fans, heater matrix</p>
-                        <p><strong>Exhaust/Emissions:</strong> catalytic converters, DPFs, EGR valves, NOx sensors</p>
-                      </div>
-                      <div className="space-y-1">
-                        <p><strong>Braking:</strong> ABS, calipers, cylinders, master cylinders</p>
-                        <p><strong>Suspension/Steering:</strong> shocks, struts, steering racks, power steering</p>
-                        <p><strong>Air Con/Climate:</strong> complete systems</p>
-                        <p><strong>Electrical:</strong> alternators, starter motors, wiring, connectors, relays</p>
-                        <p><strong>ECUs & Sensors:</strong> engine management, ABS, emissions sensors</p>
-                        <p><strong>Lighting/Ignition:</strong> headlights, indicators, ignition coils, switches</p>
-                        <p><strong>Infotainment:</strong> factory-fitted screens, sat nav, audio, displays</p>
-                        <p><strong>Driver Assist:</strong> cruise control, lane assist, parking sensors, cameras</p>
-                        <p><strong>Safety:</strong> airbags, seatbelts, pretensioners, restraint modules</p>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="hybrid-phev" className="border-border/50">
-                  <AccordionTrigger className="text-left font-semibold">
-                    Hybrid & PHEV Vehicles (All petrol/diesel plus:)
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2">
-                    <div className="grid md:grid-cols-2 gap-3 text-sm">
-                      <div className="space-y-1">
-                        <p><strong>Hybrid Drive Motors & ECUs</strong></p>
-                        <p><strong>Hybrid Battery Failure</strong></p>
-                        <p><strong>Power Control Units, Inverters & DC-DC Converters</strong></p>
-                        <p><strong>Regenerative Braking Systems</strong></p>
-                      </div>
-                      <div className="space-y-1">
-                        <p><strong>High-Voltage Cables & Connectors</strong></p>
-                        <p><strong>Cooling Systems for Hybrid Components</strong></p>
-                        <p><strong>Charging Ports & On-Board Charging Modules</strong></p>
-                        <p><strong>Hybrid Transmission Components</strong></p>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="electric-vehicles" className="border-border/50">
-                  <AccordionTrigger className="text-left font-semibold">
-                    Electric Vehicles (EVs)
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2">
-                    <div className="grid md:grid-cols-2 gap-3 text-sm">
-                      <div className="space-y-1">
-                        <p><strong>EV Drive Motors & Reduction Gear</strong></p>
-                        <p><strong>EV Transmission & Reduction Gearbox</strong></p>
-                        <p><strong>High-Voltage Battery Failure</strong></p>
-                        <p><strong>Power Control Units & Inverters</strong></p>
-                      </div>
-                      <div className="space-y-1">
-                        <p><strong>On-Board Charger (OBC) & Charging Ports</strong></p>
-                        <p><strong>High-Voltage Cables & Connectors</strong></p>
-                        <p><strong>EV-Specific Control Electronics</strong></p>
-                        <p><strong>Regenerative Braking Components</strong></p>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="motorcycles" className="border-border/50">
-                  <AccordionTrigger className="text-left font-semibold">
-                    Motorcycles (Petrol, Hybrid, EV)
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2">
-                    <div className="grid md:grid-cols-2 gap-3 text-sm">
-                      <div className="space-y-1">
-                        <p><strong>Engine/Motor & Drivetrain</strong></p>
-                        <p><strong>Gearbox/Transmission Systems</strong></p>
-                        <p><strong>ECUs, Sensors & Control Modules</strong></p>
-                        <p><strong>Electrical Systems & Wiring</strong></p>
-                        <p><strong>High-Voltage Battery (Hybrid & EV)</strong></p>
-                      </div>
-                      <div className="space-y-1">
-                        <p><strong>Suspension & Steering</strong></p>
-                        <p><strong>Braking Systems</strong></p>
-                        <p><strong>Cooling & Thermal Systems</strong></p>
-                        <p><strong>Lighting & Ignition</strong></p>
-                        <p><strong>Instrumentation & Controls</strong></p>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="optional-extras" className="border-border/50">
-                  <AccordionTrigger className="text-left font-semibold">
-                    Optional Add-ons
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2">
-                    <div className="grid md:grid-cols-2 gap-3 text-sm">
-                      <div className="space-y-1">
-                        <p><strong>Vehicle rental</strong></p>
-                        <p><strong>Wear & tear cover</strong></p>
-                        <p><strong>Tyre replacement cover</strong></p>
-                      </div>
-                      <div className="space-y-1">
-                        <p><strong>European repair cover</strong></p>
-                        <p><strong>Breakdown recovery</strong></p>
-                        <p><strong>Transferable warranty</strong></p>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-          </div>
-        </section>
-
-        {/* Compact Exclusions & Additional Info */}
-        <section className="py-8 bg-gray-50">
-          <div className="container mx-auto px-6">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8">
-                
-                {/* What's Not Covered */}
-                <div>
-                  <h2 className="text-2xl font-bold mb-4 text-foreground">What's not covered?</h2>
-                  <div className="bg-white rounded-lg p-4 border space-y-2">
-                    <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Pre-existing faults</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Routine servicing (unless added as add-on)</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Accident or collision damage</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Commercial use (taxi, courier, rental)</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Additional Info */}
-                <div>
-                  <h2 className="text-2xl font-bold mb-4 text-foreground">Key Info</h2>
-                  <div className="bg-white rounded-lg p-4 border space-y-2">
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Up to 10 claims/year or unlimited (plan dependent)</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Labour covered up to £100/hour</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">14-day cooling-off period for full refund</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">Full <Link to="/terms" className="text-primary hover:underline">terms & conditions</Link> available</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Compact Contact & CTA */}
-        <section className="py-8 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-2xl font-bold mb-6 text-foreground">Get started or contact us</h2>
-              
-              <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <div className="bg-white rounded-lg p-4 border">
-                  <h3 className="font-semibold mb-3">Customer Support</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center justify-center gap-2">
-                      <Mail className="h-4 w-4 text-primary" />
-                      <span>support@buyawarranty.co.uk</span>
-                    </div>
-                    <div className="flex items-center justify-center gap-2">
-                      <Phone className="h-4 w-4 text-primary" />
-                      <span>0330 229 5040</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-white rounded-lg p-4 border">
-                  <h3 className="font-semibold mb-3">Claims & Repairs</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center justify-center gap-2">
-                      <Mail className="h-4 w-4 text-primary" />
-                      <span>claims@buyawarranty.co.uk</span>
-                    </div>
-                    <div className="flex items-center justify-center gap-2">
-                      <Phone className="h-4 w-4 text-primary" />
-                      <span>0330 229 5045</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
+            <div className="hidden md:flex items-center space-x-4">
+              <a href="https://wa.me/443302295040" target="_blank" rel="noopener noreferrer" 
+                 className="text-green-600 hover:text-green-700 font-medium transition-colors">
+                WhatsApp Us
+              </a>
               <Link to="/">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Button className="bg-primary hover:bg-primary/90 text-white px-6">
                   Get my quote
                 </Button>
               </Link>
             </div>
+
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <div className="flex flex-col space-y-4 mt-8">
+                  <Link to="/" className="text-lg font-medium text-gray-700 hover:text-primary transition-colors">
+                    Warranty Plans
+                  </Link>
+                  <Link to="/what-is-covered" className="text-lg font-medium text-primary">
+                    What's Covered
+                  </Link>
+                  <Link to="/make-a-claim" className="text-lg font-medium text-gray-700 hover:text-primary transition-colors">
+                    Make a Claim
+                  </Link>
+                  <Link to="/faq" className="text-lg font-medium text-gray-700 hover:text-primary transition-colors">
+                    FAQs
+                  </Link>
+                  <Link to="/contact-us" className="text-lg font-medium text-gray-700 hover:text-primary transition-colors">
+                    Contact Us
+                  </Link>
+                  <div className="pt-4 border-t">
+                    <a href="https://wa.me/443302295040" target="_blank" rel="noopener noreferrer" 
+                       className="block text-green-600 hover:text-green-700 font-medium mb-4">
+                      WhatsApp Us
+                    </a>
+                    <Link to="/">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-white">
+                        Get my quote
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
-        </section>
-      </div>
-    </>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-blue-50 to-orange-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            What's covered in my <span className="text-primary">warranty</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            At Buy-a-Warranty, we like to keep things straightforward. One solid plan that works for cars, vans, and motorbikes - whether you're driving electric, hybrid, petrol or diesel.
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
+            <div className="flex items-center justify-center space-x-3 bg-white p-4 rounded-lg shadow-sm">
+              <Shield className="w-6 h-6 text-green-500" />
+              <span className="font-medium">No confusing packages</span>
+            </div>
+            <div className="flex items-center justify-center space-x-3 bg-white p-4 rounded-lg shadow-sm">
+              <CheckCircle className="w-6 h-6 text-green-500" />
+              <span className="font-medium">No hidden exclusions</span>
+            </div>
+            <div className="flex items-center justify-center space-x-3 bg-white p-4 rounded-lg shadow-sm">
+              <Clock className="w-6 h-6 text-green-500" />
+              <span className="font-medium">Fast payouts and support</span>
+            </div>
+          </div>
+          
+          <p className="text-lg text-primary font-semibold mt-8">
+            If something goes wrong, we look for reasons to say yes!
+          </p>
+        </div>
+      </section>
+
+      {/* Full Coverage List */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              Full list of <span className="text-primary">covered components</span>
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Click on each vehicle type to see the complete list of covered components
+            </p>
+          </div>
+          
+          <div className="space-y-4 max-w-5xl mx-auto">
+            {vehicleTypes.map((vehicleType) => (
+              <VehicleSection key={vehicleType.id} vehicleType={vehicleType} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-primary">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-8">
+            Ready to protect your vehicle?
+          </h2>
+          <Link to="/">
+            <Button size="lg" className="bg-white text-primary hover:bg-gray-100 font-bold px-8 py-3">
+              Get my quote
+            </Button>
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 };
 
