@@ -24,6 +24,7 @@ import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
 import { UserPermissionsTab } from '@/components/admin/UserPermissionsTab';
 import { DocumentMappingTab } from '@/components/admin/DocumentMappingTab';
 import { BulkPricingTab } from '@/components/admin/BulkPricingTab';
+import { BlogWritingTab } from '@/components/admin/BlogWritingTab';
 import OrderReconciliation from '@/components/admin/OrderReconciliation';
 import { ResendWelcomeEmail } from '@/components/admin/ResendWelcomeEmail';
 import { TestAutomatedEmail } from '@/components/admin/TestAutomatedEmail';
@@ -119,6 +120,8 @@ const AdminDashboard = () => {
         return <UserPermissionsTab />;
       case 'document-mapping':
         return <DocumentMappingTab />;
+      case 'blog-writing':
+        return <BlogWritingTab />;
       case 'testing':
         return (
           <div className="max-w-4xl mx-auto">
