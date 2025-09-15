@@ -29,6 +29,7 @@ import Terms from "./pages/Terms";
 import Protected from "./pages/Protected";
 import Claims from "./pages/Claims";
 import ContactUs from "./pages/ContactUs";
+import Complaints from "./pages/Complaints";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
 
@@ -69,6 +70,7 @@ const App = () => (
                   <Route path="/claims" element={<Claims />} />
                   <Route path="/make-a-claim" element={<Claims />} />
                   <Route path="/contact-us" element={<ContactUs />} />
+                  <Route path="/complaints" element={<Complaints />} />
         <Route path="/thewarrantyhub" element={<Blog />} />
         <Route path="/thewarrantyhub/article/:id" element={<BlogArticle />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
