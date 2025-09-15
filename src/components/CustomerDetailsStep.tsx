@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit, Check, Crown } from 'lucide-react';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit, Check, Crown, User, Shield } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
@@ -453,16 +453,34 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           <h1 className="text-3xl font-bold text-gray-900 mb-2">You're almost covered</h1>
         </div>
 
-        {/* Choose Warranty Duration and Price */}
+        {/* Customer Details Section - Now Step 5 */}
         <div className="bg-white border-2 border-white rounded-xl p-6 shadow-lg mb-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-              4
+              5
             </div>
             <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Choose Warranty Duration and Price
+              <User className="w-5 h-5" />
+              Complete Your Order
             </h3>
+          </div>
+          
+          {/* Selected Plan Summary */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-semibold text-gray-900">{planName}</h4>
+                <p className="text-sm text-gray-600">{getWarrantyDurationDisplay(paymentType)}</p>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-bold text-orange-600">
+                  £{pricingData?.monthlyPrice}/month
+                </div>
+                <div className="text-sm text-gray-500">
+                  Total: £{pricingData?.totalPrice}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Complete Protection Button */}

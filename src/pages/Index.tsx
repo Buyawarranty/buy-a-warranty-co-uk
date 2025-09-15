@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import Homepage from '@/components/Homepage';
 import RegistrationForm from '@/components/RegistrationForm';
 import PricingTable from '@/components/PricingTable';
-
+import WarrantyDurationStep from '@/components/WarrantyDurationStep';
 import CarJourneyProgress from '@/components/CarJourneyProgress';
 import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
 import CustomerDetailsStep from '@/components/CustomerDetailsStep';
@@ -81,7 +81,7 @@ const Index = () => {
     const stepParam = searchParams.get('step');
     if (stepParam) {
       const step = parseInt(stepParam);
-      return step >= 1 && step <= 4 ? step : 1;
+      return step >= 1 && step <= 5 ? step : 1;
     }
     return 1;
   };
@@ -370,7 +370,7 @@ const Index = () => {
     };
   }, [searchParams]);
   
-  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Review & Confirm'];
+  const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Choose Duration', 'Review & Confirm'];
 
   const handleRegistrationComplete = (data: VehicleData) => {
     const nextStep = data.isManualEntry ? 3 : 2;
@@ -432,14 +432,29 @@ const Index = () => {
     }
   ) => {
     setSelectedPlan({ id: planId, paymentType, name: planName, pricingData });
-    setCurrentStep(4); // Back to step 4 for customer details
+    setCurrentStep(4); // Go to step 4 for warranty duration selection
     updateStepInUrl(4);
     saveStateToLocalStorage(4);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Track plan selection for abandoned cart emails
     if (vehicleData) {
-      trackAbandonedCart(vehicleData, 4, planName, paymentType); // Back to step 4
+      trackAbandonedCart(vehicleData, 4, planName, paymentType);
+    }
+  };
+
+  const handleDurationSelected = (paymentType: string) => {
+    if (selectedPlan) {
+      setSelectedPlan({ ...selectedPlan, paymentType });
+      setCurrentStep(5); // Go to step 5 for customer details
+      updateStepInUrl(5);
+      saveStateToLocalStorage(5);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Track duration selection for abandoned cart emails
+      if (vehicleData) {
+        trackAbandonedCart(vehicleData, 5, selectedPlan.name, paymentType);
+      }
     }
   };
 
@@ -482,13 +497,15 @@ const Index = () => {
           currentStep === 1 ? "Car Warranty Prices | Affordable UK Vehicle Warranties" :
           currentStep === 2 ? "Get Your Car Warranty Quote | Instant Online Quotes" :
           currentStep === 3 ? "Choose Your Car Warranty Plan | Compare Prices" :
+          currentStep === 4 ? "Select Warranty Duration | 1, 2 or 3 Year Options" :
           "Complete Your Car Warranty Purchase | Secure Checkout"
         }
         description={
           currentStep === 1 ? "Compare our car warranty prices and choose the perfect plan for your vehicle. Flexible, affordable UK coverage with no hidden fees. Instant online quotes available." :
           currentStep === 2 ? "Get an instant quote for your car warranty. Enter your vehicle details and receive competitive pricing for comprehensive coverage in the UK." :
           currentStep === 3 ? "Compare car warranty plans and choose the best coverage for your vehicle. Basic, Gold, and Platinum options available with flexible payment terms." :
-          "Complete your car warranty purchase with our secure checkout. Instant activation and immediate coverage for your vehicle."
+          currentStep === 4 ? "Choose your warranty duration: 1, 2, or 3 years. Longer terms offer better value with discounts up to 20% off the total price." :
+          "Complete your car warranty purchase with our secure checkout. Review your selected plan and enter your details for instant approval."
         }
         keywords="car warranty, vehicle warranty, UK warranty, car insurance, breakdown cover, warranty prices, vehicle protection, extended warranty"
         canonical={`${window.location.origin}/?step=${currentStep}`}
@@ -533,6 +550,38 @@ const Index = () => {
       )}
 
       {currentStep === 4 && (
+        <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
+          {vehicleData && selectedPlan ? (
+            <WarrantyDurationStep
+              vehicleData={vehicleData}
+              planId={selectedPlan.id}
+              planName={selectedPlan.name}
+              pricingData={selectedPlan.pricingData}
+              onNext={handleDurationSelected}
+              onBack={() => handleBackToStep(3)}
+            />
+          ) : (
+            <div className="w-full px-4 py-8">
+              <div className="max-w-4xl mx-auto text-center space-y-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Oops! We've lost your plan details
+                </h2>
+                <p className="text-gray-600">
+                  Please go back and select your warranty plan again.
+                </p>
+                <Button 
+                  onClick={() => handleStepChange(3)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                >
+                  Choose Plan
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {currentStep === 5 && (
         <div className="bg-[#e8f4fb]">
           {vehicleData && selectedPlan ? (
             <CustomerDetailsStep
@@ -542,7 +591,7 @@ const Index = () => {
               planName={selectedPlan.name}
               pricingData={selectedPlan.pricingData}
               onNext={handleCustomerDetailsComplete}
-              onBack={() => handleBackToStep(3)}
+              onBack={() => handleBackToStep(4)}
             />
           ) : (
             <div className="w-full px-4 py-8">
