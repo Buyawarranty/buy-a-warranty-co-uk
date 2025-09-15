@@ -13,7 +13,6 @@ import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
 import MaintenanceBanner from '@/components/MaintenanceBanner';
-import confetti from 'canvas-confetti';
 
 
 interface VehicleData {
@@ -164,26 +163,6 @@ const Index = () => {
       console.log('QUOTE RESTORATION: No quote params found, skipping restoration');
     }
   }, [quoteParam, emailParam]);
-  
-  // Trigger light confetti when reaching step 2
-  useEffect(() => {
-    if (currentStep === 2) {
-      const triggerLightConfetti = () => {
-        confetti({
-          particleCount: 30,
-          spread: 60,
-          origin: { y: 0.3 },
-          colors: ['#3b82f6', '#10b981', '#f59e0b'],
-          gravity: 0.5,
-          scalar: 0.8,
-          drift: 0.1
-        });
-      };
-      
-      // Small delay to ensure step transition is visible
-      setTimeout(triggerLightConfetti, 500);
-    }
-  }, [currentStep]);
   
   // Save state to localStorage
   const saveStateToLocalStorage = (step?: number) => {
