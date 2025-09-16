@@ -968,122 +968,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </TooltipProvider>
        </div>
 
-        {/* Step 4: Premium Warranty Plan */}
-        <div className="section-header rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-              4
-            </div>
-            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              Premium Warranty Plan
-            </h2>
-          </div>
-          
-          {/* Single Premium Plan Card */}
-          <div className="max-w-2xl mx-auto">
-            <div className="p-8 rounded-xl border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-orange-100 shadow-lg shadow-orange-500/20">
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-foreground mb-2">Premium Warranty</h3>
-                <p className="text-gray-600">Comprehensive coverage for your vehicle</p>
-              </div>
-              
-              {/* Duration Selection */}
-              <div className="mb-6">
-                <h4 className="text-lg font-semibold text-foreground mb-4 text-center">Choose Your Duration</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { period: '12months', label: '1 Year', duration: 12 },
-                    { period: '24months', label: '2 Years', duration: 24 },
-                    { period: '36months', label: '3 Years', duration: 36 }
-                  ].map(({ period, label, duration }) => {
-                    const planPrice = getPricingData(voluntaryExcess, selectedClaimLimit, period);
-                    const adjustedPrice = vehiclePriceAdjustment.isValid 
-                      ? applyPriceAdjustment(planPrice, vehiclePriceAdjustment)
-                      : planPrice;
-                    const monthlyPrice = Math.round(adjustedPrice / duration);
-                    
-                    return (
-                      <button
-                        key={period}
-                        onClick={() => setPaymentType(period as '12months' | '24months' | '36months')}
-                        className={`p-4 rounded-lg border-2 transition-all duration-200 ${
-                          paymentType === period
-                            ? 'border-orange-600 bg-white shadow-lg'
-                            : 'border-gray-300 bg-white/70 hover:border-orange-400 hover:shadow-md'
-                        }`}
-                      >
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-foreground mb-1">{label}</div>
-                          <div className="text-2xl font-bold text-orange-600 mb-1">
-                            £{adjustedPrice}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            £{monthlyPrice}/month
-                          </div>
-                          {paymentType === period && (
-                            <div className="mt-2 flex items-center justify-center gap-1 text-orange-600">
-                              <Check className="h-4 w-4" />
-                              <span className="text-xs font-medium">Selected</span>
-                            </div>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              
-              {/* Plan Features */}
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-green-600" />
-                  <span className="font-medium">£{selectedClaimLimit.toLocaleString()} Claim Limit</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-green-600" />
-                  <span className="font-medium">£{voluntaryExcess} Voluntary Excess</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-green-600" />
-                  <span className="font-medium">Unlimited Claims</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-green-600" />
-                  <span className="font-medium">Nationwide Coverage</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-green-600" />
-                  <span className="font-medium">Comprehensive Mechanical & Electrical Coverage</span>
-                </div>
-              </div>
-              
-              {/* Current Selection Summary */}
-              <div className="bg-white rounded-lg p-4 border border-orange-200">
-                <div className="text-center">
-                  <div className="text-sm text-gray-600 mb-1">Your Premium Plan</div>
-                  <div className="text-xl font-bold text-orange-600">
-                    £{(() => {
-                      const planPrice = getPricingData(voluntaryExcess, selectedClaimLimit, paymentType);
-                      return vehiclePriceAdjustment.isValid 
-                        ? applyPriceAdjustment(planPrice, vehiclePriceAdjustment)
-                        : planPrice;
-                    })()} total
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36'} months • 
-                    £{getMonthlyDisplayPrice((() => {
-                      const planPrice = getPricingData(voluntaryExcess, selectedClaimLimit, paymentType);
-                      return vehiclePriceAdjustment.isValid 
-                        ? applyPriceAdjustment(planPrice, vehiclePriceAdjustment)
-                        : planPrice;
-                    })())}/month
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
 
@@ -1252,11 +1136,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
             </div>
             
-            {/* Step 5: Add-On Protection Packages Section */}
+            {/* Step 4: Add-On Protection Packages Section */}
             <div className="section-header rounded-lg p-6 mt-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  5
+                  4
                 </div>
                 <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
                   <Shield className="w-5 h-5" />
