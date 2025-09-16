@@ -1,326 +1,294 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, Clock, AlertCircle, Shield, FileText, Menu, Heart, CheckCircle } from 'lucide-react';
+import { Menu, X, Phone, Mail, Clock, AlertCircle, Shield, FileText, CheckCircle, MessageSquare, TrendingUp } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import pandaService from '@/assets/panda-service.png';
+import pandaThumbsUp from '@/assets/panda-thumbs-up.png';
+import pandaSavings from '@/assets/panda-savings.png';
+import pandaHappyCar from '@/assets/panda-happy-car.png';
 
 const Complaints = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const complaintSteps = [
-    {
-      step: 1,
-      title: 'Contact Us First',
-      description: 'Most issues can be resolved quickly through direct contact with our customer service team.',
-      contact: 'Phone: 0330 229 5040 or Email: support@buyawarranty.co.uk'
-    },
-    {
-      step: 2,
-      title: 'Formal Complaint',
-      description: 'If you\'re not satisfied with our initial response, submit a formal written complaint.',
-      contact: 'complaints@buyawarranty.co.uk'
-    },
-    {
-      step: 3,
-      title: 'Independent Review',
-      description: 'If we can\'t resolve your complaint, you can refer it to the Financial Ombudsman Service.',
-      contact: 'Free and independent service'
-    }
-  ];
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
       <SEOHead 
-        title="Complaints Procedure | Buy A Warranty - We Listen & Act"
-        description="Our commitment to fair treatment and excellent service. Learn about our complaints procedure and how we resolve customer concerns quickly and fairly."
-        keywords="complaints, customer service, fair treatment, resolution"
-        canonical={`${window.location.origin}/complaints`}
+        title="Complaints Procedure | Buy A Warranty UK"
+        description="Learn about our complaints procedure and how we resolve customer concerns quickly and fairly. We are committed to providing excellent customer service."
+        keywords="complaints procedure, customer service, Buy A Warranty, complaint resolution, fair treatment"
+        canonical="https://buyawarranty.co.uk/complaints"
       />
 
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            <div className="flex items-center">
-              <Link to="/" className="hover:opacity-80 transition-opacity">
-                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
-              </Link>
-            </div>
+      <header className="bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/" className="flex items-center">
+              <img 
+                src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                alt="Buy a Warranty Logo" 
+                className="h-8 w-auto"
+              />
+            </Link>
             
-            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-              <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
-              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
-              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
-              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
-            </nav>
-
-            <div className="hidden lg:flex items-center space-x-3">
-              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="sm" className="bg-green-500 text-white border-green-500 hover:bg-green-600">
-                  WhatsApp Us
-                </Button>
-              </a>
-              <Link to="/">
-                <Button size="sm" className="bg-orange-500 text-white hover:bg-orange-600">
-                  Get my quote
-                </Button>
+            <div className="hidden md:flex items-center space-x-8">
+              <Link to="/" className="text-gray-600 hover:text-[#eb4b00] transition-colors">
+                Home
+              </Link>
+              <Link to="/faq" className="text-gray-600 hover:text-[#eb4b00] transition-colors">
+                FAQ
+              </Link>
+              <Link to="/contact-us" className="text-gray-600 hover:text-[#eb4b00] transition-colors">
+                Contact Us
               </Link>
             </div>
 
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="lg:hidden p-2">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <div className="flex flex-col h-full">
-                  <div className="flex items-center justify-between pb-6">
-                    <Link to="/" className="hover:opacity-80 transition-opacity">
-                      <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-8 w-auto" />
-                    </Link>
-                  </div>
-                  <nav className="flex flex-col space-y-6 flex-1">
-                    <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
-                      What's Covered
-                    </Link>
-                    <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
-                      Make a Claim
-                    </Link>
-                    <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
-                       FAQs
-                    </Link>
-                    <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
-                      Contact Us
-                    </Link>
-                  </nav>
-                </div>
-              </SheetContent>
-            </Sheet>
+            <button
+              className="md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
-        </div>
+
+          {/* Mobile menu */}
+          {isMenuOpen && (
+            <div className="md:hidden py-4 border-t border-gray-100">
+              <div className="flex flex-col space-y-4">
+                <Link to="/" className="text-gray-600 hover:text-[#eb4b00] transition-colors">
+                  Home
+                </Link>
+                <Link to="/faq" className="text-gray-600 hover:text-[#eb4b00] transition-colors">
+                  FAQ
+                </Link>
+                <Link to="/contact-us" className="text-gray-600 hover:text-[#eb4b00] transition-colors">
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+          )}
+        </nav>
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 to-orange-50 py-16">
+      <section className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-6">
-              <Heart className="w-12 h-12 text-red-500 mr-4" />
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-                We Listen <span className="text-primary">&</span> We Care
-              </h1>
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <img 
+                src={pandaService} 
+                alt="Panda representing excellent customer service" 
+                className="h-24 w-auto"
+              />
             </div>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              If you feel you've been unfairly treated, we want to hear from you. Your voice matters to us, and we're committed to making things right. We listen attentively to every concern and work hard to resolve issues fairly and promptly.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
-            <div className="flex items-center justify-center space-x-3 bg-white p-6 rounded-lg shadow-sm">
-              <AlertCircle className="w-6 h-6 text-primary" />
-              <span className="font-medium text-gray-800">We Listen Attentively</span>
-            </div>
-            <div className="flex items-center justify-center space-x-3 bg-white p-6 rounded-lg shadow-sm">
-              <Shield className="w-6 h-6 text-primary" />
-              <span className="font-medium text-gray-800">Fair Treatment Guaranteed</span>
-            </div>
-            <div className="flex items-center justify-center space-x-3 bg-white p-6 rounded-lg shadow-sm">
-              <Clock className="w-6 h-6 text-primary" />
-              <span className="font-medium text-gray-800">Quick Resolution</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Contact Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-primary text-white rounded-2xl p-8 md:p-12 text-center">
-            <h2 className="text-3xl font-bold mb-6">Let's Talk First</h2>
-            <p className="text-xl mb-8 text-white/90">
-              Most concerns can be resolved quickly with a simple conversation. Our friendly team is here to help.
-            </p>
-            <div className="grid md:grid-cols-2 gap-6">
-              <a 
-                href="tel:03302295040" 
-                className="bg-white text-primary font-bold py-4 px-8 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center"
-              >
-                <Phone className="w-5 h-5 mr-3" />
-                Call: 0330 229 5040
-              </a>
-              <a 
-                href="mailto:support@buyawarranty.co.uk" 
-                className="bg-white text-primary font-bold py-4 px-8 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center"
-              >
-                <Mail className="w-5 h-5 mr-3" />
-                Email: support@buyawarranty.co.uk
-              </a>
-            </div>
-            <p className="mt-6 text-sm text-white/80">
-              Our customer service hours: Monday - Friday, 9:00 AM - 5:30 PM
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              Complaints Procedure
+            </h1>
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+              At Buy A Warranty, we are committed to providing excellent customer service. If you are dissatisfied with any aspect of our service or products, we want to hear from you so we can resolve the issue promptly and fairly.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Complaints Process */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Our Complaints <span className="text-primary">Process</span>
-            </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              We believe in transparency and fairness. Here's our step-by-step process to ensure your complaint is handled properly.
-            </p>
-          </div>
-
-          <div className="space-y-8 max-w-4xl mx-auto">
-            {complaintSteps.map((step, index) => (
-              <div key={step.step} className="bg-white rounded-lg shadow-lg p-8 border-l-4 border-primary">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-lg">
-                      {step.step}
-                    </div>
-                  </div>
-                  <div className="ml-6 flex-1">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                    <p className="text-gray-600 mb-4 text-lg">{step.description}</p>
-                    <div className="bg-orange-50 p-4 rounded-lg">
-                      <p className="text-primary font-semibold">{step.contact}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* What We Need Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                What We Need From <span className="text-primary">You</span>
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        {/* How to Make a Complaint */}
+        <section className="bg-white rounded-2xl shadow-lg p-8 mb-12">
+          <div className="flex items-start space-x-6">
+            <img 
+              src={pandaThumbsUp} 
+              alt="Panda encouraging communication" 
+              className="h-20 w-auto flex-shrink-0"
+            />
+            <div className="flex-1">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <MessageSquare className="w-8 h-8 text-[#eb4b00] mr-3" />
+                How to Make a Complaint
               </h2>
-              <p className="text-lg text-gray-600">
-                To help us resolve your complaint quickly and fairly, please provide:
+              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                You can submit a complaint using any of the following methods:
               </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-green-500 mr-4 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Your Policy Details</h4>
-                    <p className="text-gray-600">Policy number, registration number, or any reference numbers you have.</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-green-500 mr-4 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Clear Description</h4>
-                    <p className="text-gray-600">What happened, when it happened, and what outcome you're looking for.</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-green-500 mr-4 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Supporting Documents</h4>
-                    <p className="text-gray-600">Any emails, letters, invoices, or photos related to your complaint.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-6">
-                <div className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-green-500 mr-4 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Contact Information</h4>
-                    <p className="text-gray-600">Your preferred contact method so we can keep you updated.</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-green-500 mr-4 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Timeline of Events</h4>
-                    <p className="text-gray-600">When things happened and what steps you've already taken.</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <CheckCircle className="w-6 h-6 text-green-500 mr-4 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Previous Communications</h4>
-                    <p className="text-gray-600">Details of any previous conversations or attempts to resolve the issue.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Financial Ombudsman Section */}
-      <section className="py-16 bg-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <FileText className="w-16 h-16 text-blue-600 mx-auto mb-6" />
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                Independent Support Available
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                If you're not satisfied with our response to your complaint, you have the right to refer your case to the Financial Ombudsman Service - a free, independent service.
-              </p>
-              <div className="grid md:grid-cols-3 gap-6 text-left">
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Website:</h4>
-                  <a href="https://www.financial-ombudsman.org.uk" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                    financial-ombudsman.org.uk
+              
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-blue-50 p-6 rounded-lg">
+                  <h3 className="font-bold text-gray-900 mb-3 flex items-center">
+                    <Mail className="w-5 h-5 text-blue-600 mr-2" />
+                    Email Us
+                  </h3>
+                  <a href="mailto:support@buyawarranty.co.uk" className="text-[#eb4b00] hover:underline font-medium">
+                    support@buyawarranty.co.uk
                   </a>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Phone:</h4>
-                  <p className="text-gray-600">0800 023 4567</p>
+                <div className="bg-green-50 p-6 rounded-lg">
+                  <h3 className="font-bold text-gray-900 mb-3 flex items-center">
+                    <Phone className="w-5 h-5 text-green-600 mr-2" />
+                    Call Us
+                  </h3>
+                  <a href="tel:03302295040" className="text-[#eb4b00] hover:underline font-medium">
+                    0330 229 5040
+                  </a>
+                  <p className="text-sm text-gray-600 mt-1">(Monday to Friday, 9am–5pm)</p>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Email:</h4>
-                  <p className="text-gray-600">complaint.info@financial-ombudsman.org.uk</p>
+              </div>
+
+              <div className="bg-orange-50 border-l-4 border-orange-400 p-6 rounded-r-lg">
+                <h3 className="font-bold text-gray-900 mb-4">Please include the following details to help us investigate your complaint efficiently:</h3>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start">
+                    <span className="w-2 h-2 bg-[#eb4b00] rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Your full name and contact details
+                  </li>
+                  <li className="flex items-start">
+                    <span className="w-2 h-2 bg-[#eb4b00] rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Details of the product or service in question
+                  </li>
+                  <li className="flex items-start">
+                    <span className="w-2 h-2 bg-[#eb4b00] rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    A clear description of the issue
+                  </li>
+                  <li className="flex items-start">
+                    <span className="w-2 h-2 bg-[#eb4b00] rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Any relevant documentation (e.g. warranty registration number, correspondence)
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* What Happens Next */}
+        <section className="bg-white rounded-2xl shadow-lg p-8 mb-12">
+          <div className="flex items-start space-x-6">
+            <img 
+              src={pandaHappyCar} 
+              alt="Panda with car representing our process" 
+              className="h-20 w-auto flex-shrink-0"
+            />
+            <div className="flex-1">
+              <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                <TrendingUp className="w-8 h-8 text-[#eb4b00] mr-3" />
+                What Happens Next
+              </h2>
+              
+              <div className="space-y-8">
+                {/* Acknowledgement */}
+                <div className="border-l-4 border-blue-400 bg-blue-50 p-6 rounded-r-lg">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                    <CheckCircle className="w-6 h-6 text-blue-600 mr-2" />
+                    1. Acknowledgement
+                  </h3>
+                  <p className="text-gray-700 text-lg">
+                    We will acknowledge your complaint within <strong>2 working days</strong> of receipt.
+                  </p>
+                </div>
+
+                {/* Investigation */}
+                <div className="border-l-4 border-orange-400 bg-orange-50 p-6 rounded-r-lg">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                    <Shield className="w-6 h-6 text-orange-600 mr-2" />
+                    2. Investigation
+                  </h3>
+                  <p className="text-gray-700 text-lg">
+                    Your complaint will be reviewed by a member of our team. We aim to provide a full response within <strong>10 working days</strong>. If further investigation is required, we will keep you informed of progress.
+                  </p>
+                </div>
+
+                {/* Resolution */}
+                <div className="border-l-4 border-green-400 bg-green-50 p-6 rounded-r-lg">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                    <FileText className="w-6 h-6 text-green-600 mr-2" />
+                    3. Resolution
+                  </h3>
+                  <p className="text-gray-700 text-lg">
+                    We will explain our findings and any actions we propose to resolve your complaint.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Final CTA */}
-      <section className="py-16 bg-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">
-            We're Here to Make Things Right
-          </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Your satisfaction is our priority. We're committed to treating all customers fairly and resolving issues promptly.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact-us">
-              <Button size="lg" className="bg-white text-primary hover:bg-gray-100 font-bold px-8 py-3">
-                Contact Us Now
-              </Button>
-            </Link>
-            <a href="mailto:complaints@buyawarranty.co.uk">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary font-bold px-8 py-3">
-                Email Formal Complaint
-              </Button>
-            </a>
+        {/* Continuous Improvement */}
+        <section className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 mb-8">
+          <div className="flex items-start space-x-6">
+            <img 
+              src={pandaSavings} 
+              alt="Panda representing continuous improvement" 
+              className="h-20 w-auto flex-shrink-0"
+            />
+            <div className="flex-1">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <TrendingUp className="w-8 h-8 text-[#eb4b00] mr-3" />
+                Continuous Improvement
+              </h2>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                All complaints are logged and reviewed regularly to help us improve our services and prevent future issues. Your feedback is valuable in helping us provide better service to all our customers.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Last Updated */}
+        <section className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+          <div className="text-center">
+            <div className="bg-gray-50 p-4 rounded-lg inline-block">
+              <p className="text-gray-600 font-medium">
+                <strong>Last updated:</strong> 16 September 2025
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Information */}
+        <section className="bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-2xl p-8">
+          <h2 className="text-3xl font-bold mb-6 text-center">Ready to Raise a Complaint?</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Contact Our Team</h3>
+              <div className="space-y-3">
+                <p className="flex items-center">
+                  <Phone className="w-5 h-5 mr-3" />
+                  <span className="font-medium mr-2">Phone:</span>
+                  <a href="tel:03302295040" className="text-orange-300 hover:text-orange-200 transition-colors">
+                    0330 229 5040
+                  </a>
+                </p>
+                <p className="flex items-center">
+                  <Mail className="w-5 h-5 mr-3" />
+                  <span className="font-medium mr-2">Email:</span>
+                  <a href="mailto:support@buyawarranty.co.uk" className="text-orange-300 hover:text-orange-200 transition-colors">
+                    support@buyawarranty.co.uk
+                  </a>
+                </p>
+                <p className="flex items-center">
+                  <Clock className="w-5 h-5 mr-3" />
+                  <span className="font-medium mr-2">Hours:</span>
+                  <span className="text-blue-200">Monday to Friday, 9am–5pm</span>
+                </p>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Related Information</h3>
+              <div className="space-y-2">
+                <Link to="/contact-us" className="block text-blue-200 hover:text-white transition-colors">
+                  Contact Us Page
+                </Link>
+                <Link to="/faq" className="block text-blue-200 hover:text-white transition-colors">
+                  Frequently Asked Questions
+                </Link>
+                <Link to="/terms" className="block text-blue-200 hover:text-white transition-colors">
+                  Terms & Conditions
+                </Link>
+                <Link to="/privacy" className="block text-blue-200 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
