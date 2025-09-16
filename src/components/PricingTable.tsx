@@ -235,8 +235,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     });
     
     // Determine correct plan type based on actual vehicle characteristics
+    // For motorbikes, use car plans but apply 50% discount via calculatePlanPrice()
     if (actualVehicleType.includes('motorbike') || actualVehicleType.includes('motorcycle') || actualVehicleType === 'bike') {
-      dbVehicleType = 'motorbike';
+      dbVehicleType = 'car'; // Use car plans, discount applied in calculatePlanPrice()
     } else if (actualVehicleType.includes('van') || vehicleModel?.includes('transit') || vehicleModel?.includes('sprinter') || vehicleModel?.includes('crafter')) {
       dbVehicleType = 'van';
     } else if (actualVehicleType.includes('suv')) {
@@ -1120,15 +1121,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 £{(() => {
                   if (!selectedPlan) return '0';
                   
-                  const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                  const durationKey = durationMonths.toString();
-                  const excessKey = `${voluntaryExcess}_${selectedClaimLimit}`;
-                  
-                  // Get base price from selected plan's pricing matrix
-                  const pricingEntry = selectedPlan.pricing_matrix?.[durationKey]?.[excessKey];
-                  const adjustedPrice = pricingEntry?.price || 0;
+                  // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
+                  const adjustedPrice = calculatePlanPrice();
                   
                   // Add plan add-ons
+                  const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
                   let planAddOnPrice = 0;
                   const planAddOns = selectedAddOns[selectedPlan.id] || {};
                   if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
@@ -1158,15 +1155,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <span className="text-sm font-normal text-gray-600 ml-1">
                   • £{(() => {
                     if (!selectedPlan) return '0';
-                    const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                    const durationKey = durationMonths.toString();
-                    const excessKey = `${voluntaryExcess}_${selectedClaimLimit}`;
                     
-                    // Get base price from selected plan's pricing matrix
-                    const pricingEntry = selectedPlan.pricing_matrix?.[durationKey]?.[excessKey];
-                    const adjustedPrice = pricingEntry?.price || 0;
+                    // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
+                    const adjustedPrice = calculatePlanPrice();
                     
                     // Add plan add-ons
+                    const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
                     let planAddOnPrice = 0;
                     const planAddOns = selectedAddOns[selectedPlan.id] || {};
                     if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
@@ -1190,7 +1184,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
                     
                     const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
-                    
                     return Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
                   })()} /month
                 </span>
