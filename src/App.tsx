@@ -32,6 +32,7 @@ import ContactUs from "./pages/ContactUs";
 import Complaints from "./pages/Complaints";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
+import CookiePolicy from "./pages/CookiePolicy";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
                   <Route path="/car-preview" element={<CarSpinnerPreview />} />
                   <Route path="/original-pricing" element={<OriginalPricing />} />
                   <Route path="/terms" element={<Terms />} />
+                  <Route path="/cookies" element={<CookiePolicy />} />
                   <Route path="/what-is-covered" element={<Protected />} />
                   <Route path="/claims" element={<Claims />} />
                   <Route path="/make-a-claim" element={<Claims />} />
