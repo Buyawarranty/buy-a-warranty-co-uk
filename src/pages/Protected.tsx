@@ -107,9 +107,13 @@ const Protected = () => {
         />
       </button>
       
-      {openSections[vehicleType.id] && (
+      <div className={`overflow-hidden transition-all duration-200 ease-out ${
+        openSections[vehicleType.id] 
+          ? 'max-h-screen opacity-100 animate-accordion-down' 
+          : 'max-h-0 opacity-0'
+      }`}>
         <div className="px-6 py-4 bg-white">
-          <ul className="space-y-2">
+          <ul className="space-y-2 transform translate-y-0">
             {vehicleType.components.map((component, index) => (
               <li key={index} className="flex items-start text-gray-700">
                 <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
@@ -118,7 +122,7 @@ const Protected = () => {
             ))}
           </ul>
         </div>
-      )}
+      </div>
     </div>
   );
 

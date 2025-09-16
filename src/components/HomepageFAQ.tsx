@@ -81,11 +81,15 @@ const HomepageFAQ = () => {
         />
       </button>
       
-      {openItems[faq.id] && (
-        <div className="px-6 pb-5 text-gray-800 bg-white border-t border-orange-400 animate-accordion-down">
-          <p className="text-base leading-relaxed">{faq.answer}</p>
+      <div className={`overflow-hidden transition-all duration-200 ease-out ${
+        openItems[faq.id] 
+          ? 'max-h-screen opacity-100 animate-accordion-down' 
+          : 'max-h-0 opacity-0'
+      }`}>
+        <div className="px-6 pb-5 text-gray-800 bg-white border-t border-orange-400">
+          <p className="text-base leading-relaxed pt-4 transform translate-y-0">{faq.answer}</p>
         </div>
-      )}
+      </div>
     </div>
   );
 
