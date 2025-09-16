@@ -434,6 +434,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * durationMonths; // £6/mo
     if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo
     if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo
+    if (selectedProtectionAddOns.motFee) protectionPrice += 3 * durationMonths; // £3/mo
+    if (selectedProtectionAddOns.lostKey) protectionPrice += 3 * durationMonths; // £3/mo
+    if (selectedProtectionAddOns.consequential) protectionPrice += 5 * durationMonths; // £5/mo
     if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo
     if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
     
@@ -489,6 +492,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo
       if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo
       if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo
+      if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 4 * durationMonths; // £4/mo
+      if (selectedProtectionAddOns.motFee) recurringAddonTotal += 3 * durationMonths; // £3/mo
+      if (selectedProtectionAddOns.lostKey) recurringAddonTotal += 3 * durationMonths; // £3/mo
+      if (selectedProtectionAddOns.consequential) recurringAddonTotal += 5 * durationMonths; // £5/mo
       if (selectedProtectionAddOns.transfer) oneTimeAddonTotal += 30;
       
       // Calculate monthly amounts
@@ -1289,12 +1296,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           
                            // Protection addon prices: monthly add-ons converted to selected duration + one-time
                            let protectionPrice = 0;
-                           if (selectedProtectionAddOns.breakdown) protectionPrice += 6 * durationMonths; // £6/mo * duration
-                           if (selectedProtectionAddOns.rental) protectionPrice += 4 * durationMonths; // £4/mo * duration
-                           if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                           if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                           if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
-                           if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
+                            if (selectedProtectionAddOns.breakdown) protectionPrice += 6 * durationMonths; // £6/mo * duration
+                            if (selectedProtectionAddOns.rental) protectionPrice += 4 * durationMonths; // £4/mo * duration
+                            if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                            if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                            if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
+                            if (selectedProtectionAddOns.motRepair) protectionPrice += 4 * durationMonths; // £4/mo * duration
+                            if (selectedProtectionAddOns.motFee) protectionPrice += 3 * durationMonths; // £3/mo * duration
+                            if (selectedProtectionAddOns.lostKey) protectionPrice += 3 * durationMonths; // £3/mo * duration
+                            if (selectedProtectionAddOns.consequential) protectionPrice += 5 * durationMonths; // £5/mo * duration
+                            if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
                           
                           return basePrice + planAddOnPrice + protectionPrice;
                         })()}
@@ -1321,12 +1332,16 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                             let recurringAddonTotal = 0;
                             let hasTransfer = false;
                             
-                            if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
-                            if (selectedProtectionAddOns.rental) recurringAddonTotal += 4 * durationMonths; // £4/mo * duration
-                            if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                            if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                            if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
-                            if (selectedProtectionAddOns.transfer) hasTransfer = true;
+                             if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
+                             if (selectedProtectionAddOns.rental) recurringAddonTotal += 4 * durationMonths; // £4/mo * duration
+                             if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                             if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                             if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
+                             if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 4 * durationMonths; // £4/mo * duration
+                             if (selectedProtectionAddOns.motFee) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
+                             if (selectedProtectionAddOns.lostKey) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
+                             if (selectedProtectionAddOns.consequential) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
+                             if (selectedProtectionAddOns.transfer) hasTransfer = true;
                            
                            // Calculate monthly amounts
                            const monthlyBasePrice = Math.round(basePrice / durationMonths * 100) / 100;

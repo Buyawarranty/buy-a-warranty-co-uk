@@ -43,7 +43,7 @@ const addOnPackages = [
   {
     key: 'european',
     icon: '🇪🇺',
-    title: 'European Cover',
+    title: 'Europe Cover',
     shortDescription: 'Drive with confidence across Europe just £3/mo',
     price: 3,
     priceType: 'monthly',
@@ -58,7 +58,7 @@ const addOnPackages = [
   {
     key: 'breakdown',
     icon: '🚗',
-    title: 'Breakdown Recovery',
+    title: '24/7 Recovery',
     shortDescription: '24/7 roadside assistance and recovery service £6/mo',
     price: 6,
     priceType: 'monthly',
@@ -85,6 +85,66 @@ const addOnPackages = [
       'Comprehensive insurance included',
       'Collection and delivery service',
       'Emergency rental available 24/7'
+    ]
+  },
+  {
+    key: 'motRepair',
+    icon: '🔧',
+    title: 'MOT Repair',
+    shortDescription: 'MOT failure repair cover just £4/mo',
+    price: 4,
+    priceType: 'monthly',
+    bulletPoints: [
+      'Covers cost of MOT failure repairs',
+      'Up to £750 per claim',
+      'Includes parts and labour',
+      'Fast-track repair service',
+      'Nationwide coverage'
+    ]
+  },
+  {
+    key: 'motFee',
+    icon: '📋',
+    title: 'MOT Fee',
+    shortDescription: 'Annual MOT test fee covered £3/mo',
+    price: 3,
+    priceType: 'monthly',
+    bulletPoints: [
+      'Annual MOT test fee covered',
+      'Choose your preferred test center',
+      'Reminder service included',
+      'Online booking available',
+      'Certificate delivery service'
+    ]
+  },
+  {
+    key: 'lostKey',
+    icon: '🔑',
+    title: 'Lost Key',
+    shortDescription: 'Lost or stolen key replacement £3/mo',
+    price: 3,
+    priceType: 'monthly',
+    bulletPoints: [
+      'Lost or stolen key replacement',
+      'Emergency locksmith service',
+      'New key programming included',
+      '24/7 assistance available',
+      'Up to £500 per claim'
+    ]
+  },
+  {
+    key: 'consequential',
+    icon: '⚡',
+    title: 'Consequential Damage',
+    shortDescription: 'Cover for damage caused by covered failures £5/mo',
+    price: 5,
+    priceType: 'monthly',
+    bulletPoints: [
+      'Damage caused by covered component failures',
+      'Engine damage from cooling system failure',
+      'Transmission damage from clutch issues',
+      'Additional peace of mind protection',
+      'Up to claim limit coverage'
     ]
   },
   {

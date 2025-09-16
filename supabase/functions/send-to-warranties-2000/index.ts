@@ -43,11 +43,16 @@ interface Warranties2000Registration {
   Ref?: string; // Your reference
   MOTDue?: string; // yyyy-mm-dd
   // Add-ons (using w2000 API field names)
-  TyreCover?: string; // Y/N
-  WearTear?: string; // Y/N
-  EuroCover?: string; // Y/N
-  Recovery?: string; // Y/N - 24/7 Recovery/Breakdown
-  Rental?: string; // Y/N - Vehicle Rental
+  Recovery?: string; // Y/N - 24/7 Recovery
+  MOTRepair?: string; // Y/N - MOT Repair
+  TyreCover?: string; // Y/N - Tyre cover
+  WearTear?: string; // Y/N - Wear & tear
+  LostKey?: string; // Y/N - Lost key
+  MOTFee?: string; // Y/N - MOT fee
+  EuroCover?: string; // Y/N - Europe cover
+  Rental?: string; // Y/N - Vehicle rental
+  Consequential?: string; // Y/N - Consequential damage
+  Transfer?: string; // Y/N - Transfer fee
 }
 
 // Timeout wrapper for fetch
@@ -336,7 +341,10 @@ serve(async (req) => {
         transfer_cover: policy.transfer_cover,
         breakdown_recovery: policy.breakdown_recovery,
         vehicle_rental: policy.vehicle_rental,
-        mot_fee: policy.mot_fee
+        mot_fee: policy.mot_fee,
+        mot_repair: policy.mot_repair,
+        lost_key: policy.lost_key,
+        consequential: policy.consequential
       } : null,
       customerData: {
         id: customer.id,
@@ -346,14 +354,22 @@ serve(async (req) => {
         transfer_cover: customer.transfer_cover,
         breakdown_recovery: customer.breakdown_recovery,
         vehicle_rental: customer.vehicle_rental,
-        mot_fee: customer.mot_fee
+        mot_fee: customer.mot_fee,
+        mot_repair: customer.mot_repair,
+        lost_key: customer.lost_key,
+        consequential: customer.consequential
       },
       finalAddonDecisions: {
+        Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true),
+        MOTRepair: (policy?.mot_repair === true || customer?.mot_repair === true),
         TyreCover: (policy?.tyre_cover === true || customer?.tyre_cover === true),
         WearTear: (policy?.wear_tear === true || customer?.wear_tear === true),
+        LostKey: (policy?.lost_key === true || customer?.lost_key === true),
+        MOTFee: (policy?.mot_fee === true || customer?.mot_fee === true),
         EuroCover: (policy?.europe_cover === true || customer?.europe_cover === true),
-        Recovery: (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true),
-        Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true)
+        Rental: (policy?.vehicle_rental === true || customer?.vehicle_rental === true),
+        Consequential: (policy?.consequential === true || customer?.consequential === true),
+        Transfer: (policy?.transfer_cover === true || customer?.transfer_cover === true)
       }
     });
 
@@ -394,11 +410,17 @@ serve(async (req) => {
     };
 
     // W2000 API requires ALL add-on fields to be present with explicit Y/N values
-    registrationData.TyreCover = (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'N';
-    registrationData.WearTear = (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'N';
-    registrationData.EuroCover = (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'N';
-    registrationData.Recovery = (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'N';
-    registrationData.Rental = (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'N';
+    // Map add-ons according to the required W2000 field names
+    registrationData.Recovery = (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true) ? 'Y' : 'N'; // 24/7 Recovery
+    registrationData.MOTRepair = (policy?.mot_repair === true || customer?.mot_repair === true) ? 'Y' : 'N'; // MOT Repair
+    registrationData.TyreCover = (policy?.tyre_cover === true || customer?.tyre_cover === true) ? 'Y' : 'N'; // Tyre cover
+    registrationData.WearTear = (policy?.wear_tear === true || customer?.wear_tear === true) ? 'Y' : 'N'; // Wear & tear
+    registrationData.LostKey = (policy?.lost_key === true || customer?.lost_key === true) ? 'Y' : 'N'; // Lost key
+    registrationData.MOTFee = (policy?.mot_fee === true || customer?.mot_fee === true) ? 'Y' : 'N'; // MOT fee
+    registrationData.EuroCover = (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'N'; // Europe cover
+    registrationData.Rental = (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'N'; // Vehicle rental
+    registrationData.Consequential = (policy?.consequential === true || customer?.consequential === true) ? 'Y' : 'N'; // Consequential damage
+    registrationData.Transfer = (policy?.transfer_cover === true || customer?.transfer_cover === true) ? 'Y' : 'N'; // Transfer fee
 
     console.log(`[WARRANTIES-2000] Final registration data with add-ons:`, {
       regNum: registrationData.RegNum,
@@ -406,11 +428,16 @@ serve(async (req) => {
       customerEmail: registrationData.EMail,
       ref: registrationData.Ref,
       addOns: {
-        TyreCover: registrationData.TyreCover,
-        WearTear: registrationData.WearTear, 
-        EuroCover: registrationData.EuroCover,
-        Recovery: registrationData.Recovery,
-        Rental: registrationData.Rental
+        Recovery: registrationData.Recovery, // 24/7 Recovery
+        MOTRepair: registrationData.MOTRepair, // MOT Repair
+        TyreCover: registrationData.TyreCover, // Tyre cover
+        WearTear: registrationData.WearTear, // Wear & tear
+        LostKey: registrationData.LostKey, // Lost key
+        MOTFee: registrationData.MOTFee, // MOT fee
+        EuroCover: registrationData.EuroCover, // Europe cover
+        Rental: registrationData.Rental, // Vehicle rental
+        Consequential: registrationData.Consequential, // Consequential damage
+        Transfer: registrationData.Transfer // Transfer fee
       }
     });
 
