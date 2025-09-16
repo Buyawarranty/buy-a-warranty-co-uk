@@ -34,6 +34,7 @@ import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
 import CookiePolicy from "./pages/CookiePolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import WarrantyPlan from "./pages/WarrantyPlan";
 
 const queryClient = new QueryClient();
 
