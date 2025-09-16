@@ -101,6 +101,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     });
     return adjustment;
   }, [vehicleData, paymentType]);
+
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -108,6 +109,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [selectedClaimLimit, setSelectedClaimLimit] = useState<number>(1250);
   const [summaryDismissed, setSummaryDismissed] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  
   // Add-ons state
   const [selectedProtectionAddOns, setSelectedProtectionAddOns] = useState<{[key: string]: boolean}>({
     breakdown: false,
@@ -383,9 +385,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     });
     
     return adjustedPrice;
-    
-    // This should not be reached since we're using the exact pricing table above
-    return basePrice;
   };
 
   // Get the plan that matches the selected claim limit
@@ -722,148 +721,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
         </div>
 
-        {/* Add-On Protection Packages */}
-        <div className="section-header rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
-              3
-            </div>
-            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              Add-On Protection Packages
-            </h3>
-          </div>
-          <AddOnProtectionPackages 
-            selectedAddOns={selectedProtectionAddOns}
-            paymentType={paymentType}
-            onAddOnChange={(addOnKey, selected) => 
-              setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
-            }
-          />
-        </div>
-
-        {/* Choose Warranty Duration */}
-        <div className="section-header rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
-              4
-            </div>
-            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Choose Warranty Duration
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            {[
-              {
-                id: '12months',
-                title: '1 Year',
-                subtitle: 'Premium Plan',
-                description: 'Comprehensive coverage',
-                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval'],
-                isPopular: false
-              },
-              {
-                id: '24months',
-                title: '2 Years',
-                subtitle: 'Most Popular',
-                description: 'Best value for money',
-                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '15% discount'],
-                isPopular: true
-              },
-              {
-                id: '36months',
-                title: '3 Years',
-                subtitle: 'Best Value',
-                description: 'Maximum protection period',
-                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '20% discount'],
-                isPopular: false
-              }
-            ].map((option) => {
-              const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
-              const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
-              const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
-              
-              // Calculate add-on costs for this duration
-              const selectedPlan = getSelectedPlan();
-              const planAddOnCount = selectedPlan ? Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length : 0;
-              const planAddOnPrice = planAddOnCount * 2 * durationMonths;
-              
-              let protectionAddOnPrice = 0;
-              if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
-              if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
-              if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
-              if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
-              if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
-              if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
-              if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
-              if (selectedProtectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths;
-              if (selectedProtectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths;
-              if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
-              
-              const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
-              const monthlyPrice = Math.round(totalPrice / durationMonths);
-              
-              return (
-                <div
-                  key={option.id}
-                  onClick={() => setPaymentType(option.id as '12months' | '24months' | '36months')}
-                  className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
-                    paymentType === option.id 
-                      ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                      : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                  }`}
-                >
-                  {option.isPopular && (
-                    <div className="mb-2">
-                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                        MOST POPULAR
-                      </span>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-lg font-bold text-gray-900">{option.title}</h4>
-                      <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
-                        <Crown className="w-3 h-3" />
-                        {option.subtitle}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-600 mb-4 text-sm">{option.description}</p>
-                  
-                  <div className="space-y-2 mb-6">
-                    {option.features.map((feature, index) => (
-                      <div key={index} className="flex items-center text-sm text-gray-600">
-                        <Check className="w-4 h-4 text-green-500 mr-2" />
-                        {feature}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <div className="text-2xl font-bold text-orange-600">
-                      £{monthlyPrice}
-                      <span className="text-sm font-normal text-gray-600 ml-1">/month</span>
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Total: £{totalPrice}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Claim Limit Selection */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
-              5
+              3
             </div>
             <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
               <ShieldCheck className="w-5 h-5" />
@@ -1087,349 +949,156 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </TooltipProvider>
        </div>
 
+        {/* Choose Warranty Duration */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
+              4
+            </div>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Calendar className="w-5 h-5" />
+              Choose Warranty Duration
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {[
+              {
+                id: '12months',
+                title: '1 Year',
+                subtitle: 'Premium Plan',
+                description: 'Comprehensive coverage',
+                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval'],
+                isPopular: false
+              },
+              {
+                id: '24months',
+                title: '2 Years',
+                subtitle: 'Most Popular',
+                description: 'Best value for money',
+                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '15% discount'],
+                isPopular: true
+              },
+              {
+                id: '36months',
+                title: '3 Years',
+                subtitle: 'Best Value',
+                description: 'Maximum protection period',
+                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '20% discount'],
+                isPopular: false
+              }
+            ].map((option) => {
+              const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
+              const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+              const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
+              
+              // Calculate add-on costs for this duration
+              const selectedPlan = getSelectedPlan();
+              const planAddOnCount = selectedPlan ? Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length : 0;
+              const planAddOnPrice = planAddOnCount * 2 * durationMonths;
+              
+              let protectionAddOnPrice = 0;
+              if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
+              if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
+              if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
+              if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+              if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
+              if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
+              if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
+              if (selectedProtectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths;
+              if (selectedProtectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths;
+              if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
+              
+              const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
+              const monthlyPrice = Math.round(totalPrice / durationMonths);
+              
+              return (
+                <div
+                  key={option.id}
+                  onClick={() => setPaymentType(option.id as '12months' | '24months' | '36months')}
+                  className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
+                    paymentType === option.id 
+                      ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                      : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                  }`}
+                >
+                  {option.isPopular && (
+                    <div className="mb-2">
+                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                        MOST POPULAR
+                      </span>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-lg font-bold text-gray-900">{option.title}</h4>
+                      <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
+                        <Crown className="w-3 h-3" />
+                        {option.subtitle}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-600 mb-4 text-sm">{option.description}</p>
+                  
+                  <div className="space-y-2 mb-6">
+                    {option.features.map((feature, index) => (
+                      <div key={index} className="flex items-center text-sm text-gray-600">
+                        <Check className="w-4 h-4 text-green-500 mr-2" />
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="text-2xl font-bold text-orange-600">
+                      £{monthlyPrice}
+                      <span className="text-sm font-normal text-gray-600 ml-1">/month</span>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Total: £{totalPrice}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Add-On Protection Packages */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
+              5
+            </div>
+            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              Add-On Protection Packages
+            </h3>
+          </div>
+          <AddOnProtectionPackages 
+            selectedAddOns={selectedProtectionAddOns}
+            paymentType={paymentType}
+            onAddOnChange={(addOnKey, selected) => 
+              setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
+            }
+          />
+        </div>
 
       </div>
 
-      {/* Loading State */}
-      {plansLoading && (
-        <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
-          <div className="flex justify-center items-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-            <span className="ml-4 text-lg text-gray-600">Loading pricing plans...</span>
-          </div>
-        </div>
-      )}
-
-      {/* Error State */}
-      {plansError && !plansLoading && (
-        <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
-          <div className="text-center py-16">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-8 max-w-md mx-auto">
-              <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Pricing</h3>
-              <p className="text-red-600 mb-4">{plansError}</p>
-              <Button 
-                onClick={() => {
-                  let alive = true;
-                  setPlans([]);
-                  setPlansLoading(true);
-                  setPlansError(null);
-                  
-                  (async () => {
-                    try {
-                      const rows = await fetchPlansFor(vt);
-                      if (!alive) return;
-                      setPlans(rows);
-                    } catch (e: any) {
-                      if (!alive) return;
-                      setPlansError('Failed to load pricing plans. Please try again.');
-                      toast.error('Failed to load pricing plans');
-                    } finally {
-                      if (alive) setPlansLoading(false);
-                    }
-                  })();
-                }} 
-                variant="outline" 
-                className="border-red-300 text-red-700 hover:bg-red-50"
-              >
-                Try Again
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Coverage Information & Plan Selection */}
+      {/* Continue Button */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16">
-          
-
-
-          {/* Payment Duration Selection */}
-          <div className="section-header rounded-lg p-6 mt-8 relative">
-            {/* Complete Protection section on separate line for mobile */}
-            <div className="flex items-center justify-center sm:justify-end mb-4 sm:mb-0 sm:absolute sm:top-6 sm:right-6">
-              <div className="flex items-center gap-4">
-                <span className="text-lg font-medium text-gray-600 hidden sm:block">Complete Protection</span>
-                <Accordion type="single" collapsible className="w-auto">
-                  <AccordionItem value="whats-included" className="border-none">
-                    <AccordionTrigger className="hover:no-underline pb-0 pt-0 [&>svg]:hidden">
-                      <div className="border-2 border-orange-500 text-orange-500 rounded-lg px-3 py-2 bg-white hover:bg-orange-50 transition-colors duration-200 flex items-center gap-2 text-sm cursor-pointer" style={{ boxShadow: '0 0 10px rgba(249, 115, 22, 0.15)', filter: 'drop-shadow(0 0 8px rgba(249, 115, 22, 0.1))' }}>
-                        <div className="w-4 h-4 border border-orange-500 rounded-full flex items-center justify-center text-xs font-bold">
-                          i
-                        </div>
-                        <span className="font-medium">
-                          <span className="sm:hidden">Complete Protection. </span>What's Included?
-                        </span>
-                      </div>
-                    </AccordionTrigger>
-                  
-                    <AccordionContent className="pb-0">
-                      <div className="mt-4">
-                        {/* Core Coverage Items */}
-                        <div className="mb-6">
-                          <h4 className="text-lg font-semibold text-foreground mb-4">Comprehensive Coverage</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {[
-                              { item: 'Unlimited Claims', icon: Infinity },
-                              { item: "'ALL' Mechanical & Electrical Components", icon: Zap },
-                              { item: 'Petrol/Diesel Car Coverage', icon: Car },
-                              { item: 'Engine, Gearbox, Clutch, Turbo & Drivetrain', icon: Cog },
-                              { item: 'Suspension, Steering & Braking Systems', icon: Settings },
-                              { item: 'Fuel, Cooling & Emissions Systems', icon: Droplets },
-                              { item: 'ECUs, Sensors & Driver Assistance Tech', icon: Cpu },
-                              { item: 'Air Conditioning, Airbags & Multimedia Systems', icon: Snowflake },
-                              { item: 'Diagnostics & Fault-Finding', icon: Search },
-                              { item: 'Labour Costs', icon: Users },
-                              { item: 'Recovery Claim-back', icon: RotateCcw }
-                            ].map(({ item, icon: Icon }, index) => (
-                              <div key={index} className="flex items-center gap-3">
-                                <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center flex-shrink-0">
-                                  <Icon className="h-3.5 w-3.5 text-success-foreground" />
-                                </div>
-                                <span className="text-foreground font-medium">{item}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Additional Benefits */}
-                        <div className="bg-white rounded-lg p-4 mb-6 shadow-lg shadow-black/10">
-                          <h4 className="font-semibold text-foreground mb-3">Additional Benefits</h4>
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3">
-                              <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                                <Infinity className="h-3 w-3 text-primary-foreground" />
-                              </div>
-                              <span className="text-foreground">Claim as many times as needed</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                                <MapPin className="h-3 w-3 text-primary-foreground" />
-                              </div>
-                              <span className="text-foreground">Approved garages or choose your own</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* What's Not Included */}
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                          <h4 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
-                            <X className="h-4 w-4" />
-                            What's not included:
-                          </h4>
-                          <div className="space-y-2">
-                            {[
-                              'Items related to routine servicing, such as tyres, brake pads and discs',
-                              'Pre-existing faults or issues',
-                              'Vehicles used for hire & reward (e.g. Taxis, Couriers, rentals etc.)'
-                            ].map((item, index) => (
-                              <div key={index} className="flex items-start gap-3">
-                                <div className="w-4 h-4 mt-0.5 flex items-center justify-center flex-shrink-0">
-                                  <X className="h-3 w-3 text-red-500" />
-                                </div>
-                                <span className="text-red-700 text-sm">{item}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        
-                        {/* Mobile Close Button */}
-                        <div className="md:hidden mt-6 pt-4 border-t border-border">
-                          <Button 
-                            variant="outline" 
-                            className="w-full"
-                            onClick={() => {
-                              // This will close the accordion by triggering it
-                              const accordionTrigger = document.querySelector('[data-state="open"] button[data-radix-collection-item]') as HTMLElement;
-                              accordionTrigger?.click();
-                            }}
-                          >
-                            <ChevronUp className="h-4 w-4 mr-2" />
-                            Close Coverage Details
-                          </Button>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </div>
-            </div>
-            
-            
-            {/* Pricing Summary and CTA */}
-            <div className="flex justify-end mt-8">
-              {/* Prominent Pricing Display */}
-              <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border-2 border-orange-200 shadow-lg">
-                <div className="flex items-center justify-between gap-6">
-                  <div className="space-y-2">
-                    {/* Current Price Display */}
-                    <div className="text-3xl font-bold text-orange-600">
-                        £{(() => {
-                           const selectedPlan = getSelectedPlan();
-                           if (!selectedPlan) return calculatePlanPrice();
-                           const basePrice = calculatePlanPrice();
-                          
-                          // Get duration for add-on calculations
-                          const durationMonths = paymentType === '12months' ? 12 : 
-                                                paymentType === '24months' ? 24 : 
-                                                paymentType === '36months' ? 36 : 12;
-                          
-                          // Calculate add-on prices correctly for selected duration
-                          const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                          const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
-                          
-                           // Protection addon prices: monthly add-ons converted to selected duration + one-time
-                           let protectionPrice = 0;
-                            if (selectedProtectionAddOns.breakdown) protectionPrice += 6 * durationMonths; // £6/mo * duration
-                            if (selectedProtectionAddOns.rental) protectionPrice += 4 * durationMonths; // £4/mo * duration
-                            if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                            if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                            if (selectedProtectionAddOns.european) protectionPrice += 3 * durationMonths; // £3/mo * duration
-                            if (selectedProtectionAddOns.motRepair) protectionPrice += 4 * durationMonths; // £4/mo * duration
-                            if (selectedProtectionAddOns.motFee) protectionPrice += 3 * durationMonths; // £3/mo * duration
-                            if (selectedProtectionAddOns.lostKey) protectionPrice += 3 * durationMonths; // £3/mo * duration
-                            if (selectedProtectionAddOns.consequential) protectionPrice += 5 * durationMonths; // £5/mo * duration
-                            if (selectedProtectionAddOns.transfer) protectionPrice += 30; // £30 one-time
-                          
-                          return basePrice + planAddOnPrice + protectionPrice;
-                        })()}
-                      <span className="text-sm font-normal text-gray-600 ml-2">total</span>
-                    </div>
-                    
-                    {/* Monthly Instalments */}
-                    <div className="border-t border-orange-200 pt-2">
-                       {(() => {
-                          const selectedPlan = getSelectedPlan();
-                          if (!selectedPlan) return null;
-                          
-                           const basePrice = calculatePlanPrice();
-                           const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
-                           
-                           // Get duration for calculations
-                           const durationMonths = paymentType === '12months' ? 12 : 
-                                                 paymentType === '24months' ? 24 : 
-                                                 paymentType === '36months' ? 36 : 12;
-                           
-                           const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
-                           
-                            // Protection add-ons: Monthly add-ons calculated for duration, Transfer is one-time
-                            let recurringAddonTotal = 0;
-                            let hasTransfer = false;
-                            
-                             if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 6 * durationMonths; // £6/mo * duration
-                             if (selectedProtectionAddOns.rental) recurringAddonTotal += 4 * durationMonths; // £4/mo * duration
-                             if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                             if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                             if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
-                             if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 4 * durationMonths; // £4/mo * duration
-                             if (selectedProtectionAddOns.motFee) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
-                             if (selectedProtectionAddOns.lostKey) recurringAddonTotal += 3 * durationMonths; // £3/mo * duration
-                             if (selectedProtectionAddOns.consequential) recurringAddonTotal += 5 * durationMonths; // £5/mo * duration
-                             if (selectedProtectionAddOns.transfer) hasTransfer = true;
-                           
-                           // Calculate monthly amounts
-                           const monthlyBasePrice = Math.round(basePrice / durationMonths * 100) / 100;
-                         const monthlyRecurringAddons = Math.round(recurringAddonTotal / durationMonths * 100) / 100;
-                         const monthlyTransferFee = hasTransfer ? Math.round(30 / durationMonths * 100) / 100 : 0;
-                         const standardMonthlyInstallment = monthlyBasePrice + planAddOnPrice + monthlyRecurringAddons + monthlyTransferFee;
-                         
-                         return (
-                           <>
-                             <div className="text-xl font-semibold text-gray-800">
-                               £{Math.round(standardMonthlyInstallment * 100) / 100} <span className="text-sm font-normal text-gray-600">x {durationMonths} monthly instalments</span>
-                             </div>
-                             <p className="text-xs text-gray-500 mt-1">Interest-free payments • No hidden fees</p>
-                           </>
-                         );
-                       })()}
-                    </div>
-                  </div>
-                  
-                  {/* Animated CTA Button on the right */}
-                  <div className="animate-[bounce_4s_ease-in-out_infinite]">
-                    <Button 
-                      size="lg"
-                      onClick={() => {
-                        // Use the selected plan based on claim limit
-                        handleSelectPlan();
-                      }}
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group min-w-[180px]"
-                    >
-                      Confirm & Pay
-                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* No plans message */}
-      {!plansLoading && !plansError && displayPlans.length === 0 && (
-        <div className="max-w-6xl mx-auto px-4 pb-16 pt-16">
-          <div className="text-center py-16">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">No plans available</h3>
-            <p className="text-gray-600">No pricing plans found for this vehicle type.</p>
-          </div>
-        </div>
-      )}
-
-      {/* Thin Summary Bar */}
-      {isFloatingBarVisible && !summaryDismissed && getSelectedPlan() && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-          <div className="max-w-7xl mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-6 text-sm">
-                 {(() => {
-                    const selectedPlan = getSelectedPlan();
-                    const planPrice = calculatePlanPrice(); // Price already includes vehicle adjustments
-                    const addOnPrice = calculateAddOnPrice(selectedPlan?.id || '');
-                    const totalPrice = planPrice + addOnPrice;
-                    const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                    const monthlyEquivalent = Math.round(totalPrice / durationMonths);
-                   
-                   return (
-                     <>
-                        <div className="flex flex-col gap-1">
-                          <span className="font-medium text-gray-900 flex items-center gap-2">
-                            <PartyPopper className="w-4 h-4 text-orange-500" />
-                            Upgraded to premium plan
-                            <HelpCircle className="w-4 h-4 text-gray-400" />
-                          </span>
-                          <span className="text-sm text-gray-600">- Halfords MOT fee cover included</span>
-                        </div>
-                        <span className="font-bold text-gray-600">
-                          Duration: {paymentType === '12months' ? '12 Months' : 
-                           paymentType === '24months' ? '24 Months' : '36 Months'}
-                        </span>
-                        <div className="text-xl font-bold text-green-600">£{monthlyEquivalent}/mo (£{totalPrice})</div>
-                     </>
-                   );
-                 })()}
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                <Button
-                  onClick={() => {
-                    handleSelectPlan();
-                  }}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-semibold"
-                  size="sm"
-                >
-                  Continue to Payment
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSummaryDismissed(true)}
-                  className="h-8 w-8 p-0 hover:bg-gray-100"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+          <div className="flex justify-center mt-8">
+            <Button
+              onClick={handleSelectPlan}
+              size="lg"
+              className="w-full sm:w-auto text-lg font-semibold px-12 py-3"
+            >
+              Continue to Checkout
+            </Button>
           </div>
         </div>
       )}
