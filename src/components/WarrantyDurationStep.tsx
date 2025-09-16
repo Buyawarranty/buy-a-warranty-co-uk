@@ -30,6 +30,46 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   const [selectedPaymentType, setSelectedPaymentType] = useState('24months');
   const navigate = useNavigate();
 
+  // Get pricing data using the exact pricing structure from the matrix
+  const getPricingForDuration = (paymentPeriod: string) => {
+    if (!pricingData) return { totalPrice: 0, monthlyPrice: 0 };
+    
+    const { voluntaryExcess = 50, claimLimit = 1250 } = pricingData;
+    
+    // Your exact pricing matrix
+    const pricingTable = {
+      '12months': {
+        0: { 750: 467, 1250: 497, 2000: 587 },
+        50: { 750: 437, 1250: 457, 2000: 547 },
+        100: { 750: 387, 1250: 417, 2000: 507 },
+        150: { 750: 367, 1250: 387, 2000: 477 }
+      },
+      '24months': {
+        0: { 750: 897, 1250: 937, 2000: 1027 },
+        50: { 750: 827, 1250: 877, 2000: 957 },
+        100: { 750: 737, 1250: 787, 2000: 877 },
+        150: { 750: 697, 1250: 737, 2000: 827 }
+      },
+      '36months': {
+        0: { 750: 1347, 1250: 1397, 2000: 1497 },
+        50: { 750: 1247, 1250: 1297, 2000: 1397 },
+        100: { 750: 1097, 1250: 1177, 2000: 1277 },
+        150: { 750: 1047, 1250: 1097, 2000: 1197 }
+      }
+    };
+    
+    const periodData = pricingTable[paymentPeriod as keyof typeof pricingTable] || pricingTable['12months'];
+    const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[50];
+    const totalPrice = excessData[claimLimit as keyof typeof excessData] || excessData[1250];
+    
+    const durationMonths = paymentPeriod === '12months' ? 12 : 
+                          paymentPeriod === '24months' ? 24 : 
+                          paymentPeriod === '36months' ? 36 : 12;
+    const monthlyPrice = Math.round(totalPrice / durationMonths);
+    
+    return { totalPrice, monthlyPrice };
+  };
+
   const durationOptions = [
     {
       id: '12months',
@@ -37,8 +77,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       subtitle: 'Premium Plan',
       description: 'Comprehensive coverage',
       features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval'],
-      monthlyPrice: pricingData ? Math.round(pricingData.totalPrice / 12) : 0,
-      totalPrice: pricingData?.totalPrice || 0,
+      ...getPricingForDuration('12months'),
       isPopular: false
     },
     {
@@ -47,8 +86,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       subtitle: 'Most Popular',
       description: 'Best value for money',
       features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '15% discount'],
-      monthlyPrice: pricingData ? Math.round((pricingData.totalPrice * 1.8) / 24) : 0,
-      totalPrice: pricingData ? Math.round(pricingData.totalPrice * 1.8) : 0,
+      ...getPricingForDuration('24months'),
       isPopular: true
     },
     {
@@ -57,8 +95,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       subtitle: 'Best Value',
       description: 'Maximum protection period',
       features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '20% discount'],
-      monthlyPrice: pricingData ? Math.round((pricingData.totalPrice * 2.4) / 36) : 0,
-      totalPrice: pricingData ? Math.round(pricingData.totalPrice * 2.4) : 0,
+      ...getPricingForDuration('36months'),
       isPopular: false
     }
   ];
