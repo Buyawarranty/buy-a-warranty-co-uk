@@ -722,11 +722,148 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
         </div>
 
-        {/* Claim Limit Selection */}
+        {/* Add-On Protection Packages */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
               3
+            </div>
+            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              Add-On Protection Packages
+            </h3>
+          </div>
+          <AddOnProtectionPackages 
+            selectedAddOns={selectedProtectionAddOns}
+            paymentType={paymentType}
+            onAddOnChange={(addOnKey, selected) => 
+              setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
+            }
+          />
+        </div>
+
+        {/* Choose Warranty Duration */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
+              4
+            </div>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Calendar className="w-5 h-5" />
+              Choose Warranty Duration
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {[
+              {
+                id: '12months',
+                title: '1 Year',
+                subtitle: 'Premium Plan',
+                description: 'Comprehensive coverage',
+                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval'],
+                isPopular: false
+              },
+              {
+                id: '24months',
+                title: '2 Years',
+                subtitle: 'Most Popular',
+                description: 'Best value for money',
+                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '15% discount'],
+                isPopular: true
+              },
+              {
+                id: '36months',
+                title: '3 Years',
+                subtitle: 'Best Value',
+                description: 'Maximum protection period',
+                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '20% discount'],
+                isPopular: false
+              }
+            ].map((option) => {
+              const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
+              const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+              const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
+              
+              // Calculate add-on costs for this duration
+              const selectedPlan = getSelectedPlan();
+              const planAddOnCount = selectedPlan ? Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length : 0;
+              const planAddOnPrice = planAddOnCount * 2 * durationMonths;
+              
+              let protectionAddOnPrice = 0;
+              if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
+              if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
+              if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
+              if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+              if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
+              if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
+              if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
+              if (selectedProtectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths;
+              if (selectedProtectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths;
+              if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
+              
+              const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
+              const monthlyPrice = Math.round(totalPrice / durationMonths);
+              
+              return (
+                <div
+                  key={option.id}
+                  onClick={() => setPaymentType(option.id as '12months' | '24months' | '36months')}
+                  className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
+                    paymentType === option.id 
+                      ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                      : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                  }`}
+                >
+                  {option.isPopular && (
+                    <div className="mb-2">
+                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                        MOST POPULAR
+                      </span>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-lg font-bold text-gray-900">{option.title}</h4>
+                      <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
+                        <Crown className="w-3 h-3" />
+                        {option.subtitle}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-600 mb-4 text-sm">{option.description}</p>
+                  
+                  <div className="space-y-2 mb-6">
+                    {option.features.map((feature, index) => (
+                      <div key={index} className="flex items-center text-sm text-gray-600">
+                        <Check className="w-4 h-4 text-green-500 mr-2" />
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="text-2xl font-bold text-orange-600">
+                      £{monthlyPrice}
+                      <span className="text-sm font-normal text-gray-600 ml-1">/month</span>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Total: £{totalPrice}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Claim Limit Selection */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
+              5
             </div>
             <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
               <ShieldCheck className="w-5 h-5" />
@@ -1118,25 +1255,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
             </div>
             
-            {/* Step 4: Add-On Protection Packages Section */}
-            <div className="section-header rounded-lg p-6 mt-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  4
-                </div>
-                <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  Add-On Protection Packages
-                </h3>
-              </div>
-              <AddOnProtectionPackages 
-                selectedAddOns={selectedProtectionAddOns}
-                paymentType={paymentType}
-                onAddOnChange={(addOnKey, selected) => 
-                  setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
-                }
-              />
-            </div>
             
             {/* Pricing Summary and CTA */}
             <div className="flex justify-end mt-8">
