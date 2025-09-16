@@ -91,14 +91,87 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [quoteSent, setQuoteSent] = useState(false);
   const [addAnotherWarrantyEnabled, setAddAnotherWarrantyEnabled] = useState(false);
   const [selectedClaimLimit, setSelectedClaimLimit] = useState('plus'); // Default to Plus Cover
+  const [currentPaymentType, setCurrentPaymentType] = useState(paymentType);
+  const [currentPricingData, setCurrentPricingData] = useState(pricingData);
 
   // Debug logging for pricing
   console.log('CustomerDetailsStep - Pricing Debug:', {
-    monthlyPrice: pricingData.monthlyPrice,
-    totalPrice: pricingData.totalPrice,
-    protectionAddOns: pricingData.protectionAddOns,
-    voluntaryExcess: pricingData.voluntaryExcess
+    monthlyPrice: currentPricingData.monthlyPrice,
+    totalPrice: currentPricingData.totalPrice,
+    protectionAddOns: currentPricingData.protectionAddOns,
+    voluntaryExcess: currentPricingData.voluntaryExcess,
+    currentPaymentType,
+    originalPaymentType: paymentType
   });
+
+  // Get pricing data using the exact pricing structure from the matrix
+  const getPricingForDuration = (paymentPeriod: string) => {
+    const { voluntaryExcess = 50, claimLimit = 1250, protectionAddOns = {}, selectedAddOns = {} } = pricingData;
+    
+    // Your exact pricing matrix for base warranty
+    const pricingTable = {
+      '12months': {
+        0: { 750: 467, 1250: 497, 2000: 587 },
+        50: { 750: 437, 1250: 457, 2000: 547 },
+        100: { 750: 387, 1250: 417, 2000: 507 },
+        150: { 750: 367, 1250: 387, 2000: 477 }
+      },
+      '24months': {
+        0: { 750: 897, 1250: 937, 2000: 1027 },
+        50: { 750: 827, 1250: 877, 2000: 957 },
+        100: { 750: 737, 1250: 787, 2000: 877 },
+        150: { 750: 697, 1250: 737, 2000: 827 }
+      },
+      '36months': {
+        0: { 750: 1347, 1250: 1397, 2000: 1497 },
+        50: { 750: 1247, 1250: 1297, 2000: 1397 },
+        100: { 750: 1097, 1250: 1177, 2000: 1277 },
+        150: { 750: 1047, 1250: 1097, 2000: 1197 }
+      }
+    };
+    
+    const periodData = pricingTable[paymentPeriod as keyof typeof pricingTable] || pricingTable['12months'];
+    const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[50];
+    const baseWarrantyPrice = excessData[claimLimit as keyof typeof excessData] || excessData[1250];
+    
+    // Calculate addon prices for this duration
+    const durationMonths = paymentPeriod === '12months' ? 12 : 
+                          paymentPeriod === '24months' ? 24 : 
+                          paymentPeriod === '36months' ? 36 : 12;
+    
+    // Plan-specific addons (from step 3 selection)
+    const planAddOnCount = Object.values(selectedAddOns || {}).filter(Boolean).length;
+    const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
+    
+    // Protection addons (from step 3 selection)
+    let protectionAddOnPrice = 0;
+    if (protectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths; // £6/mo
+    if (protectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths; // £4/mo
+    if (protectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths; // £5/mo
+    if (protectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths; // £5/mo
+    if (protectionAddOns.european) protectionAddOnPrice += 3 * durationMonths; // £3/mo
+    if (protectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths; // £4/mo
+    if (protectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths; // £3/mo
+    if (protectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths; // £3/mo
+    if (protectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths; // £5/mo
+    if (protectionAddOns.transfer) protectionAddOnPrice += 30; // £30 one-time
+    
+    const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
+    const monthlyPrice = Math.round(totalPrice / durationMonths);
+    
+    return { totalPrice, monthlyPrice };
+  };
+
+  // Handle duration change
+  const handleDurationChange = (newPaymentType: string) => {
+    setCurrentPaymentType(newPaymentType);
+    const newPricing = getPricingForDuration(newPaymentType);
+    setCurrentPricingData({
+      ...currentPricingData,
+      totalPrice: newPricing.totalPrice,
+      monthlyPrice: newPricing.monthlyPrice
+    });
+  };
 
   // Helper function to get payment period months
   const getPaymentPeriodMonths = () => {
@@ -196,16 +269,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   // Calculate prices based on pricing data passed from PricingTable
   // The pricingData.totalPrice already includes base price + all addons
-  const monthlyBumperPrice = pricingData.monthlyPrice; // Monthly amount for display
-  const bumperTotalPrice = pricingData.totalPrice; // Total already includes all addons
+  const monthlyBumperPrice = currentPricingData.monthlyPrice; // Monthly amount for display
+  const bumperTotalPrice = currentPricingData.totalPrice; // Total already includes all addons
   const stripePrice = Math.round(bumperTotalPrice * 0.95); // 5% discount for Stripe
   
   // Calculate protection addons total for display purposes only
   let protectionAddonsTotal = 0;
-  if (pricingData.protectionAddOns?.breakdown) protectionAddonsTotal += 89;
-  if (pricingData.protectionAddOns?.rental) protectionAddonsTotal += 89;
-  if (pricingData.protectionAddOns?.wearTear) protectionAddonsTotal += 89;
-  if (pricingData.protectionAddOns?.transfer) protectionAddonsTotal += 30;
+  if (currentPricingData.protectionAddOns?.breakdown) protectionAddonsTotal += 89;
+  if (currentPricingData.protectionAddOns?.rental) protectionAddonsTotal += 89;
+  if (currentPricingData.protectionAddOns?.wearTear) protectionAddonsTotal += 89;
+  if (currentPricingData.protectionAddOns?.transfer) protectionAddonsTotal += 30;
   
   // Check for automatic 10% discount (add another warranty)
   const hasAutoDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
@@ -318,8 +391,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           body: {
             planId: planName.toLowerCase(),
             vehicleData,
-            paymentType: paymentType,
-            voluntaryExcess: pricingData.voluntaryExcess,
+            paymentType: currentPaymentType,
+            voluntaryExcess: currentPricingData.voluntaryExcess,
             customerData: customerData,
             discountCode: customerData.discount_code || null,
             finalAmount: discountedBumperPrice, // Pass the final calculated amount
@@ -470,14 +543,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-semibold text-gray-900">{planName}</h4>
-                <p className="text-sm text-gray-600">{getWarrantyDurationDisplay(paymentType)}</p>
+                <p className="text-sm text-gray-600">{getWarrantyDurationDisplay(currentPaymentType)}</p>
               </div>
               <div className="text-right">
                 <div className="text-lg font-bold text-orange-600">
-                  £{pricingData?.monthlyPrice}/month
+                  £{currentPricingData?.monthlyPrice}/month
                 </div>
                 <div className="text-sm text-gray-500">
-                  Total: £{pricingData?.totalPrice}
+                  Total: £{currentPricingData?.totalPrice}
                 </div>
               </div>
             </div>
@@ -496,8 +569,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* 1 Year Option */}
-            <div className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
-              paymentType === 'yearly' 
+            <div 
+              onClick={() => handleDurationChange('12months')}
+              className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
+              currentPaymentType === '12months' 
                 ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
                 : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
             }`}>
@@ -533,16 +608,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               
               <div className="mb-6">
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-black">£{Math.round(pricingData.totalPrice)} cover</div>
+                  <div className="text-2xl font-bold text-black">£{Math.round(getPricingForDuration('12months').totalPrice)} cover</div>
                   <div className="text-sm text-gray-600">or</div>
-                  <div className="text-lg text-gray-600">£{Math.round(pricingData.monthlyPrice)}/mo</div>
+                  <div className="text-lg text-gray-600">£{Math.round(getPricingForDuration('12months').monthlyPrice)}/mo</div>
                 </div>
               </div>
             </div>
 
             {/* 2 Years Option */}
-            <div className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
-              paymentType === 'two_yearly' 
+            <div 
+              onClick={() => handleDurationChange('24months')}
+              className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
+              currentPaymentType === '24months' 
                 ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
                 : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
             }`}>
@@ -578,16 +655,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               
               <div className="mb-6">
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-black">£{Math.round(pricingData.totalPrice)} cover</div>
+                  <div className="text-2xl font-bold text-black">£{Math.round(getPricingForDuration('24months').totalPrice)} cover</div>
                   <div className="text-sm text-gray-600">or</div>
-                  <div className="text-lg text-gray-600">£{Math.round(pricingData.monthlyPrice)}/mo</div>
+                  <div className="text-lg text-gray-600">£{Math.round(getPricingForDuration('24months').monthlyPrice)}/mo</div>
                 </div>
               </div>
             </div>
 
             {/* 3 Years Option */}
-            <div className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full ${
-              paymentType === 'three_yearly' 
+            <div 
+              onClick={() => handleDurationChange('36months')}
+              className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
+              currentPaymentType === '36months' 
                 ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
                 : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
             }`}>
@@ -623,9 +702,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               
               <div className="mb-6">
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-black">£{Math.round(pricingData.totalPrice)} cover</div>
+                  <div className="text-2xl font-bold text-black">£{Math.round(getPricingForDuration('36months').totalPrice)} cover</div>
                   <div className="text-sm text-gray-600">or</div>
-                  <div className="text-lg text-gray-600">£{Math.round(pricingData.monthlyPrice)}/mo</div>
+                  <div className="text-lg text-gray-600">£{Math.round(getPricingForDuration('36months').monthlyPrice)}/mo</div>
                 </div>
               </div>
             </div>
@@ -838,55 +917,55 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <span className="text-gray-600">Plan:</span>
                             <span className="font-semibold">Platinum</span>
                           </div>
+                           <div className="flex justify-between">
+                             <span className="text-gray-600">Claim Limit:</span>
+                             <span className="font-semibold">£{currentPricingData?.claimLimit?.toLocaleString() || getClaimLimitAmount(selectedClaimLimit).toLocaleString()}</span>
+                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-600">Claim Limit:</span>
-                            <span className="font-semibold">£{pricingData?.claimLimit?.toLocaleString() || getClaimLimitAmount(selectedClaimLimit).toLocaleString()}</span>
+                            <span className="text-gray-600">Cover period:</span>
+                            <span className="font-semibold">
+                              {getWarrantyDurationDisplay(currentPaymentType)}
+                            </span>
                           </div>
-                         <div className="flex justify-between">
-                           <span className="text-gray-600">Cover period:</span>
-                           <span className="font-semibold">
-                             {getWarrantyDurationDisplay(paymentType)}
-                           </span>
-                         </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Voluntary Excess:</span>
-                            <span className="font-semibold">£{pricingData.voluntaryExcess}</span>
-                          </div>
+                           <div className="flex justify-between">
+                             <span className="text-gray-600">Voluntary Excess:</span>
+                             <span className="font-semibold">£{currentPricingData.voluntaryExcess}</span>
+                           </div>
 
-                           {/* Add-ons integrated into main list */}
-                           {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
-                             <>
-                               {pricingData.protectionAddOns.breakdown && (
-                                 <div className="flex justify-between">
-                                   <span className="text-gray-600">🚨 24/7 Breakdown Recovery:</span>
-                                   <span className="font-semibold">£6/mo</span>
-                                 </div>
-                               )}
-                               {pricingData.protectionAddOns.rental && (
+                            {/* Add-ons integrated into main list */}
+                            {currentPricingData.protectionAddOns && Object.values(currentPricingData.protectionAddOns).some(Boolean) && (
+                              <>
+                                {currentPricingData.protectionAddOns.breakdown && (
                                   <div className="flex justify-between">
-                                    <span className="text-gray-600">🚙 Vehicle Rental:</span>
-                                    <span className="font-semibold">£4/mo</span>
+                                    <span className="text-gray-600">🚨 24/7 Breakdown Recovery:</span>
+                                    <span className="font-semibold">£6/mo</span>
                                   </div>
-                               )}
-                               {pricingData.protectionAddOns.tyre && (
-                                 <div className="flex justify-between">
-                                   <span className="text-gray-600">🛞 Tyre Cover:</span>
-                                   <span className="font-semibold">£60/year</span>
-                                 </div>
-                               )}
-                               {pricingData.protectionAddOns.wearTear && (
-                                 <div className="flex justify-between">
-                                   <span className="text-gray-600">🛠️ Wear & Tear Cover:</span>
-                                   <span className="font-semibold">£60/year</span>
-                                 </div>
-                               )}
-                               {pricingData.protectionAddOns.european && (
-                                 <div className="flex justify-between">
-                                   <span className="text-gray-600">🌍 European Cover:</span>
-                                   <span className="font-semibold">£36/year</span>
-                                 </div>
-                               )}
-                               {pricingData.protectionAddOns.transfer && (
+                                )}
+                                {currentPricingData.protectionAddOns.rental && (
+                                   <div className="flex justify-between">
+                                     <span className="text-gray-600">🚙 Vehicle Rental:</span>
+                                     <span className="font-semibold">£4/mo</span>
+                                   </div>
+                                )}
+                                {currentPricingData.protectionAddOns.tyre && (
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">🛞 Tyre Cover:</span>
+                                    <span className="font-semibold">£60/year</span>
+                                  </div>
+                                )}
+                                {currentPricingData.protectionAddOns.wearTear && (
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">🛠️ Wear & Tear Cover:</span>
+                                    <span className="font-semibold">£60/year</span>
+                                  </div>
+                                )}
+                                {currentPricingData.protectionAddOns.european && (
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">🌍 European Cover:</span>
+                                    <span className="font-semibold">£36/year</span>
+                                  </div>
+                                )}
+                                {currentPricingData.protectionAddOns.transfer && (
                                  <div className="flex justify-between">
                                    <span className="text-gray-600">🔁 Transfer Cover:</span>
                                    <span className="font-semibold">£30 one-time</span>
