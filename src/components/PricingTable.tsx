@@ -175,6 +175,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     fetchPdfUrls();
   }, []);
 
+  // Set selectedPlan when plans are loaded
+  useEffect(() => {
+    if (plans.length > 0 && !selectedPlan) {
+      setSelectedPlan(plans[0]);
+    }
+  }, [plans, selectedPlan]);
+
   // Fetch reliability score when component loads
   useEffect(() => {
     if (vehicleData?.regNumber && vt === 'car') {
@@ -1114,18 +1121,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   if (!selectedPlan) return '0';
                   
                   const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+                  const durationKey = durationMonths.toString();
+                  const excessKey = `${voluntaryExcess}_${selectedClaimLimit}`;
                   
-                  // Get base price from selected plan
-                  const adjustedPrice = selectedPlan[`${paymentType}_${voluntaryExcess}`] || 0;
+                  // Get base price from selected plan's pricing matrix
+                  const pricingEntry = selectedPlan.pricing_matrix?.[durationKey]?.[excessKey];
+                  const adjustedPrice = pricingEntry?.price || 0;
                   
                   // Add plan add-ons
                   let planAddOnPrice = 0;
-                  if (selectedAddOns.tyre) planAddOnPrice += 5 * durationMonths;
-                  if (selectedAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
-                  if (selectedAddOns.european) planAddOnPrice += 3 * durationMonths;
-                  if (selectedAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
-                  if (selectedAddOns.rental) planAddOnPrice += 4 * durationMonths;
-                  if (selectedAddOns.transfer) planAddOnPrice += 30;
+                  const planAddOns = selectedAddOns[selectedPlan.id] || {};
+                  if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
+                  if (planAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
+                  if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
+                  if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
+                  if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
+                  if (planAddOns.transfer) planAddOnPrice += 30;
                   
                   // Add protection add-ons
                   let protectionAddOnPrice = 0;
@@ -1148,16 +1159,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   • £{(() => {
                     if (!selectedPlan) return '0';
                     const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                    const adjustedPrice = selectedPlan[`${paymentType}_${voluntaryExcess}`] || 0;
+                    const durationKey = durationMonths.toString();
+                    const excessKey = `${voluntaryExcess}_${selectedClaimLimit}`;
+                    
+                    // Get base price from selected plan's pricing matrix
+                    const pricingEntry = selectedPlan.pricing_matrix?.[durationKey]?.[excessKey];
+                    const adjustedPrice = pricingEntry?.price || 0;
                     
                     // Add plan add-ons
                     let planAddOnPrice = 0;
-                    if (selectedAddOns.tyre) planAddOnPrice += 5 * durationMonths;
-                    if (selectedAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
-                    if (selectedAddOns.european) planAddOnPrice += 3 * durationMonths;
-                    if (selectedAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
-                    if (selectedAddOns.rental) planAddOnPrice += 4 * durationMonths;
-                    if (selectedAddOns.transfer) planAddOnPrice += 30;
+                    const planAddOns = selectedAddOns[selectedPlan.id] || {};
+                    if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
+                    if (planAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
+                    if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
+                    if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
+                    if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
+                    if (planAddOns.transfer) planAddOnPrice += 30;
                     
                     // Add protection add-ons
                     let protectionAddOnPrice = 0;
