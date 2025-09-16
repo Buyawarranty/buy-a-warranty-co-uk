@@ -196,8 +196,8 @@ const AdminDashboard = () => {
       />
       <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       
-      <div className="flex-1 lg:ml-64">
-        <header className="bg-white shadow-sm border-b px-4 lg:px-6 py-4">
+      <div className="flex-1 lg:ml-64 overflow-hidden">
+        <header className="bg-white shadow-sm border-b px-4 lg:px-6 py-4 flex-shrink-0">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
               Admin Dashboard
@@ -219,7 +219,7 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        <main className="p-4 lg:p-6">
+        <main className="p-4 lg:p-6 overflow-y-auto h-[calc(100vh-80px)]">
           {renderContent()}
         </main>
       </div>

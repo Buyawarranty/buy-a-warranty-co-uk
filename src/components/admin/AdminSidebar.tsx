@@ -137,7 +137,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
           <p className="text-sm text-gray-600">Manage your warranty business</p>
         </div>
         
-        <nav className="mt-6 overflow-y-auto max-h-[calc(100vh-120px)]">
+        <nav className="mt-6 overflow-y-auto h-[calc(100vh-160px)] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (

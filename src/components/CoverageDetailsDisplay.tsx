@@ -39,12 +39,12 @@ const CoverageDetailsDisplay: React.FC<CoverageDetailsProps> = ({
               {item.value ? (
                 <>
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <Badge variant="secondary" className="text-xs">Yes</Badge>
+                  <Badge variant="secondary" className="text-xs">Y</Badge>
                 </>
               ) : (
                 <>
                   <XCircle className="h-4 w-4 text-red-500" />
-                  <Badge variant="outline" className="text-xs">No</Badge>
+                  <Badge variant="outline" className="text-xs">N</Badge>
                 </>
               )}
             </div>
