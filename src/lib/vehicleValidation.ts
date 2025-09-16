@@ -148,37 +148,35 @@ function checkIfMotorbike(make: string, model: string, vehicleType: string): boo
     return false;
   }
 
-  // STRICT REQUIREMENT: Must have explicit motorbike indicator in vehicle type
-  if (!vehicleTypeLC || !['motorbike', 'motorcycle', 'moped', 'scooter', 'bike'].includes(vehicleTypeLC)) {
-    console.log('🚗 No explicit motorbike vehicle type indicator, returning false');
-    return false;
-  }
-
-  // Only proceed if vehicle type is explicitly a motorbike
-  console.log('✅ Vehicle type indicates motorbike:', vehicleTypeLC);
-
-  // Additional validation: Must be from a known motorbike manufacturer
-  const knownMotorbikeManufacturers = [
-    'yamaha', 'kawasaki', 'ducati', 'ktm', 'harley-davidson', 'harley davidson', 
+  // Check for explicit motorbike indicator in vehicle type OR strong manufacturer/model evidence
+  const hasExplicitMotorbikeType = vehicleTypeLC && ['motorbike', 'motorcycle', 'moped', 'scooter', 'bike'].includes(vehicleTypeLC);
+  
+  // For known motorbike manufacturers with strong model patterns, allow detection even without explicit vehicle type
+  const isKnownMotorbikeManufacturer = ['yamaha', 'kawasaki', 'ducati', 'ktm', 'harley-davidson', 'harley davidson', 
     'triumph', 'aprilia', 'mv agusta', 'benelli', 'moto guzzi', 'indian', 
     'husqvarna', 'beta', 'sherco', 'gas gas', 'royal enfield', 'norton', 
-    'zero', 'energica', 'honda', 'suzuki', 'bmw'
-  ];
+    'zero', 'energica'].includes(makeLC);
   
-  if (!knownMotorbikeManufacturers.includes(makeLC)) {
-    console.log('🚗 Unknown motorbike manufacturer, treating as car:', makeLC);
-    return false;
-  }
-
-  // For manufacturers that make both cars and bikes, require strong model evidence
-  if (['honda', 'bmw', 'suzuki'].includes(makeLC)) {
-    const hasStrongMotorbikeModel = MOTORBIKE_MODEL_PATTERNS.some(pattern => 
-      modelLC.startsWith(pattern) || modelLC === pattern
-    );
-    if (!hasStrongMotorbikeModel) {
-      console.log('🚗 Mixed manufacturer without strong motorbike model indicators:', makeLC, modelLC);
+  const hasStrongMotorbikeModel = MOTORBIKE_MODEL_PATTERNS.some(pattern => 
+    modelLC.startsWith(pattern) || modelLC === pattern || modelLC.includes(pattern)
+  );
+  
+  // Allow detection if explicit type OR (known manufacturer AND strong model pattern)
+  if (!hasExplicitMotorbikeType && !(isKnownMotorbikeManufacturer && hasStrongMotorbikeModel)) {
+    // For mixed manufacturers (Honda, BMW, Suzuki), require very strong evidence
+    if (['honda', 'bmw', 'suzuki'].includes(makeLC) && hasStrongMotorbikeModel) {
+      console.log('✅ Mixed manufacturer with strong motorbike model evidence:', makeLC, modelLC);
+    } else if (!hasExplicitMotorbikeType) {
+      console.log('🚗 No explicit motorbike type or strong manufacturer/model evidence, returning false');
       return false;
     }
+  }
+
+  // Log detection method
+  if (hasExplicitMotorbikeType) {
+    console.log('✅ Vehicle type explicitly indicates motorbike:', vehicleTypeLC);
+  } else {
+    console.log('✅ Motorbike detected via manufacturer/model pattern:', makeLC, modelLC);
   }
 
   console.log('🏍️ Confirmed motorbike detection:', makeLC, modelLC, vehicleTypeLC);
