@@ -73,7 +73,7 @@ interface PricingTableProps {
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('24months');
+  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('12months');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
