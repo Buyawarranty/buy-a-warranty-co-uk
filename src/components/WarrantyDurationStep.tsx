@@ -36,6 +36,13 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     
     const { voluntaryExcess = 50, claimLimit = 1250 } = pricingData;
     
+    console.log('WarrantyDurationStep - getPricingForDuration Debug:', {
+      paymentPeriod,
+      receivedPricingData: pricingData,
+      voluntaryExcess,
+      claimLimit
+    });
+    
     // Your exact pricing matrix
     const pricingTable = {
       '12months': {
@@ -66,6 +73,14 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                           paymentPeriod === '24months' ? 24 : 
                           paymentPeriod === '36months' ? 36 : 12;
     const monthlyPrice = Math.round(totalPrice / durationMonths);
+    
+    console.log('WarrantyDurationStep - Calculated pricing:', {
+      paymentPeriod,
+      totalPrice,
+      monthlyPrice,
+      selectedFromMatrix: `${voluntaryExcess}_${claimLimit}`,
+      matrixLookup: { periodData, excessData, result: totalPrice }
+    });
     
     return { totalPrice, monthlyPrice };
   };
