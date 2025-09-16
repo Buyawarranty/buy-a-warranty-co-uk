@@ -1103,6 +1103,45 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       )}
 
+      {/* Sticky Total Bar */}
+      {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+          <div className="flex items-center justify-between p-4 max-w-6xl mx-auto">
+            <div className="flex flex-col">
+              <div className="text-sm text-gray-600">Total warranty cost</div>
+              <div className="text-xl font-bold text-foreground">
+                £{(() => {
+                  if (!selectedPlan) return '0';
+                  
+                  const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+                  
+                  // Get base price from selected plan
+                  const adjustedPrice = selectedPlan[`${paymentType}_${voluntaryExcess}`] || 0;
+                  
+                  // For simplicity, just show the base price - add-ons are calculated in the main sections
+                  return adjustedPrice;
+                })()}
+                <span className="text-sm font-normal text-gray-600 ml-1">
+                  • £{(() => {
+                    if (!selectedPlan) return '0';
+                    const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+                    const adjustedPrice = selectedPlan[`${paymentType}_${voluntaryExcess}`] || 0;
+                    return Math.round(adjustedPrice / durationMonths);
+                  })()} /month
+                </span>
+              </div>
+            </div>
+            <Button
+              onClick={handleSelectPlan}
+              size="lg"
+              className="text-lg font-semibold px-8 py-3 bg-primary hover:bg-primary/90"
+            >
+              Continue to Pay
+            </Button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
