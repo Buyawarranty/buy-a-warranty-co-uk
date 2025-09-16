@@ -398,6 +398,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
   };
 
+  const getMonthlyDisplayPrice = (totalPrice: number) => {
+    const durationMonths = paymentType === '12months' ? 12 : 
+                          paymentType === '24months' ? 24 : 
+                          paymentType === '36months' ? 36 : 12;
+    return Math.round(totalPrice / durationMonths);
+  };
+
   const getPlanSavings = (plan: Plan) => {
     if (paymentType === '12months') return null;
     
@@ -952,7 +959,86 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </button>
             </div>
           </TooltipProvider>
-         </div>
+       </div>
+
+        {/* Step 4: Warranty Plans Selection */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              4
+            </div>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              Choose Your Warranty Plan
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {displayPlans.map((plan, index) => {
+              const planPrice = getPricingData(voluntaryExcess, selectedClaimLimit, paymentType);
+              const adjustedPrice = vehiclePriceAdjustment.isValid 
+                ? applyPriceAdjustment(planPrice, vehiclePriceAdjustment)
+                : planPrice;
+              const monthlyPrice = getMonthlyDisplayPrice(adjustedPrice);
+              
+              // Determine plan type based on claim limit
+              const isSelected = (
+                (selectedClaimLimit === 750 && plan.name === 'Basic') ||
+                (selectedClaimLimit === 1250 && plan.name === 'Gold') ||
+                (selectedClaimLimit === 2000 && plan.name === 'Platinum')
+              );
+              
+              return (
+                <div
+                  key={plan.id}
+                  className={`p-6 rounded-lg border-2 transition-all duration-200 ${
+                    isSelected
+                      ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20'
+                      : 'border-gray-200 bg-white hover:border-orange-300 hover:shadow-md'
+                  }`}
+                >
+                  <div className="text-center mb-4">
+                    <h3 className="text-xl font-bold text-foreground mb-2">{plan.name}</h3>
+                    <div className="text-3xl font-bold text-orange-600 mb-1">
+                      £{adjustedPrice}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      £{monthlyPrice}/month
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-600" />
+                      <span className="text-sm">£{selectedClaimLimit.toLocaleString()} Claim Limit</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-600" />
+                      <span className="text-sm">£{voluntaryExcess} Voluntary Excess</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-600" />
+                      <span className="text-sm">Unlimited Claims</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-600" />
+                      <span className="text-sm">Nationwide Coverage</span>
+                    </div>
+                  </div>
+                  
+                  {isSelected && (
+                    <div className="mt-4 p-3 bg-orange-100 rounded-lg">
+                      <div className="flex items-center gap-2 text-orange-700">
+                        <Check className="h-4 w-4" />
+                        <span className="text-sm font-medium">Selected Plan</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
       </div>
 
