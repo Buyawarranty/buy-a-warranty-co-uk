@@ -472,20 +472,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     setLoading(prev => ({ ...prev, [selectedPlan.id]: true }));
     
     try {
-      const basePrice = calculatePlanPrice();
+      // Always use 12 months for initial plan calculation (step 3 -> step 4)
+      const initialPaymentType = '12months';
+      const durationMonths = 12;
       
-      // Calculate add-on prices correctly
+      // Get base price for 1 year using the pricing matrix
+      const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, initialPaymentType);
+      
+      // Calculate add-on prices for 1 year
       const planAddOnCount = Object.values(selectedAddOns[selectedPlan.id] || {}).filter(Boolean).length;
       const planAddOnPrice = planAddOnCount * 2; // £2 per add-on per month
       
-      // Get duration for calculations
-      const durationMonths = paymentType === '12months' ? 12 : 
-                            paymentType === '24months' ? 24 : 
-                            paymentType === '36months' ? 36 : 12;
-      
-      // Protection add-ons: Calculate correctly for selected duration
-      let recurringAddonTotal = 0; // Monthly add-ons (calculated for full duration)  
-      let oneTimeAddonTotal = 0;   // Transfer (added to first installment only)
+      // Protection add-ons: Calculate for 1 year duration
+      let recurringAddonTotal = 0; // Monthly add-ons (calculated for 1 year)  
+      let oneTimeAddonTotal = 0;   // Transfer (one-time fee)
       
       if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 6 * durationMonths; // £6/mo
       if (selectedProtectionAddOns.rental) recurringAddonTotal += 4 * durationMonths; // £4/mo
@@ -498,19 +498,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       if (selectedProtectionAddOns.consequential) recurringAddonTotal += 5 * durationMonths; // £5/mo
       if (selectedProtectionAddOns.transfer) oneTimeAddonTotal += 30;
       
-      // Calculate monthly amounts
-      const monthlyBasePrice = Math.round(basePrice / durationMonths * 100) / 100; // Base warranty spread over duration
-      const monthlyPlanAddons = planAddOnPrice; // Plan-specific addons (already monthly)
-      const monthlyRecurringAddons = Math.round(recurringAddonTotal / durationMonths * 100) / 100; // Protection addons spread over duration
-      
-      // Standard monthly installment (all installments, or all if no transfer)
-      const standardMonthlyInstallment = monthlyBasePrice + monthlyPlanAddons + monthlyRecurringAddons;
-      
-      // First installment (includes one-time transfer fee if selected)
-      const firstInstallment = standardMonthlyInstallment + oneTimeAddonTotal;
-      
-      // Total price calculation with vehicle adjustments applied
-      const totalPrice = basePrice + (planAddOnPrice * durationMonths) + recurringAddonTotal + oneTimeAddonTotal;
+      // Calculate total price for 1 year with vehicle adjustments applied
+      const adjustedBasePrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+      const totalPrice = adjustedBasePrice + (planAddOnPrice * durationMonths) + recurringAddonTotal + oneTimeAddonTotal;
       
       // Don't allow progression if vehicle is too old
       if (vehicleAgeError) {
@@ -518,41 +508,33 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         return;
       }
       
-      console.log('Selected plan pricing data:', {
+      console.log('Selected plan pricing data for 1 year:', {
         planId: selectedPlan.id,
         planName: selectedPlan.name,
-        paymentType,
+        paymentType: initialPaymentType,
         basePrice,
-        monthlyBasePrice,
+        adjustedBasePrice,
         recurringAddonTotal,
         oneTimeAddonTotal,
-        standardMonthlyInstallment,
-        firstInstallment,
         totalPrice,
         voluntaryExcess,
+        selectedClaimLimit,
         selectedAddOns: selectedAddOns[selectedPlan.id],
         protectionAddOns: selectedProtectionAddOns
       });
       
-      // Call onPlanSelected with the calculated pricing data
+      // Call onPlanSelected with the 1-year pricing data and selected options
       onPlanSelected?.(
         selectedPlan.id, 
-        paymentType, 
+        initialPaymentType, 
         selectedPlan.name,
         {
-          totalPrice,
-          monthlyPrice: standardMonthlyInstallment, // Standard monthly amount
+          totalPrice, // 1-year total price
+          monthlyPrice: Math.round(totalPrice / 12), // 1-year monthly price
           voluntaryExcess,
           selectedAddOns: selectedAddOns[selectedPlan.id] || {},
           protectionAddOns: selectedProtectionAddOns,
-          claimLimit: selectedClaimLimit, // Add the selected claim limit
-          // Add installment breakdown for step 3
-          installmentBreakdown: {
-            firstInstallment: firstInstallment,
-            standardInstallment: standardMonthlyInstallment,
-            hasTransfer: oneTimeAddonTotal > 0,
-            transferAmount: oneTimeAddonTotal
-          }
+          claimLimit: selectedClaimLimit
         }
       );
       

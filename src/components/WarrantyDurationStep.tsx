@@ -34,16 +34,18 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   const getPricingForDuration = (paymentPeriod: string) => {
     if (!pricingData) return { totalPrice: 0, monthlyPrice: 0 };
     
-    const { voluntaryExcess = 50, claimLimit = 1250 } = pricingData;
+    const { voluntaryExcess = 50, claimLimit = 1250, protectionAddOns = {}, selectedAddOns = {} } = pricingData;
     
     console.log('WarrantyDurationStep - getPricingForDuration Debug:', {
       paymentPeriod,
       receivedPricingData: pricingData,
       voluntaryExcess,
-      claimLimit
+      claimLimit,
+      protectionAddOns,
+      selectedAddOns
     });
     
-    // Your exact pricing matrix
+    // Your exact pricing matrix for base warranty
     const pricingTable = {
       '12months': {
         0: { 750: 467, 1250: 497, 2000: 587 },
@@ -67,19 +69,46 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     
     const periodData = pricingTable[paymentPeriod as keyof typeof pricingTable] || pricingTable['12months'];
     const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[50];
-    const totalPrice = excessData[claimLimit as keyof typeof excessData] || excessData[1250];
+    const baseWarrantyPrice = excessData[claimLimit as keyof typeof excessData] || excessData[1250];
     
+    // Calculate addon prices for this duration
     const durationMonths = paymentPeriod === '12months' ? 12 : 
                           paymentPeriod === '24months' ? 24 : 
                           paymentPeriod === '36months' ? 36 : 12;
+    
+    // Plan-specific addons (from step 3 selection)
+    const planAddOnCount = Object.values(selectedAddOns || {}).filter(Boolean).length;
+    const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
+    
+    // Protection addons (from step 3 selection)
+    let protectionAddOnPrice = 0;
+    if (protectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths; // £6/mo
+    if (protectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths; // £4/mo (Note: this should be vehicle_rental)
+    if (protectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths; // £5/mo
+    if (protectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths; // £5/mo
+    if (protectionAddOns.european) protectionAddOnPrice += 3 * durationMonths; // £3/mo
+    if (protectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths; // £4/mo
+    if (protectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths; // £3/mo
+    if (protectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths; // £3/mo
+    if (protectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths; // £5/mo
+    if (protectionAddOns.transfer) protectionAddOnPrice += 30; // £30 one-time
+    
+    const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
     const monthlyPrice = Math.round(totalPrice / durationMonths);
     
     console.log('WarrantyDurationStep - Calculated pricing:', {
       paymentPeriod,
+      baseWarrantyPrice,
+      planAddOnPrice,
+      protectionAddOnPrice,
       totalPrice,
       monthlyPrice,
       selectedFromMatrix: `${voluntaryExcess}_${claimLimit}`,
-      matrixLookup: { periodData, excessData, result: totalPrice }
+      durationMonths,
+      addOnBreakdown: {
+        planAddOnCount,
+        protectionAddOns
+      }
     });
     
     return { totalPrice, monthlyPrice };
