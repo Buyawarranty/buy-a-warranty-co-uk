@@ -961,7 +961,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </TooltipProvider>
        </div>
 
-        {/* Step 4: Warranty Plans Selection */}
+        {/* Step 4: Premium Warranty Plan */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -969,74 +969,112 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
             <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
               <Shield className="w-5 h-5" />
-              Choose Your Warranty Plan
+              Premium Warranty Plan
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {displayPlans.map((plan, index) => {
-              const planPrice = getPricingData(voluntaryExcess, selectedClaimLimit, paymentType);
-              const adjustedPrice = vehiclePriceAdjustment.isValid 
-                ? applyPriceAdjustment(planPrice, vehiclePriceAdjustment)
-                : planPrice;
-              const monthlyPrice = getMonthlyDisplayPrice(adjustedPrice);
+          {/* Single Premium Plan Card */}
+          <div className="max-w-2xl mx-auto">
+            <div className="p-8 rounded-xl border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-orange-100 shadow-lg shadow-orange-500/20">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-foreground mb-2">Premium Warranty</h3>
+                <p className="text-gray-600">Comprehensive coverage for your vehicle</p>
+              </div>
               
-              // Determine plan type based on claim limit
-              const isSelected = (
-                (selectedClaimLimit === 750 && plan.name === 'Basic') ||
-                (selectedClaimLimit === 1250 && plan.name === 'Gold') ||
-                (selectedClaimLimit === 2000 && plan.name === 'Platinum')
-              );
-              
-              return (
-                <div
-                  key={plan.id}
-                  className={`p-6 rounded-lg border-2 transition-all duration-200 ${
-                    isSelected
-                      ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20'
-                      : 'border-gray-200 bg-white hover:border-orange-300 hover:shadow-md'
-                  }`}
-                >
-                  <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold text-foreground mb-2">{plan.name}</h3>
-                    <div className="text-3xl font-bold text-orange-600 mb-1">
-                      £{adjustedPrice}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      £{monthlyPrice}/month
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-600" />
-                      <span className="text-sm">£{selectedClaimLimit.toLocaleString()} Claim Limit</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-600" />
-                      <span className="text-sm">£{voluntaryExcess} Voluntary Excess</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-600" />
-                      <span className="text-sm">Unlimited Claims</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-600" />
-                      <span className="text-sm">Nationwide Coverage</span>
-                    </div>
-                  </div>
-                  
-                  {isSelected && (
-                    <div className="mt-4 p-3 bg-orange-100 rounded-lg">
-                      <div className="flex items-center gap-2 text-orange-700">
-                        <Check className="h-4 w-4" />
-                        <span className="text-sm font-medium">Selected Plan</span>
-                      </div>
-                    </div>
-                  )}
+              {/* Duration Selection */}
+              <div className="mb-6">
+                <h4 className="text-lg font-semibold text-foreground mb-4 text-center">Choose Your Duration</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[
+                    { period: '12months', label: '1 Year', duration: 12 },
+                    { period: '24months', label: '2 Years', duration: 24 },
+                    { period: '36months', label: '3 Years', duration: 36 }
+                  ].map(({ period, label, duration }) => {
+                    const planPrice = getPricingData(voluntaryExcess, selectedClaimLimit, period);
+                    const adjustedPrice = vehiclePriceAdjustment.isValid 
+                      ? applyPriceAdjustment(planPrice, vehiclePriceAdjustment)
+                      : planPrice;
+                    const monthlyPrice = Math.round(adjustedPrice / duration);
+                    
+                    return (
+                      <button
+                        key={period}
+                        onClick={() => setPaymentType(period as '12months' | '24months' | '36months')}
+                        className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                          paymentType === period
+                            ? 'border-orange-600 bg-white shadow-lg'
+                            : 'border-gray-300 bg-white/70 hover:border-orange-400 hover:shadow-md'
+                        }`}
+                      >
+                        <div className="text-center">
+                          <div className="text-lg font-bold text-foreground mb-1">{label}</div>
+                          <div className="text-2xl font-bold text-orange-600 mb-1">
+                            £{adjustedPrice}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            £{monthlyPrice}/month
+                          </div>
+                          {paymentType === period && (
+                            <div className="mt-2 flex items-center justify-center gap-1 text-orange-600">
+                              <Check className="h-4 w-4" />
+                              <span className="text-xs font-medium">Selected</span>
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              </div>
+              
+              {/* Plan Features */}
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-green-600" />
+                  <span className="font-medium">£{selectedClaimLimit.toLocaleString()} Claim Limit</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-green-600" />
+                  <span className="font-medium">£{voluntaryExcess} Voluntary Excess</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-green-600" />
+                  <span className="font-medium">Unlimited Claims</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-green-600" />
+                  <span className="font-medium">Nationwide Coverage</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-green-600" />
+                  <span className="font-medium">Comprehensive Mechanical & Electrical Coverage</span>
+                </div>
+              </div>
+              
+              {/* Current Selection Summary */}
+              <div className="bg-white rounded-lg p-4 border border-orange-200">
+                <div className="text-center">
+                  <div className="text-sm text-gray-600 mb-1">Your Premium Plan</div>
+                  <div className="text-xl font-bold text-orange-600">
+                    £{(() => {
+                      const planPrice = getPricingData(voluntaryExcess, selectedClaimLimit, paymentType);
+                      return vehiclePriceAdjustment.isValid 
+                        ? applyPriceAdjustment(planPrice, vehiclePriceAdjustment)
+                        : planPrice;
+                    })()} total
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36'} months • 
+                    £{getMonthlyDisplayPrice((() => {
+                      const planPrice = getPricingData(voluntaryExcess, selectedClaimLimit, paymentType);
+                      return vehiclePriceAdjustment.isValid 
+                        ? applyPriceAdjustment(planPrice, vehiclePriceAdjustment)
+                        : planPrice;
+                    })())}/month
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
