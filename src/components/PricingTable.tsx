@@ -1010,7 +1010,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
               
               const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
-              const monthlyPrice = Math.round(totalPrice / durationMonths);
+              const monthlyPrice = Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
               
               return (
                 <div
@@ -1126,7 +1126,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     if (!selectedPlan) return '0';
                     const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
                     const adjustedPrice = selectedPlan[`${paymentType}_${voluntaryExcess}`] || 0;
-                    return Math.round(adjustedPrice / durationMonths);
+                    return Math.round(adjustedPrice / 12); // Always use 12 months for monthly calculation
                   })()} /month
                 </span>
               </div>

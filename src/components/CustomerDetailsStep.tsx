@@ -157,7 +157,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (protectionAddOns.transfer) protectionAddOnPrice += 30; // £30 one-time
     
     const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
-    const monthlyPrice = Math.round(totalPrice / durationMonths);
+    const monthlyPrice = Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
     
     return { totalPrice, monthlyPrice };
   };
