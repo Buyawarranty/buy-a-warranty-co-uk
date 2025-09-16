@@ -214,27 +214,183 @@ const Claims = () => {
       </header>
 
       <div className="min-h-screen">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-blue-50 to-gray-100 py-12 lg:py-20 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              {/* Left Side - Content */}
-              <div className="text-center lg:text-left space-y-6">
-                <h1 className="text-4xl lg:text-6xl font-bold text-gray-900">
+        {/* Hero Section - UX Optimized */}
+        <section className="bg-gradient-to-b from-blue-50 to-white py-16 lg:py-24 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              Making a Claim – Simple, Supportive and Stress Free
+            </h1>
+            <p className="text-xl lg:text-2xl text-gray-600 mb-12 leading-relaxed">
+              We know that vehicle issues can be stressful, but making a claim shouldn't be. At 
+              <span className="font-semibold"> Buy-A-Warranty</span>, we've made the process clear, quick and customer focused, so you can get the help you need without the hassle.
+            </p>
+            
+            {/* Why You're in Safe Hands */}
+            <div className="mb-12">
+              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">Why You're in Safe Hands</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                <div className="flex items-start gap-3 p-6 bg-white rounded-lg shadow-sm">
+                  <div className="text-green-500 flex-shrink-0 mt-1">
+                    <Check className="w-6 h-6" />
+                  </div>
+                  <p className="text-gray-700">We respond to claims quickly and fairly, with no unnecessary delays</p>
+                </div>
+                <div className="flex items-start gap-3 p-6 bg-white rounded-lg shadow-sm">
+                  <div className="text-green-500 flex-shrink-0 mt-1">
+                    <Check className="w-6 h-6" />
+                  </div>
+                  <p className="text-gray-700">Our UK-based claims team is here to guide you every step of the way</p>
+                </div>
+                <div className="flex items-start gap-3 p-6 bg-white rounded-lg shadow-sm">
+                  <div className="text-green-500 flex-shrink-0 mt-1">
+                    <Check className="w-6 h-6" />
+                  </div>
+                  <p className="text-gray-700">We keep things simple, with no confusing jargon or hidden terms</p>
+                </div>
+              </div>
+            </div>
+
+            {/* What You'll Need */}
+            <div className="mb-12">
+              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">What You'll Need</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                <div className="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm">
+                  <div className="text-green-500 flex-shrink-0 mt-1">
+                    <Check className="w-5 h-5" />
+                  </div>
+                  <p className="text-gray-700">Your warranty registration number</p>
+                </div>
+                <div className="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm">
+                  <div className="text-green-500 flex-shrink-0 mt-1">
+                    <Check className="w-5 h-5" />
+                  </div>
+                  <p className="text-gray-700">Vehicle details including make, model and registration</p>
+                </div>
+                <div className="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm">
+                  <div className="text-green-500 flex-shrink-0 mt-1">
+                    <Check className="w-5 h-5" />
+                  </div>
+                  <p className="text-gray-700">A brief description of the issue</p>
+                </div>
+                <div className="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm">
+                  <div className="text-green-500 flex-shrink-0 mt-1">
+                    <Check className="w-5 h-5" />
+                  </div>
+                  <p className="text-gray-700">Any supporting documents or garage reports</p>
+                </div>
+              </div>
+            </div>
+
+            {/* How to Start Your Claim */}
+            <div className="mb-12">
+              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">How to Start Your Claim</h2>
+              <p className="text-lg text-gray-700 mb-6">You can begin your claim by contacting us:</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div className="p-6 bg-white rounded-lg shadow-sm border-l-4 border-orange-500">
+                  <p className="font-semibold text-gray-900">Email:</p>
+                  <p className="text-orange-500 font-medium">claims@buyawarranty.co.uk</p>
+                </div>
+                <div className="p-6 bg-white rounded-lg shadow-sm border-l-4 border-orange-500">
+                  <p className="font-semibold text-gray-900">Phone:</p>
+                  <p className="text-orange-500 font-medium">0330 229 5045</p>
+                  <p className="text-sm text-gray-600">(Monday to Friday, 9am to 5.30pm)</p>
+                </div>
+              </div>
+              <p className="text-lg text-gray-700 mb-8">Or simply complete the form below:</p>
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-lg"
+                onClick={() => document.getElementById('claim-form')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Start Your Claim Now
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Form Section */}
+        <section className="py-16 lg:py-24 px-4 bg-gray-50" id="claim-form">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Left Side - Form */}
+              <div className="bg-white p-8 rounded-xl shadow-lg">
+                <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
                   Make A Claim
-                </h1>
-                <p className="text-gray-600 text-lg lg:text-xl">
-                  Quick, simple repair process – we're here to help.
-                </p>
-                <Button 
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-full"
-                  onClick={() => document.getElementById('claim-form')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  Start Your Claim Now
-                </Button>
+                </h2>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <Label htmlFor="name" className="text-gray-700 font-medium text-base">
+                      Name
+                    </Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      placeholder="Your Name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="phone" className="text-gray-700 font-medium text-base">
+                      Phone Number
+                    </Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="Your Phone Number"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="vehicleReg" className="text-gray-700 font-medium text-base">
+                      Vehicle Reg/Make/Model
+                    </Label>
+                    <Input
+                      id="vehicleReg"
+                      name="vehicleReg"
+                      type="text"
+                      placeholder="Enter Vehicle Registration"
+                      value={formData.vehicleReg}
+                      onChange={handleInputChange}
+                      className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="email" className="text-gray-700 font-medium text-base">
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="Your Email Address"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 w-full text-lg font-semibold rounded-lg disabled:opacity-50 transition-colors"
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit'}
+                  </Button>
+                </form>
               </div>
               
-              {/* Right Side - Car Image */}
+              {/* Right Side - Illustration */}
               <div className="flex justify-center">
                 <img 
                   src="/lovable-uploads/1ea8b848-c473-49fa-a5ab-c5551bbd385d.png" 
@@ -246,174 +402,81 @@ const Claims = () => {
           </div>
         </section>
 
-        {/* Form Section */}
-        <section className="py-12 lg:py-20 px-4 bg-white" id="claim-form">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              {/* Left Side - Form */}
-              <div className="space-y-6">
-                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                  Make A Claim
-                </h2>
-                
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <Label htmlFor="name" className="text-gray-700 font-medium">
-                      Name
-                    </Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      placeholder="Your Name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="mt-1 h-12"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="phone" className="text-gray-700 font-medium">
-                      Phone Number
-                    </Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="Your Phone Number"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="mt-1 h-12"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="vehicleReg" className="text-gray-700 font-medium">
-                      Vehicle Reg/Make/Model
-                    </Label>
-                    <Input
-                      id="vehicleReg"
-                      name="vehicleReg"
-                      type="text"
-                      placeholder="Enter Vehicle Registration"
-                      value={formData.vehicleReg}
-                      onChange={handleInputChange}
-                      className="mt-1 h-12"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="email" className="text-gray-700 font-medium">
-                      Email
-                    </Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="Your Email Address"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="mt-1 h-12"
-                    />
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 w-full text-lg font-semibold disabled:opacity-50"
-                  >
-                    {isSubmitting ? 'Submitting...' : 'Submit'}
-                  </Button>
-                </form>
-              </div>
-              
-              {/* Right Side - Illustration */}
-              <div className="flex justify-center">
-                <img 
-                  src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
-                  alt="Vehicle service illustration" 
-                  className="w-full max-w-md h-auto"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Repair Process */}
-        <section className="py-12 lg:py-20 px-4 bg-gray-50">
+        <section className="py-16 lg:py-24 px-4 bg-white">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-8">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-6">
               Repair Process
             </h2>
-            <p className="text-gray-600 text-lg text-center mb-12">
+            <p className="text-gray-600 text-lg text-center mb-12 max-w-3xl mx-auto">
               If something goes wrong, we're here to help - quickly and efficiently. Just follow these simple steps to ensure your claim is processed smoothly:
             </p>
             
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* Step 1 */}
-              <div className="flex items-start gap-4">
-                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+              <div className="flex items-start gap-6 p-6 bg-gray-50 rounded-xl">
+                <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
                   1
                 </div>
-                <p className="text-gray-700 text-lg">
+                <p className="text-gray-700 text-lg leading-relaxed">
                   Report the fault to us at <span className="font-semibold text-orange-500">0330 229 5045</span> (Mon-Fri 9am to 5:30pm) or complete the form below
                 </p>
               </div>
               
               {/* Step 2 */}
-              <div className="flex items-start gap-4">
-                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+              <div className="flex items-start gap-6 p-6 bg-gray-50 rounded-xl">
+                <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
                   2
                 </div>
-                <p className="text-gray-700 text-lg">
+                <p className="text-gray-700 text-lg leading-relaxed">
                   Choose your own VAT-registered garage or use an approved repairer
                 </p>
               </div>
               
               {/* Step 3 */}
-              <div className="flex items-start gap-4">
-                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+              <div className="flex items-start gap-6 p-6 bg-gray-50 rounded-xl">
+                <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
                   3
                 </div>
-                <p className="text-gray-700 text-lg">
+                <p className="text-gray-700 text-lg leading-relaxed">
                   Wait for written approval before any repairs begin
                 </p>
               </div>
               
               {/* Step 4 */}
-              <div className="flex items-start gap-4">
-                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+              <div className="flex items-start gap-6 p-6 bg-gray-50 rounded-xl">
+                <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
                   4
                 </div>
-                <p className="text-gray-700 text-lg">
+                <p className="text-gray-700 text-lg leading-relaxed">
                   Proceed with the repair (once approved)
                 </p>
               </div>
               
               {/* Step 5 */}
-              <div className="flex items-start gap-4">
-                <div className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">
+              <div className="flex items-start gap-6 p-6 bg-gray-50 rounded-xl">
+                <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
                   5
                 </div>
-                <p className="text-gray-700 text-lg">
+                <p className="text-gray-700 text-lg leading-relaxed">
                   Submit the final invoice and proof of repair
                 </p>
               </div>
             </div>
             
-            <p className="text-gray-600 text-lg mt-8 text-center">
-              If approved, we will pay the repairer directly. In some cases, we will make the pay-out to you after we have made our checks.
-            </p>
-            
-            {/* Payout Time Box */}
-            <div className="bg-white border-2 border-orange-200 rounded-lg p-6 mt-8 text-center">
-              <div className="flex items-center justify-center gap-3">
-                <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12,6 12,12 16,14"></polyline>
-                </svg>
+            <div className="mt-12 text-center">
+              <p className="text-gray-600 text-lg mb-6 max-w-2xl mx-auto">
+                If approved, we will pay the repairer directly. In some cases, we will make the pay-out to you after we have made our checks.
+              </p>
+              
+              {/* Payout Time Box */}
+              <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-8 max-w-md mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12,6 12,12 16,14"></polyline>
+                  </svg>
+                </div>
                 <p className="text-lg font-semibold text-gray-900">
                   We aim to pay out within 90 minutes of final approval
                 </p>
@@ -423,33 +486,35 @@ const Claims = () => {
         </section>
 
         {/* Your Repair Limit Explained */}
-        <section className="py-12 lg:py-20 px-4 bg-white">
+        <section className="py-16 lg:py-24 px-4 bg-gray-50">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8">
               Your Repair Limit Explained
             </h2>
-            <div className="space-y-6 text-lg text-gray-600">
-              <p>
+            <div className="space-y-6 text-lg text-gray-600 max-w-3xl mx-auto">
+              <p className="leading-relaxed">
                 Your maximum repair limit is clearly outlined in your warranty email and in your online account. If a repair goes over your limit, you can simply top it up.
               </p>
-              <p>
+              <p className="leading-relaxed">
                 In our experience, that's very rare, especially if you've chosen a claim limit that suits your vehicle and driving habits.
               </p>
-              <p className="text-gray-900 font-semibold text-xl">
-                We cover what we promise - no hidden surprises.
-              </p>
+              <div className="bg-white p-8 rounded-xl shadow-sm border-l-4 border-orange-500 mt-8">
+                <p className="font-semibold text-xl text-gray-900">
+                  We cover what we promise - no hidden surprises.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Ready To Start Your Claim */}
-        <section className="py-12 lg:py-20 px-4 bg-gray-50">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">
-              Ready To <span className="text-orange-500">Start</span> Your Claim?
+        {/* Ready to Start CTA */}
+        <section className="py-16 lg:py-24 px-4 bg-gradient-to-r from-orange-500 to-orange-600">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-8">
+              Ready To <span className="text-yellow-300">Start</span> Your Claim?
             </h2>
             <Button 
-              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-full"
+              className="bg-white text-orange-500 hover:bg-gray-100 px-10 py-5 text-xl font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
               onClick={() => document.getElementById('claim-form')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Start Your Claim Now
