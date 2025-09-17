@@ -517,6 +517,7 @@ export type Database = {
           breakdown_recovery: boolean | null
           bumper_order_id: string | null
           claim_limit: number | null
+          consequential: boolean | null
           created_at: string
           customer_full_name: string | null
           customer_id: string | null
@@ -526,7 +527,9 @@ export type Database = {
           email_sent_status: string | null
           europe_cover: boolean | null
           id: string
+          lost_key: boolean | null
           mot_fee: boolean | null
+          mot_repair: boolean | null
           payment_amount: number | null
           payment_currency: string | null
           payment_type: string
@@ -557,6 +560,7 @@ export type Database = {
           breakdown_recovery?: boolean | null
           bumper_order_id?: string | null
           claim_limit?: number | null
+          consequential?: boolean | null
           created_at?: string
           customer_full_name?: string | null
           customer_id?: string | null
@@ -566,7 +570,9 @@ export type Database = {
           email_sent_status?: string | null
           europe_cover?: boolean | null
           id?: string
+          lost_key?: boolean | null
           mot_fee?: boolean | null
+          mot_repair?: boolean | null
           payment_amount?: number | null
           payment_currency?: string | null
           payment_type: string
@@ -597,6 +603,7 @@ export type Database = {
           breakdown_recovery?: boolean | null
           bumper_order_id?: string | null
           claim_limit?: number | null
+          consequential?: boolean | null
           created_at?: string
           customer_full_name?: string | null
           customer_id?: string | null
@@ -606,7 +613,9 @@ export type Database = {
           email_sent_status?: string | null
           europe_cover?: boolean | null
           id?: string
+          lost_key?: boolean | null
           mot_fee?: boolean | null
+          mot_repair?: boolean | null
           payment_amount?: number | null
           payment_currency?: string | null
           payment_type?: string
@@ -650,6 +659,7 @@ export type Database = {
           building_number: string | null
           bumper_order_id: string | null
           claim_limit: number | null
+          consequential: boolean | null
           country: string | null
           county: string | null
           created_at: string
@@ -662,8 +672,10 @@ export type Database = {
           flat_number: string | null
           id: string
           last_name: string | null
+          lost_key: boolean | null
           mileage: string | null
           mot_fee: boolean | null
+          mot_repair: boolean | null
           name: string
           original_amount: number | null
           payment_type: string | null
@@ -698,6 +710,7 @@ export type Database = {
           building_number?: string | null
           bumper_order_id?: string | null
           claim_limit?: number | null
+          consequential?: boolean | null
           country?: string | null
           county?: string | null
           created_at?: string
@@ -710,8 +723,10 @@ export type Database = {
           flat_number?: string | null
           id?: string
           last_name?: string | null
+          lost_key?: boolean | null
           mileage?: string | null
           mot_fee?: boolean | null
+          mot_repair?: boolean | null
           name: string
           original_amount?: number | null
           payment_type?: string | null
@@ -746,6 +761,7 @@ export type Database = {
           building_number?: string | null
           bumper_order_id?: string | null
           claim_limit?: number | null
+          consequential?: boolean | null
           country?: string | null
           county?: string | null
           created_at?: string
@@ -758,8 +774,10 @@ export type Database = {
           flat_number?: string | null
           id?: string
           last_name?: string | null
+          lost_key?: boolean | null
           mileage?: string | null
           mot_fee?: boolean | null
+          mot_repair?: boolean | null
           name?: string
           original_amount?: number | null
           payment_type?: string | null

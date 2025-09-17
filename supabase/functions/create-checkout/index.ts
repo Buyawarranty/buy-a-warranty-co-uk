@@ -199,9 +199,12 @@ serve(async (req) => {
         addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
         addon_europe_cover: protectionAddOns?.european ? 'true' : 'false',
         addon_transfer_cover: protectionAddOns?.transfer ? 'true' : 'false',
-        addon_breakdown_recovery: protectionAddOns?.breakdown ? 'true' : 'false', // Fixed field name
-        addon_vehicle_rental: protectionAddOns?.rental ? 'true' : 'false', // Fixed to use 'rental' not 'vehicleRental'
-        addon_mot_cover: protectionAddOns?.motRepair ? 'true' : 'false'
+        addon_breakdown_recovery: protectionAddOns?.breakdown ? 'true' : 'false',
+        addon_vehicle_rental: protectionAddOns?.rental ? 'true' : 'false',
+        addon_mot_fee: protectionAddOns?.motFee ? 'true' : 'false',
+        addon_mot_repair: protectionAddOns?.motRepair ? 'true' : 'false',
+        addon_lost_key: protectionAddOns?.lostKey ? 'true' : 'false',
+        addon_consequential: protectionAddOns?.consequential ? 'true' : 'false'
       },
       automatic_tax: { enabled: false },
       billing_address_collection: 'required',

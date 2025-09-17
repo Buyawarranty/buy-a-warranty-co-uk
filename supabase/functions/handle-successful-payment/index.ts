@@ -81,9 +81,12 @@ serve(async (req) => {
       wear_tear: metadata?.addon_wear_tear === 'true',
       europe_cover: metadata?.addon_europe_cover === 'true', 
       transfer_cover: metadata?.addon_transfer_cover === 'true',
-      breakdown_recovery: metadata?.addon_breakdown_recovery === 'true', // Now matches create-checkout
-      vehicle_rental: metadata?.addon_vehicle_rental === 'true', // Now matches create-checkout
-      mot_fee: metadata?.addon_mot_cover === 'true'
+      breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
+      vehicle_rental: metadata?.addon_vehicle_rental === 'true',
+      mot_fee: metadata?.addon_mot_fee === 'true',
+      mot_repair: metadata?.addon_mot_repair === 'true',
+      lost_key: metadata?.addon_lost_key === 'true',
+      consequential: metadata?.addon_consequential === 'true'
     };
 
     // Debug addon metadata parsing
@@ -96,7 +99,10 @@ serve(async (req) => {
         addon_transfer_cover: metadata?.addon_transfer_cover,
         addon_breakdown_recovery: metadata?.addon_breakdown_recovery,
         addon_vehicle_rental: metadata?.addon_vehicle_rental,
-        addon_mot_cover: metadata?.addon_mot_cover
+        addon_mot_fee: metadata?.addon_mot_fee,
+        addon_mot_repair: metadata?.addon_mot_repair,
+        addon_lost_key: metadata?.addon_lost_key,
+        addon_consequential: metadata?.addon_consequential
       },
       parsedValues: {
         tyre_cover: metadata?.addon_tyre_cover === 'true',
@@ -105,7 +111,10 @@ serve(async (req) => {
         transfer_cover: metadata?.addon_transfer_cover === 'true',
         breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
         vehicle_rental: metadata?.addon_vehicle_rental === 'true',
-        mot_fee: metadata?.addon_mot_cover === 'true'
+        mot_fee: metadata?.addon_mot_fee === 'true',
+        mot_repair: metadata?.addon_mot_repair === 'true',
+        lost_key: metadata?.addon_lost_key === 'true',
+        consequential: metadata?.addon_consequential === 'true'
       }
     });
 
@@ -128,9 +137,12 @@ serve(async (req) => {
         wear_tear: metadata?.addon_wear_tear === 'true',
         europe_cover: metadata?.addon_europe_cover === 'true', 
         transfer_cover: metadata?.addon_transfer_cover === 'true',
-        breakdown_recovery: metadata?.addon_breakdown_recovery === 'true', // Now matches create-checkout
-        vehicle_rental: metadata?.addon_vehicle_rental === 'true', // Now matches create-checkout
-        mot_fee: metadata?.addon_mot_cover === 'true'
+        breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
+        vehicle_rental: metadata?.addon_vehicle_rental === 'true',
+        mot_fee: metadata?.addon_mot_fee === 'true',
+        mot_repair: metadata?.addon_mot_repair === 'true',
+        lost_key: metadata?.addon_lost_key === 'true',
+        consequential: metadata?.addon_consequential === 'true'
       };
 
       // Create policy record

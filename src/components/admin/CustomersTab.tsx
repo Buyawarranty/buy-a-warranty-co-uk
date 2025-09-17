@@ -473,6 +473,9 @@ export const CustomersTab = () => {
           breakdown_recovery: false,
           vehicle_rental: false,
           mot_fee: false,
+          mot_repair: false,
+          lost_key: false,
+          consequential: false,
           claim_limit: 1250
         }));
         

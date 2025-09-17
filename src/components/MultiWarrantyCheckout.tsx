@@ -268,7 +268,11 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                 european: item.pricingData.selectedAddOns?.european || false,
                 breakdown: item.pricingData.selectedAddOns?.breakdown || false,
                 rental: item.pricingData.selectedAddOns?.rental || false,
-                transfer: item.pricingData.selectedAddOns?.transfer || false
+                transfer: item.pricingData.selectedAddOns?.transfer || false,
+                motRepair: item.pricingData.selectedAddOns?.motRepair || false,
+                motFee: item.pricingData.selectedAddOns?.motFee || false,
+                lostKey: item.pricingData.selectedAddOns?.lostKey || false,
+                consequential: item.pricingData.selectedAddOns?.consequential || false
               },
               totalPrice: item.pricingData.totalPrice
             })),
@@ -299,7 +303,11 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                   european: item.pricingData.selectedAddOns?.european || false,
                   breakdown: item.pricingData.selectedAddOns?.breakdown || false,
                   rental: item.pricingData.selectedAddOns?.rental || false,
-                  transfer: item.pricingData.selectedAddOns?.transfer || false
+                  transfer: item.pricingData.selectedAddOns?.transfer || false,
+                  motRepair: item.pricingData.selectedAddOns?.motRepair || false,
+                  motFee: item.pricingData.selectedAddOns?.motFee || false,
+                  lostKey: item.pricingData.selectedAddOns?.lostKey || false,
+                  consequential: item.pricingData.selectedAddOns?.consequential || false
                 },
                 totalPrice: item.pricingData.totalPrice
               })),
@@ -337,7 +345,11 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               european: item.pricingData.selectedAddOns?.european || false,
               breakdown: item.pricingData.selectedAddOns?.breakdown || false,
               rental: item.pricingData.selectedAddOns?.rental || false,
-              transfer: item.pricingData.selectedAddOns?.transfer || false
+              transfer: item.pricingData.selectedAddOns?.transfer || false,
+              motRepair: item.pricingData.selectedAddOns?.motRepair || false,
+              motFee: item.pricingData.selectedAddOns?.motFee || false,
+              lostKey: item.pricingData.selectedAddOns?.lostKey || false,
+              consequential: item.pricingData.selectedAddOns?.consequential || false
             },
               totalPrice: item.pricingData.totalPrice
             })),
