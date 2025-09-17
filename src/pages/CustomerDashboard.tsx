@@ -97,9 +97,12 @@ const CustomerDashboard = () => {
     setLoginLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      // Use the customer-login edge function instead of direct Supabase auth
+      const { data, error } = await supabase.functions.invoke('customer-login', {
+        body: {
+          email,
+          password,
+        }
       });
 
       if (error) {
@@ -111,12 +114,24 @@ const CustomerDashboard = () => {
         return;
       }
 
-      if (data.user) {
+      if (data?.user && data?.session) {
+        // Set the session in Supabase auth
+        await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token
+        });
+        
         toast({
           title: "Welcome back!",
           description: "You have been signed in successfully.",
         });
         // User state will be updated by the auth listener
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "Invalid email or password.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Login error:', error);
