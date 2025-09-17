@@ -573,7 +573,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </p>
               </div>
 
-              <button className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
+              <button 
+                onClick={scrollToQuoteForm}
+                className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto"
+              >
                 Start Cover
               </button>
             </div>
@@ -718,7 +721,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 We want to get you back on the road as soon as possible.
               </p>
 
-              <button className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto">
+              <button 
+                onClick={scrollToQuoteForm}
+                className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto"
+              >
                 Get Instant Quote
               </button>
             </div>
@@ -784,7 +790,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* CTA Button */}
-          <button className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors w-full sm:w-auto">
+          <button 
+            onClick={scrollToQuoteForm}
+            className="bg-brand-orange hover:bg-orange-600 text-white font-bold px-6 md:px-10 py-4 md:py-6 text-lg md:text-xl rounded-lg shadow-lg transition-colors w-full sm:w-auto"
+          >
             Get Instant Quote
           </button>
         </div>
