@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const HomepageFAQ = () => {
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
@@ -11,59 +13,60 @@ const HomepageFAQ = () => {
     }));
   };
 
+  // Top 10 FAQs from the main FAQ page - most popular and important questions
   const leftColumnFAQs = [
     {
       id: 'what-is-warranty',
-      question: 'What is a Warranty?',
-      answer: 'A warranty is a promise from a company to fix or replace a product if it breaks within a certain time period. For vehicles, it covers repairs for mechanical and electrical components that fail due to normal use.'
+      question: 'What\'s a car warranty and why should I get one?',
+      answer: 'Think of a warranty as a backup plan for your car. If something goes wrong – like a mechanical or electrical fault – your warranty helps cover the cost of repairs. New cars usually come with a manufacturer\'s warranty for about 3 years. After that, you\'re on your own unless you get an extended warranty. That\'s where we come in – giving you peace of mind and helping you avoid surprise bills.'
     },
     {
-      id: 'how-claims-work',
-      question: 'How do claims work?',
-      answer: 'When something covered by your warranty breaks, you contact us to report the claim. We authorize repairs at approved garages, and you don\'t pay anything towards the covered repair costs.'
+      id: 'whats-covered-warranty',
+      question: 'What\'s covered in my warranty?',
+      answer: 'At Buy-a-Warranty, we like to keep things simple. One solid plan that works for cars, vans, and motorbikes, whether you\'re driving electric, hybrid, petrol, or diesel. We keep things simple with no confusing packages, you won\'t encounter any unexpected rejections, and we offer straightforward cover without the hassle.'
     },
     {
-      id: 'what-covered',
-      question: 'What\'s covered under the warranty?',
-      answer: 'Our warranty covers engine, gearbox, clutch, turbo, drivetrain, suspension, steering, braking systems, fuel systems, cooling systems, emissions systems, ECUs, electrical systems, driver assistance technology, oil conditioning, air conditioning, and multimedia systems.'
+      id: 'car-issue',
+      question: 'What should I do if my car has an issue?',
+      answer: 'If your car experiences a problem, please contact our Claims Team at 0330 229 5045. They are available Monday to Friday from 09:00 to 17:30 and can help start and process your warranty claim. If the issue arises outside of these hours, please fill out our online contact form.'
     },
     {
-      id: 'vehicle-age-mileage',
-      question: 'What vehicle age and mileage do you cover?',
-      answer: 'We cover vehicles up to 15 years old and with up to 150,000 miles on the odometer at the time of purchase.'
+      id: 'how-long-cover',
+      question: 'How long can I get cover for?',
+      answer: 'You can choose a plan that suits you – pay in full and save more money, spread it over 12 months interest free, or go for monthly Pay As You Go. We offer 1, 2, or 3-year warranty plans.'
     },
     {
-      id: 'monthly-payment',
-      question: 'Can I pay monthly?',
-      answer: 'Yes! We offer flexible payment options including monthly payments with 0% APR, making it easier to budget for your vehicle protection.'
+      id: 'service-regularly',
+      question: 'Do I need to service my car regularly?',
+      answer: 'Yes please! Keeping up with your car\'s servicing schedule helps keep your warranty valid. Just follow the manufacturer\'s guidelines and keep your receipts.'
     }
   ];
 
   const rightColumnFAQs = [
     {
+      id: 'how-make-claim',
+      question: 'How do I make a claim?',
+      answer: 'Arrange for your vehicle to be inspected by a local independent repair garage to diagnose any issues. Once diagnosed, before any repairs are conducted, the repairer must directly contact our Claims Team at 0330 229 5045. It\'s important to note that failure to do so will not allow us to process your claim.'
+    },
+    {
       id: 'how-much-cost',
       question: 'How much does it cost?',
-      answer: 'Warranty costs start from just £12 per month, depending on your vehicle and the level of cover you choose. Get an instant quote by entering your registration number.'
+      answer: 'Warranty costs start from just £12 per month, depending on your vehicle and the level of cover you choose. Get an instant quote by entering your registration number above.'
     },
     {
-      id: 'claim-limits',
-      question: 'Are there any claim limits?',
-      answer: 'We offer plans with £2,000 or £5,000 per claim limits, with unlimited claims throughout your warranty period. No excess to pay on any approved repairs.'
+      id: 'preferred-garage',
+      question: 'Can I use my preferred garage for repairs?',
+      answer: 'Yes, you are allowed to use your own garage. You can opt for a main dealer, but be prepared to cover the price difference compared to a local independent garage. Please ensure the garage is VAT registered.'
     },
     {
-      id: 'where-repairs',
-      question: 'Where can I get repairs done?',
-      answer: 'Repairs can be carried out at trusted garages nationwide, including major chains like ATS and Kwik Fit, as well as independent approved repairers.'
+      id: 'cancel-warranty',
+      question: 'Can I cancel my warranty?',
+      answer: 'You have 14 days to cancel your warranty for a full refund (if no repairs have been made). After this period, our standard cancellation policy applies. Contact us at support@buyawarranty.co.uk or call 0330 229 5045.'
     },
     {
-      id: 'how-long-valid',
-      question: 'How long is the warranty valid?',
-      answer: 'You can choose from 1, 2, or 3-year warranty plans. The warranty remains valid as long as you keep up with your payments and maintain your vehicle properly.'
-    },
-    {
-      id: 'cancel-anytime',
-      question: 'Can I cancel anytime?',
-      answer: 'Yes, you can cancel your warranty at any time. If you cancel within the first 30 days, you\'ll receive a full refund. After that, you may be entitled to a pro-rata refund.'
+      id: 'transferable',
+      question: 'Is the warranty transferable?',
+      answer: 'The cover is transferable to a new owner if sold privately. Most of our warranties can be transferred to the new owner – it\'s a great selling point and adds value to your car. There is a £30 fee for transferring the warranty.'
     }
   ];
 
@@ -121,6 +124,21 @@ const HomepageFAQ = () => {
               <FAQItem key={faq.id} faq={faq} />
             ))}
           </div>
+        </div>
+
+        {/* View All FAQs Button */}
+        <div className="text-center mt-12">
+          <Link to="/faq">
+            <Button 
+              size="lg"
+              className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 text-lg font-semibold"
+            >
+              View All FAQs
+            </Button>
+          </Link>
+          <p className="text-sm text-gray-600 mt-3">
+            Have more questions? Check out our comprehensive FAQ page for detailed answers.
+          </p>
         </div>
       </div>
     </section>
