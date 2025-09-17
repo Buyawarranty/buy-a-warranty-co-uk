@@ -964,6 +964,132 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
         </div>
 
+        {/* What's Covered Section */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-brand-orange text-white rounded-full flex items-center justify-center">
+              <Info className="w-4 h-4" />
+            </div>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              What's Covered?
+            </h2>
+          </div>
+          
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              Click on each vehicle type to see the complete list of covered components
+            </p>
+            
+            <Accordion type="single" collapsible className="w-full space-y-3">
+              {/* Petrol & Diesel Vehicles */}
+              <AccordionItem value="petrol-diesel" className="border border-gray-200 rounded-lg">
+                <AccordionTrigger className="bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-4 rounded-lg hover:no-underline">
+                  <span className="font-semibold">Petrol & Diesel (Combustion Engine) Vehicles</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 py-4 bg-white">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <ul className="space-y-2">
+                      <li>• Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</li>
+                      <li>• Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</li>
+                      <li>• Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</li>
+                      <li>• Turbocharger & Supercharger Units</li>
+                      <li>• Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</li>
+                      <li>• Cooling & Heating Systems (radiators, thermostats, water pumps, cooling fans, heater matrix)</li>
+                      <li>• Exhaust & Emissions Systems (catalytic converters, DPFs, OPFs, EGR valves, NOx sensors, AdBlue/Eolys systems)</li>
+                    </ul>
+                    <ul className="space-y-2">
+                      <li>• Braking Systems (ABS, calipers, cylinders, master cylinders)</li>
+                      <li>• Suspension & Steering Systems (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)</li>
+                      <li>• Air Conditioning & Climate Control Systems</li>
+                      <li>• Electrical Components & Charging Systems (alternators, starter motors, wiring looms, connectors, relays)</li>
+                      <li>• Electronic Control Units (ECUs) & Sensors (engine management, ABS, traction control, emissions sensors)</li>
+                      <li>• Lighting & Ignition Systems (headlights, indicators, ignition coils, switches, control modules)</li>
+                      <li>• Factory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)</li>
+                      <li>• Driver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)</li>
+                      <li>• Safety Systems (airbags, seatbelts, pretensioners, safety restraint modules)</li>
+                    </ul>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Hybrid & PHEV Vehicles */}
+              <AccordionItem value="hybrid-phev" className="border border-gray-200 rounded-lg">
+                <AccordionTrigger className="bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-4 rounded-lg hover:no-underline">
+                  <span className="font-semibold">Hybrid & PHEV Vehicles</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 py-4 bg-white">
+                  <p className="text-sm text-muted-foreground mb-4">All petrol/diesel engine parts and labour plus:</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <ul className="space-y-2">
+                      <li>• Hybrid Drive Motors & ECUs</li>
+                      <li>• Hybrid Battery Failure</li>
+                      <li>• Power Control Units, Inverters & DC-DC Converters</li>
+                      <li>• Regenerative Braking Systems</li>
+                      <li>• High-Voltage Cables & Connectors</li>
+                    </ul>
+                    <ul className="space-y-2">
+                      <li>• Cooling Systems for Hybrid Components</li>
+                      <li>• Charging Ports & On-Board Charging Modules</li>
+                      <li>• Hybrid Transmission Components</li>
+                    </ul>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Electric Vehicles */}
+              <AccordionItem value="electric" className="border border-gray-200 rounded-lg">
+                <AccordionTrigger className="bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-4 rounded-lg hover:no-underline">
+                  <span className="font-semibold">Electric vehicles (EVs)</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 py-4 bg-white">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <ul className="space-y-2">
+                      <li>• EV Drive Motors & Reduction Gear</li>
+                      <li>• EV Transmission & Reduction Gearbox Assemblies</li>
+                      <li>• High-Voltage Battery Failure</li>
+                      <li>• Power Control Units & Inverters</li>
+                      <li>• On-Board Charger (OBC) & Charging Ports</li>
+                    </ul>
+                    <ul className="space-y-2">
+                      <li>• DC-DC Converters</li>
+                      <li>• Thermal Management Systems</li>
+                      <li>• High-Voltage Cables & Connectors</li>
+                      <li>• EV-Specific Control Electronics</li>
+                      <li>• Regenerative Braking System Components</li>
+                    </ul>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Motorcycles */}
+              <AccordionItem value="motorcycles" className="border border-gray-200 rounded-lg">
+                <AccordionTrigger className="bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-4 rounded-lg hover:no-underline">
+                  <span className="font-semibold">Motorcycles (Petrol, Hybrid, EV)</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 py-4 bg-white">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <ul className="space-y-2">
+                      <li>• Engine / Motor & Drivetrain Components</li>
+                      <li>• Gearbox / Transmission Systems</li>
+                      <li>• ECUs, Sensors & Control Modules</li>
+                      <li>• Electrical Systems & Wiring</li>
+                      <li>• High-Voltage Battery Failure (Hybrid & EV)</li>
+                    </ul>
+                    <ul className="space-y-2">
+                      <li>• Suspension & Steering Systems</li>
+                      <li>• Braking Systems</li>
+                      <li>• Cooling & Thermal Systems</li>
+                      <li>• Lighting & Ignition Systems</li>
+                      <li>• Instrumentation & Rider Controls</li>
+                    </ul>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
+
         {/* Choose Warranty Duration */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
