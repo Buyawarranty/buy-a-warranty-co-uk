@@ -43,9 +43,19 @@ serve(async (req) => {
       throw new Error("Missing required parameters: email, planType, paymentType, and policyNumber are all required");
     }
 
-    // Generate temporary password
-    const tempPassword = generateTempPassword();
-    logStep("Generated temporary password");
+    // Check if this email already has a temporary password
+    logStep("Checking for existing welcome email record");
+    const { data: existingWelcomeEmail } = await supabaseClient
+      .from('welcome_emails')
+      .select('temporary_password')
+      .eq('email', email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    // Use existing password or generate new one
+    const tempPassword = existingWelcomeEmail?.temporary_password || generateTempPassword();
+    logStep(existingWelcomeEmail ? "Using existing temporary password" : "Generated new temporary password");
 
     // Check if user already exists first by email
     logStep("Checking if user exists");
@@ -263,7 +273,7 @@ serve(async (req) => {
           <div style="background-color: #e7f3ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #007bff;">
             <h3 style="color: #333; margin-top: 0;">Your Customer Portal Access</h3>
             <p>Access your customer portal to view your warranty details, submit claims, and manage your account:</p>
-            <p><strong>Login URL:</strong> <a href="https://buyawarranty.co.uk/auth" style="color: #007bff;">https://buyawarranty.co.uk/auth</a></p>
+            <p><strong>Login URL:</strong> <a href="https://buyawarranty.co.uk/customer-dashboard" style="color: #007bff;">https://buyawarranty.co.uk/customer-dashboard</a></p>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Temporary Password:</strong> <code style="background-color: #f1f1f1; padding: 4px 8px; border-radius: 4px;">${tempPassword}</code></p>
             <p style="color: #666; font-size: 14px; margin-top: 15px;">
