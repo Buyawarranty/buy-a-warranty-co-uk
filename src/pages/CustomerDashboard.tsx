@@ -227,13 +227,28 @@ const CustomerDashboard = () => {
     console.log("fetchPolicies: Fetching policies for user:", user.id, "email:", user.email);
     
     try {
-      const { data, error } = await supabase
+      // First try to get policies by user_id, then by email if none found
+      let { data, error } = await supabase
         .from('customer_policies')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      console.log("fetchPolicies: Query result:", { data, error, count: data?.length });
+      console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
+
+      // If no policies found by user_id, try by email
+      if ((!data || data.length === 0) && user.email) {
+        console.log("fetchPolicies: No policies found by user_id, trying by email");
+        const emailResult = await supabase
+          .from('customer_policies')
+          .select('*')
+          .eq('email', user.email)
+          .order('created_at', { ascending: false });
+        
+        data = emailResult.data;
+        error = emailResult.error;
+        console.log("fetchPolicies: Query by email result:", { data, error, count: data?.length });
+      }
 
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching policies:', error);
