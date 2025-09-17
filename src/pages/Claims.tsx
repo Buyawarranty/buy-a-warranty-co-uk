@@ -135,7 +135,7 @@ const Claims = () => {
                   size="sm"
                   className="lg:hidden p-2"
                 >
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-12 w-12" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">

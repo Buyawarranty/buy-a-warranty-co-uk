@@ -271,7 +271,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   size="lg"
                   className="lg:hidden p-3 min-w-[48px] min-h-[48px]"
                 >
-                  <Menu className="h-12 w-12" />
+                  <Menu className="h-24 w-24" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
