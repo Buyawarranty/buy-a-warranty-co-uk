@@ -220,8 +220,8 @@ const handler = async (req: Request): Promise<Response> => {
     let attachments = [];
     
     try {
-      // Load Terms and Conditions PDF from public folder
-      const termsResponse = await fetch('https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-4.pdf');
+      // Load Terms and Conditions PDF from public folder (updated to v2.2-5 for all warranty types)
+      const termsResponse = await fetch('https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf');
       if (termsResponse.ok) {
         const termsBuffer = await termsResponse.arrayBuffer();
         const termsBytes = new Uint8Array(termsBuffer);
@@ -234,7 +234,7 @@ const handler = async (req: Request): Promise<Response> => {
         }
         
         attachments.push({
-          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-4.pdf',
+          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf',
           content: termsBase64,
           content_type: 'application/pdf'
         });
@@ -244,8 +244,8 @@ const handler = async (req: Request): Promise<Response> => {
         console.log(JSON.stringify({ evt: "terms.pdf.failed", rid, status: termsResponse.status }));
       }
       
-      // Load Platinum Warranty Plan PDF from public folder
-      const platinumResponse = await fetch('https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-3.pdf');
+      // Load Platinum Warranty Plan PDF from public folder (updated to v2.2-4 for all warranty types)
+      const platinumResponse = await fetch('https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-4.pdf');
       if (platinumResponse.ok) {
         const platinumBuffer = await platinumResponse.arrayBuffer();
         const platinumBytes = new Uint8Array(platinumBuffer);
@@ -258,7 +258,7 @@ const handler = async (req: Request): Promise<Response> => {
         }
         
         attachments.push({
-          filename: 'Platinum-warranty-plan_v2.2-3.pdf',
+          filename: 'Platinum-warranty-plan_v2.2-4.pdf',
           content: platinumBase64,
           content_type: 'application/pdf'
         });
@@ -443,28 +443,9 @@ const handler = async (req: Request): Promise<Response> => {
       paymentMethod = 'Bumper';
     }
 
-    // Generate policy document URL based on plan type
-    const planTypeLower = policy.plan_type.toLowerCase();
-    let policyDocumentUrl;
-    
-    if (planTypeLower.includes('basic')) {
-      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf';
-    } else if (planTypeLower.includes('gold')) {
-      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/gold/Gold-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464758473.pdf';
-    } else if (planTypeLower.includes('platinum')) {
-      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf';
-    } else if (planTypeLower.includes('electric') || planTypeLower.includes('ev')) {
-      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/electric/EV-Extended-Warranty-Plan-Buy-a-Warranty%202.0-1754464859338.pdf';
-    } else if (planTypeLower.includes('motorbike') || planTypeLower.includes('motorcycle')) {
-      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/motorbike/Motorbike-Extended-Warranty-Plan%202.0-1754464869722.pdf';
-    } else if (planTypeLower.includes('hybrid') || planTypeLower.includes('phev')) {
-      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/phev/Hybrid-PHEV-Warranty-Plan%202.0-1754464878940.pdf';
-    } else {
-      // Default to basic if plan type doesn't match any specific type
-      policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/basic/Basic-Cover-Warranty-Plan-Buyawarranty%202.0-1754464740490.pdf';
-    }
-
-    const termsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/terms-and-conditions/Terms%20and%20conditions-1754666518644.pdf';
+    // Use the standardized PDF documents for all warranty types (motorbikes, vans, cars, EV, PHEV)
+    const policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-4.pdf';
+    const termsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf';
 
     // Registration plate styling - optimized for both light and dark modes
     const regPlate = customerDetails?.registration_plate || 'N/A';
