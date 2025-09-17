@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Calendar, Crown, Check, ArrowLeft } from 'lucide-react';
+import { Calendar, Crown, Check, ArrowLeft, X, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface WarrantyDurationStepProps {
@@ -118,29 +118,75 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     {
       id: '12months',
       title: '1 Year',
-      subtitle: 'Premium Plan',
-      description: 'Comprehensive coverage',
-      features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval'],
+      subtitle: 'cover',
+      description: 'Flexible protection for short-term peace of mind.',
+      planTitle: 'Platinum comprehensive plan',
+      features: [
+        'All mechanical & electrical parts covered - no surprises, just solid protection',
+        'Up to 10 claims per policy - plenty of cover when you need it',
+        'Labour costs included – we\'ve got the work sorted',
+        'Fault diagnostics – we\'ll help find the problem fast',
+        'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
+        'Fast claims process – no drama, just quick resolutions',
+        '14-day money-back guarantee – change your mind? No problem',
+        'Optional extras available – tailor your cover to suit your needs'
+      ],
+      exclusions: [
+        'Pre-existing faults are not covered. - If your vehicle already had a known issue before the warranty started, it won\'t be covered. Only new problems that happen after the policy begins are protected'
+      ],
       ...getPricingForDuration('12months'),
-      isPopular: false
+      isPopular: false,
+      isBestValue: false
     },
     {
       id: '24months',
       title: '2 Years',
-      subtitle: 'Most Popular',
-      description: 'Best value for money',
-      features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '15% discount'],
+      subtitle: 'Cover — Save 10%',
+      description: 'Balanced Protection and Value.',
+      planTitle: 'Platinum comprehensive plan',
+      features: [
+        'All mechanical & electrical parts covered - no surprises, just solid protection',
+        'Unlimited claims per policy - plenty of cover when you need it',
+        'Labour costs included – we\'ve got the work sorted',
+        'Fault diagnostics – we\'ll help find the problem fast',
+        'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
+        'Fast claims process – no drama, just quick resolutions',
+        'MOT test fee - Your MOT test fee is covered by us every time your vehicle is due for its MOT',
+        '24/7 Vehicle recovery – We\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded.',
+        '14-day money-back guarantee – change your mind? No problem',
+        'Optional extras available – tailor your cover to suit your needs'
+      ],
+      exclusions: [
+        'Pre-existing faults are not covered - Pre-existing faults present before the warranty start date are not covered. Only issues that arise after your policy begins will be eligible for protection.'
+      ],
       ...getPricingForDuration('24months'),
-      isPopular: true
+      isPopular: true,
+      isBestValue: false
     },
     {
       id: '36months',
       title: '3 Years',
-      subtitle: 'Best Value',
-      description: 'Maximum protection period',
-      features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '20% discount'],
+      subtitle: 'cover Save 20%',
+      description: 'Long-term protection, better value',
+      planTitle: 'Platinum comprehensive plan',
+      features: [
+        'All mechanical & electrical parts covered - no surprises, just solid protection',
+        'Unlimited claims per policy - plenty of cover when you need it',
+        'Labour costs included – we\'ve got the work sorted',
+        'Fault diagnostics – we\'ll help find the problem fast',
+        'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
+        'Fast claims process – no drama, just quick resolutions',
+        'MOT test fee - Your MOT test fee is covered by us every time your vehicle is due for its MOT',
+        '24/7 Vehicle recovery – We\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded.',
+        '14-day money-back guarantee – change your mind? No problem',
+        'Optional extras available – tailor your cover to suit your needs'
+      ],
+      exclusions: [
+        'Pre-existing faults are not covered - Pre-existing faults present before the warranty start date are not covered. Only issues that arise after your policy begins will be eligible for protection.'
+      ],
       ...getPricingForDuration('36months'),
-      isPopular: false
+      isPopular: false,
+      isBestValue: true
     }
   ];
 
@@ -202,7 +248,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
               <div
                 key={option.id}
                 onClick={() => setSelectedPaymentType(option.id)}
-                className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
+                className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer relative ${
                   selectedPaymentType === option.id 
                     ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
                     : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
@@ -215,24 +261,36 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                     </span>
                   </div>
                 )}
-                
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-lg font-bold text-gray-900">{option.title}</h4>
-                    <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
-                      <Crown className="w-3 h-3" />
-                      {option.subtitle}
+
+                {option.isBestValue && (
+                  <div className="mb-2">
+                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                      Best Value
                     </span>
                   </div>
+                )}
+                
+                <div className="mb-4">
+                  <h4 className="text-lg font-bold text-gray-900 mb-1">{option.title} {option.subtitle}</h4>
+                  <p className="text-gray-600 text-sm mb-3">{option.description}</p>
+                  <h5 className="text-sm font-semibold text-gray-800 mb-3">{option.planTitle}</h5>
+                  <p className="text-xs text-gray-600 mb-3">Here's what's included:</p>
                 </div>
                 
-                <p className="text-gray-600 mb-4 text-sm">{option.description}</p>
-                
-                <div className="space-y-2 mb-6">
+                <div className="space-y-2 mb-4">
                   {option.features.map((feature, index) => (
-                    <div key={index} className="flex items-center text-sm text-gray-600">
-                      <Check className="w-4 h-4 text-green-500 mr-2" />
-                      {feature}
+                    <div key={index} className="flex items-start text-xs text-gray-600">
+                      <Check className="w-3 h-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-2 mb-6">
+                  {option.exclusions.map((exclusion, index) => (
+                    <div key={index} className="flex items-start text-xs text-gray-600">
+                      <span className="mr-2 mt-0.5 text-red-500 font-bold">x</span>
+                      <span>{exclusion}</span>
                     </div>
                   ))}
                 </div>
@@ -248,6 +306,27 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Full Platinum Plan Section */}
+          <div className="bg-gradient-to-r from-blue-50 to-orange-50 rounded-xl p-6 mb-8 border border-gray-200">
+            <div className="text-center">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Discover everything the Platinum Plan offers and any limitations - click here for complete details and peace of mind
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                If something goes wrong, we look for reasons to say yes!
+              </p>
+              <a 
+                href="/Platinum-warranty-plan_v2.2-5.pdf" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200"
+              >
+                <FileText className="w-4 h-4" />
+                View Full Platinum Plan Details
+              </a>
+            </div>
           </div>
 
           {/* Continue Button */}
