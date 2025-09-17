@@ -280,7 +280,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 <div className="space-y-2 mb-4">
                   {option.features.map((feature, index) => (
                     <div key={index} className="flex items-start text-xs text-gray-600">
-                      <Check className="w-3 h-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span className="mr-2 mt-0.5 text-green-500 font-bold">✓</span>
                       <span>{feature}</span>
                     </div>
                   ))}
@@ -289,7 +289,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 <div className="space-y-2 mb-6">
                   {option.exclusions.map((exclusion, index) => (
                     <div key={index} className="flex items-start text-xs text-gray-600">
-                      <span className="mr-2 mt-0.5 text-red-500 font-bold">x</span>
+                      <span className="mr-2 mt-0.5 text-red-500 font-bold">✗</span>
                       <span>{exclusion}</span>
                     </div>
                   ))}
@@ -309,23 +309,42 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
           </div>
 
           {/* Full Platinum Plan Section */}
-          <div className="bg-gradient-to-r from-blue-50 to-orange-50 rounded-xl p-6 mb-8 border border-gray-200">
+          <div className="bg-gradient-to-r from-blue-50 to-orange-50 rounded-xl p-8 mb-8 border border-gray-200 shadow-lg">
             <div className="text-center">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">
-                Discover everything the Platinum Plan offers and any limitations - click here for complete details and peace of mind
-              </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                If something goes wrong, we look for reasons to say yes!
-              </p>
-              <a 
-                href="/Platinum-warranty-plan_v2.2-5.pdf" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200"
-              >
-                <FileText className="w-4 h-4" />
-                View Full Platinum Plan Details
-              </a>
+              <div className="mb-4">
+                <Crown className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  Discover everything the Platinum Plan offers and any limitations
+                </h3>
+                <p className="text-base text-gray-700 mb-2">
+                  Click here for complete details and peace of mind
+                </p>
+                <p className="text-sm text-gray-600 font-medium">
+                  Wondering if we actually pay out? Fair question — and the answer is yes. We genuinely value our customers, and when something goes wrong, we look for reasons to say Yes, not excuses to say no.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a 
+                  href="/Platinum-warranty-plan_v2.2-5.pdf" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+                >
+                  <FileText className="w-4 h-4" />
+                  View Full Platinum Plan Details
+                </a>
+                
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <span className="text-green-500 font-bold">✓</span>
+                  <span>Complete coverage breakdown</span>
+                </div>
+                
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <span className="text-green-500 font-bold">✓</span>
+                  <span>All terms & conditions</span>
+                </div>
+              </div>
             </div>
           </div>
 
