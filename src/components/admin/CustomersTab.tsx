@@ -1082,8 +1082,8 @@ export const CustomersTab = () => {
           variables: {
             customer_name: customer?.name || customer?.first_name || 'Customer',
             customerName: customer?.name || customer?.first_name || 'Customer',
-            loginLink: 'https://buyawarranty.co.uk/customer-dashboard',
-            portalLink: 'https://buyawarranty.co.uk/customer-dashboard'
+            loginLink: `${window.location.origin}/customer-dashboard`,
+            portalLink: `${window.location.origin}/customer-dashboard`
           }
         };
       } else {

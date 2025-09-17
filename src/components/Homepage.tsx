@@ -240,6 +240,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
               <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
               <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+              <Link to="/customer-dashboard" className="text-blue-600 hover:text-blue-800 font-semibold text-sm xl:text-base">Customer Login</Link>
             </nav>
 
             {/* Desktop CTA Buttons - Show on desktop */}
@@ -315,6 +316,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Contact Us
+                    </Link>
+                    <Link 
+                      to="/customer-dashboard" 
+                      className="text-blue-600 hover:text-blue-800 font-semibold text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Customer Login
                     </Link>
                   </nav>
 
