@@ -354,24 +354,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </header>
 
-      {/* Trustpilot Logo - Moved above the fold */}
-      <div className="bg-white py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
-          <a 
-            href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hover:opacity-80 transition-opacity"
-          >
-            <img 
-              src={trustpilotLogo} 
-              alt="Trustpilot Excellent Rating" 
-              className="h-12 w-auto"
-            />
-          </a>
-        </div>
-      </div>
-
       {/* Hero Section */}
       <section id="quote-form" className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -497,13 +479,28 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
             </div>
 
-{/* Right Content - Hero Image */}
+ {/* Right Content - Hero Image */}
             <div className="relative">
               <img 
                 src="/lovable-uploads/c9993cb7-e55a-47a3-936b-d5bb733e4d87.png" 
                 alt="Panda mascot with cars and motorcycle" 
                 className="w-full h-auto"
               />
+              {/* Trustpilot Logo positioned to align with van */}
+              <div className="absolute top-20 left-4 z-10">
+                <a 
+                  href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  <img 
+                    src={trustpilotLogo} 
+                    alt="Trustpilot Excellent Rating" 
+                    className="h-8 sm:h-10 w-auto"
+                  />
+                </a>
+              </div>
               {/* Halfords Logo positioned to the right */}
               <div className="absolute top-4 right-0 z-10">
                 <img 
