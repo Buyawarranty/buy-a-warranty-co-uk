@@ -33,7 +33,7 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { planName, paymentType, voluntaryExcess = 0, vehicleData, customerData, discountCode, finalAmount, addAnotherWarrantyEnabled, protectionAddOns } = body;
+    const { planName, paymentType, voluntaryExcess = 0, vehicleData, customerData, discountCode, finalAmount, addAnotherWarrantyEnabled, protectionAddOns, claimLimit } = body;
     logStep("Request data", { planName, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns });
     
     // Use planName for pricing lookup (basic, gold, platinum)
@@ -194,6 +194,7 @@ serve(async (req) => {
         discount_code: discountCode || '',
         voluntary_excess: voluntaryExcess?.toString() || '0',
         final_amount: finalAmount?.toString() || totalAmount?.toString(),
+        claim_limit: claimLimit?.toString() || '1250',
         // Add-ons data - using correct field names that match handle-successful-payment
         addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
         addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',

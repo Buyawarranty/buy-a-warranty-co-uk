@@ -2263,13 +2263,19 @@ export const CustomersTab = () => {
                               {selectedCustomer.customer_policies?.[0] && (
                                 <div className="space-y-4">
                                   <h3 className="text-lg font-semibold">Coverage Details</h3>
-                                  <CoverageDetailsDisplay
-                                    mot_fee={(selectedCustomer.customer_policies[0] as any).mot_fee}
-                                    tyre_cover={(selectedCustomer.customer_policies[0] as any).tyre_cover}
-                                    wear_tear={(selectedCustomer.customer_policies[0] as any).wear_tear}
-                                    europe_cover={(selectedCustomer.customer_policies[0] as any).europe_cover}
-                                    transfer_cover={(selectedCustomer.customer_policies[0] as any).transfer_cover}
-                                  />
+                                   <CoverageDetailsDisplay
+                                     mot_fee={(selectedCustomer.customer_policies[0] as any).mot_fee}
+                                     tyre_cover={(selectedCustomer.customer_policies[0] as any).tyre_cover}
+                                     wear_tear={(selectedCustomer.customer_policies[0] as any).wear_tear}
+                                     europe_cover={(selectedCustomer.customer_policies[0] as any).europe_cover}
+                                     transfer_cover={(selectedCustomer.customer_policies[0] as any).transfer_cover}
+                                     breakdown_recovery={(selectedCustomer.customer_policies[0] as any).breakdown_recovery}
+                                     vehicle_rental={(selectedCustomer.customer_policies[0] as any).vehicle_rental}
+                                     mot_repair={(selectedCustomer.customer_policies[0] as any).mot_repair}
+                                     lost_key={(selectedCustomer.customer_policies[0] as any).lost_key}
+                                     consequential={(selectedCustomer.customer_policies[0] as any).consequential}
+                                     claim_limit={(selectedCustomer.customer_policies[0] as any).claim_limit}
+                                   />
                                 </div>
                               )}
 
