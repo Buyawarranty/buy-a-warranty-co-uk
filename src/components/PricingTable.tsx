@@ -1235,14 +1235,90 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {/* Continue Button */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="flex justify-center mt-8">
-            <Button
-              onClick={handleSelectPlan}
-              size="lg"
-              className="w-full sm:w-auto text-lg font-semibold px-12 py-3"
-            >
-              Continue to Checkout
-            </Button>
+          <div className="flex justify-end mt-8">
+            <div className="flex flex-col items-end space-y-2">
+              <div className="text-right">
+                <div className="text-sm text-gray-600">Total warranty cost</div>
+                <div className="text-xl font-bold text-foreground">
+                  £{(() => {
+                    if (!selectedPlan) return '0';
+                    
+                    // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
+                    const adjustedPrice = calculatePlanPrice();
+                    
+                    // Add plan add-ons
+                    const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+                    let planAddOnPrice = 0;
+                    const planAddOns = selectedAddOns[selectedPlan.id] || {};
+                    if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
+                    if (planAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
+                    if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
+                    if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
+                    if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
+                    if (planAddOns.transfer) planAddOnPrice += 30;
+                    
+                    // Add protection add-ons
+                    let protectionAddOnPrice = 0;
+                    if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
+                    if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
+                    if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
+                    if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+                    if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
+                    if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
+                    if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
+                    if (selectedProtectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths;
+                    if (selectedProtectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths;
+                    if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
+                    
+                    const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
+                    
+                    return totalPrice;
+                  })()}
+                  <span className="text-sm font-normal text-gray-600 ml-1">
+                    • £{(() => {
+                      if (!selectedPlan) return '0';
+                      
+                      // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
+                      const adjustedPrice = calculatePlanPrice();
+                      
+                      // Add plan add-ons
+                      const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+                      let planAddOnPrice = 0;
+                      const planAddOns = selectedAddOns[selectedPlan.id] || {};
+                      if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
+                      if (planAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
+                      if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
+                      if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
+                      if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
+                      if (planAddOns.transfer) planAddOnPrice += 30;
+                      
+                      // Add protection add-ons
+                      let protectionAddOnPrice = 0;
+                      if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
+                      if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
+                      if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
+                      if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+                      if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
+                      if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
+                      if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
+                      if (selectedProtectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths;
+                      if (selectedProtectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths;
+                      if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
+                      
+                      const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
+                      return Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
+                    })()} /month
+                  </span>
+                </div>
+              </div>
+              <Button
+                onClick={handleSelectPlan}
+                size="lg"
+                className="text-lg font-semibold px-12 py-3"
+              >
+                Continue to Checkout
+              </Button>
+            </div>
           </div>
         </div>
       )}
