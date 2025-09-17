@@ -214,215 +214,61 @@ const handler = async (req: Request): Promise<Response> => {
         .eq('id', policy.id);
     }
 
-    // Get PDF documents - try multiple approaches
-    console.log(JSON.stringify({ evt: "pdf.lookup.start", rid, planType: policy.plan_type }));
+    // Load the required PDF attachments
+    console.log(JSON.stringify({ evt: "pdf.load.start", rid }));
     
     let attachments = [];
     
-    // Determine vehicle type based on plan and customer data
-    const isSpecialVehicle = ['motorcycle', 'van', 'motorhome', 'caravan', 'motorbike'].some(type => 
-      policy.plan_type.toLowerCase().includes(type)
-    );
-    const vehicleType = isSpecialVehicle ? 'special_vehicle' : 'standard';
-
-    // 1. Try plan_document_mapping first with correct vehicle type
-    const { data: documentMapping } = await supabase
-      .from('plan_document_mapping')
-      .select('document_path')
-      .eq('plan_name', policy.plan_type)
-      .eq('vehicle_type', vehicleType)
-      .maybeSingle();
-
-    console.log(JSON.stringify({ 
-      evt: "plan.mapping.result", 
-      rid, 
-      documentMapping, 
-      planType: policy.plan_type,
-      vehicleType
-    }));
-
-    // 2. Build list of possible PDF paths to try
-    let pdfPaths = [];
-    if (documentMapping?.document_path) {
-      pdfPaths.push(documentMapping.document_path);
-    }
-    
-    // Map plan types to match customer_documents table exactly
-    const planTypeMapping: Record<string, string> = {
-      'basic': 'basic',
-      'gold': 'gold', 
-      'platinum': 'platinum',
-      'electric': 'electric',
-      'ev': 'electric',  // Map EV to electric
-      'phev': 'phev',
-      'hybrid': 'phev',  // Map hybrid to phev
-      'motorbike': 'motorbike',
-      'motorbike extended warranty': 'motorbike'
-    };
-    
-    const normalizedPlanType = planTypeMapping[policy.plan_type.toLowerCase()] || policy.plan_type.toLowerCase();
-    console.log(JSON.stringify({ evt: "plan.mapping", rid, originalPlan: policy.plan_type, normalizedPlan: normalizedPlanType }));
-    
-    // Add common plan naming patterns using normalized plan type
-    const planLower = normalizedPlanType.replace(/\s+/g, '-');
-    const possiblePaths = [
-      `${planLower}-warranty.pdf`,
-      `${planLower}.pdf`,
-      `plan-${planLower}.pdf`,
-      `${normalizedPlanType}.pdf`,
-      `${normalizedPlanType}-warranty.pdf`,
-      'terms-and-conditions.pdf'
-    ];
-    
-    pdfPaths.push(...possiblePaths);
-    
-    console.log(JSON.stringify({ evt: "pdf.paths.to.try", rid, paths: pdfPaths }));
-
-    // Try to download each PDF
-    for (const pdfPath of pdfPaths) {
-      try {
-        console.log(JSON.stringify({ evt: "pdf.download.attempt", rid, path: pdfPath }));
+    try {
+      // Load Terms and Conditions PDF from public folder
+      const termsResponse = await fetch('https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-4.pdf');
+      if (termsResponse.ok) {
+        const termsBuffer = await termsResponse.arrayBuffer();
+        const termsBytes = new Uint8Array(termsBuffer);
+        let termsBase64 = '';
+        const chunkSize = 8192;
         
-        const { data: fileData, error: downloadError } = await supabase.storage
-          .from('policy-documents')
-          .download(pdfPath);
-
-        if (!downloadError && fileData) {
-          const fileSize = fileData.size;
-          console.log(JSON.stringify({ evt: "pdf.found", rid, path: pdfPath, bytes: fileSize }));
-          
-          if (fileSize > 10 * 1024 * 1024) { // 10MB limit
-            console.log(JSON.stringify({ evt: "pdf.too.large", rid, path: pdfPath, bytes: fileSize }));
-            continue;
-          }
-
-          // Convert to base64 for attachment using chunked approach to avoid stack overflow
-          const buffer = await fileData.arrayBuffer();
-          const uint8Array = new Uint8Array(buffer);
-          let base64Content = '';
-          const chunkSize = 8192;
-          
-          for (let i = 0; i < uint8Array.length; i += chunkSize) {
-            const chunk = uint8Array.slice(i, i + chunkSize);
-            base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
-          }
-          
-          let filename;
-          if (pdfPath.includes('terms')) {
-            filename = 'Terms-and-Conditions.pdf';
-          } else {
-            filename = `${policy.plan_type}-Warranty-${policy.warranty_number}.pdf`;
-          }
-          
-          attachments.push({
-            filename,
-            content: base64Content,
-            content_type: 'application/pdf'
-          });
-          
-          console.log(JSON.stringify({ 
-            evt: "pdf.prepared", 
-            rid, 
-            path: pdfPath,
-            filename,
-            base64Length: base64Content.length 
-          }));
-          
-          // Only get first plan document, but continue looking for terms
-          if (!pdfPath.includes('terms') && attachments.length >= 1) {
-            break;
-          }
-        } else {
-          console.log(JSON.stringify({ evt: "pdf.not.found", rid, path: pdfPath, error: downloadError?.message }));
+        for (let i = 0; i < termsBytes.length; i += chunkSize) {
+          const chunk = termsBytes.slice(i, i + chunkSize);
+          termsBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
         }
-      } catch (error) {
-        console.log(JSON.stringify({ 
-          evt: "pdf.error", 
-          rid, 
-          path: pdfPath,
-          error: error instanceof Error ? error.message : String(error) 
-        }));
-      }
-    }
-    
-    // Also try customer_documents table with normalized plan type if no documents found yet
-    if (attachments.length === 0) {
-      console.log(JSON.stringify({ evt: "trying.customer.documents.table", rid, normalizedPlanType }));
-      
-      const { data: planDoc, error: planError } = await supabase
-        .from('customer_documents')
-        .select('document_name, file_url')
-        .eq('plan_type', normalizedPlanType)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (planDoc && !planError) {
-        try {
-          console.log(JSON.stringify({ evt: "customer.doc.found", rid, url: planDoc.file_url, name: planDoc.document_name }));
-          const response = await fetch(planDoc.file_url);
-          
-          if (response.ok) {
-            const fileBuffer = await response.arrayBuffer();
-            // Use chunked approach to avoid stack overflow
-            const bytes = new Uint8Array(fileBuffer);
-            let base64Content = '';
-            const chunkSize = 8192;
-            
-            for (let i = 0; i < bytes.length; i += chunkSize) {
-              const chunk = bytes.slice(i, i + chunkSize);
-              base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
-            }
-            
-            attachments.push({
-              filename: planDoc.document_name.endsWith('.pdf') ? planDoc.document_name : `${planDoc.document_name}.pdf`,
-              content: base64Content,
-              content_type: 'application/pdf'
-            });
-            console.log(JSON.stringify({ evt: "customer.doc.attached", rid, filename: planDoc.document_name }));
-          }
-        } catch (error) {
-          console.log(JSON.stringify({ evt: "customer.doc.error", rid, error: error.message }));
-        }
+        
+        attachments.push({
+          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-4.pdf',
+          content: termsBase64,
+          content_type: 'application/pdf'
+        });
+        
+        console.log(JSON.stringify({ evt: "terms.pdf.attached", rid }));
+      } else {
+        console.log(JSON.stringify({ evt: "terms.pdf.failed", rid, status: termsResponse.status }));
       }
       
-      // Also try to get terms and conditions
-      const { data: termsDoc, error: termsError } = await supabase
-        .from('customer_documents')
-        .select('document_name, file_url')
-        .eq('plan_type', 'terms-and-conditions')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (termsDoc && !termsError) {
-        try {
-          console.log(JSON.stringify({ evt: "terms.doc.found", rid, url: termsDoc.file_url }));
-          const response = await fetch(termsDoc.file_url);
-          
-          if (response.ok) {
-            const fileBuffer = await response.arrayBuffer();
-            // Use chunked approach to avoid stack overflow
-            const bytes = new Uint8Array(fileBuffer);
-            let base64Content = '';
-            const chunkSize = 8192;
-            
-            for (let i = 0; i < bytes.length; i += chunkSize) {
-              const chunk = bytes.slice(i, i + chunkSize);
-              base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
-            }
-            
-            attachments.push({
-              filename: termsDoc.document_name.endsWith('.pdf') ? termsDoc.document_name : `${termsDoc.document_name}.pdf`,
-              content: base64Content,
-              content_type: 'application/pdf'
-            });
-            console.log(JSON.stringify({ evt: "terms.doc.attached", rid, filename: termsDoc.document_name }));
-          }
-        } catch (error) {
-          console.log(JSON.stringify({ evt: "terms.doc.error", rid, error: error.message }));
+      // Load Platinum Warranty Plan PDF from public folder
+      const platinumResponse = await fetch('https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-3.pdf');
+      if (platinumResponse.ok) {
+        const platinumBuffer = await platinumResponse.arrayBuffer();
+        const platinumBytes = new Uint8Array(platinumBuffer);
+        let platinumBase64 = '';
+        const chunkSize = 8192;
+        
+        for (let i = 0; i < platinumBytes.length; i += chunkSize) {
+          const chunk = platinumBytes.slice(i, i + chunkSize);
+          platinumBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
         }
+        
+        attachments.push({
+          filename: 'Platinum-warranty-plan_v2.2-3.pdf',
+          content: platinumBase64,
+          content_type: 'application/pdf'
+        });
+        
+        console.log(JSON.stringify({ evt: "platinum.pdf.attached", rid }));
+      } else {
+        console.log(JSON.stringify({ evt: "platinum.pdf.failed", rid, status: platinumResponse.status }));
       }
+    } catch (error) {
+      console.log(JSON.stringify({ evt: "pdf.load.error", rid, error: error.message }));
     }
     
     console.log(JSON.stringify({ evt: "pdf.final.count", rid, attachmentCount: attachments.length }));
@@ -643,6 +489,7 @@ const handler = async (req: Request): Promise<Response> => {
       from: resendFrom,
       to: [customer.email],
       subject: `🎉 Congratulations — Your Buyawarranty.co.uk Protection is Now Registered! ✅`,
+      ...(attachments.length > 0 && { attachments }),
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 30px;">

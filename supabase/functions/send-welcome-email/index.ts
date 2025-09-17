@@ -200,11 +200,61 @@ serve(async (req) => {
       });
     };
 
+    // Load the required PDF attachments
+    const attachments = [];
+    
+    try {
+      // Load Terms and Conditions PDF
+      const termsPath = '/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-4.pdf';
+      const termsResponse = await fetch(`https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents${termsPath}`);
+      if (termsResponse.ok) {
+        const termsBuffer = await termsResponse.arrayBuffer();
+        const termsBytes = new Uint8Array(termsBuffer);
+        let termsBase64 = '';
+        const chunkSize = 8192;
+        
+        for (let i = 0; i < termsBytes.length; i += chunkSize) {
+          const chunk = termsBytes.slice(i, i + chunkSize);
+          termsBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+        }
+        
+        attachments.push({
+          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-4.pdf',
+          content: termsBase64,
+          content_type: 'application/pdf'
+        });
+      }
+      
+      // Load Platinum Warranty Plan PDF
+      const platinumPath = '/Platinum-warranty-plan_v2.2-3.pdf';
+      const platinumResponse = await fetch(`https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents${platinumPath}`);
+      if (platinumResponse.ok) {
+        const platinumBuffer = await platinumResponse.arrayBuffer();
+        const platinumBytes = new Uint8Array(platinumBuffer);
+        let platinumBase64 = '';
+        const chunkSize = 8192;
+        
+        for (let i = 0; i < platinumBytes.length; i += chunkSize) {
+          const chunk = platinumBytes.slice(i, i + chunkSize);
+          platinumBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+        }
+        
+        attachments.push({
+          filename: 'Platinum-warranty-plan_v2.2-3.pdf',
+          content: platinumBase64,
+          content_type: 'application/pdf'
+        });
+      }
+    } catch (error) {
+      logStep("Warning: Could not load PDF attachments", error);
+    }
+
     // Send welcome email directly using Resend
     const emailPayload = {
       from: resendFrom,
       to: [email],
       subject: `🎉 Congratulations — Your Buyawarranty.co.uk Protection is Now Registered! ✅`,
+      ...(attachments.length > 0 && { attachments }),
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 30px;">
