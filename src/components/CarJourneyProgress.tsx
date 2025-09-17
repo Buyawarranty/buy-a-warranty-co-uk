@@ -39,7 +39,7 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-6 px-4">
+    <div className="w-full max-w-6xl mx-auto py-6 px-4">
       {/* Brand Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold">
