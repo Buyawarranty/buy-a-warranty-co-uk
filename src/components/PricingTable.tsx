@@ -1095,134 +1095,35 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="text-center mb-8">
             <p className="text-muted-foreground">Enhance your warranty with optional protection covers</p>
           </div>
-          
-          {/* Two-column layout for add-ons and summary */}
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Add-ons grid - takes 2 columns */}
-            <div className="lg:col-span-2">
-              <AddOnProtectionPackages 
-                selectedAddOns={selectedProtectionAddOns}
-                paymentType={paymentType}
-                onAddOnChange={(addOnKey, selected) => 
-                  setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
-                }
-              />
-            </div>
-            
-            {/* Summary box - takes 1 column */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-8">
-                <div className="bg-gray-50 rounded-lg p-6 border-2 border-gray-200">
-                  <h4 className="font-semibold text-lg mb-4">Order Summary</h4>
-                  
-                  {/* Main warranty */}
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center pb-2 border-b border-gray-200">
-                      <span className="text-sm text-muted-foreground">Main Warranty</span>
-                      <span className="font-medium">
-                        £{(() => {
-                          if (!selectedPlan) return '0';
-                          return calculatePlanPrice().toLocaleString();
-                        })()}
-                      </span>
-                    </div>
-                    
-                    {/* Selected add-ons */}
-                    {(() => {
-                      const selectedAddOnsList = Object.entries(selectedProtectionAddOns)
-                        .filter(([_, selected]) => selected)
-                        .map(([key]) => {
-                          const addOnPackages = [
-                            { key: 'tyre', title: 'Tyre Cover', price: 5, priceType: 'monthly' },
-                            { key: 'wearTear', title: 'Wear & Tear', price: 5, priceType: 'monthly' },
-                            { key: 'european', title: 'Europe Cover', price: 3, priceType: 'monthly' },
-                            { key: 'breakdown', title: '24/7 Recovery', price: 6, priceType: 'monthly' },
-                            { key: 'rental', title: 'Vehicle Rental', price: 4, priceType: 'monthly' },
-                            { key: 'motRepair', title: 'MOT Repair', price: 4, priceType: 'monthly' },
-                            { key: 'motFee', title: 'MOT Fee', price: 3, priceType: 'monthly' },
-                            { key: 'lostKey', title: 'Lost Key', price: 3, priceType: 'monthly' },
-                            { key: 'consequential', title: 'Consequential Damage', price: 5, priceType: 'monthly' },
-                            { key: 'transfer', title: 'Transfer Cover', price: 30, priceType: 'one-off' },
-                          ];
-                          return addOnPackages.find(addon => addon.key === key);
-                        })
-                        .filter(Boolean);
-                      
-                      return selectedAddOnsList.map((addon) => {
-                        if (!addon) return null;
-                        const months = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                        const totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
-                        
-                        return (
-                          <div key={addon.key} className="flex justify-between items-center text-sm">
-                            <span className="text-muted-foreground">{addon.title}</span>
-                            <span>£{totalPrice}</span>
-                          </div>
-                        );
-                      });
-                    })()}
-                    
-                    {/* Total */}
-                    <div className="flex justify-between items-center pt-3 border-t border-gray-300">
-                      <span className="font-semibold text-lg">Total</span>
-                      <span className="font-bold text-xl text-primary">
-                        £{(() => {
-                          let total = selectedPlan ? calculatePlanPrice() : 0;
-                          
-                          // Add protection add-ons
-                          const months = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                          Object.entries(selectedProtectionAddOns).forEach(([key, selected]) => {
-                            if (selected) {
-                              const addOnPackages = [
-                                { key: 'tyre', price: 5, priceType: 'monthly' },
-                                { key: 'wearTear', price: 5, priceType: 'monthly' },
-                                { key: 'european', price: 3, priceType: 'monthly' },
-                                { key: 'breakdown', price: 6, priceType: 'monthly' },
-                                { key: 'rental', price: 4, priceType: 'monthly' },
-                                { key: 'motRepair', price: 4, priceType: 'monthly' },
-                                { key: 'motFee', price: 3, priceType: 'monthly' },
-                                { key: 'lostKey', price: 3, priceType: 'monthly' },
-                                { key: 'consequential', price: 5, priceType: 'monthly' },
-                                { key: 'transfer', price: 30, priceType: 'one-off' },
-                              ];
-                              const addon = addOnPackages.find(a => a.key === key);
-                              if (addon) {
-                                total += addon.priceType === 'monthly' ? addon.price * months : addon.price;
-                              }
-                            }
-                          });
-                          
-                          return total.toLocaleString();
-                        })()}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  {/* Continue to Checkout Button */}
-                  <Button
-                    onClick={handleSelectPlan}
-                    size="lg"
-                    className="w-full mt-6 bg-primary hover:bg-primary/90 text-white font-semibold text-lg py-3"
-                  >
-                    Continue to Checkout
-                  </Button>
-                  
-                  <div className="mt-4 text-xs text-center text-muted-foreground">
-                    <p>✓ No hidden fees</p>
-                    <p>✓ Cancel anytime</p>
-                    <p>✓ Money back guarantee</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <AddOnProtectionPackages 
+            selectedAddOns={selectedProtectionAddOns}
+            paymentType={paymentType}
+            onAddOnChange={(addOnKey, selected) => 
+              setSelectedProtectionAddOns(prev => ({ ...prev, [addOnKey]: selected }))
+            }
+          />
         </div>
 
       </div>
 
-      {/* Sticky Total Bar - Keep but hide when add-ons section is visible */}
+      {/* Continue Button */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 lg:hidden">
+        <div className="max-w-6xl mx-auto px-4 pb-16">
+          <div className="flex justify-center mt-8">
+            <Button
+              onClick={handleSelectPlan}
+              size="lg"
+              className="w-full sm:w-auto text-lg font-semibold px-12 py-3"
+            >
+              Continue to Checkout
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Sticky Total Bar */}
+      {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
           <div className="flex items-center justify-between p-4 max-w-6xl mx-auto">
             <div className="flex flex-col">
               <div className="text-sm text-gray-600">Total warranty cost</div>
