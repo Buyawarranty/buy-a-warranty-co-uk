@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronUp, Check, Package } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check } from 'lucide-react';
 
 interface AddOnProtectionPackagesProps {
   selectedAddOns: {[key: string]: boolean};
@@ -199,24 +199,8 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
   const months = getMonthsFromPaymentType(paymentType);
 
   return (
-    <div className="mt-8 mb-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="bg-white rounded-lg p-6 border border-border shadow-lg">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-              4
-            </div>
-            <h3 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Package className="w-6 h-6" />
-              Add-On Protection Packages
-            </h3>
-          </div>
-          <div className="text-center mb-8">
-            <p className="text-muted-foreground">Enhance your warranty with optional protection covers</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-3">
-            {addOnPackages.map((addon) => {
+    <div className="grid md:grid-cols-3 gap-3">
+      {addOnPackages.map((addon) => {
               // Calculate total price based on duration for monthly add-ons
               const totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
               const priceDisplay = addon.priceType === 'monthly' 
@@ -282,9 +266,6 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                 </div>
               );
             })}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

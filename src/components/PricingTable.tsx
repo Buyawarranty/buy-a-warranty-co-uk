@@ -1092,6 +1092,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               Add-On Protection Packages
             </h3>
           </div>
+          <div className="text-center mb-8">
+            <p className="text-muted-foreground">Enhance your warranty with optional protection covers</p>
+          </div>
           <AddOnProtectionPackages 
             selectedAddOns={selectedProtectionAddOns}
             paymentType={paymentType}
