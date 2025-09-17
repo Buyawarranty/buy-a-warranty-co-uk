@@ -199,7 +199,7 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
   const months = getMonthsFromPaymentType(paymentType);
 
   return (
-    <div className="grid md:grid-cols-3 gap-3">
+    <div className="grid sm:grid-cols-2 gap-3">
       {addOnPackages.map((addon) => {
               // Calculate total price based on duration for monthly add-ons
               const totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
