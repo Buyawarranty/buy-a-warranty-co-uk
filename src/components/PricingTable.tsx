@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck, PartyPopper, CheckCircle, Crown } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -118,6 +119,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     wearTear: false,
     european: false,
     transfer: false
+  });
+  
+  // Claim limit dialog state
+  const [claimLimitDialogOpen, setClaimLimitDialogOpen] = useState<{[key: number]: boolean}>({
+    750: false,
+    1250: false,
+    2000: false
   });
   
   // Reliability score state
@@ -742,8 +750,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
           
           
-          <TooltipProvider>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* AutoCare Essential */}
             <button
               onClick={() => setSelectedClaimLimit(750)}
@@ -754,58 +761,59 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               }`}
             >
               <div className="absolute top-4 right-4">
-                <Tooltip>
-                  <TooltipTrigger asChild>
+                <Dialog open={claimLimitDialogOpen[750]} onOpenChange={(open) => setClaimLimitDialogOpen(prev => ({...prev, 750: open}))}>
+                  <DialogTrigger asChild>
                     <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" onClick={(e) => e.stopPropagation()}>
                       <HelpCircle className="h-6 w-6 text-primary hover:text-primary/80 drop-shadow-sm" />
                     </button>
-                  </TooltipTrigger>
-                   <TooltipContent side="top" className="w-80 md:w-96 p-6 max-w-[90vw]">
-                     <div className="space-y-4">
-                       <div className="flex items-center gap-2 text-green-600">
-                         <CheckCircle className="h-5 w-5" />
-                         <h3 className="font-bold text-base">Your £750 Claim Limit – How It Works</h3>
-                       </div>
-                       
-                       <div className="mb-4">
-                         <h4 className="font-semibold text-foreground mb-1">Essential protection for everyday reliability.</h4>
-                         <p className="text-sm text-muted-foreground">A cost-effective solution for basic mechanical and electrical failures, perfect for budget-conscious drivers.</p>
-                       </div>
-                       
-                       <div className="space-y-3">
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm font-medium text-foreground">If your repair costs £750 or less:</p>
-                             <p className="text-sm text-muted-foreground">You pay nothing – we cover the full cost of parts and labour.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm font-medium text-foreground">If your repair costs more than £750:</p>
-                             <p className="text-sm text-muted-foreground">You simply pay the difference. For example, if the repair is £850, we cover £750 and you pay just £100.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm text-muted-foreground"><span className="font-semibold">Excess</span> is based on the option you choose – and there are no hidden fees. Just straightforward cover that helps you manage unexpected repair bills.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm text-muted-foreground"><span className="font-semibold">Nationwide</span> support and fast claims processing to get you back on the road quickly.</p>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   </TooltipContent>
-                </Tooltip>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2 text-green-600">
+                        <CheckCircle className="h-5 w-5" />
+                        Your £750 Claim Limit – How It Works
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="mb-4">
+                        <h4 className="font-semibold text-foreground mb-1">Essential protection for everyday reliability.</h4>
+                        <p className="text-sm text-muted-foreground">A cost-effective solution for basic mechanical and electrical failures, perfect for budget-conscious drivers.</p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">If your repair costs £750 or less:</p>
+                            <p className="text-sm text-muted-foreground">You pay nothing – we cover the full cost of parts and labour.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">If your repair costs more than £750:</p>
+                            <p className="text-sm text-muted-foreground">You simply pay the difference. For example, if the repair is £850, we cover £750 and you pay just £100.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm text-muted-foreground"><span className="font-semibold">Excess</span> is based on the option you choose – and there are no hidden fees. Just straightforward cover that helps you manage unexpected repair bills.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm text-muted-foreground"><span className="font-semibold">Nationwide</span> support and fast claims processing to get you back on the road quickly.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
               <div className="text-2xl font-bold text-black mb-2">£750 cover</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Essential</h4>
@@ -826,58 +834,59 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 MOST POPULAR
               </div>
               <div className="absolute top-4 right-4">
-                <Tooltip>
-                  <TooltipTrigger asChild>
+                <Dialog open={claimLimitDialogOpen[1250]} onOpenChange={(open) => setClaimLimitDialogOpen(prev => ({...prev, 1250: open}))}>
+                  <DialogTrigger asChild>
                     <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" onClick={(e) => e.stopPropagation()}>
                       <HelpCircle className="h-6 w-6 text-primary hover:text-primary/80 drop-shadow-sm" />
                     </button>
-                  </TooltipTrigger>
-                   <TooltipContent side="top" className="w-80 md:w-96 p-6 max-w-[90vw]">
-                     <div className="space-y-4">
-                       <div className="flex items-center gap-2 text-green-600">
-                         <CheckCircle className="h-5 w-5" />
-                         <h3 className="font-bold text-base">Your £1,250 Claim Limit – How It Works</h3>
-                       </div>
-                       
-                       <div className="mb-4">
-                         <h4 className="font-semibold text-foreground mb-1">Balanced protection for life's bigger bumps.</h4>
-                         <p className="text-sm text-muted-foreground">A comprehensive option that balances cost and coverage, ideal for drivers who want broader protection.</p>
-                       </div>
-                       
-                       <div className="space-y-3">
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm font-medium text-foreground">If your repair costs £1,250 or less:</p>
-                             <p className="text-sm text-muted-foreground">You pay nothing – we cover the full cost of parts and labour.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm font-medium text-foreground">If your repair costs more than £1,250:</p>
-                             <p className="text-sm text-muted-foreground">You simply pay the difference. For example, if the repair is £1,400, we cover £1,250 and you pay just £150.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm text-muted-foreground"><span className="font-semibold">Excess</span> is based on the option you choose – and there are no hidden fees. Just straightforward cover that helps you manage unexpected repair bills.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm text-muted-foreground"><span className="font-semibold">Nationwide</span> support and fast claims processing to get you back on the road quickly.</p>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   </TooltipContent>
-                </Tooltip>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2 text-green-600">
+                        <CheckCircle className="h-5 w-5" />
+                        Your £1,250 Claim Limit – How It Works
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="mb-4">
+                        <h4 className="font-semibold text-foreground mb-1">Balanced protection for life's bigger bumps.</h4>
+                        <p className="text-sm text-muted-foreground">A comprehensive option that balances cost and coverage, ideal for drivers who want broader protection.</p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">If your repair costs £1,250 or less:</p>
+                            <p className="text-sm text-muted-foreground">You pay nothing – we cover the full cost of parts and labour.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">If your repair costs more than £1,250:</p>
+                            <p className="text-sm text-muted-foreground">You simply pay the difference. For example, if the repair is £1,400, we cover £1,250 and you pay just £150.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm text-muted-foreground"><span className="font-semibold">Excess</span> is based on the option you choose – and there are no hidden fees. Just straightforward cover that helps you manage unexpected repair bills.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm text-muted-foreground"><span className="font-semibold">Nationwide</span> support and fast claims processing to get you back on the road quickly.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
               <div className="text-2xl font-bold text-black mb-2">£1,250 cover</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Advantage</h4>
@@ -895,58 +904,59 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               }`}
             >
               <div className="absolute top-4 right-4">
-                <Tooltip>
-                  <TooltipTrigger asChild>
+                <Dialog open={claimLimitDialogOpen[2000]} onOpenChange={(open) => setClaimLimitDialogOpen(prev => ({...prev, 2000: open}))}>
+                  <DialogTrigger asChild>
                     <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" onClick={(e) => e.stopPropagation()}>
                       <HelpCircle className="h-6 w-6 text-primary hover:text-primary/80 drop-shadow-sm" />
                     </button>
-                  </TooltipTrigger>
-                   <TooltipContent side="top" className="w-80 md:w-96 p-6 max-w-[90vw]">
-                     <div className="space-y-4">
-                       <div className="flex items-center gap-2 text-green-600">
-                         <CheckCircle className="h-5 w-5" />
-                         <h3 className="font-bold text-base">Your £2,000 Claim Limit – How It Works</h3>
-                       </div>
-                       
-                       <div className="mb-4">
-                         <h4 className="font-semibold text-foreground mb-1">Maximum protection for ultimate peace of mind.</h4>
-                         <p className="text-sm text-muted-foreground">Our most comprehensive cover, designed for drivers who want the highest level of protection against expensive repairs.</p>
-                       </div>
-                       
-                       <div className="space-y-3">
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm font-medium text-foreground">If your repair costs £2,000 or less:</p>
-                             <p className="text-sm text-muted-foreground">You pay nothing – we cover the full cost of parts and labour.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm font-medium text-foreground">If your repair costs more than £2,000:</p>
-                             <p className="text-sm text-muted-foreground">You simply pay the difference. For example, if the repair is £2,200, we cover £2,000 and you pay just £200.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm text-muted-foreground"><span className="font-semibold">Excess</span> is based on the option you choose – and there are no hidden fees. Just straightforward cover that helps you manage unexpected repair bills.</p>
-                           </div>
-                         </div>
-                         
-                         <div className="flex items-start gap-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <div>
-                             <p className="text-sm text-muted-foreground"><span className="font-semibold">Nationwide</span> support and fast claims processing to get you back on the road quickly.</p>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   </TooltipContent>
-                </Tooltip>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2 text-green-600">
+                        <CheckCircle className="h-5 w-5" />
+                        Your £2,000 Claim Limit – How It Works
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="mb-4">
+                        <h4 className="font-semibold text-foreground mb-1">Maximum protection for ultimate peace of mind.</h4>
+                        <p className="text-sm text-muted-foreground">Our most comprehensive cover, designed for drivers who want the highest level of protection against expensive repairs.</p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">If your repair costs £2,000 or less:</p>
+                            <p className="text-sm text-muted-foreground">You pay nothing – we cover the full cost of parts and labour.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">If your repair costs more than £2,000:</p>
+                            <p className="text-sm text-muted-foreground">You simply pay the difference. For example, if the repair is £2,200, we cover £2,000 and you pay just £200.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm text-muted-foreground"><span className="font-semibold">Excess</span> is based on the option you choose – and there are no hidden fees. Just straightforward cover that helps you manage unexpected repair bills.</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm text-muted-foreground"><span className="font-semibold">Nationwide</span> support and fast claims processing to get you back on the road quickly.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
               <div className="text-2xl font-bold text-black mb-2">£2,000 cover</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Elite</h4>
@@ -954,8 +964,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <p className="text-sm font-medium text-foreground">Top-tier cover for total peace of mind.</p>
             </button>
             </div>
-          </TooltipProvider>
-       </div>
+        </div>
 
         {/* Choose Warranty Duration */}
         <div className="section-header rounded-lg p-6">
