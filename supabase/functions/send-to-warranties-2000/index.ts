@@ -420,7 +420,7 @@ serve(async (req) => {
     registrationData.EuroCover = (policy?.europe_cover === true || customer?.europe_cover === true) ? 'Y' : 'N'; // Europe cover
     registrationData.Rental = (policy?.vehicle_rental === true || customer?.vehicle_rental === true) ? 'Y' : 'N'; // Vehicle rental
     registrationData.Consequential = (policy?.consequential === true || customer?.consequential === true) ? 'Y' : 'N'; // Consequential damage
-    registrationData.Transfer = (policy?.transfer_cover === true || customer?.transfer_cover === true) ? 'Y' : 'N'; // Transfer fee
+    registrationData.Transfer = (policy?.transfer_cover === true || customer?.transfer_cover === true) ? 'Y' : 'N'; // Transfer fee (mapped from transfer_cover)
 
     console.log(`[WARRANTIES-2000] Final registration data with add-ons:`, {
       regNum: registrationData.RegNum,
