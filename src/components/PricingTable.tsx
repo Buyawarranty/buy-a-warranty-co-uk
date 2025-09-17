@@ -815,9 +815,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </DialogContent>
                 </Dialog>
               </div>
-              <div className="text-2xl font-bold text-black mb-2">£750 cover</div>
+              <div className="text-2xl font-bold text-black mb-2">£750 per claim</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Essential</h4>
-              <p className="text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg mb-2 inline-block">10 claims per year</p>
               <p className="text-sm font-medium text-foreground">Confidence for the everyday drive.</p>
             </button>
             
@@ -890,7 +889,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
               <div className="text-2xl font-bold text-black mb-2">£1,250 cover</div>
               <h4 className="text-lg font-semibold text-foreground mb-1">AutoCare Advantage</h4>
-              <p className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg mb-2 inline-block">Unlimited claims</p>
               <p className="text-sm font-medium text-foreground">Balanced protection for life's bigger bumps.</p>
             </button>
             

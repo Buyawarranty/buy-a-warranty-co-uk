@@ -24,8 +24,8 @@ const OriginalPricing = () => {
     {
       id: 'essential',
       name: 'AutoCare Essential',
-      claimLimit: '£750',
-      claimsPerYear: '10 claims per year',
+      claimLimit: '£750 per claim',
+      claimsPerYear: '',
       description: 'Confidence for the everyday drive.',
       isPopular: false
     },
@@ -33,7 +33,7 @@ const OriginalPricing = () => {
       id: 'advantage',
       name: 'AutoCare Advantage',
       claimLimit: '£1,250',
-      claimsPerYear: 'Unlimited claims',
+      claimsPerYear: '',
       description: 'Balanced protection for life\'s bigger bumps.',
       isPopular: true
     },

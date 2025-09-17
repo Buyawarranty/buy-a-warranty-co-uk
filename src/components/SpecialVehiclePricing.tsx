@@ -414,14 +414,11 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
               }`}
               onClick={() => setSelectedClaimLimit(750)}>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-2xl font-bold text-black">£750 cover</div>
+                  <div className="text-2xl font-bold text-black">£750 per claim</div>
                   <Info className="w-5 h-5 text-gray-400" />
                 </div>
                 <div className="text-lg font-semibold text-gray-700 mb-2">
                   {getVehicleTypeTitle()} Essential
-                </div>
-                <div className="text-orange-600 font-semibold mb-2">
-                  10 claims per year
                 </div>
                 <div className="text-gray-600">
                   Confidence for the everyday drive.
@@ -446,9 +443,6 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                 </div>
                 <div className="text-lg font-semibold text-gray-700 mb-2">
                   {getVehicleTypeTitle()} Advantage
-                </div>
-                <div className="text-green-600 font-semibold mb-2">
-                  Unlimited claims
                 </div>
                 <div className="text-gray-600">
                   Balanced protection for life's bigger bumps.
