@@ -354,6 +354,24 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </header>
 
+      {/* Trustpilot Logo - Moved above the fold */}
+      <div className="bg-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+          <a 
+            href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity"
+          >
+            <img 
+              src={trustpilotLogo} 
+              alt="Trustpilot Excellent Rating" 
+              className="h-12 w-auto"
+            />
+          </a>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section id="quote-form" className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -493,22 +511,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
                   className="h-16 w-auto"
                 />
-              </div>
-              
-              {/* Trustpilot Logo positioned below Halfords */}
-              <div className="absolute top-24 right-0 z-10">
-                <a 
-                  href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  <img 
-                    src={trustpilotLogo} 
-                    alt="Trustpilot Excellent Rating" 
-                    className="h-12 w-auto"
-                  />
-                </a>
               </div>
               
               {/* Vehicle Types positioned underneath the panda's feet */}
