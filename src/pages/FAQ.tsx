@@ -70,8 +70,8 @@ const FAQ = () => {
         },
         {
           id: 'do-you-pay-claims',
-          question: 'Do you actually pay out claims?',
-          answer: 'Yes, we do – and we\'re proud of it.\n\nNo confusing small print\nStraightforward, honest cover\nExcellent Trustpilot reviews\nConfidence your vehicle is covered when you need it most'
+          question: 'Do we actually pay out claims?',
+          answer: 'It\'s a fair question - and the answer is yes. We genuinely value our customers, and when something goes wrong, we don\'t look for loopholes. We look for reasons to say yes.\n\nWith easy-to-follow terms, we\'re committed to giving you reliable protection and peace of mind.'
         },
         {
           id: 'pay-upfront',
