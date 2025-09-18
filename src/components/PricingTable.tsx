@@ -1481,6 +1481,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       )}
 
+      {/* Trust Section */}
+      <div className="mt-16 mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+        <div className="text-center max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold text-foreground mb-4 flex items-center justify-center gap-2">
+            🔍 Do we actually pay out claims?
+          </h3>
+          <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
+            It's a fair question - and the answer is yes. We genuinely value our customers, and when something goes wrong, we don't look for loopholes. We look for reasons to say yes.
+          </p>
+          <p className="text-base text-muted-foreground font-medium">
+            With easy-to-follow terms, we're committed to giving you reliable protection and peace of mind.
+          </p>
+        </div>
+      </div>
+
     </div>
   );
 };
