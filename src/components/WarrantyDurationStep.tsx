@@ -141,7 +141,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     {
       id: '24months',
       title: '⭐️ 2-Year Cover — Save 10%',
-      subtitle: '',
+      subtitle: 'Most Popular',
       description: 'Balanced Protection and Value',
       planTitle: 'Platinum Comprehensive Plan',
       features: [
@@ -166,7 +166,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     {
       id: '36months',
       title: '🏆 3-Year Cover — Save 20%',
-      subtitle: '',
+      subtitle: 'Best Value',
       description: 'Extended cover for long-term peace of mind',
       planTitle: 'Platinum Comprehensive Plan',
       features: [
