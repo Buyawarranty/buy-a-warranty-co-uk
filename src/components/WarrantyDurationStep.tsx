@@ -117,13 +117,13 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   const durationOptions = [
     {
       id: '12months',
-      title: '1 Year',
-      subtitle: 'cover',
-      description: 'Flexible protection for short-term peace of mind.',
-      planTitle: 'Platinum comprehensive plan',
+      title: '✅ 1-Year Cover',
+      subtitle: '',
+      description: 'Flexible protection for short-term peace of mind',
+      planTitle: 'Platinum Comprehensive Plan',
       features: [
-        'All mechanical & electrical parts covered - no surprises, just solid protection',
-        'Up to 10 claims per policy - plenty of cover when you need it',
+        'All mechanical & electrical parts covered – no surprises, just solid protection',
+        'Up to 10 claims per policy – plenty of cover when you need it',
         'Labour costs included – we\'ve got the work sorted',
         'Fault diagnostics – we\'ll help find the problem fast',
         'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
@@ -132,7 +132,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Optional extras available – tailor your cover to suit your needs'
       ],
       exclusions: [
-        'Pre-existing faults are not covered. - If your vehicle already had a known issue before the warranty started, it won\'t be covered. Only new problems that happen after the policy begins are protected'
+        'Pre-existing faults are not covered – if your vehicle already had a known issue before the warranty started, it won\'t be covered. Only new problems that happen after the policy begins are protected.'
       ],
       ...getPricingForDuration('12months'),
       isPopular: false,
@@ -140,24 +140,24 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     },
     {
       id: '24months',
-      title: '2 Years',
-      subtitle: 'Cover — Save 10%',
-      description: 'Balanced Protection and Value.',
-      planTitle: 'Platinum comprehensive plan',
+      title: '⭐️ 2-Year Cover — Save 10%',
+      subtitle: '',
+      description: 'Balanced Protection and Value',
+      planTitle: 'Platinum Comprehensive Plan',
       features: [
-        'All mechanical & electrical parts covered - no surprises, just solid protection',
-        'Unlimited claims per policy - plenty of cover when you need it',
+        'All mechanical & electrical parts covered – no surprises, just solid protection',
+        'Unlimited claims per policy – plenty of cover when you need it',
         'Labour costs included – we\'ve got the work sorted',
         'Fault diagnostics – we\'ll help find the problem fast',
         'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
         'Fast claims process – no drama, just quick resolutions',
-        'MOT test fee - Your MOT test fee is covered by us every time your vehicle is due for its MOT',
-        '24/7 Vehicle recovery – We\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded.',
+        'MOT test fee – your MOT test fee is covered by us every time your vehicle is due for its MOT',
+        '24/7 Vehicle recovery – we\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded',
         '14-day money-back guarantee – change your mind? No problem',
         'Optional extras available – tailor your cover to suit your needs'
       ],
       exclusions: [
-        'Pre-existing faults are not covered - Pre-existing faults present before the warranty start date are not covered. Only issues that arise after your policy begins will be eligible for protection.'
+        'Pre-existing faults are not covered – pre-existing faults present before the warranty start date are not covered. Only issues that arise after your policy begins will be eligible for protection.'
       ],
       ...getPricingForDuration('24months'),
       isPopular: true,
@@ -165,24 +165,26 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     },
     {
       id: '36months',
-      title: '3 Years',
-      subtitle: 'cover Save 20%',
-      description: 'Long-term protection, better value',
-      planTitle: 'Platinum comprehensive plan',
+      title: '🏆 3-Year Cover — Save 20%',
+      subtitle: '',
+      description: 'Extended cover for long-term peace of mind',
+      planTitle: 'Platinum Comprehensive Plan',
       features: [
-        'All mechanical & electrical parts covered - no surprises, just solid protection',
-        'Unlimited claims per policy - plenty of cover when you need it',
+        'All mechanical & electrical parts covered – no surprises, just solid protection',
+        'Unlimited claims per policy – plenty of cover when you need it',
         'Labour costs included – we\'ve got the work sorted',
         'Fault diagnostics – we\'ll help find the problem fast',
         'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
         'Fast claims process – no drama, just quick resolutions',
-        'MOT test fee - Your MOT test fee is covered by us every time your vehicle is due for its MOT',
-        '24/7 Vehicle recovery – We\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded.',
+        'MOT test fee – your MOT test fee is covered by us every time your vehicle is due for its MOT',
+        '24/7 Vehicle recovery – we\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded',
+        'Vehicle rental cover – stay on the move even if your vehicle is undergoing repairs',
+        'Free transfer of warranty – a transferable warranty boosts buyer confidence, making your vehicle more attractive and potentially increasing its resale value',
         '14-day money-back guarantee – change your mind? No problem',
         'Optional extras available – tailor your cover to suit your needs'
       ],
       exclusions: [
-        'Pre-existing faults are not covered - Pre-existing faults present before the warranty start date are not covered. Only issues that arise after your policy begins will be eligible for protection.'
+        'Pre-existing faults are not covered – pre-existing faults present before the warranty start date are not covered. Only issues that arise after your policy begins will be eligible for protection.'
       ],
       ...getPricingForDuration('36months'),
       isPopular: false,
