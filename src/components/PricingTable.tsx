@@ -122,6 +122,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     transfer: false
   });
   
+  // Benefits expansion state
+  const [expandedBenefits, setExpandedBenefits] = useState<Record<string, boolean>>({});
+  
   // Claim limit dialog state
   const [claimLimitDialogOpen, setClaimLimitDialogOpen] = useState<{[key: number]: boolean}>({
     750: false,
@@ -1214,16 +1217,29 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <p className="text-gray-600 mb-4 text-sm">{option.description}</p>
                   
                   <div className="space-y-2 mb-6">
-                    {option.features.slice(0, 4).map((feature, index) => (
+                    {(expandedBenefits[option.id] ? option.features : option.features.slice(0, 4)).map((feature, index) => (
                       <div key={index} className="flex items-start text-xs text-gray-600">
                         <Check className="w-3 h-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                         <span>{feature}</span>
                       </div>
                     ))}
                     {option.features.length > 4 && (
-                      <div className="text-xs text-gray-500 font-medium">
-                        +{option.features.length - 4} more benefits
-                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedBenefits(prev => ({
+                            ...prev,
+                            [option.id]: !prev[option.id]
+                          }));
+                        }}
+                        className="flex items-center gap-1 text-xs text-orange-500 hover:text-orange-600 font-medium transition-colors mt-2"
+                      >
+                        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${expandedBenefits[option.id] ? 'rotate-180' : ''}`} />
+                        {expandedBenefits[option.id] 
+                          ? 'Show less' 
+                          : `+${option.features.length - 4} more benefits`
+                        }
+                      </button>
                     )}
                   </div>
                   
