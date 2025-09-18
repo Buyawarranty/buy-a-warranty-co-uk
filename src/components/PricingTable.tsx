@@ -1117,7 +1117,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
             <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
               <Calendar className="w-5 h-5" />
-              Choose Warranty Duration
+              Choose Your Warranty Duration and Price
             </h2>
           </div>
 
@@ -1125,26 +1125,59 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             {[
               {
                 id: '12months',
-                title: '1 Year',
-                subtitle: 'Premium Plan',
-                description: 'Comprehensive coverage',
-                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval'],
+                title: '✅ 1-Year Cover',
+                subtitle: '',
+                description: 'Flexible protection for short-term peace of mind',
+                features: [
+                  'All mechanical & electrical parts covered – no surprises, just solid protection',
+                  'Up to 10 claims per policy – plenty of cover when you need it',
+                  'Labour costs included – we\'ve got the work sorted',
+                  'Fault diagnostics – we\'ll help find the problem fast',
+                  'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
+                  'Fast claims process – no drama, just quick resolutions',
+                  '14-day money-back guarantee – change your mind? No problem',
+                  'Optional extras available – tailor your cover to suit your needs'
+                ],
                 isPopular: false
               },
               {
                 id: '24months',
-                title: '2 Years',
+                title: '⭐️ 2-Year Cover — Save 10%',
                 subtitle: 'Most Popular',
-                description: 'Best value for money',
-                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '15% discount'],
+                description: 'Balanced Protection and Value',
+                features: [
+                  'All mechanical & electrical parts covered – no surprises, just solid protection',
+                  'Unlimited claims per policy – plenty of cover when you need it',
+                  'Labour costs included – we\'ve got the work sorted',
+                  'Fault diagnostics – we\'ll help find the problem fast',
+                  'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
+                  'Fast claims process – no drama, just quick resolutions',
+                  'MOT test fee – your MOT test fee is covered by us every time your vehicle is due for its MOT',
+                  '24/7 Vehicle recovery – we\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded',
+                  '14-day money-back guarantee – change your mind? No problem',
+                  'Optional extras available – tailor your cover to suit your needs'
+                ],
                 isPopular: true
               },
               {
                 id: '36months',
-                title: '3 Years',
+                title: '🏆 3-Year Cover — Save 20%',
                 subtitle: 'Best Value',
-                description: 'Maximum protection period',
-                features: ['Drive now, pay later', 'UK & EU breakdown cover', 'Guaranteed approval', '20% discount'],
+                description: 'Extended cover for long-term peace of mind',
+                features: [
+                  'All mechanical & electrical parts covered – no surprises, just solid protection',
+                  'Unlimited claims per policy – plenty of cover when you need it',
+                  'Labour costs included – we\'ve got the work sorted',
+                  'Fault diagnostics – we\'ll help find the problem fast',
+                  'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
+                  'Fast claims process – no drama, just quick resolutions',
+                  'MOT test fee – your MOT test fee is covered by us every time your vehicle is due for its MOT',
+                  '24/7 Vehicle recovery – we\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded',
+                  'Vehicle rental cover – stay on the move even if your vehicle is undergoing repairs',
+                  'Free transfer of warranty – a transferable warranty boosts buyer confidence, making your vehicle more attractive and potentially increasing its resale value',
+                  '14-day money-back guarantee – change your mind? No problem',
+                  'Optional extras available – tailor your cover to suit your needs'
+                ],
                 isPopular: false
               }
             ].map((option) => {
