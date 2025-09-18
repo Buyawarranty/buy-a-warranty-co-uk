@@ -16,7 +16,7 @@ const Terms = () => {
     }));
   };
 
-  const AccordionItem = ({ item }: { item: any }) => (
+  const TermsAccordionItem = ({ item }: { item: any }) => (
     <div className="bg-brand-orange rounded-lg overflow-hidden shadow-lg border border-orange-400 mb-4">
       <button
         onClick={() => toggleItem(item.id)}
@@ -203,7 +203,7 @@ const Terms = () => {
         {/* Terms Accordions */}
         <div className="space-y-4">
           {termsContent.map((item) => (
-            <AccordionItem key={item.id} item={item} />
+            <TermsAccordionItem key={item.id} item={item} />
           ))}
         </div>
 
