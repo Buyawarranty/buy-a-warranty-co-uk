@@ -1209,42 +1209,59 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div
                   key={option.id}
                   onClick={() => setPaymentType(option.id as '12months' | '24months' | '36months')}
-                  className={`p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
+                  className={`relative p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer overflow-hidden ${
                     paymentType === option.id 
                       ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
                       : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                   }`}
                 >
-                  {option.isPopular && (
-                    <div className="mb-2">
-                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                        MOST POPULAR
+                  {/* Save Percentage Ribbon */}
+                  {(option.id === '24months' || option.id === '36months') && (
+                    <div className="absolute -top-3 -right-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-full transform rotate-12 shadow-lg">
+                      <span className="text-sm font-bold">
+                        Save {option.id === '24months' ? '10%' : '20%'}
                       </span>
                     </div>
                   )}
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-lg font-bold text-gray-900">{option.title}</h4>
-                      <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
-                        <Crown className="w-3 h-3" />
-                        {option.subtitle}
+
+                  {/* Badge Pills */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {option.isPopular && (
+                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                        MOST POPULAR
                       </span>
-                    </div>
+                    )}
+                    {option.id === '36months' && (
+                      <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                        BEST VALUE
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Title */}
+                  <div className="mb-4">
+                    <h4 className="text-xl font-extrabold text-gray-900 mb-2 leading-tight">
+                      {option.title.split(' — ')[0]}
+                    </h4>
                   </div>
                   
                   <p className="text-gray-600 mb-4 text-sm">{option.description}</p>
                   
                   <div className="space-y-2 mb-6">
-                    {option.features.map((feature, index) => (
-                      <div key={index} className="flex items-center text-sm text-gray-600">
-                        <Check className="w-4 h-4 text-green-500 mr-2" />
-                        {feature}
+                    {option.features.slice(0, 4).map((feature, index) => (
+                      <div key={index} className="flex items-start text-xs text-gray-600">
+                        <Check className="w-3 h-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                        <span>{feature}</span>
                       </div>
                     ))}
+                    {option.features.length > 4 && (
+                      <div className="text-xs text-gray-500 font-medium">
+                        +{option.features.length - 4} more benefits
+                      </div>
+                    )}
                   </div>
                   
-                  <div className="space-y-1">
+                  <div className="space-y-1 mt-auto">
                     <div className="text-2xl font-bold text-orange-600">
                       £{monthlyPrice}
                       <span className="text-sm font-normal text-gray-600 ml-1">/month</span>
