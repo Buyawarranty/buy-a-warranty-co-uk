@@ -1071,18 +1071,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </p>
             </div>
             
-            <AccordionItem value="government-access" className="border-none">
-              <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
-                Government access to booking records
-              </AccordionTrigger>
-              <AccordionContent className="pt-2 pb-4 px-0">
-                <div className="bg-white rounded-lg p-6 border border-slate-200">
-                  <p className="text-sm text-slate-700 leading-relaxed">
-                    Details about government access to booking records and compliance requirements...
-                  </p>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="government-access" className="border-none">
+                <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
+                  Government access to booking records
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 pb-4 px-0">
+                  <div className="bg-white rounded-lg p-6 border border-slate-200">
+                    <p className="text-sm text-slate-700 leading-relaxed">
+                      Details about government access to booking records and compliance requirements...
+                    </p>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
             <div className="pt-2">
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -1090,18 +1092,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </p>
             </div>
             
-            <AccordionItem value="forbidden-articles" className="border-none">
-              <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
-                Forbidden articles and substances list
-              </AccordionTrigger>
-              <AccordionContent className="pt-2 pb-4 px-0">
-                <div className="bg-white rounded-lg p-6 border border-slate-200">
-                  <p className="text-sm text-slate-700 leading-relaxed">
-                    Details about forbidden articles and substances in warranty coverage...
-                  </p>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="forbidden-articles" className="border-none">
+                <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
+                  Forbidden articles and substances list
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 pb-4 px-0">
+                  <div className="bg-white rounded-lg p-6 border border-slate-200">
+                    <p className="text-sm text-slate-700 leading-relaxed">
+                      Details about forbidden articles and substances in warranty coverage...
+                    </p>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
 
