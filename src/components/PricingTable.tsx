@@ -1187,6 +1187,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
                   {/* Badge Pills */}
                   <div className="flex flex-wrap gap-2 mb-4">
+                    {option.id === '12months' && (
+                      <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                        STARTER
+                      </span>
+                    )}
                     {option.isPopular && (
                       <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                         MOST POPULAR
