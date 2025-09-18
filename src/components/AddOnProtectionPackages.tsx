@@ -11,155 +11,64 @@ interface AddOnProtectionPackagesProps {
 
 const addOnPackages = [
   {
-    key: 'tyre',
-    icon: '🛞',
-    title: 'Tyre Cover',
-    shortDescription: 'Cheaper than a single tyre repair £5/mo',
-    price: 5,
+    key: 'breakdown',
+    icon: '🚗',
+    title: '24/7 Vehicle recovery',
+    shortDescription: 'Only 12 interest-free easy installments for entire warranty period',
+    price: 3.99,
     priceType: 'monthly',
     bulletPoints: [
-      'Puncture repairs covered',
-      'Replacement due to accidental damage',
-      'Emergency roadside tyre fitting',
-      'Alloy wheel damage coverage',
-      'Valve replacements included'
+      'Get roadside assistance and recovery if your vehicle breaks down unexpectedly',
+      'For full details please see platinum warranty cover below'
     ]
   },
   {
-    key: 'wearTear',
-    icon: '🛠️',
-    title: 'Wear & Tear',
-    shortDescription: 'Extra peace of mind for ageing parts just £5/mo',
-    price: 5,
+    key: 'tyre',
+    icon: '🛞',
+    title: 'TyreCover',
+    shortDescription: 'Only 12 interest-free easy installments for entire warranty period',
+    price: 7.99,
     priceType: 'monthly',
     bulletPoints: [
-      'Natural deterioration of vehicle components',
-      'Brake pads and clutch wear covered',
-      'Suspension bushes included',
-      'High-wear items protection',
-      'Essential for vehicles over 5 years old'
+      'Includes repair or replacement for damaged tyres',
+      'For full details please see platinum warranty cover below'
     ]
   },
   {
     key: 'european',
     icon: '🇪🇺',
     title: 'Europe Cover',
-    shortDescription: 'Drive with confidence across Europe just £3/mo',
-    price: 3,
+    shortDescription: 'Same UK level platinum cover whilst you drive with confidence across Europe',
+    price: 0,
     priceType: 'monthly',
     bulletPoints: [
-      'Coverage in all EU countries plus Switzerland, Norway, Iceland',
-      'Emergency accommodation provided',
-      'Vehicle repatriation service',
-      'Hire car if repairs take more than 24 hours',
-      '24/7 multilingual helpline'
-    ]
-  },
-  {
-    key: 'breakdown',
-    icon: '🚗',
-    title: '24/7 Recovery',
-    shortDescription: '24/7 roadside assistance and recovery service £6/mo',
-    price: 6,
-    priceType: 'monthly',
-    bulletPoints: [
-      '24/7 roadside assistance coverage',
-      'Vehicle recovery to nearest garage',
-      'Emergency fuel delivery',
-      'Battery jump start service',
-      'Flat tyre change assistance',
-      'Key lockout service'
+      'Same UK level platinum cover whilst you drive with confidence across Europe',
+      'For full details please see platinum warranty cover below'
     ]
   },
   {
     key: 'rental',
     icon: '🚙',
     title: 'Vehicle Rental',
-    shortDescription: 'Replacement vehicle while yours is being repaired £4/mo',
-    price: 4,
+    shortDescription: 'Only 12 interest-free easy installments for entire warranty period',
+    price: 3.99,
     priceType: 'monthly',
     bulletPoints: [
-      'Replacement vehicle for up to 14 days',
-      'Available while your car is being repaired',
-      'Similar category vehicle provided',
-      'Comprehensive insurance included',
-      'Collection and delivery service',
-      'Emergency rental available 24/7'
-    ]
-  },
-  {
-    key: 'motRepair',
-    icon: '🔧',
-    title: 'MOT Repair',
-    shortDescription: 'MOT failure repair cover just £4/mo',
-    price: 4,
-    priceType: 'monthly',
-    bulletPoints: [
-      'Covers cost of MOT failure repairs',
-      'Up to £750 per claim',
-      'Includes parts and labour',
-      'Fast-track repair service',
-      'Nationwide coverage'
-    ]
-  },
-  {
-    key: 'motFee',
-    icon: '📋',
-    title: 'MOT Fee',
-    shortDescription: 'Annual MOT test fee covered £3/mo',
-    price: 3,
-    priceType: 'monthly',
-    bulletPoints: [
-      'Annual MOT test fee covered',
-      'Choose your preferred test center',
-      'Reminder service included',
-      'Online booking available',
-      'Certificate delivery service'
-    ]
-  },
-  {
-    key: 'lostKey',
-    icon: '🔑',
-    title: 'Lost Key',
-    shortDescription: 'Lost or stolen key replacement £3/mo',
-    price: 3,
-    priceType: 'monthly',
-    bulletPoints: [
-      'Lost or stolen key replacement',
-      'Emergency locksmith service',
-      'New key programming included',
-      '24/7 assistance available',
-      'Up to £500 per claim'
-    ]
-  },
-  {
-    key: 'consequential',
-    icon: '⚡',
-    title: 'Consequential Damage',
-    shortDescription: 'Cover for damage caused by covered failures £5/mo',
-    price: 5,
-    priceType: 'monthly',
-    bulletPoints: [
-      'Damage caused by covered component failures',
-      'Engine damage from cooling system failure',
-      'Transmission damage from clutch issues',
-      'Additional peace of mind protection',
-      'Up to claim limit coverage'
+      'Replacement vehicle while yours is being repaired',
+      'For full details please see platinum warranty cover below'
     ]
   },
   {
     key: 'transfer',
     icon: '🔁',
     title: 'Transfer Cover',
-    shortDescription: 'Transfer to a new owner - One-off fee £30',
-    price: 30,
+    shortDescription: 'Transfer to a new owner',
+    price: 19.99,
     priceType: 'one-off',
     bulletPoints: [
       'Transfer remaining warranty to new owner',
       'Increases vehicle resale value',
-      'Makes vehicle more attractive to buyers',
-      'Simple online transfer process',
-      'Immediate confirmation and updated documentation'
+      'Makes vehicle more attractive to buyers'
     ]
   }
 ];
@@ -204,8 +113,10 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
               // Calculate total price based on duration for monthly add-ons
               const totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
               const priceDisplay = addon.priceType === 'monthly' 
-                ? `£${totalPrice} (£${addon.price}/mo × ${months} months)`
-                : `£${addon.price}`;
+                ? addon.price > 0 
+                  ? `£${addon.price.toFixed(2)} per month`
+                  : 'Included'
+                : `£${addon.price} one-time fee`;
               
               return (
                  <div 
@@ -225,8 +136,10 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                         <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{addon.shortDescription}</p>
                         <div className="text-sm font-bold text-black">
                           {priceDisplay}
-                          {addon.priceType === 'one-off' && (
-                            <span className="text-xs font-normal text-muted-foreground ml-1">one-time fee</span>
+                          {addon.priceType === 'monthly' && addon.price > 0 && (
+                            <div className="text-xs font-normal text-muted-foreground">
+                              Only 12 interest-free easy installments for entire warranty period
+                            </div>
                           )}
                         </div>
                       </div>
