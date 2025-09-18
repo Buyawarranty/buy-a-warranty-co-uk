@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Menu, Upload, X } from 'lucide-react';
+import { Check, Menu, Upload, X, Mail, Phone, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -337,16 +337,43 @@ Issue Timing: ${formData.issueTiming}
             <div className="mb-12">
               <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">How to Start Your Claim</h2>
               <p className="text-lg text-gray-700 mb-6">You can begin your claim by contacting us:</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <div className="p-6 bg-white rounded-lg shadow-sm border-l-4 border-orange-500">
-                  <p className="font-semibold text-gray-900">Email:</p>
-                  <p className="text-orange-500 font-medium">claims@buyawarranty.co.uk</p>
-                </div>
-                <div className="p-6 bg-white rounded-lg shadow-sm border-l-4 border-orange-500">
-                  <p className="font-semibold text-gray-900">Phone:</p>
-                  <p className="text-orange-500 font-medium">0330 229 5045</p>
-                  <p className="text-sm text-gray-600">(Monday to Friday, 9am to 5.30pm)</p>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <a 
+                  href="mailto:claims@buyawarranty.co.uk"
+                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-orange-200 hover:-translate-y-1"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
+                      <Mail className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300">Email Us</h3>
+                      <p className="text-sm text-gray-500">Send us your claim details</p>
+                    </div>
+                  </div>
+                  <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">claims@buyawarranty.co.uk</p>
+                  <p className="text-sm text-gray-600 mt-2">We typically respond within 2 hours</p>
+                </a>
+
+                <a 
+                  href="tel:03302295045"
+                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-orange-200 hover:-translate-y-1"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
+                      <Phone className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300">Call Us</h3>
+                      <p className="text-sm text-gray-500">Speak to our claims team</p>
+                    </div>
+                  </div>
+                  <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">0330 229 5045</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Clock className="w-4 h-4 text-gray-400" />
+                    <p className="text-sm text-gray-600">Monday to Friday, 9am to 5.30pm</p>
+                  </div>
+                </a>
               </div>
               <p className="text-lg text-gray-700 mb-8">Or simply complete the form below:</p>
               <Button 
