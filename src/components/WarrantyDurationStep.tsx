@@ -276,7 +276,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                   <h4 className="text-lg font-bold text-gray-900 mb-1">{option.title} {option.subtitle}</h4>
                   <p className="text-gray-600 text-sm mb-3">{option.description}</p>
                   <h5 className="text-sm font-semibold text-gray-800 mb-3">{option.planTitle}</h5>
-                  <p className="text-xs text-gray-600 mb-3">Here's what's included:</p>
+                  <p className="text-xs text-gray-600 mb-3">What's included:</p>
                 </div>
                 
                 <div className="space-y-2 mb-4">
