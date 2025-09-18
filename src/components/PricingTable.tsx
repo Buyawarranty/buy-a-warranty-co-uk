@@ -949,18 +949,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 What's Covered?
               </h2>
             </div>
-            <p className="text-gray-600 text-base">
+            <p className="text-gray-600 text-base leading-relaxed">
               Click on each vehicle type to see the complete list of covered components
             </p>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center justify-between w-full text-left bg-orange-500 hover:bg-orange-600 text-white font-medium py-4 px-6 rounded-lg transition-colors">
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
+                <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                 <span>Petrol & Diesel (Combustion Engine) Vehicles</span>
-                <ChevronDown className="w-4 h-4 text-white transition-transform duration-200" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-4">
+              <CollapsibleContent className="pt-4 pl-7">
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
                     <div className="space-y-3">
@@ -989,11 +989,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </Collapsible>
 
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center justify-between w-full text-left bg-orange-500 hover:bg-orange-600 text-white font-medium py-4 px-6 rounded-lg transition-colors">
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
+                <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                 <span>Hybrid & PHEV Vehicles</span>
-                <ChevronDown className="w-4 h-4 text-white transition-transform duration-200" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-4">
+              <CollapsibleContent className="pt-4 pl-7">
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <p className="text-gray-600 mb-4 italic">All petrol/diesel engine parts and labour plus:</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
@@ -1015,11 +1015,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </Collapsible>
 
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center justify-between w-full text-left bg-orange-500 hover:bg-orange-600 text-white font-medium py-4 px-6 rounded-lg transition-colors">
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
+                <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                 <span>Electric vehicles (EVs)</span>
-                <ChevronDown className="w-4 h-4 text-white transition-transform duration-200" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-4">
+              <CollapsibleContent className="pt-4 pl-7">
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
                     <ul className="space-y-1.5">
@@ -1042,11 +1042,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </Collapsible>
 
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center justify-between w-full text-left bg-orange-500 hover:bg-orange-600 text-white font-medium py-4 px-6 rounded-lg transition-colors">
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
+                <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                 <span>Motorcycles (Petrol, Hybrid, EV)</span>
-                <ChevronDown className="w-4 h-4 text-white transition-transform duration-200" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-4">
+              <CollapsibleContent className="pt-4 pl-7">
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
                     <ul className="space-y-1.5">
