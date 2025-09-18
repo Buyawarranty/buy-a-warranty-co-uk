@@ -951,117 +951,117 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="space-y-3">
             <Accordion type="single" collapsible className="w-full">
               {/* Terms and conditions */}
-              <AccordionItem value="terms" className="border-none">
-                <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
-                  Terms and conditions
-                </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-4 px-0">
-                  <div className="bg-white rounded-lg p-6 border border-slate-200">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
-                      <div className="space-y-3">
-                        <div className="font-medium text-slate-800 mb-2">Engine & Powertrain Coverage:</div>
-                        <ul className="space-y-1.5 text-sm">
-                          <li>• Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</li>
-                          <li>• Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</li>
-                          <li>• Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</li>
-                          <li>• Turbocharger & Supercharger Units</li>
-                          <li>• Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</li>
+                <div className="border-none">
+                  <div className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200">
+                    Terms and conditions
+                  </div>
+                  <div className="pt-2 pb-4 px-0">
+                    <div className="bg-white rounded-lg p-6 border border-slate-200">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
+                        <div className="space-y-3">
+                          <div className="font-medium text-slate-800 mb-2">Engine & Powertrain Coverage:</div>
+                          <ul className="space-y-1.5 text-sm">
+                            <li>• Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</li>
+                            <li>• Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</li>
+                            <li>• Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</li>
+                            <li>• Turbocharger & Supercharger Units</li>
+                            <li>• Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</li>
+                          </ul>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="font-medium text-slate-800 mb-2">Systems & Electronics:</div>
+                          <ul className="space-y-1.5 text-sm">
+                            <li>• Braking Systems (ABS, calipers, cylinders, master cylinders)</li>
+                            <li>• Suspension & Steering Systems (shocks, struts, steering racks, power steering)</li>
+                            <li>• Air Conditioning & Climate Control Systems</li>
+                            <li>• Electrical Components & Charging Systems (alternators, starter motors, wiring)</li>
+                            <li>• Electronic Control Units (ECUs) & Sensors (engine management, ABS, emissions)</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Hybrid & PHEV coverage */}
+                <div className="border-none">
+                  <div className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200">
+                    Hybrid & PHEV vehicle coverage
+                  </div>
+                  <div className="pt-2 pb-4 px-0">
+                    <div className="bg-white rounded-lg p-6 border border-slate-200">
+                      <p className="text-slate-600 mb-4 italic">All petrol/diesel engine parts and labour plus:</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
+                        <ul className="space-y-1.5">
+                          <li>• Hybrid Drive Motors & ECUs</li>
+                          <li>• Hybrid Battery Failure</li>
+                          <li>• Power Control Units, Inverters & DC-DC Converters</li>
+                          <li>• Regenerative Braking Systems</li>
+                          <li>• High-Voltage Cables & Connectors</li>
+                        </ul>
+                        <ul className="space-y-1.5">
+                          <li>• Cooling Systems for Hybrid Components</li>
+                          <li>• Charging Ports & On-Board Charging Modules</li>
+                          <li>• Hybrid Transmission Components</li>
                         </ul>
                       </div>
-                      <div className="space-y-3">
-                        <div className="font-medium text-slate-800 mb-2">Systems & Electronics:</div>
-                        <ul className="space-y-1.5 text-sm">
-                          <li>• Braking Systems (ABS, calipers, cylinders, master cylinders)</li>
-                          <li>• Suspension & Steering Systems (shocks, struts, steering racks, power steering)</li>
-                          <li>• Air Conditioning & Climate Control Systems</li>
-                          <li>• Electrical Components & Charging Systems (alternators, starter motors, wiring)</li>
-                          <li>• Electronic Control Units (ECUs) & Sensors (engine management, ABS, emissions)</li>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Electric vehicle coverage */}
+                <div className="border-none">
+                  <div className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200">
+                    Electric vehicle coverage
+                  </div>
+                  <div className="pt-2 pb-4 px-0">
+                    <div className="bg-white rounded-lg p-6 border border-slate-200">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
+                        <ul className="space-y-1.5">
+                          <li>• EV Drive Motors & Reduction Gear</li>
+                          <li>• EV Transmission & Reduction Gearbox Assemblies</li>
+                          <li>• High-Voltage Battery Failure</li>
+                          <li>• Power Control Units & Inverters</li>
+                          <li>• On-Board Charger (OBC) & Charging Ports</li>
+                        </ul>
+                        <ul className="space-y-1.5">
+                          <li>• DC-DC Converters</li>
+                          <li>• Thermal Management Systems</li>
+                          <li>• High-Voltage Cables & Connectors</li>
+                          <li>• EV-Specific Control Electronics</li>
+                          <li>• Regenerative Braking System Components</li>
                         </ul>
                       </div>
                     </div>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
+                </div>
 
-              {/* Hybrid & PHEV coverage */}
-              <AccordionItem value="hybrid" className="border-none">
-                <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
-                  Hybrid & PHEV vehicle coverage
-                </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-4 px-0">
-                  <div className="bg-white rounded-lg p-6 border border-slate-200">
-                    <p className="text-slate-600 mb-4 italic">All petrol/diesel engine parts and labour plus:</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
-                      <ul className="space-y-1.5">
-                        <li>• Hybrid Drive Motors & ECUs</li>
-                        <li>• Hybrid Battery Failure</li>
-                        <li>• Power Control Units, Inverters & DC-DC Converters</li>
-                        <li>• Regenerative Braking Systems</li>
-                        <li>• High-Voltage Cables & Connectors</li>
-                      </ul>
-                      <ul className="space-y-1.5">
-                        <li>• Cooling Systems for Hybrid Components</li>
-                        <li>• Charging Ports & On-Board Charging Modules</li>
-                        <li>• Hybrid Transmission Components</li>
-                      </ul>
+                {/* Motorcycle coverage */}
+                <div className="border-none">
+                  <div className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200">
+                    Motorcycle coverage
+                  </div>
+                  <div className="pt-2 pb-4 px-0">
+                    <div className="bg-white rounded-lg p-6 border border-slate-200">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
+                        <ul className="space-y-1.5">
+                          <li>• Engine / Motor & Drivetrain Components</li>
+                          <li>• Gearbox / Transmission Systems</li>
+                          <li>• ECUs, Sensors & Control Modules</li>
+                          <li>• Electrical Systems & Wiring</li>
+                          <li>• High-Voltage Battery Failure (Hybrid & EV)</li>
+                        </ul>
+                        <ul className="space-y-1.5">
+                          <li>• Suspension & Steering Systems</li>
+                          <li>• Braking Systems</li>
+                          <li>• Cooling & Thermal Systems</li>
+                          <li>• Lighting & Ignition Systems</li>
+                          <li>• Instrumentation & Rider Controls</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              {/* Electric vehicle coverage */}
-              <AccordionItem value="electric" className="border-none">
-                <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
-                  Electric vehicle coverage
-                </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-4 px-0">
-                  <div className="bg-white rounded-lg p-6 border border-slate-200">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
-                      <ul className="space-y-1.5">
-                        <li>• EV Drive Motors & Reduction Gear</li>
-                        <li>• EV Transmission & Reduction Gearbox Assemblies</li>
-                        <li>• High-Voltage Battery Failure</li>
-                        <li>• Power Control Units & Inverters</li>
-                        <li>• On-Board Charger (OBC) & Charging Ports</li>
-                      </ul>
-                      <ul className="space-y-1.5">
-                        <li>• DC-DC Converters</li>
-                        <li>• Thermal Management Systems</li>
-                        <li>• High-Voltage Cables & Connectors</li>
-                        <li>• EV-Specific Control Electronics</li>
-                        <li>• Regenerative Braking System Components</li>
-                      </ul>
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              {/* Motorcycle coverage */}
-              <AccordionItem value="motorcycles" className="border-none">
-                <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
-                  Motorcycle coverage
-                </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-4 px-0">
-                  <div className="bg-white rounded-lg p-6 border border-slate-200">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
-                      <ul className="space-y-1.5">
-                        <li>• Engine / Motor & Drivetrain Components</li>
-                        <li>• Gearbox / Transmission Systems</li>
-                        <li>• ECUs, Sensors & Control Modules</li>
-                        <li>• Electrical Systems & Wiring</li>
-                        <li>• High-Voltage Battery Failure (Hybrid & EV)</li>
-                      </ul>
-                      <ul className="space-y-1.5">
-                        <li>• Suspension & Steering Systems</li>
-                        <li>• Braking Systems</li>
-                        <li>• Cooling & Thermal Systems</li>
-                        <li>• Lighting & Ignition Systems</li>
-                        <li>• Instrumentation & Rider Controls</li>
-                      </ul>
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
+                </div>
             </Accordion>
             
             <div className="pt-4 border-t border-slate-200 mt-6">
@@ -1071,20 +1071,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </p>
             </div>
             
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="government-access" className="border-none">
-                <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
+            <div className="w-full">
+              <div className="border-none">
+                <div className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200">
                   Government access to booking records
-                </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-4 px-0">
+                </div>
+                <div className="pt-2 pb-4 px-0">
                   <div className="bg-white rounded-lg p-6 border border-slate-200">
                     <p className="text-sm text-slate-700 leading-relaxed">
                       Details about government access to booking records and compliance requirements...
                     </p>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                </div>
+              </div>
+            </div>
 
             <div className="pt-2">
               <p className="text-sm text-slate-600 leading-relaxed">
@@ -1092,20 +1092,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </p>
             </div>
             
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="forbidden-articles" className="border-none">
-                <AccordionTrigger className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200 [&>svg]:text-slate-400">
+            <div className="w-full">
+              <div className="border-none">
+                <div className="text-left py-4 px-0 text-slate-600 hover:text-slate-800 font-medium hover:no-underline transition-colors duration-200">
                   Forbidden articles and substances list
-                </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-4 px-0">
+                </div>
+                <div className="pt-2 pb-4 px-0">
                   <div className="bg-white rounded-lg p-6 border border-slate-200">
                     <p className="text-sm text-slate-700 leading-relaxed">
                       Details about forbidden articles and substances in warranty coverage...
                     </p>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
