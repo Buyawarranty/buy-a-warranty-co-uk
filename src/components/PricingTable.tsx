@@ -1275,6 +1275,59 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           />
         </div>
 
+        {/* Additional Information Section */}
+        <div className="bg-white rounded-lg p-8 border border-gray-200 shadow-sm">
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2 mb-4">
+              📄 Additional Information
+            </h3>
+            <p className="text-muted-foreground">
+              Discover everything the Platinum Plan offers and any limitations - click below for complete details and feel confident in your cover.
+            </p>
+          </div>
+          
+          <div className="space-y-4">
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
+                <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                <span>Terms and Conditions</span>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-4 pl-7">
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    Please refer to the complete Terms and Conditions document for full coverage details, exclusions, and limitations. 
+                    This document contains important information about your warranty coverage, claims procedures, and your rights and obligations.
+                  </p>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
+                <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                <span>Platinum Plan Details</span>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-4 pl-7">
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                    The Platinum Plan provides comprehensive coverage for your vehicle's mechanical and electrical components. 
+                    Key features include:
+                  </p>
+                  <ul className="text-gray-700 text-sm space-y-2">
+                    <li>• Unlimited claims throughout the warranty period</li>
+                    <li>• All labour costs included</li>
+                    <li>• Fast fault diagnostics</li>
+                    <li>• Consequential damage protection</li>
+                    <li>• 24/7 breakdown recovery service</li>
+                    <li>• MOT test fee coverage</li>
+                    <li>• 14-day money-back guarantee</li>
+                  </ul>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        </div>
+
       </div>
 
       {/* Continue Button */}
