@@ -385,7 +385,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
 
           {/* One Last Thing Section */}
           <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">
               One last thing before we take your payment...
             </h3>
             
@@ -395,62 +395,62 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
 
             <div className="space-y-4">
               <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-blue-600 hover:text-blue-800 font-medium py-2">
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                   <span>Terms and conditions</span>
-                  <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                  <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
                 </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 text-gray-600 text-sm">
+                <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                   <p>Complete terms and conditions for your warranty coverage, including coverage details, claim procedures, and policy limitations.</p>
                 </CollapsibleContent>
               </Collapsible>
 
               <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-blue-600 hover:text-blue-800 font-medium py-2">
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                   <span>Fare rules</span>
-                  <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                  <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
                 </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 text-gray-600 text-sm">
+                <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                   <p>Pricing structure, payment terms, and billing information for your selected warranty plan.</p>
                 </CollapsibleContent>
               </Collapsible>
 
               <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-blue-600 hover:text-blue-800 font-medium py-2">
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                   <span>General conditions of carriage</span>
-                  <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                  <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
                 </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 text-gray-600 text-sm">
+                <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                   <p>Standard terms that apply to the provision of warranty services and customer obligations.</p>
                 </CollapsibleContent>
               </Collapsible>
 
               <div className="pt-4 border-t border-gray-200">
-                <p className="text-gray-700 mb-4">
+                <p className="text-gray-900 mb-4">
                   I agree that the personal data, which has been provided in connection with this booking, may be passed to government authorities for border control and aviation security purposes.
                 </p>
 
                 <Collapsible>
-                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-blue-600 hover:text-blue-800 font-medium py-2">
+                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                     <span>Government access to booking records</span>
-                    <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                    <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="pt-2 text-gray-600 text-sm">
+                  <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                     <p>Information about how your personal data may be shared with relevant authorities as required by law.</p>
                   </CollapsibleContent>
                 </Collapsible>
               </div>
 
               <div className="pt-4 border-t border-gray-200">
-                <p className="text-gray-700 mb-4">
+                <p className="text-gray-900 mb-4">
                   I agree that I have read and understood the forbidden articles and substances list.
                 </p>
 
                 <Collapsible>
-                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-blue-600 hover:text-blue-800 font-medium py-2">
+                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                     <span>Forbidden articles and substances list</span>
-                    <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                    <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="pt-2 text-gray-600 text-sm">
+                  <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                     <p>List of prohibited items and substances that are not covered under the warranty policy.</p>
                   </CollapsibleContent>
                 </Collapsible>
