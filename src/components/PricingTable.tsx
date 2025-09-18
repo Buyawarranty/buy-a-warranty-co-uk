@@ -938,79 +938,135 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
         </div>
 
-        {/* One Last Thing Section */}
+        {/* What's Covered Section */}
         <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-lg">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              One last thing before we take your payment...
-            </h2>
-            <p className="text-gray-900 mb-6">
-              By submitting this payment and checking the box in this section, I agree to the terms and conditions, fare rules applicable to my booking and general conditions of carriage.
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-6 h-6 rounded-full border-2 border-gray-400 flex items-center justify-center">
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                What's Covered?
+              </h2>
+            </div>
+            <p className="text-gray-600 text-base">
+              Click on each vehicle type to see the complete list of covered components
             </p>
           </div>
           
           <div className="space-y-4">
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                <span>Terms and conditions</span>
-                <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+              <CollapsibleTrigger className="flex items-center justify-between w-full text-left bg-orange-500 hover:bg-orange-600 text-white font-medium py-4 px-6 rounded-lg transition-colors">
+                <span>Petrol & Diesel (Combustion Engine) Vehicles</span>
+                <ChevronDown className="w-4 h-4 text-white transition-transform duration-200" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                <p>Complete terms and conditions for your warranty coverage, including coverage details, claim procedures, and policy limitations.</p>
+              <CollapsibleContent className="pt-4">
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+                    <div className="space-y-3">
+                      <div className="font-medium text-gray-800 mb-2">Engine & Powertrain Coverage:</div>
+                      <ul className="space-y-1.5 text-sm">
+                        <li>• Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</li>
+                        <li>• Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</li>
+                        <li>• Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</li>
+                        <li>• Turbocharger & Supercharger Units</li>
+                        <li>• Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="font-medium text-gray-800 mb-2">Systems & Electronics:</div>
+                      <ul className="space-y-1.5 text-sm">
+                        <li>• Braking Systems (ABS, calipers, cylinders, master cylinders)</li>
+                        <li>• Suspension & Steering Systems (shocks, struts, steering racks, power steering)</li>
+                        <li>• Air Conditioning & Climate Control Systems</li>
+                        <li>• Electrical Components & Charging Systems (alternators, starter motors, wiring)</li>
+                        <li>• Electronic Control Units (ECUs) & Sensors (engine management, ABS, emissions)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </CollapsibleContent>
             </Collapsible>
 
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                <span>Fare rules</span>
-                <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+              <CollapsibleTrigger className="flex items-center justify-between w-full text-left bg-orange-500 hover:bg-orange-600 text-white font-medium py-4 px-6 rounded-lg transition-colors">
+                <span>Hybrid & PHEV Vehicles</span>
+                <ChevronDown className="w-4 h-4 text-white transition-transform duration-200" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                <p>Pricing structure, payment terms, and billing information for your selected warranty plan.</p>
+              <CollapsibleContent className="pt-4">
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p className="text-gray-600 mb-4 italic">All petrol/diesel engine parts and labour plus:</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+                    <ul className="space-y-1.5">
+                      <li>• Hybrid Drive Motors & ECUs</li>
+                      <li>• Hybrid Battery Failure</li>
+                      <li>• Power Control Units, Inverters & DC-DC Converters</li>
+                      <li>• Regenerative Braking Systems</li>
+                      <li>• High-Voltage Cables & Connectors</li>
+                    </ul>
+                    <ul className="space-y-1.5">
+                      <li>• Cooling Systems for Hybrid Components</li>
+                      <li>• Charging Ports & On-Board Charging Modules</li>
+                      <li>• Hybrid Transmission Components</li>
+                    </ul>
+                  </div>
+                </div>
               </CollapsibleContent>
             </Collapsible>
 
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                <span>General conditions of carriage</span>
-                <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+              <CollapsibleTrigger className="flex items-center justify-between w-full text-left bg-orange-500 hover:bg-orange-600 text-white font-medium py-4 px-6 rounded-lg transition-colors">
+                <span>Electric vehicles (EVs)</span>
+                <ChevronDown className="w-4 h-4 text-white transition-transform duration-200" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                <p>Standard terms that apply to the provision of warranty services and customer obligations.</p>
+              <CollapsibleContent className="pt-4">
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+                    <ul className="space-y-1.5">
+                      <li>• EV Drive Motors & Reduction Gear</li>
+                      <li>• EV Transmission & Reduction Gearbox Assemblies</li>
+                      <li>• High-Voltage Battery Failure</li>
+                      <li>• Power Control Units & Inverters</li>
+                      <li>• On-Board Charger (OBC) & Charging Ports</li>
+                    </ul>
+                    <ul className="space-y-1.5">
+                      <li>• DC-DC Converters</li>
+                      <li>• Thermal Management Systems</li>
+                      <li>• High-Voltage Cables & Connectors</li>
+                      <li>• EV-Specific Control Electronics</li>
+                      <li>• Regenerative Braking System Components</li>
+                    </ul>
+                  </div>
+                </div>
               </CollapsibleContent>
             </Collapsible>
 
-            <div className="pt-4 border-t border-gray-200">
-              <p className="text-gray-900 mb-4">
-                I agree that the personal data, which has been provided in connection with this booking, may be passed to government authorities for border control and aviation security purposes.
-              </p>
-
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                  <span>Government access to booking records</span>
-                  <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                  <p>Information about how your personal data may be shared with relevant authorities as required by law.</p>
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
-
-            <div className="pt-4 border-t border-gray-200">
-              <p className="text-gray-900 mb-4">
-                I agree that I have read and understood the forbidden articles and substances list.
-              </p>
-
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                  <span>Forbidden articles and substances list</span>
-                  <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                  <p>List of prohibited items and substances that are not covered under the warranty policy.</p>
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center justify-between w-full text-left bg-orange-500 hover:bg-orange-600 text-white font-medium py-4 px-6 rounded-lg transition-colors">
+                <span>Motorcycles (Petrol, Hybrid, EV)</span>
+                <ChevronDown className="w-4 h-4 text-white transition-transform duration-200" />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-4">
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+                    <ul className="space-y-1.5">
+                      <li>• Engine / Motor & Drivetrain Components</li>
+                      <li>• Gearbox / Transmission Systems</li>
+                      <li>• ECUs, Sensors & Control Modules</li>
+                      <li>• Electrical Systems & Wiring</li>
+                      <li>• High-Voltage Battery Failure (Hybrid & EV)</li>
+                    </ul>
+                    <ul className="space-y-1.5">
+                      <li>• Suspension & Steering Systems</li>
+                      <li>• Braking Systems</li>
+                      <li>• Cooling & Thermal Systems</li>
+                      <li>• Lighting & Ignition Systems</li>
+                      <li>• Instrumentation & Rider Controls</li>
+                    </ul>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </div>
         </div>
 
