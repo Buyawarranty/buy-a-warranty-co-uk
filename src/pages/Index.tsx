@@ -78,8 +78,18 @@ const Index = () => {
   // Get current step from URL or default to 1
   const getStepFromUrl = () => {
     const stepParam = searchParams.get('step');
+    console.log('getStepFromUrl - stepParam:', stepParam);
     if (stepParam) {
       const step = parseInt(stepParam);
+      console.log('getStepFromUrl - parsed step:', step);
+      return step >= 1 && step <= 5 ? step : 1;
+    }
+    // Also check window.location for step parameter as fallback
+    const urlParams = new URLSearchParams(window.location.search);
+    const fallbackStep = urlParams.get('step');
+    console.log('getStepFromUrl - fallback step from window.location:', fallbackStep);
+    if (fallbackStep) {
+      const step = parseInt(fallbackStep);
       return step >= 1 && step <= 5 ? step : 1;
     }
     return 1;
@@ -519,15 +529,31 @@ const Index = () => {
       {currentStep === 3 && (
         <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
           <MaintenanceBanner />
-          {vehicleData && (
+          {vehicleData ? (
             <>
-              
               <PricingTable 
                 vehicleData={vehicleData} 
                 onBack={() => handleBackToStep(2)} 
                 onPlanSelected={handlePlanSelected}
               />
             </>
+          ) : (
+            <div className="w-full px-4 py-8">
+              <div className="max-w-4xl mx-auto text-center space-y-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Vehicle Details Required
+                </h2>
+                <p className="text-gray-600">
+                  To view our warranty plans, we need your vehicle details first.
+                </p>
+                <Button 
+                  onClick={() => handleStepChange(1)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                >
+                  Enter Vehicle Details
+                </Button>
+              </div>
+            </div>
           )}
         </div>
       )}
