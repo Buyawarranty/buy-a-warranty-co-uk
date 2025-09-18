@@ -233,7 +233,7 @@ const Protected = () => {
             </div>
           </div>
           
-          <p className="text-lg text-primary font-semibold mt-8">
+          <p className="text-lg text-gray-900 font-semibold mt-8">
             If something goes wrong, we look for reasons to say yes!
           </p>
         </div>
