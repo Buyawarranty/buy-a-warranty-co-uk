@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Check, Menu } from 'lucide-react';
+import { Check, Menu, Upload, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,8 +16,13 @@ const Claims = () => {
     name: '',
     email: '',
     phone: '',
-    vehicleReg: ''
+    vehicleReg: '',
+    faultDescription: '',
+    dateOccurred: '',
+    faultDetails: '',
+    issueTiming: ''
   });
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -25,6 +31,21 @@ const Claims = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
+  const removeFile = () => {
+    setUploadedFile(null);
+    const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   };
 
 
@@ -43,13 +64,39 @@ const Claims = () => {
     setIsSubmitting(true);
     
     try {
+      let fileData = null;
+      
+      if (uploadedFile) {
+        const reader = new FileReader();
+        const fileBase64 = await new Promise<string>((resolve) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(uploadedFile);
+        });
+        
+        fileData = {
+          name: uploadedFile.name,
+          size: uploadedFile.size,
+          type: uploadedFile.type,
+          data: fileBase64
+        };
+      }
+
+      const claimMessage = `
+Claim Details:
+Vehicle: ${formData.vehicleReg}
+Fault Description: ${formData.faultDescription}
+Date Occurred: ${formData.dateOccurred}
+Fault Details: ${formData.faultDetails}
+Issue Timing: ${formData.issueTiming}
+      `.trim();
+
       const response = await supabase.functions.invoke('submit-claim', {
         body: {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          message: `Claim for vehicle: ${formData.vehicleReg}`,
-          file: null
+          message: claimMessage,
+          file: fileData
         }
       });
 
@@ -67,8 +114,13 @@ const Claims = () => {
         name: '',
         email: '',
         phone: '',
-        vehicleReg: ''
+        vehicleReg: '',
+        faultDescription: '',
+        dateOccurred: '',
+        faultDetails: '',
+        issueTiming: ''
       });
+      setUploadedFile(null);
       
     } catch (error: any) {
       console.error('Submission error:', error);
@@ -378,6 +430,130 @@ const Claims = () => {
                       required
                       className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                     />
+                  </div>
+
+                  {/* Tell Us What Happened Section */}
+                  <div className="border-t pt-6 mt-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Tell Us What Happened</h3>
+                    <p className="text-gray-600 text-sm mb-6">
+                      We're here to help get things sorted quickly. Please share a few details about the issue with your vehicle so we can understand what went wrong and how best to support you.
+                    </p>
+
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="faultDescription" className="text-gray-700 font-medium text-base">
+                          Fault Description
+                        </Label>
+                        <Input
+                          id="faultDescription"
+                          name="faultDescription"
+                          type="text"
+                          placeholder="Brief description of the issue"
+                          value={formData.faultDescription}
+                          onChange={handleInputChange}
+                          className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="dateOccurred" className="text-gray-700 font-medium text-base">
+                          Date the issue occurred
+                        </Label>
+                        <Input
+                          id="dateOccurred"
+                          name="dateOccurred"
+                          type="date"
+                          value={formData.dateOccurred}
+                          onChange={handleInputChange}
+                          className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="faultDetails" className="text-gray-700 font-medium text-base">
+                          Describe the fault in your own words. What's not working as expected?
+                        </Label>
+                        <Textarea
+                          id="faultDetails"
+                          name="faultDetails"
+                          placeholder="Please provide as much detail as possible about the problem..."
+                          value={formData.faultDetails}
+                          onChange={handleInputChange}
+                          className="mt-2 min-h-[100px] border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="issueTiming" className="text-gray-700 font-medium text-base">
+                          Was the issue noticed while driving, after a service, or during a routine check?
+                        </Label>
+                        <Textarea
+                          id="issueTiming"
+                          name="issueTiming"
+                          placeholder="Tell us when and how you first noticed the problem..."
+                          value={formData.issueTiming}
+                          onChange={handleInputChange}
+                          className="mt-2 min-h-[80px] border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                        />
+                      </div>
+
+                      {/* File Upload */}
+                      <div>
+                        <Label htmlFor="file-upload" className="text-gray-700 font-medium text-base">
+                          Upload Supporting Documents (Optional)
+                        </Label>
+                        <p className="text-gray-500 text-sm mb-2">
+                          You can upload garage reports, photos, or other relevant documents (Max 20MB)
+                        </p>
+                        
+                        {!uploadedFile ? (
+                          <div className="mt-2">
+                            <label htmlFor="file-upload" className="cursor-pointer">
+                              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-orange-500 transition-colors">
+                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                                <p className="mt-2 text-sm text-gray-600">
+                                  Click to upload or drag and drop
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  PDF, DOC, JPG, PNG up to 20MB
+                                </p>
+                              </div>
+                            </label>
+                            <input
+                              id="file-upload"
+                              name="file-upload"
+                              type="file"
+                              className="hidden"
+                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              onChange={handleFileUpload}
+                            />
+                          </div>
+                        ) : (
+                          <div className="mt-2 p-4 bg-gray-50 rounded-lg border flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <div className="text-orange-500">
+                                <Upload className="h-5 w-5" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{uploadedFile.name}</p>
+                                <p className="text-xs text-gray-500">
+                                  {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                              </div>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={removeFile}
+                              className="text-gray-500 hover:text-red-500"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                   <Button 
