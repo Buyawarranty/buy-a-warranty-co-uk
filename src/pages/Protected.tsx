@@ -94,7 +94,12 @@ const Protected = () => {
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
       <button
         onClick={() => toggleSection(vehicleType.id)}
-        className="w-full px-6 py-4 text-left flex items-center justify-between bg-primary text-white hover:bg-primary/90 transition-colors"
+        className={`w-full px-6 py-4 text-left flex items-center justify-between text-white hover:opacity-90 transition-all duration-300 ${
+          vehicleType.id === 'petrol-diesel' ? 'bg-primary' :
+          vehicleType.id === 'hybrid-phev' ? 'bg-gradient-to-r from-primary to-orange-500' :
+          vehicleType.id === 'electric-vehicles' ? 'bg-gradient-to-r from-blue-600 to-primary' :
+          'bg-gradient-to-r from-primary/90 to-orange-600'
+        }`}
       >
         <div>
           <span className="font-bold text-lg">{vehicleType.title}</span>
