@@ -1450,12 +1450,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     )}
                     {option.id === '36months' && (
                       <>
-                        <div className="text-2xl font-bold text-orange-600">
-                          £{monthlyPrice}
-                          <span className="text-sm font-normal text-gray-600 ml-1">/month</span>
+                        <div className="text-lg font-bold text-gray-900">
+                          🛡️ 3-year protection for only £{totalPrice} – Save £200
                         </div>
-                        <div className="text-sm text-gray-500">
-                          Total: £{totalPrice}
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-blue-500">💡</span>
+                            <span>12 easy interest-free payments</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-green-500 font-bold">✔</span>
+                            <span>Nothing to pay in year 2 & 3 – full cover, no payments</span>
+                          </div>
                         </div>
                       </>
                     )}
