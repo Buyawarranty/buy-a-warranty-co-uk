@@ -142,7 +142,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     },
     {
       id: '24months',
-      title: '⭐️ 2-Year Cover — Save 10%',
+      title: '⭐️ 2-Year Cover — Save £100 today',
       subtitle: 'Most Popular',
       description: 'Balanced Protection and Value',
       planTitle: 'Platinum Comprehensive Plan',
@@ -267,10 +267,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
               >
                 {/* Save Percentage Ribbon */}
                 {(option.id === '24months' || option.id === '36months') && (
-                  <div className="absolute -top-3 -right-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-full transform rotate-12 shadow-lg">
-                    <span className="text-sm font-bold">
-                      Save {option.id === '24months' ? '10%' : '20%'}
-                    </span>
+                  <div className="absolute -top-3 -right-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg border-2 border-white">
+                    {option.id === '24months' ? 'Save £100 today' : 'Save £200 Today'}
                   </div>
                 )}
 
