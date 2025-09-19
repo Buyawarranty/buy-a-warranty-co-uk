@@ -1409,14 +1409,56 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     )}
                   </div>
                   
-                  <div className="space-y-1 mt-auto">
-                    <div className="text-2xl font-bold text-orange-600">
-                      £{monthlyPrice}
-                      <span className="text-sm font-normal text-gray-600 ml-1">/month</span>
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Total: £{totalPrice}
-                    </div>
+                  <div className="space-y-2 mt-auto">
+                    {option.id === '12months' && (
+                      <>
+                        <div className="text-lg font-bold text-gray-900">
+                          Protect your vehicle for just £38/month
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-green-500 font-bold">✔</span>
+                            <span>Total cost: £457</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-green-500 font-bold">✔</span>
+                            <span>12 easy, interest-free payments</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-green-500 font-bold">✔</span>
+                            <span>Affordable peace of mind for the year ahead</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    {option.id === '24months' && (
+                      <>
+                        <div className="text-lg font-bold text-gray-900">
+                          🛡️ 2-year protection for only <span className="line-through text-gray-400">£877</span> £777 – Save £100 Today
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-blue-500">💡</span>
+                            <span>12 easy interest-free payments</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-green-500 font-bold">✔</span>
+                            <span>Nothing to pay in year 2 – full cover, no payments</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    {option.id === '36months' && (
+                      <>
+                        <div className="text-2xl font-bold text-orange-600">
+                          £{monthlyPrice}
+                          <span className="text-sm font-normal text-gray-600 ml-1">/month</span>
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          Total: £{totalPrice}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               );
