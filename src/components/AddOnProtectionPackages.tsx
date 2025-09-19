@@ -163,12 +163,12 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                     <div className="flex items-start gap-3 flex-1">
                       <div className="text-xl mt-1">{addon.icon}</div>
                       <div className="flex-1">
-                        <h4 className="font-semibold text-sm text-foreground mb-1">{addon.title}</h4>
-                        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{addon.shortDescription}</p>
-                        <div className="text-sm font-bold text-black">
+                        <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
+                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{addon.shortDescription}</p>
+                        <div className="text-base font-bold text-black">
                           {priceDisplay}
                           {addon.priceType === 'monthly' && addon.price > 0 && (
-                            <div className="text-xs font-normal text-muted-foreground">
+                            <div className="text-sm font-normal text-muted-foreground">
                               Only 12 interest-free easy installments for entire warranty period
                             </div>
                           )}
@@ -186,7 +186,7 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                     <div className="flex justify-end">
                       <CollapsibleTrigger 
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+                        className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors"
                       >
                         <span>Read more</span>
                         {expandedItems[addon.key] ? (
@@ -201,7 +201,7 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                         {addon.bulletPoints.map((point, index) => (
                           <div key={index} className="flex items-start gap-2">
                             <Check className="h-3 w-3 text-green-500 mt-1 flex-shrink-0" strokeWidth={3} />
-                            <span className="text-xs text-muted-foreground">{point}</span>
+                            <span className="text-sm text-muted-foreground">{point}</span>
                           </div>
                         ))}
                       </div>

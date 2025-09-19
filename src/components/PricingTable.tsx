@@ -1380,11 +1380,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </h4>
                   </div>
                   
-                  <p className="text-gray-600 mb-4 text-sm">{option.description}</p>
+                  <p className="text-gray-600 mb-4 text-base">{option.description}</p>
                   
                   <div className="space-y-2 mb-6">
                     {(expandedBenefits[option.id] ? option.features : option.features.slice(0, 4)).map((feature, index) => (
-                      <div key={index} className="flex items-start text-xs text-gray-600">
+                      <div key={index} className="flex items-start text-sm text-gray-600">
                         <Check className="w-3 h-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                         <span>{feature}</span>
                       </div>
@@ -1398,7 +1398,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                             [option.id]: !prev[option.id]
                           }));
                         }}
-                        className="flex items-center gap-1 text-xs text-orange-500 hover:text-orange-600 font-medium transition-colors mt-2"
+                        className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors mt-2"
                       >
                         <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${expandedBenefits[option.id] ? 'rotate-180' : ''}`} />
                         {expandedBenefits[option.id] 
@@ -1416,15 +1416,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           Protect your vehicle for just £{monthlyPrice}/month
                         </div>
                         <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                           <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-green-500 font-bold">✔</span>
                             <span>Total cost: £{totalPrice}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                           <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-green-500 font-bold">✔</span>
                             <span>12 easy, interest-free payments</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                           <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-green-500 font-bold">✔</span>
                             <span>Affordable peace of mind for the year ahead</span>
                           </div>
@@ -1437,15 +1437,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           Protect your vehicle for just £{monthlyPrice}/month
                         </div>
                         <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                           <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-blue-500">🛡️</span>
                             <span>2-year protection for only £{totalPrice} – Save £100 Today</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                           <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-blue-500">💡</span>
                             <span>12 easy interest-free payments</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                           <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-green-500 font-bold">✔</span>
                             <span>Nothing to pay in year 2 – full cover, no payments</span>
                           </div>
@@ -1458,15 +1458,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           Protect your vehicle for just £{monthlyPrice}/month
                         </div>
                         <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                           <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-blue-500">🛡️</span>
                             <span>3-year protection for only £{totalPrice} – Save £200</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                           <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-blue-500">💡</span>
                             <span>12 easy interest-free payments</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <div className="flex items-center gap-2 text-base text-gray-600">
                             <span className="text-green-500 font-bold">✔</span>
                             <span>Nothing to pay in year 2 & 3 – full cover, no payments</span>
                           </div>
