@@ -43,7 +43,7 @@ const Protected = () => {
     {
       id: 'hybrid-phev',
       title: 'Hybrid & PHEV Vehicles',
-      subtitle: 'All petrol/diesel engine parts and labour plus:',
+      subtitle: 'Includes all related petrol/diesel engine parts and labour plus:',
       components: [
         'Hybrid Drive Motors & ECUs',
         'Hybrid Battery Failure',
@@ -58,7 +58,7 @@ const Protected = () => {
     {
       id: 'electric-vehicles',
       title: 'Electric vehicles (EVs)',
-      subtitle: 'All petrol/diesel engine parts and labour plus:',
+      subtitle: 'Includes all related petrol/diesel engine parts and labour plus:',
       components: [
         'EV Drive Motors & Reduction Gear',
         'EV Transmission & Reduction Gearbox Assemblies',
