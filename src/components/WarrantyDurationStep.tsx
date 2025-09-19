@@ -332,12 +332,12 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                   {option.id === '12months' && (
                     <>
                       <div className="text-lg font-bold text-gray-900">
-                        Protect your vehicle for just £38/month
+                        Protect your vehicle for just £{option.monthlyPrice}/month
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <span className="text-green-500 font-bold">✔</span>
-                          <span>Total cost: £457</span>
+                          <span>Total cost: £{option.totalPrice}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <span className="text-green-500 font-bold">✔</span>
@@ -353,7 +353,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                   {option.id === '24months' && (
                     <>
                       <div className="text-lg font-bold text-gray-900">
-                        🛡️ 2-year protection for only <span className="line-through text-gray-400">£877</span> £777 – Save £100 Today
+                        🛡️ 2-year protection for only £{option.totalPrice} – Save £100 Today
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
