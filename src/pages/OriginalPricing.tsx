@@ -41,7 +41,6 @@ const OriginalPricing = () => {
       id: 'elite',
       name: 'AutoCare Elite',
       claimLimit: '£2,000',
-      claimsPerYear: 'Unlimited claims',
       description: 'Top-tier cover for total peace of mind.',
       isPopular: false
     }

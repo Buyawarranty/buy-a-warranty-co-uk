@@ -890,7 +890,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               >
                 <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Elite</h4>
                 <div className="text-2xl font-bold text-black mb-2">£2,000 per claim</div>
-                <p className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg mb-2 inline-block">Unlimited claims</p>
                 <p className="text-sm font-medium text-foreground mb-4">Top-tier cover for total peace of mind.</p>
               </button>
               

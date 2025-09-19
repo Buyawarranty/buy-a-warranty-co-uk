@@ -463,9 +463,6 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
                 <div className="text-lg font-semibold text-gray-700 mb-2">
                   {getVehicleTypeTitle()} Elite
                 </div>
-                <div className="text-green-600 font-semibold mb-2">
-                  Unlimited claims
-                </div>
                 <div className="text-gray-600">
                   Top-tier cover for total peace of mind.
                 </div>
