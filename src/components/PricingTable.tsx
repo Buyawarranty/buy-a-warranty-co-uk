@@ -1349,8 +1349,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 >
                   {/* Save Percentage Ribbon */}
                   {(option.id === '24months' || option.id === '36months') && (
-                     <div className="absolute -top-3 -right-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg border-2 border-white">
-                       {option.id === '24months' ? 'Save £100 today' : 'Save £200 Today'}
+                     <div className="absolute -top-0 -right-0 bg-gradient-to-br from-green-500 to-green-600 text-white px-6 py-3 shadow-lg overflow-hidden">
+                       <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 transform rotate-45 scale-150"></div>
+                       <span className="relative z-10 text-sm font-bold whitespace-nowrap">
+                         {option.id === '24months' ? 'Save £100 today' : 'Save £200 Today'}
+                       </span>
+                       <div className="absolute bottom-0 left-0 w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[10px] border-t-green-700"></div>
                      </div>
                   )}
 
