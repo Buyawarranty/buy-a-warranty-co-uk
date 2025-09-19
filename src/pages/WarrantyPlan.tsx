@@ -1541,11 +1541,6 @@ const WarrantyPlan = () => {
               </div>
             </div>
             
-            <div className="text-sm opacity-75 max-w-3xl mx-auto">
-              <p>
-                Buyawarranty.co.uk is a trading name of One Warranty Limited. Registered in the United Kingdom under Company number 10314863 since 2016. Registered address: Warranty House, 62 Berkhamsted Ave, Wembley, HA9 6DT, England.
-              </p>
-            </div>
           </div>
         </section>
       </div>
