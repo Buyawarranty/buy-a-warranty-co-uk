@@ -204,14 +204,14 @@ const WarrantyPlan = () => {
                   <Button 
                     variant="outline"
                     size="lg"
-                    className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold"
+                    className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold bg-transparent"
                     asChild
                   >
                     <a 
                       href="/Platinum-warranty-plan_v2.2-2.pdf" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 text-white hover:text-primary"
                     >
                       <Download className="w-5 h-5" />
                       Download PDF
