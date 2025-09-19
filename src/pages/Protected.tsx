@@ -37,7 +37,7 @@ const Protected = () => {
         'Factory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)',
         'Driver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)',
         'Safety Systems (airbags, seatbelts, pretensioners, safety restraint modules)',
-        'Convertible power-hood, motors, hydraulic parts, buttons, switches, wiring, sensors, control units, roof locking system, water seals, and metal frame'
+        'Convertible power-hood, motors, hydraulic parts , buttons, switches, wiring, sensors and related parts'
       ]
     },
     {
