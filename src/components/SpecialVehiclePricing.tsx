@@ -154,33 +154,48 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     }
   };
 
-  // Pricing structure similar to regular cars but for special vehicles
+  // Use pricing from the database plan's pricing_matrix instead of hardcoded values
   const getPricingData = (excess: number, claimLimit: number, paymentPeriod: string) => {
-    // Special vehicle pricing (slightly higher than regular cars due to specialized parts)
-    const pricingTable = {
-      'yearly': {
-        0: { 750: 520, 1250: 550, 2000: 640 },
-        50: { 750: 490, 1250: 510, 2000: 600 },
-        100: { 750: 440, 1250: 470, 2000: 560 },
-        150: { 750: 420, 1250: 440, 2000: 530 }
-      },
-      'two_yearly': {
-        0: { 750: 990, 1250: 1030, 2000: 1120 },
-        50: { 750: 920, 1250: 970, 2000: 1050 },
-        100: { 750: 830, 1250: 880, 2000: 970 },
-        150: { 750: 790, 1250: 830, 2000: 920 }
-      },
-      'three_yearly': {
-        0: { 750: 1440, 1250: 1490, 2000: 1590 },
-        50: { 750: 1340, 1250: 1390, 2000: 1490 },
-        100: { 750: 1190, 1250: 1270, 2000: 1370 },
-        150: { 750: 1140, 1250: 1190, 2000: 1290 }
-      }
+    // Get the first (and typically only) plan
+    const plan = plans[0];
+    if (!plan?.pricing_matrix) {
+      console.warn('No pricing matrix found, using fallback prices');
+      return 467; // Fallback price
+    }
+
+    // Map payment period to database format
+    const periodMap = {
+      'yearly': '12',
+      'two_yearly': '24', 
+      'three_yearly': '36'
     };
     
-    const periodData = pricingTable[paymentPeriod as keyof typeof pricingTable] || pricingTable['yearly'];
-    const excessData = periodData[excess as keyof typeof periodData] || periodData[0];
-    return excessData[claimLimit as keyof typeof excessData] || excessData[1250];
+    const dbPeriod = periodMap[paymentPeriod as keyof typeof periodMap] || '12';
+    const excessKey = `${excess}_${claimLimit}`;
+    
+    console.log('Getting pricing data:', {
+      excess,
+      claimLimit,
+      paymentPeriod,
+      dbPeriod,
+      excessKey,
+      pricing_matrix: plan.pricing_matrix
+    });
+    
+    try {
+      const periodData = plan.pricing_matrix[dbPeriod];
+      if (periodData && periodData[excessKey] && periodData[excessKey].price) {
+        const price = periodData[excessKey].price;
+        console.log('Found price in database:', price);
+        return price;
+      }
+    } catch (error) {
+      console.error('Error parsing pricing matrix:', error);
+    }
+    
+    // Fallback to default pricing if database lookup fails
+    console.warn('Falling back to default pricing');
+    return 467;
   };
 
   const calculatePlanPrice = (claimLimit: number) => {
