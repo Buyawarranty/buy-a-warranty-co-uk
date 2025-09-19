@@ -452,7 +452,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     if (selectedProtectionAddOns.breakdown) protectionPrice += 5 * durationMonths; // £5/mo
     if (selectedProtectionAddOns.motRepair) protectionPrice += 6 * durationMonths; // £6/mo
     if (selectedProtectionAddOns.tyre) protectionPrice += 5 * durationMonths; // £5/mo
-    if (selectedProtectionAddOns.wearTear) protectionPrice += 5 * durationMonths; // £5/mo
+    if (selectedProtectionAddOns.wearAndTear) {
+      // Use tiered pricing for wear and tear
+      const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                               paymentType === '24months' ? 10.99 : 8.99;
+      protectionPrice += wearAndTearPrice * durationMonths;
+    }
     if (selectedProtectionAddOns.motFee) protectionPrice += 3 * durationMonths; // £3/mo
     if (selectedProtectionAddOns.lostKey) protectionPrice += 3 * durationMonths; // £3/mo
     if (selectedProtectionAddOns.consequential) protectionPrice += 5 * durationMonths; // £5/mo
@@ -509,7 +514,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       if (selectedProtectionAddOns.breakdown) recurringAddonTotal += 6 * durationMonths; // £6/mo
       if (selectedProtectionAddOns.rental) recurringAddonTotal += 4 * durationMonths; // £4/mo
       if (selectedProtectionAddOns.tyre) recurringAddonTotal += 5 * durationMonths; // £5/mo
-      if (selectedProtectionAddOns.wearTear) recurringAddonTotal += 5 * durationMonths; // £5/mo
+      if (selectedProtectionAddOns.wearAndTear) {
+        const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                 paymentType === '24months' ? 10.99 : 8.99;
+        recurringAddonTotal += wearAndTearPrice * durationMonths;
+      }
       if (selectedProtectionAddOns.european) recurringAddonTotal += 3 * durationMonths; // £3/mo
       if (selectedProtectionAddOns.motRepair) recurringAddonTotal += 4 * durationMonths; // £4/mo
       if (selectedProtectionAddOns.motFee) recurringAddonTotal += 3 * durationMonths; // £3/mo
@@ -1157,7 +1166,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
               if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
               if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
-              if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+              if (selectedProtectionAddOns.wearAndTear) {
+                const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                         paymentType === '24months' ? 10.99 : 8.99;
+                protectionAddOnPrice += wearAndTearPrice * durationMonths;
+              }
               if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
               if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
               if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
@@ -1369,7 +1382,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     let planAddOnPrice = 0;
                     const planAddOns = selectedAddOns[selectedPlan.id] || {};
                     if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
-                    if (planAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
+                    if (planAddOns.wearAndTear) {
+                      const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                               paymentType === '24months' ? 10.99 : 8.99;
+                      planAddOnPrice += wearAndTearPrice * durationMonths;
+                    }
                     if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
                     if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
                     if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
@@ -1380,7 +1397,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
                     if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
                     if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
-                    if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+                    if (selectedProtectionAddOns.wearAndTear) {
+                      const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                               paymentType === '24months' ? 10.99 : 8.99;
+                      protectionAddOnPrice += wearAndTearPrice * durationMonths;
+                    }
                     if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
                     if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
                     if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
@@ -1404,7 +1425,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       let planAddOnPrice = 0;
                       const planAddOns = selectedAddOns[selectedPlan.id] || {};
                       if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
-                      if (planAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
+                      if (planAddOns.wearAndTear) {
+                        const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                                 paymentType === '24months' ? 10.99 : 8.99;
+                        planAddOnPrice += wearAndTearPrice * durationMonths;
+                      }
                       if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
                       if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
                       if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
@@ -1415,7 +1440,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
                       if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
                       if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
-                      if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+                      if (selectedProtectionAddOns.wearAndTear) {
+                        const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                                 paymentType === '24months' ? 10.99 : 8.99;
+                        protectionAddOnPrice += wearAndTearPrice * durationMonths;
+                      }
                       if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
                       if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
                       if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
@@ -1459,7 +1488,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   let planAddOnPrice = 0;
                   const planAddOns = selectedAddOns[selectedPlan.id] || {};
                   if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
-                  if (planAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
+                  if (planAddOns.wearAndTear) {
+                    const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                             paymentType === '24months' ? 10.99 : 8.99;
+                    planAddOnPrice += wearAndTearPrice * durationMonths;
+                  }
                   if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
                   if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
                   if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
@@ -1470,7 +1503,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
                   if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
                   if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
-                  if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+                  if (selectedProtectionAddOns.wearAndTear) {
+                    const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                             paymentType === '24months' ? 10.99 : 8.99;
+                    protectionAddOnPrice += wearAndTearPrice * durationMonths;
+                  }
                   if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
                   if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
                   if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
@@ -1494,7 +1531,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     let planAddOnPrice = 0;
                     const planAddOns = selectedAddOns[selectedPlan.id] || {};
                     if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
-                    if (planAddOns.wearTear) planAddOnPrice += 5 * durationMonths;
+                    if (planAddOns.wearAndTear) {
+                      const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                               paymentType === '24months' ? 10.99 : 8.99;
+                      planAddOnPrice += wearAndTearPrice * durationMonths;
+                    }
                     if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
                     if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
                     if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
@@ -1505,7 +1546,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
                     if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
                     if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
-                    if (selectedProtectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths;
+                    if (selectedProtectionAddOns.wearAndTear) {
+                      const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                               paymentType === '24months' ? 10.99 : 8.99;
+                      protectionAddOnPrice += wearAndTearPrice * durationMonths;
+                    }
                     if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
                     if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
                     if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
