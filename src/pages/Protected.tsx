@@ -43,8 +43,8 @@ const Protected = () => {
     {
       id: 'hybrid-phev',
       title: 'Hybrid & PHEV Vehicles',
-      subtitle: 'Includes all related petrol/diesel engine parts and labour plus:',
       components: [
+        'Includes all related petrol/diesel engine parts and labour plus:',
         'Hybrid Drive Motors & ECUs',
         'Hybrid Battery Failure',
         'Power Control Units, Inverters & DC-DC Converters',
@@ -58,8 +58,8 @@ const Protected = () => {
     {
       id: 'electric-vehicles',
       title: 'Electric vehicles (EVs)',
-      subtitle: 'Includes all related petrol/diesel engine parts and labour plus:',
       components: [
+        'Includes all related petrol/diesel engine parts and labour plus:',
         'EV Drive Motors & Reduction Gear',
         'EV Transmission & Reduction Gearbox Assemblies',
         'High-Voltage Battery Failure',
@@ -98,9 +98,6 @@ const Protected = () => {
       >
         <div>
           <span className="font-bold text-lg">{vehicleType.title}</span>
-          {vehicleType.subtitle && (
-            <p className="text-sm text-white/90 mt-1">{vehicleType.subtitle}</p>
-          )}
         </div>
         <ChevronDown 
           className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
