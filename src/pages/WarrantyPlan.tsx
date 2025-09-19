@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { ChevronDown, Download, ExternalLink, Check, Menu } from 'lucide-react';
+import { ChevronDown, Download, ExternalLink, Check, Menu, Shield, Car, Zap, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Card, CardContent } from '@/components/ui/card';
+
+// Import panda images
+import pandaEvWarranty from '@/assets/panda-ev-warranty-hero.png';
+import pandaMotorcycle from '@/assets/panda-motorcycle-warranty.png';
+import pandaGarage from '@/assets/panda-garage-warranty.png';
+import pandaVehicleCollection from '@/assets/panda-vehicle-collection.png';
+import pandaCelebrating from '@/assets/panda-celebrating.png';
 
 const WarrantyPlan = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -167,188 +175,359 @@ const WarrantyPlan = () => {
         </div>
       </header>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 lg:py-24 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-              Platinum Warranty Plan
-            </h1>
-            <p className="text-xl lg:text-2xl mb-8 opacity-90">
-              We've got you covered!
-            </p>
-            <p className="text-lg lg:text-xl mb-12 max-w-3xl mx-auto leading-relaxed">
-              When you join Buy-a-Warranty, you get our Platinum Plan as standard - giving you top-level protection
-            </p>
-            
-            {/* Key Benefits */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <Check className="w-8 h-8 mb-4 mx-auto text-green-300" />
-                <p className="font-medium">All mechanical & electrical parts covered*</p>
+        <section className="bg-gradient-to-br from-primary via-primary-hover to-secondary py-20 lg:py-32">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="text-white space-y-8">
+                <div className="space-y-4">
+                  <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+                    Platinum Warranty Plan
+                  </h1>
+                  <p className="text-xl lg:text-2xl opacity-90">
+                    We've got you covered!
+                  </p>
+                  <p className="text-lg lg:text-xl leading-relaxed opacity-80">
+                    When you join Buy-a-Warranty, you get our Platinum Plan as standard - giving you top-level protection
+                  </p>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    size="lg"
+                    className="bg-white text-primary hover:bg-muted px-8 py-4 text-lg font-semibold"
+                    onClick={() => document.getElementById('coverage-details')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    View Coverage Details
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    size="lg"
+                    className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold"
+                    asChild
+                  >
+                    <a 
+                      href="/Platinum-warranty-plan_v2.2-2.pdf" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2"
+                    >
+                      <Download className="w-5 h-5" />
+                      Download PDF
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </Button>
+                </div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <Check className="w-8 h-8 mb-4 mx-auto text-green-300" />
-                <p className="font-medium">Labour costs included</p>
+
+              <div className="flex justify-center">
+                <img 
+                  src={pandaEvWarranty} 
+                  alt="Panda with electric vehicle warranty protection" 
+                  className="w-full max-w-lg h-auto drop-shadow-2xl"
+                />
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <Check className="w-8 h-8 mb-4 mx-auto text-green-300" />
-                <p className="font-medium">Fault diagnostics included</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <Check className="w-8 h-8 mb-4 mx-auto text-green-300" />
-                <p className="font-medium">Consequential damage cover</p>
-              </div>
-            </div>
-            
-            <p className="text-sm opacity-75 mb-8">*full list of parts and components in this document</p>
-            
-            {/* PDF Download Link */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button 
-                size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
-                onClick={() => document.getElementById('coverage-details')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                View Coverage Details
-              </Button>
-              <Button 
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
-                asChild
-              >
-                <a 
-                  href="/Platinum-warranty-plan_v2.2-2.pdf" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <Download className="w-5 h-5" />
-                  Download PDF
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              </Button>
             </div>
           </div>
         </section>
 
-        {/* Overview Section */}
-        <section className="py-16 lg:py-24 px-4 bg-white">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8">
-              Platinum Plan extended warranty
-            </h2>
-            <p className="text-2xl lg:text-3xl font-bold text-orange-500 mb-8">
-              If it breaks, we'll fix it!
-            </p>
-            <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-              Your journey matters - we're with you all the way.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Comprehensive Protection</h3>
-                <p className="text-gray-600">Mechanical and electrical breakdown coverage for critical and additional vehicle components</p>
-              </div>
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Simple Claims</h3>
-                <p className="text-gray-600">Straightforward processing with minimal paperwork</p>
-              </div>
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Efficient Support</h3>
-                <p className="text-gray-600">Timely assistance when mechanical and electrical issues arise</p>
-              </div>
+        {/* Key Benefits Section */}
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+                Key Benefits of Our Platinum Plan
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                If it breaks, we'll fix it! Your journey matters - we're with you all the way.
+              </p>
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="font-medium text-gray-900">Customer service:</p>
-                  <p className="text-orange-500 font-medium">0330 229 5040</p>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">Claims line:</p>
-                  <p className="text-orange-500 font-medium">0330 229 5045</p>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <CardContent className="space-y-4">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                    <Shield className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="font-bold text-lg">All Parts Covered</h3>
+                  <p className="text-muted-foreground">Mechanical & electrical parts covered with labour costs included</p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <CardContent className="space-y-4">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                    <Wrench className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <h3 className="font-bold text-lg">Fault Diagnostics</h3>
+                  <p className="text-muted-foreground">Complete fault diagnostics and consequential damage cover included</p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <CardContent className="space-y-4">
+                  <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
+                    <Car className="w-8 h-8 text-orange-600" />
+                  </div>
+                  <h3 className="font-bold text-lg">Simple Claims</h3>
+                  <p className="text-muted-foreground">Straightforward processing with minimal paperwork and quick turnaround</p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <CardContent className="space-y-4">
+                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
+                    <Zap className="w-8 h-8 text-purple-600" />
+                  </div>
+                  <h3 className="font-bold text-lg">Fast Support</h3>
+                  <p className="text-muted-foreground">Timely assistance when mechanical and electrical issues arise</p>
+                </CardContent>
+              </Card>
             </div>
+            
+            <Card className="bg-muted p-8 text-center">
+              <CardContent className="space-y-6">
+                <h3 className="text-2xl font-bold text-foreground">Need Help? We're Here for You</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <p className="font-semibold text-foreground">Customer Service</p>
+                    <p className="text-2xl font-bold text-primary">0330 229 5040</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="font-semibold text-foreground">Claims Line</p>
+                    <p className="text-2xl font-bold text-primary">0330 229 5045</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
         {/* Vehicle Types Section */}
-        <section className="py-16 lg:py-24 px-4 bg-gray-50" id="coverage-details">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-8">
-              Reliable cover for Cars, Vans, SUVs and Motorcycles
-            </h2>
+        <section className="py-20 bg-muted/30" id="coverage-details">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+                Comprehensive Coverage for All Vehicle Types
+              </h2>
+              <p className="text-xl text-muted-foreground">
+                From electric cars to motorcycles - we've got you covered
+              </p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {vehicleTypes.map((type) => (
-                <div key={type.id} className="bg-white rounded-lg p-6 text-center shadow-sm">
-                  <h3 className="font-bold text-gray-900 mb-2">{type.title.split('.')[1]}</h3>
-                  <p className="text-sm text-gray-600">{type.description}</p>
+            <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {vehicleTypes.map((type, index) => (
+                    <Card key={type.id} className="p-6 hover:shadow-lg transition-shadow">
+                      <CardContent className="space-y-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <span className="text-2xl font-bold text-primary">{index + 1}</span>
+                        </div>
+                        <h3 className="font-bold text-lg text-foreground">
+                          {type.title.split('.')[1].trim()}
+                        </h3>
+                        <p className="text-sm text-muted-foreground font-medium">{type.subtitle}</p>
+                        <p className="text-sm text-muted-foreground">{type.description}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              <div className="flex justify-center">
+                <img 
+                  src={pandaVehicleCollection} 
+                  alt="Panda with various vehicles covered by warranty" 
+                  className="w-full max-w-lg h-auto"
+                />
+              </div>
             </div>
           </div>
         </section>
 
         {/* Enhanced Coverage Overview */}
-        <section className="py-16 lg:py-24 px-4 bg-white">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-12">
-              Understanding your mechanical & electrical extended warranty
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Enhanced Coverage</h3>
-                  <p className="text-gray-600">This warranty covers components against Mechanical and Electrical Breakdown. Our platinum package is our most comprehensive plan. Enjoy a discount on our three-year warranty plans, with pricing based on current market rates. It's long-term protection at even better value.</p>
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="flex justify-center order-2 lg:order-1">
+                <img 
+                  src={pandaGarage} 
+                  alt="Panda and mechanic providing professional service" 
+                  className="w-full max-w-lg h-auto"
+                />
+              </div>
+
+              <div className="space-y-8 order-1 lg:order-2">
+                <div className="space-y-4">
+                  <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+                    Understanding Your Warranty Coverage
+                  </h2>
+                  <p className="text-xl text-muted-foreground">
+                    Comprehensive protection designed for your peace of mind
+                  </p>
                 </div>
                 
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Vehicle Compatibility</h3>
-                  <p className="text-gray-600">Suitable for Cars, SUV'S and Vans. Labour is covered up to £100 per hour - which is pretty generous compared to industry standards.</p>
-                </div>
-                
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Unlimited Claims</h3>
-                  <p className="text-gray-600">Make an unlimited number of claims throughout your warranty period unless you select 10 claims per year at checkout. Each approved repair is covered up to your claim limit.</p>
+                <div className="space-y-6">
+                  <Card className="p-6">
+                    <CardContent className="space-y-3">
+                      <h3 className="text-xl font-bold text-foreground">Enhanced Protection</h3>
+                      <p className="text-muted-foreground">
+                        Our platinum package covers components against Mechanical and Electrical Breakdown. 
+                        Enjoy discounts on three-year plans with competitive pricing and long-term protection.
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="p-6">
+                    <CardContent className="space-y-3">
+                      <h3 className="text-xl font-bold text-foreground">Generous Coverage</h3>
+                      <p className="text-muted-foreground">
+                        Suitable for Cars, SUVs, Vans, and Motorcycles. Labour covered up to £100 per hour - 
+                        more generous than industry standards.
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="p-6">
+                    <CardContent className="space-y-3">
+                      <h3 className="text-xl font-bold text-foreground">Unlimited Claims</h3>
+                      <p className="text-muted-foreground">
+                        Make unlimited claims throughout your warranty period. Each approved repair 
+                        is covered up to your claim limit with no hidden restrictions.
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
-              
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Halfords MOT fee</h3>
-                  <p className="text-gray-600">Free Halfords MOT test fee coverage when your MOT is due for renewal with select packages.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Additional Benefits */}
+        <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+                    Additional Benefits & Services
+                  </h2>
+                  <p className="text-xl text-muted-foreground">
+                    More than just warranty coverage
+                  </p>
                 </div>
                 
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Vehicle hire and recovery</h3>
-                  <p className="text-gray-600">Vehicle Hire, Vehicle recovery and additional coverage within the EU.</p>
+                <div className="space-y-6">
+                  <Card className="p-6">
+                    <CardContent className="space-y-3">
+                      <h3 className="text-xl font-bold text-foreground">Free MOT Coverage</h3>
+                      <p className="text-muted-foreground">
+                        Free Halfords MOT test fee coverage when your MOT is due for renewal with select packages.
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="p-6">
+                    <CardContent className="space-y-3">
+                      <h3 className="text-xl font-bold text-foreground">Vehicle Hire & Recovery</h3>
+                      <p className="text-muted-foreground">
+                        Vehicle hire, recovery services, and additional coverage within the EU for complete peace of mind.
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
+              </div>
+
+              <div className="flex justify-center">
+                <img 
+                  src={pandaMotorcycle} 
+                  alt="Panda on motorcycle showcasing motorcycle warranty coverage" 
+                  className="w-full max-w-lg h-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Get Started Section */}
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+                    Ready to Protect Your Vehicle?
+                  </h2>
+                  <p className="text-xl text-muted-foreground">
+                    Join thousands of satisfied customers who trust us with their vehicle protection
+                  </p>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <Check className="w-5 h-5 text-green-600" />
+                    </div>
+                    <p className="text-lg">Get an instant quote in under 2 minutes</p>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <Check className="w-5 h-5 text-green-600" />
+                    </div>
+                    <p className="text-lg">Choose from flexible payment options</p>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <Check className="w-5 h-5 text-green-600" />
+                    </div>
+                    <p className="text-lg">Comprehensive coverage starts immediately</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <Button size="lg" className="bg-primary hover:bg-primary-hover text-white px-8 py-4 text-lg">
+                    Get Your Quote Now
+                  </Button>
+                  <p className="text-sm text-muted-foreground">
+                    No hidden fees • Cancel anytime • 30-day money back guarantee
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <img 
+                  src={pandaCelebrating} 
+                  alt="Happy panda celebrating warranty protection" 
+                  className="w-full max-w-lg h-auto"
+                />
               </div>
             </div>
           </div>
         </section>
 
         {/* Detailed Coverage by Vehicle Type */}
-        <section className="py-16 lg:py-24 px-4 bg-gray-50">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-12">
-              Detailed Coverage by Vehicle Type
-            </h2>
+        <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+                Detailed Coverage by Vehicle Type
+              </h2>
+              <p className="text-xl text-muted-foreground">
+                Comprehensive breakdown of what's covered for each vehicle type
+              </p>
+            </div>
             
             <Accordion type="single" collapsible className="space-y-4">
               {/* Petrol & Diesel */}
-              <AccordionItem value="petrol-diesel" className="bg-white rounded-lg border">
+              <AccordionItem value="petrol-diesel" className="bg-card rounded-lg border shadow-sm">
                 <AccordionTrigger className="px-6 py-4 text-left hover:no-underline">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">1. Petrol & Diesel (Combustion) Vehicles</h3>
-                    <p className="text-gray-600">Car, Van and SUV cover</p>
+                    <h3 className="text-xl font-bold text-foreground">1. Petrol & Diesel (Combustion) Vehicles</h3>
+                    <p className="text-muted-foreground">Car, Van and SUV cover</p>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-6">
