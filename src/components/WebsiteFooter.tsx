@@ -10,7 +10,7 @@ const WebsiteFooter = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Get help when you need it most
+              Need advice? Have an questions?
             </h2>
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8">
               <a 
@@ -18,14 +18,14 @@ const WebsiteFooter = () => {
                 className="flex items-center text-lg font-semibold text-[#eb4b00] hover:text-[#d63f00] transition-colors"
               >
                 <Phone className="w-5 h-5 mr-2" />
-                Call us: 0330 229 5040
+                Call us: 0330 229 5040 (Mon-Fri 9am to 5:30pm)
               </a>
               <a 
                 href="mailto:support@buyawarranty.co.uk" 
                 className="flex items-center text-lg font-semibold text-[#eb4b00] hover:text-[#d63f00] transition-colors"
               >
                 <Mail className="w-5 h-5 mr-2" />
-                support@buyawarranty.co.uk
+                or email us: support@buyawarranty.co.uk
               </a>
             </div>
           </div>
