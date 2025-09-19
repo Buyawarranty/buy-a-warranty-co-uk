@@ -1341,22 +1341,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div
                   key={option.id}
                   onClick={() => setPaymentType(option.id as '12months' | '24months' | '36months')}
-                  className={`relative p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer overflow-hidden ${
-                    paymentType === option.id 
-                      ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                      : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                  }`}
-                >
-                  {/* Save Percentage Ribbon */}
-                  {(option.id === '24months' || option.id === '36months') && (
-                     <div className="absolute -top-0 -right-0 bg-gradient-to-br from-green-500 to-green-600 text-white px-6 py-3 shadow-lg overflow-hidden">
-                       <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 transform rotate-45 scale-150"></div>
-                       <span className="relative z-10 text-sm font-bold whitespace-nowrap">
-                         {option.id === '24months' ? 'Save £100 today' : 'Save £200 Today'}
-                       </span>
-                       <div className="absolute bottom-0 left-0 w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[10px] border-t-green-700"></div>
+                   className={`relative p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
+                     paymentType === option.id 
+                       ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                       : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                   }`}
+                 >
+                   {/* Save Percentage Ribbon */}
+                   {(option.id === '24months' || option.id === '36months') && (
+                     <div className="absolute top-2 right-2 bg-gradient-to-br from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-10">
+                       {option.id === '24months' ? 'Save £100 today' : 'Save £200 Today'}
                      </div>
-                  )}
+                   )}
 
                   {/* Badge Pills */}
                   <div className="flex flex-wrap gap-2 mb-4">
