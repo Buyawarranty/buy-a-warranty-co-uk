@@ -121,7 +121,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       id: '12months',
       title: '✅ 1-Year Cover',
       subtitle: '',
-      description: 'Flexible protection for short-term peace of mind',
+      description: 'Flexible protection for short-term cover',
       planTitle: 'Platinum Comprehensive Plan',
       features: [
         'All mechanical & electrical parts covered – no surprises, just solid protection',

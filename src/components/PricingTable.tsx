@@ -1255,7 +1255,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 id: '12months',
                 title: '✅ 1-Year Cover',
                 subtitle: '',
-                description: 'Flexible protection for short-term peace of mind',
+                description: 'Flexible protection for short-term cover',
                 features: [
                   'All mechanical & electrical parts covered – no surprises, just solid protection',
                   'Up to 10 claims per policy – plenty of cover when you need it',
