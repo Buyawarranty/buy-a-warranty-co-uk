@@ -1531,40 +1531,52 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           
           <div className="space-y-4">
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors text-base">
                 <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                 <span>Terms and Conditions</span>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-4 pl-7">
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    Please refer to the complete Terms and Conditions document for full coverage details, exclusions, and limitations. 
-                    This document contains important information about your warranty coverage, claims procedures, and your rights and obligations.
+                  <p className="text-gray-700 text-base leading-relaxed mb-4">
+                    Clear, straightforward terms designed to protect you and give you peace of mind.
                   </p>
+                  <a 
+                    href="https://buyawarranty.co.uk/terms" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 font-medium text-base underline"
+                  >
+                    View Full Terms and Conditions
+                  </a>
                 </div>
               </CollapsibleContent>
             </Collapsible>
 
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors text-base">
                 <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                 <span>Platinum Plan Details</span>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-4 pl-7">
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                    The Platinum Plan provides comprehensive coverage for your vehicle's mechanical and electrical components. 
-                    Key features include:
+                  <p className="text-gray-700 text-base leading-relaxed mb-4">
+                    The Platinum Plan provides comprehensive coverage for your vehicle's mechanical and electrical components. Key features include:
                   </p>
-                  <ul className="text-gray-700 text-sm space-y-2">
-                    <li>• Unlimited claims throughout the warranty period</li>
-                    <li>• All labour costs included</li>
+                  <ul className="text-gray-700 text-base space-y-2 mb-4">
+                    <li>• Fast and easy claims</li>
+                    <li>• All labour costs</li>
                     <li>• Fast fault diagnostics</li>
                     <li>• Consequential damage protection</li>
-                    <li>• 24/7 breakdown recovery service</li>
-                    <li>• MOT test fee coverage</li>
                     <li>• 14-day money-back guarantee</li>
                   </ul>
+                  <a 
+                    href="https://buyawarranty.co.uk/warranty-plan" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 font-medium text-base underline"
+                  >
+                    View Full Platinum Plan Details
+                  </a>
                 </div>
               </CollapsibleContent>
             </Collapsible>
