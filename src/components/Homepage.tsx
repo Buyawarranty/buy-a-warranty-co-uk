@@ -596,8 +596,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Left - Content */}
             <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
               <div className="mb-4 md:mb-6">
-                <div className="inline-block bg-brand-orange text-white px-3 md:px-4 py-2 rounded text-sm font-bold mb-3 md:mb-4">
-                  Multiple claims covered
+                <div className="text-brand-orange text-sm font-semibold uppercase tracking-wide mb-3 md:mb-4">
+                  Unlimited claims
                 </div>
                 <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
                   Complete <span className="text-brand-orange">vehicle protection</span>
