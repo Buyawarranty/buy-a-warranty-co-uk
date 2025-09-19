@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe, ArrowRightLeft } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
 import HomepageFAQ from './HomepageFAQ';
@@ -811,20 +811,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     <Phone className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">24/7 Breakdown Recovery</h3>
+                    <h3 className="text-lg font-bold text-brand-dark-text">24/7 Vehicle Recovery</h3>
                     <p className="text-brand-dark-text">Help whenever you need it.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <FileCheck className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">MOT Repair Cover</h3>
-                    <p className="text-brand-dark-text">Stay road-legal without the stress.</p>
                   </div>
                 </div>
               </div>
@@ -844,11 +832,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <div className="space-y-4 text-left">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <Settings className="w-6 h-6 text-white" />
+                    <Globe className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">Wear & Tear</h3>
-                    <p className="text-brand-dark-text">Extra peace of mind for ageing parts.</p>
+                    <h3 className="text-lg font-bold text-brand-dark-text">Europe Cover</h3>
+                    <p className="text-brand-dark-text">Drive with confidence across Europe.</p>
                   </div>
                 </div>
               </div>
@@ -859,8 +847,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     <Key className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">Lost Key Cover</h3>
-                    <p className="text-brand-dark-text">No more panic if your keys go missing.</p>
+                    <h3 className="text-lg font-bold text-brand-dark-text">Vehicle Rental</h3>
+                    <p className="text-brand-dark-text">Replacement vehicle when yours is off the road.</p>
                   </div>
                 </div>
               </div>
@@ -868,11 +856,23 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <div className="space-y-4 text-left">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <Globe className="w-6 h-6 text-white" />
+                    <ArrowRightLeft className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">European Cover</h3>
-                    <p className="text-brand-dark-text">Drive with confidence across Europe.</p>
+                    <h3 className="text-lg font-bold text-brand-dark-text">Transfer Cover</h3>
+                    <p className="text-brand-dark-text">Coverage continues when you change ownership.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-left">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
+                    <Settings className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-brand-dark-text">Wear and Tear</h3>
+                    <p className="text-brand-dark-text">Extra peace of mind for ageing parts.</p>
                   </div>
                 </div>
               </div>
