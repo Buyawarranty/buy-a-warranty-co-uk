@@ -11,6 +11,25 @@ interface AddOnProtectionPackagesProps {
 
 const addOnPackages = [
   {
+    key: 'wearAndTear',
+    icon: '🔧',
+    title: 'Wear & Tear Cover',
+    description: 'Protection against normal wear and tear items',
+    priceMonthly: {
+      '12months': 12.99,
+      '24months': 10.99,
+      '36months': 8.99
+    },
+    priceType: 'monthly',
+    bulletPoints: [
+      'Brake pads and discs coverage',
+      'Clutch wear protection',
+      'Wiper blades and bulbs',
+      'Battery replacement cover',
+      'Exhaust system wear protection'
+    ]
+  },
+  {
     key: 'breakdown',
     icon: '🚗',
     title: '24/7 Vehicle recovery',
@@ -110,13 +129,25 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
   return (
     <div className="grid md:grid-cols-3 gap-3">
       {addOnPackages.map((addon) => {
-              // Calculate total price based on duration for monthly add-ons
-              const totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
-              const priceDisplay = addon.priceType === 'monthly' 
-                ? addon.price > 0 
-                  ? `£${addon.price.toFixed(2)} per month`
-                  : 'Included'
-                : `£${addon.price} one-time fee`;
+              // Calculate price based on addon structure
+              let monthlyPrice, totalPrice, priceDisplay;
+              
+              if (addon.priceMonthly) {
+                // New format with different pricing tiers
+                monthlyPrice = addon.priceMonthly[paymentType];
+                totalPrice = monthlyPrice * months;
+                priceDisplay = monthlyPrice > 0 
+                  ? `£${monthlyPrice.toFixed(2)} per month`
+                  : 'Included';
+              } else {
+                // Legacy format with single price
+                totalPrice = addon.priceType === 'monthly' ? addon.price * months : addon.price;
+                priceDisplay = addon.priceType === 'monthly' 
+                  ? addon.price > 0 
+                    ? `£${addon.price.toFixed(2)} per month`
+                    : 'Included'
+                  : `£${addon.price} one-time fee`;
+              }
               
               return (
                  <div 
