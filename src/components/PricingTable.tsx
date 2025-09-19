@@ -977,23 +977,61 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <div className="space-y-3">
                       <div className="font-medium text-gray-800 mb-2">Engine & Powertrain Coverage:</div>
                       <ul className="space-y-1.5 text-sm">
-                        <li>• Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</li>
-                        <li>• Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</li>
-                        <li>• Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</li>
-                        <li>• Turbocharger & Supercharger Units</li>
-                        <li>• Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Turbocharger & Supercharger Units</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</span>
+                        </li>
                       </ul>
                     </div>
                     <div className="space-y-3">
                       <div className="font-medium text-gray-800 mb-2">Systems & Electronics:</div>
                       <ul className="space-y-1.5 text-sm">
-                        <li>• Braking Systems (ABS, calipers, cylinders, master cylinders)</li>
-                        <li>• Suspension & Steering Systems (shocks, struts, steering racks, power steering)</li>
-                        <li>• Air Conditioning & Climate Control Systems</li>
-                        <li>• Electrical Components & Charging Systems (alternators, starter motors, wiring)</li>
-                        <li>• Electronic Control Units (ECUs) & Sensors (engine management, ABS, emissions)</li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Braking Systems (ABS, calipers, cylinders, master cylinders)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Suspension & Steering Systems (shocks, struts, steering racks, power steering)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Air Conditioning & Climate Control Systems</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Electrical Components & Charging Systems (alternators, starter motors, wiring)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span>Electronic Control Units (ECUs) & Sensors (engine management, ABS, emissions)</span>
+                        </li>
                       </ul>
                     </div>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <button 
+                      onClick={() => document.getElementById('additional-information')?.scrollIntoView({ behavior: 'smooth' })}
+                      className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 transition-colors"
+                    >
+                      Need more details? <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                    </button>
                   </div>
                 </div>
               </CollapsibleContent>
@@ -1009,17 +1047,49 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <p className="text-gray-600 mb-4 italic">All petrol/diesel engine parts and labour plus:</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
                     <ul className="space-y-1.5">
-                      <li>• Hybrid Drive Motors & ECUs</li>
-                      <li>• Hybrid Battery Failure</li>
-                      <li>• Power Control Units, Inverters & DC-DC Converters</li>
-                      <li>• Regenerative Braking Systems</li>
-                      <li>• High-Voltage Cables & Connectors</li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Hybrid Drive Motors & ECUs</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Hybrid Battery Failure</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Power Control Units, Inverters & DC-DC Converters</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Regenerative Braking Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>High-Voltage Cables & Connectors</span>
+                      </li>
                     </ul>
                     <ul className="space-y-1.5">
-                      <li>• Cooling Systems for Hybrid Components</li>
-                      <li>• Charging Ports & On-Board Charging Modules</li>
-                      <li>• Hybrid Transmission Components</li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Cooling Systems for Hybrid Components</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Charging Ports & On-Board Charging Modules</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Hybrid Transmission Components</span>
+                      </li>
                     </ul>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <button 
+                      onClick={() => document.getElementById('additional-information')?.scrollIntoView({ behavior: 'smooth' })}
+                      className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 transition-colors"
+                    >
+                      Need more details? <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                    </button>
                   </div>
                 </div>
               </CollapsibleContent>
@@ -1034,19 +1104,57 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
                     <ul className="space-y-1.5">
-                      <li>• EV Drive Motors & Reduction Gear</li>
-                      <li>• EV Transmission & Reduction Gearbox Assemblies</li>
-                      <li>• High-Voltage Battery Failure</li>
-                      <li>• Power Control Units & Inverters</li>
-                      <li>• On-Board Charger (OBC) & Charging Ports</li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>EV Drive Motors & Reduction Gear</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>EV Transmission & Reduction Gearbox Assemblies</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>High-Voltage Battery Failure</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Power Control Units & Inverters</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>On-Board Charger (OBC) & Charging Ports</span>
+                      </li>
                     </ul>
                     <ul className="space-y-1.5">
-                      <li>• DC-DC Converters</li>
-                      <li>• Thermal Management Systems</li>
-                      <li>• High-Voltage Cables & Connectors</li>
-                      <li>• EV-Specific Control Electronics</li>
-                      <li>• Regenerative Braking System Components</li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>DC-DC Converters</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Thermal Management Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>High-Voltage Cables & Connectors</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>EV-Specific Control Electronics</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Regenerative Braking System Components</span>
+                      </li>
                     </ul>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <button 
+                      onClick={() => document.getElementById('additional-information')?.scrollIntoView({ behavior: 'smooth' })}
+                      className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 transition-colors"
+                    >
+                      Need more details? <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                    </button>
                   </div>
                 </div>
               </CollapsibleContent>
@@ -1061,19 +1169,57 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
                     <ul className="space-y-1.5">
-                      <li>• Engine / Motor & Drivetrain Components</li>
-                      <li>• Gearbox / Transmission Systems</li>
-                      <li>• ECUs, Sensors & Control Modules</li>
-                      <li>• Electrical Systems & Wiring</li>
-                      <li>• High-Voltage Battery Failure (Hybrid & EV)</li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Engine / Motor & Drivetrain Components</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Gearbox / Transmission Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>ECUs, Sensors & Control Modules</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Electrical Systems & Wiring</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>High-Voltage Battery Failure (Hybrid & EV)</span>
+                      </li>
                     </ul>
                     <ul className="space-y-1.5">
-                      <li>• Suspension & Steering Systems</li>
-                      <li>• Braking Systems</li>
-                      <li>• Cooling & Thermal Systems</li>
-                      <li>• Lighting & Ignition Systems</li>
-                      <li>• Instrumentation & Rider Controls</li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Suspension & Steering Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Braking Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Cooling & Thermal Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Lighting & Ignition Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Instrumentation & Rider Controls</span>
+                      </li>
                     </ul>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <button 
+                      onClick={() => document.getElementById('additional-information')?.scrollIntoView({ behavior: 'smooth' })}
+                      className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 transition-colors"
+                    >
+                      Need more details? <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                    </button>
                   </div>
                 </div>
               </CollapsibleContent>
@@ -1309,7 +1455,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Additional Information Section */}
-        <div className="bg-white rounded-lg p-8 border border-gray-200 shadow-sm">
+        <div id="additional-information" className="bg-white rounded-lg p-8 border border-gray-200 shadow-sm">
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-foreground flex items-center gap-2 mb-4">
               📄 Additional Information
