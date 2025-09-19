@@ -1434,9 +1434,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     {option.id === '24months' && (
                       <>
                         <div className="text-lg font-bold text-gray-900">
-                          🛡️ 2-year protection for only £{totalPrice} – Save £100 Today
+                          Protect your vehicle for just £{monthlyPrice}/month
                         </div>
                         <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-blue-500">🛡️</span>
+                            <span>2-year protection for only £{totalPrice} – Save £100 Today</span>
+                          </div>
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <span className="text-blue-500">💡</span>
                             <span>12 easy interest-free payments</span>
@@ -1451,9 +1455,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     {option.id === '36months' && (
                       <>
                         <div className="text-lg font-bold text-gray-900">
-                          🛡️ 3-year protection for only £{totalPrice} – Save £200
+                          Protect your vehicle for just £{monthlyPrice}/month
                         </div>
                         <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-blue-500">🛡️</span>
+                            <span>3-year protection for only £{totalPrice} – Save £200</span>
+                          </div>
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <span className="text-blue-500">💡</span>
                             <span>12 easy interest-free payments</span>
