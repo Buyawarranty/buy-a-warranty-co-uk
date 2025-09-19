@@ -177,7 +177,7 @@ const WarrantyPlan = () => {
 
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-primary via-primary-hover to-secondary py-20 lg:py-32">
+        <section className="bg-gradient-to-br from-primary to-orange-600 py-20 lg:py-32">
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="text-white space-y-8">
