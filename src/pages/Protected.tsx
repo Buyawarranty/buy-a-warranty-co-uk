@@ -58,6 +58,7 @@ const Protected = () => {
     {
       id: 'electric-vehicles',
       title: 'Electric vehicles (EVs)',
+      subtitle: 'All petrol/diesel engine parts and labour plus:',
       components: [
         'EV Drive Motors & Reduction Gear',
         'EV Transmission & Reduction Gearbox Assemblies',
