@@ -200,26 +200,25 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                         )}
                       </CollapsibleTrigger>
                     </div>
-                    <CollapsibleContent className="mt-2">
-                      <div className="space-y-1">
-                        {addon.bulletPoints.map((point, index) => (
-                          <div key={index} className="flex items-start gap-2">
-                            <Check className="h-3 w-3 text-green-500 mt-1 flex-shrink-0" strokeWidth={3} />
-                            <span className="text-sm text-muted-foreground">{point}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
+                     <CollapsibleContent className="mt-2">
+                       <div className="space-y-1">
+                         {addon.bulletPoints.map((point, index) => (
+                           <div key={index} className="flex items-start gap-2">
+                             <Check className="h-3 w-3 text-green-500 mt-1 flex-shrink-0" strokeWidth={3} />
+                             <span className="text-sm text-muted-foreground">{point}</span>
+                           </div>
+                         ))}
+                         <div className="mt-3 pt-2 border-t border-gray-200">
+                           <p className="text-xs text-muted-foreground italic">
+                             Full details available in our Platinum Warranty Plan – see below for more information.
+                           </p>
+                         </div>
+                       </div>
+                     </CollapsibleContent>
                   </Collapsible>
                 </div>
               );
             })}
-      </div>
-      
-      <div className="text-center mt-6">
-        <p className="text-sm text-muted-foreground">
-          Full details available in our Platinum Warranty Plan – see below for more information.
-        </p>
       </div>
     </div>
   );
