@@ -381,7 +381,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   </div>
                   <div className="flex items-center">
                     <Check className="w-5 h-5 text-green-500 mr-2" />
-                    <span className="font-medium">Unlimited claims</span>
+                    <span className="font-medium">Unlimited Claims</span>
                   </div>
                   <div className="flex items-center">
                     <Check className="w-5 h-5 text-green-500 mr-2" />
@@ -596,8 +596,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Left - Content */}
             <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
               <div className="mb-4 md:mb-6">
-                <div className="text-brand-orange text-sm font-semibold uppercase tracking-wide mb-3 md:mb-4">
-                  Unlimited claims
+                <div className="text-green-600 text-sm font-semibold uppercase tracking-wide mb-3 md:mb-4">
+                  Unlimited Claims
                 </div>
                 <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
                   Complete <span className="text-brand-orange">vehicle protection</span>
@@ -657,7 +657,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Right - Content */}
             <div className="space-y-6 md:space-y-8">
               <div className="mb-4 md:mb-6">
-                <div className="inline-block bg-brand-orange text-white px-3 md:px-4 py-2 rounded text-sm font-bold mb-3 md:mb-4">
+                <div className="text-green-600 text-sm font-semibold uppercase tracking-wide mb-3 md:mb-4">
                   Easy Options
                 </div>
                 <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
@@ -709,8 +709,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Left - Content */}
             <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
               <div className="mb-4 md:mb-6">
-                <div className="inline-block bg-brand-orange text-white px-3 md:px-4 py-2 rounded text-sm font-bold mb-3 md:mb-4">
-                  High mileage, No Problem!
+                <div className="text-green-600 text-sm font-semibold uppercase tracking-wide mb-3 md:mb-4">
+                  High Mileage, No Problem!
                 </div>
                 <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
                   Drive With Confidence –
