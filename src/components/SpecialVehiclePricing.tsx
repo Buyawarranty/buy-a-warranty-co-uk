@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import { calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
 
 
 interface SpecialPlan {
@@ -154,7 +155,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     }
   };
 
-  // Use pricing from the database plan's pricing_matrix instead of hardcoded values
+  // Get base pricing from database and apply vehicle-specific adjustments
   const getPricingData = (excess: number, claimLimit: number, paymentPeriod: string) => {
     // Get the first (and typically only) plan
     const plan = plans[0];
@@ -163,39 +164,54 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
       return 467; // Fallback price
     }
 
-    // Map payment period to database format
+    // Map payment period to database format and warranty years
     const periodMap = {
-      'yearly': '12',
-      'two_yearly': '24', 
-      'three_yearly': '36'
+      'yearly': { dbPeriod: '12', warrantyYears: 1 },
+      'two_yearly': { dbPeriod: '24', warrantyYears: 2 }, 
+      'three_yearly': { dbPeriod: '36', warrantyYears: 3 }
     };
     
-    const dbPeriod = periodMap[paymentPeriod as keyof typeof periodMap] || '12';
+    const { dbPeriod, warrantyYears } = periodMap[paymentPeriod as keyof typeof periodMap] || { dbPeriod: '12', warrantyYears: 1 };
     const excessKey = `${excess}_${claimLimit}`;
     
-    console.log('Getting pricing data:', {
-      excess,
-      claimLimit,
-      paymentPeriod,
-      dbPeriod,
-      excessKey,
-      pricing_matrix: plan.pricing_matrix
+    console.log('💰 calculatePlanPrice Debug:', {
+      paymentType: `${warrantyYears * 12}months`,
+      voluntaryExcess: excess,
+      selectedClaimLimit: claimLimit,
+      vehicleData,
     });
     
+    // Get base price from database
+    let basePrice = 467; // fallback price
     try {
       const periodData = plan.pricing_matrix[dbPeriod];
       if (periodData && periodData[excessKey] && periodData[excessKey].price) {
-        const price = periodData[excessKey].price;
-        console.log('Found price in database:', price);
-        return price;
+        basePrice = periodData[excessKey].price;
+        console.log('Found price in exact table:', {
+          basePrice,
+          voluntaryExcess: excess,
+          selectedClaimLimit: claimLimit,
+          paymentType: `${warrantyYears * 12}months`
+        });
       }
     } catch (error) {
       console.error('Error parsing pricing matrix:', error);
     }
     
-    // Fallback to default pricing if database lookup fails
-    console.warn('Falling back to default pricing');
-    return 467;
+    // Apply vehicle-specific adjustments (van premium, motorbike discount, etc.)
+    const vehiclePriceAdjustment = calculateVehiclePriceAdjustment(vehicleData as any, warrantyYears);
+    const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+    
+    console.log('🏍️ Motorbike/Vehicle adjustment applied:', {
+      basePrice,
+      adjustedPrice,
+      adjustment: vehiclePriceAdjustment,
+      vehicleType: vehicleData.vehicleType,
+      isMotorbike: vehicleData.vehicleType === 'MOTORBIKE',
+      discountApplied: vehiclePriceAdjustment.adjustmentAmount !== 0
+    });
+    
+    return adjustedPrice;
   };
 
   const calculatePlanPrice = (claimLimit: number) => {
