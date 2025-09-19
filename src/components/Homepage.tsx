@@ -373,7 +373,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Benefits */}
-              <div className="mb-3 sm:mb-4 text-gray-700 text-sm sm:text-base space-y-2">
+              <div className="mb-2 text-gray-700 text-sm sm:text-base space-y-2">
                 <div className="flex items-center">
                   <Check className="w-5 h-5 text-green-500 mr-3" />
                   <span className="font-medium">From just 80p a day • Unlimited claims • Fast payouts</span>
