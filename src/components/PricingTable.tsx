@@ -951,21 +951,29 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
         {/* What's Covered Section */}
         <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-lg">
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-6 h-6 rounded-full border-2 border-gray-400 flex items-center justify-center">
-                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+          <Collapsible>
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center justify-between mb-8 cursor-pointer group">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 rounded-full border-2 border-gray-400 flex items-center justify-center">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    What's Covered?
+                  </h2>
+                </div>
+                <ChevronDown className="w-5 h-5 text-gray-600 transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                What's Covered?
-              </h2>
-            </div>
-            <p className="text-gray-600 text-base leading-relaxed">
-              Click on each vehicle type to see the complete list of covered components
-            </p>
-          </div>
-          
-          <div className="space-y-6">
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent>
+              <div className="mb-8">
+                <p className="text-gray-600 text-base leading-relaxed">
+                  Click on each vehicle type to see the complete list of covered components
+                </p>
+              </div>
+              
+              <div className="space-y-6">
             <Collapsible>
               <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
                 <ChevronDown className="w-4 h-4 transition-transform duration-200" />
@@ -1225,6 +1233,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </CollapsibleContent>
             </Collapsible>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         {/* Choose Warranty Duration */}
