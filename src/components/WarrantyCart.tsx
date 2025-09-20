@@ -295,13 +295,13 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      🔥 Save 10% Instantly — Today Only!
+                      🛡️ Exclusive 10% Discount — Limited Time!
                     </h3>
                     <p className="text-gray-700 mb-3">
-                      Add another warranty to your order and get an extra 10% off right away.
+                      Protect another vehicle now and save 10% on your entire order instantly.
                     </p>
                     <p className="text-gray-600 text-sm font-medium">
-                      Don't miss out — this exclusive deal disappears after checkout!
+                      This special offer expires at checkout — secure your savings today!
                     </p>
                   </div>
                 </div>

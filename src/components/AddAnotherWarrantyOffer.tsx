@@ -29,18 +29,18 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
         {!showSuccess ? (
           <>
             <div className="flex items-center gap-3 mb-4">
-              <div className="text-2xl">🔥</div>
+              <div className="text-2xl">🛡️</div>
               <h3 className="text-xl font-bold text-gray-900">
-                Save 10% Instantly — Today Only!
+                Exclusive 10% Discount — Limited Time!
               </h3>
             </div>
             
             <p className="text-gray-700 mb-3">
-              Add another warranty to your order and get an extra 10% off right away.
+              Protect another vehicle now and save 10% on your entire order instantly.
             </p>
             
             <p className="text-sm text-gray-600 mb-4">
-              Don't miss out — this exclusive deal disappears after checkout!
+              This special offer expires at checkout — secure your savings today!
             </p>
 
             <Button
