@@ -660,6 +660,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
+            
+            {/* Clickable Logo */}
+            <div className="flex justify-center flex-1">
+              <a href="/" className="hover:opacity-80 transition-opacity">
+                <img 
+                  src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                  alt="Buy a Warranty" 
+                  className="h-8 w-auto"
+                />
+              </a>
+            </div>
           </div>
         </div>
       </div>

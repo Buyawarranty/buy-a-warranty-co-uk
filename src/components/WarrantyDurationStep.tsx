@@ -218,6 +218,33 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
 
   return (
     <div className="bg-[#e8f4fb] min-h-screen py-8">
+      {/* Header with Logo */}
+      <div className="bg-white border-b mb-8">
+        <div className="max-w-4xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <Button 
+              onClick={onBack}
+              variant="ghost"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+            
+            {/* Clickable Logo */}
+            <div className="flex justify-center flex-1">
+              <a href="/" className="hover:opacity-80 transition-opacity">
+                <img 
+                  src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                  alt="Buy a Warranty" 
+                  className="h-8 w-auto"
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Warranty Duration</h1>
