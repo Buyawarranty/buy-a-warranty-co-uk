@@ -558,6 +558,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         </div>
       </div>
 
+      {/* Registration Plate Display */}
+      <div className="max-w-4xl mx-auto px-6 pb-4">
+        <div className="bg-yellow-300 border-2 border-black rounded-lg px-6 py-3 max-w-fit mx-auto">
+          <div className="text-center">
+            <div className="text-xs font-semibold text-black mb-1">Vehicle Registration</div>
+            <div className="text-2xl font-black text-black tracking-wider">
+              {vehicleData.regNumber}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">You're almost covered</h1>
