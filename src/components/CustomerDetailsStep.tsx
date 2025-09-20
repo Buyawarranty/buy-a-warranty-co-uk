@@ -305,7 +305,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     : Math.round(baseDiscountedPrice * 0.95);
 
   const handleInputChange = (field: string, value: string) => {
-    setCustomerData(prev => ({ ...prev, [field]: value }));
+    // Special handling for mobile number - only allow numbers, spaces, and common phone characters
+    if (field === 'mobile') {
+      // Remove all non-numeric characters except spaces, +, -, and ()
+      const cleaned = value.replace(/[^\d\s+()-]/g, '');
+      // Limit to reasonable phone number length
+      const limited = cleaned.substring(0, 20);
+      setCustomerData(prev => ({ ...prev, [field]: limited }));
+    } else {
+      setCustomerData(prev => ({ ...prev, [field]: value }));
+    }
+    
     // Clear field error when user starts typing
     if (fieldErrors[field]) {
       setFieldErrors(prev => ({ ...prev, [field]: '' }));
@@ -368,7 +378,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (!customerData.last_name.trim()) errors.last_name = 'Last name is required';
     if (!customerData.email.trim()) errors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(customerData.email)) errors.email = 'Email format is invalid';
-    if (!customerData.mobile.trim()) errors.mobile = 'Mobile number is required';
+    if (!customerData.mobile.trim()) {
+      errors.mobile = 'Mobile number is required';
+    } else {
+      // UK phone number validation - should be 10-11 digits (without country code) or start with +44
+      const cleaned = customerData.mobile.replace(/[^\d+]/g, '');
+      const isValidUK = /^(\+44[1-9]\d{8,9}|0[1-9]\d{8,9}|\d{10,11})$/.test(cleaned);
+      if (!isValidUK) {
+        errors.mobile = 'Please enter a valid UK mobile number';
+      }
+    }
     if (!customerData.street.trim()) errors.street = 'Address is required';
     if (!customerData.town.trim()) errors.town = 'Town/City is required';
     if (!customerData.postcode.trim()) errors.postcode = 'Postcode is required';
