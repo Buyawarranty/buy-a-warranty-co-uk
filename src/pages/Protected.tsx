@@ -312,6 +312,40 @@ const Protected = () => {
           </Link>
         </div>
       </section>
+
+      {/* Terms and Conditions Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <FileText className="w-12 h-12 text-primary mx-auto mb-6" />
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              Terms & Conditions
+            </h2>
+            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+              Our comprehensive terms and conditions are designed to be clear, fair, and transparent. 
+              We believe in honest communication and want you to understand exactly what's covered 
+              and how our warranty protection works for you.
+            </p>
+            <p className="text-md text-gray-500 mb-8">
+              Take a moment to review our full terms and conditions document. It's written in 
+              plain English and contains all the important details about your warranty coverage, 
+              claims process, and our commitment to you.
+            </p>
+            <a 
+              href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-6.pdf" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-2 bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+            >
+              <FileText className="w-5 h-5" />
+              <span>View Terms & Conditions (PDF)</span>
+            </a>
+            <p className="text-sm text-gray-400 mt-4">
+              Opens in a new tab • Updated February 2024
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
