@@ -544,8 +544,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
  {/* Right Content - Hero Image */}
             <div className="relative">
               <img 
-                src="/lovable-uploads/c9993cb7-e55a-47a3-936b-d5bb733e4d87.png" 
-                alt="Panda mascot with cars and motorcycle" 
+                src="/lovable-uploads/panda-celebrating-hero.png" 
+                alt="Panda mascot celebrating with orange car" 
                 className="w-full h-auto"
               />
               {/* Trustpilot Logo positioned to align with van */}
