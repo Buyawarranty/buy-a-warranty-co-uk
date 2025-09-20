@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe, ArrowRightLeft } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Link } from 'react-router-dom';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
@@ -240,6 +241,42 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
               <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
               <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+              
+              {/* Call Us Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="text-gray-700 hover:text-gray-900 font-semibold text-sm xl:text-base p-2 h-auto">
+                    <Phone className="h-4 w-4 mr-2" />
+                    Call Us
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64 p-4">
+                  <div className="space-y-3">
+                    <div className="text-center text-xs text-muted-foreground mb-3">
+                      Mon-Fri 9am to 5:30pm
+                    </div>
+                    <DropdownMenuItem asChild>
+                      <a href="tel:03302295040" className="flex items-center p-3 rounded-lg hover:bg-muted cursor-pointer">
+                        <Phone className="h-4 w-4 mr-3 text-primary" />
+                        <div>
+                          <div className="font-semibold text-sm">Get a Quote</div>
+                          <div className="text-primary font-mono">0330 229 5040</div>
+                        </div>
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a href="tel:03302295045" className="flex items-center p-3 rounded-lg hover:bg-muted cursor-pointer">
+                        <Phone className="h-4 w-4 mr-3 text-primary" />
+                        <div>
+                          <div className="font-semibold text-sm">Make a Claim</div>
+                          <div className="text-primary font-mono">0330 229 5045</div>
+                        </div>
+                      </a>
+                    </DropdownMenuItem>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
               <Link to="/customer-dashboard" className="text-gray-700 hover:text-gray-900 font-semibold text-sm xl:text-base">Login</Link>
             </nav>
 
@@ -317,6 +354,34 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     >
                       Contact Us
                     </Link>
+                    
+                    {/* Call Us Section in Mobile */}
+                    <div className="py-3 border-b border-gray-200">
+                      <div className="text-gray-700 font-semibold text-xl mb-3 flex items-center">
+                        <Phone className="h-5 w-5 mr-2" />
+                        Call Us
+                      </div>
+                      <div className="text-center text-xs text-muted-foreground mb-3">
+                        Mon-Fri 9am to 5:30pm
+                      </div>
+                      <div className="space-y-2">
+                        <a href="tel:03302295040" className="flex items-center p-3 rounded-lg hover:bg-muted">
+                          <Phone className="h-4 w-4 mr-3 text-primary" />
+                          <div>
+                            <div className="font-semibold text-sm">Get a Quote</div>
+                            <div className="text-primary font-mono">0330 229 5040</div>
+                          </div>
+                        </a>
+                        <a href="tel:03302295045" className="flex items-center p-3 rounded-lg hover:bg-muted">
+                          <Phone className="h-4 w-4 mr-3 text-primary" />
+                          <div>
+                            <div className="font-semibold text-sm">Make a Claim</div>
+                            <div className="text-primary font-mono">0330 229 5045</div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    
                     <Link 
                       to="/customer-dashboard" 
                       className="text-gray-700 hover:text-gray-900 font-semibold text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
