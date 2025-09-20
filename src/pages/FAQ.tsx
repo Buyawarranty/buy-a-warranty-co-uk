@@ -2,12 +2,24 @@ import React, { useState, useMemo } from 'react';
 import { ChevronDown, Search, MessageCircle, Phone, Mail, Menu, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const FAQ = () => {
+  const navigate = useNavigate();
+  
+  const navigateToQuoteForm = () => {
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -560,6 +572,7 @@ const FAQ = () => {
                 </a>
                 <Button 
                   size="sm"
+                  onClick={navigateToQuoteForm}
                   className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
                 >
                   Get my quote
@@ -635,7 +648,10 @@ const FAQ = () => {
                       </a>
                       <Button 
                         className="w-full bg-primary text-white hover:bg-primary/90 text-xl py-4 min-h-[48px]"
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          navigateToQuoteForm();
+                        }}
                       >
                         Get my quote
                       </Button>

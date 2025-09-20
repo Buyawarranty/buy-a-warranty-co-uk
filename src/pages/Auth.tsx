@@ -18,6 +18,17 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  
+  const navigateToQuoteForm = () => {
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+  
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -283,6 +294,7 @@ const Auth = () => {
               </a>
               <Button 
                 size="sm"
+                onClick={navigateToQuoteForm}
                 className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
               >
                 Get my quote
@@ -365,7 +377,10 @@ const Auth = () => {
                     </a>
                     <Button 
                       className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        navigateToQuoteForm();
+                      }}
                     >
                       Get my quote
                     </Button>

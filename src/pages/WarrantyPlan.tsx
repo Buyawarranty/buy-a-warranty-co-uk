@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Download, ExternalLink, Check, Menu, Shield, Car, Zap, Wrench } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -16,6 +16,17 @@ import pandaCelebrating from '@/assets/panda-celebrating.png';
 
 const WarrantyPlan = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  
+  const navigateToQuoteForm = () => {
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
 
   const vehicleTypes = [
     {
@@ -85,6 +96,7 @@ const WarrantyPlan = () => {
               </a>
               <Button 
                 size="sm"
+                onClick={navigateToQuoteForm}
                 className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
               >
                 Get my quote
@@ -167,7 +179,10 @@ const WarrantyPlan = () => {
                     </a>
                     <Button 
                       className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        navigateToQuoteForm();
+                      }}
                     >
                       Get my quote
                     </Button>

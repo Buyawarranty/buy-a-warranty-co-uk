@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Check, Menu, Upload, X, Mail, Phone, Clock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,18 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Claims = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  
+  const navigateToQuoteForm = () => {
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -175,6 +187,7 @@ Issue Timing: ${formData.issueTiming}
               </a>
               <Button 
                 size="sm"
+                onClick={navigateToQuoteForm}
                 className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
               >
                 Get my quote
@@ -257,7 +270,10 @@ Issue Timing: ${formData.issueTiming}
                     </a>
                     <Button 
                       className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        navigateToQuoteForm();
+                      }}
                     >
                       Get my quote
                     </Button>
