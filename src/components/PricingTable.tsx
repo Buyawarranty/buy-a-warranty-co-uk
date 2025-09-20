@@ -1560,7 +1560,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <CollapsibleContent className="pt-4 pl-7">
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <p className="text-gray-700 text-base leading-relaxed mb-4">
-                    The Platinum Plan provides comprehensive coverage for your vehicle's mechanical and electrical components. Key features include:
+                    The Platinum Plan provides comprehensive coverage for your vehicle and complete peace of mind. Key features include:
                   </p>
                   <ul className="text-gray-700 text-base space-y-2 mb-4">
                     <li>• Fast and easy claims</li>
