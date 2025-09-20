@@ -157,9 +157,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (protectionAddOns.transfer) protectionAddOnPrice += 30; // £30 one-time
     
     const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
-    const monthlyPrice = Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
     
-    return { totalPrice, monthlyPrice };
+    // Apply automatic discounts for multi-year plans
+    let discountedPrice = totalPrice;
+    if (paymentPeriod === '24months') {
+      discountedPrice = totalPrice - 100; // £100 discount for 2-year plans
+    } else if (paymentPeriod === '36months') {
+      discountedPrice = totalPrice - 200; // £200 discount for 3-year plans
+    }
+    
+    const monthlyPrice = Math.round(discountedPrice / 12); // Always use 12 months for monthly calculation
+    
+    return { totalPrice: discountedPrice, monthlyPrice };
   };
 
   // Handle duration change

@@ -96,7 +96,16 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     if (protectionAddOns.transfer) protectionAddOnPrice += 30; // £30 one-time
     
     const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
-    const monthlyPrice = Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
+    
+    // Apply automatic discounts for multi-year plans
+    let discountedPrice = totalPrice;
+    if (paymentPeriod === '24months') {
+      discountedPrice = totalPrice - 100; // £100 discount for 2-year plans
+    } else if (paymentPeriod === '36months') {
+      discountedPrice = totalPrice - 200; // £200 discount for 3-year plans
+    }
+    
+    const monthlyPrice = Math.round(discountedPrice / 12); // Always use 12 months for monthly calculation
     
     console.log('WarrantyDurationStep - Calculated pricing:', {
       paymentPeriod,
@@ -104,6 +113,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       planAddOnPrice,
       protectionAddOnPrice,
       totalPrice,
+      discountedPrice,
       monthlyPrice,
       selectedFromMatrix: `${voluntaryExcess}_${claimLimit}`,
       durationMonths,
@@ -113,7 +123,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       }
     });
     
-    return { totalPrice, monthlyPrice };
+    return { totalPrice: discountedPrice, monthlyPrice };
   };
 
   const durationOptions = [
@@ -136,8 +146,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       exclusions: [
         'Pre-existing faults are not covered'
       ],
-      monthlyPrice: 38,
-      totalPrice: 457,
+      ...getPricingForDuration('12months'),
       isPopular: false,
       isBestValue: false
     },
@@ -162,9 +171,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       exclusions: [
         'Pre-existing faults are not covered'
       ],
-      monthlyPrice: 77,
-      totalPrice: 777,
-      originalPrice: 877,
+      ...getPricingForDuration('24months'),
+      originalPrice: getPricingForDuration('24months').totalPrice + 100, // Show original price before discount
       isPopular: true,
       isBestValue: false
     },
@@ -194,9 +202,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       exclusions: [
         'Pre-existing faults are not covered –'
       ],
-      monthlyPrice: 108,
-      totalPrice: 1008,
-      originalPrice: 1208,
+      ...getPricingForDuration('36months'),
+      originalPrice: getPricingForDuration('36months').totalPrice + 200, // Show original price before discount
       isPopular: false,
       isBestValue: true
     }
@@ -366,7 +373,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                         Nothing to pay in Year 2
                       </div>
                       <div className="text-sm font-semibold text-gray-900">
-                        Total cost: <span className="line-through text-gray-400">£{option.originalPrice}</span> £{option.totalPrice}
+                        Total cost: <span className="line-through text-gray-400">£{'originalPrice' in option ? option.originalPrice : option.totalPrice + 100}</span> £{option.totalPrice}
                       </div>
                     </>
                   )}
@@ -382,7 +389,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                         Nothing to pay in Year 2 and Year 3
                       </div>
                       <div className="text-sm font-semibold text-gray-900">
-                        Total cost: <span className="line-through text-gray-400">£{option.originalPrice}</span> £{option.totalPrice}
+                        Total cost: <span className="line-through text-gray-400">£{'originalPrice' in option ? option.originalPrice : option.totalPrice + 200}</span> £{option.totalPrice}
                       </div>
                     </>
                   )}
