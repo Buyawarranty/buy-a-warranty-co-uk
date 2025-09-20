@@ -998,61 +998,55 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <Collapsible>
               <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
                 <ChevronDown className="w-4 h-4 transition-transform duration-200" />
-                <span>Petrol & Diesel (Combustion Engine) Vehicles</span>
+                <span>Cars (Petrol, Diesel, Hybrid, EV)</span>
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-4 pl-7">
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
-                    <div className="space-y-3">
-                      <div className="font-medium text-gray-800 mb-2">Engine & Powertrain Coverage:</div>
-                      <ul className="space-y-1.5 text-sm">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Turbocharger & Supercharger Units</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="font-medium text-gray-800 mb-2">Systems & Electronics:</div>
-                      <ul className="space-y-1.5 text-sm">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Braking Systems (ABS, calipers, cylinders, master cylinders)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Suspension & Steering Systems (shocks, struts, steering racks, power steering)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Air Conditioning & Climate Control Systems</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Electrical Components & Charging Systems (alternators, starter motors, wiring)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>Electronic Control Units (ECUs) & Sensors (engine management, ABS, emissions)</span>
-                        </li>
-                      </ul>
-                    </div>
+              <CollapsibleContent>
+                <div className="mt-4 p-6 bg-gray-50 rounded-lg">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <ul className="space-y-1.5">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Engine & Drivetrain Components</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Gearbox & Transmission Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>ECUs, Sensors & Control Modules</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Electrical Components & Charging Systems (alternators, starter motors, wiring)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>EV Battery Failure & High-Voltage Components</span>
+                      </li>
+                    </ul>
+                    <ul className="space-y-1.5">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Suspension & Steering Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Braking Systems (ABS, brake assistants)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Cooling & Thermal Management</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Climate Control & Comfort Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Fuel Systems & Emissions</span>
+                      </li>
+                    </ul>
                   </div>
                   <div className="mt-6 pt-4 border-t border-gray-200">
                     <button 
@@ -1065,16 +1059,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </div>
               </CollapsibleContent>
             </Collapsible>
-
+            
             <Collapsible>
               <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
                 <ChevronDown className="w-4 h-4 transition-transform duration-200" />
-                <span>Hybrid & PHEV Vehicles</span>
+                <span>Hybrid Vehicles</span>
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-4 pl-7">
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <p className="text-gray-600 mb-4 italic">All petrol/diesel engine parts and labour plus:</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+              <CollapsibleContent>
+                <div className="mt-4 p-6 bg-gray-50 rounded-lg">
+                  <div className="grid md:grid-cols-2 gap-6">
                     <ul className="space-y-1.5">
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
@@ -1082,33 +1075,37 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Hybrid Battery Failure</span>
+                        <span>Battery Management Systems</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Power Control Units, Inverters & DC-DC Converters</span>
+                        <span>High-Voltage Battery Packs</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Power Electronics & Inverters</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                         <span>Regenerative Braking Systems</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>High-Voltage Cables & Connectors</span>
-                      </li>
                     </ul>
                     <ul className="space-y-1.5">
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Cooling Systems for Hybrid Components</span>
+                        <span>Charging Systems & Converters</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Charging Ports & On-Board Charging Modules</span>
+                        <span>Thermal Management for Batteries</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Hybrid Transmission Components</span>
+                        <span>DC-DC Converters & Onboard Chargers</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>All Standard Vehicle Components</span>
                       </li>
                     </ul>
                   </div>
@@ -1123,15 +1120,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </div>
               </CollapsibleContent>
             </Collapsible>
-
+            
             <Collapsible>
               <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
                 <ChevronDown className="w-4 h-4 transition-transform duration-200" />
-                <span>Electric vehicles (EVs)</span>
+                <span>Electric Vehicles (EVs)</span>
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-4 pl-7">
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+              <CollapsibleContent>
+                <div className="mt-4 p-6 bg-gray-50 rounded-lg">
+                  <div className="grid md:grid-cols-2 gap-6">
                     <ul className="space-y-1.5">
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
@@ -1139,41 +1136,41 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>EV Transmission & Reduction Gearbox Assemblies</span>
+                        <span>High-Voltage Battery Systems</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>High-Voltage Battery Failure</span>
+                        <span>Battery Management & Cooling</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Power Control Units & Inverters</span>
+                        <span>Onboard Chargers & AC/DC Conversion</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>On-Board Charger (OBC) & Charging Ports</span>
+                        <span>Power Electronics & Motor Controllers</span>
                       </li>
                     </ul>
                     <ul className="space-y-1.5">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>DC-DC Converters</span>
-                      </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                         <span>Thermal Management Systems</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>High-Voltage Cables & Connectors</span>
+                        <span>High-Voltage Cabling & Connectors</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>EV-Specific Control Electronics</span>
+                        <span>Regenerative Braking Components</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Regenerative Braking System Components</span>
+                        <span>DC-DC Converters & 12V Systems</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>All Standard Vehicle Electronics</span>
                       </li>
                     </ul>
                   </div>
@@ -1188,15 +1185,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </div>
               </CollapsibleContent>
             </Collapsible>
-
+            
             <Collapsible>
               <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors">
                 <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                 <span>Motorcycles (Petrol, Hybrid, EV)</span>
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-4 pl-7">
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+              <CollapsibleContent>
+                <div className="mt-4 p-6 bg-gray-50 rounded-lg">
+                  <div className="grid md:grid-cols-2 gap-6">
                     <ul className="space-y-1.5">
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
