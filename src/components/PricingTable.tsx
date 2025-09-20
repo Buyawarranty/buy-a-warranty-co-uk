@@ -1257,60 +1257,67 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             {[
               {
                 id: '12months',
-                title: '✅ 1-Year Cover',
-                subtitle: '',
-                description: 'Flexible protection for short-term cover',
+                title: '1-Year Cover',
+                subtitle: 'STARTER',
+                description: 'Flexible protection for 12 month cover',
+                planName: 'Platinum Comprehensive Plan',
                 features: [
-                  'All mechanical & electrical parts covered – no surprises, just solid protection',
-                  'Up to 10 claims per policy – plenty of cover when you need it',
-                  'Labour costs included – we\'ve got the work sorted',
-                  'Fault diagnostics – we\'ll help find the problem fast',
-                  'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
-                  'Fast claims process – no drama, just quick resolutions',
-                  '14-day money-back guarantee – change your mind? No problem',
-                  'Optional extras available – tailor your cover to suit your needs'
+                  '✅ All mechanical & electrical parts',
+                  '✅ Up to 10 claims per policy',
+                  '✅ Labour costs included',
+                  '✅ Fault diagnostics',
+                  '✅ Consequential damage cover',
+                  '✅ Fast claims process',
+                  '✅ 14-day money-back guarantee',
+                  '✅ Optional extras available',
+                  '❌ Pre-existing faults are not covered'
                 ],
-                isPopular: false
+                isPopular: false,
+                isStarter: true
               },
               {
                 id: '24months',
-                title: '⭐️ 2-Year Cover — Save £100 today',
-                subtitle: 'Most Popular',
+                title: '⭐️ 2-Year Cover — Save £100 Today',
+                subtitle: 'MOST POPULAR',
                 description: 'Balanced Protection and Value',
+                planName: 'Platinum Comprehensive Plan',
                 features: [
-                  'All mechanical & electrical parts covered – no surprises, just solid protection',
-                  'Unlimited claims per policy – plenty of cover when you need it',
-                  'Labour costs included – we\'ve got the work sorted',
-                  'Fault diagnostics – we\'ll help find the problem fast',
-                  'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
-                  'Fast claims process – no drama, just quick resolutions',
-                  'MOT test fee – your MOT test fee is covered by us every time your vehicle is due for its MOT',
-                  '24/7 Vehicle recovery – we\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded',
-                  '14-day money-back guarantee – change your mind? No problem',
-                  'Optional extras available – tailor your cover to suit your needs'
+                  '✅ All mechanical & electrical parts',
+                  '✅ Unlimited claims',
+                  '✅ Labour costs included',
+                  '✅ Fault diagnostics',
+                  '✅ MOT test fee cover',
+                  '✅ Vehicle recovery claim-back',
+                  '✅ Consequential damage cover',
+                  '✅ Fast claims process',
+                  '✅ 14-day money-back guarantee',
+                  '✅ Optional extras available',
+                  '❌ Pre-existing faults are not covered'
                 ],
                 isPopular: true
               },
               {
                 id: '36months',
-                title: '🏆 3-Year Cover — Save 20%',
-                subtitle: 'Best Value',
-                description: 'Extended cover for long-term peace of mind',
+                title: '🏆 3-Year Cover — Save £200 Today',
+                subtitle: 'BEST VALUE',
+                description: 'Extended cover for longer peace of mind',
+                planName: 'Platinum Comprehensive Plan',
                 features: [
-                  'All mechanical & electrical parts covered – no surprises, just solid protection',
-                  'Unlimited claims per policy – plenty of cover when you need it',
-                  'Labour costs included – we\'ve got the work sorted',
-                  'Fault diagnostics – we\'ll help find the problem fast',
-                  'Consequential damage cover – if one part fails and causes another to break, you\'re still covered',
-                  'Fast claims process – no drama, just quick resolutions',
-                  'MOT test fee – your MOT test fee is covered by us every time your vehicle is due for its MOT',
-                  '24/7 Vehicle recovery – we\'ll reimburse the cost of roadside assistance through our breakdown recovery service, so you\'re never left stranded',
-                  'Vehicle rental cover – stay on the move even if your vehicle is undergoing repairs',
-                  'Free transfer of warranty – a transferable warranty boosts buyer confidence, making your vehicle more attractive and potentially increasing its resale value',
-                  '14-day money-back guarantee – change your mind? No problem',
-                  'Optional extras available – tailor your cover to suit your needs'
+                  '✅ All mechanical & electrical parts',
+                  '✅ Unlimited claims',
+                  '✅ Labour costs included',
+                  '✅ Fault diagnostics',
+                  '✅ Vehicle recovery claim-back',
+                  '✅ MOT test fee cover',
+                  '✅ Europe repair cover',
+                  '✅ Vehicle rental cover',
+                  '✅ Consequential damage cover',
+                  '✅ Fast claims process',
+                  '✅ 14-day money-back guarantee',
+                  '✅ Optional extras available – tailor your cover to suit your needs',
+                  '❌ Pre-existing faults are not covered'
                 ],
-                isPopular: false
+                isBestValue: true
               }
             ].map((option) => {
               const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
@@ -1339,144 +1346,122 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
               
               const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
-              const monthlyPrice = Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
+              const monthlyPrice = Math.round(totalPrice / durationMonths);
+              
+              // Calculate original price for savings display
+              const originalPrice = option.id === '24months' ? totalPrice + 100 : option.id === '36months' ? totalPrice + 200 : totalPrice;
               
               return (
                 <div
                   key={option.id}
-                  onClick={() => setPaymentType(option.id as '12months' | '24months' | '36months')}
-                   className={`relative p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
-                     paymentType === option.id 
-                       ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                       : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                   }`}
+                  className={`relative p-6 rounded-lg transition-all duration-200 text-left w-full border-2 ${
+                    paymentType === option.id 
+                      ? 'border-orange-500 bg-orange-50' 
+                      : 'border-gray-200 bg-white hover:border-orange-300'
+                  }`}
                  >
-                   {/* Save Percentage Ribbon */}
-                   {(option.id === '24months' || option.id === '36months') && (
-                     <div className="absolute top-2 right-2 bg-gradient-to-br from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-10">
-                       {option.id === '24months' ? 'Save £100 today' : 'Save £200 Today'}
-                     </div>
-                   )}
-
-                  {/* Badge Pills */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {option.id === '12months' && (
-                      <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                        STARTER
-                      </span>
-                    )}
-                    {option.isPopular && (
-                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                        MOST POPULAR
-                      </span>
-                    )}
-                    {option.id === '36months' && (
-                      <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                        BEST VALUE
-                      </span>
-                    )}
-                  </div>
+                   {/* Badge Pills */}
+                   <div className="flex flex-wrap gap-2 mb-4">
+                     {option.isStarter && (
+                       <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                         STARTER
+                       </span>
+                     )}
+                     {option.isPopular && (
+                       <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                         MOST POPULAR
+                       </span>
+                     )}
+                     {option.isBestValue && (
+                       <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                         BEST VALUE
+                       </span>
+                     )}
+                     {option.id === '24months' && (
+                       <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                         Save 10%
+                       </span>
+                     )}
+                     {option.id === '36months' && (
+                       <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                         Save 20%
+                       </span>
+                     )}
+                   </div>
                   
                   {/* Title */}
-                  <div className="mb-4">
-                    <h4 className="text-xl font-extrabold text-gray-900 mb-2 leading-tight">
-                      {option.title.split(' — ')[0]}
+                  <div className="mb-3">
+                    <h4 className="text-lg font-bold text-gray-900 mb-1">
+                      {option.title.replace('⭐️ ', '').replace('🏆 ', '')}
                     </h4>
+                    <p className="text-sm text-gray-600 mb-2">{option.description}</p>
+                    <h5 className="font-semibold text-gray-900">{option.planName}</h5>
                   </div>
                   
-                  <p className="text-gray-600 mb-4 text-base">{option.description}</p>
-                  
-                  <div className="space-y-2 mb-6">
-                    {(expandedBenefits[option.id] ? option.features : option.features.slice(0, 4)).map((feature, index) => (
-                      <div key={index} className="flex items-start text-sm text-gray-600">
-                        <Check className="w-3 h-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                        <span>{feature}</span>
-                      </div>
-                    ))}
-                    {option.features.length > 4 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setExpandedBenefits(prev => ({
-                            ...prev,
-                            [option.id]: !prev[option.id]
-                          }));
-                        }}
-                        className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors mt-2"
-                      >
-                        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${expandedBenefits[option.id] ? 'rotate-180' : ''}`} />
-                        {expandedBenefits[option.id] 
-                          ? 'Show less' 
-                          : `+${option.features.length - 4} more benefits`
-                        }
-                      </button>
-                    )}
+                  {/* What's included */}
+                  <div className="mb-6">
+                    <h6 className="font-semibold text-gray-900 mb-3">What's included:</h6>
+                    <div className="space-y-1">
+                      {option.features.map((feature, index) => (
+                        <div key={index} className="flex items-start text-sm">
+                          <span className="mr-2 flex-shrink-0">{feature.startsWith('✅') ? '✅' : '❌'}</span>
+                          <span className={feature.startsWith('✅') ? 'text-gray-700' : 'text-red-600'}>
+                            {feature.replace(/^[✅❌]\s*/, '')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   
-                  <div className="space-y-2 mt-auto">
-                    {option.id === '12months' && (
-                      <>
-                        <div className="text-lg font-bold text-gray-900">
-                          Protect your vehicle for just £{monthlyPrice}/month
-                        </div>
-                        <div className="space-y-1">
-                           <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-green-500 font-bold">✔</span>
-                            <span>Total cost: £{totalPrice}</span>
-                          </div>
-                           <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-green-500 font-bold">✔</span>
-                            <span>12 easy, interest-free payments</span>
-                          </div>
-                           <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-green-500 font-bold">✔</span>
-                            <span>Affordable peace of mind for the year ahead</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {option.id === '24months' && (
-                      <>
-                        <div className="text-lg font-bold text-gray-900">
-                          Protect your vehicle for just £{monthlyPrice}/month
-                        </div>
-                        <div className="space-y-1">
-                           <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-blue-500">🛡️</span>
-                            <span>2-year protection for only £{totalPrice} – Save £100 Today</span>
-                          </div>
-                           <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-blue-500">💡</span>
-                            <span>12 easy interest-free payments</span>
-                          </div>
-                           <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-green-500 font-bold">✔</span>
-                            <span>Nothing to pay in year 2 – full cover, no payments</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {option.id === '36months' && (
-                      <>
-                        <div className="text-lg font-bold text-gray-900">
-                          Protect your vehicle for just £{monthlyPrice}/month
-                        </div>
-                        <div className="space-y-1">
-                           <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-blue-500">🛡️</span>
-                            <span>3-year protection for only £{totalPrice} – Save £200</span>
-                          </div>
-                           <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-blue-500">💡</span>
-                            <span>12 easy interest-free payments</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-base text-gray-600">
-                            <span className="text-green-500 font-bold">✔</span>
-                            <span>Nothing to pay in year 2 & 3 – full cover, no payments</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
+                  {/* Pricing */}
+                  <div className="mb-4 text-center">
+                    <div className="text-3xl font-bold text-orange-600 mb-1">
+                      £{monthlyPrice}/month
+                    </div>
+                    <div className="text-sm text-gray-600 mb-2">
+                      {option.id === '12months' && 'Only 12 easy payments'}
+                      {option.id === '24months' && (
+                        <>
+                          Only 12 easy payments<br/>
+                          Nothing to pay in Year 2
+                        </>
+                      )}
+                      {option.id === '36months' && (
+                        <>
+                          Only 12 easy payments<br/>
+                          Nothing to pay in Year 2 and Year 3
+                        </>
+                      )}
+                    </div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      Total cost: 
+                      {option.id !== '12months' && (
+                        <span className="line-through text-gray-500 ml-1">£{originalPrice}</span>
+                      )}
+                      <span className="text-orange-600 ml-1">£{totalPrice}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Select Button */}
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPaymentType(option.id as '12months' | '24months' | '36months');
+                    }}
+                    className={`w-full py-3 text-lg font-semibold transition-all ${
+                      paymentType === option.id
+                        ? 'bg-orange-600 hover:bg-orange-700 text-white'
+                        : 'bg-orange-500 hover:bg-orange-600 text-white'
+                    }`}
+                  >
+                    {paymentType === option.id ? 'Selected' : 'Select'}
+                  </Button>
+                  
+                  {/* Footer note */}
+                  <div className="mt-3 text-center">
+                    <p className="text-xs text-gray-500">
+                      *For more info please 'Your Cover, Made Clear' below
+                    </p>
                   </div>
                 </div>
               );
