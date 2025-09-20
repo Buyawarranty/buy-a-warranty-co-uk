@@ -14,7 +14,7 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
-import pandaClaims from "@/assets/panda-claims.png";
+import pandaCarWarranty from "@/assets/panda-car-warranty.webp";
 import trustpilotLogo from "@/assets/trustpilot-excellent-box.webp";
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
@@ -1545,19 +1545,13 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-base text-muted-foreground">
-                    <strong>Over 95% of eligible claims approved</strong> quickly and fairly
+                    <strong>94% of eligible claims approved</strong> quickly and smoothly
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-base text-muted-foreground">
                     <strong>Clear, easy-to-understand terms</strong> – no hidden catches
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-base text-muted-foreground">
-                    <strong>Real customer reviews</strong> on Trustpilot and claim stories
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -1575,8 +1569,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             <div className="flex-shrink-0 hidden md:block">
               <img 
-                src={pandaClaims} 
-                alt="Happy panda representing our commitment to approving claims" 
+                src={pandaCarWarranty} 
+                alt="Happy panda with car representing our warranty protection" 
                 className="w-48 h-48 object-contain"
               />
             </div>
