@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIcon from '@/assets/whatsapp-icon.webp';
+import pandaVehicleCollection from '@/assets/panda-vehicle-collection-hero.png';
 
 interface VehicleData {
   regNumber: string;
@@ -544,8 +545,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
  {/* Right Content - Hero Image */}
             <div className="relative">
               <img 
-                src="/lovable-uploads/panda-celebrating-hero.png" 
-                alt="Panda mascot celebrating with orange car" 
+                src={pandaVehicleCollection} 
+                alt="Panda mascot with vehicle collection including cars, van, and motorcycle" 
                 className="w-full h-auto"
               />
               {/* Trustpilot Logo positioned to align with van */}
