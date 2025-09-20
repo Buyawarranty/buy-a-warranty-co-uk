@@ -14,6 +14,7 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
+import pandaClaims from "@/assets/panda-claims.png";
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
 
@@ -1508,44 +1509,54 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
         {/* Trust Section */}
         <div className="mt-16 mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
-          <div className="text-center max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center justify-center gap-2">
-              🔍 Do We Actually Pay Out Claims?
-            </h3>
-            <p className="text-lg text-muted-foreground mb-6 leading-relaxed font-medium">
-              Absolutely. Here's what you can expect with us:
-            </p>
-            
-            <div className="space-y-4 mb-6">
-              <div className="flex items-center justify-center gap-3 text-left">
-                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                <span className="text-base text-muted-foreground">
-                  <strong>Over 95% of eligible claims approved</strong> quickly and fairly
-                </span>
+          <div className="flex items-center max-w-6xl mx-auto gap-8">
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                🔍 Do We Actually Pay Out Claims?
+              </h3>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed font-medium">
+                Absolutely. Here's what you can expect with us:
+              </p>
+              
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-base text-muted-foreground">
+                    <strong>Over 95% of eligible claims approved</strong> quickly and fairly
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-base text-muted-foreground">
+                    <strong>Clear, easy-to-understand terms</strong> – no hidden catches
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-base text-muted-foreground">
+                    <strong>Real customer reviews</strong> on Trustpilot and claim stories
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-base text-muted-foreground">
+                    <strong>We look for reasons to say yes</strong>, not excuses to say no
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center justify-center gap-3 text-left">
-                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                <span className="text-base text-muted-foreground">
-                  <strong>Clear, easy-to-understand terms</strong> – no hidden catches
-                </span>
-              </div>
-              <div className="flex items-center justify-center gap-3 text-left">
-                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                <span className="text-base text-muted-foreground">
-                  <strong>Real customer reviews</strong> on Trustpilot and claim stories
-                </span>
-              </div>
-              <div className="flex items-center justify-center gap-3 text-left">
-                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                <span className="text-base text-muted-foreground">
-                  <strong>We look for reasons to say yes</strong>, not excuses to say no
-                </span>
-              </div>
+              
+              <p className="text-base text-muted-foreground font-medium">
+                With us, you get genuine protection and real peace of mind.
+              </p>
             </div>
             
-            <p className="text-base text-muted-foreground font-medium">
-              With us, you get genuine protection and real peace of mind.
-            </p>
+            <div className="flex-shrink-0 hidden md:block">
+              <img 
+                src={pandaClaims} 
+                alt="Happy panda representing our commitment to approving claims" 
+                className="w-48 h-48 object-contain"
+              />
+            </div>
           </div>
         </div>
 
