@@ -182,7 +182,10 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Vehicle recovery claim-back',
         'MOT test fee cover',
         'Europe repair cover',
+        '',
+        '',
         'Vehicle rental cover',
+        '',
         'Consequential damage cover',
         'Fast claims process',
         '14-day money-back guarantee',
@@ -301,13 +304,17 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 </div>
                 
                 <div className="space-y-2 mb-4">
-                  {(expandedCards[option.id] ? option.features : option.features.slice(0, 4)).map((feature, index) => (
-                    <div key={index} className="flex items-start text-xs text-gray-600">
-                      <span className="mr-2 mt-0.5 text-green-500 font-bold">✓</span>
-                      <span>{feature}</span>
-                    </div>
+                  {(expandedCards[option.id] ? option.features : option.features.slice(0, 10)).map((feature, index) => (
+                    feature ? (
+                      <div key={index} className="flex items-start text-xs text-gray-600">
+                        <span className="mr-2 mt-0.5 text-green-500 font-bold">✓</span>
+                        <span>{feature}</span>
+                      </div>
+                    ) : (
+                      <div key={index} className="h-3"></div>
+                    )
                   ))}
-                  {option.features.length > 4 && (
+                  {option.features.filter(f => f).length > 10 && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -317,7 +324,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                     >
                       {expandedCards[option.id] 
                         ? `Show less`
-                        : `+${option.features.length - 4} more benefits`
+                        : `+${option.features.filter(f => f).length - 10} more benefits`
                       }
                       <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${expandedCards[option.id] ? 'rotate-180' : ''}`} />
                     </button>
