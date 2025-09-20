@@ -1591,8 +1591,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="flex justify-end mt-8">
             <div className="flex flex-col items-end space-y-2">
               <div className="text-right">
-                <div className="text-sm text-gray-600">Total warranty cost</div>
-                <div className="text-xl font-bold text-foreground">
+                {/* Monthly Price - Main Hook */}
+                <div className="text-3xl font-bold text-gray-900 mb-1">
                   £{(() => {
                     if (!selectedPlan) return '0';
                     
@@ -1632,52 +1632,60 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
                     
                     const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
+                    return Math.round(totalPrice / durationMonths);
+                  })()}/month
+                </div>
+                
+                {/* Payment Terms - Subtext */}
+                <div className="text-sm text-gray-500 mb-2">
+                  {paymentType === '12months' ? '12 easy payments' : 
+                   paymentType === '24months' ? '24 easy payments' : 
+                   '36 easy payments'}
+                </div>
+                
+                {/* Total Cost - Transparent */}
+                <div className="text-sm font-semibold text-gray-400">
+                  Total: £{(() => {
+                    if (!selectedPlan) return '0';
                     
+                    // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
+                    const adjustedPrice = calculatePlanPrice();
+                    
+                    // Add plan add-ons
+                    const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
+                    let planAddOnPrice = 0;
+                    const planAddOns = selectedAddOns[selectedPlan.id] || {};
+                    if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
+                    if (planAddOns.wearAndTear) {
+                      const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                               paymentType === '24months' ? 10.99 : 8.99;
+                      planAddOnPrice += wearAndTearPrice * durationMonths;
+                    }
+                    if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
+                    if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
+                    if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
+                    if (planAddOns.transfer) planAddOnPrice += 30;
+                    
+                    // Add protection add-ons
+                    let protectionAddOnPrice = 0;
+                    if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
+                    if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
+                    if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
+                    if (selectedProtectionAddOns.wearAndTear) {
+                      const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
+                                               paymentType === '24months' ? 10.99 : 8.99;
+                      protectionAddOnPrice += wearAndTearPrice * durationMonths;
+                    }
+                    if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
+                    if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
+                    if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
+                    if (selectedProtectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths;
+                    if (selectedProtectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths;
+                    if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
+                    
+                    const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
                     return totalPrice;
                   })()}
-                  <span className="text-sm font-normal text-gray-600 ml-1">
-                    • £{(() => {
-                      if (!selectedPlan) return '0';
-                      
-                      // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
-                      const adjustedPrice = calculatePlanPrice();
-                      
-                      // Add plan add-ons
-                      const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                      let planAddOnPrice = 0;
-                      const planAddOns = selectedAddOns[selectedPlan.id] || {};
-                      if (planAddOns.tyre) planAddOnPrice += 5 * durationMonths;
-                      if (planAddOns.wearAndTear) {
-                        const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
-                                                 paymentType === '24months' ? 10.99 : 8.99;
-                        planAddOnPrice += wearAndTearPrice * durationMonths;
-                      }
-                      if (planAddOns.european) planAddOnPrice += 3 * durationMonths;
-                      if (planAddOns.breakdown) planAddOnPrice += 6 * durationMonths;
-                      if (planAddOns.rental) planAddOnPrice += 4 * durationMonths;
-                      if (planAddOns.transfer) planAddOnPrice += 30;
-                      
-                      // Add protection add-ons
-                      let protectionAddOnPrice = 0;
-                      if (selectedProtectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths;
-                      if (selectedProtectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths;
-                      if (selectedProtectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths;
-                      if (selectedProtectionAddOns.wearAndTear) {
-                        const wearAndTearPrice = paymentType === '12months' ? 12.99 : 
-                                                 paymentType === '24months' ? 10.99 : 8.99;
-                        protectionAddOnPrice += wearAndTearPrice * durationMonths;
-                      }
-                      if (selectedProtectionAddOns.european) protectionAddOnPrice += 3 * durationMonths;
-                      if (selectedProtectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths;
-                      if (selectedProtectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths;
-                      if (selectedProtectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths;
-                      if (selectedProtectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths;
-                      if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
-                      
-                      const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
-                      return Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
-                    })()} /month
-                  </span>
                 </div>
               </div>
               <Button
@@ -1697,8 +1705,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
           <div className="flex items-center justify-between p-4 max-w-6xl mx-auto">
             <div className="flex flex-col">
-              <div className="text-sm text-gray-600">Total warranty cost</div>
-              <div className="text-xl font-bold text-foreground">
+              {/* Monthly Price - Main Hook */}
+              <div className="text-2xl font-bold text-gray-900 mb-1">
                 £{(() => {
                   if (!selectedPlan) return '0';
                   
@@ -1738,11 +1746,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
                   
                   const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
-                  
-                  return totalPrice;
-                })()}
-                <span className="text-sm font-normal text-gray-600 ml-1">
-                  • £{(() => {
+                  return Math.round(totalPrice / durationMonths);
+                })()}/month
+              </div>
+              
+              {/* Payment Terms and Total on same line for footer */}
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-gray-500">
+                  {paymentType === '12months' ? '12 easy payments' : 
+                   paymentType === '24months' ? '24 easy payments' : 
+                   '36 easy payments'}
+                </span>
+                <span className="text-gray-400">•</span>
+                <span className="font-semibold text-gray-400">
+                  Total: £{(() => {
                     if (!selectedPlan) return '0';
                     
                     // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
@@ -1781,8 +1798,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     if (selectedProtectionAddOns.transfer) protectionAddOnPrice += 30;
                     
                     const totalPrice = adjustedPrice + planAddOnPrice + protectionAddOnPrice;
-                    return Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
-                  })()} /month
+                    return totalPrice;
+                  })()}
                 </span>
               </div>
             </div>
