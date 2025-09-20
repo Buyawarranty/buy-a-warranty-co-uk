@@ -420,10 +420,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   };
 
   const getMonthlyDisplayPrice = (totalPrice: number) => {
-    const durationMonths = paymentType === '12months' ? 12 : 
-                          paymentType === '24months' ? 24 : 
-                          paymentType === '36months' ? 36 : 12;
-    return Math.round(totalPrice / durationMonths);
+    // Always show 12 monthly installments regardless of plan duration
+    return Math.round(totalPrice / 12);
   };
 
   const getPlanSavings = (plan: Plan) => {
