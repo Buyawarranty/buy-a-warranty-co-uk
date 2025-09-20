@@ -84,6 +84,20 @@ const addOnPackages = [
     ]
   },
   {
+    key: 'motFee',
+    icon: '🛠️',
+    title: 'MOT Test Fee Cover',
+    shortDescription: 'Coverage for MOT test fees when your vehicle fails its test.',
+    price: 3.99,
+    priceType: 'monthly',
+    bulletPoints: [
+      'Covers MOT test fees on failure',
+      'Reduces unexpected costs',
+      'Peace of mind for annual testing',
+      'Quick and easy claims process'
+    ]
+  },
+  {
     key: 'transfer',
     icon: '🔁',
     title: 'Transfer Cover',
@@ -105,6 +119,23 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
   paymentType
 }) => {
   const [expandedItems, setExpandedItems] = useState<{[key: string]: boolean}>({});
+
+  // Define auto-included add-ons based on payment type
+  const getAutoIncludedAddOns = () => {
+    switch (paymentType) {
+      case '24months':
+        return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+      case '36months':
+        return ['breakdown', 'motFee', 'european', 'rental']; // 3-Year: Vehicle recovery, MOT test fee, Europe cover, Vehicle rental
+      default:
+        return []; // 1-Year: No auto-included add-ons
+    }
+  };
+
+  const autoIncludedAddOns = getAutoIncludedAddOns();
+  
+  // Check if an add-on is auto-included
+  const isAutoIncluded = (addonKey: string) => autoIncludedAddOns.includes(addonKey);
 
   const toggleExpanded = (key: string) => {
     setExpandedItems(prev => {
@@ -142,10 +173,15 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
       
       <div className="grid md:grid-cols-3 gap-3">
       {addOnPackages.map((addon) => {
+        const isIncluded = isAutoIncluded(addon.key);
+        const isSelected = selectedAddOns[addon.key] || isIncluded;
+        
         // Calculate price based on addon structure
         let priceDisplay;
         
-        if (addon.priceType === 'monthly') {
+        if (isIncluded) {
+          priceDisplay = 'Included';
+        } else if (addon.priceType === 'monthly') {
           priceDisplay = addon.price > 0 
             ? `Only £${addon.price.toFixed(2)} per month`
             : 'Included';
@@ -156,22 +192,29 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
               return (
                  <div 
                    key={addon.key}
-                   onClick={() => onAddOnChange(addon.key, !selectedAddOns[addon.key])}
-                   className={`p-4 rounded-lg transition-all duration-200 bg-white cursor-pointer ${
-                     selectedAddOns[addon.key] 
-                       ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                       : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300 hover:bg-gray-50'
+                   onClick={() => !isIncluded && onAddOnChange(addon.key, !selectedAddOns[addon.key])}
+                   className={`relative p-4 rounded-lg transition-all duration-200 bg-white ${
+                     isIncluded 
+                       ? 'border-2 border-green-500 shadow-lg shadow-green-500/30 cursor-default' 
+                       : isSelected
+                         ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/30 cursor-pointer' 
+                         : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300 hover:bg-gray-50 cursor-pointer'
                    }`}
                  >
+                  {isIncluded && (
+                    <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                      INCLUDED
+                    </div>
+                  )}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-start gap-3 flex-1">
                       <div className="text-xl mt-1">{addon.icon}</div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{addon.shortDescription}</p>
-                        <div className="text-base font-bold text-black">
+                        <div className={`text-base font-bold ${isIncluded ? 'text-green-600' : 'text-black'}`}>
                           {priceDisplay}
-                          {addon.priceType === 'monthly' && addon.price > 0 && (
+                          {addon.priceType === 'monthly' && addon.price > 0 && !isIncluded && (
                             <div className="text-sm font-normal text-muted-foreground">
                               Spread over 12 interest-free payments for a full year of cover.
                             </div>
@@ -180,9 +223,14 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                       </div>
                     </div>
                     <Checkbox 
-                      checked={selectedAddOns[addon.key] || false}
-                      onCheckedChange={(checked) => onAddOnChange(addon.key, !!checked)}
-                      className="h-4 w-4 border-2 border-black data-[state=checked]:bg-black data-[state=checked]:border-black flex-shrink-0"
+                      checked={isSelected}
+                      disabled={isIncluded}
+                      onCheckedChange={(checked) => !isIncluded && onAddOnChange(addon.key, !!checked)}
+                      className={`h-4 w-4 border-2 flex-shrink-0 ${
+                        isIncluded 
+                          ? 'border-green-500 bg-green-500 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500'
+                          : 'border-black data-[state=checked]:bg-black data-[state=checked]:border-black'
+                      }`}
                     />
                   </div>
 
