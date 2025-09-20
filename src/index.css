@@ -90,7 +90,7 @@ body {
   :root {
     /* Neutral Color (backgrounds/containers) */
     --background: 0 0% 99%;
-    --foreground: 224 71% 4%;
+    --foreground: 0 0% 0%;
 
     --card: 0 0% 100%;
     --card-foreground: 224 71% 4%;
@@ -99,7 +99,7 @@ body {
     --popover-foreground: 224 71% 4%;
 
     /* CTA/Action Color (Branded Orange for primary actions) */
-    --primary: 24 95% 53%;
+    --primary: 22 100% 52%;
     --primary-foreground: 0 0% 100%;
 
     /* Neutral variants */
@@ -107,13 +107,13 @@ body {
     --secondary-foreground: 224 71% 4%;
 
     --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted-foreground: 0 0% 40%;
 
     --accent: 220 14% 96%;
     --accent-foreground: 224 71% 4%;
 
     /* Highlight Color (Green for savings/benefits) */
-    --success: 142 76% 36%;
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
     /* Keep destructive for errors */
