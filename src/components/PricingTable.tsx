@@ -1576,7 +1576,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div id="additional-information" className="bg-white rounded-lg p-8 border border-gray-200 shadow-sm">
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-foreground flex items-center gap-2 mb-4">
-              Your Cover, Made Clear
+              Your Cover Details, Made Clear
             </h3>
             <p className="text-muted-foreground">
               Discover everything the Platinum Plan offers and any limitations - click below for complete details and feel confident in your cover.
