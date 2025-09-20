@@ -1545,7 +1545,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </div>
               </div>
               
-              <p className="text-base text-muted-foreground font-medium">
+              <p className="text-base text-black font-bold">
                 With us, you get genuine protection and real peace of mind.
               </p>
             </div>
