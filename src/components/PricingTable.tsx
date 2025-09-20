@@ -638,6 +638,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="flex justify-end">
           <TrustpilotHeader className="h-8 sm:h-10" />
         </div>
+
+        
         
         {/* Vehicle Information */}
         <div className="section-header rounded-lg p-6">
