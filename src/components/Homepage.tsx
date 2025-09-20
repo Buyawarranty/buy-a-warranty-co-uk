@@ -559,7 +559,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <img 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating" 
-                    className="h-8 sm:h-10 w-auto"
+                    className="h-12 sm:h-15 w-auto"
                   />
                 </a>
               </div>
