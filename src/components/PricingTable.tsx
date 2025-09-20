@@ -15,6 +15,7 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
 import pandaClaims from "@/assets/panda-claims.png";
+import trustpilotLogo from "@/assets/trustpilot-excellent-box.webp";
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
 
@@ -1845,6 +1846,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </span>
               </div>
             </div>
+            
+            {/* Trustpilot Logo */}
+            <div className="hidden md:block flex-shrink-0 mx-4">
+              <a 
+                href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <img 
+                  src={trustpilotLogo} 
+                  alt="Trustpilot Excellent Rating" 
+                  className="h-12 w-auto hover:opacity-80 transition-opacity"
+                />
+              </a>
+            </div>
+            
             <Button
               onClick={handleSelectPlan}
               size="lg"
