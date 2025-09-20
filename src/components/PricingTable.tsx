@@ -1509,14 +1509,42 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         {/* Trust Section */}
         <div className="mt-16 mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
           <div className="text-center max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-foreground mb-4 flex items-center justify-center gap-2">
-              🔍 Do we actually pay out claims?
+            <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center justify-center gap-2">
+              🔍 Do We Actually Pay Out Claims?
             </h3>
-            <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
-              It's a fair question - and the answer is yes. We genuinely value our customers, and when something goes wrong, we don't look for loopholes. We look for reasons to say yes.
+            <p className="text-lg text-muted-foreground mb-6 leading-relaxed font-medium">
+              Absolutely. Here's what you can expect with us:
             </p>
+            
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center justify-center gap-3 text-left">
+                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-base text-muted-foreground">
+                  <strong>Over 95% of eligible claims approved</strong> quickly and fairly
+                </span>
+              </div>
+              <div className="flex items-center justify-center gap-3 text-left">
+                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-base text-muted-foreground">
+                  <strong>Clear, easy-to-understand terms</strong> – no hidden catches
+                </span>
+              </div>
+              <div className="flex items-center justify-center gap-3 text-left">
+                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-base text-muted-foreground">
+                  <strong>Real customer reviews</strong> on Trustpilot and claim stories
+                </span>
+              </div>
+              <div className="flex items-center justify-center gap-3 text-left">
+                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-base text-muted-foreground">
+                  <strong>We look for reasons to say yes</strong>, not excuses to say no
+                </span>
+              </div>
+            </div>
+            
             <p className="text-base text-muted-foreground font-medium">
-              With easy-to-follow terms, we're committed to giving you reliable protection and peace of mind.
+              With us, you get genuine protection and real peace of mind.
             </p>
           </div>
         </div>
