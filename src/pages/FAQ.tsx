@@ -15,12 +15,67 @@ const FAQ = () => {
   const [aiAnswer, setAiAnswer] = useState<string>('');
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [showAIAnswer, setShowAIAnswer] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [relatedQuestions, setRelatedQuestions] = useState<any[]>([]);
 
   const toggleItem = (id: string) => {
     setOpenItems(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
+  };
+
+  // Common search suggestions based on popular queries
+  const commonSearches = [
+    'How much does it cost?',
+    'What is covered?',
+    'How to make a claim?',
+    'Electric vehicle warranty',
+    'Can I use my own garage?',
+    'How to cancel warranty?',
+    'Breakdown cover',
+    'Service requirements'
+  ];
+
+  // Get search suggestions based on input
+  const getSearchSuggestions = (query: string) => {
+    if (!query.trim() || query.length < 2) return commonSearches.slice(0, 4);
+    
+    const matching = commonSearches.filter(search => 
+      search.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    const questionsMatching = faqData.flatMap(category => 
+      category.questions.filter(q => 
+        q.question.toLowerCase().includes(query.toLowerCase())
+      ).map(q => q.question)
+    ).slice(0, 3);
+    
+    return [...matching, ...questionsMatching].slice(0, 6);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setShowSuggestions(value.length > 0);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchTerm(suggestion);
+    setShowSuggestions(false);
+  };
+
+  const findRelatedQuestions = (query: string) => {
+    const keywords = query.toLowerCase().split(' ').filter(word => word.length > 2);
+    const allQuestions = faqData.flatMap(category => 
+      category.questions.map(q => ({ ...q, category: category.category }))
+    );
+    
+    const related = allQuestions.filter(q => {
+      const questionText = (q.question + ' ' + q.answer).toLowerCase();
+      return keywords.some(keyword => questionText.includes(keyword));
+    }).slice(0, 3);
+    
+    return related;
   };
 
   const faqData = [
@@ -604,16 +659,52 @@ const FAQ = () => {
                 Can't find what you're looking for? We're here to help.
               </p>
               
-              {/* Search Bar */}
+              {/* Search Bar with Auto-suggestions */}
               <div className="max-w-2xl mx-auto relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
                 <Input
                   type="text"
                   placeholder="Search frequently asked questions..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onFocus={() => setShowSuggestions(searchTerm.length > 0)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                   className="pl-12 pr-4 py-3 text-lg border-2 border-gray-200 focus:border-primary"
                 />
+                
+                {/* Auto-suggestions Dropdown */}
+                {showSuggestions && (
+                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-20 max-h-60 overflow-y-auto">
+                    <div className="p-2">
+                      <div className="text-xs font-medium text-gray-500 px-3 py-2 uppercase tracking-wide">
+                        {searchTerm.length > 0 ? 'Suggestions' : 'Popular Searches'}
+                      </div>
+                      {getSearchSuggestions(searchTerm).map((suggestion, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleSuggestionClick(suggestion)}
+                          className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded text-sm text-gray-700 hover:text-brand-orange transition-colors"
+                        >
+                          <Search className="w-3 h-3 inline mr-2 text-gray-400" />
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Quick Category Chips */}
+              <div className="max-w-4xl mx-auto mt-6 flex flex-wrap justify-center gap-3">
+                {faqData.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => scrollToCategory(category.id)}
+                    className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 hover:border-brand-orange hover:text-brand-orange transition-colors"
+                  >
+                    {category.category}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -764,8 +855,50 @@ const FAQ = () => {
                 </section>
               )}
 
-              {/* No Results Message */}
-              {searchTerm && filteredFAQs.length === 0 && !showAIAnswer && (
+              {/* Related Questions Section */}
+              {searchTerm && filteredFAQs.length === 0 && relatedQuestions.length > 0 && (
+                <section className="mt-8">
+                  <Card className="bg-yellow-50 border-yellow-200">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-yellow-800">
+                        <MessageCircle className="w-5 h-5" />
+                        Related Questions
+                      </CardTitle>
+                      <CardDescription className="text-yellow-600">
+                        No exact matches found, but these related questions might help:
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {relatedQuestions.map((question, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setSearchTerm(question.question);
+                              setShowSuggestions(false);
+                            }}
+                            className="w-full text-left p-3 bg-white rounded-lg border border-yellow-200 hover:border-yellow-300 hover:bg-yellow-25 transition-colors"
+                          >
+                            <div className="font-medium text-yellow-800 mb-1">{question.question}</div>
+                            <div className="text-sm text-yellow-600">From {question.category}</div>
+                          </button>
+                        ))}
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-yellow-200">
+                        <p className="text-sm text-yellow-600">
+                          Still can't find what you're looking for? Try the AI assistant response above or{' '}
+                          <a href="#contact" className="font-medium hover:underline">
+                            contact our support team
+                          </a>
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </section>
+              )}
+
+              {/* No Results Fallback - Only show if no AI answer and no related questions */}
+              {searchTerm && filteredFAQs.length === 0 && !showAIAnswer && relatedQuestions.length === 0 && (
                 <section className="text-center py-12">
                   <Search className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-brand-dark-text mb-2">
@@ -785,7 +918,7 @@ const FAQ = () => {
               )}
 
               {/* Contact Section */}
-              <section className="bg-white rounded-lg shadow-lg p-8 mt-12">
+              <section id="contact" className="bg-white rounded-lg shadow-lg p-8 mt-12">
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-brand-dark-text mb-4">
                     Still Need Help?
