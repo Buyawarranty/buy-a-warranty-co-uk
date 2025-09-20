@@ -424,6 +424,98 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </header>
 
+      {/* Step 1 - Complete Vehicle Protection */}
+      <section className="py-12 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
+            {/* Left - Content */}
+            <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
+              <div className="mb-4 md:mb-6">
+                <div className="text-green-600 text-sm font-semibold uppercase tracking-wide mb-3 md:mb-4">
+                  Unlimited Claims
+                </div>
+                <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
+                  Complete <span className="text-brand-orange">vehicle protection</span>
+                </h2>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-xl md:text-2xl font-bold text-brand-dark-text">
+                  Transparent Pricing. Trusted Protection.
+                </h3>
+                <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
+                  No hidden fees. No confusing jargon. Just clear cover options tailored to your vehicle and budget.
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-base text-brand-dark-text"><strong>14-day</strong> money-back guarantee</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-base text-brand-dark-text"><strong>Rated</strong> Excellent by UK drivers</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-base text-brand-dark-text"><strong>Backed</strong> by trusted repair networks</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right - Panda with vehicles */}
+            <div className="relative text-center order-1 lg:order-2">
+              <img 
+                src="/lovable-uploads/53a6f4f0-3302-4124-9cf6-ba1915daa8f1.png" 
+                alt="Panda mascot with various vehicles" 
+                className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Extended Warranty Video Section */}
+      <section className="py-12 md:py-20 bg-brand-gray-bg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
+            {/* Left - Video */}
+            <div className="relative aspect-video">
+              <iframe 
+                src="https://www.youtube.com/embed/G9QuVoxckbw" 
+                title="Extended warranty explainer video"
+                className="w-full h-full rounded-md shadow-lg"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+
+            {/* Right - Content */}
+            <div className="space-y-6 md:space-y-8">
+              <div>
+                <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight mb-4 md:mb-6">
+                  Reliable extended warranty
+                  <br />
+                  <span className="text-brand-orange">If it breaks, we{"'"}ll fix it 🔧</span>
+                </h2>
+                <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
+                  Enjoy complete peace of mind with our comprehensive cover. From vital mechanical components to essential electrical parts, we{"'"}ve got it all covered.
+                </p>
+              </div>
+
+              <button 
+                onClick={scrollToQuoteForm}
+                className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto"
+              >
+                Start Cover
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section id="quote-form" className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -600,98 +692,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             </div>
           </div>
           
-        </div>
-      </section>
-
-      {/* Extended Warranty Video Section */}
-      <section className="py-12 md:py-20 bg-brand-gray-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
-            {/* Left - Video */}
-            <div className="relative aspect-video">
-              <iframe 
-                src="https://www.youtube.com/embed/G9QuVoxckbw" 
-                title="Extended warranty explainer video"
-                className="w-full h-full rounded-md shadow-lg"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-
-            {/* Right - Content */}
-            <div className="space-y-6 md:space-y-8">
-              <div>
-                <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight mb-4 md:mb-6">
-                  Reliable extended warranty
-                  <br />
-                  <span className="text-brand-orange">If it breaks, we{"'"}ll fix it 🔧</span>
-                </h2>
-                <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
-                  Enjoy complete peace of mind with our comprehensive cover. From vital mechanical components to essential electrical parts, we{"'"}ve got it all covered.
-                </p>
-              </div>
-
-              <button 
-                onClick={scrollToQuoteForm}
-                className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto"
-              >
-                Start Cover
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Step 1 - Enter Your Reg Plate */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
-            {/* Left - Content */}
-            <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
-              <div className="mb-4 md:mb-6">
-                <div className="text-green-600 text-sm font-semibold uppercase tracking-wide mb-3 md:mb-4">
-                  Unlimited Claims
-                </div>
-                <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight">
-                  Complete <span className="text-brand-orange">vehicle protection</span>
-                </h2>
-              </div>
-              
-              <div className="space-y-4">
-                <h3 className="text-xl md:text-2xl font-bold text-brand-dark-text">
-                  Transparent Pricing. Trusted Protection.
-                </h3>
-                <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
-                  No hidden fees. No confusing jargon. Just clear cover options tailored to your vehicle and budget.
-                </p>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-base text-brand-dark-text"><strong>14-day</strong> money-back guarantee</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-base text-brand-dark-text"><strong>Rated</strong> Excellent by UK drivers</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-base text-brand-dark-text"><strong>Backed</strong> by trusted repair networks</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Panda with vehicles */}
-            <div className="relative text-center order-1 lg:order-2">
-              <img 
-                src="/lovable-uploads/53a6f4f0-3302-4124-9cf6-ba1915daa8f1.png" 
-                alt="Panda mascot with various vehicles" 
-                className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
-              />
-            </div>
-          </div>
         </div>
       </section>
 
