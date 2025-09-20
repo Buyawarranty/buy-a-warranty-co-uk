@@ -252,7 +252,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-72 p-4 bg-white border shadow-lg z-50">
                   <div className="space-y-3">
-                    <div className="text-left text-base font-medium text-black mb-4">
+                    <div className="text-left text-base font-medium text-gray-600 mb-4 flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-gray-600" />
                       Mon-Fri 9am to 5:30pm
                     </div>
                     <DropdownMenuItem asChild>
@@ -361,7 +362,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                         <Phone className="h-5 w-5 text-orange-500" />
                         Call Us
                       </div>
-                      <div className="text-left text-base font-medium text-black mb-4">
+                      <div className="text-left text-base font-medium text-gray-600 mb-4 flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-gray-600" />
                         Mon-Fri 9am to 5:30pm
                       </div>
                       <div className="space-y-2">
