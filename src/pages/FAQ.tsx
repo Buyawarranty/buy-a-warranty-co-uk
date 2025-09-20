@@ -1,16 +1,20 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronDown, Search, MessageCircle, Phone, Mail, Menu } from 'lucide-react';
+import { ChevronDown, Search, MessageCircle, Phone, Mail, Menu, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const FAQ = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [aiAnswer, setAiAnswer] = useState<string>('');
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [showAIAnswer, setShowAIAnswer] = useState(false);
 
   const toggleItem = (id: string) => {
     setOpenItems(prev => ({
@@ -362,6 +366,104 @@ const FAQ = () => {
     }
   };
 
+  const generateAIAnswer = async (query: string) => {
+    setIsLoadingAI(true);
+    setShowAIAnswer(true);
+    
+    try {
+      // Create a comprehensive knowledge base from all FAQ data
+      const siteKnowledge = `
+        Company: Buy-a-Warranty - Car, Van, and Motorcycle Extended Warranty Provider
+        
+        Core Services:
+        - Extended warranties for cars, vans, and motorcycles
+        - Coverage for petrol, diesel, hybrid, PHEV, and electric vehicles
+        - One comprehensive Platinum Plan covering mechanical and electrical parts
+        - Optional add-ons: Wear & tear, 24/7 recovery, tyre cover, Europe cover, vehicle rental, transfer cover
+        
+        Key Features:
+        - Warranty costs from £12/month
+        - Plans available for 1, 2, or 3 years
+        - Vehicles up to 15 years old and 150,000 miles eligible
+        - 30-day waiting period for new customers
+        - Fast claim processing (within 90 minutes of approval)
+        - Direct payment to garages or reimbursement
+        - Claims team: 0330 229 5045 (Mon-Fri 09:00-17:30)
+        - Support email: support@buyawarranty.co.uk
+        
+        Coverage Details:
+        - All mechanical and electrical parts
+        - Engine, gearbox, drivetrain, turbocharger, fuel systems
+        - Cooling, exhaust, brakes, suspension, steering
+        - Air conditioning, electrical systems, ECUs, sensors
+        - For EVs: drive motors, high-voltage battery, inverters, chargers
+        - For hybrids: hybrid motors, batteries, power control units
+        - Labour costs and diagnostics included
+        
+        What's Not Covered:
+        - Pre-existing faults
+        - Routine maintenance (unless add-on purchased)
+        - Accident/collision damage
+        - Commercial use (taxi, courier, rental)
+        
+        Claims Process:
+        1. Contact claims team at 0330 229 5045
+        2. Get vehicle diagnosed at garage
+        3. Garage must contact claims team before repairs
+        4. Fast approval and payment process
+        
+        Additional Services:
+        - Can use own garage (must be VAT registered)
+        - 14-day cancellation period for full refund
+        - Transferable warranty (£30 fee)
+        - European coverage available
+        - 24/7 breakdown recovery
+        - Vehicle rental during repairs
+        
+        ${faqData.map(category => 
+          `${category.category}:\n${category.questions.map(q => 
+            `Q: ${q.question}\nA: ${q.answer}`
+          ).join('\n\n')}`
+        ).join('\n\n')}
+      `;
+
+      // Simple AI-like response generation based on keyword matching
+      const lowerQuery = query.toLowerCase();
+      let response = '';
+
+      if (lowerQuery.includes('price') || lowerQuery.includes('cost') || lowerQuery.includes('how much')) {
+        response = 'Our warranty costs start from just £12 per month, depending on your vehicle and coverage level. We offer flexible payment options including paying in full (with savings), 12-month interest-free payments, or monthly Pay As You Go. You can get an instant quote by entering your registration number on our homepage.';
+      } else if (lowerQuery.includes('claim') || lowerQuery.includes('repair')) {
+        response = 'To make a claim, contact our Claims Team at 0330 229 5045 (Mon-Fri 09:00-17:30) or use our online form. Get your vehicle diagnosed at a garage first, then the garage must contact our claims team before starting repairs. We process claims within 90 minutes of approval and can pay the garage directly.';
+      } else if (lowerQuery.includes('cover') || lowerQuery.includes('what') || lowerQuery.includes('include')) {
+        response = 'Our Platinum Plan covers all mechanical and electrical parts including engine, gearbox, drivetrain, electrical systems, ECUs, sensors, and labour costs. We cover cars, vans, and motorcycles (petrol, diesel, hybrid, and electric). Optional add-ons available for wear & tear, tyres, Europe cover, and more.';
+      } else if (lowerQuery.includes('electric') || lowerQuery.includes('ev') || lowerQuery.includes('hybrid')) {
+        response = 'Yes, we cover electric and hybrid vehicles! For EVs we cover drive motors, high-voltage battery, inverters, chargers, and thermal systems. For hybrids we cover all the above plus petrol/diesel engine components, hybrid drive motors, batteries, and power control units.';
+      } else if (lowerQuery.includes('garage') || lowerQuery.includes('mechanic')) {
+        response = 'You can use your preferred garage for repairs as long as they\'re VAT registered. You can choose a main dealer, but may need to cover the price difference compared to an independent garage. We can also recommend trusted repair centres in our network.';
+      } else if (lowerQuery.includes('cancel') || lowerQuery.includes('refund')) {
+        response = 'You have 14 days to cancel your warranty for a full refund (if no repairs have been made). After this period, our standard cancellation policy applies. Contact us at support@buyawarranty.co.uk or call 0330 229 5045 for cancellation requests.';
+      } else if (lowerQuery.includes('transfer') || lowerQuery.includes('sell') || lowerQuery.includes('new owner')) {
+        response = 'Yes, the warranty is transferable to a new owner when you sell your vehicle privately. This adds value to your car and is a great selling point. There is a £30 fee for transferring the warranty. Contact us to arrange the transfer.';
+      } else if (lowerQuery.includes('age') || lowerQuery.includes('old') || lowerQuery.includes('mileage') || lowerQuery.includes('eligible')) {
+        response = 'We cover vehicles up to 15 years old and up to 150,000 miles. We offer warranty plans for 1, 2, or 3 years. Whether your vehicle is petrol, diesel, hybrid, or electric, we likely have coverage available.';
+      } else if (lowerQuery.includes('breakdown') || lowerQuery.includes('recovery') || lowerQuery.includes('roadside')) {
+        response = 'We offer 24/7 Vehicle Recovery as an add-on for £3.99/month. This covers recovery costs when you\'ve already been recovered. We also offer European coverage and vehicle rental during repairs as additional options.';
+      } else if (lowerQuery.includes('service') || lowerQuery.includes('maintenance') || lowerQuery.includes('mot')) {
+        response = 'Yes, you need to keep up with regular servicing to maintain your warranty validity. Follow the manufacturer\'s service schedule and keep your receipts. Routine maintenance isn\'t covered unless you add our Wear & Tear cover add-on.';
+      } else {
+        response = `I couldn't find a specific FAQ for "${query}", but I can help! Our comprehensive warranty covers mechanical and electrical parts for cars, vans, and motorcycles. For specific questions, please contact our team at 0330 229 5045 or support@buyawarranty.co.uk. You can also browse our detailed FAQ categories above for more information.`;
+      }
+
+      setAiAnswer(response);
+    } catch (error) {
+      console.error('Error generating AI answer:', error);
+      setAiAnswer(`I couldn't find a specific answer for "${query}" in our FAQ. For personalized assistance, please contact our support team at 0330 229 5045 or support@buyawarranty.co.uk. You can also browse our FAQ categories above for related information.`);
+    } finally {
+      setIsLoadingAI(false);
+    }
+  };
+
   return (
     <>
       <SEOHead 
@@ -620,6 +722,67 @@ const FAQ = () => {
                   </div>
                 </section>
               ))}
+
+              {/* AI-Generated Answer Section */}
+              {showAIAnswer && (
+                <section className="mt-8">
+                  <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-blue-800">
+                        <Search className="w-5 h-5" />
+                        AI Assistant Response
+                      </CardTitle>
+                      <CardDescription className="text-blue-600">
+                        I couldn't find an exact match in our FAQ, but here's what I found based on our warranty information:
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {isLoadingAI ? (
+                        <div className="flex items-center gap-2 text-blue-700">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Searching our knowledge base...</span>
+                        </div>
+                      ) : (
+                        <div className="prose prose-blue max-w-none">
+                          <p className="text-blue-800 leading-relaxed">{aiAnswer}</p>
+                        </div>
+                      )}
+                      <div className="mt-4 pt-4 border-t border-blue-200">
+                        <p className="text-sm text-blue-600">
+                          For more specific information, please contact our team at{' '}
+                          <a href="tel:03302295045" className="font-medium hover:underline">
+                            0330 229 5045
+                          </a>{' '}
+                          or{' '}
+                          <a href="mailto:support@buyawarranty.co.uk" className="font-medium hover:underline">
+                            support@buyawarranty.co.uk
+                          </a>
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </section>
+              )}
+
+              {/* No Results Message */}
+              {searchTerm && filteredFAQs.length === 0 && !showAIAnswer && (
+                <section className="text-center py-12">
+                  <Search className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-brand-dark-text mb-2">
+                    No results found
+                  </h3>
+                  <p className="text-brand-dark-text mb-4">
+                    Try searching with different keywords or browse our categories above.
+                  </p>
+                  <Button 
+                    onClick={() => setSearchTerm('')}
+                    variant="outline"
+                    className="border-primary text-primary hover:bg-primary hover:text-white"
+                  >
+                    Clear Search
+                  </Button>
+                </section>
+              )}
 
               {/* Contact Section */}
               <section className="bg-white rounded-lg shadow-lg p-8 mt-12">
