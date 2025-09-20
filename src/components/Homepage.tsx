@@ -290,7 +290,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="bg-[#128C7E] text-white border-[#128C7E] hover:bg-[#075E54] hover:border-[#075E54] px-3 text-sm"
+                  className="bg-[#00B67A] text-white border-[#00B67A] hover:bg-[#008C5A] hover:border-[#008C5A] px-3 text-sm"
                 >
                   WhatsApp Us
                 </Button>
@@ -401,7 +401,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" className="block">
                       <Button 
                         variant="outline" 
-                        className="w-full bg-[#128C7E] text-white border-[#128C7E] hover:bg-[#075E54] hover:border-[#075E54] text-xl py-4 min-h-[48px]"
+                        className="w-full bg-[#00B67A] text-white border-[#00B67A] hover:bg-[#008C5A] hover:border-[#008C5A] text-xl py-4 min-h-[48px]"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         WhatsApp Us
