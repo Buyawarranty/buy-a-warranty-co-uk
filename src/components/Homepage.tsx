@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe, ArrowRightLeft } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe, ArrowRightLeft, MessageCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Link } from 'react-router-dom';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
+import whatsappIcon from '@/assets/whatsapp-icon.webp';
 
 interface VehicleData {
   regNumber: string;
@@ -31,6 +33,7 @@ interface HomepageProps {
 
 const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [regNumber, setRegNumber] = useState('');
   const [mileage, setMileage] = useState('0');
   const [sliderMileage, setSliderMileage] = useState(0);
@@ -942,6 +945,33 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* FAQ Section */}
       <HomepageFAQ />
+
+      {/* Mobile Floating Action Buttons */}
+      {isMobile && (
+        <div className="fixed bottom-6 right-4 flex flex-col gap-3 z-50">
+          {/* WhatsApp Button */}
+          <a 
+            href="https://wa.me/message/SPQPJ6O3UBF5B1" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-14 h-14 bg-[#25D366] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <img 
+              src={whatsappIcon} 
+              alt="WhatsApp" 
+              className="w-8 h-8"
+            />
+          </a>
+          
+          {/* Call Button */}
+          <a 
+            href="tel:03302295040"
+            className="flex items-center justify-center w-14 h-14 bg-orange-500 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <Phone className="w-7 h-7 text-white" />
+          </a>
+        </div>
+      )}
     </div>
   );
 };
