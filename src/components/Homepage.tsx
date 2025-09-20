@@ -14,6 +14,7 @@ import MileageSlider from './MileageSlider';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIcon from '@/assets/whatsapp-icon.webp';
 import pandaVehicleCollection from '@/assets/panda-vehicle-collection-hero.png';
+import pandaCelebratingCar from '@/assets/panda-celebrating-orange-car.png';
 
 interface VehicleData {
   regNumber: string;
@@ -687,8 +688,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Right - Panda with vehicles */}
             <div className="relative text-center order-1 lg:order-2">
               <img 
-                src="/lovable-uploads/53a6f4f0-3302-4124-9cf6-ba1915daa8f1.png" 
-                alt="Panda mascot with various vehicles" 
+                src={pandaCelebratingCar} 
+                alt="Panda mascot celebrating with orange car" 
                 className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
               />
             </div>
