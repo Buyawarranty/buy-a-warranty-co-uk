@@ -235,19 +235,20 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   // Auto-include add-ons for 2-year and 3-year plans
   useEffect(() => {
     const autoIncluded = getAutoIncludedAddOns(paymentType);
-    const newProtectionAddOns = { ...selectedProtectionAddOns };
     
-    // Reset all add-ons first
-    Object.keys(newProtectionAddOns).forEach(key => {
-      newProtectionAddOns[key] = false;
-    });
+    console.log('Payment type changed:', paymentType);
+    console.log('Auto-included add-ons:', autoIncluded);
     
-    // Auto-select add-ons for 2-year and 3-year plans
+    // Only auto-select the included add-ons, don't reset user selections
     if (autoIncluded.length > 0) {
-      autoIncluded.forEach(addonKey => {
-        newProtectionAddOns[addonKey] = true;
+      setSelectedProtectionAddOns(prev => {
+        const updated = { ...prev };
+        autoIncluded.forEach(addonKey => {
+          updated[addonKey] = true;
+        });
+        console.log('Updated protection add-ons:', updated);
+        return updated;
       });
-      setSelectedProtectionAddOns(newProtectionAddOns);
     }
   }, [paymentType]);
 
