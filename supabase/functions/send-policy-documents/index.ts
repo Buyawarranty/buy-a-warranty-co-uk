@@ -168,8 +168,13 @@ serve(async (req) => {
       // Fallback to customer_documents table if no document found from plan mapping
       const planTypeMapping: Record<string, string> = {
         'basic': 'basic',
+        'basic car plan': 'basic',
         'gold': 'gold', 
+        'gold car plan': 'gold',
         'platinum': 'platinum',
+        'platinum car plan': 'platinum',
+        'premium': 'platinum', // Map premium to platinum
+        'premium car plan': 'platinum', // Map premium car plan to platinum
         'electric': 'electric',
         'ev': 'electric',  // Map EV to electric
         'phev': 'phev',
@@ -179,7 +184,7 @@ serve(async (req) => {
         'motorbike extended warranty': 'motorbike'
       };
 
-      const mappedPlanType = planTypeMapping[planType.toLowerCase()] || planType.toLowerCase();
+      const mappedPlanType = planTypeMapping[planType.toLowerCase()] || planType.toLowerCase().replace(/\s+(car|vehicle)\s+plan$/i, '');
       logStep("Falling back to customer_documents table", { planType, mappedPlanType });
       
       const { data: planDoc, error: planError } = await supabaseClient
@@ -395,9 +400,9 @@ serve(async (req) => {
         year: 'numeric' 
       }),
       // Add missing template variables to prevent template rendering errors
-      loginUrl: "https://8037b426-cb66-497b-bb9a-14209b3fb079.lovableproject.com/customer-dashboard",
+      loginUrl: "https://buyawarranty.co.uk/customer-dashboard",
       loginEmail: recipientEmail,
-      temporaryPassword: "Please check your welcome email for login details"
+      temporaryPassword: policyNumber ? `Use your policy number: ${policyNumber}` : "Your policy number will serve as your initial password"
     };
 
     const emailPayload: any = {
