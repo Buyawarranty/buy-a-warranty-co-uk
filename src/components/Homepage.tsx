@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe, ArrowRightLeft, MessageCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { VoucherBanner } from './VoucherBanner';
 
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -44,6 +45,19 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [mileageError, setMileageError] = useState('');
   const [vehicleAgeError, setVehicleAgeError] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showVoucherBanner, setShowVoucherBanner] = useState(false);
+
+  useEffect(() => {
+    // Check if user is returning from a successful purchase
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromSuccess = urlParams.get('from_success');
+    
+    if (fromSuccess === 'true') {
+      setShowVoucherBanner(true);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   const formatRegNumber = (value: string) => {
     const formatted = value.replace(/\s/g, '').toUpperCase();
@@ -425,6 +439,19 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           </div>
         </div>
       </header>
+
+      {/* Voucher Banner for returning customers */}
+      {showVoucherBanner && (
+        <div className="bg-green-50 border-b border-green-200 py-3">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+            <div className="flex items-center gap-4">
+              <span className="text-lg font-semibold text-green-800">🎉 Welcome back!</span>
+              <VoucherBanner placement="homepage" animate={true} />
+              <span className="text-sm text-green-700 font-medium">Use code for your 2nd vehicle discount</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section id="quote-form" className="bg-white py-8 sm:py-12 lg:py-16">

@@ -790,3 +790,17 @@ body {
 .promotional-card:hover::before {
   opacity: 1;
 }
+
+/* Float animation for voucher banner */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
