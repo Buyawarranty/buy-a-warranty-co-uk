@@ -115,7 +115,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
         onClick={() => setIsOpen(!isOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-md border"
       >
-        {isOpen ? <X className="h-18 w-18" /> : <Menu className="h-18 w-18" />}
+        {isOpen ? <X className="h-12 w-12" /> : <Menu className="h-12 w-12" />}
       </button>
 
       {/* Mobile overlay */}

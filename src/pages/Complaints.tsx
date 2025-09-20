@@ -61,7 +61,7 @@ const Complaints = () => {
               className="lg:hidden p-2 min-w-[48px] min-h-[48px]"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-18 w-18" /> : <Menu className="h-18 w-18" />}
+              {isMenuOpen ? <X className="h-12 w-12" /> : <Menu className="h-12 w-12" />}
             </button>
           </div>
 
