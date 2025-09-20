@@ -1267,7 +1267,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 md:items-stretch">
             {[
               {
                 id: '12months',
@@ -1368,7 +1368,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               return (
                 <div
                   key={option.id}
-                  className={`relative p-6 rounded-lg transition-all duration-200 text-left w-full border-2 ${
+                  className={`relative p-6 rounded-lg transition-all duration-200 text-left w-full border-2 h-full flex flex-col ${
                     paymentType === option.id 
                       ? 'border-orange-500 bg-orange-50' 
                       : 'border-gray-200 bg-white hover:border-orange-300'
@@ -1412,23 +1412,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <h5 className="font-semibold text-gray-900">{option.planName}</h5>
                   </div>
                   
-                  {/* What's included */}
-                  <div className="mb-6">
-                    <h6 className="font-semibold text-gray-900 mb-3">What's included:</h6>
-                    <div className="space-y-1">
-                      {option.features.map((feature, index) => (
-                        <div key={index} className="flex items-start text-sm">
-                          <span className="mr-2 flex-shrink-0">{feature.startsWith('✅') ? '✅' : '❌'}</span>
-                          <span className={feature.startsWith('✅') ? 'text-gray-700' : 'text-red-600'}>
-                            {feature.replace(/^[✅❌]\s*/, '')}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Pricing */}
-                  <div className="mb-4 text-center">
+                   {/* What's included */}
+                   <div className="mb-6 flex-grow">
+                     <h6 className="font-semibold text-gray-900 mb-3">What's included:</h6>
+                     <div className="space-y-1">
+                       {option.features.map((feature, index) => (
+                         <div key={index} className="flex items-start text-sm">
+                           <span className="mr-2 flex-shrink-0">{feature.startsWith('✅') ? '✅' : '❌'}</span>
+                           <span className={feature.startsWith('✅') ? 'text-gray-700' : 'text-red-600'}>
+                             {feature.replace(/^[✅❌]\s*/, '')}
+                           </span>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                   
+                   {/* Pricing */}
+                   <div className="mb-4 text-center mt-auto">
                     <div className="text-3xl font-bold text-orange-600 mb-1">
                       £{monthlyPrice}/month
                     </div>
