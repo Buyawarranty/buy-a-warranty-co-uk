@@ -672,7 +672,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
                       {/* Address Details */}
                       <div className="pt-4">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">Where should we send your documents?</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Your address:</h3>
                         
                         <div className="space-y-4">
                           <div>
