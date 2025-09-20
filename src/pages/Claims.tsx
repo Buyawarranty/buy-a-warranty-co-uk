@@ -164,13 +164,15 @@ Issue Timing: ${formData.issueTiming}
 
             {/* Desktop CTA Buttons - Show on desktop */}
             <div className="hidden lg:flex items-center space-x-3">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
-              >
-                WhatsApp Us
-              </Button>
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
+                >
+                  WhatsApp Us
+                </Button>
+              </a>
               <Button 
                 size="sm"
                 className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
@@ -244,13 +246,15 @@ Issue Timing: ${formData.issueTiming}
 
                   {/* CTA Buttons */}
                   <div className="space-y-4 pt-6 mt-auto">
-                    <Button 
-                      variant="outline" 
-                      className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      WhatsApp Us
-                    </Button>
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                    </a>
                     <Button 
                       className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
                       onClick={() => setIsMobileMenuOpen(false)}

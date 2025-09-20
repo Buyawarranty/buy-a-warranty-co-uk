@@ -196,7 +196,7 @@ const Protected = () => {
             </nav>
 
             <div className="hidden md:flex items-center space-x-4">
-              <a href="https://wa.me/443302295040" target="_blank" rel="noopener noreferrer" 
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" 
                  className="text-green-600 hover:text-green-700 font-medium transition-colors">
                 WhatsApp Us
               </a>
@@ -231,7 +231,7 @@ const Protected = () => {
                     Contact Us
                   </Link>
                   <div className="pt-4 border-t">
-                    <a href="https://wa.me/443302295040" target="_blank" rel="noopener noreferrer" 
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" 
                        className="block text-green-600 hover:text-green-700 font-medium mb-4">
                       WhatsApp Us
                     </a>
