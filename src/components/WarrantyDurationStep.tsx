@@ -29,7 +29,6 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   onBack
 }) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState('24months');
-  const [expandedCards, setExpandedCards] = useState<{[key: string]: boolean}>({});
   const navigate = useNavigate();
 
   // Get pricing data using the exact pricing structure from the matrix
@@ -129,8 +128,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   const durationOptions = [
     {
       id: '12months',
-      title: '✅ 1-Year Cover',
-      subtitle: '',
+      title: '1-Year Cover',
+      subtitle: 'STARTER',
       description: 'Flexible protection for 12 month cover',
       planTitle: 'Platinum Comprehensive Plan',
       features: [
@@ -148,12 +147,15 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       ],
       ...getPricingForDuration('12months'),
       isPopular: false,
-      isBestValue: false
+      isBestValue: false,
+      isStarter: true,
+      savePercent: undefined,
+      originalPrice: undefined
     },
     {
       id: '24months',
-      title: '⭐️ 2-Year Cover — Save £100 Today',
-      subtitle: 'Most Popular',
+      title: '2-Year Cover — Save £100 Today',
+      subtitle: 'MOST POPULAR',
       description: 'Balanced Protection and Value',
       planTitle: 'Platinum Comprehensive Plan',
       features: [
@@ -172,14 +174,16 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Pre-existing faults are not covered'
       ],
       ...getPricingForDuration('24months'),
-      originalPrice: getPricingForDuration('24months').totalPrice + 100, // Show original price before discount
+      originalPrice: getPricingForDuration('24months').totalPrice + 100,
       isPopular: true,
-      isBestValue: false
+      isBestValue: false,
+      isStarter: false,
+      savePercent: '10%'
     },
     {
       id: '36months',
-      title: '🏆 3-Year Cover — Save £200 Today',
-      subtitle: 'Best Value',
+      title: '3-Year Cover — Save £200 Today',
+      subtitle: 'BEST VALUE',
       description: 'Extended cover for longer peace of mind',
       planTitle: 'Platinum Comprehensive Plan',
       features: [
@@ -190,34 +194,26 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Vehicle recovery claim-back',
         'MOT test fee cover',
         'Europe repair cover',
-        '',
-        '',
         'Vehicle rental cover',
-        '',
         'Consequential damage cover',
         'Fast claims process',
         '14-day money-back guarantee',
         'Optional extras available – tailor your cover to suit your needs'
       ],
       exclusions: [
-        'Pre-existing faults are not covered –'
+        'Pre-existing faults are not covered'
       ],
       ...getPricingForDuration('36months'),
-      originalPrice: getPricingForDuration('36months').totalPrice + 200, // Show original price before discount
+      originalPrice: getPricingForDuration('36months').totalPrice + 200,
       isPopular: false,
-      isBestValue: true
+      isBestValue: true,
+      isStarter: false,
+      savePercent: '20%'
     }
   ];
 
   const handleContinue = () => {
     onNext(selectedPaymentType);
-  };
-
-  const toggleCardExpansion = (cardId: string) => {
-    setExpandedCards(prev => ({
-      ...prev,
-      [cardId]: !prev[cardId]
-    }));
   };
 
   return (
@@ -274,21 +270,26 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
               <div
                 key={option.id}
                 onClick={() => setSelectedPaymentType(option.id)}
-                 className={`relative p-4 sm:p-6 rounded-lg transition-all duration-200 text-left w-full cursor-pointer ${
-                   selectedPaymentType === option.id 
-                     ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                     : 'bg-white border border-gray-200 shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                 }`}
-               >
-                 {/* Save Percentage Ribbon */}
-                 {(option.id === '24months' || option.id === '36months') && (
-                   <div className="absolute top-2 right-2 bg-gradient-to-br from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-10">
-                     {option.id === '24months' ? 'Save £100 today' : 'Save £200 Today'}
-                   </div>
-                 )}
+                className={`relative p-4 sm:p-6 rounded-xl transition-all duration-200 text-left w-full cursor-pointer border-2 ${
+                  selectedPaymentType === option.id 
+                    ? 'border-orange-500 bg-orange-50' 
+                    : 'border-gray-200 bg-white hover:border-orange-300'
+                }`}
+              >
+                {/* Save Percentage Ribbon - Top Right */}
+                {option.savePercent && (
+                  <div className="absolute -top-2 -right-2 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-10">
+                    Save {option.savePercent}
+                  </div>
+                )}
 
-                {/* Badge Pills */}
+                {/* Badge Pills - Top Left */}
                 <div className="flex flex-wrap gap-2 mb-4">
+                  {option.isStarter && (
+                    <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                      STARTER
+                    </span>
+                  )}
                   {option.isPopular && (
                     <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                       MOST POPULAR
@@ -303,114 +304,74 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 
                 {/* Title */}
                 <div className="mb-4">
-                  <h4 className="text-xl font-extrabold text-gray-900 mb-2 leading-tight">
-                    {option.title.split(' — ')[0]}
+                  <h4 className="text-lg font-bold text-gray-900 mb-1">
+                    {option.id === '12months' && '✅ '}
+                    {option.id === '24months' && '⭐️ '}
+                    {option.id === '36months' && '🏆 '}
+                    {option.title}
                   </h4>
-                  <h5 className="text-sm font-semibold text-gray-800 mb-3">{option.planTitle}</h5>
-                  <p className="text-xs text-gray-600 mb-3">What's included:</p>
+                  <p className="text-sm text-gray-600 mb-2">{option.description}</p>
+                  <h5 className="text-sm font-semibold text-gray-800 mb-2">{option.planTitle}</h5>
+                  <p className="text-sm font-medium text-gray-700 mb-3">What's included:</p>
                 </div>
                 
+                {/* Features List - Show all features */}
                 <div className="space-y-2 mb-4">
-                  {(expandedCards[option.id] ? option.features : option.features.slice(0, 10)).map((feature, index) => (
-                    feature ? (
-                      <div key={index} className="flex items-start text-xs text-gray-600">
-                        <span className="mr-2 mt-0.5 text-green-500 font-bold">✓</span>
-                        <span>{feature}</span>
-                      </div>
-                    ) : (
-                      <div key={index} className="h-3"></div>
-                    )
+                  {option.features.map((feature, index) => (
+                    <div key={index} className="flex items-start text-sm text-gray-700">
+                      <span className="mr-2 mt-0.5 text-green-500 font-bold">✅</span>
+                      <span>{feature}</span>
+                    </div>
                   ))}
-                  {option.features.filter(f => f).length > 10 && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleCardExpansion(option.id);
-                      }}
-                      className="text-xs text-orange-500 hover:text-orange-600 font-medium cursor-pointer transition-colors duration-200 flex items-center gap-1"
-                    >
-                      {expandedCards[option.id] 
-                        ? `Show less`
-                        : `+${option.features.filter(f => f).length - 10} more benefits`
-                      }
-                      <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${expandedCards[option.id] ? 'rotate-180' : ''}`} />
-                    </button>
-                  )}
-                </div>
-
-                <div className="space-y-2 mb-6">
                   {option.exclusions.map((exclusion, index) => (
-                    <div key={index} className="flex items-start text-xs text-gray-600">
-                      <span className="mr-2 mt-0.5 text-red-500 font-bold">✗</span>
+                    <div key={`exclusion-${index}`} className="flex items-start text-sm text-gray-700">
+                      <span className="mr-2 mt-0.5 text-red-500 font-bold">❌</span>
                       <span>{exclusion}</span>
                     </div>
                   ))}
                 </div>
                 
-                <div className="space-y-3 mt-auto">
-                  {option.id === '12months' && (
-                    <>
-                      <div className="text-2xl font-bold text-gray-900">
-                        £{option.monthlyPrice}/month
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Only 12 easy payments
-                      </div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        Total cost: £{option.totalPrice}
-                      </div>
-                    </>
-                  )}
-                  {option.id === '24months' && (
-                    <>
-                      <div className="text-2xl font-bold text-gray-900">
-                        £{option.monthlyPrice}/month
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Only 12 easy payments
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Nothing to pay in Year 2
-                      </div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        Total cost: <span className="line-through text-gray-400">£{'originalPrice' in option ? option.originalPrice : option.totalPrice + 100}</span> £{option.totalPrice}
-                      </div>
-                    </>
-                  )}
-                  {option.id === '36months' && (
-                    <>
-                      <div className="text-2xl font-bold text-gray-900">
-                        £{option.monthlyPrice}/month
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Only 12 easy payments
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Nothing to pay in Year 2 and Year 3
-                      </div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        Total cost: <span className="line-through text-gray-400">£{'originalPrice' in option ? option.originalPrice : option.totalPrice + 200}</span> £{option.totalPrice}
-                      </div>
-                    </>
-                  )}
-                  
-                  {/* Select Button */}
-                  <div className="mt-4">
-                    <Button 
-                      className={`w-full ${
-                        selectedPaymentType === option.id 
-                          ? 'bg-orange-500 hover:bg-orange-600 text-white' 
-                          : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-orange-500'
-                      }`}
-                      onClick={() => setSelectedPaymentType(option.id)}
-                    >
-                      {selectedPaymentType === option.id ? 'Selected' : 'Select'}
-                    </Button>
+                {/* Pricing Section */}
+                <div className="space-y-2 mt-6 mb-4">
+                  <div className="text-3xl font-bold text-orange-500">
+                    £{option.monthlyPrice}/month
                   </div>
-                  
-                  <div className="text-xs text-gray-500 text-center mt-2">
-                    *For more info please 'Your Cover, Made Clear' below
+                  <div className="text-sm text-gray-600">
+                    Only 12 easy payments
                   </div>
+                  {option.id !== '12months' && (
+                    <div className="text-sm text-gray-600">
+                      {option.id === '24months' ? 'Nothing to pay in Year 2' : 'Nothing to pay in Year 2 and Year 3'}
+                    </div>
+                  )}
+                  <div className="text-sm font-semibold text-gray-900">
+                    Total cost: {option.originalPrice ? (
+                      <>
+                        <span className="line-through text-gray-400">£{option.originalPrice}</span>{' '}
+                        <span className="text-orange-500">£{option.totalPrice}</span>
+                      </>
+                    ) : (
+                      `£${option.totalPrice}`
+                    )}
+                  </div>
+                </div>
+                
+                {/* Select Button */}
+                <div className="mt-4">
+                  <Button 
+                    className={`w-full font-semibold ${
+                      selectedPaymentType === option.id 
+                        ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                        : 'bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50'
+                    }`}
+                    onClick={() => setSelectedPaymentType(option.id)}
+                  >
+                    {selectedPaymentType === option.id ? 'Selected' : 'Select'}
+                  </Button>
+                </div>
+                
+                <div className="text-xs text-gray-500 text-center mt-3">
+                  *For more info please 'Your Cover, Made Clear' below
                 </div>
               </div>
             ))}
