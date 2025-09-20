@@ -740,235 +740,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </div>
               </>
              )}
-        </div>
-
-        {/* Choose Your Excess Amount */}
-        <div className="section-header rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-              2
-            </div>
-            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
-              Choose Your Excess Amount
-            </h2>
-          </div>
-          
-          <div className="flex gap-1.5 flex-wrap justify-start ml-11">
-            {[0, 50, 100, 150].map((amount) => (
-              <button
-                key={amount}
-                onClick={() => toggleVoluntaryExcess(amount)}
-                className={`px-2.5 py-2 rounded-lg transition-all duration-200 text-center relative min-w-[50px] text-sm ${
-                  voluntaryExcess === amount
-                    ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                    : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-                }`}
-              >
-                <div className="text-base font-bold text-black">£{amount}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Claim Limit Selection */}
-        <div className="section-header rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
-              3
-            </div>
-            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5" />
-              Choose Your Claim Limit
-            </h2>
-          </div>
-          
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* AutoCare Essential */}
-            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
-                selectedClaimLimit === 750
-                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-              }`}>
-              <button
-                onClick={() => setSelectedClaimLimit(750)}
-                className="w-full text-left"
-              >
-                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Essential</h4>
-                <div className="text-2xl font-bold text-black mb-2">£750 per claim</div>
-                <p className="text-sm font-medium text-foreground mb-4">Confidence for the everyday drive.</p>
-              </button>
-              
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="essential-details" className="border-none">
-                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
-                    <span className="flex items-center gap-2">
-                      Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-4 pb-2">
-                    <div className="space-y-3 text-sm">
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-foreground">If your repair costs £750 or less:</p>
-                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-foreground">If your repair costs more than £750:</p>
-                          <p className="text-muted-foreground">You'll simply pay the difference. For example, if the total is £950, we'll cover £750 and you'll only pay £200.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-muted-foreground">Your excess and limits depends on the cover options you choose – and there are no hidden fees. Just clear, reliable protection to help you manage unexpected repair bills.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-muted-foreground">Plus, with nationwide support and fast claims processing, we'll get you back on the road quickly and with confidence.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-            
-            {/* AutoCare Advantage */}
-            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
-                selectedClaimLimit === 1250
-                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-              }`}>
-              <div className="absolute -top-3 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                MOST POPULAR
-              </div>
-              <button
-                onClick={() => setSelectedClaimLimit(1250)}
-                className="w-full text-left"
-              >
-                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Advantage</h4>
-                <div className="text-2xl font-bold text-black mb-2">£1,250 per claim</div>
-                <p className="text-sm font-medium text-foreground mb-4">Balanced protection for life's bigger bumps.</p>
-              </button>
-              
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="advantage-details" className="border-none">
-                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
-                    <span className="flex items-center gap-2">
-                      Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-4 pb-2">
-                    <div className="space-y-3 text-sm">
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-foreground">If your repair costs £1,250 or less:</p>
-                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-foreground">If your repair costs more than £1,250:</p>
-                          <p className="text-muted-foreground">You'll simply pay the difference. For example, if the total is £1,400, we'll cover £1,250 and you'll only pay £150.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-muted-foreground">Your excess and limits depends on the cover options you choose – and there are no hidden fees. Just clear, reliable protection to help you manage unexpected repair bills.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-muted-foreground">Plus, with nationwide support and fast claims processing, we'll get you back on the road quickly and with confidence.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-            
-            {/* AutoCare Elite */}
-            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
-                selectedClaimLimit === 2000
-                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
-                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-              }`}>
-              <button
-                onClick={() => setSelectedClaimLimit(2000)}
-                className="w-full text-left"
-              >
-                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Elite</h4>
-                <div className="text-2xl font-bold text-black mb-2">£2,000 per claim</div>
-                <p className="text-sm font-medium text-foreground mb-4">Top-tier cover for total peace of mind.</p>
-              </button>
-              
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="elite-details" className="border-none">
-                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
-                    <span className="flex items-center gap-2">
-                      Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-4 pb-2">
-                    <div className="space-y-3 text-sm">
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-foreground">If your repair costs £2,000 or less:</p>
-                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-foreground">If your repair costs more than £2,000:</p>
-                          <p className="text-muted-foreground">You'll simply pay the difference. For example, if the total is £2,200, we'll cover £2,000 and you'll only pay £200.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-muted-foreground">Your excess and limits depends on the cover options you choose – and there are no hidden fees. Just clear, reliable protection to help you manage unexpected repair bills.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-muted-foreground">Plus, with nationwide support and fast claims processing, we'll get you back on the road quickly and with confidence.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-            </div>
-        </div>
+         </div>
 
         {/* What's Covered Section */}
         <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-lg">
@@ -1254,6 +1026,235 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </CollapsibleContent>
           </Collapsible>
         </div>
+
+        {/* Choose Your Excess Amount */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              2
+            </div>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Choose Your Excess Amount
+            </h2>
+          </div>
+          
+          <div className="flex gap-1.5 flex-wrap justify-start ml-11">
+            {[0, 50, 100, 150].map((amount) => (
+              <button
+                key={amount}
+                onClick={() => toggleVoluntaryExcess(amount)}
+                className={`px-2.5 py-2 rounded-lg transition-all duration-200 text-center relative min-w-[50px] text-sm ${
+                  voluntaryExcess === amount
+                    ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                    : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                }`}
+              >
+                <div className="text-base font-bold text-black">£{amount}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Claim Limit Selection */}
+        <div className="section-header rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
+              3
+            </div>
+            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5" />
+              Choose Your Claim Limit
+            </h2>
+          </div>
+          
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* AutoCare Essential */}
+            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
+                selectedClaimLimit === 750
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+              }`}>
+              <button
+                onClick={() => setSelectedClaimLimit(750)}
+                className="w-full text-left"
+              >
+                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Essential</h4>
+                <div className="text-2xl font-bold text-black mb-2">£750 per claim</div>
+                <p className="text-sm font-medium text-foreground mb-4">Confidence for the everyday drive.</p>
+              </button>
+              
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="essential-details" className="border-none">
+                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
+                    <span className="flex items-center gap-2">
+                      Read more
+                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-4 pb-2">
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-foreground">If your repair costs £750 or less:</p>
+                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-foreground">If your repair costs more than £750:</p>
+                          <p className="text-muted-foreground">You'll simply pay the difference. For example, if the total is £950, we'll cover £750 and you'll only pay £200.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-muted-foreground">Your excess and limits depends on the cover options you choose – and there are no hidden fees. Just clear, reliable protection to help you manage unexpected repair bills.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-muted-foreground">Plus, with nationwide support and fast claims processing, we'll get you back on the road quickly and with confidence.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+            
+            {/* AutoCare Advantage */}
+            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
+                selectedClaimLimit === 1250
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+              }`}>
+              <div className="absolute -top-3 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                MOST POPULAR
+              </div>
+              <button
+                onClick={() => setSelectedClaimLimit(1250)}
+                className="w-full text-left"
+              >
+                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Advantage</h4>
+                <div className="text-2xl font-bold text-black mb-2">£1,250 per claim</div>
+                <p className="text-sm font-medium text-foreground mb-4">Balanced protection for life's bigger bumps.</p>
+              </button>
+              
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="advantage-details" className="border-none">
+                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
+                    <span className="flex items-center gap-2">
+                      Read more
+                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-4 pb-2">
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-foreground">If your repair costs £1,250 or less:</p>
+                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-foreground">If your repair costs more than £1,250:</p>
+                          <p className="text-muted-foreground">You'll simply pay the difference. For example, if the total is £1,400, we'll cover £1,250 and you'll only pay £150.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-muted-foreground">Your excess and limits depends on the cover options you choose – and there are no hidden fees. Just clear, reliable protection to help you manage unexpected repair bills.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-muted-foreground">Plus, with nationwide support and fast claims processing, we'll get you back on the road quickly and with confidence.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+            
+            {/* AutoCare Elite */}
+            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
+                selectedClaimLimit === 2000
+                  ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
+                  : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+              }`}>
+              <button
+                onClick={() => setSelectedClaimLimit(2000)}
+                className="w-full text-left"
+              >
+                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Elite</h4>
+                <div className="text-2xl font-bold text-black mb-2">£2,000 per claim</div>
+                <p className="text-sm font-medium text-foreground mb-4">Top-tier cover for total peace of mind.</p>
+              </button>
+              
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="elite-details" className="border-none">
+                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
+                    <span className="flex items-center gap-2">
+                      Read more
+                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-4 pb-2">
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-foreground">If your repair costs £2,000 or less:</p>
+                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-foreground">If your repair costs more than £2,000:</p>
+                          <p className="text-muted-foreground">You'll simply pay the difference. For example, if the total is £2,200, we'll cover £2,000 and you'll only pay £200.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-muted-foreground">Your excess and limits depends on the cover options you choose – and there are no hidden fees. Just clear, reliable protection to help you manage unexpected repair bills.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-muted-foreground">Plus, with nationwide support and fast claims processing, we'll get you back on the road quickly and with confidence.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+            </div>
+        </div>
+
 
         {/* Choose Warranty Duration */}
         <div className="section-header rounded-lg p-6">
