@@ -257,33 +257,26 @@ const ThankYou = () => {
               <div className="space-y-6">
                 {searchParams.get('addAnotherWarranty') === 'true' ? (
                   <div className="text-center">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-4">
-                      <p className="text-blue-800 font-bold text-xl mb-2">
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-4">
+                      <p className="text-orange-800 font-bold text-xl mb-2">
                         🎉 Redirecting you to add your next vehicle
                       </p>
-                      <p className="text-blue-700 font-semibold text-lg">
+                      <p className="text-orange-700 font-semibold text-lg">
                         with 10% discount applied!
                       </p>
                     </div>
                     <CarDrivingSpinner />
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {/* Add Another Warranty Offer */}
-                    <div className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6 text-center">
-                      <div className="text-3xl mb-3">🚗💚</div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        Got Another Vehicle?
+                  <div className="space-y-6">
+                    {/* Professional CTA Section */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                        Need coverage for another vehicle?
                       </h3>
-                      <p className="text-gray-700 mb-4">
-                        Save <span className="font-bold text-green-600">10% instantly</span> on your next warranty!
+                      <p className="text-gray-600 mb-6">
+                        Protect your other vehicles with the same comprehensive warranty coverage.
                       </p>
-                      <div className="bg-white border border-green-300 rounded-lg p-4 mb-4">
-                        <p className="text-sm text-gray-600 mb-2">Limited time offer:</p>
-                        <p className="font-semibold text-green-700">
-                          🎯 10% OFF • 🚀 Instant Savings • ⏰ Available Now
-                        </p>
-                      </div>
                       <Button
                         onClick={() => {
                           // Set the localStorage flag for the 10% discount on next warranty
@@ -293,19 +286,16 @@ const ThankYou = () => {
                           url.searchParams.set('step', '1');
                           window.location.href = url.toString();
                         }}
-                        className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold mr-4 mb-2"
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-base font-medium rounded-lg mb-4"
                       >
-                        ✨ Add Another Warranty (10% OFF)
+                        Get Quote for Another Vehicle
                       </Button>
-                      <p className="text-xs text-gray-500 mt-2">
-                        Discount automatically applied at checkout
-                      </p>
                     </div>
                     
                     <Button 
                       onClick={handleReturnHome}
                       variant="outline"
-                      className="w-full border-gray-300 text-gray-600 hover:bg-gray-50 px-8 py-3 text-lg font-semibold"
+                      className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-base font-medium"
                     >
                       Return to BuyAWarranty.co.uk
                     </Button>
