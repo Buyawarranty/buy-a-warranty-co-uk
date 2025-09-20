@@ -481,7 +481,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     const sendQuoteEmail = async () => {
       if (!quoteSent && customerData.email) {
         try {
-          await supabase.functions.invoke('send-quote-email', {
+          const { data, error } = await supabase.functions.invoke('send-quote-email', {
             body: {
               email: customerData.email,
               firstName: customerData.first_name,
@@ -499,10 +499,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               isInitialQuote: false
             }
           });
-          setQuoteSent(true);
-          toast.success('Quote sent to your email!');
+
+          if (error) {
+            console.error('Error sending quote email:', error);
+            toast.error('Failed to send quote email. Please check your email address.');
+          } else {
+            console.log('Quote email sent successfully:', data);
+            setQuoteSent(true);
+            toast.success('Quote sent to your email!');
+          }
         } catch (error) {
           console.error('Error sending quote email:', error);
+          toast.error('Failed to send quote email. Please try again.');
         }
       }
     };
