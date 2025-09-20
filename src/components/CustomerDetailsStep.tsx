@@ -197,7 +197,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     switch (limit) {
       case 'essential': return 'AutoCare Standard';
       case 'plus': return 'AutoCare Enhanced';
-      case 'premium': return 'AutoCare Ultimate';
+      case 'premium': return 'Platinum warranty plan';
       default: return 'AutoCare Enhanced';
     }
   };
