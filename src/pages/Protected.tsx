@@ -95,32 +95,32 @@ const Protected = () => {
       case 'petrol-diesel':
         return { 
           icon: Fuel, 
-          bgColor: 'bg-[#1C1C1C]', 
-          bgColorHover: 'hover:bg-[#0F0F0F]' 
+          bgColor: 'bg-foreground', 
+          bgColorHover: 'hover:bg-foreground/90' 
         };
       case 'hybrid-phev':
         return { 
           icon: Battery, 
-          bgColor: 'bg-[#6E6E6E]', 
-          bgColorHover: 'hover:bg-[#5A5A5A]' 
+          bgColor: 'bg-muted-foreground', 
+          bgColorHover: 'hover:bg-muted-foreground/90' 
         };
       case 'electric-vehicles':
         return { 
           icon: Zap, 
-          bgColor: 'bg-[#FF6600]', 
-          bgColorHover: 'hover:bg-[#E55A00]' 
+          bgColor: 'bg-primary', 
+          bgColorHover: 'hover:bg-primary/90' 
         };
       case 'motorcycles':
         return { 
           icon: Bike, 
-          bgColor: 'bg-[#00B67A]', 
-          bgColorHover: 'hover:bg-[#009A6B]' 
+          bgColor: 'bg-success', 
+          bgColorHover: 'hover:bg-success/90' 
         };
       default:
         return { 
           icon: Fuel, 
-          bgColor: 'bg-gray-500', 
-          bgColorHover: 'hover:bg-gray-600' 
+          bgColor: 'bg-muted-foreground', 
+          bgColorHover: 'hover:bg-muted-foreground/90' 
         };
     }
   };
