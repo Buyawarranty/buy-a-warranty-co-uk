@@ -9,6 +9,8 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { CarDrivingSpinner } from '@/components/ui/car-driving-spinner';
 import { TrophySpinner } from '@/components/ui/trophy-spinner';
 import { SEOHead } from '@/components/SEOHead';
+import bawLogo from '@/assets/baw-logo-new-2025.png';
+import pandaGarageService from '@/assets/panda-garage-service.png';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -199,113 +201,127 @@ const ThankYou = () => {
       </div>
       
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full text-center space-y-8">
-          <div className="space-y-4">
-            <div className="flex justify-center mb-6">
+        <div className="max-w-6xl w-full">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* Left column - Main content */}
+            <div className="text-center space-y-8">
+              <div className="space-y-4">
+                <div className="flex justify-center mb-6">
+                  <img 
+                    src={bawLogo}
+                    alt="BuyAWarranty Logo" 
+                    className="h-16 w-auto"
+                  />
+                </div>
+                <div className="text-6xl mb-4">🎉</div>
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                  Thanks for your purchase!
+                </h1>
+                <h2 className="text-2xl md:text-3xl font-semibold text-blue-600 mb-6">
+                  Your warranty is successfully registered
+                </h2>
+                
+                {isProcessing ? (
+                  <div className="space-y-4">
+                    <TrophySpinner />
+                    <h3 className="text-lg text-gray-600">
+                      Processing your warranty registration...
+                    </h3>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <h3 className="text-lg text-gray-600 max-w-md mx-auto leading-relaxed mb-4">
+                      Check your inbox for your plan details and terms & conditions.
+                    </h3>
+                    {policyNumber && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
+                        <p className="text-sm text-green-800 font-semibold">
+                          {source === 'bumper' ? 'BAW Policy Number:' : 'Policy Number:'}
+                        </p>
+                        <p className="text-lg text-green-900 font-mono">{policyNumber}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {paymentType && !isProcessing && (
+                  <p className="text-base text-gray-500">
+                    {paymentType === 'monthly' && 'Monthly billing cycle activated'}
+                    {paymentType === 'yearly' && 'Annual billing cycle activated'}
+                    {paymentType === 'two_yearly' && '2-year billing cycle activated'}
+                    {paymentType === 'three_yearly' && '3-year billing cycle activated'}
+                  </p>
+                )}
+              </div>
+              
+              <div className="space-y-6">
+                {searchParams.get('addAnotherWarranty') === 'true' ? (
+                  <div className="text-center">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-4">
+                      <p className="text-blue-800 font-bold text-xl mb-2">
+                        🎉 Redirecting you to add your next vehicle
+                      </p>
+                      <p className="text-blue-700 font-semibold text-lg">
+                        with 10% discount applied!
+                      </p>
+                    </div>
+                    <CarDrivingSpinner />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Add Another Warranty Offer */}
+                    <div className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6 text-center">
+                      <div className="text-3xl mb-3">🚗💚</div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">
+                        Got Another Vehicle?
+                      </h3>
+                      <p className="text-gray-700 mb-4">
+                        Save <span className="font-bold text-green-600">10% instantly</span> on your next warranty!
+                      </p>
+                      <div className="bg-white border border-green-300 rounded-lg p-4 mb-4">
+                        <p className="text-sm text-gray-600 mb-2">Limited time offer:</p>
+                        <p className="font-semibold text-green-700">
+                          🎯 10% OFF • 🚀 Instant Savings • ⏰ Available Now
+                        </p>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          // Set the localStorage flag for the 10% discount on next warranty
+                          localStorage.setItem('addAnotherWarrantyDiscount', 'true');
+                          
+                          const url = new URL(window.location.origin);
+                          url.searchParams.set('step', '1');
+                          window.location.href = url.toString();
+                        }}
+                        className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold mr-4 mb-2"
+                      >
+                        ✨ Add Another Warranty (10% OFF)
+                      </Button>
+                      <p className="text-xs text-gray-500 mt-2">
+                        Discount automatically applied at checkout
+                      </p>
+                    </div>
+                    
+                    <Button 
+                      onClick={handleReturnHome}
+                      variant="outline"
+                      className="w-full border-gray-300 text-gray-600 hover:bg-gray-50 px-8 py-3 text-lg font-semibold"
+                    >
+                      Return to BuyAWarranty.co.uk
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Right column - Car image */}
+            <div className="hidden md:flex justify-center items-center">
               <img 
-                src="/lovable-uploads/9b53da8c-70f3-4fc2-8497-e1958a650b4a.png" 
-                alt="BuyAWarranty Logo" 
-                className="h-16 w-auto"
+                src={pandaGarageService}
+                alt="Panda mechanic with car in garage" 
+                className="w-full max-w-lg h-auto"
               />
             </div>
-          <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Thanks for your purchase!
-          </h1>
-          <h2 className="text-2xl md:text-3xl font-semibold text-blue-600 mb-6">
-            Your warranty is successfully registered
-          </h2>
-          
-          {isProcessing ? (
-            <div className="space-y-4">
-              <TrophySpinner />
-              <h3 className="text-lg text-gray-600">
-                Processing your warranty registration...
-              </h3>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <h3 className="text-lg text-gray-600 max-w-md mx-auto leading-relaxed mb-4">
-                Check your inbox for your plan details and terms & conditions.
-              </h3>
-              {policyNumber && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
-                  <p className="text-sm text-green-800 font-semibold">
-                    {source === 'bumper' ? 'BAW Policy Number:' : 'Policy Number:'}
-                  </p>
-                  <p className="text-lg text-green-900 font-mono">{policyNumber}</p>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {paymentType && !isProcessing && (
-            <p className="text-base text-gray-500">
-              {paymentType === 'monthly' && 'Monthly billing cycle activated'}
-              {paymentType === 'yearly' && 'Annual billing cycle activated'}
-              {paymentType === 'two_yearly' && '2-year billing cycle activated'}
-              {paymentType === 'three_yearly' && '3-year billing cycle activated'}
-            </p>
-          )}
-        </div>
-        
-          <div className="space-y-6">
-            {searchParams.get('addAnotherWarranty') === 'true' ? (
-              <div className="text-center">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-4">
-                  <p className="text-blue-800 font-bold text-xl mb-2">
-                    🎉 Redirecting you to add your next vehicle
-                  </p>
-                  <p className="text-blue-700 font-semibold text-lg">
-                    with 10% discount applied!
-                  </p>
-                </div>
-                <CarDrivingSpinner />
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {/* Add Another Warranty Offer */}
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6 text-center">
-                  <div className="text-3xl mb-3">🚗💚</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Got Another Vehicle?
-                  </h3>
-                  <p className="text-gray-700 mb-4">
-                    Save <span className="font-bold text-green-600">10% instantly</span> on your next warranty!
-                  </p>
-                  <div className="bg-white border border-green-300 rounded-lg p-4 mb-4">
-                    <p className="text-sm text-gray-600 mb-2">Limited time offer:</p>
-                    <p className="font-semibold text-green-700">
-                      🎯 10% OFF • 🚀 Instant Savings • ⏰ Available Now
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() => {
-                      // Set the localStorage flag for the 10% discount on next warranty
-                      localStorage.setItem('addAnotherWarrantyDiscount', 'true');
-                      
-                      const url = new URL(window.location.origin);
-                      url.searchParams.set('step', '1');
-                      window.location.href = url.toString();
-                    }}
-                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold mr-4 mb-2"
-                  >
-                    ✨ Add Another Warranty (10% OFF)
-                  </Button>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Discount automatically applied at checkout
-                  </p>
-                </div>
-                
-                <Button 
-                  onClick={handleReturnHome}
-                  variant="outline"
-                  className="w-full border-gray-300 text-gray-600 hover:bg-gray-50 px-8 py-3 text-lg font-semibold"
-                >
-                  Return to BuyAWarranty.co.uk
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       </div>
