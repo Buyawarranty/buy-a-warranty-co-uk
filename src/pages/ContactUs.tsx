@@ -142,7 +142,7 @@ const ContactUs = () => {
             
             {/* Navigation - Hidden on mobile, visible on lg+ */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-              <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Warranty Plans</Link>
+              
               <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
               <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
               <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
@@ -195,13 +195,6 @@ const ContactUs = () => {
 
                   {/* Navigation Links */}
                   <nav className="flex flex-col space-y-6 flex-1">
-                    <a 
-                      href="#" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Warranty Plans
-                    </a>
                     <a 
                       href="/what-is-covered" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"

@@ -188,7 +188,7 @@ const Protected = () => {
             </div>
 
             <nav className="hidden md:flex space-x-8">
-              <Link to="/" className="text-gray-700 hover:text-primary transition-colors">Warranty Plans</Link>
+              
               <Link to="/what-is-covered" className="text-primary font-medium">What's Covered</Link>
               <Link to="/make-a-claim" className="text-gray-700 hover:text-primary transition-colors">Make a Claim</Link>
               <Link to="/faq" className="text-gray-700 hover:text-primary transition-colors">FAQs</Link>
@@ -215,9 +215,6 @@ const Protected = () => {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <div className="flex flex-col space-y-4 mt-8">
-                  <Link to="/" className="text-lg font-medium text-gray-700 hover:text-primary transition-colors">
-                    Warranty Plans
-                  </Link>
                   <Link to="/what-is-covered" className="text-lg font-medium text-primary">
                     What's Covered
                   </Link>

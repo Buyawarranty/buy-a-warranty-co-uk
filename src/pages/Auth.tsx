@@ -328,14 +328,7 @@ const Auth = () => {
                   {/* Navigation Links */}
                   <nav className="flex flex-col space-y-6 flex-1">
                     <a 
-                      href="/" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Warranty Plans
-                    </a>
-                    <a 
-                      href="/what-is-covered" 
+                      href="/what-is-covered"
                       className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
