@@ -201,11 +201,6 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                          : 'border border-gray-300 shadow-sm hover:shadow-md hover:border-orange-300 hover:bg-gray-50 cursor-pointer'
                    }`}
                  >
-                  {isIncluded && (
-                    <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                      INCLUDED
-                    </div>
-                  )}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-start gap-3 flex-1">
                       <div className="text-xl mt-1">{addon.icon}</div>
