@@ -1310,7 +1310,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 title: '1-Year Cover',
                 subtitle: '',
                 description: 'Flexible protection for 12 month cover',
-                planName: 'Platinum Comprehensive Plan',
+                planName: 'Platinum Complete Plan',
                 features: [
                   '✅ All mechanical & electrical parts',
                   '✅ Up to 10 claims per policy',
@@ -1330,7 +1330,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 title: '2-Year Cover',
                 subtitle: 'MOST POPULAR',
                 description: 'Balanced Protection and Value',
-                planName: 'Platinum Comprehensive Plan',
+                planName: 'Platinum Complete Plan',
                 features: [
                   '✅ All mechanical & electrical parts',
                   '✅ Unlimited claims',
@@ -1351,7 +1351,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 title: '3-Year Cover',
                 subtitle: 'BEST VALUE',
                 description: 'Extended cover for longer peace of mind',
-                planName: 'Platinum Comprehensive Plan',
+                planName: 'Platinum Complete Plan',
                 features: [
                   '✅ All mechanical & electrical parts',
                   '✅ Unlimited claims',

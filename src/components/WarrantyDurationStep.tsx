@@ -131,7 +131,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       title: '1-Year Cover',
       subtitle: 'STARTER',
       description: 'Flexible protection for 12 month cover',
-      planTitle: 'Platinum Comprehensive Plan',
+      planTitle: 'Platinum Complete Plan',
       features: [
         '*All mechanical & electrical parts',
         'Up to 10 claims per policy',
@@ -157,7 +157,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       title: '2-Year Cover — Save £100 Today',
       subtitle: 'MOST POPULAR',
       description: 'Balanced Protection and Value',
-      planTitle: 'Platinum Comprehensive Plan',
+      planTitle: 'Platinum Complete Plan',
       features: [
         '*All mechanical & electrical parts',
         'Unlimited claims',
@@ -185,7 +185,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       title: '3-Year Cover — Save £200 Today',
       subtitle: 'BEST VALUE',
       description: 'Extended cover for longer peace of mind',
-      planTitle: 'Platinum Comprehensive Plan',
+      planTitle: 'Platinum Complete Plan',
       features: [
         '*All mechanical & electrical parts',
         'Unlimited claims',
