@@ -1662,11 +1662,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
             
             <div className="flex-shrink-0 hidden md:block">
-              <img 
-                src={pandaCarWarranty} 
-                alt="Happy panda with car representing our warranty protection" 
-                className="w-60 h-60 object-contain"
-              />
+              <div className="w-60 h-60 flex items-center justify-center bg-green-50 rounded-full border-4 border-green-200">
+                <ShieldCheck className="w-24 h-24 text-green-600" />
+              </div>
             </div>
           </div>
         </div>
