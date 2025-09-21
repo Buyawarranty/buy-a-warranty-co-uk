@@ -1514,9 +1514,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                        {option.features.map((feature, index) => (
                          <div key={index} className="flex items-start text-sm">
                            <span className="mr-2 flex-shrink-0">{feature.startsWith('✅') ? '✅' : '❌'}</span>
-                           <span className={feature.startsWith('✅') ? 'text-gray-700' : 'text-red-600'}>
-                             {feature.replace(/^[✅❌]\s*/, '')}
-                           </span>
+                            <span className={feature.startsWith('✅') ? 'text-gray-700' : 'text-black'}>
+                              {feature.replace(/^[✅❌]\s*/, '')}
+                            </span>
                          </div>
                        ))}
                      </div>
