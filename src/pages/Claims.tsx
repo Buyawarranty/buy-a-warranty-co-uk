@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Menu, Upload, X, Mail, Phone, Clock } from 'lucide-react';
+import { Check, Menu, Upload, X, Mail, Phone, Clock, Shield, FileText, User, Wrench, AlertTriangle, Heart, Zap } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -279,36 +279,69 @@ Issue Timing: ${formData.issueTiming}
       </header>
 
       <div className="min-h-screen">
-        {/* Hero Section - UX Optimized */}
-        <section className="bg-gradient-to-b from-blue-50 to-white py-16 lg:py-24 px-4">
+        {/* Hero Section - UX Optimized with Orange Branding */}
+        <section className="bg-gradient-to-br from-orange-50 via-orange-25 to-white py-16 lg:py-24 px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Making a Claim – Simple, Supportive and Stress Free
-            </h1>
-            <p className="text-xl lg:text-2xl text-gray-600 mb-12 leading-relaxed">
-              We know that vehicle issues can be stressful, but making a claim shouldn't be. At 
-              <span className="font-semibold"> Buy-A-Warranty</span>, we've made the process clear, quick and customer focused, so you can get the help you need without the hassle.
-            </p>
+            <div className="flex justify-center items-center gap-3 mb-6">
+              <div className="p-3 bg-orange-100 rounded-full">
+                <Shield className="w-8 h-8 text-orange-500" />
+              </div>
+              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900">
+                Making a Claim
+              </h1>
+            </div>
+            <div className="flex justify-center items-center gap-2 mb-8">
+              <Heart className="w-6 h-6 text-orange-500" />
+              <p className="text-xl lg:text-2xl font-semibold text-orange-600">
+                Simple, Supportive and Stress Free
+              </p>
+              <Heart className="w-6 h-6 text-orange-500" />
+            </div>
+            <div className="max-w-3xl mx-auto">
+              <p className="text-lg lg:text-xl text-gray-600 mb-8 leading-relaxed">
+                We know that vehicle issues can be stressful, but making a claim shouldn't be. At 
+                <span className="font-semibold text-orange-600"> Buy-A-Warranty</span>, we've made the process clear, quick and customer focused.
+              </p>
+              <div className="flex justify-center items-center gap-2 text-green-600 font-medium">
+                <Zap className="w-5 h-5" />
+                <span>Get the help you need without the hassle</span>
+                <Zap className="w-5 h-5" />
+              </div>
+            </div>
             
             {/* Why You're in Safe Hands */}
-            <div className="mb-12">
-              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">Why You're in Safe Hands</h2>
+            <div className="mt-16 mb-12">
+              <div className="flex justify-center items-center gap-3 mb-8">
+                <div className="p-2 bg-green-100 rounded-full">
+                  <Shield className="w-6 h-6 text-green-600" />
+                </div>
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">Why You're in Safe Hands</h2>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-                <div className="flex items-start gap-3 p-6 bg-white rounded-lg shadow-sm">
-                  <div className="text-green-500 flex-shrink-0 mt-1">
-                    <Check className="w-6 h-6" />
+                <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100 hover:border-orange-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-orange-100 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                      <Zap className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900">Quick Response</h3>
                   </div>
                   <p className="text-gray-700">We respond to claims quickly and fairly, with no unnecessary delays</p>
                 </div>
-                <div className="flex items-start gap-3 p-6 bg-white rounded-lg shadow-sm">
-                  <div className="text-green-500 flex-shrink-0 mt-1">
-                    <Check className="w-6 h-6" />
+                <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100 hover:border-orange-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-orange-100 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                      <User className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900">UK-Based Team</h3>
                   </div>
                   <p className="text-gray-700">Our UK-based claims team is here to guide you every step of the way</p>
                 </div>
-                <div className="flex items-start gap-3 p-6 bg-white rounded-lg shadow-sm">
-                  <div className="text-green-500 flex-shrink-0 mt-1">
-                    <Check className="w-6 h-6" />
+                <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100 hover:border-orange-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-orange-100 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                      <Check className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900">Simple Process</h3>
                   </div>
                   <p className="text-gray-700">We keep things simple, with no confusing jargon or hidden terms</p>
                 </div>
@@ -317,47 +350,57 @@ Issue Timing: ${formData.issueTiming}
 
             {/* What You'll Need */}
             <div className="mb-12">
-              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">What You'll Need</h2>
+              <div className="flex justify-center items-center gap-3 mb-8">
+                <div className="p-2 bg-orange-100 rounded-full">
+                  <FileText className="w-6 h-6 text-orange-500" />
+                </div>
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">What You'll Need</h2>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                <div className="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm">
-                  <div className="text-green-500 flex-shrink-0 mt-1">
-                    <Check className="w-5 h-5" />
+                <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm border border-orange-100">
+                  <div className="p-2 bg-orange-100 rounded-full flex-shrink-0">
+                    <FileText className="w-5 h-5 text-orange-500" />
                   </div>
-                  <p className="text-gray-700">Your warranty registration number</p>
+                  <p className="text-gray-700 font-medium">Your warranty registration number</p>
                 </div>
-                <div className="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm">
-                  <div className="text-green-500 flex-shrink-0 mt-1">
-                    <Check className="w-5 h-5" />
+                <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm border border-orange-100">
+                  <div className="p-2 bg-orange-100 rounded-full flex-shrink-0">
+                    <Wrench className="w-5 h-5 text-orange-500" />
                   </div>
-                  <p className="text-gray-700">Vehicle details including make, model and registration</p>
+                  <p className="text-gray-700 font-medium">Vehicle details including make, model and registration</p>
                 </div>
-                <div className="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm">
-                  <div className="text-green-500 flex-shrink-0 mt-1">
-                    <Check className="w-5 h-5" />
+                <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm border border-orange-100">
+                  <div className="p-2 bg-orange-100 rounded-full flex-shrink-0">
+                    <AlertTriangle className="w-5 h-5 text-orange-500" />
                   </div>
-                  <p className="text-gray-700">A brief description of the issue</p>
+                  <p className="text-gray-700 font-medium">A brief description of the issue</p>
                 </div>
-                <div className="flex items-start gap-3 p-4 bg-white rounded-lg shadow-sm">
-                  <div className="text-green-500 flex-shrink-0 mt-1">
-                    <Check className="w-5 h-5" />
+                <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm border border-orange-100">
+                  <div className="p-2 bg-orange-100 rounded-full flex-shrink-0">
+                    <Upload className="w-5 h-5 text-orange-500" />
                   </div>
-                  <p className="text-gray-700">Any supporting documents or garage reports</p>
+                  <p className="text-gray-700 font-medium">Any supporting documents or garage reports</p>
                 </div>
               </div>
             </div>
 
             {/* How to Start Your Claim */}
             <div className="mb-12">
-              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">How to Start Your Claim</h2>
-              <p className="text-lg text-gray-700 mb-6">You can begin your claim by contacting us:</p>
+              <div className="flex justify-center items-center gap-3 mb-8">
+                <div className="p-2 bg-green-100 rounded-full">
+                  <Zap className="w-6 h-6 text-green-600" />
+                </div>
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">How to Start Your Claim</h2>
+              </div>
+              <p className="text-lg text-gray-700 mb-8 font-medium">Choose your preferred way to contact us:</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <a 
                   href="mailto:claims@buyawarranty.co.uk"
-                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-orange-200 hover:-translate-y-1"
+                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-orange-100 hover:border-orange-300 hover:-translate-y-1"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
-                      <Mail className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    <div className="flex-shrink-0 w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
+                      <Mail className="w-7 h-7 text-orange-500 group-hover:text-white transition-colors duration-300" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300">Email Us</h3>
@@ -365,16 +408,19 @@ Issue Timing: ${formData.issueTiming}
                     </div>
                   </div>
                   <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">claims@buyawarranty.co.uk</p>
-                  <p className="text-sm text-gray-600 mt-2">We typically respond within 2 hours</p>
+                  <div className="flex items-center gap-2 mt-3">
+                    <Clock className="w-4 h-4 text-green-500" />
+                    <p className="text-sm text-green-600 font-medium">We typically respond within 2 hours</p>
+                  </div>
                 </a>
 
                 <a 
                   href="tel:03302295045"
-                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-orange-200 hover:-translate-y-1"
+                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-orange-100 hover:border-orange-300 hover:-translate-y-1"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
-                      <Phone className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    <div className="flex-shrink-0 w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
+                      <Phone className="w-7 h-7 text-orange-500 group-hover:text-white transition-colors duration-300" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300">Call Us</h3>
@@ -382,19 +428,22 @@ Issue Timing: ${formData.issueTiming}
                     </div>
                   </div>
                   <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">0330 229 5045</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                    <p className="text-sm text-gray-600">Monday to Friday, 9am to 5.30pm</p>
+                  <div className="flex items-center gap-2 mt-3">
+                    <Clock className="w-4 h-4 text-green-500" />
+                    <p className="text-sm text-green-600 font-medium">Monday to Friday, 9am to 5.30pm</p>
                   </div>
                 </a>
               </div>
-              <p className="text-lg text-gray-700 mb-8">Or simply complete the form below:</p>
-              <Button 
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-lg"
-                onClick={() => document.getElementById('claim-form')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Start Your Claim Now
-              </Button>
+              <div className="text-center">
+                <p className="text-lg text-gray-700 mb-6 font-medium">Or simply complete the form below:</p>
+                <Button 
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-orange-500 hover:border-orange-600"
+                  onClick={() => document.getElementById('claim-form')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <FileText className="w-5 h-5 mr-2" />
+                  Start Your Claim Now
+                </Button>
+              </div>
             </div>
           </div>
         </section>
