@@ -92,7 +92,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     if (protectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths; // £3/mo
     if (protectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths; // £3/mo
     if (protectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths; // £5/mo
-    if (protectionAddOns.transfer) protectionAddOnPrice += 30; // £30 one-time
+    if (protectionAddOns.transfer) protectionAddOnPrice += 19.99; // £19.99 one-time
     
     const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
     

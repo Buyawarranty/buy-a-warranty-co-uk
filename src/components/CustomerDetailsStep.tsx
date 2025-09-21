@@ -155,7 +155,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (protectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths; // £3/mo
     if (protectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths; // £3/mo
     if (protectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths; // £5/mo
-    if (protectionAddOns.transfer) protectionAddOnPrice += 30; // £30 one-time
+    if (protectionAddOns.transfer) protectionAddOnPrice += 19.99; // £19.99 one-time
     
     const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
     
@@ -288,7 +288,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   if (currentPricingData.protectionAddOns?.breakdown) protectionAddonsTotal += 89;
   if (currentPricingData.protectionAddOns?.rental) protectionAddonsTotal += 89;
   if (currentPricingData.protectionAddOns?.wearTear) protectionAddonsTotal += 89;
-  if (currentPricingData.protectionAddOns?.transfer) protectionAddonsTotal += 30;
+  if (currentPricingData.protectionAddOns?.transfer) protectionAddonsTotal += 19.99;
   
   // Check for automatic 10% discount (add another warranty)
   const hasAutoDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
