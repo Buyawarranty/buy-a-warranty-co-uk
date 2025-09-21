@@ -388,7 +388,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                   <Button 
                     className={`w-full font-semibold ${
                       selectedPaymentType === option.id 
-                        ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                        ? 'bg-green-600 hover:bg-green-700 text-white border-2 border-green-600' 
                         : 'bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50'
                     }`}
                     onClick={() => setSelectedPaymentType(option.id)}
