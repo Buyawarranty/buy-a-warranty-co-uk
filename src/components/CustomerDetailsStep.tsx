@@ -90,7 +90,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [showValidation, setShowValidation] = useState(false);
   const [quoteSent, setQuoteSent] = useState(false);
-  const [addAnotherWarrantyEnabled, setAddAnotherWarrantyEnabled] = useState(false);
+  const [addAnotherWarrantyRequested, setAddAnotherWarrantyRequested] = useState(false);
   const [selectedClaimLimit, setSelectedClaimLimit] = useState('plus'); // Default to Plus Cover
   const [currentPaymentType, setCurrentPaymentType] = useState(paymentType);
   const [currentPricingData, setCurrentPricingData] = useState(pricingData);
@@ -425,7 +425,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             customerData: customerData,
             discountCode: customerData.discount_code || null,
             finalAmount: discountedBumperPrice, // Pass the final calculated amount
-            addAnotherWarrantyEnabled
+            addAnotherWarrantyRequested
           }
         });
 
@@ -443,10 +443,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           if (stripeResponse.error) throw stripeResponse.error;
           checkoutUrl = stripeResponse.data.url;
         } else {
-          // Set the checkout URL with query parameter if add another warranty is enabled
+          // Set the checkout URL with query parameter if add another warranty is requested
           if (data?.url) {
             const url = new URL(data.url);
-            if (addAnotherWarrantyEnabled) {
+            if (addAnotherWarrantyRequested) {
               url.searchParams.set('addAnotherWarranty', 'true');
             }
             checkoutUrl = url.toString();
@@ -467,16 +467,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             finalAmount: discountedStripePrice, // Pass the final calculated amount
             protectionAddOns: pricingData.protectionAddOns || {}, // Add protection addons data
             claimLimit: pricingData.claimLimit || 1250, // Add claim limit
-            addAnotherWarrantyEnabled
+            addAnotherWarrantyRequested
           }
         });
 
         if (error) throw error;
         
-        // Set the checkout URL with query parameter if add another warranty is enabled
+        // Set the checkout URL with query parameter if add another warranty is requested
         if (data?.url) {
           const url = new URL(data.url);
-          if (addAnotherWarrantyEnabled) {
+          if (addAnotherWarrantyRequested) {
             url.searchParams.set('addAnotherWarranty', 'true');
           }
           checkoutUrl = url.toString();
@@ -820,7 +820,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
                       {/* Add Another Warranty Offer */}
                       <AddAnotherWarrantyOffer 
-                        onAddAnotherWarranty={() => setAddAnotherWarrantyEnabled(true)}
+                        onAddAnotherWarranty={() => setAddAnotherWarrantyRequested(true)}
                       />
                     </form>
                   </div>

@@ -33,7 +33,7 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { planName, paymentType, voluntaryExcess = 0, vehicleData, customerData, discountCode, finalAmount, addAnotherWarrantyEnabled, protectionAddOns, claimLimit } = body;
+    const { planName, paymentType, voluntaryExcess = 0, vehicleData, customerData, discountCode, finalAmount, addAnotherWarrantyRequested, protectionAddOns, claimLimit } = body;
     logStep("Request data", { planName, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns });
     
     // Use planName for pricing lookup (basic, gold, platinum)
@@ -141,7 +141,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/thank-you?plan=${planType}&payment=${paymentType}&session_id={CHECKOUT_SESSION_ID}&addAnotherWarranty=${addAnotherWarrantyEnabled || false}`,
+      success_url: `${origin}/thank-you?plan=${planType}&payment=${paymentType}&session_id={CHECKOUT_SESSION_ID}&addAnotherWarranty=${addAnotherWarrantyRequested || false}`,
       cancel_url: `${origin}/?step=4&restore=${encodeURIComponent(btoa(JSON.stringify({
         regNumber: vehicleData?.regNumber || customerData?.vehicle_reg || '',
         email: customerData?.email || '',
