@@ -93,7 +93,7 @@ serve(async (req) => {
           EngSize: "1968",
           PurPrc: "276", // From the order summary
           RegDate: "2018-03-01",
-          WarType: "B-BASIC",
+          WarType: "B-PLATINUM",
           Month: "12", // 1 year coverage
           MaxClm: "500",
           MOTDue: "2026-03-25",

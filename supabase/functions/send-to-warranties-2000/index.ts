@@ -219,12 +219,12 @@ serve(async (req) => {
       throw new Error('Warranties 2000 credentials not configured');
     }
 
-    // Map plan types to warranty types (exact API values)
+    // Map plan types to warranty types (exact API values) - ALL NOW PLATINUM
     const warrantyTypeMapping: Record<string, string> = {
-      'basic': 'B-BASIC',
-      'gold': 'B-GOLD', 
+      'basic': 'B-PLATINUM',
+      'gold': 'B-PLATINUM', 
       'platinum': 'B-PLATINUM',
-      'premium': 'B-GOLD', // Premium plan maps to B-GOLD
+      'premium': 'B-PLATINUM', // Premium plan maps to B-PLATINUM
       'electric': 'B-EV',
       'ev': 'B-EV',
       'electric vehicle ev extended warranty': 'B-EV',
@@ -272,7 +272,7 @@ serve(async (req) => {
       isCommercialVehicle
     });
 
-    const warrantyType = warrantyTypeMapping[planType] || 'B-GOLD'; // Default to B-GOLD for commercial vehicles
+    const warrantyType = warrantyTypeMapping[planType] || 'B-PLATINUM'; // Default to B-PLATINUM for all plans
 
     // Calculate coverage months using the master function from warrantyDurationUtils
     const paymentType = policy?.payment_type || customer.payment_type || 'yearly';

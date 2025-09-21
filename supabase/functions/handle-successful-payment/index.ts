@@ -452,16 +452,16 @@ function getWarrantyType(planId: string): string {
     return 'B-MOTORBIKE';
   }
   
-  // Handle standard plan types
+  // Handle standard plan types - ALL NOW PLATINUM
   if (normalizedPlan.includes('basic')) {
-    return 'B-BASIC';
+    return 'B-PLATINUM';
   } else if (normalizedPlan.includes('gold')) {
-    return 'B-GOLD';
+    return 'B-PLATINUM';
   } else if (normalizedPlan.includes('platinum')) {
     return 'B-PLATINUM';
   }
   
-  return 'B-BASIC'; // Default fallback
+  return 'B-PLATINUM'; // Default fallback
 }
 
 function extractTitle(fullName: string): string {

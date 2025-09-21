@@ -148,7 +148,7 @@ serve(async (req) => {
           EngSize: "2.0",
           PurPrc: "381",
           RegDate: "2020-01-01",
-          WarType: "B-BASIC",
+          WarType: "B-PLATINUM",
           Month: "12",
           MaxClm: "3000",
           MOTExpiry: "2025-12-31",
