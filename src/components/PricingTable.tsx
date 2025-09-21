@@ -77,7 +77,7 @@ interface PricingTableProps {
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('12months');
+  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('24months');
   const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
@@ -1298,7 +1298,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               {
                 id: '12months',
                 title: '1-Year Cover',
-                subtitle: 'STARTER',
+                subtitle: '',
                 description: 'Flexible protection for 12 month cover',
                 planName: 'Platinum Comprehensive Plan',
                 features: [
@@ -1313,11 +1313,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   '❌ Pre-existing faults are not covered'
                 ],
                 isPopular: false,
-                isStarter: true
+                isStarter: false
               },
               {
                 id: '24months',
-                title: '⭐️ 2-Year Cover — Save £100 Today',
+                title: '2-Year Cover',
                 subtitle: 'MOST POPULAR',
                 description: 'Balanced Protection and Value',
                 planName: 'Platinum Comprehensive Plan',
@@ -1338,7 +1338,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               },
               {
                 id: '36months',
-                title: '🏆 3-Year Cover — Save £200 Today',
+                title: '3-Year Cover',
                 subtitle: 'BEST VALUE',
                 description: 'Extended cover for longer peace of mind',
                 planName: 'Platinum Comprehensive Plan',
@@ -1391,37 +1391,48 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               return (
                 <div
                   key={option.id}
-                  className={`relative p-6 rounded-lg transition-all duration-200 text-left w-full border-2 h-full flex flex-col ${
+                  className={`relative p-6 rounded-lg transition-all duration-200 text-left w-full border-2 flex flex-col cursor-pointer ${
+                    option.id === '12months' ? 'h-auto' : 'h-full'
+                  } ${
                     paymentType === option.id 
-                      ? 'border-orange-500 bg-orange-50' 
+                      ? 'border-orange-500 bg-orange-50 shadow-lg' 
                       : 'border-gray-200 bg-white hover:border-orange-300'
                   }`}
+                  onClick={() => setPaymentType(option.id as '12months' | '24months' | '36months')}
                  >
-                   {/* Badge Pills */}
-                   <div className="flex flex-wrap gap-2 mb-4">
-                     {option.isStarter && (
-                       <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                         STARTER
+                   {/* Selection Indicator */}
+                   {paymentType === option.id && (
+                     <div className="absolute top-4 right-4 w-6 h-6 bg-black rounded-full flex items-center justify-center">
+                       <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                       </svg>
+                     </div>
+                   )}
+
+                   {/* Top-right savings tags */}
+                   <div className="absolute top-4 right-4 flex gap-2">
+                     {option.id === '24months' && (
+                       <span className="bg-white text-red-600 px-3 py-1 rounded-full text-xs font-bold border border-red-600">
+                         Save £100 Today
                        </span>
                      )}
+                     {option.id === '36months' && (
+                       <span className="bg-white text-red-600 px-3 py-1 rounded-full text-xs font-bold border border-red-600">
+                         Save £200 Today
+                       </span>
+                     )}
+                   </div>
+
+                   {/* Badge Pills */}
+                   <div className="flex flex-wrap gap-2 mb-4 mt-8">
                      {option.isPopular && (
                        <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                          MOST POPULAR
                        </span>
                      )}
                      {option.isBestValue && (
-                       <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                       <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                          BEST VALUE
-                       </span>
-                     )}
-                     {option.id === '24months' && (
-                       <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                         Save 10%
-                       </span>
-                     )}
-                     {option.id === '36months' && (
-                       <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                         Save 20%
                        </span>
                      )}
                    </div>
@@ -1479,27 +1490,32 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     </div>
                   </div>
                   
-                  {/* Select Button */}
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPaymentType(option.id as '12months' | '24months' | '36months');
-                    }}
-                    className={`w-full py-3 text-lg font-semibold transition-all ${
-                      paymentType === option.id
-                        ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                        : 'bg-orange-500 hover:bg-orange-600 text-white'
-                    }`}
-                  >
-                    {paymentType === option.id ? 'Selected' : 'Select'}
-                  </Button>
-                  
-                  {/* Footer note */}
-                  <div className="mt-3 text-center">
-                    <p className="text-xs text-gray-500">
-                      *For more info please 'Your Cover, Made Clear' below
-                    </p>
-                  </div>
+                   {/* Select Button */}
+                   <Button
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       setPaymentType(option.id as '12months' | '24months' | '36months');
+                     }}
+                     className={`w-full py-3 text-lg font-semibold transition-all ${
+                       paymentType === option.id
+                         ? 'bg-orange-600 hover:bg-orange-700 text-white'
+                         : 'bg-orange-500 hover:bg-orange-600 text-white'
+                     }`}
+                   >
+                     {paymentType === option.id ? 'Selected' : 'Select'}
+                   </Button>
+                   
+                   {/* Footer note */}
+                   <div className="mt-3 text-center">
+                     <p className="text-xs text-gray-500">
+                       *Please see <button className="text-orange-600 hover:text-orange-700 underline" onClick={() => {
+                         const section = document.getElementById('your-cover-details');
+                         if (section) {
+                           section.scrollIntoView({ behavior: 'smooth' });
+                         }
+                       }}>Your Cover Details</button> below
+                     </p>
+                   </div>
                 </div>
               );
             })}
@@ -1578,7 +1594,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Additional Information Section */}
-        <div id="additional-information" className="bg-white rounded-lg p-8 border border-gray-200 shadow-sm">
+        <div id="your-cover-details" className="bg-white rounded-lg p-8 border border-gray-200 shadow-sm">
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-foreground flex items-center gap-2 mb-4">
               Your Cover Details, Made Clear
