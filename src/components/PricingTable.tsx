@@ -1518,11 +1518,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      </div>
                    </div>
                    
-                   {/* Pricing */}
-                   <div className="mb-4 text-center mt-auto">
-                    <div className="text-3xl font-bold text-orange-600 mb-1">
-                      £{monthlyPrice}/month
-                    </div>
+                    {/* Pricing */}
+                    <div className="mb-4 text-center mt-auto">
+                     <div className="text-3xl font-bold text-black mb-1">
+                       £{monthlyPrice}/month
+                     </div>
                      <div className="text-sm text-gray-600 mb-2">
                        {option.id === '12months' && (
                          <div className="flex items-center justify-center gap-1 font-bold">
@@ -1536,10 +1536,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                              <span className="text-green-500">✓</span>
                              Only 12 easy payments
                            </div>
-                           <div className="flex items-center justify-center gap-1 font-bold">
-                             <span className="text-green-500">✓</span>
-                             Nothing to pay in Year 2
-                           </div>
+                            <div className="flex items-center justify-center gap-1 font-bold text-red-600">
+                              <span className="text-green-500">✓</span>
+                              Nothing to pay in Year 2
+                            </div>
                          </div>
                        )}
                        {option.id === '36months' && (
@@ -1548,10 +1548,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                              <span className="text-green-500">✓</span>
                              Only 12 easy payments
                            </div>
-                           <div className="flex items-center justify-center gap-1 font-bold">
-                             <span className="text-green-500">✓</span>
-                             Nothing to pay in Year 2 and Year 3
-                           </div>
+                            <div className="flex items-center justify-center gap-1 font-bold text-red-600">
+                              <span className="text-green-500">✓</span>
+                              Nothing to pay in Year 2 and Year 3
+                            </div>
                          </div>
                        )}
                      </div>
@@ -1565,19 +1565,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </div>
                   
                    {/* Select Button */}
-                   <Button
-                     onClick={(e) => {
-                       e.stopPropagation();
-                       setPaymentType(option.id as '12months' | '24months' | '36months');
-                     }}
-                     className={`w-full py-3 text-lg font-semibold transition-all ${
-                       paymentType === option.id
-                         ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                         : 'bg-orange-500 hover:bg-orange-600 text-white'
-                     }`}
-                   >
-                     {paymentType === option.id ? 'Selected' : 'Select'}
-                   </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPaymentType(option.id as '12months' | '24months' | '36months');
+                      }}
+                      className={`w-full py-3 text-lg font-semibold transition-all ${
+                        paymentType === option.id
+                          ? 'bg-black hover:bg-gray-800 text-white'
+                          : 'bg-orange-500 hover:bg-orange-600 text-white'
+                      }`}
+                    >
+                      {paymentType === option.id ? 'Selected' : 'Select'}
+                    </Button>
                    
                    {/* Footer note */}
                    <div className="mt-3 text-center">
