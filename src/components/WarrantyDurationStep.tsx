@@ -247,7 +247,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Warranty Duration</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Build your warranty</h1>
           <p className="text-gray-600">Select the coverage period that works best for you</p>
         </div>
 
