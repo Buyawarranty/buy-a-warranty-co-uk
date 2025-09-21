@@ -346,30 +346,30 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
                   {/* Navigation Links */}
                   <nav className="flex flex-col space-y-6 flex-1">
-                    <Link 
+                     <Link 
                       to="/what-is-covered" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       What's Covered
                     </Link>
-                    <Link 
+                     <Link 
                       to="/make-a-claim" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Make a Claim
                     </Link>
-                    <Link 
+                     <Link 
                       to="/faq" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                        FAQs
                     </Link>
-                    <Link 
+                     <Link 
                       to="/contact-us" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Contact Us
@@ -377,7 +377,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     
                     {/* Call Us Section in Mobile */}
                     <div className="py-3 border-b border-gray-200">
-                      <div className="text-orange-500 font-semibold text-xl mb-3 flex items-center gap-1">
+                      <div className="text-orange-500 font-semibold text-base mb-3 flex items-center gap-1">
                         <Phone className="h-5 w-5 text-orange-500" />
                         Call Us
                       </div>
@@ -403,9 +403,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       </div>
                     </div>
                     
-                    <Link 
+                     <Link 
                       to="/customer-dashboard" 
-                      className="text-gray-700 hover:text-gray-900 font-semibold text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      className="text-gray-700 hover:text-gray-900 font-semibold text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Login
@@ -415,16 +415,16 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   {/* CTA Buttons */}
                   <div className="space-y-4 pt-6 mt-auto">
                     <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" className="block">
-                      <Button 
+                       <Button 
                         variant="outline" 
-                        className="w-full bg-[#00B67A] text-white border-[#00B67A] hover:bg-[#008C5A] hover:border-[#008C5A] text-xl py-4 min-h-[48px]"
+                        className="w-full bg-[#00B67A] text-white border-[#00B67A] hover:bg-[#008C5A] hover:border-[#008C5A] text-base py-4 min-h-[48px]"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         WhatsApp Us
                       </Button>
                     </a>
-                    <Button 
-                      className="w-full bg-primary text-white hover:bg-primary/90 text-xl py-4 min-h-[48px]"
+                     <Button 
+                      className="w-full bg-primary text-white hover:bg-primary/90 text-base py-4 min-h-[48px]"
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                         scrollToQuoteForm();

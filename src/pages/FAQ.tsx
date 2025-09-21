@@ -666,30 +666,30 @@ const FAQ = () => {
 
                     {/* Navigation Links */}
                     <nav className="flex flex-col space-y-6 flex-1">
-                      <Link 
+                       <Link 
                         to="/what-is-covered" 
-                        className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                        className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         What's Covered
                       </Link>
-                      <Link 
+                       <Link 
                         to="/make-a-claim" 
-                        className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                        className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Make a Claim
                       </Link>
-                      <Link 
+                       <Link 
                         to="/faq" 
-                        className="text-orange-500 hover:text-orange-600 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                        className="text-orange-500 hover:text-orange-600 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                          FAQs
                       </Link>
-                      <Link 
+                       <Link 
                         to="/contact-us" 
-                        className="text-gray-700 hover:text-gray-900 font-medium text-xl py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                        className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Contact Us
