@@ -1439,7 +1439,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
               const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
               
-              // Get auto-included add-ons for this payment type
+              // Get auto-included add-ons for THIS specific payment type (not global paymentType)
               const autoIncluded = getAutoIncludedAddOns(option.id);
               
               // Calculate add-on costs - charge monthly rates, not total duration
@@ -1460,7 +1460,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               const totalPrice = adjustedPrice + protectionAddOnPrice;
               const monthlyPrice = Math.round(totalPrice / 12); // Always divide by 12 months for payment
               
-              // Calculate original price for savings display
+              // Calculate original price for savings display - independent of selection
               const originalPrice = option.id === '24months' ? totalPrice + 100 : option.id === '36months' ? totalPrice + 200 : totalPrice;
               
               return (
