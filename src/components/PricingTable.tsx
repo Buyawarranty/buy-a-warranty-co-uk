@@ -1174,7 +1174,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
                     <span className="flex items-center gap-2">
                       Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
@@ -1237,7 +1237,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
                     <span className="flex items-center gap-2">
                       Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
@@ -1297,7 +1297,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
                     <span className="flex items-center gap-2">
                       Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
@@ -1680,8 +1680,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           
           <div className="space-y-4">
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors text-base">
-                <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors text-base group">
+                <ChevronDown className="w-4 h-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 <span>Terms and Conditions</span>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-4 pl-7">
@@ -1702,8 +1702,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </Collapsible>
 
             <Collapsible>
-              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors text-base">
-                <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+              <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-orange-500 hover:text-orange-600 font-medium py-2 transition-colors text-base group">
+                <ChevronDown className="w-4 h-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 <span>Platinum Plan Details</span>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-4 pl-7">
