@@ -459,9 +459,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       )}
 
       {/* Hero Section */}
-      <section id="quote-form" className="bg-white py-4 sm:py-8 lg:py-16 min-h-[80vh] sm:min-h-0">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 h-full">
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-6 lg:gap-8 items-center h-full">
+      <section id="quote-form" className="bg-white py-6 sm:py-8 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
             <div className="space-y-4 px-1 sm:px-0 flex flex-col justify-center">
 
