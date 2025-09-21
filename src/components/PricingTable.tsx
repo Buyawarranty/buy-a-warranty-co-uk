@@ -1525,38 +1525,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      <div className="text-3xl font-bold text-black mb-1">
                        £{monthlyPrice}/month
                      </div>
-                     <div className="text-sm text-gray-600 mb-2">
-                       {option.id === '12months' && (
-                         <div className="flex items-center justify-center gap-1 font-bold">
-                           <span className="text-green-500">✓</span>
-                           Only 12 easy payments
-                         </div>
-                       )}
-                       {option.id === '24months' && (
-                         <div className="space-y-1">
-                           <div className="flex items-center justify-center gap-1 font-bold">
-                             <span className="text-green-500">✓</span>
-                             Only 12 easy payments
-                           </div>
-                            <div className="flex items-center justify-center gap-1 font-bold text-red-600">
-                              <span className="text-green-500">✓</span>
-                              Nothing to pay in Year 2
-                            </div>
-                         </div>
-                       )}
-                       {option.id === '36months' && (
-                         <div className="space-y-1">
-                           <div className="flex items-center justify-center gap-1 font-bold">
-                             <span className="text-green-500">✓</span>
-                             Only 12 easy payments
-                           </div>
-                            <div className="flex items-center justify-center gap-1 font-bold text-red-600">
-                              <span className="text-green-500">✓</span>
-                              Nothing to pay in Year 2 and Year 3
-                            </div>
-                         </div>
-                       )}
-                     </div>
+                      <div className="text-sm text-gray-600 mb-2">
+                        {option.id === '12months' && (
+                          <div className="flex items-center justify-center gap-1 font-bold">
+                            <span className="text-green-500">✓</span>
+                            Only 12 easy payments
+                          </div>
+                        )}
+                        {option.id === '24months' && (
+                          <div className="flex items-center justify-center gap-1 font-bold text-red-600">
+                            <span className="text-green-500">✓</span>
+                            Nothing to pay in Year 2
+                          </div>
+                        )}
+                        {option.id === '36months' && (
+                          <div className="flex items-center justify-center gap-1 font-bold text-red-600">
+                            <span className="text-green-500">✓</span>
+                            Nothing to pay in Year 2 and Year 3
+                          </div>
+                        )}
+                      </div>
                     <div className="text-sm font-semibold text-gray-900">
                       Total cost: 
                       {option.id !== '12months' && (
