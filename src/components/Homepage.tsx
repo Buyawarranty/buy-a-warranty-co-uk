@@ -459,15 +459,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       )}
 
       {/* Hero Section */}
-      <section id="quote-form" className="bg-white py-6 sm:py-8 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 sm:gap-6 lg:gap-8 items-center">
+      <section id="quote-form" className="bg-white py-3 sm:py-8 lg:py-16 px-3 sm:px-0">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
-            <div className="space-y-4 px-1 sm:px-0 flex flex-col justify-center">
+            <div className="space-y-3 sm:space-y-4 px-0 sm:px-0 flex flex-col justify-center">
 
               {/* Main Headline */}
-              <div className="space-y-2 mb-3 sm:mb-4">
-                <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-gray-900 leading-tight">
+              <div className="space-y-2 mb-2 sm:mb-4">
+                <h1 className="text-xl sm:text-3xl lg:text-5xl font-black text-gray-900 leading-tight">
                   We{"'"}ve got you
                   <br className="hidden sm:block" />
                   <span className="sm:hidden"> </span>covered
@@ -477,7 +477,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Benefits */}
-              <div className="mb-6 sm:mb-8 text-gray-700 text-xs sm:text-sm md:text-base space-y-2">
+              <div className="mb-3 sm:mb-8 text-gray-700 text-xs sm:text-sm md:text-base space-y-1 sm:space-y-2">
                 <div className="flex items-center">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0" />
                   <span className="font-medium">From just 80p a day • Unlimited claims • Fast payouts</span>
@@ -489,12 +489,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Registration Input */}
-              <div className="space-y-3 w-full max-w-lg">
+              <div className="space-y-2 sm:space-y-3 w-full max-w-lg">
                 <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full">
                   {/* UK Section with flag */}
-                  <div className="bg-blue-600 text-white font-bold px-2 sm:px-3 md:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[50px] sm:min-w-[70px] md:min-w-[80px] h-[56px] sm:h-[60px] md:h-[66px]">
+                  <div className="bg-blue-600 text-white font-bold px-2 sm:px-3 md:px-4 py-2 sm:py-4 flex items-center justify-center min-w-[45px] sm:min-w-[70px] md:min-w-[80px] h-[48px] sm:h-[60px] md:h-[66px]">
                     <div className="flex flex-col items-center">
-                      <div className="text-sm sm:text-base md:text-lg leading-tight mb-1">🇬🇧</div>
+                      <div className="text-xs sm:text-base md:text-lg leading-tight mb-1">🇬🇧</div>
                       <div className="text-xs sm:text-sm md:text-base font-bold leading-none">UK</div>
                     </div>
                   </div>
@@ -504,7 +504,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     value={regNumber}
                     onChange={handleRegChange}
                     placeholder="Enter reg"
-                    className="bg-yellow-400 border-none outline-none text-xl sm:text-2xl md:text-3xl text-black flex-1 font-black placeholder:text-black/70 px-2 sm:px-3 md:px-4 py-3 sm:py-4 uppercase tracking-wider h-[56px] sm:h-[60px] md:h-[66px] min-w-0"
+                    className="bg-yellow-400 border-none outline-none text-lg sm:text-2xl md:text-3xl text-black flex-1 font-black placeholder:text-black/70 px-2 sm:px-3 md:px-4 py-2 sm:py-4 uppercase tracking-wider h-[48px] sm:h-[60px] md:h-[66px] min-w-0"
                     maxLength={8}
                   />
                 </div>
@@ -513,7 +513,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="space-y-2">
                   {/* Text Input Option */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Enter approximate mileage
                     </label>
                     <input
@@ -522,7 +522,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       onChange={handleMileageChange}
                       onFocus={handleMileageFocus}
                       placeholder="Enter mileage (e.g. 32,000)"
-                      className={`w-full px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-base sm:text-lg border-2 rounded-lg focus:outline-none min-w-0 ${
+                      className={`w-full px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-sm sm:text-lg border-2 rounded-lg focus:outline-none min-w-0 ${
                         mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
                       }`}
                     />
@@ -553,10 +553,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
 
                 {/* Get Quote Button */}
-                <div className="space-y-2">
+                <div className="space-y-2 mt-2">
                   <Button 
                     onClick={handleGetQuote}
-                    className={`w-full px-4 sm:px-6 md:px-12 h-[56px] sm:h-[60px] md:h-[66px] text-base sm:text-lg md:text-xl font-bold rounded-lg transition-all min-w-0 ${
+                    className={`w-full px-3 sm:px-6 md:px-12 h-[48px] sm:h-[60px] md:h-[66px] text-sm sm:text-lg md:text-xl font-bold rounded-lg transition-all min-w-0 ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-brand-orange hover:bg-brand-orange/90 text-white btn-slow-pulsate'
@@ -567,7 +567,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     <span className="sm:hidden">{isLookingUp ? 'Looking up...' : 'Get my quote'}</span>
                   </Button>
                   {!mileageError && !vehicleAgeError && (
-                    <p className="text-sm text-gray-400 text-center">
+                    <p className="text-xs sm:text-sm text-gray-400 text-center">
                       Protection for vehicles up to 150,000 miles and 15 years.
                     </p>
                   )}
