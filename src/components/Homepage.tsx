@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
-import whatsappIcon from '@/assets/whatsapp-icon.webp';
+import whatsappIconNew from '@/assets/whatsapp-icon-new.png';
 import pandaVehicleCollection from '@/assets/panda-vehicle-collection-hero.png';
 import pandaCelebratingCar from '@/assets/panda-celebrating-orange-car.png';
 
@@ -985,7 +985,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             rel="noopener noreferrer"
             className="flex items-center justify-center w-14 h-14 bg-[#25D366] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
-            <MessageCircle className="w-7 h-7 text-white" />
+            <img 
+              src={whatsappIconNew} 
+              alt="WhatsApp" 
+              className="w-7 h-7"
+            />
           </a>
           
           {/* Call Button */}
