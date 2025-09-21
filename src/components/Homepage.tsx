@@ -331,10 +331,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <Menu className="h-8 w-8" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <div className="flex flex-col h-full">
+              <SheetContent side="right" className="w-[300px] sm:w-[400px] overflow-y-auto">
+                <div className="flex flex-col h-full max-h-screen">
                   {/* Header with logo */}
-                  <div className="flex items-center justify-between pb-6">
+                  <div className="flex items-center justify-between pb-4 flex-shrink-0">
                     <Link to="/" className="hover:opacity-80 transition-opacity">
                       <img 
                         src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
@@ -345,7 +345,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   </div>
 
                   {/* Navigation Links */}
-                  <nav className="flex flex-col space-y-6 flex-1">
+                  <nav className="flex flex-col space-y-4 flex-1 overflow-y-auto pb-4">
                      <Link 
                       to="/what-is-covered" 
                       className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
@@ -413,7 +413,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   </nav>
 
                   {/* CTA Buttons */}
-                  <div className="space-y-4 pt-6 mt-auto">
+                  <div className="space-y-4 pt-4 mt-auto flex-shrink-0">
                     <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" className="block">
                        <Button 
                         variant="outline" 
@@ -459,11 +459,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       )}
 
       {/* Hero Section */}
-      <section id="quote-form" className="bg-white py-8 sm:py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
+      <section id="quote-form" className="bg-white py-4 sm:py-8 lg:py-16 min-h-[80vh] sm:min-h-0">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 h-full">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-6 lg:gap-8 items-center h-full">
             {/* Left Content */}
-            <div className="space-y-4 px-2 sm:px-0">
+            <div className="space-y-4 px-1 sm:px-0 flex flex-col justify-center">
 
               {/* Main Headline */}
               <div className="space-y-2 mb-3 sm:mb-4">
