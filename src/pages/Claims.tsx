@@ -37,12 +37,55 @@ const Claims = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  // Validation functions
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone: string): boolean => {
+    // UK phone number validation - accepts various formats
+    const phoneRegex = /^(\+44\s?|0)(\d{2}\s?\d{4}\s?\d{4}|\d{3}\s?\d{3}\s?\d{4}|\d{4}\s?\d{6}|\d{5}\s?\d{5})$/;
+    const cleanPhone = phone.replace(/\s/g, '');
+    return phoneRegex.test(cleanPhone) && cleanPhone.length >= 10;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+
+    // Clear errors when user starts typing
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
+
+    // Real-time validation for email and phone
+    if (name === 'email' && value) {
+      if (!validateEmail(value)) {
+        setErrors({
+          ...errors,
+          email: 'Please enter a valid email address'
+        });
+      }
+    }
+
+    if (name === 'phone' && value) {
+      if (!validatePhone(value)) {
+        setErrors({
+          ...errors,
+          phone: 'Please enter a valid UK phone number (e.g., 07123456789 or +44 7123 456789)'
+        });
+      }
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,10 +107,30 @@ const Claims = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email) {
+    // Validate required fields
+    const newErrors: {[key: string]: string} = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email address is required';
+    } else if (!validateEmail(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!validatePhone(formData.phone)) {
+      newErrors.phone = 'Please enter a valid UK phone number (e.g., 07123456789 or +44 7123 456789)';
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       toast({
-        title: "Missing Information",
-        description: "Please fill in your name and email address.",
+        title: "Please check your information",
+        description: "Please correct the errors below and try again.",
         variant: "destructive",
       });
       return;
@@ -133,6 +196,7 @@ Issue Timing: ${formData.issueTiming}
         issueTiming: ''
       });
       setUploadedFile(null);
+      setErrors({});
       
     } catch (error: any) {
       console.error('Submission error:', error);
@@ -461,7 +525,7 @@ Issue Timing: ${formData.issueTiming}
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <Label htmlFor="name" className="text-gray-700 font-medium text-base">
-                      Name
+                      Name *
                     </Label>
                     <Input
                       id="name"
@@ -471,23 +535,25 @@ Issue Timing: ${formData.issueTiming}
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                      className={`mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                     />
+                    {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                   </div>
 
                   <div>
                     <Label htmlFor="phone" className="text-gray-700 font-medium text-base">
-                      Phone Number
+                      Phone Number *
                     </Label>
                     <Input
                       id="phone"
                       name="phone"
                       type="tel"
-                      placeholder="Your Phone Number"
+                      placeholder="Your Phone Number (e.g., 07123456789)"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                      className={`mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                     />
+                    {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
                   </div>
 
                   <div>
@@ -507,7 +573,7 @@ Issue Timing: ${formData.issueTiming}
 
                   <div>
                     <Label htmlFor="email" className="text-gray-700 font-medium text-base">
-                      Email
+                      Email *
                     </Label>
                     <Input
                       id="email"
@@ -517,8 +583,9 @@ Issue Timing: ${formData.issueTiming}
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                      className={`mt-2 h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                     />
+                    {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
                   </div>
 
                   {/* Tell Us What Happened Section */}
