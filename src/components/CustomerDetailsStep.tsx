@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit, Check, Crown, User, Shield } from 'lucide-react';
+import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircle, HelpCircle, Edit, Check, Crown, User, Shield, Edit2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
@@ -571,15 +571,33 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         </div>
       </div>
 
-      {/* Registration Plate Display */}
-      <div className="max-w-4xl mx-auto px-6 pb-4">
-        <div className="bg-yellow-300 border-2 border-black rounded-lg px-6 py-3 max-w-fit mx-auto">
-          <div className="text-center">
-            <div className="text-xs font-semibold text-black mb-1">Vehicle Registration</div>
-            <div className="text-2xl font-black text-black tracking-wider">
-              {vehicleData.regNumber}
+      {/* Registration Plate Display - Homepage Style */}
+      <div className="max-w-4xl mx-auto px-6 pb-6">
+        <div className="flex justify-center">
+          <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black">
+            {/* UK Section with flag */}
+            <div className="bg-blue-600 text-white font-bold px-4 py-4 flex items-center justify-center min-w-[80px] h-[66px]">
+              <div className="flex flex-col items-center">
+                <div className="text-lg leading-tight mb-1">🇬🇧</div>
+                <div className="text-base font-bold leading-none">UK</div>
+              </div>
+            </div>
+            {/* Registration Display */}
+            <div className="bg-yellow-400 text-black flex-1 font-black px-6 py-4 uppercase tracking-wider h-[66px] flex items-center justify-center min-w-[200px]">
+              <span className="text-2xl">{vehicleData.regNumber}</span>
             </div>
           </div>
+        </div>
+        
+        {/* Change Option */}
+        <div className="flex justify-center mt-3">
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-2 text-orange-500 hover:text-orange-600 font-medium text-sm transition-colors"
+          >
+            <Edit2 className="w-4 h-4" />
+            Change
+          </button>
         </div>
       </div>
 
