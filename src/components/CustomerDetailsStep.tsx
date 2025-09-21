@@ -9,6 +9,7 @@ import { ArrowLeft, CreditCard, Calendar, Percent, Info, AlertCircle, CheckCircl
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AddAnotherWarrantyOffer from './AddAnotherWarrantyOffer';
 import { supabase } from '@/integrations/supabase/client';
+import PostcodeAutocomplete from '@/components/ui/uk-postcode-autocomplete';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -721,6 +722,28 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         <h3 className="text-xl font-bold text-gray-900 mb-4">Your address:</h3>
                         
                         <div className="space-y-4">
+                          {/* UK Postcode Autocomplete */}
+                          <div>
+                            <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">UK Postcode *</Label>
+                            <PostcodeAutocomplete
+                              value={customerData.postcode}
+                              onChange={(value) => handleInputChange('postcode', value)}
+                              onAddressSelect={(address) => {
+                                // Auto-populate address fields when postcode is selected
+                                handleInputChange('postcode', address.postcode);
+                                handleInputChange('town', address.town);
+                                handleInputChange('county', address.county);
+                                // Clear street if it was auto-populated, let user enter manually
+                                if (!customerData.street) {
+                                  handleInputChange('street', '');
+                                }
+                              }}
+                              required
+                              error={fieldErrors.postcode}
+                              className="mt-1"
+                            />
+                          </div>
+
                           <div>
                             <Label htmlFor="street" className="text-sm font-medium text-gray-700">Address Line 1 *</Label>
                             <Input
@@ -772,21 +795,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                 className="mt-1"
                               />
                             </div>
-                          </div>
-
-                          <div>
-                            <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
-                            <Input
-                              id="postcode"
-                              placeholder="Enter postcode"
-                              value={customerData.postcode}
-                              onChange={(e) => handleInputChange('postcode', e.target.value)}
-                              required
-                              className={`mt-1 ${fieldErrors.postcode ? 'border-red-500 focus:border-red-500' : ''}`}
-                            />
-                            {fieldErrors.postcode && (
-                              <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
-                            )}
                           </div>
 
                           <div>
