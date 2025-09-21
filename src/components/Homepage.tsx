@@ -578,7 +578,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 className="w-full h-auto"
               />
               {/* Trustpilot Logo positioned to align with van */}
-              <div className="absolute top-8 left-4 z-10">
+              <div className="absolute top-2 left-4 z-10">
                 <a 
                   href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
                   target="_blank" 
