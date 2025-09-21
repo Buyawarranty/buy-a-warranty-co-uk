@@ -1785,10 +1785,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   })()}/month
                 </div>
                 
-                /* Payment Terms - Subtext */
-                <div className="text-sm text-gray-500 mb-2">
-                  12 easy payments
-                </div>
+                {/* Payment Terms - Conditional Display */}
+                {paymentType !== '12months' && (
+                  <div className="text-sm text-gray-500 mb-2">
+                    {paymentType === '24months' 
+                      ? 'Nothing to pay in Year 2'
+                      : 'Nothing to pay in Year 2 and Year 3'
+                    }
+                  </div>
+                )}
                 
                 {/* Total Cost - Transparent */}
                 <div className="text-sm font-semibold text-gray-400">
@@ -1885,10 +1890,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               
               {/* Payment Terms and Total on same line for footer */}
               <div className="flex items-center justify-center gap-2 text-sm">
-                <span className="text-gray-500">
-                  12 easy payments
-                </span>
-                <span className="text-gray-400">•</span>
+                {paymentType !== '12months' && (
+                  <>
+                    <span className="text-gray-500">
+                      {paymentType === '24months' 
+                        ? 'Nothing to pay in Year 2'
+                        : 'Nothing to pay in Year 2 and Year 3'
+                      }
+                    </span>
+                    <span className="text-gray-400">•</span>
+                  </>
+                )}
                 <span className="font-semibold text-gray-400">
                   Total: £{(() => {
                     if (!selectedPlan) return '0';
