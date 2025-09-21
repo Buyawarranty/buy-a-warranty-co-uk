@@ -56,17 +56,17 @@ const HomepageFAQ = () => {
     {
       id: 'preferred-garage',
       question: 'Can I use my preferred garage for repairs?',
-      answer: 'Yes, you are allowed to use your own garage. You can opt for a main dealer, but be prepared to cover the price difference compared to a local independent garage. Please ensure the garage is VAT registered.'
+      answer: 'You can use your own garage, including main dealers or local independents, as long as they\'re VAT registered. If the repair cost goes over your claim limit, you may need to pay the difference (top up the extra amount).'
     },
     {
       id: 'cancel-warranty',
       question: 'Can I cancel my warranty?',
-      answer: 'You have 14 days to cancel your warranty for a full refund (if no repairs have been made). After this period, our standard cancellation policy applies. Contact us at support@buyawarranty.co.uk or call 0330 229 5045.'
+      answer: 'You have 14 days to cancel your warranty for a full refund (if no repairs have been made). After this period, our standard cancellation policy applies. Contact us at support@buyawarranty.co.uk or call 0330 229 5040.'
     },
     {
       id: 'transferable',
       question: 'Is the warranty transferable?',
-      answer: 'The cover is transferable to a new owner if sold privately. Most of our warranties can be transferred to the new owner – it\'s a great selling point and adds value to your car. There is a £30 fee for transferring the warranty.'
+      answer: 'Yes, our warranties can be transferred to a new owner if you sell your car privately—this can help you sell your vehicle and may even increase its value. There\'s a £19.99 fee if you choose to transfer the warranty at the time of purchase. If you decide to transfer it later, the fee is £30, so it\'s worth sorting early for the best deal.'
     }
   ];
 
