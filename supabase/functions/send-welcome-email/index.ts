@@ -300,7 +300,7 @@ serve(async (req) => {
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 8px 0; color: #5a6c7d; font-weight: 500; width: 30%;">Login URL:</td>
-                  <td style="padding: 8px 0;"><a href="https://pricing.buyawarranty.co.uk/customer-dashboard" style="color: #1a73e8; text-decoration: none;">https://pricing.buyawarranty.co.uk/customer-dashboard</a></td>
+                  <td style="padding: 8px 0;"><a href="https://buyawarranty.co.uk/customer-dashboard" style="color: #1a73e8; text-decoration: none;">https://buyawarranty.co.uk/customer-dashboard</a></td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; color: #5a6c7d; font-weight: 500;">Email:</td>
@@ -416,7 +416,7 @@ serve(async (req) => {
             metadata: {
               customerFirstName: finalCustomerName,
               expiryDate: calculatePolicyEndDate(paymentType),
-              portalUrl: 'https://pricing.buyawarranty.co.uk/customer-dashboard',
+              portalUrl: 'https://buyawarranty.co.uk/customer-dashboard',
               referralLink: `https://buyawarranty.co.uk/refer/${userId || 'guest'}`
             }
           });

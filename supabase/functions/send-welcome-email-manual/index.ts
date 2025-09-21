@@ -277,7 +277,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(JSON.stringify({ evt: "user.creation.start", rid, customerEmail: customer.email }));
     
     // Set the customer dashboard URL as requested by user
-    const loginUrl = 'https://pricing.buyawarranty.co.uk/customer-dashboard';
+    const loginUrl = 'https://buyawarranty.co.uk/customer-dashboard';
     
     console.log(JSON.stringify({ evt: "login.url.set", rid, loginUrl }));
     
