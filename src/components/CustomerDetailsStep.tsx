@@ -1002,6 +1002,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                   0% Interest
                                 </div>
                               </div>
+                              <div className="text-sm text-gray-600 mb-3">
+                                <div className="flex items-center mb-1">
+                                  <span className="text-green-600 mr-2">✔️</span>
+                                  <span>Only a soft credit search</span>
+                                </div>
+                                <div className="flex items-center">
+                                  <span className="text-green-600 mr-2">✔️</span>
+                                  <span>No impact on your credit score</span>
+                                </div>
+                              </div>
                               <p className="text-sm text-gray-600">
                                 {pricingData.installmentBreakdown?.hasTransfer ? (
                                   <>
