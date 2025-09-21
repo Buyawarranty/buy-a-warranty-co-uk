@@ -1760,9 +1760,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
       {/* Sticky Total Bar */}
       {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-50 to-blue-50 border-t-2 border-orange-200 shadow-lg z-50">
           <div className="flex items-center justify-between p-4 max-w-6xl mx-auto">
-            <div className="flex flex-col">
+            {/* Trustpilot Logo - Moved to left */}
+            <div className="hidden md:block flex-shrink-0 mr-4">
+              <a 
+                href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <img 
+                  src={trustpilotLogo} 
+                  alt="Trustpilot Excellent Rating" 
+                  className="h-12 w-auto hover:opacity-80 transition-opacity"
+                />
+              </a>
+            </div>
+            
+            {/* Price Section - Moved to center */}
+            <div className="flex flex-col flex-1 text-center">
               {/* Monthly Price - Main Hook */}
               <div className="text-2xl font-bold text-gray-900 mb-1">
                 £{(() => {
@@ -1794,7 +1811,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </div>
               
               {/* Payment Terms and Total on same line for footer */}
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center justify-center gap-2 text-sm">
                 <span className="text-gray-500">
                   12 easy payments
                 </span>
@@ -1828,22 +1845,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   })()}
                 </span>
               </div>
-            </div>
-            
-            {/* Trustpilot Logo */}
-            <div className="hidden md:block flex-shrink-0 mx-4">
-              <a 
-                href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="block"
-              >
-                <img 
-                  src={trustpilotLogo} 
-                  alt="Trustpilot Excellent Rating" 
-                  className="h-12 w-auto hover:opacity-80 transition-opacity"
-                />
-              </a>
             </div>
             
             <Button
