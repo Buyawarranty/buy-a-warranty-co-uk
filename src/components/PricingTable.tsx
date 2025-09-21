@@ -1197,10 +1197,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="essential-details" className="border-none">
                   <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
-                    <span className="flex items-center gap-2">
-                      Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
-                    </span>
+                    Read more
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
                     <div className="space-y-3 text-sm">
@@ -1260,10 +1257,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="advantage-details" className="border-none">
                   <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
-                    <span className="flex items-center gap-2">
-                      Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
-                    </span>
+                    Read more
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
                     <div className="space-y-3 text-sm">
@@ -1320,10 +1314,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="elite-details" className="border-none">
                   <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
-                    <span className="flex items-center gap-2">
-                      Read more
-                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
-                    </span>
+                    Read more
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
                     <div className="space-y-3 text-sm">
