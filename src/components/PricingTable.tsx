@@ -789,8 +789,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <CollapsibleTrigger className="w-full">
               <div className="flex items-center justify-between mb-8 cursor-pointer group">
                 <div className="flex items-center gap-3">
-                  <Shield className="w-6 h-6 text-green-600" />
-                  <h2 className="text-2xl font-bold text-green-700">
+                  <Shield className="w-6 h-6 text-orange-600" />
+                  <h2 className="text-2xl font-bold text-orange-600">
                     What's Covered?
                   </h2>
                 </div>
