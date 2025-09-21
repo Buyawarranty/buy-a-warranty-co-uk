@@ -820,7 +820,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Right - Panda with warranty active */}
             <div className="relative text-center order-1 lg:order-2">
               <img 
-                src="/lovable-uploads/dac1df61-e069-48d7-bfb0-6cc26bc3e816.png" 
+                src="/lovable-uploads/panda-celebrating-new.png" 
                 alt="Panda with EV charging station - Warranty Active" 
                 className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
               />
