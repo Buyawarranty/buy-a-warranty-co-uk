@@ -49,21 +49,58 @@ const FAQ = () => {
     'Service requirements'
   ];
 
-  // Get search suggestions based on input
+  // Enhanced search suggestions with scoring and instant access
   const getSearchSuggestions = (query: string) => {
-    if (!query.trim() || query.length < 2) return commonSearches.slice(0, 4);
+    if (!query.trim()) return commonSearches.slice(0, 6);
     
-    const matching = commonSearches.filter(search => 
-      search.toLowerCase().includes(query.toLowerCase())
+    const lowerQuery = query.toLowerCase();
+    const results = [];
+    
+    // First, check common searches
+    const matchingCommon = commonSearches.filter(search => 
+      search.toLowerCase().includes(lowerQuery)
+    ).map(question => ({ question, type: 'common', score: 10 }));
+    
+    // Then check all FAQ questions with scoring
+    const allQuestions = faqData.flatMap(category => 
+      category.questions.map(q => ({
+        ...q,
+        category: category.category,
+        categoryId: category.id
+      }))
     );
     
-    const questionsMatching = faqData.flatMap(category => 
-      category.questions.filter(q => 
-        q.question.toLowerCase().includes(query.toLowerCase())
-      ).map(q => q.question)
-    ).slice(0, 3);
+    const matchingQuestions = allQuestions
+      .map(q => {
+        const questionLower = q.question.toLowerCase();
+        const answerLower = q.answer.toLowerCase();
+        
+        let score = 0;
+        
+        // Exact question match gets highest score
+        if (questionLower === lowerQuery) score = 100;
+        // Question starts with query
+        else if (questionLower.startsWith(lowerQuery)) score = 80;
+        // Question contains query at word boundary
+        else if (questionLower.includes(` ${lowerQuery}`)) score = 60;
+        // Question contains query anywhere
+        else if (questionLower.includes(lowerQuery)) score = 40;
+        // Answer contains query
+        else if (answerLower.includes(lowerQuery)) score = 20;
+        
+        // Boost popular questions
+        if (q.popular) score += 15;
+        
+        return { ...q, type: 'faq', score };
+      })
+      .filter(q => q.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
     
-    return [...matching, ...questionsMatching].slice(0, 6);
+    // Combine and limit results
+    return [...matchingCommon, ...matchingQuestions]
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
   };
 
   const handleSearchChange = (value: string) => {
@@ -71,9 +108,38 @@ const FAQ = () => {
     setShowSuggestions(value.length > 0);
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchTerm(suggestion);
-    setShowSuggestions(false);
+  const handleSuggestionClick = (suggestion: any) => {
+    if (typeof suggestion === 'string') {
+      // Handle common searches
+      setSearchTerm(suggestion);
+      setShowSuggestions(false);
+    } else {
+      // Handle FAQ suggestions - scroll to and open the FAQ item
+      setSearchTerm(suggestion.question);
+      setShowSuggestions(false);
+      
+      // Scroll to category first
+      setTimeout(() => {
+        const categoryElement = document.getElementById(suggestion.categoryId);
+        if (categoryElement) {
+          categoryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          
+          // Then open the specific FAQ item
+          setTimeout(() => {
+            setOpenItems(prev => ({
+              ...prev,
+              [suggestion.id]: true
+            }));
+            
+            // Scroll to the specific FAQ item
+            const faqElement = document.getElementById(suggestion.id);
+            if (faqElement) {
+              faqElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 500);
+        }
+      }, 100);
+    }
   };
 
   const findRelatedQuestions = (query: string) => {
@@ -678,28 +744,68 @@ const FAQ = () => {
                   placeholder="Search frequently asked questions..."
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  onFocus={() => setShowSuggestions(searchTerm.length > 0)}
+                  onFocus={() => setShowSuggestions(true)}
                   onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      setShowSuggestions(false);
+                    }
+                  }}
                   className="pl-12 pr-4 py-3 text-lg border-2 border-gray-200 focus:border-primary"
+                  role="combobox"
+                  aria-expanded={showSuggestions}
+                  aria-haspopup="listbox"
+                  autoComplete="off"
                 />
                 
-                {/* Auto-suggestions Dropdown */}
+                {/* Enhanced Auto-suggestions Dropdown */}
                 {showSuggestions && (
-                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-20 max-h-60 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl mt-1 z-50 max-h-80 overflow-y-auto">
                     <div className="p-2">
                       <div className="text-xs font-medium text-gray-500 px-3 py-2 uppercase tracking-wide">
-                        {searchTerm.length > 0 ? 'Suggestions' : 'Popular Searches'}
+                        {searchTerm.length > 0 ? `${getSearchSuggestions(searchTerm).length} Suggestions` : 'Popular Searches'}
                       </div>
                       {getSearchSuggestions(searchTerm).map((suggestion, index) => (
                         <button
                           key={index}
                           onClick={() => handleSuggestionClick(suggestion)}
-                          className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded text-sm text-gray-700 hover:text-brand-orange transition-colors"
+                          className="w-full text-left px-3 py-2.5 hover:bg-gray-50 rounded-md text-sm text-gray-700 hover:text-primary transition-colors group focus:outline-none focus:bg-gray-50 focus:text-primary"
+                          role="option"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleSuggestionClick(suggestion);
+                            }
+                          }}
                         >
-                          <Search className="w-3 h-3 inline mr-2 text-gray-400" />
-                          {suggestion}
+                          <div className="flex items-start gap-2">
+                            <Search className="w-4 h-4 text-gray-400 group-hover:text-primary mt-0.5 flex-shrink-0" />
+                            <div className="flex-1">
+                              <div className="font-medium">
+                                {typeof suggestion === 'string' ? suggestion : suggestion.question}
+                              </div>
+                              {typeof suggestion !== 'string' && (
+                                <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                  <span className="px-2 py-0.5 bg-gray-100 rounded-full text-xs">
+                                    {suggestion.category}
+                                  </span>
+                                  {suggestion.popular && (
+                                    <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                                      Popular
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </button>
                       ))}
+                      {getSearchSuggestions(searchTerm).length === 0 && searchTerm.length > 0 && (
+                        <div className="px-3 py-4 text-center text-gray-500 text-sm">
+                          No suggestions found for "{searchTerm}"
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -784,7 +890,7 @@ const FAQ = () => {
                   
                   <div className="space-y-4">
                     {category.questions.map((faq) => (
-                      <div key={faq.id} className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg overflow-hidden">
+                      <div key={faq.id} id={faq.id} className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg overflow-hidden">
                         <button
                           onClick={() => toggleItem(faq.id)}
                           className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-orange-600/20 transition-colors"
