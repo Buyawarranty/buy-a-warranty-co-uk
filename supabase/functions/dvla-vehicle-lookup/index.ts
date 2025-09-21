@@ -502,20 +502,32 @@ serve(async (req) => {
         vehicleType = 'van';
       }
     }
-    // STRICT Motorcycle detection - ONLY classify as motorcycle with explicit indicators
+    // Enhanced Motorcycle detection with better coverage
     else if (
       // Must have explicit motorcycle type approval (L category for motorcycles in EU)
       (typeApproval.startsWith('l') && (typeApproval.includes('motorcycle') || typeApproval.includes('moped'))) ||
       // OR explicit motorcycle wheelplan
       (wheelplan.includes('2 wheels') && wheelplan.includes('motorcycle')) ||
-      // OR very specific engine + manufacturer + model combination for actual motorcycles
-      (engineCapacity > 0 && engineCapacity <= 800 && // Much stricter engine limit
-       ['yamaha', 'kawasaki', 'ducati', 'ktm', 'harley-davidson', 'triumph', 'aprilia', 'husqvarna', 'mv agusta'].includes(makeLower) && // Only pure motorcycle brands
-       // AND must have motorcycle model indicators
-       (/\bbike\b/i.test(modelLower) || /\bmoto\b/i.test(modelLower) || /\bscooter\b/i.test(modelLower) || 
-        /\bcbr\b/i.test(modelLower) || /\bgsxr\b/i.test(modelLower) || /\byzf\b/i.test(modelLower) ||
-        /\bninja\b/i.test(modelLower) || /\bpanigale\b/i.test(modelLower)) &&
-       // Additional safety check - make sure it's not a commercial vehicle model
+      // OR dedicated motorcycle manufacturers (always motorcycles regardless of model)
+      (['yamaha', 'kawasaki', 'ducati', 'ktm', 'harley-davidson', 'harley davidson', 'triumph', 'aprilia', 'husqvarna', 'mv agusta', 'benelli', 'moto guzzi', 'indian', 'royal enfield', 'norton', 'zero', 'energica'].includes(makeLower) &&
+       // Safety check - make sure it's not a commercial vehicle model
+       !['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'connect', 'custom', 'van', 'commercial'].some(commercial => modelLower.includes(commercial))) ||
+      // OR mixed manufacturers with strong motorcycle model patterns
+      (['honda', 'bmw', 'suzuki'].includes(makeLower) && (
+        // Honda motorcycle models
+        (/\bcbr\b/i.test(modelLower) || /\bcb\d/i.test(modelLower) || /\bvfr\b/i.test(modelLower) || /\bfireblade\b/i.test(modelLower) || /\bhornet\b/i.test(modelLower)) ||
+        // BMW motorcycle models  
+        (/\bg\s?\d{3}/i.test(modelLower) || /\bs\s?\d{3}/i.test(modelLower) || /\br\s?\d{3}/i.test(modelLower) || /\bf\s?\d{3}/i.test(modelLower) || /\bk\s?\d{3}/i.test(modelLower) || 
+         /\badventure\b/i.test(modelLower) || /\bgs\b/i.test(modelLower) || /\brt\b/i.test(modelLower) || /\brr\b/i.test(modelLower)) ||
+        // Suzuki motorcycle models
+        (/\bgsxr\b/i.test(modelLower) || /\bgsx\b/i.test(modelLower) || /\bsv\d/i.test(modelLower) || /\bdr\d/i.test(modelLower) || /\bhayabusa\b/i.test(modelLower) || /\bbandit\b/i.test(modelLower))
+      ) && 
+       // Safety check - make sure it's not a commercial vehicle model
+       !['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'connect', 'custom', 'van', 'commercial'].some(commercial => modelLower.includes(commercial))) ||
+      // OR general motorcycle model patterns (any manufacturer)
+      ((/\bmotorbike\b/i.test(modelLower) || /\bmotorcycle\b/i.test(modelLower) || /\bscooter\b/i.test(modelLower) || /\bmoped\b/i.test(modelLower) || 
+        /\bninja\b/i.test(modelLower) || /\bpanigale\b/i.test(modelLower) || /\bmonster\b/i.test(modelLower) || /\bstreetfighter\b/i.test(modelLower)) &&
+       // Safety check - make sure it's not a commercial vehicle model
        !['transit', 'sprinter', 'crafter', 'master', 'boxer', 'ducato', 'daily', 'connect', 'custom', 'van', 'commercial'].some(commercial => modelLower.includes(commercial)))
     ) {
       
