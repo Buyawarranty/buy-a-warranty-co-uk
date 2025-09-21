@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, ChevronDown, CheckCircle, Phone, Mail, Shield, Clock, Users, Wrench, FileText, Star, X, Fuel, Battery, Zap, Bike } from 'lucide-react';
+import { Menu, ChevronDown, CheckCircle, Phone, Mail, Shield, Clock, Users, Wrench, FileText, Star, X, Fuel, Battery, Zap, Bike, Crown } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
@@ -313,6 +313,40 @@ const Protected = () => {
         </div>
       </section>
 
+      {/* Platinum Warranty Plan Section */}
+      <section className="py-16 bg-blue-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <Crown className="w-12 h-12 text-orange-500 mx-auto mb-6" />
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              Platinum Warranty Plan
+            </h2>
+            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+              Discover the complete details of our comprehensive Platinum Warranty Plan. 
+              This document outlines all the specific coverage, benefits, and protection 
+              included in your premium warranty package.
+            </p>
+            <p className="text-md text-gray-500 mb-8">
+              Review the full Platinum plan details to understand exactly what's covered, 
+              including all mechanical and electrical components, claim procedures, and 
+              the extensive protection we provide for your vehicle.
+            </p>
+            <a 
+              href="/Platinum-warranty-plan_v2.2-6.pdf" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-2 bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+            >
+              <Crown className="w-5 h-5" />
+              <span>View Platinum Plan Details (PDF)</span>
+            </a>
+            <p className="text-sm text-gray-400 mt-4">
+              Opens in a new tab
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Terms and Conditions Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -341,7 +375,7 @@ const Protected = () => {
               <span>View Terms & Conditions (PDF)</span>
             </a>
             <p className="text-sm text-gray-400 mt-4">
-              Opens in a new tab • Updated February 2024
+              Opens in a new tab
             </p>
           </div>
         </div>
