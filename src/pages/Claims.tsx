@@ -266,7 +266,7 @@ Issue Timing: ${formData.issueTiming}
                   size="sm"
                   className="lg:hidden p-2"
                 >
-                  <Menu className="h-12 w-12" />
+                  <Menu className="h-8 w-8" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
@@ -286,28 +286,28 @@ Issue Timing: ${formData.issueTiming}
                   <nav className="flex flex-col space-y-6 flex-1">
                     <Link 
                       to="/what-is-covered" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       What's Covered
                     </Link>
                     <Link 
                       to="/make-a-claim" 
-                      className="text-orange-500 hover:text-orange-600 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-orange-500 hover:text-orange-600 font-medium text-sm py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Make a Claim
                     </Link>
                     <Link 
                       to="/faq" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                        FAQs
                     </Link>
                     <Link 
                       to="/contact-us" 
-                      className="text-gray-700 hover:text-gray-900 font-medium text-lg py-2 border-b border-gray-200"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Contact Us
