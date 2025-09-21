@@ -694,11 +694,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       {/* Configuration Sections */}
       <div className="max-w-6xl mx-auto px-4 py-3 space-y-6">
         
-        {/* Temporary Background Removal Tool */}
-        <BackgroundRemovalProcessor />
-
-        
-        
         {/* Vehicle Information */}
         <div className="section-header rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
@@ -1563,15 +1558,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                           </div>
                         )}
                         {option.id === '24months' && (
-                          <div className="flex items-center justify-center gap-1 font-bold text-red-600">
-                            <span className="text-green-500">✓</span>
-                            Nothing to pay in Year 2
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-center gap-1 font-bold">
+                              <span className="text-green-500">✓</span>
+                              Only 12 easy payments
+                            </div>
+                            <div className="flex items-center justify-center gap-1 font-bold text-red-600">
+                              <span className="text-green-500">✓</span>
+                              Nothing to pay in Year 2
+                            </div>
                           </div>
                         )}
                         {option.id === '36months' && (
-                          <div className="flex items-center justify-center gap-1 font-bold text-red-600">
-                            <span className="text-green-500">✓</span>
-                            Nothing to pay in Year 2 and Year 3
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-center gap-1 font-bold">
+                              <span className="text-green-500">✓</span>
+                              Only 12 easy payments
+                            </div>
+                            <div className="flex items-center justify-center gap-1 font-bold text-red-600">
+                              <span className="text-green-500">✓</span>
+                              Nothing to pay in Year 2 and Year 3
+                            </div>
                           </div>
                         )}
                       </div>
