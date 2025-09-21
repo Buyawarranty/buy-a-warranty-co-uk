@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import BackgroundRemovalProcessor from '@/components/BackgroundRemovalProcessor';
 
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
@@ -694,6 +695,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="flex justify-end">
           <TrustpilotHeader className="h-8 sm:h-10" />
         </div>
+        
+        {/* Temporary Background Removal Tool */}
+        <BackgroundRemovalProcessor />
 
         
         
