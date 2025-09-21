@@ -455,14 +455,14 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Hero Section */}
       <section id="quote-form" className="bg-white py-8 sm:py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
             {/* Left Content */}
-            <div className="space-y-4">
+            <div className="space-y-4 px-2 sm:px-0">
 
               {/* Main Headline */}
               <div className="space-y-2 mb-3 sm:mb-4">
-                <h1 className="text-3xl sm:text-3xl lg:text-5xl font-black text-gray-900 leading-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-gray-900 leading-tight">
                   We{"'"}ve got you
                   <br className="hidden sm:block" />
                   <span className="sm:hidden"> </span>covered
@@ -472,25 +472,25 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Benefits */}
-              <div className="mb-8 text-gray-700 text-sm sm:text-base space-y-2">
+              <div className="mb-6 sm:mb-8 text-gray-700 text-xs sm:text-sm md:text-base space-y-2">
                 <div className="flex items-center">
-                  <Check className="w-5 h-5 text-green-500 mr-3" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0" />
                   <span className="font-medium">From just 80p a day • Unlimited claims • Fast payouts</span>
                 </div>
                 <div className="flex items-center">
-                  <Check className="w-5 h-5 text-green-500 mr-3" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0" />
                   <span className="font-medium">Reliable cover you can trust • Save £££ on repairs</span>
                 </div>
               </div>
 
               {/* Registration Input */}
-              <div className="space-y-3 max-w-lg">
-                <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black">
+              <div className="space-y-3 w-full max-w-lg">
+                <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full">
                   {/* UK Section with flag */}
-                  <div className="bg-blue-600 text-white font-bold px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[70px] sm:min-w-[80px] h-[60px] sm:h-[66px]">
+                  <div className="bg-blue-600 text-white font-bold px-2 sm:px-3 md:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[50px] sm:min-w-[70px] md:min-w-[80px] h-[56px] sm:h-[60px] md:h-[66px]">
                     <div className="flex flex-col items-center">
-                      <div className="text-base sm:text-lg leading-tight mb-1">🇬🇧</div>
-                      <div className="text-sm sm:text-base font-bold leading-none">UK</div>
+                      <div className="text-sm sm:text-base md:text-lg leading-tight mb-1">🇬🇧</div>
+                      <div className="text-xs sm:text-sm md:text-base font-bold leading-none">UK</div>
                     </div>
                   </div>
                   {/* Registration Input */}
@@ -499,7 +499,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     value={regNumber}
                     onChange={handleRegChange}
                     placeholder="Enter reg"
-                    className="bg-yellow-400 border-none outline-none text-2xl sm:text-3xl text-black flex-1 font-black placeholder:text-black/70 px-4 sm:px-4 py-3 sm:py-4 uppercase tracking-wider h-[60px] sm:h-[66px]"
+                    className="bg-yellow-400 border-none outline-none text-xl sm:text-2xl md:text-3xl text-black flex-1 font-black placeholder:text-black/70 px-2 sm:px-3 md:px-4 py-3 sm:py-4 uppercase tracking-wider h-[56px] sm:h-[60px] md:h-[66px] min-w-0"
                     maxLength={8}
                   />
                 </div>
@@ -517,7 +517,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       onChange={handleMileageChange}
                       onFocus={handleMileageFocus}
                       placeholder="Enter mileage (e.g. 32,000)"
-                      className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
+                      className={`w-full px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-base sm:text-lg border-2 rounded-lg focus:outline-none min-w-0 ${
                         mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
                       }`}
                     />
@@ -551,7 +551,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="space-y-2">
                   <Button 
                     onClick={handleGetQuote}
-                    className={`w-full px-6 sm:px-12 h-[60px] sm:h-[66px] text-lg sm:text-xl font-bold rounded-lg transition-all ${
+                    className={`w-full px-4 sm:px-6 md:px-12 h-[56px] sm:h-[60px] md:h-[66px] text-base sm:text-lg md:text-xl font-bold rounded-lg transition-all min-w-0 ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-brand-orange hover:bg-brand-orange/90 text-white btn-slow-pulsate'
