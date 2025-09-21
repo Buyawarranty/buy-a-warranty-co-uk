@@ -584,8 +584,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       </div>
 
       <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">You're almost covered</h1>
+        <div className="text-left mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+            <Shield className="w-8 h-8 text-orange-500" />
+            You're almost covered!
+          </h1>
         </div>
 
         {/* Customer Details Section - Now Step 5 */}
@@ -604,7 +607,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-semibold text-gray-900">{planName}</h4>
+                <h4 className="font-semibold text-gray-900">{planName.replace(/Premium/gi, 'Platinum')}</h4>
                 <p className="text-sm text-gray-600">{getWarrantyDurationDisplay(currentPaymentType)}</p>
               </div>
               <div className="text-right">
