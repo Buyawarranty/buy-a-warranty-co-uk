@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ProtectedButton } from '@/components/ui/protected-button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck, PartyPopper, CheckCircle, Crown, Battery, Bike } from 'lucide-react';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck, PartyPopper, CheckCircle, Crown, Battery, Bike, AlertTriangle } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -1060,6 +1060,40 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           </div>
             </CollapsibleContent>
           </Collapsible>
+          
+          {/* What's Not Covered Section */}
+          <Collapsible>
+            <CollapsibleTrigger className="flex items-center gap-3 w-full text-left text-red-600 hover:text-red-700 font-medium py-3 transition-colors group">
+              <div className="flex items-center gap-2">
+                <ChevronDown className="w-5 h-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <span>What's not covered</span>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="mt-4 p-6 bg-red-50 rounded-lg border border-red-200">
+                <p className="text-gray-700 font-medium mb-4">
+                  We keep things straightforward and transparent.
+                </p>
+                <h4 className="font-semibold text-gray-900 mb-3">What's Not Included:</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <X className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">Pre-existing faults</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <X className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">Routine servicing and maintenance (such as fluids or brake pads)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <X className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">Vehicles used for hire or reward (including taxis, rentals, or couriers)</span>
+                  </li>
+                </ul>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+          
         </div>
 
         {/* Choose Your Excess Amount */}
