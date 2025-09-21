@@ -14,7 +14,7 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
-import pandaCarWarranty from "@/assets/panda-car-warranty.webp";
+import pandaCarWarranty from "@/assets/panda-car-warranty-transparent.png";
 import trustpilotLogo from "@/assets/trustpilot-excellent-box.webp";
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
@@ -1614,7 +1614,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <img 
                 src={pandaCarWarranty} 
                 alt="Happy panda with car representing our warranty protection" 
-                className="w-48 h-48 object-contain"
+                className="w-60 h-60 object-contain"
               />
             </div>
           </div>
