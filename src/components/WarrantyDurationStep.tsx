@@ -364,13 +364,13 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                     £{option.monthlyPrice}/month
                   </div>
                   <div className="text-sm text-gray-600">
-                    Only 12 easy payments
+                    {option.id === '12months' 
+                      ? 'Only 12 easy payments' 
+                      : option.id === '24months' 
+                        ? 'Nothing to pay in Year 2' 
+                        : 'Nothing to pay in Year 2 and Year 3'
+                    }
                   </div>
-                  {option.id !== '12months' && (
-                    <div className="text-sm text-gray-600">
-                      {option.id === '24months' ? 'Nothing to pay in Year 2' : 'Nothing to pay in Year 2 and Year 3'}
-                    </div>
-                  )}
                   <div className="text-sm font-semibold text-gray-900">
                     Total cost: {option.originalPrice ? (
                       <>
