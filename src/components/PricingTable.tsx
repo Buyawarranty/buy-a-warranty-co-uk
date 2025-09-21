@@ -818,45 +818,73 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <ul className="space-y-1.5">
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Engine & Drivetrain Components</span>
+                        <span>Engine & Internal Components (pistons, valves, camshafts, timing chains, seals, gaskets)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Gearbox & Transmission Systems</span>
+                        <span>Gearbox / Transmission Systems (manual, automatic, DSG, CVT, dual-clutch, transfer boxes)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>ECUs, Sensors & Control Modules</span>
+                        <span>Drivetrain & Clutch Assemblies (flywheel, driveshafts, differentials)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Electrical Components & Charging Systems (alternators, starter motors, wiring)</span>
+                        <span>Turbocharger & Supercharger Units</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>EV Battery Failure & High-Voltage Components</span>
+                        <span>Fuel Delivery Systems (tanks, pumps, injectors, fuel rails, fuel control electronics)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Cooling & Heating Systems (radiators, thermostats, water pumps, cooling fans, heater matrix)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Exhaust & Emissions Systems (catalytic converters, DPFs, OPFs, EGR valves, NOx sensors, AdBlue/Eolys systems)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Braking Systems (ABS, calipers, cylinders, master cylinders)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Suspension & Steering Systems (shocks, struts, steering racks, power/electric steering pumps, electronic suspension)</span>
                       </li>
                     </ul>
                     <ul className="space-y-1.5">
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Suspension & Steering Systems</span>
+                        <span>Air Conditioning & Climate Control Systems</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Braking Systems (ABS, brake assistants)</span>
+                        <span>Electrical Components & Charging Systems (alternators, starter motors, wiring looms, connectors, relays)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Cooling & Thermal Management</span>
+                        <span>Electronic Control Units (ECUs) & Sensors (engine management, ABS, traction control, emissions sensors)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Climate Control & Comfort Systems</span>
+                        <span>Lighting & Ignition Systems (headlights, indicators, ignition coils, switches, control modules)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span>Fuel Systems & Emissions</span>
+                        <span>Factory-Fitted Multimedia & Infotainment Systems (screens, sat nav, audio, digital displays)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Driver Assistance Systems (adaptive cruise control, lane assist, steering assist, parking sensors, reversing cameras)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Safety Systems (airbags, seatbelts, pretensioners, safety restraint modules)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Convertible power-hood, motors, hydraulic parts, buttons, switches, wiring, sensors and related parts</span>
                       </li>
                     </ul>
                   </div>
