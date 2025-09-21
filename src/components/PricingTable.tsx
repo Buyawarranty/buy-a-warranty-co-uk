@@ -676,25 +676,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
       </div>
 
-      {/* Customise your warranty heading */}
-      <div className="max-w-6xl mx-auto px-4 pt-8 pb-2">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-orange-100 rounded-full">
-            <Settings className="w-6 h-6 text-orange-500" />
+      {/* Customise your warranty heading and Trustpilot on same line */}
+      <div className="max-w-6xl mx-auto px-4 pt-5 pb-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-orange-100 rounded-full">
+              <Settings className="w-6 h-6 text-orange-500" />
+            </div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              Customise your warranty
+            </h1>
           </div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-            Customise your warranty
-          </h1>
+          <TrustpilotHeader className="h-8 sm:h-10" />
         </div>
       </div>
 
       {/* Configuration Sections */}
-      <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        
-        {/* Trustpilot positioned outside grey box */}
-        <div className="flex justify-end">
-          <TrustpilotHeader className="h-8 sm:h-10" />
-        </div>
+      <div className="max-w-6xl mx-auto px-4 py-3 space-y-6">
         
         {/* Temporary Background Removal Tool */}
         <BackgroundRemovalProcessor />
