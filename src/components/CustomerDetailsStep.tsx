@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import AddAnotherWarrantyOffer from '@/components/AddAnotherWarrantyOffer';
 import { useAuth } from '@/hooks/useAuth';
 import { trackFormSubmission, trackEvent } from '@/utils/analytics';
+import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 
 export interface CustomerDetailsStepProps {
   vehicleData: {
@@ -398,31 +399,88 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <div className="space-y-4 mb-6">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Plan</span>
-                      <span className="font-semibold">{planName}</span>
+                      <span className="font-semibold">{planName.replace(/premium/gi, 'Platinum')}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Duration</span>
-                      <span className="font-semibold">{paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36'} months</span>
+                      <span className="font-semibold">{getWarrantyDurationInMonths(paymentType)} months</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Vehicle</span>
                       <span className="font-semibold">{vehicleData.make} {vehicleData.model}</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Vehicle Registration</span>
+                      <span className="font-semibold">🇬🇧 UK {vehicleData.regNumber}</span>
+                    </div>
                   </div>
 
-                  {/* Vehicle Registration Display */}
-                  <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm text-gray-600 mb-2">Vehicle Registration</div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center">
-                            <span className="bg-blue-600 text-white px-2 py-1 rounded-l text-sm font-bold mr-0">🇬🇧 UK</span>
-                            <span className="bg-yellow-400 text-black px-3 py-1 rounded-r font-bold">{vehicleData.regNumber}</span>
+                  {/* Pricing Information */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    {(() => {
+                      const months = getWarrantyDurationInMonths(paymentType);
+                      const monthlyPayment = Math.round(discountedBumperPrice / 12);
+                      
+                      if (months === 12) {
+                        return (
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-800 mb-2">£{monthlyPayment}/month</div>
+                            <div className="flex items-center justify-center text-green-600 mb-2">
+                              <span className="mr-2">✓</span>
+                              <span className="font-medium">Only 12 easy payments</span>
+                            </div>
+                            <div className="text-lg font-semibold text-gray-900">
+                              Total cost: £{discountedBumperPrice}
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
+                        );
+                      } else if (months === 24) {
+                        const fullPrice = Math.round(discountedBumperPrice * 24 / 12); // Simulate 2-year price
+                        const savings = Math.round(fullPrice * 0.1); // 10% savings
+                        const discountPrice = fullPrice - savings;
+                        return (
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-800 mb-2">£{Math.round(discountPrice / 12)}/month</div>
+                            <div className="space-y-1 mb-3">
+                              <div className="flex items-center justify-center text-green-600">
+                                <span className="mr-2">✓</span>
+                                <span className="font-medium">Only 12 easy payments</span>
+                              </div>
+                              <div className="flex items-center justify-center text-green-600">
+                                <span className="mr-2">✓</span>
+                                <span className="font-medium">Nothing to pay in Year 2</span>
+                              </div>
+                            </div>
+                            <div className="text-lg font-semibold text-gray-900">
+                              Total cost: <span className="line-through text-gray-500">£{fullPrice}</span> £{discountPrice} <span className="text-green-600">Save £{savings}</span>
+                            </div>
+                          </div>
+                        );
+                      } else if (months === 36) {
+                        const fullPrice = Math.round(discountedBumperPrice * 36 / 12); // Simulate 3-year price
+                        const savings = Math.round(fullPrice * 0.133); // ~13.3% savings (~£200)
+                        const discountPrice = fullPrice - savings;
+                        return (
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-800 mb-2">£{Math.round(discountPrice / 12)}/month</div>
+                            <div className="space-y-1 mb-3">
+                              <div className="flex items-center justify-center text-green-600">
+                                <span className="mr-2">✓</span>
+                                <span className="font-medium">Only 12 easy payments</span>
+                              </div>
+                              <div className="flex items-center justify-center text-green-600">
+                                <span className="mr-2">✓</span>
+                                <span className="font-medium">Nothing to pay in Year 2 and Year 3</span>
+                              </div>
+                            </div>
+                            <div className="text-lg font-semibold text-gray-900">
+                              Total cost: <span className="line-through text-gray-500">£{fullPrice}</span> £{discountPrice} <span className="text-green-600">Save £{savings}</span>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()}
                   </div>
 
                   {/* Payment Methods */}
