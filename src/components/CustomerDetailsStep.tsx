@@ -1047,20 +1047,20 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         {loading ? 'Processing...' : 'Complete Purchase'}
                       </Button>
 
-                       <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
-                         <div className="w-4 h-4 bg-gray-800 rounded"></div>
-                         Secure checkout powered by Stripe
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           </CardContent>
-         </Card>
-       </div>
-     </div>
-   );
-};
+                        <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
+                          <div className="w-4 h-4 bg-gray-800 rounded"></div>
+                          Secure checkout powered by Stripe
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  };
 
 export default CustomerDetailsStep;

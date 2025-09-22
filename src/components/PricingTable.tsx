@@ -1673,6 +1673,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <p className="text-base text-black font-bold">
                 With us, you get genuine protection and real peace of mind.
               </p>
+              
+              {/* Trustpilot Section */}
+              <div className="mt-6 p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="text-center sm:text-left">
+                    <p className="text-sm font-medium text-gray-700 mb-1">Don{"'"}t just take our word for it</p>
+                    <p className="text-xs text-gray-600">See what our customers say about our claims service</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <a 
+                      href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block hover:opacity-80 transition-opacity"
+                    >
+                      <TrustpilotHeader className="h-12" />
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
             
             <div className="flex-shrink-0 hidden md:block">
