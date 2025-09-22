@@ -73,7 +73,7 @@ const addOnPackages = [
     key: 'rental',
     icon: '🚘',
     title: 'Vehicle Rental',
-    shortDescription: 'Stay mobile with up to £45/day for a replacement vehicle during repairs.',
+    shortDescription: 'Stay mobile with a replacement vehicle during repairs.',
     price: 6.99,
     priceType: 'monthly',
     bulletPoints: [
