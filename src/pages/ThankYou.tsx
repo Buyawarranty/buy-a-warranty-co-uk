@@ -204,48 +204,48 @@ const ThankYou = () => {
         <div className="max-w-6xl w-full">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             {/* Left column - Main content */}
-            <div className="text-center space-y-8">
-              <div className="space-y-4">
-                <div className="flex justify-center mb-6">
+            <div className="text-center space-y-6">
+              <div className="space-y-3">
+                <div className="flex justify-center mb-4">
                   <img 
                     src={bawLogo}
                     alt="BuyAWarranty Logo" 
-                    className="h-16 w-auto"
+                    className="h-10 sm:h-12 w-auto"
                   />
                 </div>
-                <div className="text-6xl mb-4">🎉</div>
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                <div className="text-4xl mb-3">🎉</div>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
                   Thanks for your purchase!
                 </h1>
-                <h2 className="text-2xl md:text-3xl font-semibold text-blue-600 mb-6">
+                <h2 className="text-lg md:text-xl font-semibold text-blue-600 mb-4">
                   Your warranty is successfully registered
                 </h2>
                 
                 {isProcessing ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <TrophySpinner />
-                    <h3 className="text-lg text-gray-600">
+                    <h3 className="text-base text-gray-600">
                       Processing your warranty registration...
                     </h3>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <h3 className="text-lg text-gray-600 max-w-md mx-auto leading-relaxed mb-4">
+                  <div className="space-y-3">
+                    <h3 className="text-base text-gray-600 max-w-md mx-auto leading-relaxed mb-3">
                       Check your inbox for your plan details and terms & conditions.
                     </h3>
                     {policyNumber && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 max-w-md mx-auto">
                         <p className="text-sm text-green-800 font-semibold">
                           {source === 'bumper' ? 'BAW Policy Number:' : 'Policy Number:'}
                         </p>
-                        <p className="text-lg text-green-900 font-mono">{policyNumber}</p>
+                        <p className="text-base text-green-900 font-mono">{policyNumber}</p>
                       </div>
                     )}
                   </div>
                 )}
                 
                 {paymentType && !isProcessing && (
-                  <p className="text-base text-gray-500">
+                  <p className="text-sm text-gray-500">
                     {paymentType === 'monthly' && 'Monthly billing cycle activated'}
                     {paymentType === 'yearly' && 'Annual billing cycle activated'}
                     {paymentType === 'two_yearly' && '2-year billing cycle activated'}
@@ -254,27 +254,27 @@ const ThankYou = () => {
                 )}
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {searchParams.get('addAnotherWarranty') === 'true' ? (
                   <div className="text-center">
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-4">
-                      <p className="text-orange-800 font-bold text-xl mb-2">
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-3">
+                      <p className="text-orange-800 font-bold text-lg mb-1">
                         🎉 Redirecting you to add your next vehicle
                       </p>
-                      <p className="text-orange-700 font-semibold text-lg">
+                      <p className="text-orange-700 font-semibold text-base">
                         with 10% discount applied!
                       </p>
                     </div>
                     <CarDrivingSpinner />
                   </div>
                 ) : (
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     {/* Professional CTA Section */}
-                    <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                    <div className="bg-white border border-gray-200 rounded-lg p-4 text-center shadow-sm">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
                         Need coverage for another vehicle?
                       </h3>
-                      <p className="text-gray-600 mb-6">
+                      <p className="text-gray-600 mb-4 text-sm">
                         Protect your other vehicles with the same comprehensive warranty coverage.
                       </p>
                       <Button
@@ -286,7 +286,7 @@ const ThankYou = () => {
                           url.searchParams.set('step', '1');
                           window.location.href = url.toString();
                         }}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-base font-medium rounded-lg mb-4"
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 text-sm font-medium rounded-lg mb-3"
                       >
                         Get Quote for Another Vehicle
                       </Button>
@@ -295,7 +295,7 @@ const ThankYou = () => {
                     <Button 
                       onClick={handleReturnHome}
                       variant="outline"
-                      className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-base font-medium"
+                      className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm font-medium"
                     >
                       Return to BuyAWarranty.co.uk
                     </Button>
@@ -309,7 +309,7 @@ const ThankYou = () => {
               <img 
                 src={pandaGarageService}
                 alt="Panda mechanic with car in garage" 
-                className="w-full max-w-lg h-auto"
+                className="w-full max-w-sm h-auto"
               />
             </div>
           </div>
