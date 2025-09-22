@@ -6,6 +6,7 @@ import Homepage from '@/components/Homepage';
 import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
+import { useMobileBackNavigation } from '@/hooks/useMobileBackNavigation';
 
 // Lazy load heavy components that are not immediately visible
 const RegistrationForm = lazy(() => import('@/components/RegistrationForm'));
@@ -213,6 +214,13 @@ const Index = () => {
     saveStateToLocalStorage(step);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Handle mobile back button navigation to keep users on the site
+  useMobileBackNavigation({
+    currentStep,
+    onStepChange: handleStepChange,
+    totalSteps: 5
+  });
   
   useEffect(() => {
     console.log('useEffect triggered, current URL:', window.location.href);
