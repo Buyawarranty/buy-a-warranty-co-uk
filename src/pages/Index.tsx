@@ -1,17 +1,20 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Homepage from '@/components/Homepage';
-import RegistrationForm from '@/components/RegistrationForm';
-import PricingTable from '@/components/PricingTable';
-import CarJourneyProgress from '@/components/CarJourneyProgress';
-import QuoteDeliveryStep from '@/components/QuoteDeliveryStep';
-import CustomerDetailsStep from '@/components/CustomerDetailsStep';
 import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
-import MaintenanceBanner from '@/components/MaintenanceBanner';
+import { PandaLoadingSpinner } from '@/components/ui/panda-loading-spinner';
+
+// Lazy load heavy components that are not immediately visible
+const RegistrationForm = lazy(() => import('@/components/RegistrationForm'));
+const PricingTable = lazy(() => import('@/components/PricingTable'));
+const CarJourneyProgress = lazy(() => import('@/components/CarJourneyProgress'));
+const QuoteDeliveryStep = lazy(() => import('@/components/QuoteDeliveryStep'));
+const CustomerDetailsStep = lazy(() => import('@/components/CustomerDetailsStep'));
+const MaintenanceBanner = lazy(() => import('@/components/MaintenanceBanner'));
 
 
 interface VehicleData {
@@ -505,7 +508,9 @@ const Index = () => {
       />
       {currentStep !== 1 && (
         <div className="bg-[#e8f4fb]">
-          <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
+          <Suspense fallback={<div className="h-20 bg-[#e8f4fb]"></div>}>
+            <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
+          </Suspense>
         </div>
       )}
       
@@ -516,27 +521,31 @@ const Index = () => {
       {currentStep === 2 && vehicleData && (
         <div className="bg-[#e8f4fb] w-full px-4 py-2 sm:py-4">
           <div className="max-w-4xl mx-auto">
-            <QuoteDeliveryStep 
-              vehicleData={vehicleData}
-              onNext={handleQuoteDeliveryComplete}
-              onBack={() => handleBackToStep(1)}
-              onSkip={() => handleStepChange(3)}
-            />
+            <Suspense fallback={<div className="min-h-[40vh] flex items-center justify-center"><PandaLoadingSpinner /></div>}>
+              <QuoteDeliveryStep 
+                vehicleData={vehicleData}
+                onNext={handleQuoteDeliveryComplete}
+                onBack={() => handleBackToStep(1)}
+                onSkip={() => handleStepChange(3)}
+              />
+            </Suspense>
           </div>
         </div>
       )}
 
       {currentStep === 3 && (
         <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
-          <MaintenanceBanner />
+          <Suspense fallback={<div className="h-16 bg-[#e8f4fb]"></div>}>
+            <MaintenanceBanner />
+          </Suspense>
           {vehicleData ? (
-            <>
+            <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><PandaLoadingSpinner /></div>}>
               <PricingTable 
                 vehicleData={vehicleData} 
                 onBack={() => handleBackToStep(2)} 
                 onPlanSelected={handlePlanSelected}
               />
-            </>
+            </Suspense>
           ) : (
             <div className="w-full px-4 py-8">
               <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -562,15 +571,17 @@ const Index = () => {
       {currentStep === 4 && (
         <div className="bg-[#e8f4fb]">
           {vehicleData && selectedPlan ? (
-            <CustomerDetailsStep
-              vehicleData={vehicleData}
-              planId={selectedPlan.id}
-              paymentType={selectedPlan.paymentType}
-              planName={selectedPlan.name}
-              pricingData={selectedPlan.pricingData}
-              onNext={handleCustomerDetailsComplete}
-              onBack={() => handleBackToStep(3)}
-            />
+            <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><PandaLoadingSpinner /></div>}>
+              <CustomerDetailsStep
+                vehicleData={vehicleData}
+                planId={selectedPlan.id}
+                paymentType={selectedPlan.paymentType}
+                planName={selectedPlan.name}
+                pricingData={selectedPlan.pricingData}
+                onNext={handleCustomerDetailsComplete}
+                onBack={() => handleBackToStep(3)}
+              />
+            </Suspense>
           ) : (
             <div className="w-full px-4 py-8">
               <div className="max-w-4xl mx-auto text-center space-y-6">

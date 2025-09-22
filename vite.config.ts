@@ -25,5 +25,22 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     exclude: ['fsevents'],
+    include: ['react', 'react-dom', 'react-router-dom'],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          supabase: ['@supabase/supabase-js'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-tooltip', '@radix-ui/react-button'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1600,
+  },
+  esbuild: {
+    drop: mode === 'production' ? ['console', 'debugger'] : [],
   },
 }));
