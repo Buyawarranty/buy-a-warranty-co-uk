@@ -106,9 +106,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (!customerData.address_line_1.trim()) errors.address_line_1 = 'Address is required';
     if (!customerData.city.trim()) errors.city = 'City is required';
     if (!customerData.postcode.trim()) errors.postcode = 'Postcode is required';
-    if (!customerData.date_of_birth.trim()) errors.date_of_birth = 'Date of birth is required';
-    if (!customerData.privacy_policy_accepted) errors.privacy_policy_accepted = 'Privacy policy must be accepted';
-    if (!customerData.terms_conditions_accepted) errors.terms_conditions_accepted = 'Terms and conditions must be accepted';
 
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
@@ -341,74 +338,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                           <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
                         )}
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Date of Birth */}
-                  <div>
-                    <Label htmlFor="date_of_birth" className="text-sm font-medium text-gray-700">Date of Birth *</Label>
-                    <Input
-                      id="date_of_birth"
-                      type="date"
-                      value={customerData.date_of_birth}
-                      onChange={(e) => handleInputChange('date_of_birth', e.target.value)}
-                      required
-                      className={`mt-1 transition-all duration-300 ${
-                        showValidation && !customerData.date_of_birth.trim() 
-                          ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                          : 'focus:ring-2 focus:ring-blue-200'
-                      }`}
-                    />
-                    {fieldErrors.date_of_birth && (
-                      <p className="text-red-500 text-sm mt-1">{fieldErrors.date_of_birth}</p>
-                    )}
-                  </div>
-
-                  {/* Legal Checkboxes */}
-                  <div className="space-y-4 border-t pt-6">
-                    <div className="flex items-start space-x-3">
-                      <Checkbox
-                        id="privacy_policy"
-                        checked={customerData.privacy_policy_accepted}
-                        onCheckedChange={(checked) => handleInputChange('privacy_policy_accepted', checked as boolean)}
-                        className={showValidation && !customerData.privacy_policy_accepted ? 'border-red-500' : ''}
-                      />
-                      <div className="text-sm">
-                        <label htmlFor="privacy_policy" className="font-medium text-gray-700 cursor-pointer">
-                          I agree to the <a href="/privacy-policy" target="_blank" className="text-blue-600 hover:underline">Privacy Policy</a> *
-                        </label>
-                        {fieldErrors.privacy_policy_accepted && (
-                          <p className="text-red-500 text-sm mt-1">{fieldErrors.privacy_policy_accepted}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <Checkbox
-                        id="terms_conditions"
-                        checked={customerData.terms_conditions_accepted}
-                        onCheckedChange={(checked) => handleInputChange('terms_conditions_accepted', checked as boolean)}
-                        className={showValidation && !customerData.terms_conditions_accepted ? 'border-red-500' : ''}
-                      />
-                      <div className="text-sm">
-                        <label htmlFor="terms_conditions" className="font-medium text-gray-700 cursor-pointer">
-                          I agree to the <a href="/terms" target="_blank" className="text-blue-600 hover:underline">Terms & Conditions</a> *
-                        </label>
-                        {fieldErrors.terms_conditions_accepted && (
-                          <p className="text-red-500 text-sm mt-1">{fieldErrors.terms_conditions_accepted}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <Checkbox
-                        id="marketing_opt_in"
-                        checked={customerData.marketing_opt_in}
-                        onCheckedChange={(checked) => handleInputChange('marketing_opt_in', checked as boolean)}
-                      />
-                      <label htmlFor="marketing_opt_in" className="text-sm font-medium text-gray-700 cursor-pointer">
-                        I would like to receive marketing communications about products and services
-                      </label>
                     </div>
                   </div>
 
