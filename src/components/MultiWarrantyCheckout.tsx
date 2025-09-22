@@ -612,17 +612,17 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                            </div>
                            <div className="space-y-1">
                              {(() => {
-                               // Helper function to get auto-included add-ons based on payment type
-                               const getAutoIncludedAddOns = (paymentType: string) => {
-                                 switch (paymentType) {
-                                   case 'two_yearly':
-                                     return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
-                                   case 'three_yearly':
-                                     return ['breakdown', 'motFee', 'european', 'rental']; // 3-Year: Vehicle recovery, MOT test fee, Europe cover, Vehicle rental
-                                   default:
-                                     return []; // 1-Year: No auto-included add-ons
-                                 }
-                               };
+                                // Helper function to get auto-included add-ons based on payment type
+                                const getAutoIncludedAddOns = (paymentType: string) => {
+                                  switch (paymentType) {
+                                    case 'two_yearly':
+                                      return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+                                    case 'three_yearly':
+                                      return ['breakdown', 'motFee', 'european', 'rental']; // 3-Year: Vehicle recovery, MOT test fee, Europe cover, Vehicle rental
+                                    default:
+                                      return []; // 1-Year: No auto-included add-ons
+                                  }
+                                };
                                
                                const autoIncluded = getAutoIncludedAddOns(item.paymentType);
                                const isAutoIncluded = (addOnKey: string) => autoIncluded.includes(addOnKey);
