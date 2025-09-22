@@ -444,7 +444,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                         <img 
                           src={whatsappIconNew} 
                           alt="WhatsApp" 
-                          className="w-5 h-5"
+                          className="w-6 h-6"
                         />
                         WhatsApp Us
                       </Button>
@@ -1044,7 +1044,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <img 
               src={whatsappIconNew} 
               alt="WhatsApp" 
-              className="w-8 h-8"
+              className="w-12 h-12"
             />
           </a>
           
