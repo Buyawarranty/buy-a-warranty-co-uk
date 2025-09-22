@@ -1572,11 +1572,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      </div>
                    </div>
                    
-                    {/* Pricing */}
+                     {/* Pricing */}
                     <div className="mb-4 text-center mt-auto">
-                     <div className="text-3xl font-bold text-black mb-1">
-                       £{monthlyPrice}/month
-                     </div>
+                      <div className="text-3xl font-bold text-black mb-1">
+                        £{Math.round(totalPrice / 12)}/month
+                      </div>
                       <div className="text-sm text-gray-600 mb-2">
                         {option.id === '12months' && (
                           <div className="flex items-center justify-center gap-1 font-bold">
