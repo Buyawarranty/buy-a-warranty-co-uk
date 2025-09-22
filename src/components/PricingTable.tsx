@@ -412,7 +412,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return excessData[claimLimit as keyof typeof excessData] || excessData[1250];
   };
 
-  const calculatePlanPrice = () => {
+  // Memoized price calculation to prevent pricing fluctuations
+  const basePlanPrice = useMemo(() => {
     console.log('💰 calculatePlanPrice Debug:', {
       paymentType,
       voluntaryExcess,
@@ -439,7 +440,38 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     });
     
     return adjustedPrice;
-  };
+  }, [paymentType, voluntaryExcess, selectedClaimLimit, vehiclePriceAdjustment]);
+
+  // Memoized add-on price calculation
+  const addOnPrice = useMemo(() => {
+    const autoIncluded = getAutoIncludedAddOns(paymentType);
+    let protectionAddOnPrice = 0;
+    
+    if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) protectionAddOnPrice += 3.99 * 12;
+    if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) protectionAddOnPrice += 6.99 * 12;
+    if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) protectionAddOnPrice += 7.99 * 12;
+    if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
+      protectionAddOnPrice += 9.99 * 12;
+    }
+    if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12;
+    if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12;
+    if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12;
+    if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12;
+    if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12;
+    if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
+    
+    return protectionAddOnPrice;
+  }, [paymentType, selectedProtectionAddOns]);
+
+  // Memoized total price calculation
+  const totalPrice = useMemo(() => {
+    return basePlanPrice + addOnPrice;
+  }, [basePlanPrice, addOnPrice]);
+
+  // Memoized monthly price calculation
+  const monthlyPrice = useMemo(() => {
+    return Math.round(totalPrice / 12);
+  }, [totalPrice]);
 
   // Get the plan that matches the selected claim limit
   const getSelectedPlan = (): Plan | null => {
@@ -461,7 +493,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     
     // Calculate savings compared to 12-month pricing
     const twelveMonthPrice = getPricingData(voluntaryExcess, selectedClaimLimit, '12months');
-    const currentPrice = calculatePlanPrice();
+    const currentPrice = basePlanPrice;
     const monthlyEquivalent = currentPrice / (paymentType === '24months' ? 24 : 36);
     const monthlyTwelve = twelveMonthPrice / 12;
     
@@ -537,7 +569,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       const durationMonths = 12;
       
       // Get base price for 1 year using the pricing matrix
-      const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, initialPaymentType);
+      const basePriceFor12Months = getPricingData(voluntaryExcess, selectedClaimLimit, initialPaymentType);
       
       // Protection add-ons: Calculate for 12 months payment period with auto-included logic
       let recurringAddonTotal = 0; // Monthly add-ons (calculated for 12 months)  
@@ -561,8 +593,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) oneTimeAddonTotal += 19.99;
       
       // Calculate total price for 1 year with vehicle adjustments applied
-      const adjustedBasePrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
-      const totalPrice = adjustedBasePrice + recurringAddonTotal + oneTimeAddonTotal;
+      const adjustedBasePrice = applyPriceAdjustment(basePriceFor12Months, vehiclePriceAdjustment);
+      const totalPriceFor12Months = adjustedBasePrice + recurringAddonTotal + oneTimeAddonTotal;
       
       // Don't allow progression if vehicle is too old
       if (vehicleAgeError) {
@@ -574,11 +606,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         planId: selectedPlan.id,
         planName: selectedPlan.name,
         paymentType: initialPaymentType,
-        basePrice,
+        basePrice: basePriceFor12Months,
         adjustedBasePrice,
         recurringAddonTotal,
         oneTimeAddonTotal,
-        totalPrice,
+        totalPrice: totalPriceFor12Months,
         voluntaryExcess,
         selectedClaimLimit,
         selectedAddOns: selectedAddOns[selectedPlan.id],
@@ -591,8 +623,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         initialPaymentType, 
         selectedPlan.name,
         {
-          totalPrice, // 1-year total price
-          monthlyPrice: Math.round(totalPrice / 12), // 1-year monthly price
+          totalPrice: totalPriceFor12Months, // 1-year total price
+          monthlyPrice: Math.round(totalPriceFor12Months / 12), // 1-year monthly price
           voluntaryExcess,
           selectedAddOns: selectedAddOns[selectedPlan.id] || {},
           protectionAddOns: selectedProtectionAddOns,
@@ -1778,31 +1810,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <div className="text-right">
                 {/* Monthly Price - Main Hook */}
                 <div className="text-3xl font-bold text-gray-900 mb-1">
-                  £{(() => {
-                    if (!selectedPlan) return '0';
-                    
-                     // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
-                     const adjustedPrice = calculatePlanPrice();
-                     
-                     // Add protection add-ons (charge monthly rates for 12 months payment period)
-                     const autoIncluded = getAutoIncludedAddOns(paymentType);
-                     let protectionAddOnPrice = 0;
-                     if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) protectionAddOnPrice += 3.99 * 12;
-                     if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) protectionAddOnPrice += 6.99 * 12;
-                     if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) protectionAddOnPrice += 7.99 * 12;
-                     if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
-                       protectionAddOnPrice += 9.99 * 12; // £9.99/mo for 12 months
-                     }
-                     if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12;
-                     if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12;
-                      if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12;
-                     if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12;
-                     if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12;
-                     if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
-                    
-                     const totalPrice = adjustedPrice + protectionAddOnPrice;
-                     return Math.round(totalPrice / 12); // Always divide by 12 months for payment
-                  })()}/month
+                  £{monthlyPrice}/month
                 </div>
                 
                 {/* Payment Terms - Conditional Display */}
@@ -1817,31 +1825,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 
                 {/* Total Cost - Transparent */}
                 <div className="text-sm font-semibold text-gray-400">
-                  Total: £{(() => {
-                    if (!selectedPlan) return '0';
-                    
-                      // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
-                      const adjustedPrice = calculatePlanPrice();
-                      
-                      // Add protection add-ons (charge monthly rates for 12 months payment period)
-                      const autoIncluded = getAutoIncludedAddOns(paymentType);
-                      let protectionAddOnPrice = 0;
-                      if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) protectionAddOnPrice += 3.99 * 12;
-                      if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) protectionAddOnPrice += 6.99 * 12;
-                      if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) protectionAddOnPrice += 7.99 * 12;
-                      if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
-                        protectionAddOnPrice += 9.99 * 12; // £9.99/mo for 12 months
-                      }
-                      if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12;
-                      if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12;
-                       if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12;
-                      if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12;
-                      if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12;
-                      if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
-                     
-                     const totalPrice = adjustedPrice + protectionAddOnPrice;
-                     return totalPrice;
-                  })()}
+                  Total: £{totalPrice}
                 </div>
               </div>
               <Button
@@ -1880,32 +1864,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <div className="flex flex-col flex-1 text-center">
               {/* Monthly Price - Main Hook */}
               <div className="text-2xl font-bold text-gray-900 mb-1">
-                £{(() => {
-                  if (!selectedPlan) return '0';
-                  
-                  // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)
-                  const adjustedPrice = calculatePlanPrice();
-                  
-                  // Add protection add-ons (only calculate non-auto-included ones)
-                  const autoIncluded = getAutoIncludedAddOns(paymentType);
-                  const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                  let protectionAddOnPrice = 0;
-                   if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) protectionAddOnPrice += 3.99 * 12;
-                   if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) protectionAddOnPrice += 6.99 * 12;
-                   if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) protectionAddOnPrice += 7.99 * 12;
-                   if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
-                     protectionAddOnPrice += 9.99 * 12; // £9.99/mo for 12 months
-                   }
-                   if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12;
-                   if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12;
-                   if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12;
-                   if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12;
-                   if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12;
-                   if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
-                  
-                  const totalPrice = adjustedPrice + protectionAddOnPrice;
-                  return Math.round(totalPrice / 12); // Always divide by 12 months for payment
-                })()}/month
+                £{monthlyPrice}/month
               </div>
               
               {/* Payment Terms and Total on same line for footer */}
@@ -1920,32 +1879,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </span>
                 <span className="text-gray-400">•</span>
                 <span className="font-semibold text-gray-400">
-                  Total: £{(() => {
-                    if (!selectedPlan) return '0';
-                    
-                     // Use calculatePlanPrice() which applies vehicle adjustments (including 50% motorbike discount)  
-                     const adjustedPrice = calculatePlanPrice();
-                     
-                     // Add protection add-ons (only calculate non-auto-included ones)
-                     const autoIncluded = getAutoIncludedAddOns(paymentType);
-                     const durationMonths = paymentType === '12months' ? 12 : paymentType === '24months' ? 24 : 36;
-                     let protectionAddOnPrice = 0;
-                     if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) protectionAddOnPrice += 3.99 * durationMonths;
-                     if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) protectionAddOnPrice += 6.99 * durationMonths;
-                     if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) protectionAddOnPrice += 7.99 * durationMonths;
-                     if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
-                       protectionAddOnPrice += 9.99 * durationMonths; // £9.99/mo consistently
-                     }
-                     if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * durationMonths;
-                     if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * durationMonths;
-                     if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * durationMonths;
-                     if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * durationMonths;
-                     if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * durationMonths;
-                     if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
-                     
-                     const totalPrice = adjustedPrice + protectionAddOnPrice;
-                     return totalPrice;
-                  })()}
+                  Total: £{totalPrice}
                 </span>
               </div>
             </div>
