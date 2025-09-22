@@ -467,7 +467,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
               {/* Main Headline */}
               <div className="space-y-2 mb-2 sm:mb-4">
-                <h1 className="text-xl sm:text-3xl lg:text-5xl font-black text-gray-900 leading-tight">
+                <h1 className="text-2xl sm:text-4xl lg:text-6xl font-black text-gray-900 leading-tight">
                   We{"'"}ve got you
                   <br className="hidden sm:block" />
                   <span className="sm:hidden"> </span>covered

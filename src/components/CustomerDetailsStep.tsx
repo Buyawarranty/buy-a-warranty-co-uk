@@ -1061,6 +1061,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
        </div>
      </div>
    );
- };
+};
 
- export default CustomerDetailsStep;
+export default CustomerDetailsStep;
