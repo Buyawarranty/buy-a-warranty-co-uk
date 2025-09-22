@@ -115,6 +115,18 @@ interface Customer {
   activation_email_status?: 'sent' | 'not_sent';
   assigned_to?: string;
   assigned_admin_name?: string;
+  // Add-on coverage fields
+  tyre_cover?: boolean;
+  wear_tear?: boolean;
+  europe_cover?: boolean;
+  transfer_cover?: boolean;
+  breakdown_recovery?: boolean;
+  vehicle_rental?: boolean;
+  mot_fee?: boolean;
+  claim_limit?: number;
+  mot_repair?: boolean;
+  lost_key?: boolean;
+  consequential?: boolean;
   admin_users?: {
     id: string;
     email: string;
@@ -2259,25 +2271,23 @@ export const CustomersTab = () => {
                                 />
                               </div>
 
-                              {/* Coverage Details Section */}
-                              {selectedCustomer.customer_policies?.[0] && (
-                                <div className="space-y-4">
-                                  <h3 className="text-lg font-semibold">Coverage Details</h3>
-                                   <CoverageDetailsDisplay
-                                     mot_fee={(selectedCustomer.customer_policies[0] as any).mot_fee}
-                                     tyre_cover={(selectedCustomer.customer_policies[0] as any).tyre_cover}
-                                     wear_tear={(selectedCustomer.customer_policies[0] as any).wear_tear}
-                                     europe_cover={(selectedCustomer.customer_policies[0] as any).europe_cover}
-                                     transfer_cover={(selectedCustomer.customer_policies[0] as any).transfer_cover}
-                                     breakdown_recovery={(selectedCustomer.customer_policies[0] as any).breakdown_recovery}
-                                     vehicle_rental={(selectedCustomer.customer_policies[0] as any).vehicle_rental}
-                                     mot_repair={(selectedCustomer.customer_policies[0] as any).mot_repair}
-                                     lost_key={(selectedCustomer.customer_policies[0] as any).lost_key}
-                                     consequential={(selectedCustomer.customer_policies[0] as any).consequential}
-                                     claim_limit={(selectedCustomer.customer_policies[0] as any).claim_limit}
-                                   />
-                                </div>
-                              )}
+              {/* Coverage Details Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Coverage Details & Add-ons</h3>
+                <CoverageDetailsDisplay
+                   mot_fee={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).mot_fee : selectedCustomer.mot_fee}
+                   tyre_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).tyre_cover : selectedCustomer.tyre_cover}
+                   wear_tear={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).wear_tear : selectedCustomer.wear_tear}
+                   europe_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).europe_cover : selectedCustomer.europe_cover}
+                   transfer_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).transfer_cover : selectedCustomer.transfer_cover}
+                   breakdown_recovery={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).breakdown_recovery : selectedCustomer.breakdown_recovery}
+                   vehicle_rental={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).vehicle_rental : selectedCustomer.vehicle_rental}
+                   mot_repair={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).mot_repair : selectedCustomer.mot_repair}
+                   lost_key={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).lost_key : selectedCustomer.lost_key}
+                   consequential={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).consequential : selectedCustomer.consequential}
+                   claim_limit={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).claim_limit : selectedCustomer.claim_limit}
+                 />
+              </div>
 
                               {/* Notes Section */}
                               <div className="space-y-4">
