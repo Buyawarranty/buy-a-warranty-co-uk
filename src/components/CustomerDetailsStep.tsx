@@ -399,7 +399,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Duration</span>
-                      <span className="font-semibold">{getWarrantyDurationInMonths(paymentType)} months</span>
+                      <span className="font-semibold">{paymentType === '12months' 
+                        ? '1 Year'
+                        : paymentType === '24months' 
+                          ? '2 Years'
+                          : '3 Years'
+                      }</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Vehicle</span>
@@ -407,7 +412,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Vehicle Registration</span>
-                      <span className="font-semibold">🇬🇧 UK {vehicleData.regNumber}</span>
+                      <span className="font-semibold">{vehicleData.regNumber}</span>
                     </div>
                   </div>
 
