@@ -74,7 +74,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   });
 
   const [paymentMethod, setPaymentMethod] = useState<'bumper' | 'stripe'>('bumper');
-  const [loading, setLoading] = useState(false);
+  
   const [showValidation, setShowValidation] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [addAnotherWarrantyRequested, setAddAnotherWarrantyRequested] = useState(false);
@@ -144,8 +144,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       payment_method: paymentMethod
     });
 
-    setLoading(true);
-
     try {
       const finalPrice = paymentMethod === 'stripe' ? discountedStripePrice : discountedBumperPrice;
       
@@ -168,8 +166,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     } catch (error) {
       console.error('Error submitting customer details:', error);
       toast.error('An error occurred. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -563,11 +559,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     {/* Complete Purchase Button */}
                     <Button
                       onClick={handleSubmit}
-                      disabled={loading}
                       className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 text-lg rounded-lg"
                       size="lg"
                     >
-                      {loading ? 'Processing...' : 'Complete Purchase'}
+                      Complete Purchase
                     </Button>
 
                     <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
