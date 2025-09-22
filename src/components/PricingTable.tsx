@@ -715,7 +715,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-orange-100 rounded-full">
-              <Settings className="w-6 h-6 text-orange-500" />
+              <Shield className="w-6 h-6 text-orange-500" />
             </div>
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
               Customise your warranty
