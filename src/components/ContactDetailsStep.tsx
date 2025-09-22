@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Check } from 'lucide-react';
+import { trackFormSubmission } from '@/utils/analytics';
 
 interface ContactDetailsStepProps {
   onNext: (data: { email: string; phone: string; firstName: string; lastName: string; address: string }) => void;
@@ -61,6 +62,13 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && phone && firstName && lastName && address) {
+      // Track contact details form completion
+      trackFormSubmission('contact_details', {
+        has_email: !!email,
+        has_phone: !!phone,
+        has_address: !!address
+      });
+      
       onNext({ 
         email, 
         phone,

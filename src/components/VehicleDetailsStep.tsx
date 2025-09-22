@@ -5,6 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedButton } from '@/components/ui/protected-button';
 import { validateVehicleEligibility } from '@/lib/vehicleValidation';
+import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 
 
 interface VehicleDetailsStepProps {
@@ -272,6 +273,13 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         }
         
         // Vehicle is eligible - proceed
+        trackFormSubmission('vehicle_details', {
+          entry_type: 'manual',
+          make: make,
+          year: year,
+          vehicle_type: vehicleType
+        });
+        
         onNext({ 
           regNumber, 
           mileage: rawMileage,
@@ -300,6 +308,13 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             submitData.blockReason = vehicleData.blockReason;
           }
         }
+        
+        trackFormSubmission('vehicle_details', {
+          entry_type: 'auto_detected',
+          make: vehicleData?.make,
+          year: vehicleData?.yearOfManufacture,
+          vehicle_found: !!vehicleData?.found
+        });
         
         onNext(submitData);
       }

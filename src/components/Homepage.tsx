@@ -16,6 +16,7 @@ import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIconNew from '@/assets/whatsapp-icon-new.png';
 import pandaVehicleCollection from '@/assets/panda-vehicle-collection-hero.png';
 import pandaCelebratingCar from '@/assets/panda-celebrating-orange-car.png';
+import { trackButtonClick, trackEvent } from '@/utils/analytics';
 
 interface VehicleData {
   regNumber: string;
@@ -110,6 +111,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   };
 
   const scrollToQuoteForm = () => {
+    trackButtonClick('scroll_to_quote_form');
     const quoteSection = document.getElementById('quote-form');
     if (quoteSection) {
       quoteSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -124,6 +126,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   };
 
   const handleGetQuote = async () => {
+    // Track main CTA button click
+    trackButtonClick('get_quote_main', {
+      has_reg_number: !!regNumber.trim(),
+      has_mileage: !!mileage.trim(),
+      mileage_value: mileage
+    });
+    
     // Check if registration number is entered
     if (!regNumber.trim()) {
       toast({

@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import AddAnotherWarrantyOffer from '@/components/AddAnotherWarrantyOffer';
 import { useAuth } from '@/hooks/useAuth';
+import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 
 export interface CustomerDetailsStepProps {
   vehicleData: {
@@ -122,8 +123,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     
     if (!validateForm()) {
       toast.error('Please fill in all required fields');
+      trackEvent('form_validation_error', { form_name: 'customer_details' });
       return;
     }
+
+    // Track customer details form submission
+    trackFormSubmission('customer_details', {
+      payment_type: paymentType,
+      payment_method: paymentMethod
+    });
 
     setLoading(true);
 

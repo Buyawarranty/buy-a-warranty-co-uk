@@ -8,6 +8,7 @@ import { ArrowLeft, CreditCard, CheckCircle, AlertCircle, Plus, Flame } from 'lu
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CartItem } from '@/contexts/CartContext';
+import { trackFormSubmission, trackConversion, trackEvent } from '@/utils/analytics';
 
 interface MultiWarrantyCheckoutProps {
   items: CartItem[];
@@ -204,11 +205,19 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     e.preventDefault();
     setShowValidation(true);
     
+    // Track checkout attempt
+    trackEvent('checkout_start', {
+      payment_method: selectedPaymentMethod,
+      item_count: items.length,
+      total_value: totalPrice
+    });
+    
     const errors = validateFields();
     setFieldErrors(errors);
     
     if (Object.keys(errors).length > 0) {
       toast.error('Please complete all required fields correctly');
+      trackEvent('checkout_error', { error_type: 'validation_failed' });
       return;
     }
 
@@ -283,9 +292,23 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           
           if (stripeResponse.error) throw stripeResponse.error;
           if (stripeResponse.data.url) {
+            // Track successful checkout redirect to Stripe (after Bumper fallback)
+            trackConversion('checkout_redirect', finalPrice);
+            trackEvent('payment_redirect', { 
+              method: 'stripe_fallback', 
+              amount: stripeDiscountedPrice,
+              item_count: items.length 
+            });
             window.location.href = stripeResponse.data.url;
           }
         } else if (data.url) {
+          // Track successful checkout redirect to Bumper
+          trackConversion('checkout_redirect', finalPrice);
+          trackEvent('payment_redirect', { 
+            method: 'bumper', 
+            amount: finalPrice,
+            item_count: items.length 
+          });
           // Redirect to Bumper checkout
           window.location.href = data.url;
         } else {
@@ -326,6 +349,13 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         if (error) throw error;
 
         if (data.url) {
+          // Track successful checkout redirect to Stripe
+          trackConversion('checkout_redirect', stripeDiscountedPrice);
+          trackEvent('payment_redirect', { 
+            method: 'stripe_direct', 
+            amount: stripeDiscountedPrice,
+            item_count: items.length 
+          });
           // Redirect to Stripe checkout
           window.location.href = data.url;
         } else {

@@ -6,6 +6,7 @@ import { X, Gift, Copy, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
+import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 
 interface DiscountPopupProps {
   isOpen: boolean;
@@ -56,12 +57,16 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Track discount popup email submission
+    trackFormSubmission('discount_email', { email_provided: !!email });
+    
     if (!email) {
       toast({
         title: "Email Required",
         description: "Please enter your email address",
         variant: "destructive"
       });
+      trackEvent('form_error', { form_name: 'discount_email', error: 'email_missing' });
       return;
     }
 
@@ -85,6 +90,16 @@ export const DiscountPopup: React.FC<DiscountPopupProps> = ({ isOpen, onClose })
 
       setDiscountCode(codeString);
       setShowSuccess(true);
+
+      // Track successful discount code generation
+      trackEvent('discount_code_generated', { 
+        email: email,
+        discount_code: codeString 
+      });
+      trackEvent('conversion', { 
+        conversion_type: 'discount_signup',
+        value: 25 
+      });
 
       // Present unwrapping effect
       confetti({
