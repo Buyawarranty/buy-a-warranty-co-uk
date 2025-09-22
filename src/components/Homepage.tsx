@@ -540,7 +540,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Registration Input */}
-              <div className="space-y-2 sm:space-y-3 w-full max-w-lg">
+              <div className="space-y-2 sm:space-y-3 w-full max-w-sm mx-auto lg:mx-0">
                 <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full">
                   {/* UK Section with flag */}
                   <div className="bg-blue-600 text-white font-bold px-2 sm:px-3 md:px-4 py-2 sm:py-4 flex items-center justify-center min-w-[45px] sm:min-w-[70px] md:min-w-[80px] h-[48px] sm:h-[60px] md:h-[66px]">
