@@ -169,6 +169,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           </Button>
         </div>
 
+        {/* Header with Clickable Logo */}
+        <div className="flex justify-center mb-8">
+          <a href="/" className="hover:opacity-80 transition-opacity">
+            <img 
+              src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+              alt="Buy a Warranty" 
+              className="h-10 w-auto"
+            />
+          </a>
+        </div>
+
 
         {/* Customer Details Form */}
         <Card className="border border-gray-200">
