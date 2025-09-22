@@ -46,9 +46,17 @@ const Terms = () => {
       title: 'Introduction & Our Promise',
       content: (
         <div className="space-y-6">
-          <p className="text-gray-600">
-            Thank you for choosing our vehicle warranty protection. We've got you covered with comprehensive mechanical & electrical repairs, fast payouts and nationwide garage access.
-          </p>
+          <div className="space-y-4">
+            <p className="text-gray-600">
+              We know how important peace of mind is when it comes to car ownership, and that's exactly what we're here to provide.
+            </p>
+            <p className="text-gray-600">
+              With our warranty cover, you're backed by a reliable service that includes comprehensive protection for mechanical and electrical repairs, quick claims payouts, and access to trusted garages across the UK.
+            </p>
+            <p className="text-gray-600">
+              We're committed to making things simple, fair and stress-free - so if something goes wrong, we'll be here to help get you back on the road as quickly as possible.
+            </p>
+          </div>
         </div>
       )
     },
