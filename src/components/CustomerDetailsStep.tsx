@@ -77,17 +77,31 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [showValidation, setShowValidation] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [addAnotherWarrantyRequested, setAddAnotherWarrantyRequested] = useState(false);
+  const [appliedDiscountCode, setAppliedDiscountCode] = useState<string>('');
+  const [discountAmount, setDiscountAmount] = useState<number>(0);
   const { user } = useAuth();
+
+  // Check for discount code on component mount
+  useEffect(() => {
+    const savedDiscountCode = localStorage.getItem('secondWarrantyDiscountCode');
+    if (savedDiscountCode && savedDiscountCode.startsWith('SECOND10-')) {
+      setAppliedDiscountCode(savedDiscountCode);
+      setDiscountAmount(0.10); // 10% discount
+    }
+  }, []);
 
   // Calculate pricing with discounts
   const bumperTotalPrice = pricingData.totalPrice;
   const stripeTotalPrice = Math.round(pricingData.totalPrice * 0.95);
 
-  const baseDiscountedPrice = bumperTotalPrice * 0.9;
+  // Apply second warranty discount if available
+  const secondWarrantyDiscountMultiplier = appliedDiscountCode ? (1 - discountAmount) : 1;
+  const baseDiscountedPrice = bumperTotalPrice * 0.9 * secondWarrantyDiscountMultiplier;
   const discountedBumperPrice = Math.round(baseDiscountedPrice);
   const discountedStripePrice = Math.round(baseDiscountedPrice * 0.95);
 
   const hasAutoDiscount = true;
+  const hasSecondWarrantyDiscount = !!appliedDiscountCode;
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -140,8 +154,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         paymentMethod,
         finalPrice,
         planId,
-        paymentType
+        paymentType,
+        discountCode: appliedDiscountCode,
+        discountAmount: hasSecondWarrantyDiscount ? discountAmount : 0,
+        addAnotherWarranty: addAnotherWarrantyRequested
       });
+
+      // Clear the discount code after use
+      if (appliedDiscountCode) {
+        localStorage.removeItem('secondWarrantyDiscountCode');
+        localStorage.removeItem('addAnotherWarrantyDiscount');
+      }
     } catch (error) {
       console.error('Error submitting customer details:', error);
       toast.error('An error occurred. Please try again.');
@@ -431,11 +454,19 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             </div>
                             <p className="text-sm text-gray-600">
                               Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
-                              {hasAutoDiscount && (
+                              {hasSecondWarrantyDiscount && (
+                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% second warranty discount + 10% multi-warranty discount applied)</span>
+                              )}
+                              {!hasSecondWarrantyDiscount && hasAutoDiscount && (
                                 <span className="text-green-600"> (10% multi-warranty discount applied)</span>
                               )}
                               {hasAutoDiscount && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
+                              )}
+                              {hasSecondWarrantyDiscount && (
+                                <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded text-xs">
+                                  <span className="font-semibold text-orange-800">Discount Code Applied: {appliedDiscountCode}</span>
+                                </div>
                               )}
                             </p>
                           </div>
@@ -455,13 +486,21 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             </div>
                              <p className="text-sm text-gray-600">
                               Pay £{discountedStripePrice} upfront via card
-                              {hasAutoDiscount && (
+                              {hasSecondWarrantyDiscount && (
+                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% second warranty discount + 10% multi-warranty discount + 5% upfront discount)</span>
+                              )}
+                              {!hasSecondWarrantyDiscount && hasAutoDiscount && (
                                 <span className="text-green-600"> (10% multi-warranty discount + 5% upfront discount)</span>
                               )}
                               {hasAutoDiscount && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.9)}</span>
                               )}
-                            </p>
+                              {hasSecondWarrantyDiscount && (
+                                <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded text-xs">
+                                  <span className="font-semibold text-orange-800">Discount Code Applied: {appliedDiscountCode}</span>
+                                </div>
+                              )}
+                             </p>
                           </div>
                         </div>
                       </div>

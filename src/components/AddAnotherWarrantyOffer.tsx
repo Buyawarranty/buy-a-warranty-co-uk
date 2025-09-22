@@ -24,7 +24,8 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
     <Card className="border border-gray-200 bg-gray-50 mb-6">
       <CardContent className="p-4">
         <h3 className="text-lg font-medium text-gray-900 mb-3">
-          10% off a 2nd Vehicle Today after checkout
+          Get 10% Off a 2nd warranty today
+          <span className="block text-sm text-gray-600">(after checkout)</span>
         </h3>
         
         <Button

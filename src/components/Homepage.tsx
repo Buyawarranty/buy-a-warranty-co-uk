@@ -47,6 +47,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [vehicleAgeError, setVehicleAgeError] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showVoucherBanner, setShowVoucherBanner] = useState(false);
+  const [showSecondWarrantyDiscount, setShowSecondWarrantyDiscount] = useState(false);
+  const [discountCode, setDiscountCode] = useState('');
 
   useEffect(() => {
     // Check if user is returning from a successful purchase
@@ -57,6 +59,16 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       setShowVoucherBanner(true);
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Check if user has discount for second warranty
+    const hasSecondWarrantyDiscount = localStorage.getItem('addAnotherWarrantyDiscount');
+    if (hasSecondWarrantyDiscount === 'true') {
+      setShowSecondWarrantyDiscount(true);
+      // Generate unique discount code for this session
+      const code = `SECOND10-${Date.now().toString().slice(-6)}`;
+      setDiscountCode(code);
+      localStorage.setItem('secondWarrantyDiscountCode', code);
     }
   }, []);
 
@@ -463,6 +475,36 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <VoucherBanner placement="homepage" animate={true} />
               <span className="text-sm text-green-700 font-medium">Use code for your 2nd vehicle discount</span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Second Warranty Discount Banner */}
+      {showSecondWarrantyDiscount && (
+        <div className="bg-orange-50 border-b border-orange-200 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+            <div className="flex items-center gap-4 text-center">
+              <span className="text-xl font-bold text-orange-800">🎉 Your 10% Discount is Ready!</span>
+              <div className="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-lg">
+                {discountCode}
+              </div>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(discountCode);
+                  toast({ title: "Copied!", description: "Discount code copied to clipboard" });
+                }}
+                variant="outline"
+                size="sm"
+                className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white"
+              >
+                Copy Code
+              </Button>
+            </div>
+          </div>
+          <div className="text-center mt-2">
+            <p className="text-sm text-orange-700">
+              This code will be automatically applied at checkout for your second warranty
+            </p>
           </div>
         </div>
       )}
