@@ -94,13 +94,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const bumperTotalPrice = pricingData.totalPrice;
   const stripeTotalPrice = Math.round(pricingData.totalPrice * 0.95);
 
-  // Apply ONLY second warranty discount if there's a valid discount code
-  const secondWarrantyDiscountMultiplier = appliedDiscountCode ? (1 - discountAmount) : 1;
-  const baseDiscountedPrice = bumperTotalPrice * secondWarrantyDiscountMultiplier; // No multi-warranty discount
-  const discountedBumperPrice = Math.round(baseDiscountedPrice);
-  const discountedStripePrice = Math.round(baseDiscountedPrice * 0.95); // Only 5% upfront + second warranty discount
+  // Only apply discount if customer has a valid discount code (from completed purchase)
+  const hasValidDiscountCode = appliedDiscountCode && discountAmount > 0;
+  const discountedPrice = hasValidDiscountCode ? bumperTotalPrice * (1 - discountAmount) : bumperTotalPrice;
+  const discountedBumperPrice = Math.round(discountedPrice);
+  const discountedStripePrice = Math.round(discountedPrice * 0.95); // 5% upfront discount on discounted price
 
-  const hasSecondWarrantyDiscount = !!appliedDiscountCode;
+  const hasSecondWarrantyDiscount = hasValidDiscountCode;
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -477,7 +477,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <div className="flex items-center justify-between mb-2">
                               <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
                                <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                                  Save a further 5% (£{Math.round(baseDiscountedPrice * 0.05)})
+                                  Save a further 5% (£{Math.round(discountedPrice * 0.05)})
                                 </div>
                             </div>
                              <p className="text-sm text-gray-600">
