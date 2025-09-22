@@ -88,7 +88,7 @@ const addOnPackages = [
     icon: '🛠️',
     title: 'MOT Test Fee Cover',
     shortDescription: 'Coverage for MOT test fees when your vehicle fails its test.',
-    price: 3.99,
+    price: 1.99,
     priceType: 'monthly',
     bulletPoints: [
       'Covers MOT test fees on failure',

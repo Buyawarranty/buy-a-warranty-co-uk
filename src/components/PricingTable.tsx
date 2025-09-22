@@ -493,7 +493,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
       protectionPrice += 9.99 * 12; // £9.99/mo for 12 months - always same monthly charge
     }
-    if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionPrice += 3.99 * 12; // £3.99/mo for 12 months
+    if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionPrice += 1.99 * 12; // £1.99/mo for 12 months
     if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionPrice += 3 * 12; // £3/mo for 12 months
     if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionPrice += 5 * 12; // £5/mo for 12 months
     if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionPrice += 5.99 * 12; // £5.99/mo for 12 months
@@ -555,7 +555,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       }
       if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) recurringAddonTotal += 5.99 * 12; // £5.99/mo for 12 months
       if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) recurringAddonTotal += 4 * 12; // £4/mo for 12 months
-      if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) recurringAddonTotal += 3.99 * 12; // £3.99/mo for 12 months
+      if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) recurringAddonTotal += 1.99 * 12; // £1.99/mo for 12 months
       if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) recurringAddonTotal += 3 * 12; // £3/mo for 12 months
       if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) recurringAddonTotal += 5 * 12; // £5/mo for 12 months
       if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) oneTimeAddonTotal += 19.99;
@@ -1452,7 +1452,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               }
               if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12; // £5.99/mo for 12 months
               if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12; // £4/mo for 12 months
-              if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 3.99 * 12; // £3.99/mo for 12 months
+              if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12; // £1.99/mo for 12 months
               if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12; // £3/mo for 12 months
               if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12; // £5/mo for 12 months
               if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99; // One-time fee
@@ -1795,7 +1795,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      }
                      if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12;
                      if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12;
-                     if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 3.99 * 12;
+                      if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12;
                      if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12;
                      if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12;
                      if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
@@ -1834,7 +1834,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       }
                       if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12;
                       if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12;
-                      if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 3.99 * 12;
+                       if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12;
                       if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12;
                       if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12;
                       if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
@@ -1898,7 +1898,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    }
                    if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12;
                    if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12;
-                   if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 3.99 * 12;
+                   if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12;
                    if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12;
                    if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12;
                    if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
@@ -1938,7 +1938,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      }
                      if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * durationMonths;
                      if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * durationMonths;
-                     if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 3.99 * durationMonths;
+                     if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * durationMonths;
                      if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * durationMonths;
                      if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * durationMonths;
                      if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
