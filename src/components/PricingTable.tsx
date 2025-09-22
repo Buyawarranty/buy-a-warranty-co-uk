@@ -1471,23 +1471,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
               const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
               
-              // Get auto-included add-ons for THIS specific payment type (not global paymentType)
-              const autoIncluded = getAutoIncludedAddOns(option.id);
-              
-              // Calculate add-on costs - charge monthly rates, not total duration
+              // Calculate add-on costs independently - only use currently selected add-ons for the SELECTED plan
               let protectionAddOnPrice = 0;
-              if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) protectionAddOnPrice += 3.99 * 12; // £3.99/mo for 12 months
-              if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) protectionAddOnPrice += 6.99 * 12; // £6.99/mo for 12 months
-              if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) protectionAddOnPrice += 7.99 * 12; // £7.99/mo for 12 months
-              if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
-                protectionAddOnPrice += 9.99 * 12; // £9.99/mo for 12 months - always same monthly charge
+              
+              // Only add protection add-on costs if this is the currently selected payment type
+              if (option.id === paymentType) {
+                // Get auto-included add-ons for THIS specific payment type
+                const autoIncluded = getAutoIncludedAddOns(option.id);
+                
+                if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) protectionAddOnPrice += 3.99 * 12; // £3.99/mo for 12 months
+                if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) protectionAddOnPrice += 6.99 * 12; // £6.99/mo for 12 months
+                if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) protectionAddOnPrice += 7.99 * 12; // £7.99/mo for 12 months
+                if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
+                  protectionAddOnPrice += 9.99 * 12; // £9.99/mo for 12 months - always same monthly charge
+                }
+                if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12; // £5.99/mo for 12 months
+                if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12; // £4/mo for 12 months
+                if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12; // £1.99/mo for 12 months
+                if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12; // £3/mo for 12 months
+                if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12; // £5/mo for 12 months
+                if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99; // One-time fee
               }
-              if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12; // £5.99/mo for 12 months
-              if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12; // £4/mo for 12 months
-              if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12; // £1.99/mo for 12 months
-              if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12; // £3/mo for 12 months
-              if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12; // £5/mo for 12 months
-              if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99; // One-time fee
               
               const totalPrice = adjustedPrice + protectionAddOnPrice;
               const monthlyPrice = Math.round(totalPrice / 12); // Always divide by 12 months for payment
