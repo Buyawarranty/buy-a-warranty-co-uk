@@ -94,15 +94,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const bumperTotalPrice = pricingData.totalPrice;
   const stripeTotalPrice = Math.round(pricingData.totalPrice * 0.95);
 
-  // Apply second warranty discount ONLY if there's a valid discount code
+  // Apply ONLY second warranty discount if there's a valid discount code
   const secondWarrantyDiscountMultiplier = appliedDiscountCode ? (1 - discountAmount) : 1;
-  const baseDiscountedPrice = appliedDiscountCode 
-    ? bumperTotalPrice * 0.9 * secondWarrantyDiscountMultiplier  // Apply both 10% multi-warranty + second warranty discount
-    : bumperTotalPrice; // No discount for first-time customers
+  const baseDiscountedPrice = bumperTotalPrice * secondWarrantyDiscountMultiplier; // No multi-warranty discount
   const discountedBumperPrice = Math.round(baseDiscountedPrice);
-  const discountedStripePrice = Math.round(baseDiscountedPrice * 0.95);
+  const discountedStripePrice = Math.round(baseDiscountedPrice * 0.95); // Only 5% upfront + second warranty discount
 
-  const hasAutoDiscount = !!appliedDiscountCode; // Only show discount message when there's actually a discount code
   const hasSecondWarrantyDiscount = !!appliedDiscountCode;
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -457,12 +454,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <p className="text-sm text-gray-600">
                               Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
                               {hasSecondWarrantyDiscount && (
-                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% second warranty discount + 10% multi-warranty discount applied)</span>
+                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% second warranty discount applied)</span>
                               )}
-                              {!hasSecondWarrantyDiscount && hasAutoDiscount && (
-                                <span className="text-green-600"> (10% multi-warranty discount applied)</span>
-                              )}
-                              {hasAutoDiscount && (
+                              {hasSecondWarrantyDiscount && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
                               {hasSecondWarrantyDiscount && (
@@ -489,13 +483,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                              <p className="text-sm text-gray-600">
                               Pay £{discountedStripePrice} upfront via card
                               {hasSecondWarrantyDiscount && (
-                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% second warranty discount + 10% multi-warranty discount + 5% upfront discount)</span>
+                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% second warranty discount + 5% upfront discount)</span>
                               )}
-                              {!hasSecondWarrantyDiscount && hasAutoDiscount && (
-                                <span className="text-green-600"> (10% multi-warranty discount + 5% upfront discount)</span>
+                              {!hasSecondWarrantyDiscount && (
+                                <span className="text-green-600"> (5% upfront discount)</span>
                               )}
-                              {hasAutoDiscount && (
-                                <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice * 0.9)}</span>
+                              {hasSecondWarrantyDiscount && (
+                                <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
                               {hasSecondWarrantyDiscount && (
                                 <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded text-xs">
