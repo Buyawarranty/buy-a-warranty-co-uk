@@ -1868,7 +1868,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             <div className="flex flex-col flex-1 text-center">
               {/* Monthly Price - Main Hook */}
               <div className="text-2xl font-bold text-gray-900 mb-1">
-                £{monthlyPrice}/month
+                £{monthlyPrice}/month - {paymentType === '12months' 
+                  ? '1 Year Cover'
+                  : paymentType === '24months' 
+                    ? '2 Year Cover'
+                    : '3 Year Cover'
+                }
               </div>
               
               {/* Payment Terms and Total on same line for footer */}
