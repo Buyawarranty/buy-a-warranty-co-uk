@@ -564,37 +564,38 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     setLoading(prev => ({ ...prev, [selectedPlan.id]: true }));
     
     try {
-      // Always use 12 months for initial plan calculation (step 3 -> step 4)
-      const initialPaymentType = '12months';
-      const durationMonths = 12;
+      // Use the actually selected payment type instead of hardcoding to 12 months
+      const selectedPaymentType = paymentType;
+      const durationMonths = paymentType === '12months' ? 12 : 
+                            paymentType === '24months' ? 24 : 36;
       
-      // Get base price for 1 year using the pricing matrix
-      const basePriceFor12Months = getPricingData(voluntaryExcess, selectedClaimLimit, initialPaymentType);
+      // Get base price for selected duration using the pricing matrix
+      const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, selectedPaymentType);
       
-      // Protection add-ons: Calculate for 12 months payment period with auto-included logic
-      let recurringAddonTotal = 0; // Monthly add-ons (calculated for 12 months)  
+      // Protection add-ons: Calculate for selected payment period with auto-included logic
+      let recurringAddonTotal = 0; // Monthly add-ons (calculated for selected duration)  
       let oneTimeAddonTotal = 0;   // Transfer (one-time fee)
       
       // Get auto-included add-ons
       const autoIncluded = getAutoIncludedAddOns(paymentType);
       
-      // Recurring add-ons (only add to total if not auto-included) - always 12 months for payment
-      if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) recurringAddonTotal += 3.99 * 12; // £3.99/mo for 12 months
-      if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) recurringAddonTotal += 6.99 * 12; // £6.99/mo for 12 months
-      if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) recurringAddonTotal += 7.99 * 12; // £7.99/mo for 12 months
+      // Recurring add-ons (only add to total if not auto-included) - calculate for selected duration
+      if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) recurringAddonTotal += 3.99 * durationMonths; // £3.99/mo 
+      if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) recurringAddonTotal += 6.99 * durationMonths; // £6.99/mo 
+      if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) recurringAddonTotal += 7.99 * durationMonths; // £7.99/mo 
       if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
-        recurringAddonTotal += 9.99 * 12; // £9.99/mo for 12 months
+        recurringAddonTotal += 9.99 * durationMonths; // £9.99/mo 
       }
-      if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) recurringAddonTotal += 5.99 * 12; // £5.99/mo for 12 months
-      if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) recurringAddonTotal += 4 * 12; // £4/mo for 12 months
-      if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) recurringAddonTotal += 1.99 * 12; // £1.99/mo for 12 months
-      if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) recurringAddonTotal += 3 * 12; // £3/mo for 12 months
-      if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) recurringAddonTotal += 5 * 12; // £5/mo for 12 months
+      if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) recurringAddonTotal += 5.99 * durationMonths; // £5.99/mo 
+      if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) recurringAddonTotal += 4 * durationMonths; // £4/mo 
+      if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) recurringAddonTotal += 1.99 * durationMonths; // £1.99/mo 
+      if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) recurringAddonTotal += 3 * durationMonths; // £3/mo 
+      if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) recurringAddonTotal += 5 * durationMonths; // £5/mo 
       if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) oneTimeAddonTotal += 19.99;
       
-      // Calculate total price for 1 year with vehicle adjustments applied
-      const adjustedBasePrice = applyPriceAdjustment(basePriceFor12Months, vehiclePriceAdjustment);
-      const totalPriceFor12Months = adjustedBasePrice + recurringAddonTotal + oneTimeAddonTotal;
+      // Calculate total price for selected duration with vehicle adjustments applied
+      const adjustedBasePrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+      const totalPrice = adjustedBasePrice + recurringAddonTotal + oneTimeAddonTotal;
       
       // Don't allow progression if vehicle is too old
       if (vehicleAgeError) {
@@ -602,29 +603,30 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         return;
       }
       
-      console.log('Selected plan pricing data for 1 year:', {
+      console.log('Selected plan pricing data:', {
         planId: selectedPlan.id,
         planName: selectedPlan.name,
-        paymentType: initialPaymentType,
-        basePrice: basePriceFor12Months,
+        paymentType: selectedPaymentType,
+        durationMonths,
+        basePrice: basePrice,
         adjustedBasePrice,
         recurringAddonTotal,
         oneTimeAddonTotal,
-        totalPrice: totalPriceFor12Months,
+        totalPrice: totalPrice,
         voluntaryExcess,
         selectedClaimLimit,
         selectedAddOns: selectedAddOns[selectedPlan.id],
         protectionAddOns: selectedProtectionAddOns
       });
       
-      // Call onPlanSelected with the 1-year pricing data and selected options
+      // Call onPlanSelected with the correct pricing data and selected options
       onPlanSelected?.(
         selectedPlan.id, 
-        initialPaymentType, 
+        selectedPaymentType, 
         selectedPlan.name,
         {
-          totalPrice: totalPriceFor12Months, // 1-year total price
-          monthlyPrice: Math.round(totalPriceFor12Months / 12), // 1-year monthly price
+          totalPrice: totalPrice, 
+          monthlyPrice: Math.round(totalPrice / durationMonths), 
           voluntaryExcess,
           selectedAddOns: selectedAddOns[selectedPlan.id] || {},
           protectionAddOns: selectedProtectionAddOns,
