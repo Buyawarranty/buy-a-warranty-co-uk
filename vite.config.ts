@@ -34,7 +34,7 @@ export default defineConfig(({ mode }) => ({
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
           supabase: ['@supabase/supabase-js'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-tooltip', '@radix-ui/react-button'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-tooltip', '@radix-ui/react-slot'],
         },
       },
     },
