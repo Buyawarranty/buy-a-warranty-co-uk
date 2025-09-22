@@ -169,38 +169,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           </Button>
         </div>
 
-        {/* Progress Indicator */}
-        <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center space-x-4">
-            <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-            <div className="w-16 h-1 bg-green-500"></div>
-            <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-            <div className="w-16 h-1 bg-green-500"></div>
-            <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-            <div className="w-16 h-1 bg-green-500"></div>
-            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">4</div>
-          </div>
-        </div>
-
-        {/* Customer Details Section - Now Step 5 */}
-        <div className="bg-white border-2 border-white rounded-xl p-6 shadow-lg mb-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-              5
-            </div>
-            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <User className="w-5 h-5" />
-              Complete Your Order
-            </h3>
-          </div>
-          
-          <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-2 rounded-lg inline-flex items-center gap-2 mb-4">
-            <div className="w-4 h-4 bg-blue-600 text-white rounded flex items-center justify-center">
-              <span className="text-white font-bold text-xs">UK</span>
-            </div>
-            <span className="font-bold">{vehicleData.regNumber}</span>
-          </div>
-        </div>
 
         {/* Customer Details Form */}
         <Card className="border border-gray-200">
