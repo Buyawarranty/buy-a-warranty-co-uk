@@ -572,42 +572,29 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         </div>
       </div>
 
-      {/* Registration Plate Display - Homepage Style */}
-      <div className="max-w-4xl mx-auto px-6 pb-6">
-        <div className="flex justify-center">
-          <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black">
-            {/* UK Section with flag */}
-            <div className="bg-blue-600 text-white font-bold px-4 py-4 flex items-center justify-center min-w-[80px] h-[66px]">
-              <div className="flex flex-col items-center">
-                <div className="text-lg leading-tight mb-1">🇬🇧</div>
-                <div className="text-base font-bold leading-none">UK</div>
-              </div>
-            </div>
-            {/* Registration Display */}
-            <div className="bg-yellow-400 text-black flex-1 font-black px-6 py-4 uppercase tracking-wider h-[66px] flex items-center justify-center min-w-[200px]">
-              <span className="text-2xl">{vehicleData.regNumber}</span>
-            </div>
-          </div>
-        </div>
-        
-        {/* Change Option */}
-        <div className="flex justify-center mt-3">
-          <button 
-            onClick={onBack}
-            className="flex items-center gap-2 text-orange-500 hover:text-orange-600 font-medium text-sm transition-colors"
-          >
-            <Edit2 className="w-4 h-4" />
-            Change
-          </button>
-        </div>
-      </div>
-
+      {/* Registration Plate Display - Moved inside box 5 */}
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-left mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
             <Shield className="w-8 h-8 text-orange-500" />
             You're almost covered!
           </h1>
+          {/* Registration Plate inside box 5, replacing price */}
+          <div className="flex justify-center">
+            <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black">
+              {/* UK Section with flag */}
+              <div className="bg-blue-600 text-white font-bold px-4 py-4 flex items-center justify-center min-w-[80px] h-[66px]">
+                <div className="flex flex-col items-center">
+                  <div className="text-lg leading-tight mb-1">🇬🇧</div>
+                  <div className="text-base font-bold leading-none">UK</div>
+                </div>
+              </div>
+              {/* Registration Display */}
+              <div className="bg-yellow-400 text-black flex-1 font-black px-6 py-4 uppercase tracking-wider h-[66px] flex items-center justify-center min-w-[200px]">
+                <span className="text-2xl">{vehicleData.regNumber}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Customer Details Section - Now Step 5 */}
@@ -622,25 +609,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             </h3>
           </div>
           
-          {/* Selected Plan Summary */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-semibold text-gray-900">{planName.replace(/Premium/gi, 'Platinum')}</h4>
-                <p className="text-sm text-gray-600">{getWarrantyDurationDisplay(currentPaymentType)}</p>
-              </div>
-              <div className="text-right">
-                <div className="text-lg font-bold text-orange-600">
-                  £{currentPricingData?.monthlyPrice}/month
-                </div>
-                <div className="text-sm text-gray-500">
-                  Total: £{currentPricingData?.totalPrice}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Plans section removed per user request */}
+          {/* Removed price display here as per request */}
         </div>
 
         {/* Customer Details Form */}
@@ -662,7 +631,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             value={customerData.first_name}
                             onChange={(e) => handleInputChange('first_name', e.target.value)}
                             required
-                            className={`mt-1 ${fieldErrors.first_name ? 'border-red-500 focus:border-red-500' : ''}`}
+                            className={`mt-1 transition-all duration-300 ${
+                              showValidation && !customerData.first_name.trim() 
+                                ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                                : 'focus:ring-2 focus:ring-blue-200'
+                            }`}
                           />
                           {fieldErrors.first_name && (
                             <p className="text-red-500 text-sm mt-1">{fieldErrors.first_name}</p>
@@ -676,7 +649,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             value={customerData.last_name}
                             onChange={(e) => handleInputChange('last_name', e.target.value)}
                             required
-                            className={`mt-1 ${fieldErrors.last_name ? 'border-red-500 focus:border-red-500' : ''}`}
+                            className={`mt-1 transition-all duration-300 ${
+                              showValidation && !customerData.last_name.trim() 
+                                ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                                : 'focus:ring-2 focus:ring-blue-200'
+                            }`}
                           />
                           {fieldErrors.last_name && (
                             <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>
@@ -914,24 +891,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                            )}
                         </div>
 
-                        {/* Payment Summary */}
+                        {/* Vehicle Registration Display */}
                         <div className="border-t border-gray-200 pt-4 mb-6">
-                          <div className="text-green-600 font-semibold text-lg mb-2">
-                            Payment: £{Math.round(bumperTotalPrice / 12)} x 12 easy payments
-                          </div>
                           <div className="flex justify-between items-center">
-                            <span className="font-semibold text-gray-900">Total Price:</span>
+                            <span className="font-semibold text-gray-900">Vehicle Registration:</span>
                             <div className="text-right">
-                              <div className="font-semibold text-gray-900">
-                                £{Math.round(discountValidation?.isValid ? discountValidation.finalAmount : bumperTotalPrice)} for entire cover period
-                                {discountValidation?.isValid && (
-                                  <span className="text-green-600 text-sm ml-2">
-                                    (Discount applied: -£{Math.round(bumperTotalPrice - discountValidation.finalAmount)})
-                                  </span>
-                                )}
+                              <div className="font-semibold text-lg text-gray-900 bg-yellow-400 px-3 py-1 rounded border-2 border-blue-600 inline-flex items-center">
+                                <span className="bg-blue-600 text-white px-2 py-1 rounded-l text-sm font-bold mr-0">🇬🇧 UK</span>
+                                <span className="bg-yellow-400 text-black px-3 py-1 rounded-r font-bold">{vehicleData.regNumber}</span>
                               </div>
                             </div>
                           </div>
+                        </div>
 
                         {/* Discount Code Section */}
                         <div className="pt-4 border-t border-gray-200">
@@ -981,10 +952,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                               )}
                               {discountValidation.message}
                             </div>
-                          )}
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
                     {/* Payment Method */}
                     <div className="bg-white rounded-lg shadow-sm p-6 border">
@@ -1080,11 +1051,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         <div className="w-4 h-4 bg-gray-800 rounded"></div>
                         Secure checkout powered by Stripe
                       </div>
-                    </div>
-                  </div>
-                </div>
+                     </div>
+                   </div>
+                 </div>
               </CardContent>
             </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
