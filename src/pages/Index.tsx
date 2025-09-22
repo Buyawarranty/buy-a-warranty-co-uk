@@ -573,11 +573,18 @@ const Index = () => {
           {vehicleData && selectedPlan ? (
             <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><PandaLoadingSpinner /></div>}>
               <CustomerDetailsStep
-                vehicleData={vehicleData}
+                vehicleData={{
+                  ...vehicleData,
+                  make: vehicleData.make || 'Unknown'
+                }}
                 planId={selectedPlan.id}
                 paymentType={selectedPlan.paymentType}
                 planName={selectedPlan.name}
-                pricingData={selectedPlan.pricingData}
+                pricingData={{
+                  basePrice: selectedPlan.pricingData.totalPrice || 0,
+                  totalPrice: selectedPlan.pricingData.totalPrice || 0,
+                  ...selectedPlan.pricingData
+                }}
                 onNext={handleCustomerDetailsComplete}
                 onBack={() => handleBackToStep(3)}
               />

@@ -707,7 +707,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               </h2>
             </div>
             <Button
-              onClick={onBack}
+              onClick={() => window.location.href = '/'}
               variant="outline"
               size="sm"
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
