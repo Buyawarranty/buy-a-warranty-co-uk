@@ -562,10 +562,67 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             </form>
           </div>
 
-          {/* Order Summary */}
+          {/* Complete Your Order Section */}
           <div>
+            {/* Header with shield icon */}
+            <div className="mb-6 flex items-center gap-3">
+              <div className="bg-orange-100 p-2 rounded-full">
+                <div className="w-6 h-6 bg-orange-500 rounded-sm flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-white rounded-sm"></div>
+                </div>
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900">You're almost covered!</h1>
+            </div>
+
+            {/* Complete Your Order Card */}
+            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-gray-800 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                  5
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                  </svg>
+                  Complete Your Order
+                </h2>
+              </div>
+
+              {/* Plan Summary */}
+              {items.length > 0 && (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">{items[0].planName} Plan</h3>
+                    <p className="text-gray-600">
+                      {items[0].paymentType === 'yearly' ? '12 months' : 
+                       items[0].paymentType === 'two_yearly' ? '24 months' : '36 months'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-blue-600 text-white px-2 py-1 rounded-l flex items-center gap-1">
+                      <span className="text-xs">🇬🇧</span>
+                      <span className="text-sm font-medium">UK</span>
+                    </div>
+                    <div className="bg-yellow-400 text-black px-3 py-1 rounded-r font-bold">
+                      {customerData.postcode || 'Enter postcode'}
+                    </div>
+                    <button 
+                      type="button"
+                      className="text-orange-500 text-sm font-medium ml-2 hover:underline"
+                      onClick={() => {
+                        document.getElementById('postcode')?.focus();
+                      }}
+                    >
+                      Change
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Order Summary */}
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">Order Summary</h1>
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h3>
               
               {/* Discount Alert for Second Purchase */}
               {discountValidation && discountValidation.valid && (
