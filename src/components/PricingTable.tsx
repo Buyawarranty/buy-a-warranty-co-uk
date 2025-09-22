@@ -1679,7 +1679,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="text-center sm:text-left">
                     <p className="text-sm font-medium text-gray-700 mb-1">Don{"'"}t just take our word for it</p>
-                    <p className="text-xs text-gray-600">See what our customers say about our claims service</p>
+                    <p className="text-xs text-gray-600">See what our customers say about our warranty service</p>
                   </div>
                   <div className="flex-shrink-0">
                     <a 
