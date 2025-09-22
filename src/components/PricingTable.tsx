@@ -149,6 +149,18 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   // Normalize vehicle type once
   const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
 
+  // Helper function to get auto-included add-ons based on payment type
+  const getAutoIncludedAddOns = (paymentType: string) => {
+    switch (paymentType) {
+      case '24months':
+        return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+      case '36months':
+        return ['breakdown', 'motFee', 'european', 'rental']; // 3-Year: Vehicle recovery, MOT test fee, Europe cover, Vehicle rental
+      default:
+        return []; // 1-Year: No auto-included add-ons
+    }
+  };
+
   // Check vehicle age validation
   const vehicleAgeError = useMemo(() => {
     if (vehicleData?.year) {
@@ -499,18 +511,6 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     
     const savings = Math.round((monthlyTwelve - monthlyEquivalent) * (paymentType === '24months' ? 24 : 36));
     return savings > 0 ? savings : 0;
-  };
-
-  // Helper function to get auto-included add-ons based on payment type
-  const getAutoIncludedAddOns = (paymentType: string) => {
-    switch (paymentType) {
-      case '24months':
-        return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
-      case '36months':
-        return ['breakdown', 'motFee', 'european', 'rental']; // 3-Year: Vehicle recovery, MOT test fee, Europe cover, Vehicle rental
-      default:
-        return []; // 1-Year: No auto-included add-ons
-    }
   };
 
   const calculateAddOnPrice = (planId: string) => {
