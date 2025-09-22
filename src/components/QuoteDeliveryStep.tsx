@@ -177,6 +177,17 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     <section className="bg-[#e8f4fb] py-4 sm:py-6 min-h-screen px-3 sm:px-0">
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
+        {/* Header with Clickable Logo */}
+        <div className="flex justify-center mb-6">
+          <a href="/" className="hover:opacity-80 transition-opacity">
+            <img 
+              src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+              alt="Buy a Warranty" 
+              className="h-10 w-auto"
+            />
+          </a>
+        </div>
+
         {/* Vehicle Details Section */}
         <div className="bg-gray-100 rounded-lg p-3 sm:p-6 mb-2 sm:mb-4 border border-gray-300">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
