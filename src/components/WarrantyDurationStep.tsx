@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, Crown, Check, ArrowLeft, X, FileText, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -125,7 +125,12 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     return { totalPrice: discountedPrice, monthlyPrice };
   };
 
-  const durationOptions = [
+  // Memoize pricing calculations to prevent fluctuations on re-render
+  const pricingData12 = useMemo(() => getPricingForDuration('12months'), [pricingData]);
+  const pricingData24 = useMemo(() => getPricingForDuration('24months'), [pricingData]);
+  const pricingData36 = useMemo(() => getPricingForDuration('36months'), [pricingData]);
+
+  const durationOptions = useMemo(() => [
     {
       id: '12months',
       title: '1-Year Cover',
@@ -145,7 +150,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       exclusions: [
         'Pre-existing faults are not covered'
       ],
-      ...getPricingForDuration('12months'),
+      ...pricingData12,
       isPopular: false,
       isBestValue: false,
       isStarter: true,
@@ -173,8 +178,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       exclusions: [
         'Pre-existing faults are not covered'
       ],
-      ...getPricingForDuration('24months'),
-      originalPrice: getPricingForDuration('24months').totalPrice + 100,
+      ...pricingData24,
+      originalPrice: pricingData24.totalPrice + 100,
       isPopular: true,
       isBestValue: false,
       isStarter: false,
@@ -203,14 +208,14 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       exclusions: [
         'Pre-existing faults are not covered'
       ],
-      ...getPricingForDuration('36months'),
-      originalPrice: getPricingForDuration('36months').totalPrice + 200,
+      ...pricingData36,
+      originalPrice: pricingData36.totalPrice + 200,
       isPopular: false,
       isBestValue: true,
       isStarter: false,
       savePercent: '20%'
     }
-  ];
+  ], [pricingData12, pricingData24, pricingData36]);
 
   const handleContinue = () => {
     onNext(selectedPaymentType);
