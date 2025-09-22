@@ -94,13 +94,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const bumperTotalPrice = pricingData.totalPrice;
   const stripeTotalPrice = Math.round(pricingData.totalPrice * 0.95);
 
-  // Apply second warranty discount if available
+  // Apply second warranty discount ONLY if there's a valid discount code
   const secondWarrantyDiscountMultiplier = appliedDiscountCode ? (1 - discountAmount) : 1;
-  const baseDiscountedPrice = bumperTotalPrice * 0.9 * secondWarrantyDiscountMultiplier;
+  const baseDiscountedPrice = appliedDiscountCode 
+    ? bumperTotalPrice * 0.9 * secondWarrantyDiscountMultiplier  // Apply both 10% multi-warranty + second warranty discount
+    : bumperTotalPrice; // No discount for first-time customers
   const discountedBumperPrice = Math.round(baseDiscountedPrice);
   const discountedStripePrice = Math.round(baseDiscountedPrice * 0.95);
 
-  const hasAutoDiscount = true;
+  const hasAutoDiscount = !!appliedDiscountCode; // Only show discount message when there's actually a discount code
   const hasSecondWarrantyDiscount = !!appliedDiscountCode;
 
   const handleInputChange = (field: string, value: string | boolean) => {
