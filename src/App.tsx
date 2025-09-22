@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { CartProvider } from "@/contexts/CartContext";
-import { PandaLoadingSpinner } from "@/components/ui/panda-loading-spinner";
 
 // Eager load critical components
 import Index from "./pages/Index";
@@ -69,7 +68,7 @@ const App = () => (
             <ScrollToTop />
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
               <main className="flex-1 pb-32 w-full">
-                <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><PandaLoadingSpinner /></div>}>
+                <Suspense fallback={<div className="min-h-screen flex items-center justify-center"></div>}>
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/faq" element={<FAQ />} />

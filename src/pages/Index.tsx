@@ -6,7 +6,6 @@ import Homepage from '@/components/Homepage';
 import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
-import { PandaLoadingSpinner } from '@/components/ui/panda-loading-spinner';
 
 // Lazy load heavy components that are not immediately visible
 const RegistrationForm = lazy(() => import('@/components/RegistrationForm'));
@@ -521,7 +520,7 @@ const Index = () => {
       {currentStep === 2 && vehicleData && (
         <div className="bg-[#e8f4fb] w-full px-4 py-2 sm:py-4">
           <div className="max-w-4xl mx-auto">
-            <Suspense fallback={<div className="min-h-[40vh] flex items-center justify-center"><PandaLoadingSpinner /></div>}>
+            <Suspense fallback={<div className="min-h-[40vh]"></div>}>
               <QuoteDeliveryStep 
                 vehicleData={vehicleData}
                 onNext={handleQuoteDeliveryComplete}
@@ -539,7 +538,7 @@ const Index = () => {
             <MaintenanceBanner />
           </Suspense>
           {vehicleData ? (
-            <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><PandaLoadingSpinner /></div>}>
+            <Suspense fallback={<div className="min-h-[60vh]"></div>}>
               <PricingTable 
                 vehicleData={vehicleData} 
                 onBack={() => handleBackToStep(2)} 
@@ -571,7 +570,7 @@ const Index = () => {
       {currentStep === 4 && (
         <div className="bg-[#e8f4fb]">
           {vehicleData && selectedPlan ? (
-            <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><PandaLoadingSpinner /></div>}>
+            <Suspense fallback={<div className="min-h-[60vh]"></div>}>
               <CustomerDetailsStep
                 vehicleData={{
                   ...vehicleData,
