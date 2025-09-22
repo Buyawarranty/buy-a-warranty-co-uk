@@ -11,6 +11,16 @@ const logStep = (step: string, details?: any) => {
   console.log(`[SEND-POLICY-DOCUMENTS] ${step}${detailsStr}`);
 };
 
+// Generate random temporary password
+const generateTempPassword = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -399,10 +409,10 @@ serve(async (req) => {
         month: '2-digit', 
         year: 'numeric' 
       }),
-      // Add missing template variables to prevent template rendering errors
+      // Handle customer login credentials
       loginUrl: "https://buyawarranty.co.uk/customer-dashboard",
       loginEmail: recipientEmail,
-      temporaryPassword: policyNumber ? `Use your policy number: ${policyNumber}` : "Your policy number will serve as your initial password"
+      temporaryPassword: await ensureCustomerPassword(supabaseClient, recipientEmail, policyNumber)
     };
 
     const emailPayload: any = {
@@ -458,3 +468,77 @@ serve(async (req) => {
     });
   }
 });
+
+// Ensure customer has a proper password for login
+async function ensureCustomerPassword(supabaseClient: any, email: string, policyNumber: string): Promise<string> {
+  try {
+    logStep("Ensuring customer password", { email });
+    
+    // Check if customer already has a welcome email record with password
+    const { data: existingWelcome } = await supabaseClient
+      .from('welcome_emails')
+      .select('temporary_password')
+      .eq('email', email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    
+    if (existingWelcome?.temporary_password) {
+      logStep("Using existing temporary password");
+      return existingWelcome.temporary_password;
+    }
+    
+    // Generate new temporary password
+    const tempPassword = generateTempPassword();
+    logStep("Generated new temporary password");
+    
+    // Check if user exists in auth
+    const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
+    const userExists = existingUsers?.users?.find((u: any) => u.email === email);
+    
+    if (userExists) {
+      // Update existing user's password
+      await supabaseClient.auth.admin.updateUserById(userExists.id, {
+        password: tempPassword,
+        user_metadata: {
+          ...userExists.user_metadata,
+          policy_number: policyNumber
+        }
+      });
+      logStep("Updated existing user password");
+    } else {
+      // Create new user
+      const { data: userData, error: userError } = await supabaseClient.auth.admin.createUser({
+        email: email,
+        password: tempPassword,
+        email_confirm: true,
+        user_metadata: {
+          policy_number: policyNumber
+        }
+      });
+      
+      if (userError) {
+        logStep("User creation failed", userError);
+        throw new Error(`Failed to create user: ${userError.message}`);
+      }
+      logStep("Created new user with password");
+    }
+    
+    // Store password in welcome_emails table for reference
+    await supabaseClient
+      .from('welcome_emails')
+      .insert({
+        user_id: userExists?.id || null,
+        email: email,
+        temporary_password: tempPassword,
+        email_sent_at: new Date().toISOString()
+      });
+    
+    return tempPassword;
+    
+  } catch (error) {
+    logStep("Error ensuring customer password", error);
+    // Fallback to policy number as password for backward compatibility
+    return policyNumber || 'temp123';
+  }
+}

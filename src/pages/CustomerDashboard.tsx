@@ -637,9 +637,45 @@ const CustomerDashboard = () => {
               </div>
 
               <div className="mt-4 text-center">
-                <p className="text-xs text-gray-500">
-                  Don't have an account? Contact support to get started.
-                </p>
+                  <div className="text-center space-y-2">
+                    <Button 
+                      variant="link" 
+                      onClick={() => {
+                        // Reset password for the entered email
+                        if (!email) {
+                          toast({
+                            title: "Email Required",
+                            description: "Please enter your email address first.",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        supabase.auth.resetPasswordForEmail(email, {
+                          redirectTo: `${window.location.origin}/reset-password`,
+                        }).then(({ error }) => {
+                          if (error) {
+                            toast({
+                              title: "Reset Failed",
+                              description: error.message,
+                              variant: "destructive",
+                            });
+                          } else {
+                            toast({
+                              title: "Reset Email Sent",
+                              description: "Check your email for the password reset link.",
+                            });
+                          }
+                        });
+                      }}
+                      className="text-sm"
+                    >
+                      Forgot your password?
+                    </Button>
+                    <p className="text-xs text-gray-500">
+                      First time logging in? Use the temporary password from your welcome email.
+                    </p>
+                  </div>
               </div>
             </CardContent>
           </Card>
