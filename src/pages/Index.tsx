@@ -513,13 +513,7 @@ const Index = () => {
         keywords="car warranty, vehicle warranty, UK warranty, car insurance, breakdown cover, warranty prices, vehicle protection, extended warranty"
         canonical={`${window.location.origin}/?step=${currentStep}`}
       />
-      {currentStep !== 1 && (
-        <div className="bg-[#e8f4fb]">
-          <Suspense fallback={<div className="h-20 bg-[#e8f4fb]"></div>}>
-            <CarJourneyProgress currentStep={currentStep} onStepChange={handleStepChange} />
-          </Suspense>
-        </div>
-      )}
+      {/* Removed CarJourneyProgress component to eliminate progress bar animation between steps */}
       
       {currentStep === 1 && (
         <Homepage onRegistrationSubmit={handleHomepageRegistration} />
