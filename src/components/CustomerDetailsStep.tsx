@@ -39,6 +39,17 @@ export interface CustomerDetailsStepProps {
   pricingData: {
     basePrice: number;
     totalPrice: number;
+    protectionAddOns?: {
+      breakdown?: boolean;
+      motFee?: boolean;
+      motRepair?: boolean;
+      wearTear?: boolean;
+      wearAndTear?: boolean;
+      tyre?: boolean;
+      european?: boolean;
+      rental?: boolean;
+      transfer?: boolean;
+    };
     installmentBreakdown?: {
       upfrontInstallment: number;
       monthlyInstallment: number;
@@ -512,6 +523,65 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <span className="text-gray-600">Mileage</span>
                       <span className="font-semibold">{parseInt(vehicleData.mileage || '0').toLocaleString()} miles</span>
                     </div>
+                    
+                    {/* Add-ons Section */}
+                    {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
+                      <div className="border-t pt-4">
+                        <div className="mb-2">
+                          <span className="text-gray-600 font-medium">Included Protection</span>
+                        </div>
+                        <div className="space-y-1">
+                          {pricingData.protectionAddOns.breakdown && (
+                            <div className="flex items-center">
+                              <span className="text-green-600 mr-2">✓</span>
+                              <span className="text-sm text-gray-700">24/7 Roadside Assistance</span>
+                            </div>
+                          )}
+                          {pricingData.protectionAddOns.motFee && (
+                            <div className="flex items-center">
+                              <span className="text-green-600 mr-2">✓</span>
+                              <span className="text-sm text-gray-700">MOT Fee Cover</span>
+                            </div>
+                          )}
+                          {pricingData.protectionAddOns.motRepair && (
+                            <div className="flex items-center">
+                              <span className="text-green-600 mr-2">✓</span>
+                              <span className="text-sm text-gray-700">MOT Repair Cover</span>
+                            </div>
+                          )}
+                          {(pricingData.protectionAddOns.wearTear || pricingData.protectionAddOns.wearAndTear) && (
+                            <div className="flex items-center">
+                              <span className="text-green-600 mr-2">✓</span>
+                              <span className="text-sm text-gray-700">Wear & Tear Cover</span>
+                            </div>
+                          )}
+                          {pricingData.protectionAddOns.tyre && (
+                            <div className="flex items-center">
+                              <span className="text-green-600 mr-2">✓</span>
+                              <span className="text-sm text-gray-700">Tyre Protection</span>
+                            </div>
+                          )}
+                          {pricingData.protectionAddOns.european && (
+                            <div className="flex items-center">
+                              <span className="text-green-600 mr-2">✓</span>
+                              <span className="text-sm text-gray-700">European Cover</span>
+                            </div>
+                          )}
+                          {pricingData.protectionAddOns.rental && (
+                            <div className="flex items-center">
+                              <span className="text-green-600 mr-2">✓</span>
+                              <span className="text-sm text-gray-700">Courtesy Car</span>
+                            </div>
+                          )}
+                          {pricingData.protectionAddOns.transfer && (
+                            <div className="flex items-center">
+                              <span className="text-green-600 mr-2">✓</span>
+                              <span className="text-sm text-gray-700">Warranty Transfer</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     
                     {/* Promo Code Section */}
                     <div className="border-t pt-4">
