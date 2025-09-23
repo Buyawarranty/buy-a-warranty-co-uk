@@ -25,7 +25,14 @@ export function useClickFraudProtection() {
     setIsValidating(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('validate-click', {
+      console.log('Starting click validation for:', actionType);
+      
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Validation timeout')), 10000); // 10 second timeout
+      });
+      
+      const validationPromise = supabase.functions.invoke('validate-click', {
         body: {
           action_type: actionType,
           session_id: sessionId || crypto.randomUUID(),
@@ -35,6 +42,8 @@ export function useClickFraudProtection() {
         }
       });
 
+      const { data, error } = await Promise.race([validationPromise, timeoutPromise]);
+
       if (error) {
         console.error('Click validation error:', error);
         // Allow request if validation fails to prevent blocking legitimate users
@@ -42,6 +51,7 @@ export function useClickFraudProtection() {
       }
 
       const response: ClickValidationResponse = data;
+      console.log('Validation response:', response);
       
       if (response.blocked) {
         console.log('Click blocked by fraud protection:', response);
@@ -79,11 +89,17 @@ export function useClickFraudProtection() {
         });
       }
 
+      console.log('Click validation successful');
       return response.valid;
 
     } catch (error) {
       console.error('Click validation failed:', error);
-      // Allow request if validation system is down
+      // Allow request if validation system is down - don't block legitimate users
+      toast({
+        variant: "default",
+        title: "Proceeding with request",
+        description: "Security validation temporarily unavailable.",
+      });
       return true;
     } finally {
       setIsValidating(false);
