@@ -289,6 +289,11 @@ serve(async (req) => {
                 <td style="padding: 10px 0; text-align: right; color: #2c3e50; font-weight: 600;">${formatDate(startDate)} - ${formatDate(endDate)}</td>
               </tr>
             </table>
+            <div style="margin-top: 15px; padding: 12px; background-color: #fff8e1; border-radius: 6px; border-left: 4px solid #ff9800;">
+              <p style="margin: 0; color: #2c3e50; font-weight: 600; line-height: 1.5;">
+                📎 <strong>We've attached your documents to this email. Be sure to keep them somewhere safe so you can easily find them when you need them</strong>
+              </p>
+            </div>
           </div>
 
           <!-- Customer Portal Access -->

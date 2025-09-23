@@ -531,6 +531,11 @@ const handler = async (req: Request): Promise<Response> => {
                 <td style="padding: 6px 0;">${new Date(policy.policy_end_date).toLocaleDateString('en-GB')}</td>
               </tr>
             </table>
+            <div style="margin-top: 10px; padding: 10px; background-color: #fff8e1; border-radius: 6px; border-left: 4px solid #ff9800;">
+              <p style="margin: 0; color: #333; font-weight: 600; line-height: 1.5;">
+                📎 <strong>We've attached your documents to this email. Be sure to keep them somewhere safe so you can easily find them when you need them</strong>
+              </p>
+            </div>
           </div>
 
           <div style="text-align: center; margin: 20px 0;">
