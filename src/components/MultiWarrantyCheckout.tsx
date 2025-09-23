@@ -695,58 +695,90 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                        {/* Add-ons Display */}
                        {item.pricingData.selectedAddOns && Object.values(item.pricingData.selectedAddOns).some(Boolean) && (
                          <div className="pt-4 border-t border-gray-100">
-                           <div className="mb-2">
-                             <span className="text-gray-600 font-medium">Add-on Protection:</span>
-                           </div>
-                            <div className="space-y-1">
-                              {(() => {
-                                // Get duration in months based on payment type
-                                const getDurationMonths = (paymentType: string) => {
-                                  const normalized = normalizePaymentType(paymentType);
-                                  return normalized === '24months' ? 24 : 
-                                         normalized === '36months' ? 36 : 12;
-                                };
+                           {(() => {
+                             // Get duration in months based on payment type
+                             const getDurationMonths = (paymentType: string) => {
+                               const normalized = normalizePaymentType(paymentType);
+                               return normalized === '24months' ? 24 : 
+                                      normalized === '36months' ? 36 : 12;
+                             };
+                            
+                             const durationMonths = getDurationMonths(item.paymentType);
+                             const addOnInfos = getAddOnInfo(item.paymentType, durationMonths);
+                             
+                             // Create a map of selected add-ons from pricing data
+                             const selectedAddOns = item.pricingData.selectedAddOns || {};
+                             
+                             // Separate paid and free add-ons
+                             const paidAddOns: any[] = [];
+                             const freeAddOns: any[] = [];
+                             
+                             addOnInfos.forEach(addOn => {
+                               // Map different key formats to consistent ones
+                               const keyMappings: { [key: string]: string } = {
+                                 'wearTear': 'wearAndTear'
+                               };
                                
-                                const durationMonths = getDurationMonths(item.paymentType);
-                                const addOnInfos = getAddOnInfo(item.paymentType, durationMonths);
-                                
-                                // Create a map of selected add-ons from pricing data
-                                const selectedAddOns = item.pricingData.selectedAddOns || {};
-                                
-                                return (
-                                  <>
-                                    {/* Display Protection Add-ons */}
-                                    {Object.entries(selectedAddOns).some(([_, selected]) => selected) && 
-                                      addOnInfos.map(addOn => {
-                                        // Map different key formats to consistent ones
-                                        const keyMappings: { [key: string]: string } = {
-                                          'wearTear': 'wearAndTear'
-                                        };
-                                        
-                                        const mappedKey = keyMappings[addOn.key] || addOn.key;
-                                        const isSelected = selectedAddOns[addOn.key] || selectedAddOns[mappedKey];
-                                        
-                                        if (!isSelected) return null;
-                                        
-                                        return (
-                                          <div key={addOn.key} className="flex items-center justify-between text-sm text-gray-700">
-                                            <div className="flex items-center gap-2">
-                                              <span className="text-green-600">✓</span>
-                                              <span>{addOn.name}</span>
-                                            </div>
-                                            <span className={`text-gray-600 ${addOn.isAutoIncluded ? 'font-medium text-green-600' : ''}`}>
-                                              {addOn.isAutoIncluded ? 'FREE' : (addOn.oneTimePrice ? `£${addOn.oneTimePrice}` : `£${addOn.monthlyPrice}/month`)}
-                                            </span>
-                                          </div>
-                                        );
-                                      })
-                                    }
-                                  </>
-                                );
-                              })()}
-                            </div>
-                          </div>
-                        )}
+                               const mappedKey = keyMappings[addOn.key] || addOn.key;
+                               const isSelected = selectedAddOns[addOn.key] || selectedAddOns[mappedKey];
+                               
+                               if (isSelected) {
+                                 if (addOn.isAutoIncluded) {
+                                   freeAddOns.push(addOn);
+                                 } else {
+                                   paidAddOns.push(addOn);
+                                 }
+                               }
+                             });
+                             
+                             return (
+                               <>
+                                 {/* Display Paid Add-ons in Order Summary */}
+                                 {paidAddOns.length > 0 && (
+                                   <div className="mb-4">
+                                     <div className="mb-2">
+                                       <span className="text-gray-600 font-medium">Additional Protection:</span>
+                                     </div>
+                                     <div className="space-y-1">
+                                       {paidAddOns.map(addOn => (
+                                         <div key={addOn.key} className="flex items-center justify-between text-sm text-gray-700">
+                                           <div className="flex items-center gap-2">
+                                             <span className="text-blue-600">+</span>
+                                             <span>{addOn.name}</span>
+                                           </div>
+                                           <span className="text-gray-900 font-medium">
+                                             {addOn.oneTimePrice ? `£${addOn.oneTimePrice}` : `£${addOn.monthlyPrice}/month`}
+                                           </span>
+                                         </div>
+                                       ))}
+                                     </div>
+                                   </div>
+                                 )}
+                                 
+                                 {/* Display Free Add-ons as Included Protection */}
+                                 {freeAddOns.length > 0 && (
+                                   <div className="pt-2 border-t border-gray-100">
+                                     <div className="mb-2">
+                                       <span className="text-gray-600 font-medium">Included Protection:</span>
+                                     </div>
+                                     <div className="space-y-1">
+                                       {freeAddOns.map(addOn => (
+                                         <div key={addOn.key} className="flex items-center justify-between text-sm text-gray-700">
+                                           <div className="flex items-center gap-2">
+                                             <span className="text-green-600">✓</span>
+                                             <span>{addOn.name}</span>
+                                           </div>
+                                           <span className="text-green-600 font-medium">FREE</span>
+                                         </div>
+                                       ))}
+                                     </div>
+                                   </div>
+                                 )}
+                               </>
+                             );
+                           })()}
+                         </div>
+                       )}
                     </div>
 
                     {/* Separator line between warranties */}

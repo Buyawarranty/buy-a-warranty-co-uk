@@ -615,51 +615,90 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     {/* Add-ons Section */}
                     {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
                       <div className="border-t pt-4">
-                        <div className="mb-2">
-                          <span className="text-black font-medium">Protection Add-ons</span>
-                        </div>
-                        <div className="space-y-1">
-                          {(() => {
-                            // Get duration in months and normalize payment type
-                            const durationMonths = getWarrantyDurationInMonths(paymentType);
-                            const normalizedPaymentType = normalizePaymentType(paymentType);
-                            const addOnInfos = getAddOnInfo(normalizedPaymentType, durationMonths);
+                        {(() => {
+                          // Get duration in months and normalize payment type
+                          const durationMonths = getWarrantyDurationInMonths(paymentType);
+                          const normalizedPaymentType = normalizePaymentType(paymentType);
+                          const addOnInfos = getAddOnInfo(normalizedPaymentType, durationMonths);
+                          
+                          // Separate paid and free add-ons
+                          const paidAddOns: any[] = [];
+                          const freeAddOns: any[] = [];
+                          
+                          addOnInfos.forEach(addOn => {
+                            // Check if this add-on is selected
+                            let isSelected = false;
                             
-                            return addOnInfos.map(addOn => {
-                              // Check if this add-on is selected
-                              let isSelected = false;
-                              
-                              // Map different key formats
-                              const keyMappings: { [key: string]: string } = {
-                                'wearAndTear': 'wearTear'
-                              };
-                              
-                              const mappedKey = keyMappings[addOn.key] || addOn.key;
-                              
-                              // Check both the original key and mapped key
-                              if (pricingData.protectionAddOns) {
-                                isSelected = Boolean(
-                                  pricingData.protectionAddOns[addOn.key as keyof typeof pricingData.protectionAddOns] || 
-                                  pricingData.protectionAddOns[mappedKey as keyof typeof pricingData.protectionAddOns]
-                                );
-                              }
-                              
-                              if (!isSelected) return null;
-                              
-                              return (
-                                <div key={addOn.key} className="flex items-center justify-between">
-                                  <div className="flex items-center">
-                                    <span className="text-green-600 mr-2">✓</span>
-                                    <span className="text-sm text-gray-700">{addOn.name}</span>
-                                  </div>
-                                  <span className={`text-sm ${addOn.isAutoIncluded ? 'text-green-600 font-medium' : 'text-gray-600'}`}>
-                                    {addOn.isAutoIncluded ? 'FREE' : addOn.displayPrice}
-                                  </span>
-                                </div>
+                            // Map different key formats
+                            const keyMappings: { [key: string]: string } = {
+                              'wearAndTear': 'wearTear'
+                            };
+                            
+                            const mappedKey = keyMappings[addOn.key] || addOn.key;
+                            
+                            // Check both the original key and mapped key
+                            if (pricingData.protectionAddOns) {
+                              isSelected = Boolean(
+                                pricingData.protectionAddOns[addOn.key as keyof typeof pricingData.protectionAddOns] || 
+                                pricingData.protectionAddOns[mappedKey as keyof typeof pricingData.protectionAddOns]
                               );
-                            });
-                          })()}
-                        </div>
+                            }
+                            
+                            if (isSelected) {
+                              if (addOn.isAutoIncluded) {
+                                freeAddOns.push(addOn);
+                              } else {
+                                paidAddOns.push(addOn);
+                              }
+                            }
+                          });
+                          
+                          return (
+                            <>
+                              {/* Display Paid Add-ons */}
+                              {paidAddOns.length > 0 && (
+                                <div className="mb-4">
+                                  <div className="mb-2">
+                                    <span className="text-black font-medium">Additional Protection</span>
+                                  </div>
+                                  <div className="space-y-1">
+                                    {paidAddOns.map(addOn => (
+                                      <div key={addOn.key} className="flex items-center justify-between">
+                                        <div className="flex items-center">
+                                          <span className="text-blue-600 mr-2">+</span>
+                                          <span className="text-sm text-gray-700">{addOn.name}</span>
+                                        </div>
+                                        <span className="text-sm text-gray-900 font-medium">
+                                          {addOn.displayPrice}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Display Free Add-ons */}
+                              {freeAddOns.length > 0 && (
+                                <div className={paidAddOns.length > 0 ? "border-t pt-4" : ""}>
+                                  <div className="mb-2">
+                                    <span className="text-black font-medium">Included Protection</span>
+                                  </div>
+                                  <div className="space-y-1">
+                                    {freeAddOns.map(addOn => (
+                                      <div key={addOn.key} className="flex items-center justify-between">
+                                        <div className="flex items-center">
+                                          <span className="text-green-600 mr-2">✓</span>
+                                          <span className="text-sm text-gray-700">{addOn.name}</span>
+                                        </div>
+                                        <span className="text-sm text-green-600 font-medium">FREE</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          );
+                        })()}
                       </div>
                     )}
                     
