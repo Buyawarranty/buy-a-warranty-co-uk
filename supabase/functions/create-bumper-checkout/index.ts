@@ -420,7 +420,13 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
   for (const key of sortedKeys) {
     const value = filteredPayload[key];
     // Convert arrays to JSON strings like WordPress plugin does
-    const stringValue = Array.isArray(value) ? JSON.stringify(value) : String(value);
+    // Handle undefined/null values by converting to empty strings
+    let stringValue = '';
+    if (Array.isArray(value)) {
+      stringValue = JSON.stringify(value);
+    } else if (value !== undefined && value !== null) {
+      stringValue = String(value);
+    }
     signatureString += key.toUpperCase() + '=' + stringValue + '&';
   }
   

@@ -303,7 +303,15 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
 
   let signatureString = '';
   for (const key of sortedKeys) {
-    signatureString += key.toUpperCase() + '=' + filteredPayload[key] + '&';
+    const value = filteredPayload[key];
+    // Handle undefined/null values by converting to empty strings
+    let stringValue = '';
+    if (Array.isArray(value)) {
+      stringValue = JSON.stringify(value);
+    } else if (value !== undefined && value !== null) {
+      stringValue = String(value);
+    }
+    signatureString += key.toUpperCase() + '=' + stringValue + '&';
   }
 
   const encoder = new TextEncoder();
