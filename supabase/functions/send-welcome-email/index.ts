@@ -180,8 +180,8 @@ serve(async (req) => {
       throw new Error('RESEND_API_KEY not configured');
     }
 
-    // Use the standardized PDF documents for all warranty types (motorbikes, vans, cars, EV, PHEV)
-    const planDocumentUrl = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-7.pdf`;
+    // Use the new Premium Plan PDF for all warranty types
+    const planDocumentUrl = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf`;
     const termsUrl = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf`;
     
     logStep("Document URLs determined", { planType, planDocumentUrl, termsUrl });
@@ -247,23 +247,23 @@ serve(async (req) => {
         });
       }
       
-      // Load Platinum Warranty Plan PDF (updated to v2.2-7 for all warranty types)
-      const platinumPath = '/Platinum-warranty-plan_v2.2-7.pdf';
-      const platinumResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents${platinumPath}`);
-      if (platinumResponse.ok) {
-        const platinumBuffer = await platinumResponse.arrayBuffer();
-        const platinumBytes = new Uint8Array(platinumBuffer);
-        let platinumBase64 = '';
+      // Load Premium Extended Warranty Plan PDF (new standard for all warranty types)
+      const premiumPath = '/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf';
+      const premiumResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents${premiumPath}`);
+      if (premiumResponse.ok) {
+        const premiumBuffer = await premiumResponse.arrayBuffer();
+        const premiumBytes = new Uint8Array(premiumBuffer);
+        let premiumBase64 = '';
         const chunkSize = 8192;
         
-        for (let i = 0; i < platinumBytes.length; i += chunkSize) {
-          const chunk = platinumBytes.slice(i, i + chunkSize);
-          platinumBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+        for (let i = 0; i < premiumBytes.length; i += chunkSize) {
+          const chunk = premiumBytes.slice(i, i + chunkSize);
+          premiumBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
         }
         
         attachments.push({
-          filename: 'Platinum-warranty-plan_v2.2-7.pdf',
-          content: platinumBase64,
+          filename: 'Premium-Extended-Warranty-Plan-2.0.pdf',
+          content: premiumBase64,
           type: 'application/pdf'
         });
       }
@@ -356,13 +356,13 @@ serve(async (req) => {
             </ol>
           </div>
 
-          <!-- Warranty Documents -->
+           <!-- Warranty Documents -->
           <div style="margin: 15px 0;">
-            <h3 style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">Your Warranty Documents</h3>
-            <p style="color: #5a6c7d; line-height: 1.6; margin-bottom: 10px;">Your warranty documents are attached to this email and also available for download:</p>
+            <h3 style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">Your Premium Warranty Documents</h3>
+            <p style="color: #5a6c7d; line-height: 1.6; margin-bottom: 10px;">Your premium warranty documents are attached to this email and also available for download:</p>
             <ul style="list-style: none; padding: 0; margin: 0;">
               <li style="margin-bottom: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
-                📄 <a href="${planDocumentUrl}" style="color: #1a73e8; text-decoration: none; font-weight: 500;">Your ${planType} Warranty Policy</a>
+                📄 <a href="${planDocumentUrl}" style="color: #1a73e8; text-decoration: none; font-weight: 500;">Your Premium Extended Warranty Policy</a>
               </li>
               <li style="margin-bottom: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
                 📋 <a href="${termsUrl}" style="color: #1a73e8; text-decoration: none; font-weight: 500;">Terms and Conditions</a>

@@ -175,16 +175,16 @@ serve(async (req) => {
     // Fallback to customer_documents table if no document found from mapping
 
     if (attachments.length === 0) {
-      // Fallback to customer_documents table if no document found from plan mapping
+      // Updated plan type mapping - all standard car warranties now use premium
       const planTypeMapping: Record<string, string> = {
-        'basic': 'basic',
-        'basic car plan': 'basic',
-        'gold': 'gold', 
-        'gold car plan': 'gold',
-        'platinum': 'platinum',
-        'platinum car plan': 'platinum',
-        'premium': 'platinum', // Map premium to platinum
-        'premium car plan': 'platinum', // Map premium car plan to platinum
+        'basic': 'premium',
+        'basic car plan': 'premium',
+        'gold': 'premium', 
+        'gold car plan': 'premium',
+        'platinum': 'premium',
+        'platinum car plan': 'premium',
+        'premium': 'premium',
+        'premium car plan': 'premium',
         'electric': 'electric',
         'ev': 'electric',  // Map EV to electric
         'phev': 'phev',
@@ -366,12 +366,10 @@ serve(async (req) => {
       const planLower = planType.toLowerCase();
       
       // Map various plan type formats to standardized display names
-      if (planLower.includes('basic') || planLower.includes('blue')) {
-        return 'Basic';
-      } else if (planLower.includes('gold')) {
-        return 'Gold';
-      } else if (planLower.includes('platinum')) {
-        return 'Platinum';
+      if (planLower.includes('basic') || planLower.includes('blue') || 
+          planLower.includes('gold') || planLower.includes('platinum') || 
+          planLower.includes('premium')) {
+        return 'Premium';
       } else if (planLower.includes('phev') || planLower.includes('hybrid')) {
         return 'PHEV';
       } else if (planLower.includes('ev') || planLower.includes('electric')) {

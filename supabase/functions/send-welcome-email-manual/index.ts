@@ -254,8 +254,8 @@ const handler = async (req: Request): Promise<Response> => {
         console.log(JSON.stringify({ evt: "terms.pdf.failed", rid, status: termsResponse.status }));
       }
       
-      // Load Platinum Warranty Plan PDF from public folder
-      const platinumResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-7.pdf`);
+      // Load Premium Extended Warranty Plan PDF from public folder
+      const premiumResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf`);
       if (platinumResponse.ok) {
         const platinumBuffer = await platinumResponse.arrayBuffer();
         const platinumBytes = new Uint8Array(platinumBuffer);
@@ -268,7 +268,7 @@ const handler = async (req: Request): Promise<Response> => {
         }
         
         attachments.push({
-          filename: 'Platinum-warranty-plan_v2.2-7.pdf',
+          filename: 'Premium-Extended-Warranty-Plan-2.0.pdf',
           content: platinumBase64,
           type: 'application/pdf'
         });
@@ -495,8 +495,8 @@ const handler = async (req: Request): Promise<Response> => {
       paymentMethod = 'Bumper';
     }
 
-    // Use the standardized PDF documents for all warranty types (motorbikes, vans, cars, EV, PHEV)
-    const policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-4.pdf';
+    // Use the new Premium Plan PDF for all warranty types
+    const policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf';
     const termsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf';
 
     // Registration plate styling - optimized for both light and dark modes

@@ -145,15 +145,22 @@ const CustomerDashboard = () => {
     }
   };
 
-  // Map plan types to document types
+  // Map plan types to document types - all warranties now use premium plan
   const mapPlanTypeToDocumentType = (planType: string): string => {
+    // Map all plan types to premium for unified premium warranty coverage
+    const premiumPlans = [
+      'basic', 'Basic', 'Basic Car Plan',
+      'gold', 'Gold', 'Gold Car Plan', 
+      'platinum', 'Platinum', 'Platinum Car Plan',
+      'premium', 'Premium', 'Premium Car Plan'
+    ];
+    
+    if (premiumPlans.some(plan => planType.toLowerCase().includes(plan.toLowerCase()))) {
+      return 'premium';
+    }
+    
+    // Keep special vehicle types unchanged
     const mapping: Record<string, string> = {
-      'basic': 'basic',
-      'Basic': 'basic',
-      'gold': 'gold', 
-      'Gold': 'gold',
-      'platinum': 'platinum',
-      'Platinum': 'platinum',
       'phev hybrid extended warranty': 'phev',
       'PHEV Hybrid Extended Warranty': 'phev',
       'electric': 'electric',
@@ -162,7 +169,7 @@ const CustomerDashboard = () => {
       'Motorbike': 'motorbike'
     };
     
-    return mapping[planType] || planType.toLowerCase();
+    return mapping[planType] || 'premium'; // Default to premium
   };
 
   // Fetch documents for policies
@@ -472,16 +479,15 @@ const CustomerDashboard = () => {
       return policy.document_url;
     }
     
-    // Fallback to old PDF fields for backward compatibility
+    // Fallback to old PDF fields for backward compatibility - all now point to premium
     switch (policy.plan_type.toLowerCase()) {
       case 'basic':
-        return policy.pdf_basic_url;
-      case 'gold':
-        return policy.pdf_gold_url;
+      case 'gold':  
       case 'platinum':
-        return policy.pdf_platinum_url;
+      case 'premium':
+        return policy.pdf_platinum_url || policy.pdf_gold_url || policy.pdf_basic_url;
       default:
-        return null;
+        return policy.pdf_platinum_url || policy.pdf_gold_url || policy.pdf_basic_url;
     }
   };
 
