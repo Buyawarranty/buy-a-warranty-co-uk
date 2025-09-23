@@ -91,7 +91,7 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
   const pandaPosition = Math.max(5, Math.min(95, percentage));
 
   return (
-    <div className="py-2">
+    <div className="w-full max-w-xs py-2">
       {/* Hint Text */}
       <div className="text-center text-sm text-muted-foreground mb-2">
         Drag the panda or click anywhere on the slider to set your mileage

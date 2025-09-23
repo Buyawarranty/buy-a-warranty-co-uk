@@ -540,7 +540,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
 
               {/* Registration Input */}
-              <div className="space-y-2 sm:space-y-3 w-full max-w-sm mx-auto lg:mx-0">
+              <div className="space-y-2 sm:space-y-3 w-full max-w-xs mx-auto lg:mx-0">
                 <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full">
                   {/* UK Section with flag */}
                   <div className="bg-blue-600 text-white font-bold px-2 sm:px-3 md:px-4 py-2 sm:py-4 flex items-center justify-center min-w-[45px] sm:min-w-[70px] md:min-w-[80px] h-[48px] sm:h-[60px] md:h-[66px]">
@@ -573,7 +573,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       onChange={handleMileageChange}
                       onFocus={handleMileageFocus}
                       placeholder="Enter mileage (e.g. 32,000)"
-                      className={`w-full px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-sm sm:text-lg border-2 rounded-lg focus:outline-none min-w-0 ${
+                      className={`w-full max-w-xs px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-sm sm:text-lg border-2 rounded-lg focus:outline-none min-w-0 ${
                         mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
                       }`}
                     />
@@ -607,7 +607,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="space-y-2 mt-2">
                   <Button 
                     onClick={handleGetQuote}
-                    className={`w-full px-3 sm:px-6 md:px-12 h-[48px] sm:h-[60px] md:h-[66px] text-sm sm:text-lg md:text-xl font-bold rounded-lg transition-all min-w-0 ${
+                    className={`w-full max-w-xs px-3 sm:px-6 md:px-12 h-[48px] sm:h-[60px] md:h-[66px] text-sm sm:text-lg md:text-xl font-bold rounded-lg transition-all min-w-0 ${
                       isLookingUp
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-brand-orange hover:bg-brand-orange/90 text-white btn-slow-pulsate'
