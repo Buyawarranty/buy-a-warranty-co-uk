@@ -246,7 +246,7 @@ const handler = async (req: Request): Promise<Response> => {
         attachments.push({
           filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf',
           content: termsBase64,
-          content_type: 'application/pdf'
+          type: 'application/pdf'
         });
         
         console.log(JSON.stringify({ evt: "terms.pdf.attached", rid }));
@@ -270,7 +270,7 @@ const handler = async (req: Request): Promise<Response> => {
         attachments.push({
           filename: 'Platinum-warranty-plan_v2.2-7.pdf',
           content: platinumBase64,
-          content_type: 'application/pdf'
+          type: 'application/pdf'
         });
         
         console.log(JSON.stringify({ evt: "platinum.pdf.attached", rid }));

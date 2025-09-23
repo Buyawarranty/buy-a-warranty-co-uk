@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
       attachments: [{
         filename: `test-warranty-${warrantyNumber}.pdf`,
         content: testPdfBase64,
-        content_type: 'application/pdf'
+        type: 'application/pdf'
       }]
     };
 

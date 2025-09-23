@@ -243,7 +243,7 @@ serve(async (req) => {
         attachments.push({
           filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf',
           content: termsBase64,
-          content_type: 'application/pdf'
+          type: 'application/pdf'
         });
       }
       
@@ -264,7 +264,7 @@ serve(async (req) => {
         attachments.push({
           filename: 'Platinum-warranty-plan_v2.2-7.pdf',
           content: platinumBase64,
-          content_type: 'application/pdf'
+          type: 'application/pdf'
         });
       }
     } catch (error) {
