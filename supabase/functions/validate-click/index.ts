@@ -154,7 +154,7 @@ serve(async (req) => {
     const botDetection = detectBot(user_agent || '', referrer)
     let riskScore = botDetection.riskScore
 
-    // Check rate limiting
+    // Check rate limiting - be much more lenient for purchase actions
     const oneHourAgo = new Date(currentTime.getTime() - 60 * 60 * 1000)
     const { data: recentClicks } = await supabase
       .from('click_fraud_protection')
@@ -165,13 +165,24 @@ serve(async (req) => {
 
     const totalRecentClicks = recentClicks?.reduce((sum, record) => sum + record.click_count, 0) || 0
 
-    // Increase risk score based on recent activity
-    if (totalRecentClicks > 20) {
-      riskScore = Math.min(riskScore + 50, 100)
-    } else if (totalRecentClicks > 10) {
-      riskScore = Math.min(riskScore + 30, 100)
-    } else if (totalRecentClicks > 5) {
-      riskScore = Math.min(riskScore + 15, 100)
+    // For purchase completion, be very lenient to allow legitimate customers
+    if (action_type === 'complete_purchase') {
+      // Only increase risk score for extremely high activity (likely automated)
+      if (totalRecentClicks > 100) {
+        riskScore = Math.min(riskScore + 30, 100)
+      } else if (totalRecentClicks > 50) {
+        riskScore = Math.min(riskScore + 15, 100)
+      }
+      // Don't penalize normal purchase attempts (up to 50 clicks is acceptable)
+    } else {
+      // For other actions, use normal rate limiting
+      if (totalRecentClicks > 20) {
+        riskScore = Math.min(riskScore + 50, 100)
+      } else if (totalRecentClicks > 10) {
+        riskScore = Math.min(riskScore + 30, 100)
+      } else if (totalRecentClicks > 5) {
+        riskScore = Math.min(riskScore + 15, 100)
+      }
     }
 
     // Log the click activity
