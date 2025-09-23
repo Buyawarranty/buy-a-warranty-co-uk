@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, CheckCircle, Edit, User, CreditCard, MapPin } from 'lucide-react';
+import { PostcodeAutocomplete } from '@/components/ui/uk-postcode-autocomplete';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import AddAnotherWarrantyOffer from '@/components/AddAnotherWarrantyOffer';
@@ -113,13 +114,38 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const validateForm = () => {
     const errors: {[key: string]: string} = {};
     
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    // UK phone number validation (landline and mobile)
+    const phoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$|^(\+44\s?1\d{3}|\(?01\d{3}\)?)\s?\d{3}\s?\d{3}$|^(\+44\s?2\d{2}|\(?02\d{2}\)?)\s?\d{3}\s?\d{4}$/;
+    
+    // UK postcode validation
+    const postcodeRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]?\s?[0-9][A-Z]{2}$/i;
+    
     if (!customerData.first_name.trim()) errors.first_name = 'First name is required';
     if (!customerData.last_name.trim()) errors.last_name = 'Last name is required';
-    if (!customerData.email.trim()) errors.email = 'Email is required';
-    if (!customerData.phone.trim()) errors.phone = 'Phone number is required';
+    
+    if (!customerData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!emailRegex.test(customerData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!customerData.phone.trim()) {
+      errors.phone = 'Phone number is required';
+    } else if (!phoneRegex.test(customerData.phone)) {
+      errors.phone = 'Please enter a valid UK phone number';
+    }
+    
     if (!customerData.address_line_1.trim()) errors.address_line_1 = 'Address is required';
     if (!customerData.city.trim()) errors.city = 'City is required';
-    if (!customerData.postcode.trim()) errors.postcode = 'Postcode is required';
+    
+    if (!customerData.postcode.trim()) {
+      errors.postcode = 'Postcode is required';
+    } else if (!postcodeRegex.test(customerData.postcode)) {
+      errors.postcode = 'Please enter a valid UK postcode';
+    }
 
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
@@ -260,12 +286,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <Input
                       id="email"
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="e.g., john.smith@email.com"
                       value={customerData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       required
                       className={`mt-1 transition-all duration-300 ${
-                        showValidation && !customerData.email.trim() 
+                        showValidation && fieldErrors.email 
                           ? 'border-red-500 focus:border-red-500 animate-pulse' 
                           : 'focus:ring-2 focus:ring-blue-200'
                       }`}
@@ -281,12 +307,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="Enter your phone number"
+                      placeholder="e.g., 07123 456789 or 01234 567890"
                       value={customerData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       required
                       className={`mt-1 transition-all duration-300 ${
-                        showValidation && !customerData.phone.trim() 
+                        showValidation && fieldErrors.phone 
                           ? 'border-red-500 focus:border-red-500 animate-pulse' 
                           : 'focus:ring-2 focus:ring-blue-200'
                       }`}
@@ -294,6 +320,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     {fieldErrors.phone && (
                       <p className="text-red-500 text-sm mt-1">{fieldErrors.phone}</p>
                     )}
+                    <p className="text-xs text-gray-500 mt-1">UK mobile or landline numbers only</p>
                   </div>
 
                   {/* Address Fields */}
@@ -330,15 +357,39 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="city" className="text-sm font-medium text-gray-700">City *</Label>
+                        <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
+                        <PostcodeAutocomplete
+                          value={customerData.postcode}
+                          onChange={(value) => handleInputChange('postcode', value)}
+                          onAddressSelect={(address) => {
+                            // Auto-populate address fields when postcode is selected
+                            if (address.town) {
+                              handleInputChange('city', address.town);
+                            }
+                            if (address.street && !customerData.address_line_1) {
+                              handleInputChange('address_line_1', address.street);
+                            }
+                          }}
+                          placeholder="e.g., SW1A 1AA"
+                          required
+                          className={`${
+                            showValidation && fieldErrors.postcode 
+                              ? 'border-red-500 focus:border-red-500' 
+                              : ''
+                          }`}
+                          error={fieldErrors.postcode}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="city" className="text-sm font-medium text-gray-700">City/Town *</Label>
                         <Input
                           id="city"
-                          placeholder="Enter your city"
+                          placeholder="Enter your city/town"
                           value={customerData.city}
                           onChange={(e) => handleInputChange('city', e.target.value)}
                           required
                           className={`mt-1 transition-all duration-300 ${
-                            showValidation && !customerData.city.trim() 
+                            showValidation && fieldErrors.city 
                               ? 'border-red-500 focus:border-red-500 animate-pulse' 
                               : 'focus:ring-2 focus:ring-blue-200'
                           }`}
@@ -346,24 +397,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         {fieldErrors.city && (
                           <p className="text-red-500 text-sm mt-1">{fieldErrors.city}</p>
                         )}
-                      </div>
-                      <div>
-                        <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
-                        <Input
-                          id="postcode"
-                          placeholder="Enter your postcode"
-                          value={customerData.postcode}
-                          onChange={(e) => handleInputChange('postcode', e.target.value)}
-                          required
-                          className={`mt-1 transition-all duration-300 ${
-                            showValidation && !customerData.postcode.trim() 
-                              ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                              : 'focus:ring-2 focus:ring-blue-200'
-                          }`}
-                        />
-                        {fieldErrors.postcode && (
-                          <p className="text-red-500 text-sm mt-1">{fieldErrors.postcode}</p>
-                        )}
+                        <p className="text-xs text-gray-500 mt-1">This may auto-fill from your postcode</p>
                       </div>
                     </div>
                   </div>
@@ -387,7 +421,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       className="flex items-center gap-2"
                     >
                       <Edit className="w-4 h-4" />
-                      Edit
+                      Change
                     </Button>
                   </div>
                   
@@ -422,6 +456,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <span className="text-gray-600">Vehicle Registration</span>
                       <span className="font-semibold">{vehicleData.regNumber}</span>
                     </div>
+                    {hasValidDiscountCode && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Promo Code</span>
+                        <span className="font-semibold text-orange-600">{appliedDiscountCode}</span>
+                      </div>
+                    )}
                   </div>
 
                    {/* Pricing Information */}
