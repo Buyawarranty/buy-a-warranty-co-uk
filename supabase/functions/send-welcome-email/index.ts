@@ -251,7 +251,7 @@ serve(async (req) => {
     const emailPayload = {
       from: resendFrom,
       to: [email],
-      subject: `🎉 Congratulations — Your Buyawarranty.co.uk Protection is Now Registered! ✅`,
+      subject: `🎉 Congratulations — Your Buyawarranty.co.uk Protection is Now Registered!`,
       ...(attachments.length > 0 && { attachments }),
       html: `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; color: #333333;">
