@@ -499,6 +499,9 @@ const handler = async (req: Request): Promise<Response> => {
     const policyDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf';
     const termsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf';
 
+    // Define login URL for customer portal
+    const loginUrl = 'https://buyawarranty.co.uk/auth';
+
     // Registration plate styling - optimized for both light and dark modes
     const regPlate = customerDetails?.registration_plate || 'N/A';
     const regPlateStyle = `
