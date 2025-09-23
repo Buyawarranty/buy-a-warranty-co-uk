@@ -314,6 +314,8 @@ const handler = async (req: Request): Promise<Response> => {
         rid, 
         usingExistingPassword: !!latestWelcomeEmail?.temporary_password 
       }));
+    }
+
     // Check if user already exists and handle authentication
     console.log(JSON.stringify({ evt: "checking.user.existence", rid, customerEmail: customer.email }));
     const { data: existingUsers } = await supabase.auth.admin.listUsers();
@@ -331,36 +333,36 @@ const handler = async (req: Request): Promise<Response> => {
           password: tempPassword,
           user_metadata: {
             plan_type: policy.plan_type,
-          policy_number: policy.policy_number,
-          warranty_number: policy.warranty_number
+            policy_number: policy.policy_number,
+            warranty_number: policy.warranty_number
+          }
+        });
+        console.log(JSON.stringify({ evt: "user.updated", rid, userId }));
+      } else {
+        // Create new user account
+        const { data: userData, error: userError } = await supabase.auth.admin.createUser({
+          email: customer.email,
+          password: tempPassword,
+          email_confirm: true,
+          user_metadata: {
+            plan_type: policy.plan_type,
+            policy_number: policy.policy_number,
+            warranty_number: policy.warranty_number
+          }
+        });
+
+        if (userError) {
+          console.log(JSON.stringify({ evt: "user.creation.failed", rid, error: userError.message }));
+          throw new Error(`Failed to create user: ${userError.message}`);
         }
-      });
-      console.log(JSON.stringify({ evt: "user.updated", rid, userId }));
-    } else if (shouldIncludeLoginDetails && tempPassword) {
-      // Create new user account
-      const { data: userData, error: userError } = await supabase.auth.admin.createUser({
-        email: customer.email,
-        password: tempPassword,
-        email_confirm: true,
-        user_metadata: {
-          plan_type: policy.plan_type,
-          policy_number: policy.policy_number,
-          warranty_number: policy.warranty_number
+
+        if (!userData.user) {
+          throw new Error("User creation returned no user data");
         }
-      });
 
-      if (userError) {
-        console.log(JSON.stringify({ evt: "user.creation.failed", rid, error: userError.message }));
-        throw new Error(`Failed to create user: ${userError.message}`);
+        userId = userData.user.id;
+        console.log(JSON.stringify({ evt: "user.created", rid, userId }));
       }
-
-      if (!userData.user) {
-        throw new Error("User creation returned no user data");
-      }
-
-      userId = userData.user.id;
-      console.log(JSON.stringify({ evt: "user.created", rid, userId }));
-    }
     } else {
       // User has reset password, so they manage their own account
       console.log(JSON.stringify({ evt: "user.password.reset", rid, message: "User has reset password, no account management needed" }));
