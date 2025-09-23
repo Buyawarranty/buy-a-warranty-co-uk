@@ -5,6 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ProtectedButton } from '@/components/ui/protected-button';
 import { validateVehicleEligibility } from '@/lib/vehicleValidation';
+import { isHighPerformanceModel, getHighPerformanceBlockMessage } from '@/lib/highPerformanceModels';
 import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 
 
@@ -169,7 +170,19 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       if (data.found) {
         setVehicleFound(true);
         
-        // Check if this is a blocked vehicle
+        // Check if this is a high-performance model that should be blocked
+        if (data.make && data.model && isHighPerformanceModel(data.make, data.model)) {
+          console.log('High-performance vehicle detected:', `${data.make} ${data.model}`);
+          toast({
+            title: "Warranty Coverage Not Available",
+            description: getHighPerformanceBlockMessage(),
+            variant: "destructive",
+          });
+          setShowManualEntry(false);
+          return;
+        }
+        
+        // Check if this is a blocked vehicle (from API)
         if (data.blocked) {
           console.log('Blocked vehicle detected:', data.blockReason);
           toast({
@@ -254,6 +267,17 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     if (showManualEntry) {
       // Manual entry validation
       if (regNumber && mileage && make && model && year && vehicleType && numericMileage <= 150000 && mileageError === '' && yearError === '') {
+        // Check if this is a high-performance model that should be blocked
+        if (isHighPerformanceModel(make, model)) {
+          console.log('High-performance vehicle detected (manual entry):', `${make} ${model}`);
+          toast({
+            title: "Warranty Coverage Not Available",
+            description: getHighPerformanceBlockMessage(),
+            variant: "destructive",
+          });
+          return;
+        }
+        
         // Check vehicle eligibility for manual entries
         const vehicleEligibility = validateVehicleEligibility({
           make: make.toLowerCase().trim(),

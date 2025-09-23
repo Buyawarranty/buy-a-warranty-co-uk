@@ -15,6 +15,7 @@ import BackgroundRemovalProcessor from '@/components/BackgroundRemovalProcessor'
 
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
+import { calculateAddOnPrice } from '@/lib/addOnsUtils';
 import pandaCarWarranty from "@/assets/panda-car-warranty-transparent.png";
 import trustpilotLogo from "@/assets/trustpilot-excellent-box.webp";
 
@@ -458,7 +459,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const addOnPrice = useMemo(() => {
     const durationMonths = paymentType === '12months' ? 12 : 
                           paymentType === '24months' ? 24 : 36;
-    return utilCalculateAddOnPrice(selectedProtectionAddOns, paymentType, durationMonths);
+    return calculateAddOnPrice(selectedProtectionAddOns, paymentType, durationMonths);
   }, [paymentType, selectedProtectionAddOns]);
 
   // Memoized total price calculation
