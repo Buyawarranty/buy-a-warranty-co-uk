@@ -221,7 +221,7 @@ const handler = async (req: Request): Promise<Response> => {
     
     try {
       // Load Terms and Conditions PDF from public folder
-      const termsResponse = await fetch('https://buyawarranty.co.uk/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf');
+      const termsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf`);
       if (termsResponse.ok) {
         const termsBuffer = await termsResponse.arrayBuffer();
         const termsBytes = new Uint8Array(termsBuffer);
@@ -234,7 +234,7 @@ const handler = async (req: Request): Promise<Response> => {
         }
         
         attachments.push({
-          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf',
+          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf',
           content: termsBase64,
           content_type: 'application/pdf'
         });
@@ -245,7 +245,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
       
       // Load Platinum Warranty Plan PDF from public folder
-      const platinumResponse = await fetch('https://buyawarranty.co.uk/Platinum-warranty-plan_v2.2-4.pdf');
+      const platinumResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-7.pdf`);
       if (platinumResponse.ok) {
         const platinumBuffer = await platinumResponse.arrayBuffer();
         const platinumBytes = new Uint8Array(platinumBuffer);
@@ -258,7 +258,7 @@ const handler = async (req: Request): Promise<Response> => {
         }
         
         attachments.push({
-          filename: 'Platinum-warranty-plan_v2.2-4.pdf',
+          filename: 'Platinum-warranty-plan_v2.2-7.pdf',
           content: platinumBase64,
           content_type: 'application/pdf'
         });

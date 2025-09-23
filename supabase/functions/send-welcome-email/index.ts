@@ -181,8 +181,8 @@ serve(async (req) => {
     }
 
     // Use the standardized PDF documents for all warranty types (motorbikes, vans, cars, EV, PHEV)
-    const planDocumentUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-4.pdf';
-    const termsUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf';
+    const planDocumentUrl = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-7.pdf`;
+    const termsUrl = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf`;
     
     logStep("Document URLs determined", { planType, planDocumentUrl, termsUrl });
 
@@ -226,9 +226,9 @@ serve(async (req) => {
     const attachments = [];
     
     try {
-      // Load Terms and Conditions PDF (updated to v2.2-5 for all warranty types)
-      const termsPath = '/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf';
-      const termsResponse = await fetch(`https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents${termsPath}`);
+      // Load Terms and Conditions PDF (updated to v2.2-7 for all warranty types)
+      const termsPath = '/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf';
+      const termsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents${termsPath}`);
       if (termsResponse.ok) {
         const termsBuffer = await termsResponse.arrayBuffer();
         const termsBytes = new Uint8Array(termsBuffer);
@@ -241,15 +241,15 @@ serve(async (req) => {
         }
         
         attachments.push({
-          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf',
+          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf',
           content: termsBase64,
           content_type: 'application/pdf'
         });
       }
       
-      // Load Platinum Warranty Plan PDF (updated to v2.2-4 for all warranty types)
-      const platinumPath = '/Platinum-warranty-plan_v2.2-4.pdf';
-      const platinumResponse = await fetch(`https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents${platinumPath}`);
+      // Load Platinum Warranty Plan PDF (updated to v2.2-7 for all warranty types)
+      const platinumPath = '/Platinum-warranty-plan_v2.2-7.pdf';
+      const platinumResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents${platinumPath}`);
       if (platinumResponse.ok) {
         const platinumBuffer = await platinumResponse.arrayBuffer();
         const platinumBytes = new Uint8Array(platinumBuffer);
@@ -262,7 +262,7 @@ serve(async (req) => {
         }
         
         attachments.push({
-          filename: 'Platinum-warranty-plan_v2.2-4.pdf',
+          filename: 'Platinum-warranty-plan_v2.2-7.pdf',
           content: platinumBase64,
           content_type: 'application/pdf'
         });
