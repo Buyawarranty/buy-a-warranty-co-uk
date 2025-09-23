@@ -118,13 +118,13 @@ serve(async (req) => {
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : customerData.email,
       line_items: lineItems,
       mode: "payment",
       success_url: `${req.headers.get("origin") || 'https://buyawarranty.co.uk'}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin") || 'https://buyawarranty.co.uk'}/?step=cart`,
       discounts: coupon ? [{ coupon }] : undefined,
+      // Add customer or customer_email but not both
+      ...(customerId ? { customer: customerId } : { customer_email: customerData.email }),
       metadata: {
         customer_email: customerData.email,
         customer_name: `${customerData.first_name} ${customerData.last_name}`,

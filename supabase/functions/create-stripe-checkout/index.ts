@@ -152,8 +152,6 @@ serve(async (req) => {
 
     // Create checkout session
     const sessionData: any = {
-      customer: stripeCustomerId,
-      customer_email: stripeCustomerId ? undefined : customerEmail,
       line_items: lineItems,
       mode: "payment",
       success_url: `${origin}/thank-you?plan=${planType}&payment=${paymentType}&session_id={CHECKOUT_SESSION_ID}`,
@@ -190,6 +188,13 @@ serve(async (req) => {
         original_amount: totalAmount.toString()
       }
     };
+
+    // Add customer or customer_email but not both
+    if (stripeCustomerId) {
+      sessionData.customer = stripeCustomerId;
+    } else if (customerEmail) {
+      sessionData.customer_email = customerEmail;
+    }
 
     if (coupon) {
       sessionData.discounts = [{ coupon: coupon.id }];

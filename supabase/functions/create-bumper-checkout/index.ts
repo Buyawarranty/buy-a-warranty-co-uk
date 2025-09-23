@@ -391,6 +391,11 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
   for (const key of sortedKeys) {
     signatureString += key.toUpperCase() + '=' + filteredPayload[key] + '&';
   }
+  
+  // Remove trailing '&'
+  if (signatureString.endsWith('&')) {
+    signatureString = signatureString.slice(0, -1);
+  }
 
   // Generate HMAC SHA-256 signature
   const encoder = new TextEncoder();
