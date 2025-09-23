@@ -433,7 +433,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     </div>
                   </div>
 
-                  {/* Plan Details */}
+                   {/* Plan Details */}
                   <div className="space-y-4 mb-6">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Plan</span>
@@ -456,12 +456,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <span className="text-gray-600">Vehicle Registration</span>
                       <span className="font-semibold">{vehicleData.regNumber}</span>
                     </div>
-                    {hasValidDiscountCode && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Promo Code</span>
-                        <span className="font-semibold text-orange-600">{appliedDiscountCode}</span>
-                      </div>
-                    )}
+                    
+                    {/* Promo Code Section - Always show this section */}
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Promo Code</span>
+                      <span className="font-semibold">
+                        {hasValidDiscountCode ? (
+                          <span className="text-orange-600">{appliedDiscountCode}</span>
+                        ) : (
+                          <span className="text-gray-400">None applied</span>
+                        )}
+                      </span>
+                    </div>
                   </div>
 
                    {/* Pricing Information */}
