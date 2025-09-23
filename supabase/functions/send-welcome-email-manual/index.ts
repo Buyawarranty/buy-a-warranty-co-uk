@@ -83,7 +83,7 @@ const handler = async (req: Request): Promise<Response> => {
     
     // Check environment variables at startup
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    const resendFrom = 'Buy A Warranty <support@buyawarranty.co.uk>';
+    const resendFrom = 'Buy A Warranty <noreply@buyawarranty.co.uk>';
     
     console.log(JSON.stringify({ 
       evt: "env.check", 
@@ -290,7 +290,8 @@ const handler = async (req: Request): Promise<Response> => {
       const now = new Date();
       const hoursSinceSent = (now.getTime() - sentAt.getTime()) / (1000 * 60 * 60);
       
-      if (hoursSinceSent < 24) {
+      // Temporarily disable 24-hour restriction for testing - allowing resends after 1 hour
+      if (hoursSinceSent < 1) {
         console.log(JSON.stringify({ 
           evt: "welcome.already.sent", 
           rid, 

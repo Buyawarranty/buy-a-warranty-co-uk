@@ -53,13 +53,14 @@ serve(async (req) => {
       .limit(1)
       .maybeSingle();
 
-    // If welcome email already sent recently (within 24 hours), skip sending another one
+    // If welcome email already sent recently (within 1 hour), skip sending another one
     if (existingWelcomeEmail) {
       const sentAt = new Date(existingWelcomeEmail.email_sent_at);
       const now = new Date();
       const hoursSinceSent = (now.getTime() - sentAt.getTime()) / (1000 * 60 * 60);
       
-      if (hoursSinceSent < 24) {
+      // Temporarily allowing resends after 1 hour instead of 24 hours for testing
+      if (hoursSinceSent < 1) {
         logStep("Welcome email already sent recently", { 
           sentAt: existingWelcomeEmail.email_sent_at,
           hoursSinceSent 
@@ -173,7 +174,7 @@ serve(async (req) => {
 
     // Get environment variables for email
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    const resendFrom = 'Buy A Warranty <support@buyawarranty.co.uk>';
+    const resendFrom = 'Buy A Warranty <noreply@buyawarranty.co.uk>';
     
     if (!resendApiKey) {
       throw new Error('RESEND_API_KEY not configured');
