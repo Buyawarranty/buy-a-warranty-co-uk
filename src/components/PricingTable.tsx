@@ -1716,7 +1716,10 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               <div className="mt-6 p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="text-center sm:text-left">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Don{"'"}t just take our word for it</p>
+                    <p className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-gray-600" />
+                      Don{"'"}t just take our word for it
+                    </p>
                     <p className="text-xs text-gray-600">See what our customers say about our warranty service</p>
                   </div>
                   <div className="flex-shrink-0">
@@ -1734,8 +1737,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             </div>
             
             <div className="flex-shrink-0 hidden md:block">
-              <div className="w-60 h-60 flex items-center justify-center bg-green-50 rounded-full border-4 border-green-200">
-                <ShieldCheck className="w-24 h-24 text-green-600" />
+              <div className="w-60 h-60 flex flex-col items-center justify-center bg-green-50 rounded-full border-4 border-green-200">
+                <ShieldCheck className="w-24 h-24 text-green-600 mb-2" />
+                <div className="text-center px-4">
+                  <p className="text-sm font-bold text-green-700">14 day money</p>
+                  <p className="text-sm font-bold text-green-700">back guarantee</p>
+                </div>
               </div>
             </div>
           </div>
