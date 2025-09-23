@@ -64,13 +64,20 @@ export interface CustomerDetailsStepProps {
 
 const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({ 
   vehicleData, 
-  planId,
-  paymentType,
-  planName,
-  pricingData,
+  planId, 
+  paymentType, 
+  planName, 
+  pricingData, 
   onBack, 
   onNext 
 }) => {
+  console.log('🏗️ CustomerDetailsStep mounted with props:', {
+    vehicleData: vehicleData ? 'present' : 'missing',
+    planId: planId ? 'present' : 'missing', 
+    paymentType,
+    planName,
+    pricingData: pricingData ? 'present' : 'missing'
+  });
   const [customerData, setCustomerData] = useState({
     first_name: '',
     last_name: '',
@@ -219,13 +226,20 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       e.preventDefault();
     }
 
+    console.log('🚀 Submit button clicked - starting payment process');
+    console.log('Payment method:', paymentMethod);
+    console.log('Form data:', { planId, vehicleData, customerData });
+
     setShowValidation(true);
     
     if (!validateForm()) {
+      console.log('❌ Form validation failed');
       toast.error('Please fill in all required fields');
       trackEvent('form_validation_error', { form_name: 'customer_details' });
       return;
     }
+
+    console.log('✅ Form validation passed');
 
     // Track customer details form submission
     trackFormSubmission('customer_details', {
@@ -235,9 +249,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
     try {
       const finalPrice = paymentMethod === 'stripe' ? discountedStripePrice : discountedBumperPrice;
+      console.log('💰 Final price calculated:', finalPrice);
       
       // Process payment based on selected method
       if (paymentMethod === 'bumper') {
+        console.log('🏦 Processing Bumper payment...');
         // Create Bumper checkout
         const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-bumper-checkout', {
           body: {
@@ -256,6 +272,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           }
         });
 
+        console.log('Bumper response:', { checkoutData, checkoutError });
+
         if (checkoutError) {
           console.error('Bumper checkout error:', checkoutError);
           toast.error('Payment processing failed. Please try again.');
@@ -263,15 +281,19 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         }
 
         if (checkoutData?.fallbackToStripe) {
+          console.log('🔄 Falling back to Stripe...');
           // Fallback to Stripe if Bumper fails
           await processStripeCheckout();
         } else if (checkoutData?.checkoutUrl) {
+          console.log('🌐 Redirecting to Bumper checkout:', checkoutData.checkoutUrl);
           // Redirect to Bumper checkout
           window.location.href = checkoutData.checkoutUrl;
         } else {
+          console.log('❌ No checkout URL received from Bumper');
           toast.error('Payment setup failed. Please try again.');
         }
       } else {
+        console.log('💳 Processing Stripe payment...');
         // Process Stripe payment
         await processStripeCheckout();
       }
@@ -289,6 +311,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   const processStripeCheckout = async () => {
     const finalPrice = discountedStripePrice;
+    console.log('💳 Processing Stripe checkout with price:', finalPrice);
     
     const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-stripe-checkout', {
       body: {
@@ -305,6 +328,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       }
     });
 
+    console.log('Stripe response:', { checkoutData, checkoutError });
+
     if (checkoutError) {
       console.error('Stripe checkout error:', checkoutError);
       toast.error('Payment processing failed. Please try again.');
@@ -312,9 +337,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     }
 
     if (checkoutData?.url) {
+      console.log('🌐 Redirecting to Stripe checkout:', checkoutData.url);
       // Redirect to Stripe checkout
       window.location.href = checkoutData.url;
     } else {
+      console.log('❌ No checkout URL received from Stripe');
       toast.error('Payment setup failed. Please try again.');
     }
   };
