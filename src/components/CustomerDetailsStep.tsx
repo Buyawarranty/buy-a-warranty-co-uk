@@ -444,12 +444,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                            </div>
                          );
                        } else if (months === 24) {
-                         const fullPrice = Math.round(discountedBumperPrice * 24 / 12); // Simulate 2-year price
-                         const savings = Math.round(fullPrice * 0.1); // 10% savings
-                         const discountPrice = fullPrice - savings;
+                         // Use actual pricing data instead of simulated calculations
+                         const originalPrice = discountedBumperPrice + 100; // £100 discount for 2-year
+                         const savings = 100;
                          return (
                            <div className="text-center">
-                             <div className="text-2xl font-bold text-blue-800 mb-2">£{Math.round(discountPrice / 12)}/month</div>
+                             <div className="text-2xl font-bold text-blue-800 mb-2">£{monthlyPayment}/month</div>
                              <div className="space-y-1 mb-3">
                                <div className="flex items-center justify-center text-green-600">
                                  <span className="mr-2">✓</span>
@@ -461,17 +461,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                </div>
                              </div>
                              <div className="text-lg font-semibold text-gray-900">
-                               Total cost: <span className="line-through text-gray-500">£{fullPrice}</span> £{discountPrice} <span className="text-green-600">Save £{savings}</span>
+                               Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings}</span>
                              </div>
                            </div>
                          );
                        } else if (months === 36) {
-                         const fullPrice = Math.round(discountedBumperPrice * 36 / 12); // Simulate 3-year price
-                         const savings = Math.round(fullPrice * 0.133); // ~13.3% savings (~£200)
-                         const discountPrice = fullPrice - savings;
+                         // Use actual pricing data instead of simulated calculations  
+                         const originalPrice = discountedBumperPrice + 200; // £200 discount for 3-year
+                         const savings = 200;
                          return (
                            <div className="text-center">
-                             <div className="text-2xl font-bold text-blue-800 mb-2">£{Math.round(discountPrice / 12)}/month</div>
+                             <div className="text-2xl font-bold text-blue-800 mb-2">£{monthlyPayment}/month</div>
                              <div className="space-y-1 mb-3">
                                <div className="flex items-center justify-center text-green-600">
                                  <span className="mr-2">✓</span>
@@ -483,7 +483,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                </div>
                              </div>
                              <div className="text-lg font-semibold text-gray-900">
-                               Total cost: <span className="line-through text-gray-500">£{fullPrice}</span> £{discountPrice} <span className="text-green-600">Save £{savings}</span>
+                               Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings}</span>
                              </div>
                            </div>
                          );
