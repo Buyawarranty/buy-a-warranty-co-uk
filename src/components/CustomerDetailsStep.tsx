@@ -663,7 +663,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <p className="text-sm text-gray-600">
                               Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
                               {hasSecondWarrantyDiscount && (
-                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% second warranty discount applied)</span>
+                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% discount applied)</span>
                               )}
                               {hasSecondWarrantyDiscount && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
@@ -692,7 +692,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                              <p className="text-sm text-gray-600">
                               Pay £{discountedStripePrice} upfront via card
                               {hasSecondWarrantyDiscount && (
-                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% second warranty discount + 5% upfront discount)</span>
+                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% discount + 5% upfront discount)</span>
                               )}
                               {!hasSecondWarrantyDiscount && (
                                 <span className="text-green-600"> (5% upfront discount)</span>
