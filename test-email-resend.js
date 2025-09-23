@@ -5,10 +5,9 @@ async function testEmailResend() {
   try {
     console.log('Testing email resend for warranty BAW-2508-400117...');
     
-    const { data, error } = await supabase.functions.invoke('send-welcome-email-manual', {
+    const { data, error } = await supabase.functions.invoke('resend-welcome-email', {
       body: {
-        policyId: '5e0dfd8c-77ec-4a1d-b4eb-ff6c91363d25',
-        customerId: '106e5c62-94f9-4eeb-a72a-e135cd976196'
+        customerEmail: 'claims@buyawarranty.co.uk'
       }
     });
 

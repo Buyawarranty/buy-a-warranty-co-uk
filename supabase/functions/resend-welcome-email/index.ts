@@ -56,7 +56,7 @@ serve(async (req) => {
       .eq('email', customerEmail)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (policyError || !policy) {
       logStep("Warning: No policy found, using warranty reference number", policyError);
