@@ -257,19 +257,19 @@ serve(async (req) => {
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; color: #333333;">
           
           <!-- Header -->
-          <div style="text-align: center; margin-bottom: 30px; padding: 20px 0; border-bottom: 2px solid #f0f0f0;">
+          <div style="text-align: center; margin-bottom: 20px; padding: 15px 0; border-bottom: 2px solid #f0f0f0;">
             <h1 style="color: #2c3e50; margin: 0; font-size: 28px; font-weight: 600;">Welcome to Buy A Warranty</h1>
-            <p style="color: #5a6c7d; margin: 10px 0 0 0; font-size: 16px;">Your vehicle protection is now active</p>
+            <p style="color: #5a6c7d; margin: 10px 0 0 0; font-size: 16px;">Your Buy-A-Warranty Protection is Now Registered</p>
           </div>
 
           <!-- Greeting -->
-          <div style="margin-bottom: 30px;">
-            <h2 style="color: #2c3e50; margin-bottom: 15px; font-size: 22px; font-weight: 500;">Hi ${finalCustomerName},</h2>
+          <div style="margin-bottom: 20px;">
+            <h2 style="color: #2c3e50; margin-bottom: 10px; font-size: 22px; font-weight: 500;">Hi ${finalCustomerName},</h2>
             <p style="color: #5a6c7d; line-height: 1.6; margin: 0;">Thank you for choosing Buy A Warranty. Your vehicle protection is now registered and active. We're here to provide you with peace of mind on the road.</p>
           </div>
 
           <!-- Policy Details -->
-          <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #e9ecef;">
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 15px 0; border: 1px solid #e9ecef;">
             <h3 style="color: #2c3e50; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Your Policy Details</h3>
             <table style="width: 100%; border-collapse: collapse;">
               <tr style="border-bottom: 1px solid #e9ecef;">
@@ -292,23 +292,23 @@ serve(async (req) => {
           </div>
 
           <!-- Customer Portal Access -->
-          <div style="background-color: #f0f7ff; padding: 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #d4e6f1;">
-            <h3 style="color: #2c3e50; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Your Customer Portal Access</h3>
-            <p style="color: #5a6c7d; line-height: 1.6; margin-bottom: 20px;">Access your customer portal to view warranty details, submit claims, and manage your account:</p>
+          <div style="background-color: #f0f7ff; padding: 20px; border-radius: 8px; margin: 15px 0; border: 1px solid #d4e6f1;">
+            <h3 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">Your Customer Portal Access</h3>
+            <p style="color: #5a6c7d; line-height: 1.6; margin-bottom: 15px;">Access your customer portal to view warranty details, submit claims, and manage your account:</p>
             
-            <div style="background-color: #ffffff; padding: 20px; border-radius: 6px; border: 1px solid #d4e6f1; margin-bottom: 15px;">
+            <div style="background-color: #ffffff; padding: 15px; border-radius: 6px; border: 1px solid #d4e6f1; margin-bottom: 10px;">
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
-                  <td style="padding: 8px 0; color: #5a6c7d; font-weight: 500; width: 30%;">Login URL:</td>
-                  <td style="padding: 8px 0;"><a href="https://buyawarranty.co.uk/customer-dashboard" style="color: #1a73e8; text-decoration: none;">https://buyawarranty.co.uk/customer-dashboard</a></td>
+                  <td style="padding: 6px 0; color: #5a6c7d; font-weight: 500; width: 30%;">Login URL:</td>
+                  <td style="padding: 6px 0;"><a href="https://buyawarranty.co.uk/customer-dashboard" style="color: #1a73e8; text-decoration: none;">https://buyawarranty.co.uk/customer-dashboard</a></td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; color: #5a6c7d; font-weight: 500;">Email:</td>
-                  <td style="padding: 8px 0; color: #2c3e50; font-weight: 600;">${email}</td>
+                  <td style="padding: 6px 0; color: #5a6c7d; font-weight: 500;">Email:</td>
+                  <td style="padding: 6px 0; color: #2c3e50; font-weight: 600;">${email}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; color: #5a6c7d; font-weight: 500;">Password:</td>
-                  <td style="padding: 8px 0;"><code style="background-color: #f8f9fa; padding: 6px 10px; border-radius: 4px; font-family: 'Courier New', monospace; color: #2c3e50; border: 1px solid #e9ecef;">${tempPassword}</code></td>
+                  <td style="padding: 6px 0; color: #5a6c7d; font-weight: 500;">Password:</td>
+                  <td style="padding: 6px 0;"><code style="background-color: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: 'Courier New', monospace; color: #2c3e50; border: 1px solid #e9ecef;">${tempPassword}</code></td>
                 </tr>
               </table>
             </div>
@@ -317,9 +317,9 @@ serve(async (req) => {
           </div>
 
           <!-- Important Actions -->
-          <div style="background-color: #fff8e1; padding: 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #ffe082;">
-            <h3 style="color: #2c3e50; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Next Steps</h3>
-            <ol style="color: #5a6c7d; line-height: 1.8; margin: 0; padding-left: 20px;">
+          <div style="background-color: #fff8e1; padding: 20px; border-radius: 8px; margin: 15px 0; border: 1px solid #ffe082;">
+            <h3 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">Next Steps</h3>
+            <ol style="color: #5a6c7d; line-height: 1.6; margin: 0; padding-left: 20px;">
               <li><strong>Log into your customer portal</strong> using the credentials above</li>
               <li><strong>Download your warranty documents</strong> (attached to this email)</li>
               <li><strong>Save your policy number</strong> for future reference</li>
@@ -328,36 +328,45 @@ serve(async (req) => {
           </div>
 
           <!-- Warranty Documents -->
-          <div style="margin: 25px 0;">
-            <h3 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">Your Warranty Documents</h3>
-            <p style="color: #5a6c7d; line-height: 1.6; margin-bottom: 15px;">Your warranty documents are attached to this email and also available for download:</p>
+          <div style="margin: 15px 0;">
+            <h3 style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">Your Warranty Documents</h3>
+            <p style="color: #5a6c7d; line-height: 1.6; margin-bottom: 10px;">Your warranty documents are attached to this email and also available for download:</p>
             <ul style="list-style: none; padding: 0; margin: 0;">
-              <li style="margin-bottom: 12px; padding: 12px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
+              <li style="margin-bottom: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
                 📄 <a href="${planDocumentUrl}" style="color: #1a73e8; text-decoration: none; font-weight: 500;">Your ${planType} Warranty Policy</a>
               </li>
-              <li style="margin-bottom: 12px; padding: 12px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
+              <li style="margin-bottom: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
                 📋 <a href="${termsUrl}" style="color: #1a73e8; text-decoration: none; font-weight: 500;">Terms and Conditions</a>
               </li>
             </ul>
           </div>
 
           <!-- Support Information -->
-          <div style="text-align: center; margin: 30px 0; padding: 25px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
-            <h3 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">Need Help?</h3>
-            <p style="color: #5a6c7d; margin-bottom: 20px;">Our customer service team is here to help:</p>
-            <div style="margin-bottom: 15px;">
-              <p style="margin: 8px 0;">📧 <a href="mailto:info@buyawarranty.co.uk" style="color: #1a73e8; text-decoration: none; font-weight: 500;">info@buyawarranty.co.uk</a></p>
-              <p style="margin: 8px 0;">📞 <a href="tel:+442045713400" style="color: #1a73e8; text-decoration: none; font-weight: 500;">+44 204 571 3400</a></p>
+          <div style="text-align: center; margin: 15px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+            <h3 style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">Need Help?</h3>
+            <p style="color: #5a6c7d; margin-bottom: 15px;">Our customer service team is here to help:</p>
+            <div style="margin-bottom: 10px;">
+              <p style="margin: 5px 0;">📧 <strong>Customer support:</strong> <a href="mailto:support@buyawarranty.co.uk" style="color: #1a73e8; text-decoration: none; font-weight: 500;">support@buyawarranty.co.uk</a></p>
+              <p style="margin: 5px 0;">📞 <strong>Customer support:</strong> <a href="tel:03302295040" style="color: #1a73e8; text-decoration: none; font-weight: 500;">0330 229 5040</a></p>
+              <p style="margin: 5px 0;">📧 <strong>Claims line:</strong> <a href="mailto:claims@buyawarranty.co.uk" style="color: #1a73e8; text-decoration: none; font-weight: 500;">claims@buyawarranty.co.uk</a></p>
+              <p style="margin: 5px 0;">📞 <strong>Claims line:</strong> <a href="tel:03302295045" style="color: #1a73e8; text-decoration: none; font-weight: 500;">0330 229 5045</a></p>
             </div>
           </div>
 
           <!-- Footer -->
-          <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+          <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9ecef;">
             <p style="color: #6c757d; font-size: 14px; margin: 0 0 10px 0;">
-              Thank you for choosing Buy A Warranty for your vehicle protection needs.
+              Thank you for choosing buyawarranty.co.uk
+            </p>
+            <p style="color: #6c757d; font-size: 14px; margin: 0 0 10px 0;">
+              Kind regards,<br>
+              The Buy-A-Warranty Team
             </p>
             <p style="color: #6c757d; font-size: 12px; margin: 0;">
-              Buy A Warranty Ltd, 1 Knightsbridge, London, SW1X 7LX
+              <strong>buyawarranty.co.uk</strong><br>
+              Your trusted warranty partner<br>
+              <strong>Claims line:</strong> 0330 229 5045 | claims@buyawarranty.co.uk<br>
+              <strong>Customer support:</strong> 0330 229 5040 | support@buyawarranty.co.uk
             </p>
           </div>
         </div>
