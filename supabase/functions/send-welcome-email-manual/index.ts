@@ -220,8 +220,8 @@ const handler = async (req: Request): Promise<Response> => {
     let attachments = [];
     
     try {
-      // Load Terms and Conditions PDF from public folder (updated to v2.2-5 for all warranty types)
-      const termsResponse = await fetch('https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf');
+      // Load Terms and Conditions PDF from public folder
+      const termsResponse = await fetch('https://buyawarranty.co.uk/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-5.pdf');
       if (termsResponse.ok) {
         const termsBuffer = await termsResponse.arrayBuffer();
         const termsBytes = new Uint8Array(termsBuffer);
@@ -244,8 +244,8 @@ const handler = async (req: Request): Promise<Response> => {
         console.log(JSON.stringify({ evt: "terms.pdf.failed", rid, status: termsResponse.status }));
       }
       
-      // Load Platinum Warranty Plan PDF from public folder (updated to v2.2-4 for all warranty types)
-      const platinumResponse = await fetch('https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/Platinum-warranty-plan_v2.2-4.pdf');
+      // Load Platinum Warranty Plan PDF from public folder
+      const platinumResponse = await fetch('https://buyawarranty.co.uk/Platinum-warranty-plan_v2.2-4.pdf');
       if (platinumResponse.ok) {
         const platinumBuffer = await platinumResponse.arrayBuffer();
         const platinumBytes = new Uint8Array(platinumBuffer);

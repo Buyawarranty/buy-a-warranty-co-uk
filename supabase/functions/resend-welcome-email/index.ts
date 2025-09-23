@@ -52,7 +52,7 @@ serve(async (req) => {
     // Get the latest policy for this customer
     const { data: policy, error: policyError } = await supabaseClient
       .from('customer_policies')
-      .select('policy_number')
+      .select('id, policy_number')
       .eq('email', customerEmail)
       .order('created_at', { ascending: false })
       .limit(1)
@@ -64,15 +64,12 @@ serve(async (req) => {
 
     const policyNumber = policy?.policy_number || customer.warranty_reference_number || 'Policy number not available';
 
-    // Call the send-welcome-email function with customer data
-    const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email', {
+    // Call the send-welcome-email-manual function with customer data
+    const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
       body: {
-        email: customer.email,
-        planType: customer.plan_type,
-        paymentType: customer.payment_type || 'yearly',
-        policyNumber: policyNumber,
-        registrationPlate: customer.registration_plate,
-        customerName: customer.name
+        policyId: policy?.id,
+        customerId: customer.id,
+        forceResend: true
       }
     });
 
