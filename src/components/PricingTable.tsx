@@ -456,23 +456,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   // Memoized add-on price calculation
   const addOnPrice = useMemo(() => {
-    const autoIncluded = getAutoIncludedAddOns(paymentType);
-    let protectionAddOnPrice = 0;
-    
-    if (selectedProtectionAddOns.breakdown && !autoIncluded.includes('breakdown')) protectionAddOnPrice += 3.99 * 12;
-    if (selectedProtectionAddOns.rental && !autoIncluded.includes('rental')) protectionAddOnPrice += 6.99 * 12;
-    if (selectedProtectionAddOns.tyre && !autoIncluded.includes('tyre')) protectionAddOnPrice += 7.99 * 12;
-    if (selectedProtectionAddOns.wearAndTear && !autoIncluded.includes('wearAndTear')) {
-      protectionAddOnPrice += 9.99 * 12;
-    }
-    if (selectedProtectionAddOns.european && !autoIncluded.includes('european')) protectionAddOnPrice += 5.99 * 12;
-    if (selectedProtectionAddOns.motRepair && !autoIncluded.includes('motRepair')) protectionAddOnPrice += 4 * 12;
-    if (selectedProtectionAddOns.motFee && !autoIncluded.includes('motFee')) protectionAddOnPrice += 1.99 * 12;
-    if (selectedProtectionAddOns.lostKey && !autoIncluded.includes('lostKey')) protectionAddOnPrice += 3 * 12;
-    if (selectedProtectionAddOns.consequential && !autoIncluded.includes('consequential')) protectionAddOnPrice += 5 * 12;
-    if (selectedProtectionAddOns.transfer && !autoIncluded.includes('transfer')) protectionAddOnPrice += 19.99;
-    
-    return protectionAddOnPrice;
+    const durationMonths = paymentType === '12months' ? 12 : 
+                          paymentType === '24months' ? 24 : 36;
+    return utilCalculateAddOnPrice(selectedProtectionAddOns, paymentType, durationMonths);
   }, [paymentType, selectedProtectionAddOns]);
 
   // Memoized total price calculation
@@ -513,7 +499,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return savings > 0 ? savings : 0;
   };
 
-  const calculateAddOnPrice = (planId: string) => {
+  const calculateLocalAddOnPrice = (planId: string) => {
     // Get auto-included add-ons for current payment type
     const autoIncluded = getAutoIncludedAddOns(paymentType);
     

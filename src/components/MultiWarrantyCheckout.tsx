@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CartItem } from '@/contexts/CartContext';
 import { trackFormSubmission, trackConversion, trackEvent } from '@/utils/analytics';
+import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType } from '@/lib/addOnsUtils';
 
 interface MultiWarrantyCheckoutProps {
   items: CartItem[];
@@ -697,102 +698,55 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                            <div className="mb-2">
                              <span className="text-gray-600 font-medium">Add-on Protection:</span>
                            </div>
-                           <div className="space-y-1">
-                             {(() => {
-                                // Helper function to get auto-included add-ons based on payment type
-                                const getAutoIncludedAddOns = (paymentType: string) => {
-                                  switch (paymentType) {
-                                    case 'two_yearly':
-                                      return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
-                                    case 'three_yearly':
-                                      return ['breakdown', 'motFee', 'european', 'rental']; // 3-Year: Vehicle recovery, MOT test fee, Europe cover, Vehicle rental
-                                    default:
-                                      return []; // 1-Year: No auto-included add-ons
-                                  }
+                            <div className="space-y-1">
+                              {(() => {
+                                // Get duration in months based on payment type
+                                const getDurationMonths = (paymentType: string) => {
+                                  const normalized = normalizePaymentType(paymentType);
+                                  return normalized === '24months' ? 24 : 
+                                         normalized === '36months' ? 36 : 12;
                                 };
                                
-                               const autoIncluded = getAutoIncludedAddOns(item.paymentType);
-                               const isAutoIncluded = (addOnKey: string) => autoIncluded.includes(addOnKey);
-                               
-                               return (
-                                 <>
-                                   {item.pricingData.selectedAddOns.tyre && (
-                                     <div className="flex items-center justify-between text-sm text-gray-700">
-                                       <div className="flex items-center gap-2">
-                                         <span className="text-green-600">✓</span>
-                                         <span>Tyre Cover</span>
-                                       </div>
-                                       <span className="text-gray-600">£7.99/month</span>
-                                     </div>
-                                   )}
-                                   {item.pricingData.selectedAddOns.wearTear && (
-                                     <div className="flex items-center justify-between text-sm text-gray-700">
-                                       <div className="flex items-center gap-2">
-                                         <span className="text-green-600">✓</span>
-                                         <span>Wear & Tear</span>
-                                       </div>
-                                       <span className="text-gray-600">£9.99/month</span>
-                                     </div>
-                                   )}
-                                   {item.pricingData.selectedAddOns.european && (
-                                     <div className="flex items-center justify-between text-sm text-gray-700">
-                                       <div className="flex items-center gap-2">
-                                         <span className="text-green-600">✓</span>
-                                         <span>European Cover</span>
-                                       </div>
-                                       <span className="text-gray-600">
-                                         {isAutoIncluded('european') ? 'Free' : '£5.99/month'}
-                                       </span>
-                                     </div>
-                                   )}
-                                   {item.pricingData.selectedAddOns.breakdown && (
-                                     <div className="flex items-center justify-between text-sm text-gray-700">
-                                       <div className="flex items-center gap-2">
-                                         <span className="text-green-600">✓</span>
-                                         <span>24/7 Vehicle Recovery</span>
-                                       </div>
-                                       <span className="text-gray-600">
-                                         {isAutoIncluded('breakdown') ? 'Free' : '£3.99/month'}
-                                       </span>
-                                     </div>
-                                   )}
-                                   {item.pricingData.selectedAddOns.rental && (
-                                     <div className="flex items-center justify-between text-sm text-gray-700">
-                                       <div className="flex items-center gap-2">
-                                         <span className="text-green-600">✓</span>
-                                         <span>Vehicle Rental</span>
-                                       </div>
-                                       <span className="text-gray-600">
-                                         {isAutoIncluded('rental') ? 'Free' : '£6.99/month'}
-                                       </span>
-                                     </div>
-                                   )}
-                                   {item.pricingData.selectedAddOns.transfer && (
-                                     <div className="flex items-center justify-between text-sm text-gray-700">
-                                       <div className="flex items-center gap-2">
-                                         <span className="text-green-600">✓</span>
-                                         <span>Transfer Cover</span>
-                                       </div>
-                                       <span className="text-gray-600">£19.99 one-time</span>
-                                     </div>
-                                   )}
-                                   {item.pricingData.selectedAddOns.motFee && (
-                                     <div className="flex items-center justify-between text-sm text-gray-700">
-                                       <div className="flex items-center gap-2">
-                                         <span className="text-green-600">✓</span>
-                                         <span>MOT Test Fee Cover</span>
-                                       </div>
-                                       <span className="text-gray-600">
-                                         {isAutoIncluded('motFee') ? 'Free' : '£1.99/month'}
-                                       </span>
-                                     </div>
-                                   )}
-                                 </>
-                               );
-                             })()}
-                           </div>
-                         </div>
-                       )}
+                                const durationMonths = getDurationMonths(item.paymentType);
+                                const addOnInfos = getAddOnInfo(item.paymentType, durationMonths);
+                                
+                                // Create a map of selected add-ons from pricing data
+                                const selectedAddOns = item.pricingData.selectedAddOns || {};
+                                
+                                return (
+                                  <>
+                                    {/* Display Protection Add-ons */}
+                                    {Object.entries(selectedAddOns).some(([_, selected]) => selected) && 
+                                      addOnInfos.map(addOn => {
+                                        // Map different key formats to consistent ones
+                                        const keyMappings: { [key: string]: string } = {
+                                          'wearTear': 'wearAndTear'
+                                        };
+                                        
+                                        const mappedKey = keyMappings[addOn.key] || addOn.key;
+                                        const isSelected = selectedAddOns[addOn.key] || selectedAddOns[mappedKey];
+                                        
+                                        if (!isSelected) return null;
+                                        
+                                        return (
+                                          <div key={addOn.key} className="flex items-center justify-between text-sm text-gray-700">
+                                            <div className="flex items-center gap-2">
+                                              <span className="text-green-600">✓</span>
+                                              <span>{addOn.name}</span>
+                                            </div>
+                                            <span className={`text-gray-600 ${addOn.isAutoIncluded ? 'font-medium text-green-600' : ''}`}>
+                                              {addOn.isAutoIncluded ? 'FREE' : (addOn.oneTimePrice ? `£${addOn.oneTimePrice}` : `£${addOn.monthlyPrice}/month`)}
+                                            </span>
+                                          </div>
+                                        );
+                                      })
+                                    }
+                                  </>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        )}
                     </div>
 
                     {/* Separator line between warranties */}

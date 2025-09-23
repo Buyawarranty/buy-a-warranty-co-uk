@@ -14,6 +14,7 @@ import AddAnotherWarrantyOffer from '@/components/AddAnotherWarrantyOffer';
 import { useAuth } from '@/hooks/useAuth';
 import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
+import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType } from '@/lib/addOnsUtils';
 
 export interface CustomerDetailsStepProps {
   vehicleData: {
