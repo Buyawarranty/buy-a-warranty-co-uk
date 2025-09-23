@@ -942,7 +942,10 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               </Button>
               
               <div className="text-xs text-gray-500 text-center mt-3">
-                <p>🔒 Secure checkout powered by Stripe</p>
+                <p className="flex items-center justify-center gap-1">
+                  <CreditCard size={12} className="text-blue-600" />
+                  Secure checkout powered by Stripe
+                </p>
                 <p>All major cards accepted</p>
               </div>
             </div>

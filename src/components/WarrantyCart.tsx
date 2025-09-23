@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Trash2, Plus, ShoppingCart, ArrowRight, ArrowLeft, CheckCircle, Info, AlertCircle } from 'lucide-react';
+import { Trash2, Plus, ShoppingCart, ArrowRight, ArrowLeft, CheckCircle, Info, AlertCircle, CreditCard } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { getWarrantyDurationDisplay } from '@/lib/warrantyDurationUtils';
@@ -430,7 +430,7 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
               </div>
 
               <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
-                <div className="w-4 h-4 bg-gray-800 rounded"></div>
+                <CreditCard size={16} className="text-blue-600" />
                 Secure checkout powered by Stripe
               </div>
             </div>
