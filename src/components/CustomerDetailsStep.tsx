@@ -616,7 +616,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
                       <div className="border-t pt-4">
                         <div className="mb-2">
-                          <span className="text-gray-600 font-medium">Included Protection</span>
+                          <span className="text-black font-medium">Included Protection</span>
                         </div>
                         <div className="space-y-1">
                           {pricingData.protectionAddOns.breakdown && (
