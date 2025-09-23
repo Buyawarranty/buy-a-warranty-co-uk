@@ -221,8 +221,13 @@ serve(async (req) => {
     logStep("Bumper payload prepared", loggableData);
 
     // Generate signature exactly like the WordPress plugin
+    console.log("BUMPER DEBUG: Payload before signature:", JSON.stringify(bumperRequestData, null, 2));
+    
     const signature = await generateSignature(bumperRequestData, bumperSecretKey);
     bumperRequestData.signature = signature;
+    
+    console.log("BUMPER DEBUG: Generated signature:", signature);
+    console.log("BUMPER DEBUG: Final payload:", JSON.stringify(bumperRequestData, null, 2));
 
     // CRITICAL FIX: Use PRODUCTION Bumper API, not demo
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";
@@ -386,16 +391,22 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
   // Sort keys alphabetically
   const sortedKeys = Object.keys(filteredPayload).sort();
 
-  // Build signature string
+  // Build signature string (WordPress plugin format)
   let signatureString = '';
   for (const key of sortedKeys) {
-    signatureString += key.toUpperCase() + '=' + filteredPayload[key] + '&';
+    const value = filteredPayload[key];
+    // Convert arrays to JSON strings like WordPress plugin does
+    const stringValue = Array.isArray(value) ? JSON.stringify(value) : String(value);
+    signatureString += key.toUpperCase() + '=' + stringValue + '&';
   }
   
   // Remove trailing '&'
   if (signatureString.endsWith('&')) {
     signatureString = signatureString.slice(0, -1);
   }
+
+  console.log("BUMPER DEBUG: Signature string:", signatureString);
+  console.log("BUMPER DEBUG: Secret key length:", secretKey.length);
 
   // Generate HMAC SHA-256 signature
   const encoder = new TextEncoder();

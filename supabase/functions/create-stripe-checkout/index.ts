@@ -150,6 +150,8 @@ serve(async (req) => {
       }
     }
 
+    console.log("STRIPE DEBUG: Customer data:", { stripeCustomerId, customerEmail });
+    
     // Create checkout session
     const sessionData: any = {
       line_items: lineItems,
@@ -192,8 +194,10 @@ serve(async (req) => {
     // Add customer or customer_email but not both
     if (stripeCustomerId) {
       sessionData.customer = stripeCustomerId;
+      console.log("STRIPE DEBUG: Using customer ID:", stripeCustomerId);
     } else if (customerEmail) {
       sessionData.customer_email = customerEmail;
+      console.log("STRIPE DEBUG: Using customer email:", customerEmail);
     }
 
     if (coupon) {
