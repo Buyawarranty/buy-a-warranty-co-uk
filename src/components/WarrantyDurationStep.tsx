@@ -4,6 +4,7 @@ import { Calendar, Crown, Check, ArrowLeft, X, FileText, ChevronDown } from 'luc
 import { useNavigate } from 'react-router-dom';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { calculateAddOnPrice } from '@/lib/addOnsUtils';
+import { calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
 
 interface WarrantyDurationStepProps {
   vehicleData: any;
@@ -73,6 +74,12 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     const excessData = periodData[voluntaryExcess as keyof typeof periodData] || periodData[50];
     const baseWarrantyPrice = excessData[claimLimit as keyof typeof excessData] || excessData[1250];
     
+    // Apply vehicle-specific price adjustments (van, motorbike, etc.)
+    const warrantyYears = paymentPeriod === '12months' ? 1 : 
+                         paymentPeriod === '24months' ? 2 : 3;
+    const vehiclePriceAdjustment = calculateVehiclePriceAdjustment(vehicleData, warrantyYears);
+    const adjustedBasePrice = applyPriceAdjustment(baseWarrantyPrice, vehiclePriceAdjustment);
+    
     // Calculate addon prices for this duration
     const durationMonths = paymentPeriod === '12months' ? 12 : 
                           paymentPeriod === '24months' ? 24 : 
@@ -86,7 +93,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     // Calculate protection add-on price using centralized utility
     const protectionAddOnPrice = calculateAddOnPrice(protectionAddOns || {}, paymentPeriod, durationMonths);
     
-    const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
+    const totalPrice = adjustedBasePrice + planAddOnPrice + protectionAddOnPrice;
     
     // Apply automatic discounts for multi-year plans
     let discountedPrice = totalPrice;
@@ -101,6 +108,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     console.log('WarrantyDurationStep - Calculated pricing:', {
       paymentPeriod,
       baseWarrantyPrice,
+      adjustedBasePrice,
+      vehiclePriceAdjustment: vehiclePriceAdjustment.adjustmentAmount,
       planAddOnPrice,
       protectionAddOnPrice,
       totalPrice,
@@ -117,10 +126,18 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     return { totalPrice: discountedPrice, monthlyPrice };
   };
 
-  // Memoize pricing calculations to prevent fluctuations on re-render
-  const pricingData12 = useMemo(() => getPricingForDuration('12months'), [pricingData]);
-  const pricingData24 = useMemo(() => getPricingForDuration('24months'), [pricingData]);
-  const pricingData36 = useMemo(() => getPricingForDuration('36months'), [pricingData]);
+  // Memoize pricing calculations with stable dependencies to prevent fluctuations on re-render
+  const vehicleDataStable = useMemo(() => vehicleData, [vehicleData?.regNumber, vehicleData?.make, vehicleData?.model, vehicleData?.vehicleType]);
+  const pricingDataStable = useMemo(() => pricingData, [
+    pricingData?.voluntaryExcess, 
+    pricingData?.claimLimit, 
+    JSON.stringify(pricingData?.selectedAddOns),
+    JSON.stringify(pricingData?.protectionAddOns)
+  ]);
+  
+  const pricingData12 = useMemo(() => getPricingForDuration('12months'), [vehicleDataStable, pricingDataStable]);
+  const pricingData24 = useMemo(() => getPricingForDuration('24months'), [vehicleDataStable, pricingDataStable]);
+  const pricingData36 = useMemo(() => getPricingForDuration('36months'), [vehicleDataStable, pricingDataStable]);
 
   const durationOptions = useMemo(() => [
     {
