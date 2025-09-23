@@ -1432,15 +1432,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
               const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
               const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
               
-              // Calculate add-on costs independently - only use currently selected add-ons for the SELECTED plan
+              // Calculate add-on costs for ALL options to show proper pricing
               let protectionAddOnPrice = 0;
               
-              // Only add protection add-on costs if this is the currently selected payment type
-              if (option.id === paymentType) {
-                // Calculate protection add-on price using centralized utility  
-                const autoIncluded = getAutoIncludedAddOns(option.id);
-                protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
-              }
+              // Always calculate add-on costs for proper display
+              protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
               
                const totalPrice = adjustedPrice + protectionAddOnPrice;
                // For 2-year and 3-year plans, divide by 12 since users only pay for 12 months
