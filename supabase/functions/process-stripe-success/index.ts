@@ -125,48 +125,11 @@ serve(async (req) => {
 
     logStep("Payment processed successfully", paymentData);
 
-    // Send welcome email for Stripe customer using EXACT same logic as Bumper
-    if (paymentData?.customerId && paymentData?.policyId) {
-      try {
-        logStep("Sending welcome email for Stripe customer (using Bumper pattern)", { 
-          customerId: paymentData.customerId, 
-          policyId: paymentData.policyId,
-          customerEmail: vehicleData.email,
-          planType: session.metadata?.plan_id || planId
-        });
-
-        const emailPayload = {
-          customerId: paymentData.customerId,
-          policyId: paymentData.policyId
-        };
-
-        // Use EXACT same email function as Bumper
-        const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
-          body: emailPayload
-        });
-        
-        logStep("Email function response", {
-          data: emailResult,
-          error: emailError
-        });
-
-        if (emailError) {
-          logStep("ERROR: Welcome email failed", { 
-            error: emailError,
-            policyId: paymentData.policyId
-          });
-        } else {
-          logStep("SUCCESS: Welcome email sent successfully", emailResult);
-        }
-
-      } catch (emailError) {
-        logStep("Welcome email failed", { 
-          error: emailError,
-          message: emailError instanceof Error ? emailError.message : String(emailError),
-          policyId: paymentData.policyId
-        });
-      }
-    }
+    // Email is already handled by handle-successful-payment function
+    logStep("Email already sent via handle-successful-payment", { 
+      customerId: paymentData?.customerId, 
+      policyId: paymentData?.policyId
+    });
 
     return new Response(JSON.stringify({ 
       success: true, 
