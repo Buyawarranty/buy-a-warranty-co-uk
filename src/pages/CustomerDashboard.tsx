@@ -651,8 +651,8 @@ const CustomerDashboard = () => {
                           return;
                         }
                         
-                        supabase.auth.resetPasswordForEmail(email, {
-                          redirectTo: `${window.location.origin}/reset-password`,
+                        supabase.functions.invoke('send-password-reset-email', {
+                          body: { email }
                         }).then(({ error }) => {
                           if (error) {
                             toast({

@@ -1367,8 +1367,8 @@ export const CustomersTab = () => {
       }
       
       // Send reset email as backup
-      const { error: emailError } = await supabase.auth.resetPasswordForEmail(customerEmail, {
-        redirectTo: `${window.location.origin}/reset-password`
+      const { error: emailError } = await supabase.functions.invoke('send-password-reset-email', {
+        body: { email: customerEmail }
       });
       
       if (emailError) {

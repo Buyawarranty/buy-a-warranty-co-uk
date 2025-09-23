@@ -234,10 +234,11 @@ const Auth = () => {
     }
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+      // Use our custom branded password reset email
+      const { error } = await supabase.functions.invoke('send-password-reset-email', {
+        body: { email }
       });
-
+      
       if (error) throw error;
 
       toast({
