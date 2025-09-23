@@ -49,10 +49,15 @@ export const useMobileBackNavigation = ({
   }, [handleBackNavigation]);
 
   useEffect(() => {
-    // Prevent the default browser back behavior on mobile
+    // Prevent the default browser back behavior on mobile, but allow payment processing
     const preventDefaultBack = (event: BeforeUnloadEvent) => {
-      // Only prevent if user is in the middle of the flow (not on step 1)
-      if (currentStep > 1) {
+      // Don't prevent leaving during payment processing (step 4) or if user hasn't started the flow
+      if (currentStep <= 1 || currentStep >= 4) {
+        return;
+      }
+      
+      // Only prevent if user is in the middle of the flow (steps 2-3)
+      if (currentStep > 1 && currentStep < 4) {
         event.preventDefault();
         event.returnValue = '';
       }
