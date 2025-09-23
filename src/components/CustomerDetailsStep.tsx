@@ -81,6 +81,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [addAnotherWarrantyRequested, setAddAnotherWarrantyRequested] = useState(false);
   const [appliedDiscountCode, setAppliedDiscountCode] = useState<string>('');
   const [discountAmount, setDiscountAmount] = useState<number>(0);
+  const [promoCodeInput, setPromoCodeInput] = useState<string>('');
+  const [promoCodeError, setPromoCodeError] = useState<string>('');
   const { user } = useAuth();
 
   // Check for discount code on component mount
@@ -109,6 +111,42 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (fieldErrors[field]) {
       setFieldErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const applyPromoCode = async () => {
+    if (!promoCodeInput.trim()) {
+      setPromoCodeError('Please enter a promo code');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-discount-code', {
+        body: { code: promoCodeInput.trim() }
+      });
+
+      if (error) throw error;
+
+      if (data.valid) {
+        setAppliedDiscountCode(promoCodeInput.trim());
+        setDiscountAmount(data.discount_percentage / 100);
+        setPromoCodeInput('');
+        setPromoCodeError('');
+        toast.success(`Promo code applied! ${data.discount_percentage}% discount`);
+      } else {
+        setPromoCodeError('Invalid or expired promo code');
+      }
+    } catch (error) {
+      console.error('Error validating promo code:', error);
+      setPromoCodeError('Unable to validate promo code. Please try again.');
+    }
+  };
+
+  const removePromoCode = () => {
+    setAppliedDiscountCode('');
+    setDiscountAmount(0);
+    setPromoCodeInput('');
+    setPromoCodeError('');
+    toast.success('Promo code removed');
   };
 
   const validateForm = () => {
@@ -457,16 +495,55 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <span className="font-semibold">{vehicleData.regNumber}</span>
                     </div>
                     
-                    {/* Promo Code Section - Always show this section */}
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Promo Code</span>
-                      <span className="font-semibold">
-                        {hasValidDiscountCode ? (
-                          <span className="text-orange-600">{appliedDiscountCode}</span>
-                        ) : (
-                          <span className="text-gray-400">None applied</span>
+                    {/* Promo Code Section */}
+                    <div className="border-t pt-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-gray-600">Promo Code</span>
+                        {hasValidDiscountCode && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={removePromoCode}
+                            className="text-red-600 hover:text-red-800 h-auto p-1"
+                          >
+                            Remove
+                          </Button>
                         )}
-                      </span>
+                      </div>
+                      
+                      {hasValidDiscountCode ? (
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-green-800">{appliedDiscountCode}</span>
+                            <span className="text-green-600 font-medium">{Math.round(discountAmount * 100)}% OFF</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Enter promo code"
+                              value={promoCodeInput}
+                              onChange={(e) => {
+                                setPromoCodeInput(e.target.value.toUpperCase());
+                                setPromoCodeError('');
+                              }}
+                              className="flex-1"
+                            />
+                            <Button
+                              onClick={applyPromoCode}
+                              variant="outline"
+                              size="sm"
+                              disabled={!promoCodeInput.trim()}
+                            >
+                              Apply
+                            </Button>
+                          </div>
+                          {promoCodeError && (
+                            <p className="text-red-500 text-xs">{promoCodeError}</p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
