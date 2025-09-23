@@ -393,47 +393,44 @@ serve(async (req) => {
   }
 });
 
-// Generate signature exactly like the WordPress plugin
+// Generate signature exactly like the WordPress plugin - FIXED VERSION
 async function generateSignature(payload: any, secretKey: string): Promise<string> {
-  // Keys to exclude from signature (from WordPress plugin)
+  // Keys to exclude from signature (from Bumper WordPress plugin)
   const excludedKeys = [
     'api_key',
     'signature', 
     'product_description',
-    'preferred_product_type',
-    'additional_data'
+    'preferred_product_type'
   ];
 
-  // Filter payload to exclude those keys
+  // Filter payload to exclude those keys and handle values properly
   const filteredPayload: any = {};
   for (const [key, value] of Object.entries(payload)) {
     if (!excludedKeys.includes(key)) {
-      filteredPayload[key] = value;
+      // Handle empty values - convert to empty string for signature
+      if (value === null || value === undefined) {
+        filteredPayload[key] = '';
+      } else if (Array.isArray(value)) {
+        // Skip arrays entirely for signature (like product_description)
+        continue;
+      } else {
+        filteredPayload[key] = String(value);
+      }
     }
   }
 
-  // Sort keys alphabetically
-  const sortedKeys = Object.keys(filteredPayload).sort();
+  // Sort keys alphabetically (case-insensitive like WordPress)
+  const sortedKeys = Object.keys(filteredPayload).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-  // Build signature string (WordPress plugin format)
-  let signatureString = '';
+  // Build signature string exactly like WordPress plugin
+  const signatureParts = [];
   for (const key of sortedKeys) {
     const value = filteredPayload[key];
-    // Convert arrays to JSON strings like WordPress plugin does
-    // Handle undefined/null values by converting to empty strings
-    let stringValue = '';
-    if (Array.isArray(value)) {
-      stringValue = JSON.stringify(value);
-    } else if (value !== undefined && value !== null) {
-      stringValue = String(value);
-    }
-    signatureString += key.toUpperCase() + '=' + stringValue + '&';
+    // WordPress format: KEY=value (no URL encoding for signature)
+    signatureParts.push(`${key.toUpperCase()}=${value}`);
   }
   
-  // Remove trailing '&'
-  if (signatureString.endsWith('&')) {
-    signatureString = signatureString.slice(0, -1);
-  }
+  const signatureString = signatureParts.join('&');
 
   console.log("BUMPER DEBUG: Signature string:", signatureString);
   console.log("BUMPER DEBUG: Secret key length:", secretKey.length);
@@ -453,6 +450,7 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
   
   const signature = await crypto.subtle.sign('HMAC', key, data);
   
+  // Return hex string
   return Array.from(new Uint8Array(signature))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');

@@ -282,38 +282,51 @@ serve(async (req) => {
   }
 });
 
-// Generate signature exactly like the WordPress plugin
+// Generate signature exactly like the WordPress plugin - FIXED VERSION
 async function generateSignature(payload: any, secretKey: string): Promise<string> {
+  // Keys to exclude from signature (from Bumper WordPress plugin)
   const excludedKeys = [
     'api_key',
     'signature', 
     'product_description',
-    'preferred_product_type',
-    'additional_data'
+    'preferred_product_type'
   ];
 
+  // Filter payload to exclude those keys and handle values properly
   const filteredPayload: any = {};
   for (const [key, value] of Object.entries(payload)) {
     if (!excludedKeys.includes(key)) {
-      filteredPayload[key] = value;
+      // Handle empty values - convert to empty string for signature
+      if (value === null || value === undefined) {
+        filteredPayload[key] = '';
+      } else if (Array.isArray(value)) {
+        // Skip arrays entirely for signature (like product_description)
+        continue;
+      } else {
+        filteredPayload[key] = String(value);
+      }
     }
   }
 
-  const sortedKeys = Object.keys(filteredPayload).sort();
+  // Sort keys alphabetically (case-insensitive like WordPress)
+  const sortedKeys = Object.keys(filteredPayload).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-  let signatureString = '';
+  // Build signature string exactly like WordPress plugin
+  const signatureParts = [];
   for (const key of sortedKeys) {
     const value = filteredPayload[key];
-    // Handle undefined/null values by converting to empty strings
-    let stringValue = '';
-    if (Array.isArray(value)) {
-      stringValue = JSON.stringify(value);
-    } else if (value !== undefined && value !== null) {
-      stringValue = String(value);
-    }
-    signatureString += key.toUpperCase() + '=' + stringValue + '&';
+    // WordPress format: KEY=value (no URL encoding for signature)
+    signatureParts.push(`${key.toUpperCase()}=${value}`);
+  }
+  
+  let signatureString = signatureParts.join('&');
+  
+  // Remove trailing '&' if exists
+  if (signatureString.endsWith('&')) {
+    signatureString = signatureString.slice(0, -1);
   }
 
+  // Generate HMAC SHA-256 signature
   const encoder = new TextEncoder();
   const keyData = encoder.encode(secretKey);
   const data = encoder.encode(signatureString);
