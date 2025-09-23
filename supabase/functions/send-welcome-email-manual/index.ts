@@ -273,26 +273,67 @@ const handler = async (req: Request): Promise<Response> => {
     
     console.log(JSON.stringify({ evt: "pdf.final.count", rid, attachmentCount: attachments.length }));
 
-    // CREATE USER ACCOUNT AND SEND LOGIN CREDENTIALS
-    console.log(JSON.stringify({ evt: "user.creation.start", rid, customerEmail: customer.email }));
+    // Check if welcome email already sent for this email address
+    console.log(JSON.stringify({ evt: "checking.existing.welcome", rid, customerEmail: customer.email }));
     
-    // Set the customer dashboard URL as requested by user
-    const loginUrl = 'https://buyawarranty.co.uk/customer-dashboard';
-    
-    console.log(JSON.stringify({ evt: "login.url.set", rid, loginUrl }));
-    
-    // Generate temporary password for customer login
-    const generateTempPassword = () => {
+    const { data: existingWelcomeEmail } = await supabase
+      .from('welcome_emails')
+      .select('temporary_password, email_sent_at')
+      .eq('email', customer.email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    // If welcome email already sent recently (within 24 hours), skip sending another one
+    if (existingWelcomeEmail) {
+      const sentAt = new Date(existingWelcomeEmail.email_sent_at);
+      const now = new Date();
+      const hoursSinceSent = (now.getTime() - sentAt.getTime()) / (1000 * 60 * 60);
+      
+      if (hoursSinceSent < 24) {
+        console.log(JSON.stringify({ 
+          evt: "welcome.already.sent", 
+          rid, 
+          sentAt: existingWelcomeEmail.email_sent_at,
+          hoursSinceSent 
+        }));
+        
+        // Update policy status but don't send duplicate email
+        await supabase
+          .from('customer_policies')
+          .update({ email_sent_status: 'sent', email_sent_at: new Date().toISOString() })
+          .eq('id', policy.id);
+        
+        return new Response(JSON.stringify({ 
+          ok: true, 
+          rid, 
+          message: 'Welcome email already sent recently',
+          skipped: true
+        }), {
+          status: 200,
+          headers: { "content-type": "application/json", ...corsHeaders },
+        });
+      }
+    }
+
+    // Use existing password if available, otherwise generate new one
+    const tempPassword = existingWelcomeEmail?.temporary_password || (() => {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       let password = '';
       for (let i = 0; i < 8; i++) {
         password += chars.charAt(Math.floor(Math.random() * chars.length));
       }
       return password;
-    };
-
-    const tempPassword = generateTempPassword();
-    console.log(JSON.stringify({ evt: "temp.password.generated", rid }));
+    })();
+    
+    // Set the customer dashboard URL
+    const loginUrl = 'https://buyawarranty.co.uk/customer-dashboard';
+    
+    console.log(JSON.stringify({ 
+      evt: existingWelcomeEmail ? "using.existing.password" : "generated.new.password", 
+      rid, 
+      loginUrl 
+    }));
 
     // Check if user already exists
     const { data: existingUsers } = await supabase.auth.admin.listUsers();

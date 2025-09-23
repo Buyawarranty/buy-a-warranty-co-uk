@@ -43,15 +43,38 @@ serve(async (req) => {
       throw new Error("Missing required parameters: email, planType, paymentType, and policyNumber are all required");
     }
 
-    // Check if this email already has a temporary password
+    // Check if welcome email already sent for this email address
     logStep("Checking for existing welcome email record");
     const { data: existingWelcomeEmail } = await supabaseClient
       .from('welcome_emails')
-      .select('temporary_password')
+      .select('temporary_password, email_sent_at')
       .eq('email', email)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
+
+    // If welcome email already sent recently (within 24 hours), skip sending another one
+    if (existingWelcomeEmail) {
+      const sentAt = new Date(existingWelcomeEmail.email_sent_at);
+      const now = new Date();
+      const hoursSinceSent = (now.getTime() - sentAt.getTime()) / (1000 * 60 * 60);
+      
+      if (hoursSinceSent < 24) {
+        logStep("Welcome email already sent recently", { 
+          sentAt: existingWelcomeEmail.email_sent_at,
+          hoursSinceSent 
+        });
+        
+        return new Response(JSON.stringify({ 
+          success: true, 
+          message: 'Welcome email already sent recently',
+          skipped: true
+        }), {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+    }
 
     // Use existing password or generate new one
     const tempPassword = existingWelcomeEmail?.temporary_password || generateTempPassword();
