@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Crown, Check, ArrowLeft, X, FileText, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { calculateAddOnPrice } from '@/lib/addOnsUtils';
 
 interface WarrantyDurationStepProps {
   vehicleData: any;
@@ -82,17 +83,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
     
     // Protection addons (from step 3 selection)
-    let protectionAddOnPrice = 0;
-    if (protectionAddOns.breakdown) protectionAddOnPrice += 6 * durationMonths; // £6/mo
-    if (protectionAddOns.rental) protectionAddOnPrice += 4 * durationMonths; // £4/mo (Note: this should be vehicle_rental)
-    if (protectionAddOns.tyre) protectionAddOnPrice += 5 * durationMonths; // £5/mo
-    if (protectionAddOns.wearTear) protectionAddOnPrice += 5 * durationMonths; // £5/mo
-    if (protectionAddOns.european) protectionAddOnPrice += 3 * durationMonths; // £3/mo
-    if (protectionAddOns.motRepair) protectionAddOnPrice += 4 * durationMonths; // £4/mo
-    if (protectionAddOns.motFee) protectionAddOnPrice += 3 * durationMonths; // £3/mo
-    if (protectionAddOns.lostKey) protectionAddOnPrice += 3 * durationMonths; // £3/mo
-    if (protectionAddOns.consequential) protectionAddOnPrice += 5 * durationMonths; // £5/mo
-    if (protectionAddOns.transfer) protectionAddOnPrice += 19.99; // £19.99 one-time
+    // Calculate protection add-on price using centralized utility
+    const protectionAddOnPrice = calculateAddOnPrice(protectionAddOns || {}, paymentPeriod, durationMonths);
     
     const totalPrice = baseWarrantyPrice + planAddOnPrice + protectionAddOnPrice;
     

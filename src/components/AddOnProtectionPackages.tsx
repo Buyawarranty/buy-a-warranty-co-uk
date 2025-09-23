@@ -126,7 +126,7 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
       case '24months':
         return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
       case '36months':
-        return ['breakdown', 'motFee', 'european', 'rental']; // 3-Year: Vehicle recovery, MOT test fee, Europe cover, Vehicle rental
+        return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
       default:
         return []; // 1-Year: No auto-included add-ons
     }
