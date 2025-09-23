@@ -170,6 +170,9 @@ export const PostcodeAutocomplete: React.FC<PostcodeAutocompleteProps> = ({
           required={required}
           className={`pr-10 ${error ? 'border-red-500 focus:border-red-500' : ''} ${className}`}
           maxLength={8}
+          autoComplete="postal-code"
+          name="postcode"
+          id="postcode"
         />
         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
           {isLoading ? (
