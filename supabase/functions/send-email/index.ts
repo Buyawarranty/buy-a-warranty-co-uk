@@ -332,7 +332,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Add BCC for Trustpilot integration if this is a feedback template
-    if (template.template_type === 'feedback') {
+    if (template.template_type === 'feedback' || template.template_type === 'feedback_reminder') {
       emailOptions.bcc = ['buyawarranty.co.uk+8fc526946e@invite.trustpilot.com'];
     }
 

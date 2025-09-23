@@ -435,27 +435,37 @@ serve(async (req) => {
         const followingThursday = getFollowingThursday(firstTuesday);
         followingThursday.setHours(18, 0, 0, 0); // Set to 6pm
 
-        // Schedule reminder email
-        const { error: scheduleError2 } = await supabaseClient
-          .from('scheduled_emails')
-          .insert({
-            template_id: feedbackTemplate.id,
-            customer_id: userId,
-            recipient_email: email,
-            scheduled_for: followingThursday.toISOString(),
-            metadata: {
-              customerFirstName: finalCustomerName,
-              expiryDate: calculatePolicyEndDate(paymentType),
-              portalUrl: 'https://buyawarranty.co.uk/customer-dashboard',
-              referralLink: `https://buyawarranty.co.uk/refer/${userId || 'guest'}`,
-              emailType: 'reminder'
-            }
-          });
+        // Get the reminder template
+        const { data: reminderTemplate, error: reminderTemplateError } = await supabaseClient
+          .from('email_templates')
+          .select('id')
+          .eq('template_type', 'feedback_reminder')
+          .eq('is_active', true)
+          .single();
 
-        if (scheduleError2) {
-          logStep('Failed to schedule reminder Trustpilot email', { error: scheduleError2 });
-        } else {
-          logStep('Reminder Trustpilot email scheduled successfully', { scheduledFor: followingThursday });
+        // Schedule reminder email if template exists
+        if (reminderTemplate && !reminderTemplateError) {
+          const { error: scheduleError2 } = await supabaseClient
+            .from('scheduled_emails')
+            .insert({
+              template_id: reminderTemplate.id,
+              customer_id: userId,
+              recipient_email: email,
+              scheduled_for: followingThursday.toISOString(),
+              metadata: {
+                customerFirstName: finalCustomerName,
+                expiryDate: calculatePolicyEndDate(paymentType),
+                portalUrl: 'https://buyawarranty.co.uk/customer-dashboard',
+                referralLink: `https://buyawarranty.co.uk/refer/${userId || 'guest'}`,
+                emailType: 'reminder'
+              }
+            });
+
+          if (scheduleError2) {
+            logStep('Failed to schedule reminder Trustpilot email', { error: scheduleError2 });
+          } else {
+            logStep('Reminder Trustpilot email scheduled successfully', { scheduledFor: followingThursday });
+          }
         }
       }
     } catch (error) {
