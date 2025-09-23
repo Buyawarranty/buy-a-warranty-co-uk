@@ -409,7 +409,18 @@ export const CustomersTab = () => {
             status,
             warranty_number,
             email_sent_status,
-            warranties_2000_status
+            warranties_2000_status,
+            mot_fee,
+            tyre_cover,
+            wear_tear,
+            europe_cover,
+            transfer_cover,
+            breakdown_recovery,
+            vehicle_rental,
+            claim_limit,
+            mot_repair,
+            lost_key,
+            consequential
           ),
           admin_users!assigned_to(
             id,
