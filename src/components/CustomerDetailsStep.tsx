@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { ProtectedButton } from '@/components/ui/protected-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -712,13 +713,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     </RadioGroup>
 
                     {/* Complete Purchase Button */}
-                    <Button
+                    <ProtectedButton
+                      actionType="complete_purchase"
                       onClick={handleSubmit}
                       className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 text-lg rounded-lg"
                       size="lg"
                     >
                       Complete Purchase
-                    </Button>
+                    </ProtectedButton>
 
                     <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
                       <CreditCard size={16} className="text-blue-600" />
