@@ -283,6 +283,13 @@ const handler = async (req: Request): Promise<Response> => {
     
     console.log(JSON.stringify({ evt: "pdf.final.count", rid, attachmentCount: attachments.length }));
 
+    // ============= IMPROVED PASSWORD LOGIC =============
+    // 1. First purchase: Generate new temporary password
+    // 2. Subsequent purchases (before password reset): Use SAME existing temporary password  
+    // 3. After user resets password: No login credentials in emails (they manage their own password)
+    // This ensures consistent password experience and proper account ownership transition
+    // ====================================================
+    
     // Check if user has reset their password and get existing password if available
     console.log(JSON.stringify({ evt: "checking.password.reset.status", rid, customerEmail: customer.email }));
     
@@ -328,16 +335,29 @@ const handler = async (req: Request): Promise<Response> => {
         console.log(JSON.stringify({ evt: "user.exists", rid, userId: userExists.id }));
         userId = userExists.id;
         
-        // Update existing user's password and metadata
-        await supabase.auth.admin.updateUserById(userExists.id, {
-          password: tempPassword,
-          user_metadata: {
-            plan_type: policy.plan_type,
-            policy_number: policy.policy_number,
-            warranty_number: policy.warranty_number
-          }
-        });
-        console.log(JSON.stringify({ evt: "user.updated", rid, userId }));
+        // Only update password if this is a new temporary password (first time)
+        if (!latestWelcomeEmail?.temporary_password) {
+          // First time customer - create password
+          await supabase.auth.admin.updateUserById(userExists.id, {
+            password: tempPassword,
+            user_metadata: {
+              plan_type: policy.plan_type,
+              policy_number: policy.policy_number,
+              warranty_number: policy.warranty_number
+            }
+          });
+          console.log(JSON.stringify({ evt: "user.password.set.first.time", rid, userId }));
+        } else {
+          // Existing customer with existing password - just update metadata
+          await supabase.auth.admin.updateUserById(userExists.id, {
+            user_metadata: {
+              plan_type: policy.plan_type,
+              policy_number: policy.policy_number,
+              warranty_number: policy.warranty_number
+            }
+          });
+          console.log(JSON.stringify({ evt: "user.metadata.updated.same.password", rid, userId }));
+        }
       } else {
         // Create new user account
         const { data: userData, error: userError } = await supabase.auth.admin.createUser({

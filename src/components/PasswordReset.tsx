@@ -143,6 +143,19 @@ const PasswordReset = () => {
 
       if (error) throw error;
 
+      // Track that user has reset their password (so they don't get temp passwords in future emails)
+      try {
+        const { data: user } = await supabase.auth.getUser();
+        if (user?.user?.email) {
+          await supabase.functions.invoke('track-password-reset', {
+            body: { email: user.user.email }
+          });
+        }
+      } catch (trackError) {
+        console.error('Failed to track password reset:', trackError);
+        // Don't fail the password reset if tracking fails
+      }
+
       toast({
         title: "Password updated",
         description: "Your password has been successfully updated. You can now access your dashboard.",
