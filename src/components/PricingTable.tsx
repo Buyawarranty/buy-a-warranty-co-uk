@@ -454,13 +454,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     return calculateAddOnPrice(selectedProtectionAddOns, paymentType, durationMonths);
   }, [paymentType, selectedProtectionAddOns]);
 
-  // Memoized total price calculation
+  // Memoized total price calculation - should be base price + add-ons for consistency
   const totalPrice = useMemo(() => {
     return basePlanPrice + addOnPrice;
   }, [basePlanPrice, addOnPrice]);
 
-  // Memoized monthly price calculation
+  // Memoized monthly price calculation - always divide total by 12 for monthly payments
   const monthlyPrice = useMemo(() => {
+    // Always show 12 monthly payments regardless of plan duration for display
     return Math.round(totalPrice / 12);
   }, [totalPrice]);
 
@@ -1420,26 +1421,26 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 isBestValue: true
               }
             ].map((option) => {
-              // CRITICAL FIX: Calculate base price independently for each option
-              // This prevents cross-contamination of pricing when switching between options
+              // CRITICAL FIX: Always show stable base prices, never include add-ons in plan price display
               const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
-              const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+              const adjustedBasePrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
               const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
               
-              // Calculate add-on costs ONLY for the CURRENTLY SELECTED option
-              // Other options show base price only to prevent pricing fluctuation
+              // Calculate add-on costs ONLY for pricing totals, never for plan price display
               let protectionAddOnPrice = 0;
               if (paymentType === option.id) {
-                // Only calculate add-ons for the selected option
+                // Only calculate add-ons for the selected option for total cost calculation
                 protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
               }
               
-              const totalPrice = adjustedPrice + protectionAddOnPrice;
-              // For 2-year and 3-year plans, divide by 12 since users only pay for 12 months
-              const monthlyPrice = Math.round(totalPrice / 12);
+              // Plan price display: ALWAYS show base price only (stable, never changes)
+              const displayedMonthlyPrice = Math.round(adjustedBasePrice / 12);
               
-              // Calculate original price for savings display - independent of selection
-              const originalPrice = option.id === '24months' ? totalPrice + 100 : option.id === '36months' ? totalPrice + 200 : totalPrice;
+              // Total cost calculation: base + add-ons (for internal calculations and total display)
+              const totalPriceWithAddOns = adjustedBasePrice + protectionAddOnPrice;
+              
+              // Calculate original price for savings display - independent of selection, base price only
+              const originalPrice = option.id === '24months' ? adjustedBasePrice + 100 : option.id === '36months' ? adjustedBasePrice + 200 : adjustedBasePrice;
               
               return (
                 <div
@@ -1514,51 +1515,56 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      </div>
                    </div>
                    
-                     {/* Pricing */}
-                    <div className="mb-4 text-center mt-auto">
-                       <div className="text-3xl font-bold text-black mb-1">
-                         £{monthlyPrice}/month
+                      {/* Pricing */}
+                     <div className="mb-4 text-center mt-auto">
+                        <div className="text-3xl font-bold text-black mb-1">
+                          £{displayedMonthlyPrice}/month
+                        </div>
+                       <div className="text-sm text-gray-600 mb-2">
+                         {option.id === '12months' && (
+                           <div className="flex items-center justify-center gap-1 font-bold">
+                             <span className="text-green-500">✓</span>
+                             Only 12 easy payments
+                           </div>
+                         )}
+                         {option.id === '24months' && (
+                           <div className="space-y-1">
+                             <div className="flex items-center justify-center gap-1 font-bold">
+                               <span className="text-green-500">✓</span>
+                               Only 12 easy payments
+                             </div>
+                             <div className="flex items-center justify-center gap-1 font-bold text-red-600">
+                               <span className="text-green-500">✓</span>
+                               Nothing to pay in Year 2
+                             </div>
+                           </div>
+                         )}
+                         {option.id === '36months' && (
+                           <div className="space-y-1">
+                             <div className="flex items-center justify-center gap-1 font-bold">
+                               <span className="text-green-500">✓</span>
+                               Only 12 easy payments
+                             </div>
+                             <div className="flex items-center justify-center gap-1 font-bold text-red-600">
+                               <span className="text-green-500">✓</span>
+                               Nothing to pay in Year 2 and Year 3
+                             </div>
+                           </div>
+                         )}
                        </div>
-                      <div className="text-sm text-gray-600 mb-2">
-                        {option.id === '12months' && (
-                          <div className="flex items-center justify-center gap-1 font-bold">
-                            <span className="text-green-500">✓</span>
-                            Only 12 easy payments
-                          </div>
-                        )}
-                        {option.id === '24months' && (
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-center gap-1 font-bold">
-                              <span className="text-green-500">✓</span>
-                              Only 12 easy payments
-                            </div>
-                            <div className="flex items-center justify-center gap-1 font-bold text-red-600">
-                              <span className="text-green-500">✓</span>
-                              Nothing to pay in Year 2
-                            </div>
-                          </div>
-                        )}
-                        {option.id === '36months' && (
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-center gap-1 font-bold">
-                              <span className="text-green-500">✓</span>
-                              Only 12 easy payments
-                            </div>
-                            <div className="flex items-center justify-center gap-1 font-bold text-red-600">
-                              <span className="text-green-500">✓</span>
-                              Nothing to pay in Year 2 and Year 3
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    <div className="text-sm font-semibold text-gray-900">
-                      Total cost: 
-                      {option.id !== '12months' && (
-                        <span className="line-through text-gray-500 ml-1">£{originalPrice}</span>
-                      )}
-                      <span className="text-orange-600 ml-1">£{totalPrice}</span>
-                    </div>
-                  </div>
+                     <div className="text-sm font-semibold text-gray-900">
+                       Total cost: 
+                       {option.id !== '12months' && (
+                         <span className="line-through text-gray-500 ml-1">£{originalPrice}</span>
+                       )}
+                       <span className="text-orange-600 ml-1">£{adjustedBasePrice}</span>
+                       {paymentType === option.id && protectionAddOnPrice > 0 && (
+                         <span className="text-gray-600 text-xs block mt-1">
+                           + £{Math.round(protectionAddOnPrice)} add-ons = £{Math.round(totalPriceWithAddOns)} total
+                         </span>
+                       )}
+                     </div>
+                   </div>
                   
                    {/* Select Button */}
                     <Button
@@ -1761,9 +1767,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
           <div className="flex justify-end mt-8">
             <div className="flex flex-col items-end space-y-2">
               <div className="text-right">
-                {/* Monthly Price - Main Hook */}
+                {/* Monthly Price - Main Hook - Show stable base price */}
                 <div className="text-3xl font-bold text-gray-900 mb-1">
-                  £{monthlyPrice}/month
+                  £{Math.round(basePlanPrice / 12)}/month
                 </div>
                 
                 {/* Payment Terms - Conditional Display */}
@@ -1776,9 +1782,14 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   }
                 </div>
                 
-                {/* Total Cost - Transparent */}
+                {/* Total Cost - Show base + add-ons breakdown */}
                 <div className="text-sm font-semibold text-gray-400">
-                  Total: £{totalPrice}
+                  Total: £{basePlanPrice}
+                  {addOnPrice > 0 && (
+                    <span className="text-xs block text-gray-500">
+                      + £{Math.round(addOnPrice)} add-ons = £{Math.round(totalPrice)}
+                    </span>
+                  )}
                 </div>
               </div>
               <Button
@@ -1815,9 +1826,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
             
             {/* Price Section - Moved to center */}
             <div className="flex flex-col flex-1 text-center">
-              {/* Monthly Price - Main Hook */}
+              {/* Monthly Price - Main Hook - Show stable base price */}
               <div className="text-2xl font-bold text-gray-900 mb-1">
-                £{monthlyPrice}/month - {paymentType === '12months' 
+                £{Math.round(basePlanPrice / 12)}/month - {paymentType === '12months' 
                   ? '1 Year Cover'
                   : paymentType === '24months' 
                     ? '2 Year Cover'
@@ -1837,7 +1848,12 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </span>
                 <span className="text-gray-400">•</span>
                 <span className="font-semibold text-gray-400">
-                  Total: £{totalPrice}
+                  Total: £{basePlanPrice}
+                  {addOnPrice > 0 && (
+                    <span className="text-xs block text-gray-500">
+                      + £{Math.round(addOnPrice)} add-ons = £{Math.round(totalPrice)}
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
