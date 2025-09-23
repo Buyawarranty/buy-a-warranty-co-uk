@@ -36,6 +36,89 @@ interface VehicleData {
   blockReason?: string;
 }
 
+// Recovery fallback component
+const RecoveryFallback: React.FC<{
+  onRecovered: (vehicleData: VehicleData, selectedPlan: any) => void;
+  onStartOver: () => void;
+}> = ({ onRecovered, onStartOver }) => {
+  const [isAttemptingRecovery, setIsAttemptingRecovery] = useState(false);
+  const [recoveryFailed, setRecoveryFailed] = useState(false);
+
+  useEffect(() => {
+    // Attempt automatic recovery once
+    const attemptRecovery = () => {
+      setIsAttemptingRecovery(true);
+      
+      try {
+        const savedVehicleData = localStorage.getItem('buyawarranty_vehicleData');
+        const savedSelectedPlan = localStorage.getItem('buyawarranty_selectedPlan');
+        
+        if (savedVehicleData && savedSelectedPlan) {
+          const parsedVehicleData = JSON.parse(savedVehicleData);
+          const parsedSelectedPlan = JSON.parse(savedSelectedPlan);
+          
+          console.log('Recovery attempt successful:', { parsedVehicleData, parsedSelectedPlan });
+          onRecovered(parsedVehicleData, parsedSelectedPlan);
+          return;
+        }
+      } catch (error) {
+        console.error('Error during recovery attempt:', error);
+      }
+      
+      // Recovery failed
+      setRecoveryFailed(true);
+      setIsAttemptingRecovery(false);
+    };
+
+    attemptRecovery();
+  }, [onRecovered]);
+
+  if (isAttemptingRecovery) {
+    return (
+      <div className="w-full px-4 py-8">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900">
+            Restoring your details...
+          </h2>
+          <p className="text-gray-600">
+            We're recovering your warranty details. This will only take a moment.
+          </p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (recoveryFailed) {
+    return (
+      <div className="w-full px-4 py-8">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900">
+            Oops! We've lost your order details
+          </h2>
+          <p className="text-gray-600">
+            It looks like your session has expired or you've navigated back from a payment page. 
+            Please start your warranty journey again to continue.
+          </p>
+          <div className="space-y-4">
+            <Button 
+              onClick={onStartOver}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+            >
+              Start Over
+            </Button>
+            <p className="text-sm text-gray-500">
+              If you've already completed a payment, please check your email for confirmation.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const Index = () => {
   console.log('Index component rendering, URL:', window.location.href);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -185,6 +268,16 @@ const Index = () => {
       formData
     };
     localStorage.setItem('warrantyJourneyState', JSON.stringify(state));
+    
+    // Also save individual items for better recovery
+    if (vehicleData) {
+      localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(vehicleData));
+    }
+    if (selectedPlan) {
+      localStorage.setItem('buyawarranty_selectedPlan', JSON.stringify(selectedPlan));
+    }
+    localStorage.setItem('buyawarranty_formData', JSON.stringify(formData));
+    localStorage.setItem('buyawarranty_currentStep', String(step || currentStep));
   };
   
   // Load state from localStorage
@@ -221,6 +314,14 @@ const Index = () => {
     onStepChange: handleStepChange,
     totalSteps: 5
   });
+  
+  // Save state when important data changes
+  useEffect(() => {
+    if (vehicleData || selectedPlan) {
+      saveStateToLocalStorage();
+    }
+  }, [vehicleData, selectedPlan]);
+  
   
   useEffect(() => {
     console.log('useEffect triggered, current URL:', window.location.href);
@@ -382,6 +483,48 @@ const Index = () => {
     } else if (stepFromUrl === 1) {
       // Clear localStorage if we're starting fresh
       localStorage.removeItem('warrantyJourneyState');
+      localStorage.removeItem('buyawarranty_vehicleData');
+      localStorage.removeItem('buyawarranty_selectedPlan');
+      localStorage.removeItem('buyawarranty_formData');
+      localStorage.removeItem('buyawarranty_currentStep');
+    }
+    
+    // Additional recovery for when users return from payment pages
+    if (stepFromUrl === 4 && (!vehicleData || !selectedPlan)) {
+      console.log('Step 4 detected without required data, attempting recovery from localStorage');
+      
+      const savedVehicleData = localStorage.getItem('buyawarranty_vehicleData');
+      const savedSelectedPlan = localStorage.getItem('buyawarranty_selectedPlan');
+      const savedFormData = localStorage.getItem('buyawarranty_formData');
+      
+      if (savedVehicleData && !vehicleData) {
+        try {
+          const parsedVehicleData = JSON.parse(savedVehicleData);
+          console.log('Recovered vehicle data:', parsedVehicleData);
+          setVehicleData(parsedVehicleData);
+        } catch (error) {
+          console.error('Error parsing saved vehicle data:', error);
+        }
+      }
+      
+      if (savedSelectedPlan && !selectedPlan) {
+        try {
+          const parsedSelectedPlan = JSON.parse(savedSelectedPlan);
+          console.log('Recovered selected plan:', parsedSelectedPlan);
+          setSelectedPlan(parsedSelectedPlan);
+        } catch (error) {
+          console.error('Error parsing saved selected plan:', error);
+        }
+      }
+      
+      if (savedFormData) {
+        try {
+          const parsedFormData = JSON.parse(savedFormData);
+          setFormData(prev => ({ ...prev, ...parsedFormData }));
+        } catch (error) {
+          console.error('Error parsing saved form data:', error);
+        }
+      }
     }
     
     return () => {
@@ -591,28 +734,13 @@ const Index = () => {
               />
             </Suspense>
           ) : (
-            <div className="w-full px-4 py-8">
-              <div className="max-w-4xl mx-auto text-center space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Oops! We've lost your order details
-                </h2>
-                <p className="text-gray-600">
-                  It looks like your session has expired or you've navigated back from a payment page. 
-                  Please start your warranty journey again to continue.
-                </p>
-                <div className="space-y-4">
-                  <Button 
-                    onClick={() => handleStepChange(1)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
-                  >
-                    Start Over
-                  </Button>
-                  <p className="text-sm text-gray-500">
-                    If you've already completed a payment, please check your email for confirmation.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <RecoveryFallback 
+              onRecovered={(recoveredVehicleData, recoveredSelectedPlan) => {
+                setVehicleData(recoveredVehicleData);
+                setSelectedPlan(recoveredSelectedPlan);
+              }}
+              onStartOver={() => handleStepChange(1)}
+            />
           )}
         </div>
       )}
