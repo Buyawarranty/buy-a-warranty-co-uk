@@ -118,27 +118,9 @@ serve(async (req) => {
       }
     }
 
-    // Send welcome email for all warranties
-    try {
-      const { error: emailError } = await supabaseService.functions.invoke('send-welcome-email', {
-        body: {
-          customer_email: customerData.email,
-          customer_name: `${customerData.first_name} ${customerData.last_name}`,
-          warranties: processedWarranties,
-          payment_method: 'bumper',
-          total_amount: totalAmount,
-          is_multi_warranty: true
-        }
-      });
-
-      if (emailError) {
-        logStep("Warning: Failed to send welcome email", { error: emailError });
-      } else {
-        logStep("Welcome email sent successfully");
-      }
-    } catch (emailError) {
-      logStep("Warning: Error sending welcome email", { error: emailError });
-    }
+    // Email will be sent by the single warranty processing (send-welcome-email-manual)
+    // Multi-warranty emails are handled individually per policy
+    logStep("Multi-warranty email handling deferred to individual policy processing");
 
     logStep("Multi-warranty Bumper success processing completed", { 
       processedCount: processedWarranties.length,
