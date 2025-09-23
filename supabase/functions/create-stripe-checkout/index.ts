@@ -39,9 +39,9 @@ serve(async (req) => {
     
     logStep("Fetching plan data", { planId });
     const { data: planData, error: planError } = await supabaseService
-      .from('plans')
+      .from('special_vehicle_plans')
       .select('*')
-      .eq('name', planId.toLowerCase())
+      .eq('id', planId)
       .maybeSingle();
     
     if (planError) {
