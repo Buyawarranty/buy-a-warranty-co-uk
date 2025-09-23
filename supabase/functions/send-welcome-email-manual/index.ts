@@ -11,6 +11,16 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
+// Generate random password
+function generateRandomPassword(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+  for (let i = 0; i < 8; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+}
+
 interface EmailRequest {
   policyId?: string;
   customerId?: string;
@@ -273,90 +283,60 @@ const handler = async (req: Request): Promise<Response> => {
     
     console.log(JSON.stringify({ evt: "pdf.final.count", rid, attachmentCount: attachments.length }));
 
-    // Check if welcome email already sent for this email address
-    console.log(JSON.stringify({ evt: "checking.existing.welcome", rid, customerEmail: customer.email }));
+    // Check if user has reset their password and get existing password if available
+    console.log(JSON.stringify({ evt: "checking.password.reset.status", rid, customerEmail: customer.email }));
     
-    const { data: existingWelcomeEmail } = await supabase
+    const { data: latestWelcomeEmail } = await supabase
       .from('welcome_emails')
-      .select('temporary_password, email_sent_at')
+      .select('temporary_password, password_reset_by_user')
       .eq('email', customer.email)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    // If welcome email already sent recently (within 24 hours), skip sending another one
-    if (existingWelcomeEmail) {
-      const sentAt = new Date(existingWelcomeEmail.email_sent_at);
-      const now = new Date();
-      const hoursSinceSent = (now.getTime() - sentAt.getTime()) / (1000 * 60 * 60);
-      
-      // Temporarily disable 24-hour restriction for testing - allowing resends after 1 hour
-      if (hoursSinceSent < 1) {
-        console.log(JSON.stringify({ 
-          evt: "welcome.already.sent", 
-          rid, 
-          sentAt: existingWelcomeEmail.email_sent_at,
-          hoursSinceSent 
-        }));
-        
-        // Update policy status but don't send duplicate email
-        await supabase
-          .from('customer_policies')
-          .update({ email_sent_status: 'sent', email_sent_at: new Date().toISOString() })
-          .eq('id', policy.id);
-        
-        return new Response(JSON.stringify({ 
-          ok: true, 
-          rid, 
-          message: 'Welcome email already sent recently',
-          skipped: true
-        }), {
-          status: 200,
-          headers: { "content-type": "application/json", ...corsHeaders },
-        });
-      }
-    }
-
-    // Use existing password if available, otherwise generate new one
-    const tempPassword = existingWelcomeEmail?.temporary_password || (() => {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let password = '';
-      for (let i = 0; i < 8; i++) {
-        password += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return password;
-    })();
-    
-    // Set the customer dashboard URL
-    const loginUrl = 'https://buyawarranty.co.uk/customer-dashboard';
+    const hasResetPassword = latestWelcomeEmail?.password_reset_by_user || false;
+    const shouldIncludeLoginDetails = !hasResetPassword;
     
     console.log(JSON.stringify({ 
-      evt: existingWelcomeEmail ? "using.existing.password" : "generated.new.password", 
+      evt: "password.reset.check", 
       rid, 
-      loginUrl 
+      hasResetPassword, 
+      shouldIncludeLoginDetails 
     }));
 
-    // Check if user already exists
+    // Always send welcome email for new purchases, but reuse password if exists and not reset
+    let tempPassword = '';
+    if (shouldIncludeLoginDetails) {
+      // Use existing password if available, or generate new one
+      tempPassword = latestWelcomeEmail?.temporary_password || generateRandomPassword();
+      console.log(JSON.stringify({ 
+        evt: "password.handling", 
+        rid, 
+        usingExistingPassword: !!latestWelcomeEmail?.temporary_password 
+      }));
+    // Check if user already exists and handle authentication
+    console.log(JSON.stringify({ evt: "checking.user.existence", rid, customerEmail: customer.email }));
     const { data: existingUsers } = await supabase.auth.admin.listUsers();
     const userExists = existingUsers?.users?.find(u => u.email === customer.email);
     
     let userId = null;
     
-    if (userExists) {
-      console.log(JSON.stringify({ evt: "user.exists", rid, userId: userExists.id }));
-      userId = userExists.id;
-      
-      // Update existing user's password and metadata
-      await supabase.auth.admin.updateUserById(userExists.id, {
-        password: tempPassword,
-        user_metadata: {
-          plan_type: policy.plan_type,
+    if (shouldIncludeLoginDetails && tempPassword) {
+      if (userExists) {
+        console.log(JSON.stringify({ evt: "user.exists", rid, userId: userExists.id }));
+        userId = userExists.id;
+        
+        // Update existing user's password and metadata
+        await supabase.auth.admin.updateUserById(userExists.id, {
+          password: tempPassword,
+          user_metadata: {
+            plan_type: policy.plan_type,
           policy_number: policy.policy_number,
           warranty_number: policy.warranty_number
         }
       });
       console.log(JSON.stringify({ evt: "user.updated", rid, userId }));
-    } else {
+    } else if (shouldIncludeLoginDetails && tempPassword) {
       // Create new user account
       const { data: userData, error: userError } = await supabase.auth.admin.createUser({
         email: customer.email,
@@ -381,6 +361,13 @@ const handler = async (req: Request): Promise<Response> => {
       userId = userData.user.id;
       console.log(JSON.stringify({ evt: "user.created", rid, userId }));
     }
+    } else {
+      // User has reset password, so they manage their own account
+      console.log(JSON.stringify({ evt: "user.password.reset", rid, message: "User has reset password, no account management needed" }));
+      if (userExists) {
+        userId = userExists.id;
+      }
+    }
 
     // Link the customer policy to the user account
     if (userId && !policy.user_id) {
@@ -398,9 +385,10 @@ const handler = async (req: Request): Promise<Response> => {
         .insert({
           user_id: userId,
           email: customer.email,
-          temporary_password: tempPassword,
+          temporary_password: tempPassword || '',
           policy_id: policy.id,
-          email_sent_at: new Date().toISOString()
+          email_sent_at: new Date().toISOString(),
+          password_reset_by_user: hasResetPassword
         });
       console.log(JSON.stringify({ evt: "welcome.email.record.stored", rid }));
     } catch (auditError) {
@@ -527,6 +515,7 @@ const handler = async (req: Request): Promise<Response> => {
             </p>
           </div>
 
+          ${shouldIncludeLoginDetails ? `
           <div style="background-color: #e7f3ff; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #007bff;">
             <h3 style="color: #333; margin-top: 0;">🔐 Your Customer Portal Access</h3>
             <p>Access your customer portal to view your warranty details, policy documents, and manage your account:</p>
@@ -537,6 +526,17 @@ const handler = async (req: Request): Promise<Response> => {
               <em>After logging in, you will be automatically redirected to your customer dashboard where you can view your warranty details and policy documents.</em>
             </p>
           </div>
+          ` : `
+          <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ffc107;">
+            <h3 style="color: #333; margin-top: 0;">🔐 Customer Portal Access</h3>
+            <p>You can access your customer portal using your existing login credentials:</p>
+            <p><strong>Login URL:</strong> <a href="${loginUrl}" style="color: #007bff;">${loginUrl}</a></p>
+            <p><strong>Email:</strong> ${customer.email}</p>
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">
+              <em>Use your current password to access your customer dashboard where you can view all your warranty details and policy documents.</em>
+            </p>
+          </div>
+          `}
 
           <div style="background-color: #ffffff; border: 1px solid #dee2e6; padding: 15px; border-radius: 8px; margin: 15px 0;">
             <h3 style="color: #333; margin-top: 0; margin-bottom: 10px;">📋 What's included in your documents:</h3>

@@ -1586,6 +1586,7 @@ export type Database = {
           email_sent_at: string
           id: string
           password_reset: boolean
+          password_reset_by_user: boolean
           policy_id: string | null
           temporary_password: string
           user_id: string | null
@@ -1596,6 +1597,7 @@ export type Database = {
           email_sent_at?: string
           id?: string
           password_reset?: boolean
+          password_reset_by_user?: boolean
           policy_id?: string | null
           temporary_password: string
           user_id?: string | null
@@ -1606,6 +1608,7 @@ export type Database = {
           email_sent_at?: string
           id?: string
           password_reset?: boolean
+          password_reset_by_user?: boolean
           policy_id?: string | null
           temporary_password?: string
           user_id?: string | null
