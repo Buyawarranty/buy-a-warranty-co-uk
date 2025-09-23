@@ -393,7 +393,7 @@ serve(async (req) => {
       throw new Error(`Email sending error: ${emailError.message}`);
     }
 
-    // Schedule feedback email for 1 hour later
+    // Schedule Trustpilot review emails according to new schedule
     try {
       const { data: feedbackTemplate, error: templateError } = await supabaseClient
         .from('email_templates')
@@ -403,32 +403,63 @@ serve(async (req) => {
         .single();
 
       if (feedbackTemplate && !templateError) {
-        const feedbackDate = new Date();
-        feedbackDate.setHours(feedbackDate.getHours() + 1); // Send 1 hour after purchase
+        // Calculate first Tuesday at 10am after purchase
+        const purchaseDate = new Date();
+        const firstTuesday = getNextTuesday(purchaseDate);
+        firstTuesday.setHours(10, 0, 0, 0); // Set to 10am
 
-        const { error: scheduleError } = await supabaseClient
+        // Schedule first review invitation
+        const { error: scheduleError1 } = await supabaseClient
           .from('scheduled_emails')
           .insert({
             template_id: feedbackTemplate.id,
             customer_id: userId,
             recipient_email: email,
-            scheduled_for: feedbackDate.toISOString(),
+            scheduled_for: firstTuesday.toISOString(),
             metadata: {
               customerFirstName: finalCustomerName,
               expiryDate: calculatePolicyEndDate(paymentType),
               portalUrl: 'https://buyawarranty.co.uk/customer-dashboard',
-              referralLink: `https://buyawarranty.co.uk/refer/${userId || 'guest'}`
+              referralLink: `https://buyawarranty.co.uk/refer/${userId || 'guest'}`,
+              emailType: 'first_invitation'
             }
           });
 
-        if (scheduleError) {
-          logStep('Failed to schedule feedback email', { error: scheduleError });
+        if (scheduleError1) {
+          logStep('Failed to schedule first Trustpilot email', { error: scheduleError1 });
         } else {
-          logStep('Feedback email scheduled successfully', { scheduledFor: feedbackDate });
+          logStep('First Trustpilot email scheduled successfully', { scheduledFor: firstTuesday });
+        }
+
+        // Calculate following Thursday at 6pm for reminder (only if no review left)
+        const followingThursday = getFollowingThursday(firstTuesday);
+        followingThursday.setHours(18, 0, 0, 0); // Set to 6pm
+
+        // Schedule reminder email
+        const { error: scheduleError2 } = await supabaseClient
+          .from('scheduled_emails')
+          .insert({
+            template_id: feedbackTemplate.id,
+            customer_id: userId,
+            recipient_email: email,
+            scheduled_for: followingThursday.toISOString(),
+            metadata: {
+              customerFirstName: finalCustomerName,
+              expiryDate: calculatePolicyEndDate(paymentType),
+              portalUrl: 'https://buyawarranty.co.uk/customer-dashboard',
+              referralLink: `https://buyawarranty.co.uk/refer/${userId || 'guest'}`,
+              emailType: 'reminder'
+            }
+          });
+
+        if (scheduleError2) {
+          logStep('Failed to schedule reminder Trustpilot email', { error: scheduleError2 });
+        } else {
+          logStep('Reminder Trustpilot email scheduled successfully', { scheduledFor: followingThursday });
         }
       }
     } catch (error) {
-      logStep("Error scheduling feedback email", error);
+      logStep("Error scheduling Trustpilot emails", error);
       // Don't fail the whole process if scheduling fails
     }
 
@@ -529,4 +560,27 @@ function calculatePolicyEndDate(paymentType: string): string {
   const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + months);
   return endDate.toISOString();
+}
+
+// Helper function to get next Tuesday after a given date
+function getNextTuesday(fromDate: Date): Date {
+  const result = new Date(fromDate);
+  const dayOfWeek = result.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const daysUntilTuesday = (2 - dayOfWeek + 7) % 7; // 2 = Tuesday
+  
+  // If today is Tuesday, get next Tuesday
+  if (daysUntilTuesday === 0) {
+    result.setDate(result.getDate() + 7);
+  } else {
+    result.setDate(result.getDate() + daysUntilTuesday);
+  }
+  
+  return result;
+}
+
+// Helper function to get the Thursday following a given Tuesday
+function getFollowingThursday(tuesday: Date): Date {
+  const result = new Date(tuesday);
+  result.setDate(result.getDate() + 2); // Tuesday + 2 days = Thursday
+  return result;
 }
