@@ -506,9 +506,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)}>
                       {/* Monthly Interest Free Credit */}
                       <div className={`border rounded-lg p-4 ${paymentMethod === 'bumper' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
-                        <div className="flex items-center space-x-3">
-                          <RadioGroupItem value="bumper" id="bumper" />
-                          <div className="flex-1">
+                         <div className="flex items-center space-x-3">
+                           <RadioGroupItem value="bumper" id="bumper" className="border-black text-black" />
+                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
                               <Label htmlFor="bumper" className="font-semibold text-gray-900">Monthly Interest-Free Credit</Label>
                               <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
@@ -545,9 +545,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
                       {/* Pay Full Amount */}
                       <div className={`border rounded-lg p-4 ${paymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
-                        <div className="flex items-center space-x-3">
-                          <RadioGroupItem value="stripe" id="stripe" />
-                          <div className="flex-1">
+                         <div className="flex items-center space-x-3">
+                           <RadioGroupItem value="stripe" id="stripe" className="border-black text-black" />
+                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
                               <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
                                <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
