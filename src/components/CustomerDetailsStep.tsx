@@ -281,9 +281,31 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         }
 
         if (checkoutData?.fallbackToStripe) {
-          console.log('🔄 Falling back to Stripe...');
-          // Fallback to Stripe if Bumper fails
-          await processStripeCheckout();
+          console.log('🔄 Falling back to Stripe...', checkoutData.fallbackReason);
+          
+          // Show user-friendly message about why we're falling back to Stripe
+          const fallbackMessages = {
+            missing_credentials: 'Monthly Interest-Free Credit is temporarily unavailable. Please pay the full amount instead.',
+            no_customer_data: 'Unable to process monthly payments. Please pay the full amount instead.',
+            credit_check_failed: 'Your credit application was not approved. Please pay the full amount instead.',
+            error: 'Monthly Interest-Free Credit is temporarily unavailable. Please pay the full amount instead.'
+          };
+          
+          const message = fallbackMessages[checkoutData.fallbackReason] || fallbackMessages.error;
+          
+          toast.error(message, {
+            duration: 8000,
+            action: {
+              label: 'Continue with Card Payment',
+              onClick: () => {
+                // Auto-switch to Stripe payment method
+                setPaymentMethod('stripe');
+                toast.dismiss();
+              }
+            }
+          });
+          
+          return; // Don't automatically process Stripe - let user decide
         } else if (checkoutData?.checkoutUrl) {
           console.log('🌐 Redirecting to Bumper checkout:', checkoutData.checkoutUrl);
           // Redirect to Bumper checkout

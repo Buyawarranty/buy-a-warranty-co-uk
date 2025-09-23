@@ -259,49 +259,31 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         if (error) throw error;
 
         if (data.fallbackToStripe) {
-          // If Bumper failed, fallback to Stripe with 5% discount
-          toast.info('Bumper payment not available, redirecting to Stripe');
-          const stripeDiscountedPrice = Math.round(finalPrice * 0.95);
-          const stripeResponse = await supabase.functions.invoke('create-multi-warranty-checkout', {
-            body: {
-              items: items.map(item => ({
-                planName: item.planName.toLowerCase(),
-                paymentType: item.paymentType,
-                voluntaryExcess: item.pricingData.voluntaryExcess,
-                vehicleData: item.vehicleData,
-                selectedAddOns: item.pricingData.selectedAddOns,
-                protectionAddOns: {
-                  tyre: item.pricingData.selectedAddOns?.tyre || false,
-                  wearTear: item.pricingData.selectedAddOns?.wearTear || false,
-                  european: item.pricingData.selectedAddOns?.european || false,
-                  breakdown: item.pricingData.selectedAddOns?.breakdown || false,
-                  rental: item.pricingData.selectedAddOns?.rental || false,
-                  transfer: item.pricingData.selectedAddOns?.transfer || false,
-                  motRepair: item.pricingData.selectedAddOns?.motRepair || false,
-                  motFee: item.pricingData.selectedAddOns?.motFee || false,
-                  lostKey: item.pricingData.selectedAddOns?.lostKey || false,
-                  consequential: item.pricingData.selectedAddOns?.consequential || false
-                },
-                totalPrice: item.pricingData.totalPrice
-              })),
-              customerData: customerData,
-              discountCode: customerData.discount_code || null,
-              originalAmount: totalPrice,
-              finalAmount: stripeDiscountedPrice
+          // If Bumper failed, show user-friendly message and let them choose
+          console.log('🔄 Bumper fallback detected:', data.fallbackReason);
+          
+          const fallbackMessages = {
+            missing_credentials: 'Monthly Interest-Free Credit is temporarily unavailable. Continue with card payment for a 5% discount.',
+            no_customer_data: 'Unable to process monthly payments. Continue with card payment for a 5% discount.',
+            credit_check_failed: 'Your credit application was not approved. Continue with card payment for a 5% discount.',
+            error: 'Monthly Interest-Free Credit is temporarily unavailable. Continue with card payment for a 5% discount.'
+          };
+          
+          const message = fallbackMessages[data.fallbackReason] || fallbackMessages.error;
+          
+          toast.error(message, {
+            duration: 8000,
+            action: {
+              label: 'Continue with Card Payment',
+              onClick: () => {
+                // Auto-switch to Stripe payment method
+                setSelectedPaymentMethod('stripe');
+                toast.dismiss();
+              }
             }
           });
           
-          if (stripeResponse.error) throw stripeResponse.error;
-          if (stripeResponse.data.url) {
-            // Track successful checkout redirect to Stripe (after Bumper fallback)
-            trackConversion('checkout_redirect', finalPrice);
-            trackEvent('payment_redirect', { 
-              method: 'stripe_fallback', 
-              amount: stripeDiscountedPrice,
-              item_count: items.length 
-            });
-            window.location.href = stripeResponse.data.url;
-          }
+          return; // Don't automatically process Stripe - let user decide
         } else if (data.url) {
           // Track successful checkout redirect to Bumper
           trackConversion('checkout_redirect', finalPrice);
