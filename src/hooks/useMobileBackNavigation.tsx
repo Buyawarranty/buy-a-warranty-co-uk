@@ -49,24 +49,26 @@ export const useMobileBackNavigation = ({
   }, [handleBackNavigation]);
 
   useEffect(() => {
-    // Prevent the default browser back behavior on mobile, but allow payment processing
-    const preventDefaultBack = (event: BeforeUnloadEvent) => {
-      // Don't prevent leaving during payment processing (step 4) or if user hasn't started the flow
-      if (currentStep <= 1 || currentStep >= 4) {
-        return;
-      }
-      
-      // Only prevent if user is in the middle of the flow (steps 2-3)
-      if (currentStep > 1 && currentStep < 4) {
-        event.preventDefault();
-        event.returnValue = '';
+    // Only prevent leaving the actual website (not internal navigation)  
+    const preventLeavingSite = (event: BeforeUnloadEvent) => {
+      // Only prevent if user has started the warranty flow and has entered data
+      // This should only trigger when actually leaving the website/tab, not during React Router navigation
+      if (currentStep > 1) {
+        // Only show warning if user is trying to leave the entire website
+        // React Router navigation won't trigger this event
+        const isLeavingWebsite = !event.target || (event.target as any).location?.origin !== window.location.origin;
+        if (isLeavingWebsite) {
+          event.preventDefault();
+          event.returnValue = '';
+        }
       }
     };
 
-    window.addEventListener('beforeunload', preventDefaultBack);
+    // Only add listener if actually needed - remove for now to fix navigation
+    // window.addEventListener('beforeunload', preventLeavingSite);
     
     return () => {
-      window.removeEventListener('beforeunload', preventDefaultBack);
+      // window.removeEventListener('beforeunload', preventLeavingSite);
     };
   }, [currentStep]);
 };
