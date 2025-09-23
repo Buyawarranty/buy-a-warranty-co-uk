@@ -150,17 +150,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   // Normalize vehicle type once
   const vt = useMemo(() => normalizeVehicleType(vehicleData?.vehicleType), [vehicleData?.vehicleType]);
 
-  // Helper function to get auto-included add-ons based on payment type
-  const getAutoIncludedAddOns = (paymentType: string) => {
-    switch (paymentType) {
-      case '24months':
-        return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
-      case '36months':
-        return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: Vehicle recovery, MOT test fee, Vehicle rental, Tyre cover
-      default:
-        return []; // 1-Year: No auto-included add-ons
-    }
-  };
+  // Use the imported function from addOnsUtils instead of local duplicate
+  // This ensures consistency across all components
 
   // Check vehicle age validation
   const vehicleAgeError = useMemo(() => {
@@ -246,26 +237,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     setSummaryDismissed(false);
   }, [selectedClaimLimit, paymentType, voluntaryExcess, selectedProtectionAddOns]);
 
-  // Auto-include add-ons for 2-year and 3-year plans
+  // Auto-include add-ons for 2-year and 3-year plans using imported utility
   useEffect(() => {
+    // Use the imported function to get auto-included add-ons for consistency
     const newAutoIncluded = getAutoIncludedAddOns(paymentType);
     
     console.log('Payment type changed:', paymentType);
     console.log('New auto-included add-ons:', newAutoIncluded);
     
     setSelectedProtectionAddOns(prev => {
-      // Get all possible auto-included add-ons from all plans
-      const allPossibleAutoIncluded = ['breakdown', 'motFee', 'european', 'rental'];
+      // Get all possible auto-included add-ons from all plans (complete list)
+      const allPossibleAutoIncluded = ['breakdown', 'motFee', 'rental', 'tyre'];
       
-      // Start with current selections
+      // Start with current selections but reset all auto-included options
       const updated = { ...prev };
       
-      // Reset all previously auto-included add-ons to false
+      // First, uncheck all previously auto-included add-ons
       allPossibleAutoIncluded.forEach(addonKey => {
         updated[addonKey] = false;
       });
       
-      // Set the new auto-included add-ons to true
+      // Then, check the new auto-included add-ons for the selected payment type
       newAutoIncluded.forEach(addonKey => {
         updated[addonKey] = true;
       });

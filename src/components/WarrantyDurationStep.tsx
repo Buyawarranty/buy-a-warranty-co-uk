@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, Crown, Check, ArrowLeft, X, FileText, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { calculateAddOnPrice } from '@/lib/addOnsUtils';
+import { calculateAddOnPrice, getAutoIncludedAddOns } from '@/lib/addOnsUtils';
 import { calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
 
 interface WarrantyDurationStepProps {
@@ -32,6 +32,63 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
 }) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState('24months');
   const navigate = useNavigate();
+
+  // State to manage protection add-ons with auto-inclusion logic
+  const [currentProtectionAddOns, setCurrentProtectionAddOns] = useState<{[key: string]: boolean}>(() => {
+    // Initialize with passed data or defaults with auto-included items for the default payment type
+    if (pricingData?.protectionAddOns) {
+      return { ...pricingData.protectionAddOns };
+    }
+    
+    // Set default auto-included add-ons for the default payment type (24months)
+    const autoIncluded = getAutoIncludedAddOns('24months');
+    const defaultAddOns: {[key: string]: boolean} = {
+      breakdown: false,
+      motRepair: false,
+      motFee: false,
+      tyre: false,
+      wearTear: false,
+      european: false,
+      rental: false,
+      transfer: false
+    };
+    
+    // Auto-include add-ons for the default payment type
+    autoIncluded.forEach(addonKey => {
+      defaultAddOns[addonKey] = true;
+    });
+    
+    return defaultAddOns;
+  });
+
+  // Update protection add-ons when payment type changes within this step
+  useEffect(() => {
+    const newAutoIncluded = getAutoIncludedAddOns(selectedPaymentType);
+    
+    console.log('WarrantyDurationStep - Payment type changed:', selectedPaymentType);
+    console.log('WarrantyDurationStep - New auto-included add-ons:', newAutoIncluded);
+    
+    setCurrentProtectionAddOns(prev => {
+      // Get all possible auto-included add-ons from all plans
+      const allPossibleAutoIncluded = ['breakdown', 'motFee', 'rental', 'tyre'];
+      
+      // Start with current selections but reset all auto-included options
+      const updated = { ...prev };
+      
+      // First, uncheck all previously auto-included add-ons
+      allPossibleAutoIncluded.forEach(addonKey => {
+        updated[addonKey] = false;
+      });
+      
+      // Then, check the new auto-included add-ons for the selected payment type
+      newAutoIncluded.forEach(addonKey => {
+        updated[addonKey] = true;
+      });
+      
+      console.log('WarrantyDurationStep - Updated protection add-ons:', updated);
+      return updated;
+    });
+  }, [selectedPaymentType]);
 
   // Get pricing data using the exact pricing structure from the matrix
   const getPricingForDuration = (paymentPeriod: string) => {
@@ -89,9 +146,9 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     const planAddOnCount = Object.values(selectedAddOns || {}).filter(Boolean).length;
     const planAddOnPrice = planAddOnCount * 2 * durationMonths; // £2 per add-on per month * duration
     
-    // Protection addons (from step 3 selection)
-    // Calculate protection add-on price using centralized utility
-    const protectionAddOnPrice = calculateAddOnPrice(protectionAddOns || {}, paymentPeriod, durationMonths);
+    // Protection addons (from step 3 selection - use current state for this step)
+    // Calculate protection add-on price using centralized utility with current add-ons
+    const protectionAddOnPrice = calculateAddOnPrice(currentProtectionAddOns || {}, paymentPeriod, durationMonths);
     
     const totalPrice = adjustedBasePrice + planAddOnPrice + protectionAddOnPrice;
     
@@ -119,7 +176,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       durationMonths,
       addOnBreakdown: {
         planAddOnCount,
-        protectionAddOns
+        protectionAddOns: currentProtectionAddOns
       }
     });
     
