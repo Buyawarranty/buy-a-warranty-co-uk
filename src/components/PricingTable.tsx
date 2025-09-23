@@ -421,12 +421,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   // Memoized price calculation to prevent pricing fluctuations
   const basePlanPrice = useMemo(() => {
+    // Calculate vehicle adjustment for the currently selected payment type only
+    const currentWarrantyYears = paymentType === '12months' ? 1 : 
+                                paymentType === '24months' ? 2 : 3;
+    const currentVehicleAdjustment = calculateVehiclePriceAdjustment(vehicleData as any, currentWarrantyYears);
+    
     console.log('💰 calculatePlanPrice Debug:', {
       paymentType,
       voluntaryExcess,
       selectedClaimLimit,
       vehicleData,
-      vehiclePriceAdjustment
+      currentVehicleAdjustment
     });
     
     // Use your exact pricing structure
@@ -435,19 +440,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     console.log('Found price in exact table:', { basePrice, voluntaryExcess, selectedClaimLimit, paymentType });
     
     // Apply vehicle adjustments (SUV/van, Range Rover, motorbike discount, etc.) to the base price
-    const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+    const adjustedPrice = applyPriceAdjustment(basePrice, currentVehicleAdjustment);
     
     console.log('🏍️ Motorbike/Vehicle adjustment applied:', { 
       basePrice, 
       adjustedPrice, 
-      adjustment: vehiclePriceAdjustment,
+      adjustment: currentVehicleAdjustment,
       vehicleType: vehicleData?.vehicleType,
-      isMotorbike: vehiclePriceAdjustment.adjustmentType === 'motorbike_discount',
+      isMotorbike: currentVehicleAdjustment.adjustmentType === 'motorbike_discount',
       discountApplied: basePrice !== adjustedPrice
     });
     
     return adjustedPrice;
-  }, [paymentType, voluntaryExcess, selectedClaimLimit, vehiclePriceAdjustment]);
+  }, [paymentType, voluntaryExcess, selectedClaimLimit, vehicleData]);
 
   // Memoized add-on price calculation
   const addOnPrice = useMemo(() => {
