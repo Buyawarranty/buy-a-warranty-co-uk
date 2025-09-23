@@ -1428,19 +1428,23 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 isBestValue: true
               }
             ].map((option) => {
+              // CRITICAL FIX: Calculate base price independently for each option
+              // This prevents cross-contamination of pricing when switching between options
               const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
               const adjustedPrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
               const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
               
-              // Calculate add-on costs for ALL options to show proper pricing
+              // Calculate add-on costs ONLY for the CURRENTLY SELECTED option
+              // Other options show base price only to prevent pricing fluctuation
               let protectionAddOnPrice = 0;
+              if (paymentType === option.id) {
+                // Only calculate add-ons for the selected option
+                protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
+              }
               
-              // Always calculate add-on costs for proper display
-              protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
-              
-               const totalPrice = adjustedPrice + protectionAddOnPrice;
-               // For 2-year and 3-year plans, divide by 12 since users only pay for 12 months
-               const monthlyPrice = Math.round(totalPrice / 12);
+              const totalPrice = adjustedPrice + protectionAddOnPrice;
+              // For 2-year and 3-year plans, divide by 12 since users only pay for 12 months
+              const monthlyPrice = Math.round(totalPrice / 12);
               
               // Calculate original price for savings display - independent of selection
               const originalPrice = option.id === '24months' ? totalPrice + 100 : option.id === '36months' ? totalPrice + 200 : totalPrice;
