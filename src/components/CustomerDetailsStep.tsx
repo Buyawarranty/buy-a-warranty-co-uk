@@ -121,19 +121,31 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
     try {
       const { data, error } = await supabase.functions.invoke('validate-discount-code', {
-        body: { code: promoCodeInput.trim() }
+        body: { 
+          code: promoCodeInput.trim(),
+          customerEmail: customerData.email,
+          orderAmount: bumperTotalPrice
+        }
       });
 
       if (error) throw error;
 
       if (data.valid) {
         setAppliedDiscountCode(promoCodeInput.trim());
-        setDiscountAmount(data.discount_percentage / 100);
+        // Use the actual discount amount or calculate percentage discount
+        const discountPercentage = data.discountCode.type === 'percentage' 
+          ? data.discountCode.value 
+          : (data.discountAmount / bumperTotalPrice) * 100;
+        setDiscountAmount(discountPercentage / 100);
         setPromoCodeInput('');
         setPromoCodeError('');
-        toast.success(`Promo code applied! ${data.discount_percentage}% discount`);
+        
+        const discountText = data.discountCode.type === 'percentage' 
+          ? `${data.discountCode.value}% discount` 
+          : `£${data.discountAmount.toFixed(2)} discount`;
+        toast.success(`Promo code applied! ${discountText}`);
       } else {
-        setPromoCodeError('Invalid or expired promo code');
+        setPromoCodeError(data.error || 'Invalid or expired promo code');
       }
     } catch (error) {
       console.error('Error validating promo code:', error);
