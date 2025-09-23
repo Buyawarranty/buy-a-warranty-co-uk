@@ -92,6 +92,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   }, [vehicleData]);
   
   const vehiclePriceAdjustment = useMemo(() => {
+    // This is now only used for the currently selected plan in certain calculations
+    // Each individual plan will calculate its own adjustment in the map function
     const warrantyYears = paymentType === '12months' ? 1 : 
                          paymentType === '24months' ? 2 : 3;
     
@@ -1421,10 +1423,17 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 isBestValue: true
               }
             ].map((option) => {
-              // CRITICAL FIX: Always show stable base prices for each plan independently
-              // Get the pure base price for THIS specific plan (no add-ons, just base price + vehicle adjustments)
+              // CRITICAL FIX: Each plan must calculate its OWN vehicle adjustment independently
+              // Calculate warranty years for THIS specific plan option
+              const optionWarrantyYears = option.id === '12months' ? 1 : 
+                                        option.id === '24months' ? 2 : 3;
+              
+              // Calculate vehicle adjustment specifically for THIS plan duration
+              const optionVehicleAdjustment = calculateVehiclePriceAdjustment(vehicleData as any, optionWarrantyYears);
+              
+              // Get the pure base price for THIS specific plan (independent of current selection)
               const planBasePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
-              const planAdjustedBasePrice = applyPriceAdjustment(planBasePrice, vehiclePriceAdjustment);
+              const planAdjustedBasePrice = applyPriceAdjustment(planBasePrice, optionVehicleAdjustment);
               const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
               
               // Calculate add-on costs ONLY for the currently selected payment type for display purposes
@@ -1434,7 +1443,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
               }
               
-              // Plan price display: ALWAYS show stable monthly payment (base price ÷ 12, never changes with add-ons)
+              // Plan price display: ALWAYS show stable monthly payment (base price ÷ 12, never changes with other plan selections)
               const displayedMonthlyPrice = Math.round(planAdjustedBasePrice / 12);
               
               // Total cost calculation: base + add-ons (only for the selected plan)
