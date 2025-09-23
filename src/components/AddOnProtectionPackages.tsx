@@ -176,14 +176,17 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
         const isIncluded = isAutoIncluded(addon.key);
         const isSelected = selectedAddOns[addon.key] || isIncluded;
         
-        // Calculate price based on addon structure
+        // Calculate price display - always show monthly cost spread over 12 payments
         let priceDisplay;
         
         if (isIncluded) {
           priceDisplay = 'Included';
         } else if (addon.priceType === 'monthly') {
+          // For 2-year and 3-year plans, show the cost spread over 12 monthly payments
+          const totalCost = addon.price * months;
+          const monthlyPayment = totalCost / 12; // Always spread over 12 payments
           priceDisplay = addon.price > 0 
-            ? `Only £${addon.price.toFixed(2)} per month`
+            ? `Only £${monthlyPayment.toFixed(2)} per month`
             : 'Included';
         } else {
           priceDisplay = `Just £${addon.price} one-time fee`;
@@ -209,11 +212,11 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{addon.shortDescription}</p>
                         <div className={`text-base font-bold ${isIncluded ? 'text-green-600' : 'text-black'}`}>
                           {priceDisplay}
-                          {addon.priceType === 'monthly' && addon.price > 0 && !isIncluded && (
-                            <div className="text-sm font-normal text-muted-foreground">
-                              Spread over 12 interest-free payments for a full year of cover.
-                            </div>
-                          )}
+                           {addon.priceType === 'monthly' && addon.price > 0 && !isIncluded && (
+                             <div className="text-sm font-normal text-muted-foreground">
+                               Spread over 12 interest-free payments for full {paymentType === '12months' ? '1 year' : paymentType === '24months' ? '2 year' : '3 year'} coverage.
+                             </div>
+                           )}
                         </div>
                       </div>
                     </div>

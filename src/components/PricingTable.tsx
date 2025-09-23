@@ -1442,8 +1442,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
               }
               
-              const totalPrice = adjustedPrice + protectionAddOnPrice;
-              const monthlyPrice = Math.round(totalPrice / 12); // Always divide by 12 months for payment
+               const totalPrice = adjustedPrice + protectionAddOnPrice;
+               // For 2-year and 3-year plans, divide by 12 since users only pay for 12 months
+               const monthlyPrice = Math.round(totalPrice / 12);
               
               // Calculate original price for savings display - independent of selection
               const originalPrice = option.id === '24months' ? totalPrice + 100 : option.id === '36months' ? totalPrice + 200 : totalPrice;
@@ -1523,9 +1524,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                    
                      {/* Pricing */}
                     <div className="mb-4 text-center mt-auto">
-                      <div className="text-3xl font-bold text-black mb-1">
-                        £{Math.round(totalPrice / 12)}/month
-                      </div>
+                       <div className="text-3xl font-bold text-black mb-1">
+                         £{monthlyPrice}/month
+                       </div>
                       <div className="text-sm text-gray-600 mb-2">
                         {option.id === '12months' && (
                           <div className="flex items-center justify-center gap-1 font-bold">
