@@ -1421,26 +1421,27 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 isBestValue: true
               }
             ].map((option) => {
-              // CRITICAL FIX: Always show stable base prices, never include add-ons in plan price display
-              const basePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
-              const adjustedBasePrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
+              // CRITICAL FIX: Always show stable base prices for each plan independently
+              // Get the pure base price for THIS specific plan (no add-ons, just base price + vehicle adjustments)
+              const planBasePrice = getPricingData(voluntaryExcess, selectedClaimLimit, option.id);
+              const planAdjustedBasePrice = applyPriceAdjustment(planBasePrice, vehiclePriceAdjustment);
               const durationMonths = option.id === '12months' ? 12 : option.id === '24months' ? 24 : 36;
               
-              // Calculate add-on costs ONLY for pricing totals, never for plan price display
+              // Calculate add-on costs ONLY for the currently selected payment type for display purposes
               let protectionAddOnPrice = 0;
               if (paymentType === option.id) {
                 // Only calculate add-ons for the selected option for total cost calculation
                 protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
               }
               
-              // Plan price display: ALWAYS show base price only (stable, never changes)
-              const displayedMonthlyPrice = Math.round(adjustedBasePrice / 12);
+              // Plan price display: ALWAYS show stable monthly payment (base price ÷ 12, never changes with add-ons)
+              const displayedMonthlyPrice = Math.round(planAdjustedBasePrice / 12);
               
-              // Total cost calculation: base + add-ons (for internal calculations and total display)
-              const totalPriceWithAddOns = adjustedBasePrice + protectionAddOnPrice;
+              // Total cost calculation: base + add-ons (only for the selected plan)
+              const totalPriceWithAddOns = planAdjustedBasePrice + protectionAddOnPrice;
               
               // Calculate original price for savings display - independent of selection, base price only
-              const originalPrice = option.id === '24months' ? adjustedBasePrice + 100 : option.id === '36months' ? adjustedBasePrice + 200 : adjustedBasePrice;
+              const originalPrice = option.id === '24months' ? planAdjustedBasePrice + 100 : option.id === '36months' ? planAdjustedBasePrice + 200 : planAdjustedBasePrice;
               
               return (
                 <div
@@ -1557,7 +1558,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                        {option.id !== '12months' && (
                          <span className="line-through text-gray-500 ml-1">£{originalPrice}</span>
                        )}
-                       <span className="text-orange-600 ml-1">£{adjustedBasePrice}</span>
+                       <span className="text-orange-600 ml-1">£{planAdjustedBasePrice}</span>
                        {paymentType === option.id && protectionAddOnPrice > 0 && (
                          <span className="text-gray-600 text-xs block mt-1">
                            + £{Math.round(protectionAddOnPrice)} add-ons = £{Math.round(totalPriceWithAddOns)} total
