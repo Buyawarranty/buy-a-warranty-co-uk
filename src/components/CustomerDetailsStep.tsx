@@ -616,57 +616,49 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
                       <div className="border-t pt-4">
                         <div className="mb-2">
-                          <span className="text-black font-medium">Included Protection</span>
+                          <span className="text-black font-medium">Protection Add-ons</span>
                         </div>
                         <div className="space-y-1">
-                          {pricingData.protectionAddOns.breakdown && (
-                            <div className="flex items-center">
-                              <span className="text-green-600 mr-2">✓</span>
-                              <span className="text-sm text-gray-700">24/7 Roadside Assistance</span>
-                            </div>
-                          )}
-                          {pricingData.protectionAddOns.motFee && (
-                            <div className="flex items-center">
-                              <span className="text-green-600 mr-2">✓</span>
-                              <span className="text-sm text-gray-700">MOT Fee Cover</span>
-                            </div>
-                          )}
-                          {pricingData.protectionAddOns.motRepair && (
-                            <div className="flex items-center">
-                              <span className="text-green-600 mr-2">✓</span>
-                              <span className="text-sm text-gray-700">MOT Repair Cover</span>
-                            </div>
-                          )}
-                          {(pricingData.protectionAddOns.wearTear || pricingData.protectionAddOns.wearAndTear) && (
-                            <div className="flex items-center">
-                              <span className="text-green-600 mr-2">✓</span>
-                              <span className="text-sm text-gray-700">Wear & Tear Cover</span>
-                            </div>
-                          )}
-                          {pricingData.protectionAddOns.tyre && (
-                            <div className="flex items-center">
-                              <span className="text-green-600 mr-2">✓</span>
-                              <span className="text-sm text-gray-700">Tyre Protection</span>
-                            </div>
-                          )}
-                          {pricingData.protectionAddOns.european && (
-                            <div className="flex items-center">
-                              <span className="text-green-600 mr-2">✓</span>
-                              <span className="text-sm text-gray-700">European Cover</span>
-                            </div>
-                          )}
-                          {pricingData.protectionAddOns.rental && (
-                            <div className="flex items-center">
-                              <span className="text-green-600 mr-2">✓</span>
-                              <span className="text-sm text-gray-700">Courtesy Car</span>
-                            </div>
-                          )}
-                          {pricingData.protectionAddOns.transfer && (
-                            <div className="flex items-center">
-                              <span className="text-green-600 mr-2">✓</span>
-                              <span className="text-sm text-gray-700">Warranty Transfer</span>
-                            </div>
-                          )}
+                          {(() => {
+                            // Get duration in months and normalize payment type
+                            const durationMonths = getWarrantyDurationInMonths(paymentType);
+                            const normalizedPaymentType = normalizePaymentType(paymentType);
+                            const addOnInfos = getAddOnInfo(normalizedPaymentType, durationMonths);
+                            
+                            return addOnInfos.map(addOn => {
+                              // Check if this add-on is selected
+                              let isSelected = false;
+                              
+                              // Map different key formats
+                              const keyMappings: { [key: string]: string } = {
+                                'wearAndTear': 'wearTear'
+                              };
+                              
+                              const mappedKey = keyMappings[addOn.key] || addOn.key;
+                              
+                              // Check both the original key and mapped key
+                              if (pricingData.protectionAddOns) {
+                                isSelected = Boolean(
+                                  pricingData.protectionAddOns[addOn.key as keyof typeof pricingData.protectionAddOns] || 
+                                  pricingData.protectionAddOns[mappedKey as keyof typeof pricingData.protectionAddOns]
+                                );
+                              }
+                              
+                              if (!isSelected) return null;
+                              
+                              return (
+                                <div key={addOn.key} className="flex items-center justify-between">
+                                  <div className="flex items-center">
+                                    <span className="text-green-600 mr-2">✓</span>
+                                    <span className="text-sm text-gray-700">{addOn.name}</span>
+                                  </div>
+                                  <span className={`text-sm ${addOn.isAutoIncluded ? 'text-green-600 font-medium' : 'text-gray-600'}`}>
+                                    {addOn.isAutoIncluded ? 'FREE' : addOn.displayPrice}
+                                  </span>
+                                </div>
+                              );
+                            });
+                          })()}
                         </div>
                       </div>
                     )}
