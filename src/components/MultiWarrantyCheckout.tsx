@@ -676,7 +676,27 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                     <div className="space-y-4 text-base">
                       <div className="flex justify-between items-center py-2">
                         <span className="text-gray-600">Plan:</span>
-                        <span className="font-bold text-gray-900">{item.planName}</span>
+                        <span className="font-bold text-gray-900">{
+                          (() => {
+                            // Check if it's a motorcycle based on make and model
+                            const makeLC = item.vehicleData.make?.toLowerCase().trim() || '';
+                            const modelLC = item.vehicleData.model?.toLowerCase().trim() || '';
+                            
+                            const isKnownMotorbikeManufacturer = ['yamaha', 'kawasaki', 'ducati', 'ktm', 'harley-davidson', 'harley davidson', 
+                              'triumph', 'aprilia', 'mv agusta', 'benelli', 'moto guzzi', 'indian', 
+                              'husqvarna', 'beta', 'sherco', 'gas gas', 'royal enfield', 'norton', 
+                              'zero', 'energica'].includes(makeLC);
+                            
+                            const isMotorbike = isKnownMotorbikeManufacturer || 
+                                              ['honda', 'bmw', 'suzuki'].includes(makeLC) && 
+                                              (modelLC.includes('gsx') || modelLC.includes('cbr') || modelLC.includes('ninja') || 
+                                               modelLC.includes('r1') || modelLC.includes('mt') || modelLC.includes('fazer'));
+                            
+                            return isMotorbike 
+                              ? item.planName.replace(/Car/gi, 'Bike')
+                              : item.planName.replace(/Bike/gi, 'Car');
+                          })()
+                        }</span>
                       </div>
                       
                       <div className="flex justify-between items-center py-2">

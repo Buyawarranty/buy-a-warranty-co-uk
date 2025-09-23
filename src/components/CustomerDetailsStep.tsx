@@ -588,7 +588,28 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <div className="space-y-4 mb-6">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Plan</span>
-                      <span className="font-semibold">{planName.replace(/premium/gi, 'Platinum')}</span>
+                      <span className="font-semibold">{
+                        (() => {
+                          // Check if it's a motorcycle based on make and model
+                          const makeLC = vehicleData.make?.toLowerCase().trim() || '';
+                          const modelLC = vehicleData.model?.toLowerCase().trim() || '';
+                          
+                          const isKnownMotorbikeManufacturer = ['yamaha', 'kawasaki', 'ducati', 'ktm', 'harley-davidson', 'harley davidson', 
+                            'triumph', 'aprilia', 'mv agusta', 'benelli', 'moto guzzi', 'indian', 
+                            'husqvarna', 'beta', 'sherco', 'gas gas', 'royal enfield', 'norton', 
+                            'zero', 'energica'].includes(makeLC);
+                          
+                          const isMotorbike = isKnownMotorbikeManufacturer || 
+                                            ['honda', 'bmw', 'suzuki'].includes(makeLC) && 
+                                            (modelLC.includes('gsx') || modelLC.includes('cbr') || modelLC.includes('ninja') || 
+                                             modelLC.includes('r1') || modelLC.includes('mt') || modelLC.includes('fazer'));
+                          
+                          const basePlanName = planName.replace(/premium/gi, 'Platinum');
+                          return isMotorbike 
+                            ? basePlanName.replace(/Car/gi, 'Bike')
+                            : basePlanName.replace(/Bike/gi, 'Car');
+                        })()
+                      }</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Duration</span>
