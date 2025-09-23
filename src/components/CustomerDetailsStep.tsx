@@ -236,16 +236,45 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     try {
       const finalPrice = paymentMethod === 'stripe' ? discountedStripePrice : discountedBumperPrice;
       
-      onNext({
-        ...customerData,
-        paymentMethod,
-        finalPrice,
-        planId,
-        paymentType,
-        discountCode: appliedDiscountCode,
-        discountAmount: hasSecondWarrantyDiscount ? discountAmount : 0,
-        addAnotherWarranty: addAnotherWarrantyRequested
-      });
+      // Process payment based on selected method
+      if (paymentMethod === 'bumper') {
+        // Create Bumper checkout
+        const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-bumper-checkout', {
+          body: {
+            planId,
+            vehicleData,
+            paymentType,
+            voluntaryExcess: pricingData.protectionAddOns?.wearTear ? 0 : 250,
+            customerData: {
+              ...customerData,
+              final_amount: finalPrice
+            },
+            discountCode: appliedDiscountCode,
+            finalAmount: finalPrice,
+            addAnotherWarrantyRequested,
+            protectionAddOns: pricingData.protectionAddOns || {}
+          }
+        });
+
+        if (checkoutError) {
+          console.error('Bumper checkout error:', checkoutError);
+          toast.error('Payment processing failed. Please try again.');
+          return;
+        }
+
+        if (checkoutData?.fallbackToStripe) {
+          // Fallback to Stripe if Bumper fails
+          await processStripeCheckout();
+        } else if (checkoutData?.checkoutUrl) {
+          // Redirect to Bumper checkout
+          window.location.href = checkoutData.checkoutUrl;
+        } else {
+          toast.error('Payment setup failed. Please try again.');
+        }
+      } else {
+        // Process Stripe payment
+        await processStripeCheckout();
+      }
 
       // Clear the discount code after use
       if (appliedDiscountCode) {
@@ -253,8 +282,40 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         localStorage.removeItem('addAnotherWarrantyDiscount');
       }
     } catch (error) {
-      console.error('Error submitting customer details:', error);
-      toast.error('An error occurred. Please try again.');
+      console.error('Error processing payment:', error);
+      toast.error('Payment processing failed. Please try again.');
+    }
+  };
+
+  const processStripeCheckout = async () => {
+    const finalPrice = discountedStripePrice;
+    
+    const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-stripe-checkout', {
+      body: {
+        planId,
+        vehicleData,
+        paymentType,
+        voluntaryExcess: pricingData.protectionAddOns?.wearTear ? 0 : 250,
+        customerData: {
+          ...customerData,
+          final_amount: finalPrice
+        },
+        discountCode: appliedDiscountCode,
+        finalAmount: finalPrice
+      }
+    });
+
+    if (checkoutError) {
+      console.error('Stripe checkout error:', checkoutError);
+      toast.error('Payment processing failed. Please try again.');
+      return;
+    }
+
+    if (checkoutData?.url) {
+      // Redirect to Stripe checkout
+      window.location.href = checkoutData.url;
+    } else {
+      toast.error('Payment setup failed. Please try again.');
     }
   };
 
