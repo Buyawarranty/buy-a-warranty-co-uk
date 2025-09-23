@@ -19,6 +19,8 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let planId, vehicleData, originalPaymentType, voluntaryExcess, customerData, discountCode, finalAmount, addAnotherWarrantyRequested, protectionAddOns;
+  
   try {
     logStep("Function started");
 
@@ -28,7 +30,7 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { planId, vehicleData, paymentType: originalPaymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount, addAnotherWarrantyRequested, protectionAddOns } = body;
+    ({ planId, vehicleData, paymentType: originalPaymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount, addAnotherWarrantyRequested, protectionAddOns } = body);
     logStep("Request data", { planId, vehicleData, originalPaymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns });
     
     // Calculate number of instalments based on payment type
@@ -51,22 +53,44 @@ serve(async (req) => {
     );
     
     logStep("Fetching plan data", { planId });
-    const { data: planData, error: planError } = await supabaseService
-      .from('special_vehicle_plans')
-      .select('name')
-      .eq('id', planId)
-      .maybeSingle();
     
-    if (planError) {
-      logStep("Plan fetch error", { planId, error: planError });
+    // Check if planId is a UUID or plan name
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(planId);
+    
+    let planData = null;
+    let planError = null;
+    
+    if (isUUID) {
+      // Query by ID if it's a UUID
+      const result = await supabaseService
+        .from('special_vehicle_plans')
+        .select('name')
+        .eq('id', planId)
+        .maybeSingle();
+      planData = result.data;
+      planError = result.error;
+    } else {
+      // Query by name if it's a string (case insensitive)
+      const result = await supabaseService
+        .from('special_vehicle_plans')
+        .select('name')
+        .ilike('name', planId)
+        .maybeSingle();
+      planData = result.data;
+      planError = result.error;
+    }
+
+    if (planError && !planError.message.includes('no rows')) {
+      logStep("Plan fetch error", { planId, error: planError, isUUID });
       throw new Error(`Database error fetching plan: ${planError.message}`);
     }
-    
+
+    let planType;
     if (!planData) {
-      logStep("Plan not found, using planId as plan type", { planId });
-      var planType = planId.toLowerCase();
+      logStep("Plan not found in database, using planId as plan type", { planId, isUUID });
+      planType = planId.toLowerCase().replace(/\s+/g, '_');
     } else {
-      var planType = planData.name.toLowerCase();
+      planType = planData.name.toLowerCase().replace(/\s+/g, '_');
     }
     logStep("Using plan type", { planId, planType });
 
@@ -354,7 +378,7 @@ serve(async (req) => {
       fallbackToStripe: true,
       fallbackReason: "error",
       fallbackData: {
-        planId: planId || "basic",
+        planId: planType || planId || "basic",
         vehicleData: vehicleData || {},
         paymentType: originalPaymentType || "yearly",
         voluntaryExcess: voluntaryExcess || 0,
