@@ -508,6 +508,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <span className="text-gray-600">Vehicle Registration</span>
                       <span className="font-semibold">{vehicleData.regNumber}</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Mileage</span>
+                      <span className="font-semibold">{parseInt(vehicleData.mileage || '0').toLocaleString()} miles</span>
+                    </div>
                     
                     {/* Promo Code Section */}
                     <div className="border-t pt-4">
