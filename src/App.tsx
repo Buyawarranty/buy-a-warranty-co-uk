@@ -38,6 +38,7 @@ const AdminTest = lazy(() => import("./pages/AdminTest"));
 const PasswordReset = lazy(() => import("./components/PasswordReset"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const QuickPasswordReset = lazy(() => import("./pages/QuickPasswordReset"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
 // Demo and preview components
 const CarJourneyDemo = lazy(() => import("./pages/CarJourneyDemo"));
@@ -86,6 +87,7 @@ const App = () => (
                     <Route path="/admin-dashboard" element={<AdminDashboard />} />
                     <Route path="/admin-test" element={<AdminTest />} />
                     <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+                    <Route path="/forgot-password" element={<Suspense fallback={<div>Loading...</div>}><ForgotPassword /></Suspense>} />
                     <Route path="/reset-password" element={<PasswordReset />} />
                     <Route path="/password-reset" element={<ResetPassword />} />
                     <Route path="/quick-reset" element={<QuickPasswordReset />} />

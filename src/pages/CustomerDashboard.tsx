@@ -629,49 +629,15 @@ const CustomerDashboard = () => {
                   <Button 
                     variant="link" 
                     className="p-0 h-auto font-normal text-blue-600 hover:text-blue-800"
-                    onClick={() => navigate('/reset-password')}
+                    onClick={() => navigate('/forgot-password')}
                   >
-                    Reset your password
+                    Get login credentials resent
                   </Button>
                 </p>
               </div>
 
               <div className="mt-4 text-center">
                   <div className="text-center space-y-2">
-                    <Button 
-                      variant="link" 
-                      onClick={() => {
-                        // Reset password for the entered email
-                        if (!email) {
-                          toast({
-                            title: "Email Required",
-                            description: "Please enter your email address first.",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        
-                        supabase.functions.invoke('send-password-reset-email', {
-                          body: { email }
-                        }).then(({ error }) => {
-                          if (error) {
-                            toast({
-                              title: "Reset Failed",
-                              description: error.message,
-                              variant: "destructive",
-                            });
-                          } else {
-                            toast({
-                              title: "Reset Email Sent",
-                              description: "Check your email for the password reset link.",
-                            });
-                          }
-                        });
-                      }}
-                      className="text-sm"
-                    >
-                      Forgot your password?
-                    </Button>
                     <p className="text-xs text-gray-500">
                       First time logging in? Use the temporary password from your welcome email.
                     </p>
