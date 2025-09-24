@@ -1139,23 +1139,6 @@ const CustomerDashboard = () => {
                     </Card>
                   )}
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <CreditCard className="mr-2 h-5 w-5" />
-                        Billing & Renewal
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-gray-600 mb-4">
-                        Manage your payment methods and renewal settings.
-                      </p>
-                      <Button onClick={handleManageBilling} variant="outline" className="w-full">
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        Manage Billing
-                      </Button>
-                    </CardContent>
-                  </Card>
 
                   <Card>
                     <CardHeader>
@@ -1216,17 +1199,26 @@ const CustomerDashboard = () => {
                                 <p className="text-sm text-gray-600">v2.2</p>
                               </div>
                               <div className="flex gap-2">
-                                <Button size="sm" variant="outline" asChild>
-                                  <a href="/lovable-uploads/Platinum-warranty-plan_v2.2.pdf" target="_blank" rel="noopener noreferrer">
-                                    <FileText className="h-4 w-4 mr-1" />
-                                    View
-                                  </a>
+                                <Button size="sm" variant="outline" onClick={() => {
+                                  const iframe = document.createElement('iframe');
+                                  iframe.src = "/lovable-uploads/Platinum-warranty-plan_v2.2.pdf";
+                                  iframe.style.display = 'none';
+                                  document.body.appendChild(iframe);
+                                  setTimeout(() => document.body.removeChild(iframe), 100);
+                                }}>
+                                  <FileText className="h-4 w-4 mr-1" />
+                                  View
                                 </Button>
-                                <Button size="sm" variant="outline" asChild>
-                                  <a href="/lovable-uploads/Platinum-warranty-plan_v2.2.pdf" download="Platinum-warranty-plan_v2.2.pdf">
-                                    <Download className="h-4 w-4 mr-1" />
-                                    Download
-                                  </a>
+                                <Button size="sm" variant="outline" onClick={() => {
+                                  const link = document.createElement('a');
+                                  link.href = "/lovable-uploads/Platinum-warranty-plan_v2.2.pdf";
+                                  link.download = "Platinum-warranty-plan_v2.2.pdf";
+                                  document.body.appendChild(link);
+                                  link.click();
+                                  document.body.removeChild(link);
+                                }}>
+                                  <Download className="h-4 w-4 mr-1" />
+                                  Download
                                 </Button>
                               </div>
                             </div>
@@ -1241,17 +1233,25 @@ const CustomerDashboard = () => {
                                 <p className="text-sm text-gray-600">Extended Warranty Guide v2.2</p>
                               </div>
                               <div className="flex gap-2">
-                                <Button size="sm" variant="outline" asChild>
-                                  <a href="/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf" target="_blank" rel="noopener noreferrer">
-                                    <FileText className="h-4 w-4 mr-1" />
-                                    View
-                                  </a>
+                                <Button size="sm" variant="outline" onClick={() => {
+                                  const iframe = document.createElement('iframe');
+                                  iframe.src = "/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf";
+                                  iframe.style.display = 'none';
+                                  document.body.appendChild(iframe);
+                                  setTimeout(() => document.body.removeChild(iframe), 100);
+                                }}>
+                                  <FileText className="h-4 w-4 mr-1" />
+                                  View
                                 </Button>
-                                <Button size="sm" variant="outline" asChild>
-                                  <a href="/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf" download="Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf">
-                                    <Download className="h-4 w-4 mr-1" />
-                                    Download
-                                  </a>
+                                <Button size="sm" variant="outline" onClick={() => {
+                                  const link = document.createElement('a');
+                                  link.href = "/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf";
+                                  link.download = "Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf";
+                                  document.body.appendChild(link);
+                                  document.body.removeChild(link);
+                                }}>
+                                  <Download className="h-4 w-4 mr-1" />
+                                  Download
                                 </Button>
                               </div>
                             </div>
@@ -1260,28 +1260,6 @@ const CustomerDashboard = () => {
                       </div>
                     </div>
 
-                    {/* Billing Management */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Account Management</h3>
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium">Billing & Payment</h4>
-                              <p className="text-sm text-gray-600">Manage your payment methods and renewal settings</p>
-                            </div>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={handleManageBilling}
-                            >
-                              <CreditCard className="mr-2 h-4 w-4" />
-                              Manage Billing
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
 
                     {/* Policy List */}
                     <div>
