@@ -866,10 +866,9 @@ const CustomerDashboard = () => {
           </Card>
         ) : (
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="policies">All Policies</TabsTrigger>
-              <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="support">Support</TabsTrigger>
             </TabsList>
 
@@ -1302,51 +1301,6 @@ const CustomerDashboard = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="account" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Account Information</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <Label className="text-sm font-medium text-gray-500">Email Address</Label>
-                      <p className="font-semibold">{user?.email}</p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-gray-500">Account Created</Label>
-                      <p className="text-sm">{user?.created_at ? new Date(user.created_at).toLocaleDateString('en-GB') : 'Unknown'}</p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-gray-500">Total Policies</Label>
-                      <p className="font-semibold">{policies.length}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Security Settings</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => setEditingPassword(true)}
-                    >
-                      <Lock className="mr-2 h-4 w-4" />
-                      Change Password
-                    </Button>
-                    <Alert>
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>
-                        Keep your account secure by using a strong password and logging out on shared devices.
-                      </AlertDescription>
-                    </Alert>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
 
             <TabsContent value="support" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
