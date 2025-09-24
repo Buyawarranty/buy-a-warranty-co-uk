@@ -278,53 +278,24 @@ serve(async (req) => {
     } catch (parseError) {
       console.log("Failed to parse Bumper API response as JSON:", parseError);
       
-      logStep("Bumper API returned invalid JSON - credit check failed", { 
+      logStep("Bumper API returned invalid JSON", { 
         status: bumperResponse.status,
         responseText: responseText.substring(0, 500) // Limit log size
       });
       
-      return new Response(JSON.stringify({ 
-        fallbackToStripe: true,
-        fallbackReason: "credit_check_failed",
-        fallbackData: {
-          planId: planType,
-          vehicleData,
-          paymentType: originalPaymentType,
-          voluntaryExcess,
-          customerData,
-          discountCode,
-          finalAmount: totalAmount
-        }
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+      // Let Bumper handle their own response format
+      throw new Error(`Bumper API returned invalid response: ${responseText.substring(0, 100)}`);
     }
 
     if (!bumperResponse.ok) {
-      logStep("Bumper API rejected - credit check failed", { 
+      logStep("Bumper API error", { 
         status: bumperResponse.status,
         error: bumperData,
         statusText: bumperResponse.statusText
       });
       
-      // Return fallback flag to trigger Stripe checkout on frontend
-      return new Response(JSON.stringify({ 
-        fallbackToStripe: true,
-        fallbackReason: "credit_check_failed",
-        fallbackData: {
-          planId: planType,
-          vehicleData,
-          paymentType: originalPaymentType,
-          voluntaryExcess,
-          customerData,
-          discountCode,
-          finalAmount: totalAmount
-        }
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+      // Let Bumper handle their own error response
+      throw new Error(`Bumper API error: ${bumperResponse.status} - ${bumperData?.message || 'Unknown error'}`);
     }
 
     if (bumperData?.data?.redirect_url) {
@@ -346,22 +317,13 @@ serve(async (req) => {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in create-bumper-checkout", { message: errorMessage });
     
-    // On any error, fallback to Stripe with basic data
+    // Return error to frontend to handle appropriately
     return new Response(JSON.stringify({ 
-      fallbackToStripe: true,
-      fallbackReason: "error",
-      fallbackData: {
-        planId: "basic",
-        vehicleData: {},
-        paymentType: "yearly",
-        voluntaryExcess: 0,
-        customerData: {},
-        discountCode: null,
-        finalAmount: null
-      }
+      error: true,
+      message: errorMessage
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
+      status: 500,
     });
   }
 });
