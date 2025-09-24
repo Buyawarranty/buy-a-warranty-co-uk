@@ -204,6 +204,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔴 CHECKOUT BUTTON CLICKED - Payment method:', selectedPaymentMethod);
     setShowValidation(true);
     
     // Track checkout attempt
@@ -214,9 +215,11 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     });
     
     const errors = validateFields();
+    console.log('🔍 Form validation results:', { errors, fieldCount: Object.keys(errors).length });
     setFieldErrors(errors);
     
     if (Object.keys(errors).length > 0) {
+      console.error('❌ Form validation failed with errors:', errors);
       toast.error('Please complete all required fields correctly');
       trackEvent('checkout_error', { error_type: 'validation_failed' });
       return;
