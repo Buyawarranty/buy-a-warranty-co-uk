@@ -111,13 +111,49 @@ serve(async (req) => {
 
     // Create vehicle registration list for reference
     const vehicleRegs = items.map((item: any) => item.vehicleData.regNumber).join(", ");
+    // Build URLs for signature (unencoded) and request (encoded) separately
+    const baseSuccessUrl = `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-multi-warranty-bumper-success?items=${JSON.stringify(items)}&customer_data=${JSON.stringify(customerData)}&discount_code=${discountCode || ''}&total_amount=${actualTotalAmount}&redirect=${origin + '/thank-you'}`;
+    const baseFailureUrl = `${origin}/payment-fallback?multi=true&email=${customerData.email}&total=${actualTotalAmount}`;
     
+    // Encoded URLs for the actual HTTP request
+    const encodedSuccessUrl = `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-multi-warranty-bumper-success?items=${encodeURIComponent(JSON.stringify(items))}&customer_data=${encodeURIComponent(JSON.stringify(customerData))}&discount_code=${encodeURIComponent(discountCode || '')}&total_amount=${actualTotalAmount}&redirect=${encodeURIComponent(origin + '/thank-you')}`;
+    const encodedFailureUrl = `${origin}/payment-fallback?multi=true&email=${encodeURIComponent(customerData.email)}&total=${actualTotalAmount}`;
+
+    // Create payload for signature generation (with unencoded URLs)
+    const signaturePayload = {
+      amount: actualTotalAmount.toString(),
+      preferred_product_type: "paylater",
+      api_key: bumperApiKey,
+      success_url: baseSuccessUrl, // Unencoded for signature
+      failure_url: baseFailureUrl, // Unencoded for signature
+      currency: "GBP",
+      order_reference: `MULTI-VW-${Date.now()}`,
+      invoice_number: `INV-MULTI-${Date.now()}`,
+      user_email: "info@buyawarranty.co.uk",
+      first_name: customerData.first_name,
+      last_name: customerData.last_name,
+      email: customerData.email,
+      mobile: customerData.mobile,
+      vehicle_reg: vehicleRegs,
+      instalments: "12",
+      flat_number: customerData.flat_number || "",
+      building_name: customerData.building_name || "",
+      building_number: customerData.building_number || "",
+      street: customerData.street || "",
+      town: customerData.town,
+      county: customerData.county,
+      postcode: customerData.postcode,
+      country: customerData.country,
+      product_description: productDescription
+    };
+    
+    // Create payload for actual HTTP request (with encoded URLs)
     const bumperRequestData = {
       amount: actualTotalAmount.toString(),
       preferred_product_type: "paylater",
       api_key: bumperApiKey,
-      success_url: `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-multi-warranty-bumper-success?items=${encodeURIComponent(JSON.stringify(items))}&customer_data=${encodeURIComponent(JSON.stringify(customerData))}&discount_code=${encodeURIComponent(discountCode || '')}&total_amount=${actualTotalAmount}&redirect=${encodeURIComponent(origin + '/thank-you')}`,
-      failure_url: `${origin}/payment-fallback?multi=true&email=${encodeURIComponent(customerData.email)}&total=${actualTotalAmount}`,
+      success_url: encodedSuccessUrl, // Encoded for HTTP request
+      failure_url: encodedFailureUrl, // Encoded for HTTP request
       currency: "GBP",
       order_reference: `MULTI-VW-${Date.now()}`,
       invoice_number: `INV-MULTI-${Date.now()}`,
@@ -146,8 +182,9 @@ serve(async (req) => {
     delete loggableData.signature;
     logStep("Multi-warranty Bumper payload prepared", loggableData);
 
-    // Generate signature
-    const signature = await generateSignature(bumperRequestData, bumperSecretKey);
+    // Generate signature using unencoded payload
+    console.log("BUMPER DEBUG: Multi-warranty signature payload (unencoded URLs):", JSON.stringify(signaturePayload, null, 2));
+    const signature = await generateSignature(signaturePayload, bumperSecretKey);
     bumperRequestData.signature = signature;
 
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";

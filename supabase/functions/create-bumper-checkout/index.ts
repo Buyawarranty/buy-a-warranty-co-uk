@@ -205,12 +205,55 @@ serve(async (req) => {
       });
     }
 
-    const bumperRequestData = {
-      amount: totalAmount.toString(), // Send total amount to Bumper
+    // Build URLs for signature (unencoded) and request (encoded) separately
+    const baseSuccessUrl = `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-bumper-success?plan=${planId}&payment=monthly&source=bumper&addAnotherWarranty=${addAnotherWarrantyRequested || false}&first_name=${customerData.first_name || ''}&last_name=${customerData.last_name || ''}&email=${customerData.email || ''}&mobile=${customerData.mobile || ''}&street=${customerData.street || ''}&town=${customerData.town || ''}&county=${customerData.county || ''}&postcode=${customerData.postcode || ''}&country=${customerData.country || ''}&building_name=${customerData.building_name || ''}&flat_number=${customerData.flat_number || ''}&building_number=${customerData.building_number || ''}&vehicle_reg=${customerData.vehicle_reg || vehicleData.regNumber || ''}&vehicle_make=${vehicleData?.make || ''}&vehicle_model=${vehicleData?.model || ''}&vehicle_year=${vehicleData?.year || ''}&vehicle_fuel_type=${vehicleData?.fuelType || ''}&vehicle_transmission=${vehicleData?.transmission || ''}&mileage=${vehicleData?.mileage || ''}&vehicle_type=${vehicleData?.vehicleType || 'standard'}&discount_code=${discountCode || ''}&final_amount=${finalAmount || totalAmount}&original_payment_type=${originalPaymentType}&addon_tyre_cover=${protectionAddOns?.tyre ? 'true' : 'false'}&addon_wear_tear=${protectionAddOns?.wearTear ? 'true' : 'false'}&addon_europe_cover=${protectionAddOns?.european ? 'true' : 'false'}&addon_transfer_cover=${protectionAddOns?.transfer ? 'true' : 'false'}&addon_breakdown_recovery=${protectionAddOns?.breakdown ? 'true' : 'false'}&addon_vehicle_rental=${protectionAddOns?.rental ? 'true' : 'false'}&addon_mot_repair=${protectionAddOns?.motRepair ? 'true' : 'false'}&addon_mot_fee=${protectionAddOns?.motFee ? 'true' : 'false'}&addon_lost_key=${protectionAddOns?.lostKey ? 'true' : 'false'}&addon_consequential=${protectionAddOns?.consequential ? 'true' : 'false'}&redirect=${origin + '/thank-you'}`;
+    
+    const baseFailureUrl = `${origin}/payment-fallback?plan=${planId}&email=${customerData.email}&original_payment=${originalPaymentType}`;
+    
+    // Encoded URLs for the actual HTTP request
+    const encodedSuccessUrl = `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-bumper-success?plan=${planId}&payment=monthly&source=bumper&addAnotherWarranty=${addAnotherWarrantyRequested || false}&first_name=${encodeURIComponent(customerData.first_name || '')}&last_name=${encodeURIComponent(customerData.last_name || '')}&email=${encodeURIComponent(customerData.email || '')}&mobile=${encodeURIComponent(customerData.mobile || '')}&street=${encodeURIComponent(customerData.street || '')}&town=${encodeURIComponent(customerData.town || '')}&county=${encodeURIComponent(customerData.county || '')}&postcode=${encodeURIComponent(customerData.postcode || '')}&country=${encodeURIComponent(customerData.country || '')}&building_name=${encodeURIComponent(customerData.building_name || '')}&flat_number=${encodeURIComponent(customerData.flat_number || '')}&building_number=${encodeURIComponent(customerData.building_number || '')}&vehicle_reg=${encodeURIComponent(customerData.vehicle_reg || vehicleData.regNumber || '')}&vehicle_make=${encodeURIComponent(vehicleData?.make || '')}&vehicle_model=${encodeURIComponent(vehicleData?.model || '')}&vehicle_year=${encodeURIComponent(vehicleData?.year || '')}&vehicle_fuel_type=${encodeURIComponent(vehicleData?.fuelType || '')}&vehicle_transmission=${encodeURIComponent(vehicleData?.transmission || '')}&mileage=${encodeURIComponent(vehicleData?.mileage || '')}&vehicle_type=${encodeURIComponent(vehicleData?.vehicleType || 'standard')}&discount_code=${encodeURIComponent(discountCode || '')}&final_amount=${finalAmount || totalAmount}&original_payment_type=${encodeURIComponent(originalPaymentType)}&addon_tyre_cover=${protectionAddOns?.tyre ? 'true' : 'false'}&addon_wear_tear=${protectionAddOns?.wearTear ? 'true' : 'false'}&addon_europe_cover=${protectionAddOns?.european ? 'true' : 'false'}&addon_transfer_cover=${protectionAddOns?.transfer ? 'true' : 'false'}&addon_breakdown_recovery=${protectionAddOns?.breakdown ? 'true' : 'false'}&addon_vehicle_rental=${protectionAddOns?.rental ? 'true' : 'false'}&addon_mot_repair=${protectionAddOns?.motRepair ? 'true' : 'false'}&addon_mot_fee=${protectionAddOns?.motFee ? 'true' : 'false'}&addon_lost_key=${protectionAddOns?.lostKey ? 'true' : 'false'}&addon_consequential=${protectionAddOns?.consequential ? 'true' : 'false'}&redirect=${encodeURIComponent(origin + '/thank-you')}`;
+    
+    const encodedFailureUrl = `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerData.email)}&original_payment=${originalPaymentType}`;
+
+    // Create payload for signature generation (with unencoded URLs)
+    const signaturePayload = {
+      amount: totalAmount.toString(),
       preferred_product_type: "paylater",
       api_key: bumperApiKey,
-      success_url: `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-bumper-success?plan=${planId}&payment=monthly&source=bumper&addAnotherWarranty=${addAnotherWarrantyRequested || false}&first_name=${encodeURIComponent(customerData.first_name || '')}&last_name=${encodeURIComponent(customerData.last_name || '')}&email=${encodeURIComponent(customerData.email || '')}&mobile=${encodeURIComponent(customerData.mobile || '')}&street=${encodeURIComponent(customerData.street || '')}&town=${encodeURIComponent(customerData.town || '')}&county=${encodeURIComponent(customerData.county || '')}&postcode=${encodeURIComponent(customerData.postcode || '')}&country=${encodeURIComponent(customerData.country || '')}&building_name=${encodeURIComponent(customerData.building_name || '')}&flat_number=${encodeURIComponent(customerData.flat_number || '')}&building_number=${encodeURIComponent(customerData.building_number || '')}&vehicle_reg=${encodeURIComponent(customerData.vehicle_reg || vehicleData.regNumber || '')}&vehicle_make=${encodeURIComponent(vehicleData?.make || '')}&vehicle_model=${encodeURIComponent(vehicleData?.model || '')}&vehicle_year=${encodeURIComponent(vehicleData?.year || '')}&vehicle_fuel_type=${encodeURIComponent(vehicleData?.fuelType || '')}&vehicle_transmission=${encodeURIComponent(vehicleData?.transmission || '')}&mileage=${encodeURIComponent(vehicleData?.mileage || '')}&vehicle_type=${encodeURIComponent(vehicleData?.vehicleType || 'standard')}&discount_code=${encodeURIComponent(discountCode || '')}&final_amount=${finalAmount || totalAmount}&original_payment_type=${encodeURIComponent(originalPaymentType)}&addon_tyre_cover=${protectionAddOns?.tyre ? 'true' : 'false'}&addon_wear_tear=${protectionAddOns?.wearTear ? 'true' : 'false'}&addon_europe_cover=${protectionAddOns?.european ? 'true' : 'false'}&addon_transfer_cover=${protectionAddOns?.transfer ? 'true' : 'false'}&addon_breakdown_recovery=${protectionAddOns?.breakdown ? 'true' : 'false'}&addon_vehicle_rental=${protectionAddOns?.rental ? 'true' : 'false'}&addon_mot_repair=${protectionAddOns?.motRepair ? 'true' : 'false'}&addon_mot_fee=${protectionAddOns?.motFee ? 'true' : 'false'}&addon_lost_key=${protectionAddOns?.lostKey ? 'true' : 'false'}&addon_consequential=${protectionAddOns?.consequential ? 'true' : 'false'}&redirect=${encodeURIComponent(origin + '/thank-you')}`,
-      failure_url: `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerData.email)}&original_payment=${originalPaymentType}`,
+      success_url: baseSuccessUrl, // Unencoded for signature
+      failure_url: baseFailureUrl, // Unencoded for signature
+      currency: "GBP",
+      order_reference: `VW-${planType.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || Date.now()}`,
+      invoice_number: `INV-${Date.now()}`,
+      user_email: "info@buyawarranty.co.uk",
+      first_name: customerData.first_name,
+      last_name: customerData.last_name,
+      email: customerData.email,
+      mobile: customerData.mobile,
+      vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
+      instalments: instalmentCount,
+      flat_number: customerData.flat_number || "",
+      building_name: customerData.building_name || "",
+      building_number: customerData.building_number || "",
+      street: customerData.street || "",
+      town: customerData.town || "",
+      county: customerData.county || "",
+      postcode: customerData.postcode || "",
+      country: customerData.country || "",
+      product_description: [{
+        item: `${planType} Vehicle Warranty`,
+        quantity: "1",
+        price: totalAmount.toString()
+      }]
+    };
+
+    // Create payload for actual HTTP request (with encoded URLs)
+    const bumperRequestData = {
+      amount: totalAmount.toString(),
+      preferred_product_type: "paylater",
+      api_key: bumperApiKey,
+      success_url: encodedSuccessUrl, // Encoded for HTTP request
+      failure_url: encodedFailureUrl, // Encoded for HTTP request
       currency: "GBP",
       order_reference: `VW-${planType.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || Date.now()}`,
       invoice_number: `INV-${Date.now()}`,
@@ -234,7 +277,7 @@ serve(async (req) => {
       product_description: [{
         item: `${planType} Vehicle Warranty`,
         quantity: "1",
-        price: totalAmount.toString() // Use total amount in product description
+        price: totalAmount.toString()
       }]
     };
 
@@ -244,10 +287,10 @@ serve(async (req) => {
     delete loggableData.signature;
     logStep("Bumper payload prepared", loggableData);
 
-    // Generate signature exactly like the WordPress plugin
-    console.log("BUMPER DEBUG: Payload before signature:", JSON.stringify(bumperRequestData, null, 2));
+    // Generate signature using unencoded payload
+    console.log("BUMPER DEBUG: Signature payload (unencoded URLs):", JSON.stringify(signaturePayload, null, 2));
     
-    const signature = await generateSignature(bumperRequestData, bumperSecretKey);
+    const signature = await generateSignature(signaturePayload, bumperSecretKey);
     bumperRequestData.signature = signature;
     
     console.log("BUMPER DEBUG: Generated signature:", signature);
