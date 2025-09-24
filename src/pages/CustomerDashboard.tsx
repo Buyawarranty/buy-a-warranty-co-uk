@@ -1139,39 +1139,6 @@ const CustomerDashboard = () => {
                   )}
 
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <MessageSquare className="mr-2 h-5 w-5" />
-                        Need Help?
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-gray-600 mb-4">
-                        Contact our support team for assistance.
-                      </p>
-                      <div className="space-y-2">
-                        <Button 
-                          onClick={() => setShowSupportForm(true)} 
-                          variant="outline" 
-                          className="w-full"
-                        >
-                          <MessageSquare className="mr-2 h-4 w-4" />
-                          Contact Support
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="w-full" 
-                          asChild
-                        >
-                          <a href="tel:03302295040">
-                            <Phone className="mr-2 h-4 w-4" />
-                            Call Support
-                          </a>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
                 </div>
               </div>
             </TabsContent>
