@@ -524,144 +524,138 @@ const handler = async (req: Request): Promise<Response> => {
     const emailPayload = {
       from: resendFrom,
       to: [customer.email],
-      subject: `🎉 Congratulations — Your Buyawarranty.co.uk Protection is Now Registered!`,
+      subject: `Your Buy-A-Warranty Protection is Now Active`,
       ...(attachments.length > 0 && { attachments }),
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <h1 style="color: #333; margin-bottom: 10px;">Hi ${customer.first_name || customerName},</h1>
-            <h2 style="color: #28a745; margin-bottom: 15px;">Your Buy-A-Warranty Protection is Now Registered! 🎉 We're excited to have you covered and ready to enjoy peace of mind.</h2>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; line-height: 1.6;">
+          
+          <div style="margin-bottom: 30px;">
+            <h1 style="color: #333; font-size: 24px; margin-bottom: 20px;">Dear ${customer.first_name || customerName},</h1>
+            
+            <p style="color: #333; font-size: 16px; margin-bottom: 15px;">
+              Congratulations! Your Buy-A-Warranty protection is now fully registered. You've made a smart choice to safeguard your vehicle and drive with confidence.
+            </p>
           </div>
 
-          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #28a745;">
-            <p style="font-size: 16px; line-height: 1.6; margin: 0;">
-              Your policy documents are attached to this email for your records. Your policy number is: 
-              <strong style="color: #ff6b35; font-size: 18px;">${policy.warranty_number || policy.policy_number}</strong>
-            </p>
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #333; font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid #ff6b35; padding-bottom: 5px;">Your Policy Details</h2>
+            
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 8px; color: #333;">
+                <strong>Vehicle Registration:</strong> <span style="${regPlateStyle}">${regPlate}</span>
+              </li>
+              <li style="margin-bottom: 8px; color: #333;">
+                <strong>Plan Type:</strong> ${getDisplayPlanType(policy.plan_type)}
+              </li>
+              <li style="margin-bottom: 8px; color: #333;">
+                <strong>Payment Method:</strong> ${paymentMethod}
+              </li>
+              <li style="margin-bottom: 8px; color: #333;">
+                <strong>Coverage Period:</strong> ${coveragePeriod}
+              </li>
+              <li style="margin-bottom: 8px; color: #333;">
+                <strong>Policy Number:</strong> <span style="color: #ff6b35; font-weight: bold;">${policy.warranty_number || policy.policy_number}</span>
+              </li>
+            </ul>
           </div>
 
           ${shouldIncludeLoginDetails ? `
-          <div style="background-color: #e7f3ff; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #007bff;">
-            <h3 style="color: #333; margin-top: 0;">🔐 Your Customer Portal Access</h3>
-            <p>Access your customer portal to view your warranty details, policy documents, and manage your account:</p>
-            <p><strong>Login URL:</strong> <a href="${loginUrl}" style="color: #007bff;">${loginUrl}</a></p>
-            <p><strong>Email:</strong> ${customer.email}</p>
-            <p><strong>Temporary Password:</strong> <code style="background-color: #f1f1f1; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${tempPassword}</code></p>
-            <p style="color: #666; font-size: 14px; margin-top: 10px;">
-              <em>After logging in, you will be automatically redirected to your customer dashboard where you can view your warranty details and policy documents.</em>
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #333; font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid #ff6b35; padding-bottom: 5px;">Access Your Customer Portal</h2>
+            
+            <p style="color: #333; margin-bottom: 15px;">
+              Manage your warranty, view policy details, and submit claims online:
             </p>
+            
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+              <p style="margin: 0; color: #333;">
+                <a href="${loginUrl}" style="color: #ff6b35; text-decoration: none; font-weight: bold; font-size: 18px;">Customer Portal</a>
+              </p>
+            </div>
+            
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 8px; color: #333;">
+                <strong>Login Email:</strong> ${customer.email}
+              </li>
+              <li style="margin-bottom: 8px; color: #333;">
+                <strong>Access Code:</strong> <code style="background-color: #f1f1f1; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${tempPassword}</code>
+              </li>
+            </ul>
           </div>
           ` : `
-          <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ffc107;">
-            <h3 style="color: #333; margin-top: 0;">🔐 Customer Portal Access</h3>
-            <p>You can access your customer portal using your existing login credentials:</p>
-            <p><strong>Login URL:</strong> <a href="${loginUrl}" style="color: #007bff;">${loginUrl}</a></p>
-            <p><strong>Email:</strong> ${customer.email}</p>
-            <p style="color: #666; font-size: 14px; margin-top: 10px;">
-              <em>Use your current password to access your customer dashboard where you can view all your warranty details and policy documents.</em>
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #333; font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid #ff6b35; padding-bottom: 5px;">Access Your Customer Portal</h2>
+            
+            <p style="color: #333; margin-bottom: 15px;">
+              Manage your warranty, view policy details, and submit claims online:
+            </p>
+            
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+              <p style="margin: 0; color: #333;">
+                <a href="${loginUrl}" style="color: #ff6b35; text-decoration: none; font-weight: bold; font-size: 18px;">Customer Portal</a>
+              </p>
+            </div>
+            
+            <p style="color: #333;">
+              <strong>Login Email:</strong> ${customer.email}<br>
+              Use your existing password to access your account.
             </p>
           </div>
           `}
 
-          <div style="background-color: #ffffff; border: 1px solid #dee2e6; padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <h3 style="color: #333; margin-top: 0; margin-bottom: 10px;">📋 What's included in your documents:</h3>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-              <li style="padding: 6px 0; border-bottom: 1px solid #f1f1f1;"><span style="color: #28a745;">✅</span> Full warranty terms and conditions</li>
-              <li style="padding: 6px 0; border-bottom: 1px solid #f1f1f1;"><span style="color: #28a745;">✅</span> Claims process information</li>
-              <li style="padding: 6px 0; border-bottom: 1px solid #f1f1f1;"><span style="color: #28a745;">✅</span> Coverage details and limitations</li>
-              <li style="padding: 6px 0;"><span style="color: #28a745;">✅</span> Contact information for claims</li>
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #333; font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid #ff6b35; padding-bottom: 5px;">Your Policy Documents</h2>
+            
+            <p style="color: #333; margin-bottom: 15px;">
+              We've attached your full policy documents, including:
+            </p>
+            
+            <ul style="color: #333; padding-left: 20px;">
+              <li style="margin-bottom: 5px;">Warranty terms and conditions</li>
+              <li style="margin-bottom: 5px;">Coverage details and limitations</li>
+              <li style="margin-bottom: 5px;">Claims process information</li>
+              <li style="margin-bottom: 5px;">Contact details for support</li>
             </ul>
           </div>
 
-          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <h3 style="color: #333; margin-top: 0; margin-bottom: 10px;">📄 Your Policy Details:</h3>
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr style="border-bottom: 1px solid #dee2e6;">
-                <td style="padding: 6px 0; font-weight: bold; width: 40%;">Vehicle Registration:</td>
-                <td style="padding: 6px 0;"><span style="${regPlateStyle}">${regPlate}</span></td>
-              </tr>
-              <tr style="border-bottom: 1px solid #dee2e6;">
-                <td style="padding: 6px 0; font-weight: bold;">Plan Type:</td>
-                <td style="padding: 6px 0; text-transform: capitalize;">${getDisplayPlanType(policy.plan_type)}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #dee2e6;">
-                <td style="padding: 6px 0; font-weight: bold;">Payment Method:</td>
-                <td style="padding: 6px 0;">${paymentMethod}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #dee2e6;">
-                <td style="padding: 6px 0; font-weight: bold;">Coverage Period:</td>
-                <td style="padding: 6px 0; font-weight: bold; color: #ff6b35;">${coveragePeriod}</td>
-              </tr>
-              </tr>
-              <tr>
-                <td style="padding: 6px 0; font-weight: bold;">Policy End Date:</td>
-                <td style="padding: 6px 0;">${new Date(policy.policy_end_date).toLocaleDateString('en-GB')}</td>
-              </tr>
-            </table>
-            <div style="margin-top: 10px; padding: 10px; background-color: #fff8e1; border-radius: 6px; border-left: 4px solid #ff9800;">
-              <p style="margin: 0; color: #333; font-weight: 600; line-height: 1.5;">
-                📎 <strong>We've attached your documents to this email. Be sure to keep them somewhere safe so you can easily find them when you need them</strong>
-              </p>
-            </div>
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #333; font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid #ff6b35; padding-bottom: 5px;">Need Help? We're Here for You</h2>
+            
+            <ul style="list-style: none; padding: 0; margin: 0; color: #333;">
+              <li style="margin-bottom: 8px;">
+                <strong>Claims Line:</strong> <a href="tel:03302295045" style="color: #ff6b35; text-decoration: none;">0330 229 5045</a> | <a href="mailto:claims@buyawarranty.co.uk" style="color: #ff6b35; text-decoration: none;">claims@buyawarranty.co.uk</a>
+              </li>
+              <li style="margin-bottom: 8px;">
+                <strong>Customer Support:</strong> <a href="tel:03302295040" style="color: #ff6b35; text-decoration: none;">0330 229 5040</a> | <a href="mailto:support@buyawarranty.co.uk" style="color: #ff6b35; text-decoration: none;">support@buyawarranty.co.uk</a>
+              </li>
+            </ul>
           </div>
 
-          <div style="text-align: center; margin: 20px 0;">
-            <a href="${policyDocumentUrl}" 
-               style="display: inline-block; background-color: #ff6b35; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 8px; font-size: 16px;">
-              📄 View Your Policy
-            </a>
-            <br>
-            <a href="${termsUrl}" 
-               style="display: inline-block; background-color: #6c757d; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 8px; font-size: 16px;">
-              📋 Terms & Conditions
-            </a>
-          </div>
-
-          <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <p style="font-size: 16px; line-height: 1.6; margin: 0; text-align: center;">
-              You've made a smart choice to safeguard your vehicle and avoid unexpected repair bills. With your new warranty in place, you can drive with complete peace of mind knowing you're covered when it matters most.
+          <div style="margin-bottom: 25px; padding: 20px; background-color: #f8f9fa; border-radius: 5px;">
+            <p style="color: #333; margin: 0; text-align: center; font-size: 16px;">
+              Thank you for choosing Buy-A-Warranty. We're committed to giving you peace of mind when it matters most.
             </p>
           </div>
 
-          <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <h3 style="color: #856404; margin-top: 0; margin-bottom: 10px;">📞 Need help?</h3>
-            <p style="margin: 0; line-height: 1.6;">
-              If you have any questions about your coverage or need to make a claim, please contact us on:<br>
-              <strong>Customer support:</strong> <a href="tel:0330 229 5040" style="color: #ff6b35; text-decoration: none;">0330 229 5040</a><br>
-              <strong>Claims line:</strong> <a href="tel:0330 229 5045" style="color: #ff6b35; text-decoration: none;">0330 229 5045</a>
+          <div style="text-align: center; margin-bottom: 25px;">
+            <p style="color: #333; margin: 0; font-size: 16px;">
+              Best regards,<br>
+              <strong>The Buy-A-Warranty Team</strong>
             </p>
           </div>
 
-          <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 12px; border-radius: 8px; margin: 15px 0;">
-            <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #0c5460;">
-              <strong>💡 Tip:</strong> We recommend keeping these documents safe and accessible - that way you'll have everything you need right at your fingertips if you ever need to make a claim.
+          <div style="text-align: center; border-top: 1px solid #dee2e6; padding-top: 20px;">
+            <p style="color: #333; margin-bottom: 10px; font-weight: bold;">buyawarranty.co.uk</p>
+            <p style="color: #666; margin-bottom: 15px; font-style: italic;">Your trusted warranty partner</p>
+            
+            <hr style="border: none; border-top: 1px solid #dee2e6; margin: 20px 0;">
+            
+            <p style="color: #666; font-size: 12px; line-height: 1.4; margin: 0;">
+              Buyawarranty.co.uk is a trading name of One Warranty Limited. Registered in the UK under Company number: 10314863 since 2016.<br>
+              Registered address: Warranty House, 62 Berkhamsted Ave, Wembley, HA9 6DT, England.
             </p>
           </div>
 
-          <div style="text-align: center; margin: 20px 0;">
-            <p style="font-size: 18px; color: #28a745; font-weight: bold; margin: 0;">
-              Drive safe and enjoy the confidence your new warranty brings!
-            </p>
-          </div>
-
-          <div style="border-top: 2px solid #dee2e6; padding-top: 15px; margin-top: 20px; text-align: center;">
-            <p style="margin: 0; font-size: 16px; line-height: 1.6;">
-              Thank you for choosing buyawarranty.co.uk
-            </p>
-            <p style="margin: 10px 0; font-size: 16px; line-height: 1.6;">
-              Kind regards,<br>
-              The Buy-A-Warranty Team
-            </p>
-          </div>
-
-          <div style="text-align: center; margin-top: 15px;">
-            <p style="font-size: 12px; color: #6c757d; margin: 0;">
-              <strong>buyawarranty.co.uk</strong><br>
-              Your trusted warranty partner<br>
-              <strong>Claims line:</strong> 0330 229 5045 | <a href="mailto:claims@buyawarranty.co.uk" style="color: #ff6b35;">claims@buyawarranty.co.uk</a><br>
-              <strong>Customer support:</strong> 0330 229 5040 | <a href="mailto:support@buyawarranty.co.uk" style="color: #ff6b35;">support@buyawarranty.co.uk</a>
-            </p>
-          </div>
         </div>
       `,
       attachments: attachments
