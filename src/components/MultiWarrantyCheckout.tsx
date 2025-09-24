@@ -225,7 +225,25 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     setLoading(true);
     
     try {
+      console.log('💳 Processing checkout with payment method:', selectedPaymentMethod);
+      console.log('📊 Checkout summary:', {
+        totalItems: items.length,
+        totalPrice,
+        finalPrice,
+        discountApplied: discountValidation?.valid,
+        discountAmount: discountValidation?.discountAmount
+      });
+      
       if (selectedPaymentMethod === 'bumper') {
+        console.log('🚀 Starting Bumper checkout process');
+        console.log('Items to process:', items.map(item => ({
+          planName: item.planName,
+          regNumber: item.vehicleData.regNumber,
+          totalPrice: item.pricingData.totalPrice
+        })));
+        console.log('Customer data:', customerData);
+        console.log('Final price:', finalPrice);
+        
         // Try Bumper first for multi-warranty checkout
         const { data, error } = await supabase.functions.invoke('create-multi-warranty-bumper-checkout', {
           body: {
@@ -256,79 +274,42 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           }
         });
 
-        if (error) throw error;
+        console.log('🔍 Bumper API Response:', { data, error });
+
+        if (error) {
+          console.error('❌ Bumper function error:', error);
+          toast.error('Failed to process Bumper checkout: ' + error.message);
+          return;
+        }
 
         if (data.fallbackToStripe) {
-          // If Bumper failed, automatically process Stripe with 5% discount
-          console.log('🔄 Bumper fallback detected, automatically processing Stripe:', data.fallbackReason);
+          // If Bumper failed, show user-friendly message and let them choose
+          console.log('🔄 Bumper fallback detected:', data.fallbackReason);
           
           const fallbackMessages = {
-            missing_credentials: 'Monthly payments unavailable - processing your order with card payment (5% discount applied)',
-            no_customer_data: 'Processing your order with card payment (5% discount applied)',
-            credit_check_failed: 'Credit check unsuccessful - processing with card payment (5% discount applied)',
-            error: 'Processing your order with card payment (5% discount applied)'
+            missing_credentials: 'Monthly Interest-Free Credit is temporarily unavailable. Please try again or use card payment.',
+            no_customer_data: 'Unable to process monthly payments. Please try again or use card payment.',
+            credit_check_failed: 'Your credit application was not approved. Please use card payment instead.',
+            error: 'Monthly Interest-Free Credit is temporarily unavailable. Please try again or use card payment.'
           };
           
           const message = fallbackMessages[data.fallbackReason] || fallbackMessages.error;
-          toast.info(message, { duration: 5000 });
           
-          // Automatically process Stripe checkout with 5% discount
-          const stripeDiscountedPrice = Math.round(finalPrice * 0.95);
-          
-          try {
-            const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-multi-warranty-checkout', {
-              body: {
-                items: items.map(item => ({
-                  planName: item.planName.toLowerCase(),
-                  paymentType: item.paymentType,
-                  voluntaryExcess: item.pricingData.voluntaryExcess,
-                  vehicleData: item.vehicleData,
-                  selectedAddOns: item.pricingData.selectedAddOns,
-                  protectionAddOns: {
-                    tyre: item.pricingData.selectedAddOns?.tyre || false,
-                    wearTear: item.pricingData.selectedAddOns?.wearTear || false,
-                    european: item.pricingData.selectedAddOns?.european || false,
-                    breakdown: item.pricingData.selectedAddOns?.breakdown || false,
-                    rental: item.pricingData.selectedAddOns?.rental || false,
-                    transfer: item.pricingData.selectedAddOns?.transfer || false,
-                    motRepair: item.pricingData.selectedAddOns?.motRepair || false,
-                    motFee: item.pricingData.selectedAddOns?.motFee || false,
-                    lostKey: item.pricingData.selectedAddOns?.lostKey || false,
-                    consequential: item.pricingData.selectedAddOns?.consequential || false
-                  },
-                  totalPrice: item.pricingData.totalPrice
-                })),
-                customerData: customerData,
-                discountCode: customerData.discount_code || null,
-                originalAmount: totalPrice,
-                finalAmount: stripeDiscountedPrice
+          toast.error(message, {
+            duration: 8000,
+            action: {
+              label: 'Use Card Payment',
+              onClick: () => {
+                // Switch to Stripe payment method
+                setSelectedPaymentMethod('stripe');
+                toast.dismiss();
               }
-            });
-
-            if (stripeError) throw stripeError;
-
-            if (stripeData.url) {
-              // Track successful fallback redirect to Stripe
-              trackConversion('checkout_redirect_fallback', stripeDiscountedPrice);
-              trackEvent('payment_redirect', { 
-                method: 'stripe_fallback', 
-                amount: stripeDiscountedPrice,
-                item_count: items.length,
-                fallback_reason: data.fallbackReason
-              });
-              // Redirect to Stripe checkout
-              window.location.href = stripeData.url;
-            } else {
-              throw new Error('Failed to create Stripe checkout session');
             }
-          } catch (stripeError) {
-            console.error('Stripe fallback error:', stripeError);
-            toast.error('Payment processing failed. Please try again.');
-            return;
-          }
+          });
           
-          return; // Don't continue with original Bumper processing
+          return; // Don't automatically process - let user choose
         } else if (data.url) {
+          console.log('✅ Bumper checkout URL received:', data.url);
           // Track successful checkout redirect to Bumper
           trackConversion('checkout_redirect', finalPrice);
           trackEvent('payment_redirect', { 
@@ -339,7 +320,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           // Redirect to Bumper checkout
           window.location.href = data.url;
         } else {
-          toast.error('Failed to create Bumper checkout session');
+          console.error('❌ No URL received from Bumper:', data);
+          toast.error('Failed to create Bumper checkout session - no redirect URL received');
         }
       } else {
         // Create Stripe multi-warranty checkout with 5% discount
