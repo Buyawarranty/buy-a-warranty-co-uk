@@ -44,6 +44,9 @@ interface AddressData {
   city: string;
   postcode: string;
   country: string;
+  phone?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 const CustomerDashboard = () => {
@@ -60,13 +63,18 @@ const CustomerDashboard = () => {
     street: '',
     city: '',
     postcode: '',
-    country: 'United Kingdom'
+    country: 'United Kingdom',
+    phone: '',
+    firstName: '',
+    lastName: ''
   });
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [supportMessage, setSupportMessage] = useState('');
   const [supportSubject, setSupportSubject] = useState('');
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
+  const [showRenewalBanner, setShowRenewalBanner] = useState(false);
+  const [renewalDiscount, setRenewalDiscount] = useState<string | null>(null);
   
   // Login form state
   const [email, setEmail] = useState('');
@@ -276,17 +284,24 @@ const CustomerDashboard = () => {
         setPolicies(policiesWithDocuments);
         setSelectedPolicy(policiesWithDocuments[0]); // Set first policy as selected (latest)
         
+        // Fetch customer data for address and phone
+        await fetchCustomerData(user.email);
+        
         // Set address from the first policy
         const firstPolicy = policiesWithDocuments[0];
         if (firstPolicy.address && typeof firstPolicy.address === 'object') {
           const addressData = firstPolicy.address as Record<string, any>;
-          setAddress({
-            street: addressData.street || '',
-            city: addressData.city || '',
-            postcode: addressData.postcode || '',
+          setAddress(prev => ({
+            ...prev,
+            street: addressData.street || prev.street,
+            city: addressData.city || prev.city,
+            postcode: addressData.postcode || prev.postcode,
             country: addressData.country || 'United Kingdom'
-          });
+          }));
         }
+
+        // Check for renewal notification
+        checkRenewalNotification(policiesWithDocuments[0]);
       } else {
         console.log("fetchPolicies: No policies found for user");
         setPolicies([]);
@@ -314,6 +329,20 @@ const CustomerDashboard = () => {
         postcode: address.postcode,
         country: address.country
       };
+
+      // Also update customer data
+      await supabase
+        .from('customers')
+        .update({
+          first_name: address.firstName,
+          last_name: address.lastName,
+          phone: address.phone,
+          street: address.street,
+          town: address.city,
+          postcode: address.postcode,
+          country: address.country
+        })
+        .eq('email', user?.email);
 
       const { error } = await supabase
         .from('customer_policies')
@@ -497,14 +526,109 @@ const CustomerDashboard = () => {
     const endDate = new Date(policy.policy_end_date);
     const now = new Date();
     const diffTime = endDate.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays < 0) return 'Expired';
+    if (diffTime < 0) return 'Expired';
+    
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
     if (diffDays === 0) return 'Expires today';
     if (diffDays === 1) return '1 day remaining';
     if (diffDays < 30) return `${diffDays} days remaining`;
-    if (diffDays < 365) return `${Math.ceil(diffDays / 30)} months remaining`;
-    return `${Math.ceil(diffDays / 365)} years remaining`;
+    
+    // Calculate years, months, and days
+    let years = 0;
+    let months = 0;
+    let days = diffDays;
+    
+    // Calculate years
+    while (days >= 365) {
+      years++;
+      days -= 365;
+    }
+    
+    // Calculate months  
+    while (days >= 30) {
+      months++;
+      days -= 30;
+    }
+    
+    // Build the display string
+    const parts = [];
+    if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
+    if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
+    if (days > 0 && years === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
+    
+    return parts.length > 0 ? `${parts.join(', ')} remaining` : 'Less than a day remaining';
+  };
+
+  const fetchCustomerData = async (email: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('phone, first_name, last_name, street, town, county, postcode, country')
+        .eq('email', email)
+        .single();
+
+      if (error) {
+        console.error('Error fetching customer data:', error);
+        return;
+      }
+
+      if (data) {
+        setAddress(prev => ({
+          ...prev,
+          phone: data.phone || '',
+          firstName: data.first_name || '',
+          lastName: data.last_name || '',
+          street: data.street || prev.street,
+          city: data.town || prev.city,
+          postcode: data.postcode || prev.postcode,
+          country: data.country || prev.country
+        }));
+      }
+    } catch (error) {
+      console.error('Error in fetchCustomerData:', error);
+    }
+  };
+
+  const checkRenewalNotification = (policy: CustomerPolicy) => {
+    if (!policy) return;
+    
+    const endDate = new Date(policy.policy_end_date);
+    const now = new Date();
+    const diffTime = endDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Show renewal banner if within 30 days of expiry
+    if (diffDays > 0 && diffDays <= 30) {
+      setShowRenewalBanner(true);
+      generateRenewalDiscount();
+    }
+  };
+
+  const generateRenewalDiscount = async () => {
+    try {
+      const discountCode = `RENEW10-${Date.now().toString().slice(-6)}`;
+      setRenewalDiscount(discountCode);
+      
+      // Create the discount code in the database
+      const { error } = await supabase.functions.invoke('create-discount-code', {
+        body: {
+          code: discountCode,
+          type: 'percentage',
+          value: 10,
+          validDays: 30,
+          usageLimit: 1,
+          applicableProducts: ['all']
+        }
+      });
+
+      if (error) {
+        console.error('Error creating renewal discount:', error);
+      }
+    } catch (error) {
+      console.error('Error generating renewal discount:', error);
+    }
   };
 
   const handleSignOut = async () => {
@@ -683,6 +807,33 @@ const CustomerDashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        {/* Renewal Notification Banner */}
+        {showRenewalBanner && selectedPolicy && (
+          <Alert className="mb-6 border-orange-200 bg-orange-50">
+            <AlertCircle className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="text-orange-800">
+              <div className="flex items-center justify-between">
+                <div>
+                  <strong>Your warranty expires soon!</strong> Renew now and get 10% off your next policy.
+                  {renewalDiscount && (
+                    <div className="mt-2">
+                      <span className="text-sm">Use code: <strong>{renewalDiscount}</strong></span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button size="sm" onClick={() => navigate('/')}>
+                    Renew Now
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => setShowRenewalBanner(false)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {policies.length === 0 ? (
           <Card>
             <CardHeader>
@@ -844,47 +995,82 @@ const CustomerDashboard = () => {
                         </Button>
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      {editingAddress ? (
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="street">Street Address</Label>
-                            <Input
-                              id="street"
-                              value={address.street}
-                              onChange={(e) => setAddress({...address, street: e.target.value})}
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="city">City</Label>
-                              <Input
-                                id="city"
-                                value={address.city}
-                                onChange={(e) => setAddress({...address, city: e.target.value})}
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="postcode">Postcode</Label>
-                              <Input
-                                id="postcode"
-                                value={address.postcode}
-                                onChange={(e) => setAddress({...address, postcode: e.target.value})}
-                              />
-                            </div>
-                          </div>
-                          <Button onClick={updateAddress} className="w-full">
-                            Update Address
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <p>{address.street || 'No street address provided'}</p>
-                          <p>{address.city} {address.postcode}</p>
-                          <p>{address.country}</p>
-                        </div>
-                      )}
-                    </CardContent>
+                     <CardContent>
+                       {editingAddress ? (
+                         <div className="space-y-4">
+                           <div className="grid grid-cols-2 gap-4">
+                             <div>
+                               <Label htmlFor="firstName">First Name</Label>
+                               <Input
+                                 id="firstName"
+                                 value={address.firstName}
+                                 onChange={(e) => setAddress({...address, firstName: e.target.value})}
+                               />
+                             </div>
+                             <div>
+                               <Label htmlFor="lastName">Last Name</Label>
+                               <Input
+                                 id="lastName"
+                                 value={address.lastName}
+                                 onChange={(e) => setAddress({...address, lastName: e.target.value})}
+                               />
+                             </div>
+                           </div>
+                           <div>
+                             <Label htmlFor="phone">Phone Number</Label>
+                             <Input
+                               id="phone"
+                               value={address.phone}
+                               onChange={(e) => setAddress({...address, phone: e.target.value})}
+                             />
+                           </div>
+                           <div>
+                             <Label htmlFor="street">Street Address</Label>
+                             <Input
+                               id="street"
+                               value={address.street}
+                               onChange={(e) => setAddress({...address, street: e.target.value})}
+                             />
+                           </div>
+                           <div className="grid grid-cols-2 gap-4">
+                             <div>
+                               <Label htmlFor="city">City</Label>
+                               <Input
+                                 id="city"
+                                 value={address.city}
+                                 onChange={(e) => setAddress({...address, city: e.target.value})}
+                               />
+                             </div>
+                             <div>
+                               <Label htmlFor="postcode">Postcode</Label>
+                               <Input
+                                 id="postcode"
+                                 value={address.postcode}
+                                 onChange={(e) => setAddress({...address, postcode: e.target.value})}
+                               />
+                             </div>
+                           </div>
+                           <Button onClick={updateAddress} className="w-full">
+                             Update Address
+                           </Button>
+                         </div>
+                       ) : (
+                         <div className="space-y-2">
+                           {(address.firstName || address.lastName) && (
+                             <p className="font-medium">{address.firstName} {address.lastName}</p>
+                           )}
+                           {address.phone && (
+                             <p className="flex items-center gap-2">
+                               <Phone className="h-4 w-4" />
+                               {address.phone}
+                             </p>
+                           )}
+                           <p>{address.street || 'No street address provided'}</p>
+                           <p>{address.city} {address.postcode}</p>
+                           <p>{address.country}</p>
+                         </div>
+                       )}
+                     </CardContent>
                   </Card>
                 </div>
 
