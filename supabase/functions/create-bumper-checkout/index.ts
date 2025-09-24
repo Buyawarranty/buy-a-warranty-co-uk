@@ -216,6 +216,7 @@ serve(async (req) => {
     const encodedFailureUrl = `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerData.email)}&original_payment=${originalPaymentType}`;
 
     // Create payload for signature generation (with unencoded URLs)
+    // NOTE: For signature generation, we still use product_id instead of instalments
     const signaturePayload = {
       amount: totalAmount.toString(),
       success_url: baseSuccessUrl, // Unencoded for signature
@@ -235,7 +236,7 @@ serve(async (req) => {
       county: customerData.county || "",
       postcode: customerData.postcode || "",
       country: customerData.country || "",
-      instalments: instalmentCount, // Changed from product_id to instalments (Feb 2025 API update)
+      product_id: "4", // Use product_id for signature generation (Bumper's legacy field)
       send_sms: false, // Required by Bumper API
       send_email: false // Required by Bumper API
     };
@@ -471,7 +472,7 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     'additional_data'
   ];
 
-  // Define only the fields that Bumper expects (based on updated API documentation Feb 2025)
+  // Define only the fields that Bumper expects (based on API documentation)
   const allowedFields = [
     'amount',
     'building_name',
@@ -483,7 +484,7 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     'failure_url',
     'first_name',
     'flat_number',
-    'instalments', // Changed from product_id to instalments in Feb 2025
+    'product_id', // Keep product_id for signature generation
     'last_name',
     'mobile',
     'order_reference',
