@@ -555,8 +555,8 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     }
   }
 
-  // Sort keys alphabetically (case-insensitive)
-  const sortedKeys = Object.keys(filteredPayload).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  // Sort keys alphabetically (case-sensitive as per Bumper API)
+  const sortedKeys = Object.keys(filteredPayload).sort();
 
   // Build signature string exactly like Bumper API documentation
   const signatureParts = [];
