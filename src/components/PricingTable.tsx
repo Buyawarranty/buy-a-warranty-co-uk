@@ -878,7 +878,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </div>
                   <div className="mt-6 pt-4 border-t border-gray-200">
                     <button 
-                      onClick={() => document.getElementById('additional-information')?.scrollIntoView({ behavior: 'smooth' })}
+                      onClick={() => document.getElementById('your-cover-details')?.scrollIntoView({ behavior: 'smooth' })}
                       className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 transition-colors"
                     >
                       Need more details? <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
@@ -941,7 +941,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </div>
                   <div className="mt-6 pt-4 border-t border-gray-200">
                     <button 
-                      onClick={() => document.getElementById('additional-information')?.scrollIntoView({ behavior: 'smooth' })}
+                      onClick={() => document.getElementById('your-cover-details')?.scrollIntoView({ behavior: 'smooth' })}
                       className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 transition-colors"
                     >
                       Need more details? <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
@@ -1012,7 +1012,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </div>
                   <div className="mt-6 pt-4 border-t border-gray-200">
                     <button 
-                      onClick={() => document.getElementById('additional-information')?.scrollIntoView({ behavior: 'smooth' })}
+                      onClick={() => document.getElementById('your-cover-details')?.scrollIntoView({ behavior: 'smooth' })}
                       className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 transition-colors"
                     >
                       Need more details? <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
@@ -1080,7 +1080,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   </div>
                   <div className="mt-6 pt-4 border-t border-gray-200">
                     <button 
-                      onClick={() => document.getElementById('additional-information')?.scrollIntoView({ behavior: 'smooth' })}
+                      onClick={() => document.getElementById('your-cover-details')?.scrollIntoView({ behavior: 'smooth' })}
                       className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 transition-colors"
                     >
                       Need more details? <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
