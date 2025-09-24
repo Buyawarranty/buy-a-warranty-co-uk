@@ -67,7 +67,7 @@ serve(async (req) => {
       logStep("Stripe coupon created", { couponId: stripeCoupon.id });
     } catch (stripeError) {
       logStep("Stripe coupon creation failed", { error: stripeError });
-      throw new Error(`Failed to create Stripe coupon: ${stripeError.message}`);
+      throw new Error(`Failed to create Stripe coupon: ${stripeError instanceof Error ? stripeError.message : 'Unknown error'}`);
     }
 
     // Create Stripe promotion code
@@ -83,7 +83,7 @@ serve(async (req) => {
       logStep("Stripe promotion code creation failed", { error: stripeError });
       // Clean up the coupon if promotion code creation failed
       await stripe.coupons.del(stripeCoupon.id);
-      throw new Error(`Failed to create Stripe promotion code: ${stripeError.message}`);
+      throw new Error(`Failed to create Stripe promotion code: ${stripeError instanceof Error ? stripeError.message : 'Unknown error'}`);
     }
 
     // Insert into database

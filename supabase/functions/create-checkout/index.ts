@@ -50,7 +50,7 @@ serve(async (req) => {
         const token = authHeader.replace("Bearer ", "");
         const { data } = await supabaseClient.auth.getUser(token);
         user = data.user;
-        logStep("User authenticated", { userId: user.id, userEmail: user.email, formEmail: customerData?.email });
+        logStep("User authenticated", { userId: user?.id, userEmail: user?.email, formEmail: customerData?.email });
         // Only use authenticated user email if no email provided in form
         if (!customerData?.email && !vehicleData?.email && user?.email) {
           customerEmail = user.email;

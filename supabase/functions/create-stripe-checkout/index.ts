@@ -67,7 +67,7 @@ serve(async (req) => {
         const token = authHeader.replace("Bearer ", "");
         const { data } = await supabaseClient.auth.getUser(token);
         user = data.user;
-        logStep("User authenticated", { userId: user.id, userEmail: user.email, formEmail: customerData?.email });
+        logStep("User authenticated", { userId: user?.id, userEmail: user?.email, formEmail: customerData?.email });
         // Only use authenticated user email if no email provided in form
         if (!customerData?.email && !vehicleData?.email && user?.email) {
           customerEmail = user.email;
@@ -141,7 +141,7 @@ serve(async (req) => {
     if (discountCode) {
       try {
         const coupons = await stripe.coupons.list({ limit: 100 });
-        coupon = coupons.data.find(c => c.name === discountCode && c.valid);
+        coupon = coupons.data.find((c: any) => c.name === discountCode && c.valid);
         if (coupon) {
           logStep("Applied discount code", { discountCode, couponId: coupon.id });
         }

@@ -140,7 +140,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error creating test admin:', error);
     return new Response(JSON.stringify({ 
-      error: error.message || "Failed to create test admin",
+      error: error instanceof Error ? error.message : "Failed to create test admin",
       details: error
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -17,6 +17,14 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let items: any[] = [];
+  let customerData: any = {};
+  let discountCode: string | null = null;
+  let originalAmount = 0;
+  let finalAmount = 0;
+  let totalAmount = 0;
+  let actualTotalAmount = 0;
+
   try {
     logStep("Multi-warranty Bumper checkout started");
 
@@ -26,8 +34,8 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { items, customerData, discountCode, originalAmount, finalAmount, totalAmount } = body;
-    const actualTotalAmount = finalAmount || totalAmount;
+    ({ items, customerData, discountCode, originalAmount, finalAmount, totalAmount } = body);
+    actualTotalAmount = finalAmount || totalAmount;
     logStep("Request data", { itemCount: items.length, originalAmount, finalAmount, actualTotalAmount, customerData, discountCode });
 
     // Get authenticated user
@@ -178,14 +186,14 @@ serve(async (req) => {
 
     // Remove sensitive data from logs
     const loggableData = { ...bumperRequestData };
-    delete loggableData.api_key;
-    delete loggableData.signature;
+    if ('api_key' in loggableData) delete (loggableData as any).api_key;
+    if ('signature' in loggableData) delete (loggableData as any).signature;
     logStep("Multi-warranty Bumper payload prepared", loggableData);
 
     // Generate signature using unencoded payload
     console.log("BUMPER DEBUG: Multi-warranty signature payload (unencoded URLs):", JSON.stringify(signaturePayload, null, 2));
     const signature = await generateSignature(signaturePayload, bumperSecretKey);
-    bumperRequestData.signature = signature;
+    (bumperRequestData as any).signature = signature;
 
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";
     logStep("Making Bumper API request", { url: bumperApiUrl, actualTotalAmount, itemCount: items.length });

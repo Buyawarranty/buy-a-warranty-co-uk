@@ -144,9 +144,9 @@ function validateVehicleEligibility(vehicleData: any): { isValid: boolean; error
   }
   
   // Check specific model exclusions
-  if (MODEL_EXCLUSIONS[make]) {
-    const excludedModels = MODEL_EXCLUSIONS[make];
-    const isExcluded = excludedModels.some(excludedModel => {
+  if ((MODEL_EXCLUSIONS as any)[make]) {
+    const excludedModels = (MODEL_EXCLUSIONS as any)[make];
+    const isExcluded = excludedModels.some((excludedModel: any) => {
       // Normalize both model strings for comparison
       const normalizedModel = model.replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
       const normalizedExcludedModel = excludedModel.replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();

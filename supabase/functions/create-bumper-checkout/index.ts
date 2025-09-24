@@ -358,6 +358,10 @@ serve(async (req) => {
     console.log("BUMPER TEST: Generated test signature:", testSignature);
     console.log("BUMPER TEST: Expected signature:", expectedSignature);
     console.log("BUMPER TEST: Signatures match:", testSignature === expectedSignature);
+    
+    // Log the exact string being signed for debugging
+    const testString = await debugSignatureString(testPayload);
+    console.log("BUMPER TEST: Signature string being hashed:", testString);
 
     // CRITICAL FIX: Use PRODUCTION Bumper API, not demo
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";
@@ -510,6 +514,73 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     'additional_data'
   ];
 
+  // Filter payload to only exclude the excluded keys
+  const filteredPayload: any = {};
+  for (const [key, value] of Object.entries(payload)) {
+    if (!excludedKeys.includes(key)) {
+      // Handle different value types exactly as Bumper expects
+      if (value === null || value === undefined) {
+        filteredPayload[key] = '';
+      } else if (typeof value === 'boolean') {
+        // Convert boolean to string with capital first letter as per Bumper API docs
+        filteredPayload[key] = value ? 'True' : 'False';
+      } else {
+        // Convert to string 
+        filteredPayload[key] = String(value);
+      }
+    }
+  }
+
+  // Sort keys alphabetically (case-sensitive as per Bumper API)
+  const sortedKeys = Object.keys(filteredPayload).sort();
+
+  // Build signature string exactly like Bumper API documentation
+  const signatureParts = [];
+  for (const key of sortedKeys) {
+    const value = filteredPayload[key];
+    // Bumper format: KEY=value
+    signatureParts.push(`${key.toUpperCase()}=${value}`);
+  }
+  
+  // CRITICAL: Bumper requires trailing "&" at the end of signature string per their API docs
+  const signatureString = signatureParts.join('&') + '&';
+
+  console.log("BUMPER DEBUG: Filtered payload for signature:", JSON.stringify(filteredPayload, null, 2));
+  console.log("BUMPER DEBUG: Signature string:", signatureString);
+  console.log("BUMPER DEBUG: Secret key length:", secretKey.length);
+
+  // Generate HMAC SHA-256 signature
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secretKey);
+  const data = encoder.encode(signatureString);
+  
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  
+  const signature = await crypto.subtle.sign('HMAC', key, data);
+  
+  // Return hex string
+  return Array.from(new Uint8Array(signature))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+// Debug function to see exact signature string
+async function debugSignatureString(payload: any): Promise<string> {
+  // Keys to exclude from signature (from Bumper API documentation)
+  const excludedKeys = [
+    'api_key',
+    'signature', 
+    'product_description',
+    'preferred_product_type',
+    'additional_data'
+  ];
+
   // Define only the fields that Bumper expects (based on API documentation)
   const allowedFields = [
     'amount',
@@ -567,29 +638,5 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
   }
   
   // CRITICAL: Bumper requires trailing "&" at the end of signature string per their API docs
-  const signatureString = signatureParts.join('&') + '&';
-
-  console.log("BUMPER DEBUG: Filtered payload for signature:", JSON.stringify(filteredPayload, null, 2));
-  console.log("BUMPER DEBUG: Signature string:", signatureString);
-  console.log("BUMPER DEBUG: Secret key length:", secretKey.length);
-
-  // Generate HMAC SHA-256 signature
-  const encoder = new TextEncoder();
-  const keyData = encoder.encode(secretKey);
-  const data = encoder.encode(signatureString);
-  
-  const key = await crypto.subtle.importKey(
-    'raw',
-    keyData,
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign']
-  );
-  
-  const signature = await crypto.subtle.sign('HMAC', key, data);
-  
-  // Return hex string
-  return Array.from(new Uint8Array(signature))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+  return signatureParts.join('&') + '&';
 }
