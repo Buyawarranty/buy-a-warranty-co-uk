@@ -259,31 +259,75 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         if (error) throw error;
 
         if (data.fallbackToStripe) {
-          // If Bumper failed, show user-friendly message and let them choose
-          console.log('🔄 Bumper fallback detected:', data.fallbackReason);
+          // If Bumper failed, automatically process Stripe with 5% discount
+          console.log('🔄 Bumper fallback detected, automatically processing Stripe:', data.fallbackReason);
           
           const fallbackMessages = {
-            missing_credentials: 'Monthly Interest-Free Credit is temporarily unavailable. Continue with card payment for a 5% discount.',
-            no_customer_data: 'Unable to process monthly payments. Continue with card payment for a 5% discount.',
-            credit_check_failed: 'Your credit application was not approved. Continue with card payment for a 5% discount.',
-            error: 'Monthly Interest-Free Credit is temporarily unavailable. Continue with card payment for a 5% discount.'
+            missing_credentials: 'Monthly payments unavailable - processing your order with card payment (5% discount applied)',
+            no_customer_data: 'Processing your order with card payment (5% discount applied)',
+            credit_check_failed: 'Credit check unsuccessful - processing with card payment (5% discount applied)',
+            error: 'Processing your order with card payment (5% discount applied)'
           };
           
           const message = fallbackMessages[data.fallbackReason] || fallbackMessages.error;
+          toast.info(message, { duration: 5000 });
           
-          toast.error(message, {
-            duration: 8000,
-            action: {
-              label: 'Continue with Card Payment',
-              onClick: () => {
-                // Auto-switch to Stripe payment method
-                setSelectedPaymentMethod('stripe');
-                toast.dismiss();
+          // Automatically process Stripe checkout with 5% discount
+          const stripeDiscountedPrice = Math.round(finalPrice * 0.95);
+          
+          try {
+            const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-multi-warranty-checkout', {
+              body: {
+                items: items.map(item => ({
+                  planName: item.planName.toLowerCase(),
+                  paymentType: item.paymentType,
+                  voluntaryExcess: item.pricingData.voluntaryExcess,
+                  vehicleData: item.vehicleData,
+                  selectedAddOns: item.pricingData.selectedAddOns,
+                  protectionAddOns: {
+                    tyre: item.pricingData.selectedAddOns?.tyre || false,
+                    wearTear: item.pricingData.selectedAddOns?.wearTear || false,
+                    european: item.pricingData.selectedAddOns?.european || false,
+                    breakdown: item.pricingData.selectedAddOns?.breakdown || false,
+                    rental: item.pricingData.selectedAddOns?.rental || false,
+                    transfer: item.pricingData.selectedAddOns?.transfer || false,
+                    motRepair: item.pricingData.selectedAddOns?.motRepair || false,
+                    motFee: item.pricingData.selectedAddOns?.motFee || false,
+                    lostKey: item.pricingData.selectedAddOns?.lostKey || false,
+                    consequential: item.pricingData.selectedAddOns?.consequential || false
+                  },
+                  totalPrice: item.pricingData.totalPrice
+                })),
+                customerData: customerData,
+                discountCode: customerData.discount_code || null,
+                originalAmount: totalPrice,
+                finalAmount: stripeDiscountedPrice
               }
+            });
+
+            if (stripeError) throw stripeError;
+
+            if (stripeData.url) {
+              // Track successful fallback redirect to Stripe
+              trackConversion('checkout_redirect_fallback', stripeDiscountedPrice);
+              trackEvent('payment_redirect', { 
+                method: 'stripe_fallback', 
+                amount: stripeDiscountedPrice,
+                item_count: items.length,
+                fallback_reason: data.fallbackReason
+              });
+              // Redirect to Stripe checkout
+              window.location.href = stripeData.url;
+            } else {
+              throw new Error('Failed to create Stripe checkout session');
             }
-          });
+          } catch (stripeError) {
+            console.error('Stripe fallback error:', stripeError);
+            toast.error('Payment processing failed. Please try again.');
+            return;
+          }
           
-          return; // Don't automatically process Stripe - let user decide
+          return; // Don't continue with original Bumper processing
         } else if (data.url) {
           // Track successful checkout redirect to Bumper
           trackConversion('checkout_redirect', finalPrice);
