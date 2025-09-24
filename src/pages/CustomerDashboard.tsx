@@ -73,7 +73,7 @@ const CustomerDashboard = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [supportMessage, setSupportMessage] = useState('');
   const [supportSubject, setSupportSubject] = useState('');
-  const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
+  
   const [showRenewalBanner, setShowRenewalBanner] = useState(false);
   const [renewalDiscount, setRenewalDiscount] = useState<string | null>(null);
   
@@ -224,15 +224,6 @@ const CustomerDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      setIsFloatingBarVisible(scrollTop > 200);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const fetchPolicies = async () => {
     if (!user) {
@@ -1359,48 +1350,6 @@ const CustomerDashboard = () => {
         )}
       </div>
 
-      {/* Sticky Bottom Price Bar */}
-      {isFloatingBarVisible && selectedPolicy && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50 animate-slide-up">
-          <div className="max-w-7xl mx-auto px-4 py-3">
-            <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-200">
-              <div className="flex-1">
-                <h4 className={`font-bold text-base ${
-                  selectedPolicy.plan_type === 'basic' ? 'text-blue-900' :
-                  selectedPolicy.plan_type === 'gold' ? 'text-yellow-600' :
-                  'text-orange-600'
-                }`}>
-                  {selectedPolicy.plan_type.charAt(0).toUpperCase() + selectedPolicy.plan_type.slice(1)}
-                </h4>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xs">Current Plan</span>
-                  <span className="text-xs text-gray-600">
-                    - {selectedPolicy.payment_type === 'twoYear' ? '2 Year' : 
-                       selectedPolicy.payment_type === 'threeYear' ? '3 Year' : 
-                       selectedPolicy.payment_type.charAt(0).toUpperCase() + selectedPolicy.payment_type.slice(1)}
-                  </span>
-                </div>
-              </div>
-              {getPolicyPdf(selectedPolicy) && (
-                <Button
-                  size="sm"
-                  className={`ml-4 px-4 py-1.5 font-semibold rounded-lg transition-colors duration-200 ${
-                    selectedPolicy.plan_type === 'basic' ? 'bg-[#1a365d] hover:bg-[#2d4a6b] text-white' :
-                    selectedPolicy.plan_type === 'gold' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
-                    'bg-[#eb4b00] hover:bg-[#d44300] text-white'
-                  }`}
-                  asChild
-                >
-                  <a href={getPolicyPdf(selectedPolicy)} target="_blank" rel="noopener noreferrer">
-                    <FileText className="mr-1 h-3 w-3" />
-                    View PDF
-                  </a>
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Support Form Modal */}
       {showSupportForm && (
