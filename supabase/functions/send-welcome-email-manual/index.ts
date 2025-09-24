@@ -256,9 +256,9 @@ const handler = async (req: Request): Promise<Response> => {
       
       // Load Premium Extended Warranty Plan PDF from public folder
       const premiumResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf`);
-      if (platinumResponse.ok) {
-        const platinumBuffer = await platinumResponse.arrayBuffer();
-        const platinumBytes = new Uint8Array(platinumBuffer);
+      if (premiumResponse.ok) {
+        const premiumBuffer = await premiumResponse.arrayBuffer();
+        const premiumBytes = new Uint8Array(premiumBuffer);
         let platinumBase64 = '';
         const chunkSize = 8192;
         
@@ -278,7 +278,8 @@ const handler = async (req: Request): Promise<Response> => {
         console.log(JSON.stringify({ evt: "platinum.pdf.failed", rid, status: platinumResponse.status }));
       }
     } catch (error) {
-      console.log(JSON.stringify({ evt: "pdf.load.error", rid, error: error.message }));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.log(JSON.stringify({ evt: "pdf.load.error", rid, error: errorMessage }));
     }
     
     console.log(JSON.stringify({ evt: "pdf.final.count", rid, attachmentCount: attachments.length }));
@@ -414,7 +415,8 @@ const handler = async (req: Request): Promise<Response> => {
         });
       console.log(JSON.stringify({ evt: "welcome.email.record.stored", rid }));
     } catch (auditError) {
-      console.log(JSON.stringify({ evt: "welcome.email.audit.failed", rid, error: auditError.message }));
+      const errorMessage = auditError instanceof Error ? auditError.message : String(auditError);
+      console.log(JSON.stringify({ evt: "welcome.email.audit.failed", rid, error: errorMessage }));
     }
 
     // Get customer data with vehicle info from the customers table

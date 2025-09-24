@@ -66,7 +66,8 @@ serve(async (req) => {
       warrantyRef = await generateWarrantyReference();
       logStep("Generated warranty reference", { warrantyRef });
     } catch (error) {
-      logStep("Failed to generate warranty reference", { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logStep("Failed to generate warranty reference", { error: errorMessage });
     }
 
     // Register with Warranties 2000
@@ -115,7 +116,8 @@ serve(async (req) => {
           logStep("Warranties 2000 registration successful", { response: warrantiesResponse.data });
         }
       } catch (warrantiesError) {
-        logStep("Error during Warranties 2000 registration", { error: warrantiesError.message });
+        const errorMessage = warrantiesError instanceof Error ? warrantiesError.message : String(warrantiesError);
+        logStep("Error during Warranties 2000 registration", { error: errorMessage });
       }
     }
 
@@ -137,7 +139,8 @@ serve(async (req) => {
         logStep("Welcome email sent successfully", welcomeEmailResponse.data);
       }
     } catch (emailError) {
-      logStep("Welcome email failed", { error: emailError.message || emailError });
+      const errorMessage = emailError instanceof Error ? emailError.message : String(emailError);
+      logStep("Welcome email failed", { error: errorMessage });
     }
 
     return new Response(JSON.stringify({

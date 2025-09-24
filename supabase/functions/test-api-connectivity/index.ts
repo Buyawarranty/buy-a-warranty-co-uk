@@ -20,7 +20,13 @@ serve(async (req) => {
   try {
     logStep("Starting comprehensive API connectivity test");
     
-    const testResults = {
+    const testResults: {
+      timestamp: string;
+      bumper: { status: string; details: any };
+      warranties2000: { status: string; details: any };
+      stripe: { status: string; details: any };
+      environment: any;
+    } = {
       timestamp: new Date().toISOString(),
       bumper: { status: 'unknown', details: null },
       warranties2000: { status: 'unknown', details: null },
@@ -80,7 +86,7 @@ serve(async (req) => {
         
         // Generate signature
         const signature = await generateSignature(testPayload, bumperSecretKey);
-        testPayload.signature = signature;
+        (testPayload as any).signature = signature;
 
         logStep("Bumper test payload being sent", testPayload);
 
@@ -114,10 +120,11 @@ serve(async (req) => {
         };
       }
     } catch (bumperError) {
-      logStep("Bumper API test failed", { error: bumperError.message });
+      const errorMessage = bumperError instanceof Error ? bumperError.message : String(bumperError);
+      logStep("Bumper API test failed", { error: errorMessage });
       testResults.bumper = {
         status: 'error',
-        details: bumperError.message
+        details: errorMessage
       };
     }
 
@@ -187,10 +194,11 @@ serve(async (req) => {
         };
       }
     } catch (warrantiesError) {
-      logStep("Warranties 2000 API test failed", { error: warrantiesError.message });
+      const errorMessage = warrantiesError instanceof Error ? warrantiesError.message : String(warrantiesError);
+      logStep("Warranties 2000 API test failed", { error: errorMessage });
       testResults.warranties2000 = {
         status: 'error',
-        details: warrantiesError.message
+        details: errorMessage
       };
     }
 
@@ -231,10 +239,11 @@ serve(async (req) => {
         };
       }
     } catch (stripeError) {
-      logStep("Stripe API test failed", { error: stripeError.message });
+      const errorMessage = stripeError instanceof Error ? stripeError.message : String(stripeError);
+      logStep("Stripe API test failed", { error: errorMessage });
       testResults.stripe = {
         status: 'error',
-        details: stripeError.message
+        details: errorMessage
       };
     }
 

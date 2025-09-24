@@ -31,7 +31,14 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
-    const results = {
+    const results: {
+      stripeResults: any;
+      bumperResults: any;
+      missingOrders: any[];
+      processedOrders: any[];
+      errors: string[];
+      summary?: any;
+    } = {
       stripeResults: {},
       bumperResults: {},
       missingOrders: [],
@@ -52,7 +59,8 @@ serve(async (req) => {
 
     if (dbError) {
       logStep("Database query error", { error: dbError });
-      results.errors.push(`Database error: ${dbError.message}`);
+      const errorMessage = dbError instanceof Error ? dbError.message : String(dbError);
+      results.errors.push(`Database error: ${errorMessage}`);
     }
 
     const existingEmails = new Set(existingCustomers?.map(c => c.email) || []);
@@ -79,7 +87,7 @@ serve(async (req) => {
 
       logStep("Stripe sessions retrieved", { count: stripeSessions.data.length });
 
-      const missingStripeSessions = stripeSessions.data.filter(session => 
+      const missingStripeSessions = stripeSessions.data.filter((session: any) => 
         session.customer_details?.email && 
         !existingStripeIds.has(session.id) &&
         !existingEmails.has(session.customer_details.email)
@@ -88,7 +96,7 @@ serve(async (req) => {
       results.stripeResults = {
         totalSessions: stripeSessions.data.length,
         missingSessions: missingStripeSessions.length,
-        missingSessionIds: missingStripeSessions.map(s => ({
+        missingSessionIds: missingStripeSessions.map((s: any) => ({
           id: s.id,
           email: s.customer_details?.email,
           amount: s.amount_total,
@@ -99,8 +107,9 @@ serve(async (req) => {
       logStep("Stripe analysis complete", results.stripeResults);
 
     } catch (stripeError) {
-      logStep("Stripe API error", { error: stripeError.message });
-      results.errors.push(`Stripe error: ${stripeError.message}`);
+      const errorMessage = stripeError instanceof Error ? stripeError.message : String(stripeError);
+      logStep("Stripe API error", { error: errorMessage });
+      results.errors.push(`Stripe error: ${errorMessage}`);
     }
 
     // Check Bumper API for recent applications
@@ -127,14 +136,15 @@ serve(async (req) => {
       logStep("Bumper reconciliation noted", results.bumperResults);
 
     } catch (bumperError) {
-      logStep("Bumper API error", { error: bumperError.message });
-      results.errors.push(`Bumper error: ${bumperError.message}`);
+      const errorMessage = bumperError instanceof Error ? bumperError.message : String(bumperError);
+      logStep("Bumper API error", { error: errorMessage });
+      results.errors.push(`Bumper error: ${errorMessage}`);
     }
 
     // Summary
     results.summary = {
       totalExistingCustomers: existingCustomers?.length || 0,
-      potentialMissingStripeOrders: results.stripeResults.missingSessions || 0,
+      potentialMissingStripeOrders: (results.stripeResults as any).missingSessions || 0,
       potentialMissingBumperOrders: 0, // Would be populated with real Bumper API
       totalErrors: results.errors.length,
       lastChecked: new Date().toISOString()

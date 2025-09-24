@@ -531,7 +531,7 @@ serve(async (req) => {
             warranties_2000_sent_at: new Date().toISOString(),
             warranties_2000_status: 'failed',
             warranties_2000_response: {
-              error: error.message,
+              error: error instanceof Error ? error.message : String(error),
               timestamp: new Date().toISOString()
             }
           })
@@ -543,7 +543,7 @@ serve(async (req) => {
     
     return new Response(JSON.stringify({
       success: false,
-      error: error.message || 'Unknown error occurred',
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
       details: error
     }), {
       status: 500,

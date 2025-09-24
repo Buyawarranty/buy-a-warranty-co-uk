@@ -113,7 +113,8 @@ serve(async (req) => {
         });
 
       } catch (error) {
-        logStep(`Failed to process warranty ${i + 1}`, { error: error.message });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logStep(`Failed to process warranty ${i + 1}`, { error: errorMessage });
         throw error;
       }
     }

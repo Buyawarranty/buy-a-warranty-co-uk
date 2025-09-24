@@ -428,7 +428,8 @@ serve(async (req) => {
       logStep("Welcome email sent successfully", emailResult);
     } catch (emailError) {
       logStep("Error sending welcome email", emailError);
-      throw new Error(`Email sending error: ${emailError.message}`);
+      const errorMessage = emailError instanceof Error ? emailError.message : String(emailError);
+      throw new Error(`Email sending error: ${errorMessage}`);
     }
 
     // Schedule Trustpilot review emails according to new schedule

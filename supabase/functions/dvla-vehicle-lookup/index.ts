@@ -367,9 +367,10 @@ serve(async (req) => {
         break; // Success, exit retry loop
       } catch (error) {
         lastError = error;
-        console.error(`DVSA API attempt ${attempt} failed:`, error.message);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error(`DVSA API attempt ${attempt} failed:`, errorMessage);
         
-        if (error.message === 'Vehicle not found') {
+        if (errorMessage === 'Vehicle not found') {
           console.log(`Vehicle ${registrationNumber} not found in DVSA database - attempting DVLA fallback`);
 
           const regUpper = registrationNumber.toUpperCase();
@@ -460,7 +461,8 @@ serve(async (req) => {
     }
     
     if (!vehicleData) {
-      throw new Error(`DVSA API failed after ${maxRetries} attempts: ${lastError?.message}`);
+      const errorMessage = lastError instanceof Error ? lastError.message : String(lastError);
+      throw new Error(`DVSA API failed after ${maxRetries} attempts: ${errorMessage}`);
     }
 
     console.log('DVSA API response:', vehicleData);
@@ -832,9 +834,10 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in DVSA lookup:', error);
+    const errorMessage = error instanceof Error ? error.message : "Failed to lookup vehicle";
     return new Response(JSON.stringify({
       found: false,
-      error: error.message || "Failed to lookup vehicle"
+      error: errorMessage
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

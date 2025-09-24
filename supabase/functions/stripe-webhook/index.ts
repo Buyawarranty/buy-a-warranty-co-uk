@@ -46,7 +46,8 @@ serve(async (req) => {
         Deno.env.get("STRIPE_WEBHOOK_SECRET") || ""
       );
     } catch (err) {
-      logStep("Webhook signature verification failed", { error: err.message });
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      logStep("Webhook signature verification failed", { error: errorMessage });
       return new Response(JSON.stringify({ error: "Webhook signature verification failed" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,

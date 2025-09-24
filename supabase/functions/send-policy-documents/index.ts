@@ -165,8 +165,9 @@ serve(async (req) => {
           });
         }
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
         logStep("Error downloading document from mapping", { 
-          error: error.message, 
+          error: errorMessage, 
           path: documentMapping.document_path 
         });
       }
@@ -234,7 +235,8 @@ serve(async (req) => {
             logStep("Failed to fetch plan document", { status: response.status, statusText: response.statusText });
           }
         } catch (error) {
-          logStep("Error preparing plan document", { error: error.message });
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          logStep("Error preparing plan document", { error: errorMessage });
         }
       } else {
         logStep("No plan-specific document found in customer_documents", { planType: mappedPlanType, error: planError });
@@ -279,7 +281,8 @@ serve(async (req) => {
           logStep("Failed to fetch terms document", { status: response.status, statusText: response.statusText });
         }
       } catch (error) {
-        logStep("Error preparing terms document", { error: error.message });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logStep("Error preparing terms document", { error: errorMessage });
       }
     }
 

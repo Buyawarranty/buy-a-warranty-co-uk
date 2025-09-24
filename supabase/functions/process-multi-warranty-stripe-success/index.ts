@@ -33,8 +33,9 @@ serve(async (req) => {
       requestBody = JSON.parse(bodyText);
       logStep("Parsed request body", requestBody);
     } catch (parseError) {
-      logStep("Error parsing request body", { error: parseError.message });
-      throw new Error(`Invalid JSON in request body: ${parseError.message}`);
+      const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
+      logStep("Error parsing request body", { error: errorMessage });
+      throw new Error(`Invalid JSON in request body: ${errorMessage}`);
     }
 
     const { sessionId } = requestBody;
@@ -229,14 +230,15 @@ serve(async (req) => {
         }
 
       } catch (error) {
-        logStep(`Failed to process warranty ${i + 1}`, { error: error.message });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logStep(`Failed to process warranty ${i + 1}`, { error: errorMessage });
         // Don't throw here - continue processing other warranties
         processedWarranties.push({
           warrantyNumber: `Error_${i + 1}`,
           vehicleReg: `Vehicle_${i + 1}`,
           planName: 'Unknown',
           totalPrice: 0,
-          error: error.message
+          error: errorMessage
         });
       }
     }

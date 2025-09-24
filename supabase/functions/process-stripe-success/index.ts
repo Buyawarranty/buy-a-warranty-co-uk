@@ -33,8 +33,9 @@ serve(async (req) => {
       requestBody = JSON.parse(bodyText);
       logStep("Parsed request body", requestBody);
     } catch (parseError) {
-      logStep("Error parsing request body", { error: parseError.message });
-      throw new Error(`Invalid JSON in request body: ${parseError.message}`);
+      const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
+      logStep("Error parsing request body", { error: errorMessage });
+      throw new Error(`Invalid JSON in request body: ${errorMessage}`);
     }
 
     const { sessionId, planId, paymentType } = requestBody;

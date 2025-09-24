@@ -16,10 +16,13 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let transactionId: string | null = null;
+  let supabaseClient: any = null;
+
   try {
     logStep("Function started");
 
-    const supabaseClient = createClient(
+    supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
@@ -27,7 +30,7 @@ serve(async (req) => {
 
     // Parse URL parameters from Bumper redirect - now using simple transaction ID approach
     const url = new URL(req.url);
-    const transactionId = url.searchParams.get('tx');
+    transactionId = url.searchParams.get('tx');
     
     if (!transactionId) {
       logStep("No transaction ID provided");
@@ -124,7 +127,7 @@ serve(async (req) => {
           
         if (specialPlans && specialPlans.length > 0) {
           // Prefer PHEV vehicle_type for hybrid vehicles
-          const phevPlan = specialPlans.find(p => p.vehicle_type === 'PHEV');
+          const phevPlan = specialPlans.find((p: any) => p.vehicle_type === 'PHEV');
           plan = phevPlan || specialPlans[0];
           logStep("Found special vehicle plan match", { planName: plan.name, vehicleType: plan.vehicle_type });
         } else {
@@ -136,9 +139,9 @@ serve(async (req) => {
             .eq('is_active', true);
             
           if (fuzzyPlans) {
-            const matchingPlan = fuzzyPlans.find(p => {
+            const matchingPlan = fuzzyPlans.find((p: any) => {
               const nameLower = p.name.toLowerCase();
-              return planNameParts.every(part => nameLower.includes(part));
+              return planNameParts.every((part: string) => nameLower.includes(part));
             });
             
             if (matchingPlan) {
@@ -178,7 +181,8 @@ serve(async (req) => {
       warrantyRef = await generateWarrantyReference();
       logStep("Generated warranty reference", { warrantyRef });
     } catch (error) {
-      logStep("Failed to generate warranty reference", { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logStep("Failed to generate warranty reference", { error: errorMessage });
     }
 
     // Calculate policy dates and determine actual payment type first
@@ -273,9 +277,8 @@ serve(async (req) => {
         bumper_order_id: sessionId,
         policy_start_date: startDate.toISOString(),
         policy_end_date: endDate.toISOString(),
-        status: 'active',
-        // Include add-ons
-        ...addOnsData
+        status: 'active'
+        // Add-ons will be handled separately if needed
       })
       .select()
       .single();
@@ -355,7 +358,8 @@ serve(async (req) => {
             .eq('id', policy.id);
         }
       } catch (warrantiesError) {
-        logStep("Error during Warranties 2000 registration for Bumper customer", { error: warrantiesError.message });
+        const errorMessage = warrantiesError instanceof Error ? warrantiesError.message : String(warrantiesError);
+        logStep("Error during Warranties 2000 registration for Bumper customer", { error: errorMessage });
         
         // Update policy status to reflect warranty registration error
         await supabaseClient

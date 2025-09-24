@@ -76,12 +76,13 @@ const handler = async (req: Request): Promise<Response> => {
         console.log(`Batch ${Math.floor(i/batchSize) + 1} sent successfully:`, emailResponse);
         
       } catch (batchError) {
+        const errorMessage = batchError instanceof Error ? batchError.message : String(batchError);
         console.error(`Error sending batch ${Math.floor(i/batchSize) + 1}:`, batchError);
         results.push({
           batch: Math.floor(i/batchSize) + 1,
           success: false,
           count: batch.length,
-          error: batchError.message
+          error: errorMessage
         });
       }
 
