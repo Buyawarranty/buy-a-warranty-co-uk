@@ -1165,7 +1165,7 @@ const CustomerDashboard = () => {
                           className="w-full" 
                           asChild
                         >
-                          <a href="tel:+441234567890">
+                          <a href="tel:03302295040">
                             <Phone className="mr-2 h-4 w-4" />
                             Call Support
                           </a>
@@ -1391,20 +1391,43 @@ const CustomerDashboard = () => {
                     <CardTitle>Other Ways to Reach Us</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 border rounded-lg">
-                      <Phone className="h-5 w-5 text-blue-600" />
-                      <div>
-                        <p className="font-medium">Phone Support</p>
-                        <p className="text-sm text-gray-600">+44 123 456 7890</p>
-                        <p className="text-xs text-gray-500">Mon-Fri: 9AM-6PM</p>
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-sm text-gray-700">General Support</h4>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Phone className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="font-medium">Phone Support</p>
+                          <p className="text-sm text-gray-600">0330 229 5040</p>
+                          <p className="text-xs text-gray-500">Mon-Fri: 9AM-6PM</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Mail className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="font-medium">Email Support</p>
+                          <p className="text-sm text-gray-600">support@buyawarranty.co.uk</p>
+                          <p className="text-xs text-gray-500">Response within 24 hours</p>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 border rounded-lg">
-                      <Mail className="h-5 w-5 text-blue-600" />
-                      <div>
-                        <p className="font-medium">Email Support</p>
-                        <p className="text-sm text-gray-600">support@buyawarranty.co.uk</p>
-                        <p className="text-xs text-gray-500">Response within 24 hours</p>
+                    
+                    <div className="space-y-3 pt-4 border-t">
+                      <h4 className="font-medium text-sm text-gray-700">Claims and Repairs</h4>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Phone className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium">Claims Phone</p>
+                          <p className="text-sm text-gray-600">0330 229 5045</p>
+                          <p className="text-xs text-gray-500">Mon-Fri: 9AM-6PM</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Mail className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium">Claims Email</p>
+                          <p className="text-sm text-gray-600">claims@buyawarranty.co.uk</p>
+                          <p className="text-xs text-gray-500">For warranty claims and repairs</p>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
