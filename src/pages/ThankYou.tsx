@@ -10,7 +10,7 @@ import { CarDrivingSpinner } from '@/components/ui/car-driving-spinner';
 import { TrophySpinner } from '@/components/ui/trophy-spinner';
 import { SEOHead } from '@/components/SEOHead';
 import bawLogo from '@/assets/baw-logo-new-2025.png';
-import pandaGarageService from '@/assets/panda-garage-service.png';
+import pandaFamilySuccess from '@/assets/panda-family-success.png';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -307,8 +307,8 @@ const ThankYou = () => {
             {/* Right column - Car image */}
             <div className="hidden md:flex justify-center items-center">
               <img 
-                src={pandaGarageService}
-                alt="Panda mechanic with car in garage" 
+                src={pandaFamilySuccess}
+                alt="Happy family loading luggage with panda mascot" 
                 className="w-full max-w-sm h-auto"
               />
             </div>
