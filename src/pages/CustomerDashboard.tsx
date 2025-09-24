@@ -59,6 +59,7 @@ const CustomerDashboard = () => {
   const [editingAddress, setEditingAddress] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
   const [showSupportForm, setShowSupportForm] = useState(false);
+  const [customerData, setCustomerData] = useState<any>(null);
   const [address, setAddress] = useState<AddressData>({
     street: '',
     city: '',
@@ -565,7 +566,7 @@ const CustomerDashboard = () => {
     try {
       const { data, error } = await supabase
         .from('customers')
-        .select('phone, first_name, last_name, street, town, county, postcode, country')
+        .select('phone, first_name, last_name, street, town, county, postcode, country, registration_plate, vehicle_make, vehicle_model, vehicle_year')
         .eq('email', email)
         .single();
 
@@ -575,6 +576,7 @@ const CustomerDashboard = () => {
       }
 
       if (data) {
+        setCustomerData(data);
         setAddress(prev => ({
           ...prev,
           phone: data.phone || '',
@@ -894,7 +896,13 @@ const CustomerDashboard = () => {
                             </div>
                             <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
-                              <p className="font-semibold capitalize text-sm sm:text-base">{selectedPolicy.plan_type}</p>
+                              <p className="font-semibold text-sm sm:text-base">Platinum Plan</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
+                              <p className="font-semibold text-sm sm:text-base text-black">
+                                {customerData?.registration_plate || 'N/A'}
+                              </p>
                             </div>
                             <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Warranty Duration</Label>
@@ -918,10 +926,6 @@ const CustomerDashboard = () => {
                           
                           <div className="pt-4 border-t">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                              <div>
-                                <Label className="text-xs sm:text-sm font-medium text-gray-500">Time Remaining</Label>
-                                <p className="text-lg font-semibold text-blue-600">{getTimeRemaining(selectedPolicy)}</p>
-                              </div>
                               <div className="sm:text-right">
                                 <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
                                 <p className="font-semibold text-sm sm:text-base">
@@ -934,42 +938,25 @@ const CustomerDashboard = () => {
                           {/* Actions */}
                           <div className="pt-4 border-t">
                             <div className="flex flex-wrap gap-3">
-                              {getPolicyPdf(selectedPolicy) ? (
-                                <>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    asChild
-                                  >
-                                    <a href={getPolicyPdf(selectedPolicy)} target="_blank" rel="noopener noreferrer">
-                                      <FileText className="mr-2 h-4 w-4" />
-                                      View PDF
-                                    </a>
-                                  </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    onClick={() => downloadPolicyDocument(selectedPolicy)}
-                                  >
-                                    <Download className="mr-2 h-4 w-4" />
-                                    Download PDF
-                                  </Button>
-                                </>
-                              ) : (
-                                <Alert className="w-full">
-                                  <AlertCircle className="h-4 w-4" />
-                                  <AlertDescription>
-                                    Policy documents are being processed. Please contact support if you need immediate access.
-                                  </AlertDescription>
-                                </Alert>
-                              )}
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={handleManageBilling}
+                                asChild
                               >
-                                <CreditCard className="mr-2 h-4 w-4" />
-                                Manage Billing
+                                <a href="/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf" target="_blank" rel="noopener noreferrer">
+                                  <FileText className="mr-2 h-4 w-4" />
+                                  View T's and C's
+                                </a>
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                asChild
+                              >
+                                <a href="/lovable-uploads/Platinum-warranty-plan_v2.2.pdf" target="_blank" rel="noopener noreferrer">
+                                  <FileText className="mr-2 h-4 w-4" />
+                                  View your warranty plan
+                                </a>
                               </Button>
                             </div>
                           </div>
@@ -1193,48 +1180,126 @@ const CustomerDashboard = () => {
                 <CardHeader>
                   <CardTitle>All Your Policies</CardTitle>
                   <CardDescription>
-                    Complete list of your warranty policies
+                    Complete list of your warranty policies and documents
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {policies.map((policy) => (
-                      <div 
-                        key={policy.id} 
-                        className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                          selectedPolicy?.id === policy.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
-                        }`}
-                        onClick={() => setSelectedPolicy(policy)}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold">{policy.policy_number}</h3>
-                            <p className="text-sm text-gray-600 capitalize">
-                              {policy.plan_type} - {getPaymentTypeDisplay(policy.payment_type)}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Expires: {new Date(policy.policy_end_date).toLocaleDateString('en-GB')}
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              policy.status === 'active' ? 'bg-green-100 text-green-800' :
-                              policy.status === 'expired' ? 'bg-red-100 text-red-800' :
-                              'bg-yellow-100 text-yellow-800'
-                            }`}>
-                              {policy.status}
-                            </span>
-                            {getPolicyPdf(policy) && (
-                              <Button size="sm" variant="outline" asChild>
-                                <a href={getPolicyPdf(policy)} target="_blank" rel="noopener noreferrer">
-                                  <FileText className="h-3 w-3" />
-                                </a>
-                              </Button>
-                            )}
-                          </div>
-                        </div>
+                  <div className="space-y-6">
+                    {/* Policy Documents */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Policy Documents</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium">Platinum Warranty Plan</h4>
+                                <p className="text-sm text-gray-600">v2.2</p>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button size="sm" variant="outline" asChild>
+                                  <a href="/lovable-uploads/Platinum-warranty-plan_v2.2.pdf" target="_blank" rel="noopener noreferrer">
+                                    <FileText className="h-4 w-4 mr-1" />
+                                    View
+                                  </a>
+                                </Button>
+                                <Button size="sm" variant="outline" asChild>
+                                  <a href="/lovable-uploads/Platinum-warranty-plan_v2.2.pdf" download="Platinum-warranty-plan_v2.2.pdf">
+                                    <Download className="h-4 w-4 mr-1" />
+                                    Download
+                                  </a>
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium">Terms and Conditions</h4>
+                                <p className="text-sm text-gray-600">Extended Warranty Guide v2.2</p>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button size="sm" variant="outline" asChild>
+                                  <a href="/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf" target="_blank" rel="noopener noreferrer">
+                                    <FileText className="h-4 w-4 mr-1" />
+                                    View
+                                  </a>
+                                </Button>
+                                <Button size="sm" variant="outline" asChild>
+                                  <a href="/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf" download="Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf">
+                                    <Download className="h-4 w-4 mr-1" />
+                                    Download
+                                  </a>
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
                       </div>
-                    ))}
+                    </div>
+
+                    {/* Billing Management */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Account Management</h3>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium">Billing & Payment</h4>
+                              <p className="text-sm text-gray-600">Manage your payment methods and renewal settings</p>
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={handleManageBilling}
+                            >
+                              <CreditCard className="mr-2 h-4 w-4" />
+                              Manage Billing
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Policy List */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Your Policies</h3>
+                      <div className="space-y-4">
+                        {policies.map((policy) => (
+                          <div 
+                            key={policy.id} 
+                            className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                              selectedPolicy?.id === policy.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
+                            }`}
+                            onClick={() => setSelectedPolicy(policy)}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-semibold">{policy.policy_number}</h3>
+                                <p className="text-sm text-gray-600">
+                                  Platinum Plan - {getPaymentTypeDisplay(policy.payment_type)}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  Expires: {new Date(policy.policy_end_date).toLocaleDateString('en-GB')}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                  policy.status === 'active' ? 'bg-green-100 text-green-800' :
+                                  policy.status === 'expired' ? 'bg-red-100 text-red-800' :
+                                  'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {policy.status}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
