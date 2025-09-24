@@ -226,10 +226,10 @@ serve(async (req) => {
       building_name: customerData.building_name || "",
       building_number: customerData.building_number || "",
       street: customerData.street || "",
-      town: customerData.town,
-      county: customerData.county,
-      postcode: customerData.postcode,
-      country: customerData.country,
+      town: customerData.town || "",
+      county: customerData.county || "",
+      postcode: customerData.postcode || "",
+      country: customerData.country || "",
       // product_description should be an array of objects as per Bumper documentation
       product_description: [{
         item: `${planType} Vehicle Warranty`,
