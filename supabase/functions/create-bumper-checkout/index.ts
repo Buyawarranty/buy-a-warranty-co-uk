@@ -235,6 +235,7 @@ serve(async (req) => {
       county: customerData.county || "",
       postcode: customerData.postcode || "",
       country: customerData.country || "",
+      product_id: "1", // Required by Bumper API (vehicle warranty product)
       send_sms: false, // Required by Bumper API
       send_email: false // Required by Bumper API
     };
@@ -262,6 +263,7 @@ serve(async (req) => {
       county: customerData.county || "",
       postcode: customerData.postcode || "",
       country: customerData.country || "",
+      product_id: "1", // Required by Bumper API (vehicle warranty product)
       send_sms: false, // Required by Bumper API
       send_email: false, // Required by Bumper API
       // product_description should be an array of objects as per Bumper documentation
@@ -286,6 +288,37 @@ serve(async (req) => {
     
     console.log("BUMPER DEBUG: Generated signature:", signature);
     console.log("BUMPER DEBUG: Final payload:", JSON.stringify(bumperRequestData, null, 2));
+
+    // Test our signature generation with Bumper's documented example
+    const testPayload = {
+      amount: "300.00",
+      success_url: "http://www.supplier.com/success/",
+      failure_url: "http://www.supplier.com/failure/",
+      currency: "GBP",
+      order_reference: "26352",
+      first_name: "John",
+      last_name: "Smith", 
+      email: "john@smith.com",
+      product_id: "4",
+      mobile: "0778879989",
+      vehicle_reg: "XYZ1234",
+      flat_number: "23",
+      building_name: "ABC Building",
+      building_number: "39",
+      street: "DEF way",
+      town: "Southampton",
+      county: "Hampshire",
+      postcode: "SO14 3AB",
+      country: "UK",
+      send_sms: false,
+      send_email: false
+    };
+    const testSecret = "9f*u/[`tt*.*k725X;u&Zkz";
+    const testSignature = await generateSignature(testPayload, testSecret);
+    const expectedSignature = "8be9b278125a4fa15c2af43f28307d2af90ec4c1e8f52c096b0652a1b66d49c7";
+    console.log("BUMPER TEST: Generated test signature:", testSignature);
+    console.log("BUMPER TEST: Expected signature:", expectedSignature);
+    console.log("BUMPER TEST: Signatures match:", testSignature === expectedSignature);
 
     // CRITICAL FIX: Use PRODUCTION Bumper API, not demo
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";
@@ -473,6 +506,9 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
       } else if (Array.isArray(value)) {
         // Skip arrays entirely for signature (like product_description)
         continue;
+      } else if (typeof value === 'boolean') {
+        // Convert boolean to string with capital first letter (False/True) as per Bumper API
+        filteredPayload[key] = value ? 'True' : 'False';
       } else {
         filteredPayload[key] = String(value);
       }
