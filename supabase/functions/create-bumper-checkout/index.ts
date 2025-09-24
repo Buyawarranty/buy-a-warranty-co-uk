@@ -311,8 +311,8 @@ serve(async (req) => {
       county: "Hampshire",
       postcode: "SO14 3AB",
       country: "UK",
-      send_sms: false,
-      send_email: false
+      send_sms: "False",  // String values as expected by Bumper
+      send_email: "False"
     };
     const testSecret = "9f*u/[`tt*.*k725X;u&Zkz";
     const testSignature = await generateSignature(testPayload, testSecret);
@@ -508,8 +508,8 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
         // Skip arrays entirely for signature (like product_description)
         continue;
       } else if (typeof value === 'boolean') {
-        // Convert boolean to string with capital first letter (False/True) as per Bumper API
-        filteredPayload[key] = value ? 'True' : 'False';
+        // Convert boolean to string (lowercase) as per Bumper API
+        filteredPayload[key] = value ? 'true' : 'false';
       } else {
         filteredPayload[key] = String(value);
       }
