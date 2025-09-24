@@ -285,6 +285,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         if (data.fallbackToStripe) {
           // If Bumper failed, show user-friendly message and let them choose
           console.log('🔄 Bumper fallback detected:', data.fallbackReason);
+          console.log('🔍 Full Bumper response data:', data);
           
           const fallbackMessages = {
             missing_credentials: 'Monthly Interest-Free Credit is temporarily unavailable. Please try again or use card payment.',
@@ -294,6 +295,9 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           };
           
           const message = fallbackMessages[data.fallbackReason] || fallbackMessages.error;
+          
+          // For debugging - show the actual fallback reason to help identify the issue
+          console.error('❌ Bumper checkout failed with reason:', data.fallbackReason);
           
           toast.error(message, {
             duration: 8000,
