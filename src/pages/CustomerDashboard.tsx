@@ -566,9 +566,9 @@ const CustomerDashboard = () => {
     try {
       const { data, error } = await supabase
         .from('customers')
-        .select('phone, first_name, last_name, street, town, county, postcode, country, registration_plate, vehicle_make, vehicle_model, vehicle_year')
+        .select('phone, first_name, last_name, flat_number, building_name, building_number, street, town, county, postcode, country, registration_plate, vehicle_make, vehicle_model, vehicle_year')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching customer data:', error);
@@ -582,7 +582,12 @@ const CustomerDashboard = () => {
           phone: data.phone || '',
           firstName: data.first_name || '',
           lastName: data.last_name || '',
-          street: data.street || prev.street,
+          street: [
+            data.flat_number,
+            data.building_name,
+            data.building_number,
+            data.street
+          ].filter(Boolean).join(', ') || prev.street,
           city: data.town || prev.city,
           postcode: data.postcode || prev.postcode,
           country: data.country || prev.country
@@ -1011,14 +1016,15 @@ const CustomerDashboard = () => {
                                onChange={(e) => setAddress({...address, phone: e.target.value})}
                              />
                            </div>
-                           <div>
-                             <Label htmlFor="street">Street Address</Label>
-                             <Input
-                               id="street"
-                               value={address.street}
-                               onChange={(e) => setAddress({...address, street: e.target.value})}
-                             />
-                           </div>
+                            <div>
+                              <Label htmlFor="street">Full Address</Label>
+                              <Input
+                                id="street"
+                                placeholder="Flat/Building Number, Building Name, Street"
+                                value={address.street}
+                                onChange={(e) => setAddress({...address, street: e.target.value})}
+                              />
+                            </div>
                            <div className="grid grid-cols-2 gap-4">
                              <div>
                                <Label htmlFor="city">City</Label>
@@ -1041,22 +1047,35 @@ const CustomerDashboard = () => {
                              Update Address
                            </Button>
                          </div>
-                       ) : (
-                         <div className="space-y-2">
-                           {(address.firstName || address.lastName) && (
-                             <p className="font-medium">{address.firstName} {address.lastName}</p>
-                           )}
-                           {address.phone && (
-                             <p className="flex items-center gap-2">
-                               <Phone className="h-4 w-4" />
-                               {address.phone}
-                             </p>
-                           )}
-                           <p>{address.street || 'No street address provided'}</p>
-                           <p>{address.city} {address.postcode}</p>
-                           <p>{address.country}</p>
-                         </div>
-                       )}
+                        ) : (
+                          <div className="space-y-2">
+                            {(address.firstName || address.lastName) && (
+                              <p className="font-medium">{address.firstName} {address.lastName}</p>
+                            )}
+                            {address.phone && (
+                              <p className="flex items-center gap-2">
+                                <Phone className="h-4 w-4" />
+                                {address.phone}
+                              </p>
+                            )}
+                            {address.street && (
+                              <p>{address.street}</p>
+                            )}
+                            {(address.city || address.postcode) && (
+                              <p>
+                                {[address.city, customerData?.county, address.postcode]
+                                  .filter(Boolean)
+                                  .join(', ')}
+                              </p>
+                            )}
+                            {address.country && (
+                              <p>{address.country}</p>
+                            )}
+                            {!address.street && !address.city && !address.postcode && (
+                              <p className="text-gray-500 italic">No address information available</p>
+                            )}
+                          </div>
+                        )}
                      </CardContent>
                   </Card>
                 </div>
