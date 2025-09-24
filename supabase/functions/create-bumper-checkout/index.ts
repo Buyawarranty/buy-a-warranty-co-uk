@@ -235,7 +235,7 @@ serve(async (req) => {
       county: customerData.county || "",
       postcode: customerData.postcode || "",
       country: customerData.country || "",
-      product_id: "1", // Required by Bumper API (vehicle warranty product)
+      instalments: instalmentCount, // Changed from product_id to instalments (Feb 2025 API update)
       send_sms: false, // Required by Bumper API
       send_email: false // Required by Bumper API
     };
@@ -263,7 +263,7 @@ serve(async (req) => {
       county: customerData.county || "",
       postcode: customerData.postcode || "",
       country: customerData.country || "",
-      product_id: "1", // Required by Bumper API (vehicle warranty product)
+      instalments: instalmentCount, // Changed from product_id to instalments (Feb 2025 API update)
       send_sms: false, // Required by Bumper API
       send_email: false, // Required by Bumper API
       // product_description should be an array of objects as per Bumper documentation
@@ -471,7 +471,7 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     'additional_data'
   ];
 
-  // Define only the fields that Bumper expects (based on API documentation)
+  // Define only the fields that Bumper expects (based on updated API documentation Feb 2025)
   const allowedFields = [
     'amount',
     'building_name',
@@ -483,11 +483,11 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     'failure_url',
     'first_name',
     'flat_number',
+    'instalments', // Changed from product_id to instalments in Feb 2025
     'last_name',
     'mobile',
     'order_reference',
     'postcode',
-    'product_id',
     'send_email',
     'send_sms',
     'street',
