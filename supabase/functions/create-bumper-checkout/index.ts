@@ -315,15 +315,15 @@ serve(async (req) => {
 
     // Remove sensitive data from logs
     const loggableData = { ...bumperRequestData };
-    delete loggableData.api_key;
-    delete loggableData.signature;
+    if ('api_key' in loggableData) delete (loggableData as any).api_key;
+    if ('signature' in loggableData) delete (loggableData as any).signature;
     logStep("Bumper payload prepared", loggableData);
 
     // Generate signature using unencoded payload
     console.log("BUMPER DEBUG: Signature payload (unencoded URLs):", JSON.stringify(signaturePayload, null, 2));
     
     const signature = await generateSignature(signaturePayload, bumperSecretKey);
-    bumperRequestData.signature = signature;
+    (bumperRequestData as any).signature = signature;
     
     console.log("BUMPER DEBUG: Generated signature:", signature);
     console.log("BUMPER DEBUG: Final payload:", JSON.stringify(bumperRequestData, null, 2));
@@ -566,7 +566,7 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     signatureParts.push(`${key.toUpperCase()}=${value}`);
   }
   
-  // CRITICAL: Bumper requires trailing "&" at the end of signature string
+  // CRITICAL: Bumper requires trailing "&" at the end of signature string per their API docs
   const signatureString = signatureParts.join('&') + '&';
 
   console.log("BUMPER DEBUG: Filtered payload for signature:", JSON.stringify(filteredPayload, null, 2));
