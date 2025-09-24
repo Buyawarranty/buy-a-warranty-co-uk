@@ -309,7 +309,7 @@ const ThankYou = () => {
               <img 
                 src={pandaFamilySuccess}
                 alt="Happy family loading luggage with panda mascot" 
-                className="w-full max-w-sm h-auto"
+                className="w-full max-w-48 h-auto"
               />
             </div>
           </div>
