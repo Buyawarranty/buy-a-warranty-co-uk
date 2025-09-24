@@ -292,6 +292,57 @@ export type Database = {
         }
         Relationships: []
       }
+      bumper_transactions: {
+        Row: {
+          add_another_warranty: boolean | null
+          created_at: string
+          customer_data: Json
+          discount_code: string | null
+          final_amount: number
+          id: string
+          payment_type: string
+          plan_id: string
+          protection_addons: Json | null
+          redirect_url: string
+          status: string | null
+          transaction_id: string
+          updated_at: string
+          vehicle_data: Json
+        }
+        Insert: {
+          add_another_warranty?: boolean | null
+          created_at?: string
+          customer_data: Json
+          discount_code?: string | null
+          final_amount: number
+          id?: string
+          payment_type: string
+          plan_id: string
+          protection_addons?: Json | null
+          redirect_url: string
+          status?: string | null
+          transaction_id: string
+          updated_at?: string
+          vehicle_data: Json
+        }
+        Update: {
+          add_another_warranty?: boolean | null
+          created_at?: string
+          customer_data?: Json
+          discount_code?: string | null
+          final_amount?: number
+          id?: string
+          payment_type?: string
+          plan_id?: string
+          protection_addons?: Json | null
+          redirect_url?: string
+          status?: string | null
+          transaction_id?: string
+          updated_at?: string
+          vehicle_data?: Json
+        }
+        Relationships: []
+      }
       claims_submissions: {
         Row: {
           assigned_to: string | null

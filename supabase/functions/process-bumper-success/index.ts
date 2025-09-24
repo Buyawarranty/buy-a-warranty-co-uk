@@ -25,57 +25,62 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Parse URL parameters from Bumper redirect
+    // Parse URL parameters from Bumper redirect - now using simple transaction ID approach
     const url = new URL(req.url);
-    const planId = url.searchParams.get('plan');
-    const paymentType = url.searchParams.get('payment') || 'monthly';
-    const redirectUrl = url.searchParams.get('redirect');
+    const transactionId = url.searchParams.get('tx');
     
-    // Extract customer data from URL parameters
-    const customerData = {
-      first_name: url.searchParams.get('first_name'),
-      last_name: url.searchParams.get('last_name'),
-      email: url.searchParams.get('email'),
-      mobile: url.searchParams.get('mobile'),
-      street: url.searchParams.get('street'),
-      town: url.searchParams.get('town'),
-      county: url.searchParams.get('county'),
-      postcode: url.searchParams.get('postcode'),
-      country: url.searchParams.get('country'),
-      building_name: url.searchParams.get('building_name'),
-      flat_number: url.searchParams.get('flat_number'),
-      building_number: url.searchParams.get('building_number'),
-      vehicle_reg: url.searchParams.get('vehicle_reg')
-    };
+    if (!transactionId) {
+      logStep("No transaction ID provided");
+      return new Response("Invalid request - missing transaction ID", { 
+        status: 400,
+        headers: corsHeaders 
+      });
+    }
+
+    logStep("Processing Bumper success callback", { transactionId });
+
+    // Retrieve transaction data from database
+    const { data: transactionData, error: fetchError } = await supabaseClient
+      .from('bumper_transactions')
+      .select('*')
+      .eq('transaction_id', transactionId)
+      .eq('status', 'pending')
+      .single();
+
+    if (fetchError || !transactionData) {
+      logStep("Transaction not found or already processed", { transactionId, error: fetchError });
+      return new Response("Transaction not found or already processed", { 
+        status: 404,
+        headers: corsHeaders 
+      });
+    }
+
+    // Extract data from stored transaction
+    const planId = transactionData.plan_id;
+    const paymentType = transactionData.payment_type;
+    const redirectUrl = transactionData.redirect_url;
+    const customerData = transactionData.customer_data;
+    const vehicleData = transactionData.vehicle_data;
+    const protectionAddOns = transactionData.protection_addons;
+    const finalAmount = transactionData.final_amount;
+    const discountCode = transactionData.discount_code;
+    const addAnotherWarranty = transactionData.add_another_warranty;
+
+    logStep("Retrieved transaction data", { 
+      planId, 
+      customerEmail: customerData.email,
+      amount: finalAmount 
+    });
     
-    // Extract vehicle data from URL parameters
-    const vehicleData = {
-      regNumber: url.searchParams.get('vehicle_reg'),
-      make: url.searchParams.get('vehicle_make'),
-      model: url.searchParams.get('vehicle_model'),
-      year: url.searchParams.get('vehicle_year'),
-      fuelType: url.searchParams.get('vehicle_fuel_type'),
-      transmission: url.searchParams.get('vehicle_transmission'),
-      mileage: url.searchParams.get('mileage'),
-      vehicleType: url.searchParams.get('vehicle_type'),
-      voluntaryExcess: parseInt(url.searchParams.get('voluntary_excess') || '0')
-    };
-    
-    const discountCode = url.searchParams.get('discount_code');
-    const finalAmount = parseFloat(url.searchParams.get('final_amount') || '0');
-    const originalPaymentType = url.searchParams.get('original_payment_type');
     const sessionId = `bumper_${Date.now()}`; // Generate session ID for Bumper orders
     
-    // Extract add-ons data from URL parameters
-    const addOnsData = {
-      tyre_cover: url.searchParams.get('addon_tyre_cover') === 'true',
-      wear_tear: url.searchParams.get('addon_wear_tear') === 'true',
-      europe_cover: url.searchParams.get('addon_europe_cover') === 'true',
-      transfer_cover: url.searchParams.get('addon_transfer_cover') === 'true',
-      mot_fee: url.searchParams.get('addon_mot_cover') === 'true'
-    };
-    
-    logStep("Processing Bumper payment", { planId, paymentType, hasCustomerData: !!customerData, hasVehicleData: !!vehicleData, addOnsData });
+    logStep("Processing Bumper payment", { 
+      planId, 
+      paymentType, 
+      hasCustomerData: !!customerData, 
+      hasVehicleData: !!vehicleData, 
+      finalAmount 
+    });
 
     if (!planId) {
       throw new Error("Plan ID is required");
@@ -465,6 +470,17 @@ serve(async (req) => {
       });
     }
     
+    // Mark transaction as completed
+    await supabaseClient
+      .from('bumper_transactions')
+      .update({ 
+        status: 'completed',
+        updated_at: new Date().toISOString()
+      })
+      .eq('transaction_id', transactionId);
+    
+    logStep("Transaction marked as completed", { transactionId });
+    
     return new Response(JSON.stringify({
       success: true,
       policyNumber: warrantyRef || policyNumber, // Return warranty number for Bumper orders
@@ -478,6 +494,21 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in process-bumper-success", { message: errorMessage });
+    
+    // Mark transaction as failed
+    if (transactionId) {
+      try {
+        await supabaseClient
+          .from('bumper_transactions')
+          .update({ 
+            status: 'failed',
+            updated_at: new Date().toISOString()
+          })
+          .eq('transaction_id', transactionId);
+      } catch (updateError) {
+        logStep("Failed to update transaction status to failed", { updateError });
+      }
+    }
     
     return new Response(JSON.stringify({ 
       success: false, 
