@@ -566,7 +566,8 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     signatureParts.push(`${key.toUpperCase()}=${value}`);
   }
   
-  const signatureString = signatureParts.join('&');
+  // CRITICAL: Bumper requires trailing "&" at the end of signature string
+  const signatureString = signatureParts.join('&') + '&';
 
   console.log("BUMPER DEBUG: Filtered payload for signature:", JSON.stringify(filteredPayload, null, 2));
   console.log("BUMPER DEBUG: Signature string:", signatureString);
