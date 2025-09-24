@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import pandaSavingsFaq from '@/assets/panda-savings-faq.png';
 
 const FAQ = () => {
   const navigate = useNavigate();
@@ -865,6 +866,27 @@ const FAQ = () => {
                           {q.question}
                         </button>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Savings Section */}
+                {!searchTerm && (
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg shadow-lg p-6 mt-6">
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                      <div className="flex-1">
+                        <h3 className="font-bold text-xl text-orange-800 mb-3">Save Money with Extended Warranty</h3>
+                        <p className="text-orange-700 leading-relaxed">
+                          Protect yourself from unexpected repair costs! Our extended warranty plans can save you thousands compared to paying for major repairs out of pocket. Small monthly payments give you peace of mind and big savings when you need it most.
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0">
+                        <img 
+                          src={pandaSavingsFaq} 
+                          alt="Panda mascot saving money with warranty protection" 
+                          className="w-48 h-48 object-contain"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
