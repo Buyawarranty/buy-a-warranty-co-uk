@@ -365,8 +365,8 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     if (value === null || value === undefined) {
       value = '';
     } else if (typeof value === 'boolean') {
-      // Convert boolean to string as lowercase (common API format)
-      value = value ? 'true' : 'false';
+      // Convert boolean to string exactly as Bumper expects: True/False (capitalized)
+      value = value ? 'True' : 'False';
     } else {
       // Convert to string
       value = String(value);
