@@ -234,7 +234,9 @@ serve(async (req) => {
       town: customerData.town || "",
       county: customerData.county || "",
       postcode: customerData.postcode || "",
-      country: customerData.country || ""
+      country: customerData.country || "",
+      send_sms: false, // Required by Bumper API
+      send_email: false // Required by Bumper API
     };
 
     // Create payload for actual HTTP request (with encoded URLs)
@@ -260,6 +262,8 @@ serve(async (req) => {
       county: customerData.county || "",
       postcode: customerData.postcode || "",
       country: customerData.country || "",
+      send_sms: false, // Required by Bumper API
+      send_email: false, // Required by Bumper API
       // product_description should be an array of objects as per Bumper documentation
       product_description: [{
         item: `${planType} Vehicle Warranty`,
