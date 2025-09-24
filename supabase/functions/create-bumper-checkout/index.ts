@@ -205,24 +205,63 @@ serve(async (req) => {
       });
     }
 
-    // Build URLs for signature (unencoded) and request (encoded) separately
-    const baseSuccessUrl = `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-bumper-success?plan=${planId}&payment=monthly&source=bumper&addAnotherWarranty=${addAnotherWarrantyRequested || false}&first_name=${customerData.first_name || ''}&last_name=${customerData.last_name || ''}&email=${customerData.email || ''}&mobile=${customerData.mobile || ''}&street=${customerData.street || ''}&town=${customerData.town || ''}&county=${customerData.county || ''}&postcode=${customerData.postcode || ''}&country=${customerData.country || ''}&building_name=${customerData.building_name || ''}&flat_number=${customerData.flat_number || ''}&building_number=${customerData.building_number || ''}&vehicle_reg=${customerData.vehicle_reg || vehicleData.regNumber || ''}&vehicle_make=${vehicleData?.make || ''}&vehicle_model=${vehicleData?.model || ''}&vehicle_year=${vehicleData?.year || ''}&vehicle_fuel_type=${vehicleData?.fuelType || ''}&vehicle_transmission=${vehicleData?.transmission || ''}&mileage=${vehicleData?.mileage || ''}&vehicle_type=${vehicleData?.vehicleType || 'standard'}&discount_code=${discountCode || ''}&final_amount=${finalAmount || totalAmount}&original_payment_type=${originalPaymentType}&addon_tyre_cover=${protectionAddOns?.tyre ? 'true' : 'false'}&addon_wear_tear=${protectionAddOns?.wearTear ? 'true' : 'false'}&addon_europe_cover=${protectionAddOns?.european ? 'true' : 'false'}&addon_transfer_cover=${protectionAddOns?.transfer ? 'true' : 'false'}&addon_breakdown_recovery=${protectionAddOns?.breakdown ? 'true' : 'false'}&addon_vehicle_rental=${protectionAddOns?.rental ? 'true' : 'false'}&addon_mot_repair=${protectionAddOns?.motRepair ? 'true' : 'false'}&addon_mot_fee=${protectionAddOns?.motFee ? 'true' : 'false'}&addon_lost_key=${protectionAddOns?.lostKey ? 'true' : 'false'}&addon_consequential=${protectionAddOns?.consequential ? 'true' : 'false'}&redirect=${origin + '/thank-you'}`;
+    // Generate a unique transaction ID for this checkout
+    const transactionId = `VW-${planType.toUpperCase()}-${Date.now()}`;
     
-    const baseFailureUrl = `${origin}/payment-fallback?plan=${planId}&email=${customerData.email}&original_payment=${originalPaymentType}`;
-    
-    // Encoded URLs for the actual HTTP request
-    const encodedSuccessUrl = `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-bumper-success?plan=${planId}&payment=monthly&source=bumper&addAnotherWarranty=${addAnotherWarrantyRequested || false}&first_name=${encodeURIComponent(customerData.first_name || '')}&last_name=${encodeURIComponent(customerData.last_name || '')}&email=${encodeURIComponent(customerData.email || '')}&mobile=${encodeURIComponent(customerData.mobile || '')}&street=${encodeURIComponent(customerData.street || '')}&town=${encodeURIComponent(customerData.town || '')}&county=${encodeURIComponent(customerData.county || '')}&postcode=${encodeURIComponent(customerData.postcode || '')}&country=${encodeURIComponent(customerData.country || '')}&building_name=${encodeURIComponent(customerData.building_name || '')}&flat_number=${encodeURIComponent(customerData.flat_number || '')}&building_number=${encodeURIComponent(customerData.building_number || '')}&vehicle_reg=${encodeURIComponent(customerData.vehicle_reg || vehicleData.regNumber || '')}&vehicle_make=${encodeURIComponent(vehicleData?.make || '')}&vehicle_model=${encodeURIComponent(vehicleData?.model || '')}&vehicle_year=${encodeURIComponent(vehicleData?.year || '')}&vehicle_fuel_type=${encodeURIComponent(vehicleData?.fuelType || '')}&vehicle_transmission=${encodeURIComponent(vehicleData?.transmission || '')}&mileage=${encodeURIComponent(vehicleData?.mileage || '')}&vehicle_type=${encodeURIComponent(vehicleData?.vehicleType || 'standard')}&discount_code=${encodeURIComponent(discountCode || '')}&final_amount=${finalAmount || totalAmount}&original_payment_type=${encodeURIComponent(originalPaymentType)}&addon_tyre_cover=${protectionAddOns?.tyre ? 'true' : 'false'}&addon_wear_tear=${protectionAddOns?.wearTear ? 'true' : 'false'}&addon_europe_cover=${protectionAddOns?.european ? 'true' : 'false'}&addon_transfer_cover=${protectionAddOns?.transfer ? 'true' : 'false'}&addon_breakdown_recovery=${protectionAddOns?.breakdown ? 'true' : 'false'}&addon_vehicle_rental=${protectionAddOns?.rental ? 'true' : 'false'}&addon_mot_repair=${protectionAddOns?.motRepair ? 'true' : 'false'}&addon_mot_fee=${protectionAddOns?.motFee ? 'true' : 'false'}&addon_lost_key=${protectionAddOns?.lostKey ? 'true' : 'false'}&addon_consequential=${protectionAddOns?.consequential ? 'true' : 'false'}&redirect=${encodeURIComponent(origin + '/thank-you')}`;
-    
-    const encodedFailureUrl = `${origin}/payment-fallback?plan=${planId}&email=${encodeURIComponent(customerData.email)}&original_payment=${originalPaymentType}`;
+    // Store transaction data in database for retrieval after Bumper callback
+    const { error: insertError } = await supabase
+      .from('bumper_transactions')
+      .insert({
+        transaction_id: transactionId,
+        plan_id: planId,
+        customer_data: customerData,
+        vehicle_data: vehicleData,
+        protection_addons: protectionAddOns,
+        payment_type: originalPaymentType,
+        final_amount: finalAmount || totalAmount,
+        discount_code: discountCode || '',
+        add_another_warranty: addAnotherWarrantyRequested || false,
+        redirect_url: `${origin}/thank-you`,
+        created_at: new Date().toISOString(),
+        status: 'pending'
+      });
 
-    // Create payload for signature generation (with unencoded URLs)
-    // NOTE: For signature generation, we still use product_id instead of instalments
+    if (insertError) {
+      console.error("Failed to store transaction data:", insertError);
+      // Fall back to Stripe if we can't store transaction data
+      return new Response(JSON.stringify({ 
+        fallbackToStripe: true,
+        fallbackReason: "database_error",
+        fallbackData: {
+          planId: planType,
+          vehicleData,
+          paymentType: originalPaymentType,
+          voluntaryExcess,
+          customerData,
+          discountCode,
+          finalAmount: totalAmount
+        }
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+    
+    // Create simple URLs for Bumper (to keep signature string short)
+    const baseSuccessUrl = `https://mzlpuxzwyrcyrgrongeb.supabase.co/functions/v1/process-bumper-success`;
+    const baseFailureUrl = `${origin}/payment-fallback`;
+    
+    // Use the same simple URLs for both signature and request
+    const successUrl = `${baseSuccessUrl}?tx=${transactionId}`;
+    const failureUrl = `${baseFailureUrl}?tx=${transactionId}`;
+
+    // Create payload for signature generation (with simple URLs)
     const signaturePayload = {
       amount: totalAmount.toString(),
-      success_url: baseSuccessUrl, // Unencoded for signature
-      failure_url: baseFailureUrl, // Unencoded for signature
+      success_url: successUrl,
+      failure_url: failureUrl,
       currency: "GBP",
-      order_reference: `VW-${planType.toUpperCase()}-${Date.now()}`,
+      order_reference: transactionId,
       first_name: customerData.first_name || "",
       last_name: customerData.last_name || "",
       email: customerData.email,
@@ -241,15 +280,15 @@ serve(async (req) => {
       send_email: false // Required by Bumper API
     };
 
-    // Create payload for actual HTTP request (with encoded URLs)
+    // Create payload for actual HTTP request (same simple URLs)
     const bumperRequestData = {
       amount: totalAmount.toString(),
       preferred_product_type: "paylater",
       api_key: bumperApiKey,
-      success_url: encodedSuccessUrl, // Encoded for HTTP request
-      failure_url: encodedFailureUrl, // Encoded for HTTP request
+      success_url: successUrl,
+      failure_url: failureUrl,
       currency: "GBP",
-      order_reference: `VW-${planType.toUpperCase()}-${Date.now()}`,
+      order_reference: transactionId,
       first_name: customerData.first_name || "",
       last_name: customerData.last_name || "",
       email: customerData.email,
