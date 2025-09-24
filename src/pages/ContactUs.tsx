@@ -253,7 +253,7 @@ const ContactUs = () => {
         </div>
       </header>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         {/* Top Section - Get In Touch With Us */}
         <section className="bg-white py-8 sm:py-12 lg:py-16 px-4">
           <div className="max-w-7xl mx-auto">
@@ -273,22 +273,42 @@ const ContactUs = () => {
                   Get In Touch With Us
                 </h1>
                 
-                {/* Email Us Section */}
+                {/* Customer Sales and Support Section */}
                 <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary text-white rounded-full p-2">
                       <Mail size={20} className="sm:w-6 sm:h-6" />
                     </div>
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Email Us</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Customer Sales and Support</h2>
                   </div>
                   <div className="ml-11 sm:ml-14 space-y-2">
                     <div className="text-sm sm:text-base">
-                      <span className="font-medium text-gray-700">Customer service:</span>
+                      <span className="font-medium text-gray-700">Email:</span>
                       <span className="text-gray-600"> support@buyawarranty.co.uk</span>
                     </div>
                     <div className="text-sm sm:text-base">
-                      <span className="font-medium text-gray-700">Claims:</span>
+                      <span className="font-medium text-gray-700">Phone:</span>
+                      <span className="text-gray-600"> 0330 229 5040</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Claims and Repairs Section */}
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary text-white rounded-full p-2">
+                      <Mail size={20} className="sm:w-6 sm:h-6" />
+                    </div>
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Claims and Repairs</h2>
+                  </div>
+                  <div className="ml-11 sm:ml-14 space-y-2">
+                    <div className="text-sm sm:text-base">
+                      <span className="font-medium text-gray-700">Email:</span>
                       <span className="text-gray-600"> claims@buyawarranty.co.uk</span>
+                    </div>
+                    <div className="text-sm sm:text-base">
+                      <span className="font-medium text-gray-700">Phone:</span>
+                      <span className="text-gray-600"> 0330 229 5045</span>
                     </div>
                   </div>
                 </div>
