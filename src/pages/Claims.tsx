@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import pandaMechanicFix from '@/assets/panda-mechanic-fix.png';
 
 const Claims = () => {
   const { toast } = useToast();
@@ -725,8 +726,8 @@ Issue Timing: ${formData.issueTiming}
               {/* Right Side - Illustration */}
               <div className="flex justify-center">
                 <img 
-                  src="/lovable-uploads/1ea8b848-c473-49fa-a5ab-c5551bbd385d.png" 
-                  alt="Panda mascot with mechanic and white car on lift" 
+                  src={pandaMechanicFix} 
+                  alt="Panda mechanic with tools fixing a car" 
                   className="w-full max-w-lg h-auto"
                 />
               </div>
