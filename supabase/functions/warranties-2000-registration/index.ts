@@ -112,11 +112,12 @@ serve(async (req) => {
       });
     } catch (parseError) {
       console.error('Failed to parse request JSON:', parseError);
+      const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
       return new Response(
         JSON.stringify({ 
           success: false,
           error: 'Invalid JSON in request body',
-          details: parseError.message
+          details: errorMessage
         }),
         { 
           status: 400, 
@@ -268,11 +269,12 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in warranties registration:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(
       JSON.stringify({ 
         success: false, 
         error: 'Internal server error',
-        details: error.message 
+        details: errorMessage
       }),
       { 
         status: 500, 

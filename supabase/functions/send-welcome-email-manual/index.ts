@@ -259,23 +259,23 @@ const handler = async (req: Request): Promise<Response> => {
       if (premiumResponse.ok) {
         const premiumBuffer = await premiumResponse.arrayBuffer();
         const premiumBytes = new Uint8Array(premiumBuffer);
-        let platinumBase64 = '';
+        let premiumBase64 = '';
         const chunkSize = 8192;
         
-        for (let i = 0; i < platinumBytes.length; i += chunkSize) {
-          const chunk = platinumBytes.slice(i, i + chunkSize);
-          platinumBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+        for (let i = 0; i < premiumBytes.length; i += chunkSize) {
+          const chunk = premiumBytes.slice(i, i + chunkSize);
+          premiumBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
         }
         
         attachments.push({
           filename: 'Premium-Extended-Warranty-Plan-2.0.pdf',
-          content: platinumBase64,
+          content: premiumBase64,
           type: 'application/pdf'
         });
         
-        console.log(JSON.stringify({ evt: "platinum.pdf.attached", rid }));
+        console.log(JSON.stringify({ evt: "premium.pdf.attached", rid }));
       } else {
-        console.log(JSON.stringify({ evt: "platinum.pdf.failed", rid, status: platinumResponse.status }));
+        console.log(JSON.stringify({ evt: "premium.pdf.failed", rid, status: premiumResponse.status }));
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
