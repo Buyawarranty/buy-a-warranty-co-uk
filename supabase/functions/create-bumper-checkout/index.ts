@@ -19,7 +19,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  let planId, vehicleData, originalPaymentType, voluntaryExcess, customerData, discountCode, finalAmount, addAnotherWarrantyRequested, protectionAddOns;
+  let planId, vehicleData, originalPaymentType, voluntaryExcess, customerData, discountCode, finalAmount, addAnotherWarrantyRequested, protectionAddOns, planType;
   
   try {
     logStep("Function started");
@@ -85,7 +85,6 @@ serve(async (req) => {
       throw new Error(`Database error fetching plan: ${planError.message}`);
     }
 
-    let planType;
     if (!planData) {
       logStep("Plan not found in database, using planId as plan type", { planId, isUUID });
       planType = planId.toLowerCase().replace(/\s+/g, '_');
@@ -209,7 +208,7 @@ serve(async (req) => {
     const transactionId = `VW-${planType.toUpperCase()}-${Date.now()}`;
     
     // Store transaction data in database for retrieval after Bumper callback
-    const { error: insertError } = await supabase
+    const { error: insertError } = await supabaseService
       .from('bumper_transactions')
       .insert({
         transaction_id: transactionId,
