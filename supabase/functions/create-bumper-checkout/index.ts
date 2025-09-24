@@ -311,8 +311,8 @@ serve(async (req) => {
       county: "Hampshire",
       postcode: "SO14 3AB",
       country: "UK",
-      send_sms: "False",  // String values as expected by Bumper
-      send_email: "False"
+      send_sms: false,  // Boolean values as Bumper expects
+      send_email: false
     };
     const testSecret = "9f*u/[`tt*.*k725X;u&Zkz";
     const testSignature = await generateSignature(testPayload, testSecret);
@@ -501,16 +501,17 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
   const filteredPayload: any = {};
   for (const [key, value] of Object.entries(payload)) {
     if (!excludedKeys.includes(key) && allowedFields.includes(key)) {
-      // Handle empty values - convert to empty string for signature
+      // Handle different value types exactly as Bumper expects
       if (value === null || value === undefined) {
         filteredPayload[key] = '';
       } else if (Array.isArray(value)) {
         // Skip arrays entirely for signature (like product_description)
         continue;
       } else if (typeof value === 'boolean') {
-        // Convert boolean to string (lowercase) as per Bumper API
-        filteredPayload[key] = value ? 'true' : 'false';
+        // Convert boolean to string with capital first letter as per Bumper API
+        filteredPayload[key] = value ? 'True' : 'False';
       } else {
+        // Convert to string and ensure it matches Bumper's expected format
         filteredPayload[key] = String(value);
       }
     }
