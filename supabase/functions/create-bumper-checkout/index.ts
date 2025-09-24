@@ -218,20 +218,15 @@ serve(async (req) => {
     // Create payload for signature generation (with unencoded URLs)
     const signaturePayload = {
       amount: totalAmount.toString(),
-      preferred_product_type: "paylater",
-      api_key: bumperApiKey,
       success_url: baseSuccessUrl, // Unencoded for signature
       failure_url: baseFailureUrl, // Unencoded for signature
       currency: "GBP",
-      order_reference: `VW-${planType.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || Date.now()}`,
-      invoice_number: `INV-${Date.now()}`,
-      user_email: "info@buyawarranty.co.uk",
-      first_name: customerData.first_name,
-      last_name: customerData.last_name,
+      order_reference: `VW-${planType.toUpperCase()}-${Date.now()}`,
+      first_name: customerData.first_name || "",
+      last_name: customerData.last_name || "",
       email: customerData.email,
-      mobile: customerData.mobile,
+      mobile: customerData.mobile || "",
       vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
-      instalments: instalmentCount,
       flat_number: customerData.flat_number || "",
       building_name: customerData.building_name || "",
       building_number: customerData.building_number || "",
@@ -239,12 +234,7 @@ serve(async (req) => {
       town: customerData.town || "",
       county: customerData.county || "",
       postcode: customerData.postcode || "",
-      country: customerData.country || "",
-      product_description: [{
-        item: `${planType} Vehicle Warranty`,
-        quantity: "1",
-        price: totalAmount.toString()
-      }]
+      country: customerData.country || ""
     };
 
     // Create payload for actual HTTP request (with encoded URLs)
@@ -255,15 +245,12 @@ serve(async (req) => {
       success_url: encodedSuccessUrl, // Encoded for HTTP request
       failure_url: encodedFailureUrl, // Encoded for HTTP request
       currency: "GBP",
-      order_reference: `VW-${planType.toUpperCase()}-${customerData.vehicle_reg?.replace(/\s+/g, '') || Date.now()}`,
-      invoice_number: `INV-${Date.now()}`,
-      user_email: "info@buyawarranty.co.uk", // Link applications back to Buy a Warranty
-      first_name: customerData.first_name,
-      last_name: customerData.last_name,
+      order_reference: `VW-${planType.toUpperCase()}-${Date.now()}`,
+      first_name: customerData.first_name || "",
+      last_name: customerData.last_name || "",
       email: customerData.email,
-      mobile: customerData.mobile,
+      mobile: customerData.mobile || "",
       vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
-      instalments: instalmentCount, // Dynamic based on payment period
       // Address fields directly (not nested in object)
       flat_number: customerData.flat_number || "",
       building_name: customerData.building_name || "",
@@ -436,20 +423,46 @@ serve(async (req) => {
   }
 });
 
-// Generate signature exactly like the WordPress plugin - FIXED VERSION
+// Generate signature exactly like Bumper API documentation requires
 async function generateSignature(payload: any, secretKey: string): Promise<string> {
-  // Keys to exclude from signature (from Bumper WordPress plugin)
+  // Keys to exclude from signature (from Bumper API documentation)
   const excludedKeys = [
     'api_key',
     'signature', 
     'product_description',
-    'preferred_product_type'
+    'preferred_product_type',
+    'additional_data'
   ];
 
-  // Filter payload to exclude those keys and handle values properly
+  // Define only the fields that Bumper expects (based on API documentation)
+  const allowedFields = [
+    'amount',
+    'building_name',
+    'building_number', 
+    'country',
+    'county',
+    'currency',
+    'email',
+    'failure_url',
+    'first_name',
+    'flat_number',
+    'last_name',
+    'mobile',
+    'order_reference',
+    'postcode',
+    'product_id',
+    'send_email',
+    'send_sms',
+    'street',
+    'success_url',
+    'town',
+    'vehicle_reg'
+  ];
+
+  // Filter payload to only include allowed fields and exclude excluded keys
   const filteredPayload: any = {};
   for (const [key, value] of Object.entries(payload)) {
-    if (!excludedKeys.includes(key)) {
+    if (!excludedKeys.includes(key) && allowedFields.includes(key)) {
       // Handle empty values - convert to empty string for signature
       if (value === null || value === undefined) {
         filteredPayload[key] = '';
@@ -462,19 +475,20 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     }
   }
 
-  // Sort keys alphabetically (case-insensitive like WordPress)
+  // Sort keys alphabetically (case-insensitive)
   const sortedKeys = Object.keys(filteredPayload).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-  // Build signature string exactly like WordPress plugin
+  // Build signature string exactly like Bumper API documentation
   const signatureParts = [];
   for (const key of sortedKeys) {
     const value = filteredPayload[key];
-    // WordPress format: KEY=value (no URL encoding for signature)
+    // Bumper format: KEY=value (no URL encoding for signature)
     signatureParts.push(`${key.toUpperCase()}=${value}`);
   }
   
   const signatureString = signatureParts.join('&');
 
+  console.log("BUMPER DEBUG: Filtered payload for signature:", JSON.stringify(filteredPayload, null, 2));
   console.log("BUMPER DEBUG: Signature string:", signatureString);
   console.log("BUMPER DEBUG: Secret key length:", secretKey.length);
 
