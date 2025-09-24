@@ -4,10 +4,10 @@ import './index.css'
 
 // Preload critical resources
 const preloadResources = () => {
-  // Preload fonts
+  // Preload fonts - matching the actual Helvetica Neue font used in CSS
   const fontLink = document.createElement('link');
   fontLink.rel = 'preload';
-  fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap';
   fontLink.as = 'style';
   document.head.appendChild(fontLink);
   
