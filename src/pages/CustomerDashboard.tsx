@@ -1430,18 +1430,6 @@ const CustomerDashboard = () => {
                         </div>
                       </div>
                       
-                      {/* Claim Details */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <div>
-                          <Label className="text-xs sm:text-sm font-medium text-gray-700">Claim Limit</Label>
-                          <p className="font-bold text-lg text-blue-900">£1250 per claim</p>
-                        </div>
-                        <div>
-                          <Label className="text-xs sm:text-sm font-medium text-gray-700">Excess</Label>
-                          <p className="font-bold text-lg text-blue-900">£50</p>
-                        </div>
-                      </div>
-                      
                       {/* Order Summary */}
                       {policy.payment_amount && (
                         <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
