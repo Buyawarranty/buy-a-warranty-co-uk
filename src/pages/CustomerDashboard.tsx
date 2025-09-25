@@ -245,27 +245,27 @@ const CustomerDashboard = () => {
     console.log("fetchPolicies: Fetching policies for user:", user.id, "email:", user.email);
     
     try {
-      // First try to get policies by user_id, then by email if none found
+      // Always fetch by email first for better data consistency
       let { data, error } = await supabase
         .from('customer_policies')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('email', user.email)
         .order('created_at', { ascending: false });
 
-      console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
+      console.log("fetchPolicies: Query by email result:", { data, error, count: data?.length });
 
-      // If no policies found by user_id, try by email
-      if ((!data || data.length === 0) && user.email) {
-        console.log("fetchPolicies: No policies found by user_id, trying by email");
-        const emailResult = await supabase
+      // If no policies found by email, try by user_id as fallback
+      if ((!data || data.length === 0)) {
+        console.log("fetchPolicies: No policies found by email, trying by user_id");
+        const userIdResult = await supabase
           .from('customer_policies')
           .select('*')
-          .eq('email', user.email)
+          .eq('user_id', user.id)
           .order('created_at', { ascending: false });
         
-        data = emailResult.data;
-        error = emailResult.error;
-        console.log("fetchPolicies: Query by email result:", { data, error, count: data?.length });
+        data = userIdResult.data;
+        error = userIdResult.error;
+        console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
       }
 
       if (error && error.code !== 'PGRST116') {
@@ -566,10 +566,13 @@ const CustomerDashboard = () => {
 
   const fetchCustomerData = async (email: string) => {
     try {
+      // Get the most recent customer record for this email
       const { data, error } = await supabase
         .from('customers')
         .select('*')
         .eq('email', email)
+        .order('created_at', { ascending: false })
+        .limit(1)
         .maybeSingle();
 
       if (error) {
