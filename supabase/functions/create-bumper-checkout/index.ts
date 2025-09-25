@@ -368,7 +368,7 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
       // Convert boolean to string exactly as Bumper expects: True/False (capitalized)
       value = value ? 'True' : 'False';
     } else {
-      // Convert to string
+      // Convert to string - use values exactly as provided
       value = String(value);
     }
     
@@ -392,6 +392,7 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
   console.log("BUMPER DEBUG: Signature payload:", JSON.stringify(signaturePayload, null, 2));
   console.log("BUMPER DEBUG: Signature string:", signatureString);
   console.log("BUMPER DEBUG: Secret key length:", secretKey.length);
+  console.log("BUMPER DEBUG: Secret key preview:", secretKey.substring(0, 4) + "..." + secretKey.substring(secretKey.length - 4));
 
   // Generate HMAC SHA-256 signature
   const encoder = new TextEncoder();
@@ -454,8 +455,20 @@ async function debugSignatureString(payload: any): Promise<string> {
       // Convert boolean to string exactly as Bumper expects: True/False (capitalized)
       value = value ? 'True' : 'False';
     } else {
-      // Convert to string
+      // Convert to string and handle URL decoding for URL fields
       value = String(value);
+      
+      // CRITICAL: URLs must NOT be URL encoded for signature generation
+      // Bumper expects raw URLs in the signature string
+      if (field === 'success_url' || field === 'failure_url') {
+        // Decode URLs to ensure they're not double-encoded
+        try {
+          value = decodeURIComponent(value);
+        } catch (e) {
+          // If decoding fails, use the original value
+          console.log(`BUMPER DEBUG: Failed to decode URL ${field}: ${value}`);
+        }
+      }
     }
     
     signaturePayload[field] = value;
