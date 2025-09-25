@@ -93,13 +93,16 @@ const handler = async (req: Request): Promise<Response> => {
     
     // Check environment variables at startup
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    const resendFrom = 'Buy A Warranty <noreply@buyawarranty.co.uk>';
+    // Use onboarding@resend.dev temporarily to ensure delivery - this is a verified Resend domain
+    // TODO: Configure buyawarranty.co.uk domain in Resend for production use
+    const resendFrom = 'Buy A Warranty <onboarding@resend.dev>';
     
     console.log(JSON.stringify({ 
       evt: "env.check", 
       rid,
       hasResendKey: !!resendApiKey,
-      hasFrom: !!resendFrom
+      hasFrom: !!resendFrom,
+      fromAddress: resendFrom
     }));
     
     if (!resendApiKey) {
