@@ -125,6 +125,32 @@ serve(async (req) => {
     // Create transaction ID for tracking
     const transactionId = `VW-${planType.toUpperCase()}-${Date.now()}`;
     
+    // Store transaction data in database for later processing
+    const redirectUrl = `${origin}/thank-you`;
+    
+    const { error: storeError } = await supabase
+      .from('bumper_transactions')
+      .insert({
+        transaction_id: transactionId,
+        plan_id: planId,
+        payment_type: paymentType,
+        customer_data: customerData,
+        vehicle_data: vehicleData,
+        protection_addons: protectionAddOns,
+        final_amount: totalAmount,
+        discount_code: discountCode || '',
+        add_another_warranty: addAnotherWarrantyRequested || false,
+        redirect_url: redirectUrl,
+        status: 'pending'
+      });
+
+    if (storeError) {
+      logStep("Failed to store transaction data", { error: storeError });
+      throw new Error("Failed to store transaction data");
+    }
+
+    logStep("Transaction data stored", { transactionId, redirectUrl });
+    
     // Bumper API URLs
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";
     

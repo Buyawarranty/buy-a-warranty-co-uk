@@ -12,7 +12,13 @@ const logStep = (step: string, details?: any) => {
 };
 
 serve(async (req) => {
+  // Add detailed logging for all requests to help debug Bumper callbacks
+  const url = new URL(req.url);
+  console.log(`[PROCESS-BUMPER-SUCCESS] Incoming request: ${req.method} ${url.pathname}${url.search}`);
+  console.log(`[PROCESS-BUMPER-SUCCESS] Headers: ${JSON.stringify(Object.fromEntries(req.headers.entries()))}`);
+  
   if (req.method === 'OPTIONS') {
+    console.log(`[PROCESS-BUMPER-SUCCESS] Handling OPTIONS request`);
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -32,12 +38,42 @@ serve(async (req) => {
     const url = new URL(req.url);
     transactionId = url.searchParams.get('tx');
     
+    // Log all URL parameters for debugging
+    const allParams = Object.fromEntries(url.searchParams.entries());
+    logStep("All URL parameters received", allParams);
+    
     if (!transactionId) {
-      logStep("No transaction ID provided");
-      return new Response("Invalid request - missing transaction ID", { 
-        status: 400,
-        headers: corsHeaders 
-      });
+      logStep("No transaction ID provided in URL parameters", { allParams });
+      
+      // Check if this is a direct Bumper callback with different parameter names
+      const bumperParams = {
+        reference: url.searchParams.get('reference'),
+        order_reference: url.searchParams.get('order_reference'),
+        status: url.searchParams.get('status'),
+        amount: url.searchParams.get('amount')
+      };
+      
+      logStep("Checking for alternative Bumper parameters", bumperParams);
+      
+      if (bumperParams.order_reference) {
+        transactionId = bumperParams.order_reference;
+        logStep("Using order_reference as transaction ID", { transactionId });
+      } else {
+        logStep("No valid transaction identifier found");
+        return new Response(`
+          <!DOCTYPE html>
+          <html><head><title>Payment Processing Error</title></head>
+          <body>
+            <h1>Payment Processing Error</h1>
+            <p>Invalid request - missing transaction identifier</p>
+            <p>Received parameters: ${JSON.stringify(allParams)}</p>
+            <p><a href="/">Return to Home</a></p>
+          </body></html>
+        `, { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'text/html' }
+        });
+      }
     }
 
     logStep("Processing Bumper success callback", { transactionId });
