@@ -73,6 +73,7 @@ const CustomerDashboard = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [supportMessage, setSupportMessage] = useState('');
   const [supportSubject, setSupportSubject] = useState('');
+  const [activeTab, setActiveTab] = useState('overview');
   
   const [showRenewalBanner, setShowRenewalBanner] = useState(false);
   const [renewalDiscount, setRenewalDiscount] = useState<string | null>(null);
@@ -857,7 +858,7 @@ const CustomerDashboard = () => {
             </CardContent>
           </Card>
         ) : (
-          <Tabs defaultValue="overview" className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="policies">All Policies</TabsTrigger>
@@ -1199,7 +1200,14 @@ const CustomerDashboard = () => {
             <TabsContent value="policies" className="space-y-6">
               <div className="space-y-6">
                 {policies.map((policy) => (
-                  <Card key={policy.id}>
+                  <Card 
+                    key={policy.id} 
+                    className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                    onClick={() => {
+                      setSelectedPolicy(policy);
+                      setActiveTab('overview');
+                    }}
+                  >
                     <CardHeader>
                       <CardTitle className="flex items-center justify-between text-lg">
                         <span className="flex items-center">
