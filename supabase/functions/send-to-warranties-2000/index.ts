@@ -323,13 +323,13 @@ serve(async (req) => {
     // Valid claim limits are 750, 1250, 2000
     const policyClaimLimit = policy?.claim_limit;
     const customerClaimLimit = customer?.claim_limit;
-    const claimLimit = policyClaimLimit || customerClaimLimit || 1250;
+    const rawClaimLimit = policyClaimLimit || customerClaimLimit || 1250;
     
     // Ensure claim limit is one of the valid values, default to 1250 if invalid
     const validClaimLimits = [750, 1250, 2000];
-    const maxClaimAmount = validClaimLimits.includes(claimLimit) ? claimLimit.toString() : '1250';
+    const maxClaimAmount = validClaimLimits.includes(rawClaimLimit) ? rawClaimLimit.toString() : '1250';
     
-    console.log(`[WARRANTIES-2000] Using claim limit: ${maxClaimAmount} (Policy: ${policyClaimLimit}, Customer: ${customerClaimLimit})`);
+    console.log(`[WARRANTIES-2000] Claim limit processing: Policy: ${policyClaimLimit}, Customer: ${customerClaimLimit}, Raw: ${rawClaimLimit}, Final: ${maxClaimAmount}`);
 
     // Enhanced addon debugging - check both policy and customer tables
     console.log(`[WARRANTIES-2000] Enhanced add-on debug:`, {
@@ -405,7 +405,7 @@ serve(async (req) => {
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: (customer.voluntary_excess || 0).toString(),
-      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'}`
+      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${maxClaimAmount} | VolExcess: ${customer.voluntary_excess || 0}`
       // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
 
@@ -422,11 +422,14 @@ serve(async (req) => {
     registrationData.Consequential = (policy?.consequential === true || customer?.consequential === true) ? 'Y' : 'N'; // Consequential damage
     registrationData.Transfer = (policy?.transfer_cover === true || customer?.transfer_cover === true) ? 'Y' : 'N'; // Transfer fee (mapped from transfer_cover)
 
-    console.log(`[WARRANTIES-2000] Final registration data with add-ons:`, {
+    console.log(`[WARRANTIES-2000] Final registration data sent to W2000:`, {
       regNum: registrationData.RegNum,
       warType: registrationData.WarType,
       customerEmail: registrationData.EMail,
       ref: registrationData.Ref,
+      claimLimit: registrationData.MaxClm,
+      voluntaryExcess: registrationData.VolEx,
+      coverage: registrationData.Month,
       addOns: {
         Recovery: registrationData.Recovery, // 24/7 Recovery
         MOTRepair: registrationData.MOTRepair, // MOT Repair

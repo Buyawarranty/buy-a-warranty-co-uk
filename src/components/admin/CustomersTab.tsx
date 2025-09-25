@@ -499,7 +499,7 @@ export const CustomersTab = () => {
           mot_repair: false,
           lost_key: false,
           consequential: false,
-          claim_limit: 1250
+          claim_limit: policy.claim_limit || 1250
         }));
         
         directData = [...directData, ...orphanedAsCustomers];
@@ -1630,6 +1630,7 @@ export const CustomersTab = () => {
               <TableHead>Expiry Date</TableHead>
               <TableHead>Payment Method</TableHead>
               <TableHead>Vol. Excess</TableHead>
+              <TableHead>Claim Limit</TableHead>
               <TableHead>Ref</TableHead>
               <TableHead>Email Status</TableHead>
               <TableHead>Warranties2000</TableHead>
@@ -1747,11 +1748,16 @@ export const CustomersTab = () => {
                           customer.stripe_session_id ? 'Stripe' : 'N/A'}
                        </Badge>
                      </TableCell>
-                     <TableCell>
-                       <Badge variant="secondary" className="bg-blue-50 text-blue-700">
-                         £{customer.voluntary_excess || 0}
-                       </Badge>
-                     </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="bg-blue-50 text-blue-700">
+                          £{customer.voluntary_excess || 0}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-green-50 text-green-700">
+                          £{(customer.customer_policies?.[0] as any)?.claim_limit || customer.claim_limit || 1250}
+                        </Badge>
+                      </TableCell>
                    <TableCell className="font-mono text-sm">
                     {customer.warranty_reference_number || customer.warranty_number ? (
                       <div className="bg-green-50 px-2 py-1 rounded border">
