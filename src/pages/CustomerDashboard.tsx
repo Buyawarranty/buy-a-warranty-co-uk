@@ -931,6 +931,21 @@ const CustomerDashboard = () => {
                             </div>
                           </div>
                           
+                          {/* Order Summary */}
+                          {selectedPolicy.payment_amount && (
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                              <Label className="text-xs sm:text-sm font-medium text-gray-700">Order Summary</Label>
+                              <div className="flex justify-between items-center mt-2">
+                                <span className="text-sm text-gray-600">Total Amount Paid</span>
+                                <span className="font-bold text-lg text-gray-900">£{selectedPolicy.payment_amount}</span>
+                              </div>
+                              <div className="flex justify-between items-center mt-1">
+                                <span className="text-sm text-gray-600">Payment Type</span>
+                                <span className="text-sm text-gray-900">{getPaymentTypeDisplay(selectedPolicy.payment_type)}</span>
+                              </div>
+                            </div>
+                          )}
+                          
                           <div className="pt-4 border-t">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                               <div className="sm:text-right">
@@ -1173,120 +1188,119 @@ const CustomerDashboard = () => {
             </TabsContent>
 
             <TabsContent value="policies" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>All Your Policies</CardTitle>
-                  <CardDescription>
-                    Complete list of your warranty policies and documents
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    {/* Policy Documents */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Policy Documents</h3>
+              <div className="space-y-6">
+                {policies.map((policy) => (
+                  <Card key={policy.id}>
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between text-lg">
+                        <span className="flex items-center">
+                          <FileText className="mr-2 h-5 w-5" />
+                          Your Active Policy
+                        </span>
+                        <span className="text-sm font-normal text-gray-600">
+                          {policies.length} total policies
+                        </span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h4 className="font-medium">Platinum Warranty Plan</h4>
-                                <p className="text-sm text-gray-600">v2.2</p>
-                              </div>
-                              <div className="flex gap-2">
-                                <Button size="sm" variant="outline" onClick={() => {
-                                  window.open("/lovable-uploads/Platinum-warranty-plan_v2.2.pdf", "_blank");
-                                }}>
-                                  <FileText className="h-4 w-4 mr-1" />
-                                  View
-                                </Button>
-                                <Button size="sm" variant="outline" onClick={() => {
-                                  const link = document.createElement('a');
-                                  link.href = "/lovable-uploads/Platinum-warranty-plan_v2.2.pdf";
-                                  link.download = "Platinum-warranty-plan_v2.2.pdf";
-                                  document.body.appendChild(link);
-                                  link.click();
-                                  document.body.removeChild(link);
-                                }}>
-                                  <Download className="h-4 w-4 mr-1" />
-                                  Download
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                        
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h4 className="font-medium">Terms and Conditions</h4>
-                                <p className="text-sm text-gray-600">Extended Warranty Guide v2.2</p>
-                              </div>
-                              <div className="flex gap-2">
-                                <Button size="sm" variant="outline" onClick={() => {
-                                  window.open("/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf", "_blank");
-                                }}>
-                                  <FileText className="h-4 w-4 mr-1" />
-                                  View
-                                </Button>
-                                <Button size="sm" variant="outline" onClick={() => {
-                                  const link = document.createElement('a');
-                                  link.href = "/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf";
-                                  link.download = "Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf";
-                                  document.body.appendChild(link);
-                                  document.body.removeChild(link);
-                                }}>
-                                  <Download className="h-4 w-4 mr-1" />
-                                  Download
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <div>
+                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy Number</Label>
+                          <p className="font-semibold text-sm sm:text-base">{policy.policy_number}</p>
+                        </div>
+                        <div>
+                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
+                          <p className="font-semibold text-sm sm:text-base">Platinum Plan</p>
+                        </div>
+                        <div>
+                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
+                          <p className="font-semibold text-sm sm:text-base text-black">
+                            {customerData?.registration_plate || 'N/A'}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Warranty Duration</Label>
+                          <p className="font-semibold text-sm sm:text-base">
+                            {getWarrantyDurationDisplay(policy.payment_type)}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Status</Label>
+                          <p className={`font-semibold capitalize text-sm sm:text-base flex items-center gap-2 ${
+                            policy.status === 'active' ? 'text-green-600' : 
+                            policy.status === 'expired' ? 'text-red-600' : 'text-yellow-600'
+                          }`}>
+                            {policy.status === 'active' && <CheckCircle className="h-4 w-4" />}
+                            {policy.status === 'expired' && <X className="h-4 w-4" />}
+                            {policy.status === 'pending' && <AlertCircle className="h-4 w-4" />}
+                            {policy.status}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-
-
-                    {/* Policy List */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Your Policies</h3>
-                      <div className="space-y-4">
-                        {policies.map((policy) => (
-                          <div 
-                            key={policy.id} 
-                            className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                              selectedPolicy?.id === policy.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
-                            }`}
-                            onClick={() => setSelectedPolicy(policy)}
-                          >
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <h3 className="font-semibold">{policy.policy_number}</h3>
-                                <p className="text-sm text-gray-600">
-                                  Platinum Plan - {getPaymentTypeDisplay(policy.payment_type)}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  Expires: {new Date(policy.policy_end_date).toLocaleDateString('en-GB')}
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className={`px-2 py-1 rounded text-xs font-medium ${
-                                  policy.status === 'active' ? 'bg-green-100 text-green-800' :
-                                  policy.status === 'expired' ? 'bg-red-100 text-red-800' :
-                                  'bg-yellow-100 text-yellow-800'
-                                }`}>
-                                  {policy.status}
-                                </span>
-                              </div>
-                            </div>
+                      
+                      {/* Claim Details */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div>
+                          <Label className="text-xs sm:text-sm font-medium text-gray-700">Claim Limit</Label>
+                          <p className="font-bold text-lg text-blue-900">£1250 per claim</p>
+                        </div>
+                        <div>
+                          <Label className="text-xs sm:text-sm font-medium text-gray-700">Excess</Label>
+                          <p className="font-bold text-lg text-blue-900">£50</p>
+                        </div>
+                      </div>
+                      
+                      {/* Order Summary */}
+                      {policy.payment_amount && (
+                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                          <Label className="text-xs sm:text-sm font-medium text-gray-700">Order Summary</Label>
+                          <div className="flex justify-between items-center mt-2">
+                            <span className="text-sm text-gray-600">Total Amount Paid</span>
+                            <span className="font-bold text-lg text-gray-900">£{policy.payment_amount}</span>
                           </div>
-                        ))}
+                          <div className="flex justify-between items-center mt-1">
+                            <span className="text-sm text-gray-600">Payment Type</span>
+                            <span className="text-sm text-gray-900">{getPaymentTypeDisplay(policy.payment_type)}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="pt-4 border-t">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                          <div className="sm:text-right">
+                            <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
+                            <p className="font-semibold text-sm sm:text-base">
+                              {new Date(policy.policy_end_date).toLocaleDateString('en-GB')}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+
+                      {/* Actions */}
+                      <div className="pt-4 border-t">
+                        <div className="flex flex-wrap gap-3">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open("/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf", "_blank")}
+                          >
+                            <FileText className="mr-2 h-4 w-4" />
+                            View T's and C's
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open("/lovable-uploads/Platinum-warranty-plan_v2.2.pdf", "_blank")}
+                          >
+                            <FileText className="mr-2 h-4 w-4" />
+                            View your warranty plan
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </TabsContent>
 
 
