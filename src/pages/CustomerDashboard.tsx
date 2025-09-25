@@ -1485,43 +1485,7 @@ const CustomerDashboard = () => {
 
 
             <TabsContent value="support" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Contact Support</CardTitle>
-                    <CardDescription>
-                      Send us a message and we'll get back to you as soon as possible.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="supportSubject">Subject</Label>
-                        <Input
-                          id="supportSubject"
-                          placeholder="Brief description of your issue"
-                          value={supportSubject}
-                          onChange={(e) => setSupportSubject(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="supportMessage">Message</Label>
-                        <Textarea
-                          id="supportMessage"
-                          placeholder="Please describe your issue in detail..."
-                          rows={6}
-                          value={supportMessage}
-                          onChange={(e) => setSupportMessage(e.target.value)}
-                        />
-                      </div>
-                      <Button onClick={submitSupportRequest} className="w-full">
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        Send Support Request
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
+              <div className="max-w-2xl">
                 <Card>
                   <CardHeader>
                     <CardTitle>Other Ways to Reach Us</CardTitle>
