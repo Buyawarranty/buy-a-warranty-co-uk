@@ -29,6 +29,9 @@ interface CustomerPolicy {
   pdf_platinum_url?: string;
   payment_amount?: number;
   document_url?: string; // Add this for fetched documents
+  claim_limit?: number;
+  voluntary_excess?: number;
+  warranty_number?: string;
   mot_fee?: boolean;
   tyre_cover?: boolean;
   wear_tear?: boolean;
@@ -106,6 +109,41 @@ const CustomerDashboard = () => {
     // If user is logged in, fetch their policies
     if (user) {
       fetchPolicies();
+      
+      // Set up real-time updates for new warranties
+      const channel = supabase
+        .channel('customer-policies-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'customer_policies',
+            filter: `email=eq.${user.email}`
+          },
+          (payload) => {
+            console.log('New warranty detected, refreshing policies');
+            fetchPolicies();
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'customer_policies',
+            filter: `email=eq.${user.email}`
+          },
+          (payload) => {
+            console.log('Warranty updated, refreshing policies');
+            fetchPolicies();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     } else {
       // User not logged in, show login form (don't redirect)
       setPolicyLoading(false);
@@ -588,12 +626,15 @@ const CustomerDashboard = () => {
           phone: data.phone || '',
           firstName: data.first_name || '',
           lastName: data.last_name || '',
-          street: [
-            data.flat_number,
-            data.building_name,
-            data.building_number,
-            data.street
-          ].filter(Boolean).join(', ') || prev.street,
+          street: (() => {
+            const addressParts = [
+              data.flat_number,
+              data.building_name,
+              data.building_number,
+              data.street
+            ].filter(part => part && part.trim() && part !== ',');
+            return addressParts.length > 0 ? addressParts.join(', ') : prev.street;
+          })(),
           city: data.town || prev.city,
           postcode: data.postcode || prev.postcode,
           country: data.country || prev.country
@@ -919,25 +960,28 @@ const CustomerDashboard = () => {
                               </p>
                             </div>
                             <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle</Label>
-                              <p className="font-semibold text-sm sm:text-base text-black">
-                                {customerData?.vehicle_make && customerData?.vehicle_model 
-                                  ? `${customerData.vehicle_make} ${customerData.vehicle_model}`.toUpperCase()
-                                  : 'Not provided'}
-                              </p>
-                            </div>
-                            <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
-                              <p className="font-semibold text-sm sm:text-base text-black">
-                                {customerData?.registration_plate || 'Not provided'}
-                              </p>
-                            </div>
-                            <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Mileage</Label>
-                              <p className="font-semibold text-sm sm:text-base">
-                                {customerData?.mileage ? `${Number(customerData.mileage).toLocaleString()} miles` : 'Not provided'}
-                              </p>
-                            </div>
+                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle</Label>
+                               <p className="font-semibold text-sm sm:text-base text-black">
+                                 {customerData?.vehicle_make && customerData?.vehicle_model && 
+                                  customerData.vehicle_make !== 'Unknown' && customerData.vehicle_model !== 'Unknown'
+                                   ? `${customerData.vehicle_make} ${customerData.vehicle_model}`.toUpperCase()
+                                   : (selectedPolicy?.plan_type?.includes('motorbike') || selectedPolicy?.plan_type?.includes('Motorbike'))
+                                   ? 'Motorbike Details Not Provided'
+                                   : 'Vehicle Details Not Provided'}
+                               </p>
+                             </div>
+                             <div>
+                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
+                               <p className="font-semibold text-sm sm:text-base text-black">
+                                 {customerData?.registration_plate || 'Not provided'}
+                               </p>
+                             </div>
+                             <div>
+                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Mileage</Label>
+                               <p className="font-semibold text-sm sm:text-base">
+                                 {customerData?.mileage && customerData.mileage.trim() ? `${Number(customerData.mileage).toLocaleString()} miles` : 'Not provided'}
+                               </p>
+                             </div>
                             <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Status</Label>
                               <p className={`font-semibold capitalize text-sm sm:text-base flex items-center gap-2 ${
@@ -1005,28 +1049,46 @@ const CustomerDashboard = () => {
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                             <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-700">Claim Limit</Label>
-                              <p className="font-bold text-lg text-blue-900">£1250 per claim</p>
+                              <p className="font-bold text-lg text-blue-900">
+                                £{(selectedPolicy.claim_limit || customerData?.claim_limit || 1250).toLocaleString()} per claim
+                              </p>
                             </div>
                             <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-700">Excess</Label>
-                              <p className="font-bold text-lg text-blue-900">£50</p>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-700">Voluntary Excess</Label>
+                              <p className="font-bold text-lg text-blue-900">
+                                £{(selectedPolicy.voluntary_excess || customerData?.voluntary_excess || 0)}
+                              </p>
                             </div>
                           </div>
                           
                           {/* Order Summary */}
-                          {selectedPolicy.payment_amount && (
-                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                              <Label className="text-xs sm:text-sm font-medium text-gray-700">Order Summary</Label>
-                              <div className="flex justify-between items-center mt-2">
-                                <span className="text-sm text-gray-600">Total Amount Paid</span>
-                                <span className="font-bold text-lg text-gray-900">£{selectedPolicy.payment_amount}</span>
-                              </div>
-                              <div className="flex justify-between items-center mt-1">
-                                <span className="text-sm text-gray-600">Payment Type</span>
+                          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Order Summary</Label>
+                            <div className="space-y-2">
+                              {(selectedPolicy.payment_amount || customerData?.final_amount) && (
+                                <div className="flex justify-between items-center">
+                                  <span className="text-sm text-gray-600">Total Amount Paid</span>
+                                  <span className="font-bold text-lg text-gray-900">
+                                    £{selectedPolicy.payment_amount || customerData?.final_amount}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Payment Duration</span>
                                 <span className="text-sm text-gray-900">{getPaymentTypeDisplay(selectedPolicy.payment_type)}</span>
                               </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Policy Number</span>
+                                <span className="text-sm font-mono text-gray-900">{selectedPolicy.policy_number}</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Warranty Reference</span>
+                                <span className="text-sm font-mono text-gray-900">
+                                  {selectedPolicy.warranty_number || customerData?.warranty_reference_number}
+                                </span>
+                              </div>
                             </div>
-                          )}
+                          </div>
                           
                           <div className="pt-4 border-t">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
