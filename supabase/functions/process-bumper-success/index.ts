@@ -185,12 +185,7 @@ serve(async (req) => {
       logStep("Failed to generate warranty reference", { error: errorMessage });
     }
 
-    // Calculate policy dates and determine actual payment type first
-    const startDate = new Date();
-    let endDate = new Date();
-    
     // For Bumper orders, determine the actual policy duration based on the plan and amount
-    // Since Bumper can process monthly payments for longer-term plans
     let actualPaymentType = paymentType;
     
     // If it's monthly payment, check if the amounts suggest a longer term
@@ -208,261 +203,98 @@ serve(async (req) => {
         actualPaymentType = '12months';
       }
     }
-    
-    // Use centralized warranty duration calculation
-    const durationMonths = getWarrantyDurationInMonths(actualPaymentType);
-    endDate.setMonth(endDate.getMonth() + durationMonths);
 
-    // Create new customer record (always create new for each order, even for same email)
-    logStep("Creating new customer record");
-    
-    const { data: newCustomer, error: customerError } = await supabaseClient
-      .from('customers')
-      .insert({
-        name: customerName,
-        email: customerEmail,
-        phone: customerData?.mobile,
-        first_name: customerData?.first_name,
-        last_name: customerData?.last_name,
-        flat_number: customerData?.flat_number,
-        building_name: customerData?.building_name,
-        building_number: customerData?.building_number,
-        street: customerData?.street,
-        town: customerData?.town,
-        county: customerData?.county,
-        postcode: customerData?.postcode,
-        country: customerData?.country || 'United Kingdom',
-        plan_type: plan.name,
-        status: 'Active',
-        registration_plate: vehicleReg,
-        vehicle_make: vehicleData?.make,
-        vehicle_model: vehicleData?.model,
-        vehicle_year: vehicleData?.year,
-        vehicle_fuel_type: vehicleData?.fuelType,
-        vehicle_transmission: vehicleData?.transmission,
-        mileage: vehicleData?.mileage,
-        payment_type: actualPaymentType, // Store the actual duration, not the original payment type
-        bumper_order_id: sessionId,
-        discount_code: discountCode,
-        discount_amount: 0,
-        original_amount: finalAmount,
-        final_amount: finalAmount,
-        warranty_reference_number: warrantyRef,
-        warranty_number: warrantyRef,
-        voluntary_excess: vehicleData?.voluntaryExcess || 0
-      })
-      .select()
-      .single();
+    // Prepare vehicle and customer data in the same format as Stripe
+    const vehicleDataFormatted = {
+      regNumber: vehicleData?.regNumber || customerData?.vehicle_reg || '',
+      mileage: vehicleData?.mileage || '',
+      make: vehicleData?.make || '',
+      model: vehicleData?.model || '',
+      year: vehicleData?.year || '',
+      fuelType: vehicleData?.fuelType || '',
+      transmission: vehicleData?.transmission || '',
+      vehicleType: vehicleData?.vehicleType || 'standard',
+      voluntaryExcess: vehicleData?.voluntaryExcess || 0,
+      fullName: customerName,
+      phone: customerData?.mobile || customerData?.phone || '',
+      address: `${customerData?.street || ''}, ${customerData?.town || ''}, ${customerData?.county || ''}, ${customerData?.postcode || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',').trim(),
+      email: customerEmail
+    };
 
-    if (customerError) {
-      logStep("Error creating customer", { error: customerError });
-      throw new Error("Failed to create customer record");
-    }
-    
-    const customer = newCustomer;
+    const customerDataFormatted = {
+      first_name: customerData?.first_name || '',
+      last_name: customerData?.last_name || '',
+      mobile: customerData?.mobile || customerData?.phone || '',
+      street: customerData?.street || '',
+      town: customerData?.town || '',
+      county: customerData?.county || '',
+      postcode: customerData?.postcode || '',
+      country: customerData?.country || 'United Kingdom',
+      building_name: customerData?.building_name || '',
+      flat_number: customerData?.flat_number || '',
+      building_number: customerData?.building_number || '',
+      vehicle_reg: vehicleData?.regNumber || customerData?.vehicle_reg || '',
+      discount_code: discountCode || '',
+      final_amount: finalAmount || 0,
+      fullName: customerName,
+      phone: customerData?.mobile || customerData?.phone || '',
+      address: `${customerData?.street || ''}, ${customerData?.town || ''}, ${customerData?.county || ''}, ${customerData?.postcode || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',').trim()
+    };
 
-    logStep("Customer created", { customerId: customer.id });
+    logStep("Prepared data for handle-successful-payment", { 
+      planId: plan.name, 
+      actualPaymentType, 
+      customerEmail,
+      hasVehicleData: !!vehicleDataFormatted,
+      hasCustomerData: !!customerDataFormatted
+    });
 
-    // Create policy record
-    const { data: policy, error: policyError } = await supabaseClient
-      .from('customer_policies')
-      .insert({
-        customer_id: customer.id, // Link to the customer record
-        user_id: null, // No user account for Bumper payments
-        email: customerEmail,
-        plan_type: plan.name,
-        payment_type: actualPaymentType, // Store the actual duration, not the original payment type
-        policy_number: policyNumber,
-        warranty_number: warrantyRef,
-        bumper_order_id: sessionId,
-        policy_start_date: startDate.toISOString(),
-        policy_end_date: endDate.toISOString(),
-        status: 'active'
-        // Add-ons will be handled separately if needed
-      })
-      .select()
-      .single();
-
-    if (policyError) {
-      logStep("Error creating policy", { error: policyError });
-      throw new Error("Failed to create policy record");
-    }
-
-    logStep("Policy created", { policyId: policy.id, policyNumber });
-
-    // Create payment record (amount will be monthly since Bumper forces monthly)
-    const monthlyPrice = plan.monthly_price;
-    
-    const { error: paymentError } = await supabaseClient
-      .from('payments')
-      .insert({
-        customer_id: customer.id,
-        amount: monthlyPrice,
-        plan_type: plan.name,
-        currency: 'GBP',
-        stripe_payment_id: null // No Stripe ID for Bumper payments
-      });
+    // Use the same handle-successful-payment function as Stripe (with email sending enabled)
+    const { data: paymentData, error: paymentError } = await supabaseClient.functions.invoke('handle-successful-payment', {
+      body: {
+        planId: plan.name,
+        paymentType: actualPaymentType,
+        userEmail: customerEmail,
+        userId: null, // No user account for Bumper payments
+        stripeSessionId: sessionId, // Use Bumper session ID
+        vehicleData: vehicleDataFormatted,
+        customerData: customerDataFormatted,
+        metadata: {
+          plan_id: plan.name,
+          payment_type: actualPaymentType,
+          customer_name: customerName,
+          customer_email: customerEmail,
+          bumper_transaction_id: transactionId,
+          final_amount: finalAmount.toString(),
+          discount_code: discountCode
+        }
+        // No skipEmail: true - allow emails to be sent just like Stripe
+      }
+    });
 
     if (paymentError) {
-      logStep("Error creating payment record", { error: paymentError });
-      // Don't throw here as the main policy creation succeeded
+      logStep("Error processing payment via handle-successful-payment", paymentError);
+      throw new Error(`Payment processing failed: ${paymentError.message}`);
     }
 
-    logStep("Payment record created");
+    logStep("Payment processed successfully via handle-successful-payment", paymentData);
 
-    // Register with Warranties 2000 for all Bumper customers AFTER policy is created
-    if (warrantyRef && policy?.id) {
-      try {
-        logStep("Attempting Warranties 2000 registration for Bumper customer", { 
-          policyId: policy.id,
-          customerId: customer.id,
-          warrantyRef: warrantyRef 
-        });
+    // Email is already handled by handle-successful-payment function
+    logStep("Email already sent via handle-successful-payment", { 
+      customerId: paymentData?.customerId, 
+      policyId: paymentData?.policyId
+    });
 
-        const warrantiesResponse = await supabaseClient.functions.invoke('send-to-warranties-2000', {
-          body: { 
-            policyId: policy.id,
-            customerId: customer.id 
-          }
-        });
-
-        if (warrantiesResponse.error) {
-          logStep("Warranties 2000 registration failed", { error: warrantiesResponse.error });
-          
-          // Update policy status to reflect warranty registration failure
-          await supabaseClient
-            .from('customer_policies')
-            .update({ 
-              warranties_2000_status: 'failed',
-              warranties_2000_sent_at: new Date().toISOString(),
-              warranties_2000_response: {
-                error: warrantiesResponse.error,
-                timestamp: new Date().toISOString()
-              }
-            })
-            .eq('id', policy.id);
-        } else {
-          logStep("Warranties 2000 registration successful for Bumper customer", { response: warrantiesResponse.data });
-          
-          // Update policy status to reflect warranty registration success
-          await supabaseClient
-            .from('customer_policies')
-            .update({ 
-              warranties_2000_status: 'sent',
-              warranties_2000_sent_at: new Date().toISOString(),
-              warranties_2000_response: {
-                response: warrantiesResponse.data,
-                timestamp: new Date().toISOString()
-              }
-            })
-            .eq('id', policy.id);
-        }
-      } catch (warrantiesError) {
-        const errorMessage = warrantiesError instanceof Error ? warrantiesError.message : String(warrantiesError);
-        logStep("Error during Warranties 2000 registration for Bumper customer", { error: errorMessage });
-        
-        // Update policy status to reflect warranty registration error
-        await supabaseClient
-          .from('customer_policies')
-          .update({ 
-            warranties_2000_status: 'failed',
-            warranties_2000_sent_at: new Date().toISOString(),
-            warranties_2000_response: {
-              error: warrantiesError instanceof Error ? warrantiesError.message : String(warrantiesError),
-              timestamp: new Date().toISOString()
-            }
-          })
-          .eq('id', policy.id);
-      }
-    } else {
-      logStep("Skipping Warranties 2000 registration", { 
-        hasWarrantyRef: !!warrantyRef,
-        hasPolicyId: !!policy?.id,
-        reason: !warrantyRef ? "No warranty reference generated" : "No policy ID available"
-      });
-    }
-
-    // Send welcome email automatically for Bumper customers
-    try {
-      console.log(`[BUMPER-EMAIL-DEBUG] Sending welcome email for policy:`, {
-        customerId: customer.id,
-        policyId: policy.id,
-        customerEmail: customer.email,
-        planType: plan.name
-      });
-
-      const emailPayload = {
-        customerId: customer.id,
-        policyId: policy.id
-      };
-
-      // Use Supabase client to invoke the function
-      const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
-        body: emailPayload
-      });
-      
-      console.log(`[BUMPER-EMAIL-DEBUG] Email function response:`, {
-        data: emailResult,
-        error: emailError
-      });
-
-      if (emailError || (emailResult && emailResult.error)) {
-        logStep("ERROR: Welcome email failed", { 
-          error: emailError || emailResult?.error,
-          policyId: policy.id
-        });
-        
-        // Update policy status to reflect email failure
-        await supabaseClient
-          .from('customer_policies')
-          .update({ 
-            email_sent_status: 'failed',
-            email_sent_at: new Date().toISOString()
-          })
-          .eq('id', policy.id);
-      } else if (emailResult && emailResult.success) {
-        logStep("SUCCESS: Welcome email sent successfully", emailResult);
-        
-        // Update policy status to reflect email success
-        await supabaseClient
-          .from('customer_policies')
-          .update({ 
-            email_sent_status: 'sent',
-            email_sent_at: new Date().toISOString()
-          })
-          .eq('id', policy.id);
-      } else {
-        logStep("WARNING: Welcome email status unclear", { 
-          emailResult,
-          policyId: policy.id
-        });
-        
-        // Mark as failed if response is unclear
-        await supabaseClient
-          .from('customer_policies')
-          .update({ 
-            email_sent_status: 'failed',
-            email_sent_at: new Date().toISOString()
-          })
-          .eq('id', policy.id);
-      }
-
-    } catch (emailError) {
-      logStep("Welcome email failed", { 
-        error: emailError,
-        message: emailError instanceof Error ? emailError.message : String(emailError),
-        policyId: policy.id
-      });
-      
-      // Update policy status to reflect email failure
-      await supabaseClient
-        .from('customer_policies')
-        .update({ 
-          email_sent_status: 'failed',
-          email_sent_at: new Date().toISOString()
-        })
-        .eq('id', policy.id);
-    }
+    // Mark transaction as completed
+    await supabaseClient
+      .from('bumper_transactions')
+      .update({ 
+        status: 'completed',
+        updated_at: new Date().toISOString()
+      })
+      .eq('transaction_id', transactionId);
+    
+    logStep("Transaction marked as completed", { transactionId });
 
     // Redirect to thank you page if redirectUrl is provided
     if (redirectUrl) {
@@ -470,6 +302,7 @@ serve(async (req) => {
       const redirectUrlObj = new URL(redirectUrl);
       redirectUrlObj.searchParams.set('plan', planId);
       redirectUrlObj.searchParams.set('payment', paymentType);
+      redirectUrlObj.searchParams.set('policyNumber', paymentData?.policyNumber || 'N/A');
       redirectUrlObj.searchParams.set('source', 'bumper');
       
       logStep("Redirecting to thank you page with parameters", { 
@@ -488,22 +321,11 @@ serve(async (req) => {
       });
     }
     
-    // Mark transaction as completed
-    await supabaseClient
-      .from('bumper_transactions')
-      .update({ 
-        status: 'completed',
-        updated_at: new Date().toISOString()
-      })
-      .eq('transaction_id', transactionId);
-    
-    logStep("Transaction marked as completed", { transactionId });
-    
     return new Response(JSON.stringify({
       success: true,
-      policyNumber: warrantyRef || policyNumber, // Return warranty number for Bumper orders
-      planType: plan.name,
-      message: "Payment processed successfully"
+      message: "Payment processed and warranty registered successfully",
+      policyNumber: paymentData?.policyNumber,
+      data: paymentData
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
