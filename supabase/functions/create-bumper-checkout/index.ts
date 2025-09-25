@@ -204,14 +204,25 @@ serve(async (req) => {
     // Generate signature using unencoded payload
     console.log("BUMPER DEBUG: Signature payload (unencoded URLs):", JSON.stringify(signaturePayload, null, 2));
     
+    // DETAILED SIGNATURE DEBUG - Show step by step what we're doing
+    console.log("=== DETAILED SIGNATURE GENERATION DEBUG ===");
+    console.log("1. Original payload keys:", Object.keys(signaturePayload));
+    console.log("2. Secret key being used:", bumperSecretKey);
+    console.log("3. Secret key length:", bumperSecretKey?.length);
+    
     const signature = await generateSignature(signaturePayload, bumperSecretKey);
     (bumperRequestData as any).signature = signature;
     
-    console.log("BUMPER DEBUG: Generated signature:", signature);
-    console.log("BUMPER DEBUG: Final payload:", JSON.stringify(bumperRequestData, null, 2));
-
-    // Test our signature generation with Bumper's documented example
-    const testPayload = {
+    console.log("4. Generated signature:", signature);
+    console.log("5. Final payload being sent to Bumper:", JSON.stringify({
+      ...bumperRequestData,
+      api_key: "[REDACTED]",
+      signature: signature
+    }, null, 2));
+    
+    // Try to reproduce the test case signature to verify our algorithm
+    console.log("=== VERIFYING ALGORITHM WITH TEST CASE ===");
+    const bumperTestPayload = {
       amount: "300.00",
       success_url: "http://www.supplier.com/success/",
       failure_url: "http://www.supplier.com/failure/",
@@ -235,16 +246,38 @@ serve(async (req) => {
       send_email: false
     };
     
-    // Use test secret from Bumper documentation - trying the original 23-char key from logs  
-    const testSecretKey = "9f*u/[`tt*.*k725X;u&Zkz";
-    const testSignatureString = await debugSignatureString(testPayload);
-    console.log("BUMPER TEST: Signature string being hashed:", testSignatureString);
+    const bumperTestSecretKey = "9f*u/[`tt*.*k725X;u&Zkz";
+    const bumperTestSignature = await generateSignature(bumperTestPayload, bumperTestSecretKey);
+    const expectedSignature = "8be9b278125a4fa15c2af43f28307d2af90ec4c1e8f52c096b0652a1b66d49c7";
     
-    const testSignature = await generateSignature(testPayload, testSecretKey);
-    console.log("BUMPER TEST: Generated test signature:", testSignature);
-    console.log("BUMPER TEST: Expected signature: 8be9b278125a4fa15c2af43f28307d2af90ec4c1e8f52c096b0652a1b66d49c7");
-    console.log("BUMPER TEST: Signatures match:", testSignature === "8be9b278125a4fa15c2af43f28307d2af90ec4c1e8f52c096b0652a1b66d49c7");
-    console.log("BUMPER DEBUG: Secret key length:", testSecretKey.length);
+    console.log("Test signature generated:", bumperTestSignature);
+    console.log("Expected test signature:", expectedSignature);
+    console.log("Test signatures match:", bumperTestSignature === expectedSignature);
+    
+    if (bumperTestSignature !== expectedSignature) {
+      console.log("❌ SIGNATURE ALGORITHM IS INCORRECT - Need to fix the generation logic");
+      
+      // Let's debug the test signature string step by step
+      const testSigString = await debugSignatureString(bumperTestPayload);
+      console.log("Test signature string:", testSigString);
+      console.log("Test signature string length:", testSigString.length);
+      
+      // Check each character of the expected vs actual
+      console.log("Character-by-character comparison of signature strings:");
+      const expectedSigString = "AMOUNT=300.00&BUILDING_NAME=ABC Building&BUILDING_NUMBER=39&COUNTRY=UK&COUNTY=Hampshire&CURRENCY=GBP&EMAIL=john@smith.com&FAILURE_URL=http://www.supplier.com/failure/&FIRST_NAME=John&FLAT_NUMBER=23&LAST_NAME=Smith&MOBILE=0778879989&ORDER_REFERENCE=26352&POSTCODE=SO14 3AB&PRODUCT_ID=4&SEND_EMAIL=False&SEND_SMS=False&STREET=DEF way&SUCCESS_URL=http://www.supplier.com/success/&TOWN=Southampton&VEHICLE_REG=XYZ1234&";
+      
+      if (testSigString !== expectedSigString) {
+        console.log("🔍 Signature strings don't match:");
+        console.log("Expected:", expectedSigString);
+        console.log("Actual  :", testSigString);
+        console.log("Expected length:", expectedSigString.length);
+        console.log("Actual length  :", testSigString.length);
+      } else {
+        console.log("✅ Signature strings match - issue is in HMAC generation");
+      }
+    } else {
+      console.log("✅ SIGNATURE ALGORITHM IS CORRECT");
+    }
 
     logStep("Making Bumper API request to PRODUCTION", { 
       url: bumperApiUrl,
