@@ -557,7 +557,7 @@ const CustomerDashboard = () => {
     try {
       const { data, error } = await supabase
         .from('customers')
-        .select('phone, first_name, last_name, flat_number, building_name, building_number, street, town, county, postcode, country, registration_plate, vehicle_make, vehicle_model, vehicle_year')
+        .select('*')
         .eq('email', email)
         .maybeSingle();
 
@@ -567,6 +567,7 @@ const CustomerDashboard = () => {
       }
 
       if (data) {
+        console.log('Customer data fetched:', data);
         setCustomerData(data);
         setAddress(prev => ({
           ...prev,
@@ -891,12 +892,20 @@ const CustomerDashboard = () => {
                             </div>
                             <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
-                              <p className="font-semibold text-sm sm:text-base">Platinum Plan</p>
+                              <p className="font-semibold text-sm sm:text-base">
+                                {selectedPolicy.plan_type.includes('motorbike') || selectedPolicy.plan_type.includes('Motorbike') 
+                                  ? 'Motorbike Plan' 
+                                  : selectedPolicy.plan_type.includes('van') || selectedPolicy.plan_type.includes('Van')
+                                  ? 'Van Plan'
+                                  : selectedPolicy.plan_type.includes('phev') || selectedPolicy.plan_type.includes('electric') || selectedPolicy.plan_type.includes('Electric')
+                                  ? 'Electric/Hybrid Plan'
+                                  : 'Car Plan'}
+                              </p>
                             </div>
                             <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
                               <p className="font-semibold text-sm sm:text-base text-black">
-                                {customerData?.registration_plate || 'N/A'}
+                                {customerData?.registration_plate || 'Not provided'}
                               </p>
                             </div>
                             <div>
@@ -1210,12 +1219,20 @@ const CustomerDashboard = () => {
                         </div>
                         <div>
                           <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
-                          <p className="font-semibold text-sm sm:text-base">Platinum Plan</p>
+                          <p className="font-semibold text-sm sm:text-base">
+                            {policy.plan_type.includes('motorbike') || policy.plan_type.includes('Motorbike') 
+                              ? 'Motorbike Plan' 
+                              : policy.plan_type.includes('van') || policy.plan_type.includes('Van')
+                              ? 'Van Plan'
+                              : policy.plan_type.includes('phev') || policy.plan_type.includes('electric') || policy.plan_type.includes('Electric')
+                              ? 'Electric/Hybrid Plan'
+                              : 'Car Plan'}
+                          </p>
                         </div>
                         <div>
                           <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
                           <p className="font-semibold text-sm sm:text-base text-black">
-                            {customerData?.registration_plate || 'N/A'}
+                            {customerData?.registration_plate || 'Not provided'}
                           </p>
                         </div>
                         <div>
