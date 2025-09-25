@@ -73,8 +73,8 @@ serve(async (req) => {
       discount_amount: customerData?.discount_amount || 0,
       original_amount: customerData?.original_amount || null,
       final_amount: customerData?.final_amount || null,
-      voluntary_excess: vehicleData?.voluntaryExcess || 0,
-      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || metadata?.claimLimit || '1250'), // Add claim limit
+      voluntary_excess: parseInt(metadata?.voluntary_excess || customerData?.voluntaryExcess || vehicleData?.voluntaryExcess || '150'),
+      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || metadata?.claimLimit || '750'), // Add claim limit
       warranty_reference_number: warrantyReference,
       // Add addon data to customer record too - fixed field names to match create-checkout
       tyre_cover: metadata?.addon_tyre_cover === 'true',
@@ -156,7 +156,7 @@ serve(async (req) => {
         policy_start_date: new Date().toISOString(),
         policy_end_date: calculatePolicyEndDate(paymentType),
         status: 'active',
-        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || '1250'), // Add claim limit to policy
+        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || '750'), // Add claim limit to policy
         // Include add-ons
         ...addOnsData
       };
