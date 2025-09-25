@@ -201,8 +201,8 @@ serve(async (req) => {
     if ('signature' in loggableData) delete (loggableData as any).signature;
     logStep("Bumper payload prepared", loggableData);
 
-    // Generate signature using unencoded payload
-    console.log("BUMPER DEBUG: Signature payload (unencoded URLs):", JSON.stringify(signaturePayload, null, 2));
+    // Generate signature using the corrected Bumper specification
+    console.log("BUMPER DEBUG: Signature payload (for generation):", JSON.stringify(signaturePayload, null, 2));
     
     // DETAILED SIGNATURE DEBUG - Show step by step what we're doing
     console.log("=== DETAILED SIGNATURE GENERATION DEBUG ===");
@@ -210,49 +210,21 @@ serve(async (req) => {
     console.log("2. Secret key being used:", bumperSecretKey);
     console.log("3. Secret key length:", bumperSecretKey?.length);
     
-    // AGGRESSIVE BYPASS: Skip signature entirely for now
-    console.log("🚀 BYPASSING SIGNATURE COMPLETELY - Removing all signature fields");
+    // Generate the signature using the corrected algorithm
+    console.log("🔐 GENERATING SIGNATURE using corrected Bumper specification");
     
-    // Remove signature-related fields entirely
-    delete (bumperRequestData as any).signature;
-    delete (bumperRequestData as any).api_key; // Try without API key as well
+    const signature = await generateSignature(signaturePayload, bumperSecretKey);
     
-    // Try minimal payload approach
-    const minimalPayload = {
-      amount: totalAmount.toString(),
-      preferred_product_type: "paylater",
-      success_url: successUrl,
-      failure_url: failureUrl,
-      currency: "GBP",
-      order_reference: transactionId,
-      first_name: customerData.first_name || "Test",
-      last_name: customerData.last_name || "User",
-      email: customerData.email || "test@example.com",
-      mobile: customerData.phone || customerData.mobile || "07123456789",
-      vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "TEST123",
-      street: customerData.address_line_1 || customerData.street || "Test Street",
-      town: customerData.city || customerData.town || "Test Town",
-      postcode: customerData.postcode || "TEST123",
-      instalments: instalmentCount,
-      send_sms: false,
-      send_email: false,
-      product_description: [{
-        item: `${planType} Vehicle Warranty`,
-        quantity: "1",
-        price: totalAmount.toString()
-      }]
-    };
+    // Add signature and api_key to the request payload
+    (bumperRequestData as any).signature = signature;
+    (bumperRequestData as any).api_key = bumperApiKey;
     
-    // Override with minimal payload
-    Object.assign(bumperRequestData, minimalPayload);
-    
-    console.log("🔄 Using aggressive bypass with minimal payload");
-    let signatureMethod = "aggressive_bypass";
-    
-    console.log("5. Final signature method used:", signatureMethod);
+    console.log("✅ Generated signature:", signature);
+    console.log("5. Final signature method used:", "bumper_specification_corrected");
     console.log("6. Final payload being sent to Bumper:", JSON.stringify({
       ...bumperRequestData,
-      api_key: "[REDACTED]"
+      api_key: "[REDACTED]",
+      signature: signature
     }, null, 2));
     
     // Try to reproduce the test case signature to verify our algorithm
@@ -396,43 +368,64 @@ serve(async (req) => {
   }
 });
 
-// Generate signature exactly like Bumper API documentation requires
+// Generate signature for Bumper API according to their exact documentation
 async function generateSignature(payload: any, secretKey: string): Promise<string> {
-  // Build signature string exactly as shown in Bumper documentation
-  // Format: KEY=value& (alphabetically sorted, uppercase keys, trailing &)
+  logStep('🔐 Starting signature generation with Bumper specification', { 
+    payloadKeys: Object.keys(payload),
+    secretKeyLength: secretKey.length 
+  });
   
-  const signatureParts: string[] = [];
+  // Create a copy and remove excluded fields as per Bumper docs:
+  // "except for api_key, signature, product_description, preferred_product_type, and additional_data parameters"
+  const filteredPayload = { ...payload };
+  delete filteredPayload.api_key;
+  delete filteredPayload.signature;
+  delete filteredPayload.product_description;
+  delete filteredPayload.preferred_product_type;
+  delete filteredPayload.additional_data;
   
-  // Get all keys and sort them alphabetically (case-sensitive)
-  const sortedKeys = Object.keys(payload).sort();
+  logStep('🔍 Filtered payload (excluded signature fields)', { 
+    filteredKeys: Object.keys(filteredPayload),
+    excludedFields: ['api_key', 'signature', 'product_description', 'preferred_product_type', 'additional_data']
+  });
+  
+  // Sort keys alphabetically as per Bumper specification
+  const sortedKeys = Object.keys(filteredPayload).sort();
+  logStep('📋 Sorted keys alphabetically', sortedKeys);
+  
+  // Build signature string exactly as per Bumper specification:
+  // Format: "{PARAMETER}={value}&" where PARAMETER is upper-cased
+  let signatureString = '';
   
   for (const key of sortedKeys) {
-    let value = payload[key];
+    const value = filteredPayload[key];
     
-    // Handle different value types exactly as Bumper expects
-    if (value === null || value === undefined) {
-      value = '';
-    } else if (typeof value === 'boolean') {
-      value = value ? 'True' : 'False';
+    // Handle boolean values - Bumper expects "True"/"False" (capitalized)
+    let stringValue: string;
+    if (typeof value === 'boolean') {
+      stringValue = value ? 'True' : 'False';
+    } else if (value === null || value === undefined) {
+      stringValue = '';
     } else {
-      value = String(value);
+      stringValue = String(value);
     }
     
-    // Format as KEY=value (key must be uppercase)
-    signatureParts.push(`${key.toUpperCase()}=${value}`);
+    // Parameter key should be upper-cased, value as-is
+    // Format: "{PARAMETER}={value}&"
+    signatureString += `${key.toUpperCase()}=${stringValue}&`;
   }
   
-  // Join with & and add trailing & as required by Bumper
-  const signatureString = signatureParts.join('&') + '&';
+  logStep('📝 Final signature string for HMAC', { 
+    signatureString,
+    length: signatureString.length 
+  });
   
-  console.log("BUMPER DEBUG: Final signature string:", signatureString);
-  
-  // Generate HMAC SHA-256 signature
+  // Generate HMAC SHA-256 exactly as Bumper expects
   const encoder = new TextEncoder();
   const keyData = encoder.encode(secretKey);
-  const data = encoder.encode(signatureString);
+  const messageData = encoder.encode(signatureString);
   
-  const key = await crypto.subtle.importKey(
+  const cryptoKey = await crypto.subtle.importKey(
     'raw',
     keyData,
     { name: 'HMAC', hash: 'SHA-256' },
@@ -440,12 +433,13 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
     ['sign']
   );
   
-  const signature = await crypto.subtle.sign('HMAC', key, data);
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, messageData);
+  const hashArray = Array.from(new Uint8Array(signature));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   
-  // Return hex string (lowercase)
-  return Array.from(new Uint8Array(signature))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+  logStep('✅ Generated HMAC signature', { signature: hashHex });
+  
+  return hashHex;
 }
 
 // Debug function to see exact signature string
