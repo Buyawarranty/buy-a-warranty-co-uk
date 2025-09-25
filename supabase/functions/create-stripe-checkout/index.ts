@@ -209,8 +209,8 @@ serve(async (req) => {
         sessionData.metadata = {
           ...sessionData.metadata,
           customer_name: `${customerData.first_name || ''} ${customerData.last_name || ''}`.trim(),
-          customer_phone: customerData.mobile || '',
-          customer_address: `${customerData.building_number || ''} ${customerData.street || ''}, ${customerData.town || ''}, ${customerData.postcode || ''}`.trim()
+          customer_phone: customerData.phone || customerData.mobile || '',
+          customer_address: `${customerData.address_line_1 || ''}, ${customerData.address_line_2 || ''}, ${customerData.city || ''}, ${customerData.postcode || ''}`.trim().replace(/,+/g, ',').replace(/^,|,$/g, '')
         };
       }
 
