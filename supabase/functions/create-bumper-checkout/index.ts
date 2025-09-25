@@ -128,28 +128,52 @@ serve(async (req) => {
     // Store transaction data in database for later processing
     const redirectUrl = `${origin}/thank-you`;
     
-    const { error: storeError } = await supabase
+    logStep("Attempting to store transaction data", { transactionId, redirectUrl });
+    
+    const transactionInsertData = {
+      transaction_id: transactionId,
+      plan_id: planId,
+      payment_type: paymentType,
+      customer_data: customerData,
+      vehicle_data: vehicleData,
+      protection_addons: protectionAddOns,
+      final_amount: totalAmount,
+      discount_code: discountCode || '',
+      add_another_warranty: addAnotherWarrantyRequested || false,
+      redirect_url: redirectUrl,
+      status: 'pending'
+    };
+    
+    logStep("Transaction data to insert", { 
+      transactionId,
+      planId,
+      totalAmount,
+      customerEmail: customerData?.email,
+      hasVehicleData: !!vehicleData,
+      hasCustomerData: !!customerData
+    });
+
+    const { data: insertedTransaction, error: storeError } = await supabase
       .from('bumper_transactions')
-      .insert({
-        transaction_id: transactionId,
-        plan_id: planId,
-        payment_type: paymentType,
-        customer_data: customerData,
-        vehicle_data: vehicleData,
-        protection_addons: protectionAddOns,
-        final_amount: totalAmount,
-        discount_code: discountCode || '',
-        add_another_warranty: addAnotherWarrantyRequested || false,
-        redirect_url: redirectUrl,
-        status: 'pending'
-      });
+      .insert(transactionInsertData)
+      .select()
+      .single();
 
     if (storeError) {
-      logStep("Failed to store transaction data", { error: storeError });
-      throw new Error("Failed to store transaction data");
+      logStep("Failed to store transaction data", { error: storeError, transactionId });
+      throw new Error(`Failed to store transaction data: ${storeError.message}`);
     }
 
-    logStep("Transaction data stored", { transactionId, redirectUrl });
+    if (!insertedTransaction) {
+      logStep("Transaction insert returned no data", { transactionId });
+      throw new Error("Transaction insert returned no data");
+    }
+
+    logStep("Transaction data stored successfully", { 
+      transactionId, 
+      insertedId: insertedTransaction.id,
+      redirectUrl 
+    });
     
     // Bumper API URLs
     const bumperApiUrl = "https://api.bumper.co/v2/apply/";

@@ -79,19 +79,90 @@ serve(async (req) => {
     logStep("Processing Bumper success callback", { transactionId });
 
     // Retrieve transaction data from database
+    logStep("Searching for transaction", { transactionId, status: 'pending' });
+    
     const { data: transactionData, error: fetchError } = await supabaseClient
       .from('bumper_transactions')
       .select('*')
       .eq('transaction_id', transactionId)
       .eq('status', 'pending')
-      .single();
+      .maybeSingle();
 
-    if (fetchError || !transactionData) {
-      logStep("Transaction not found or already processed", { transactionId, error: fetchError });
-      return new Response("Transaction not found or already processed", { 
-        status: 404,
-        headers: corsHeaders 
+    logStep("Transaction query result", { 
+      found: !!transactionData, 
+      error: fetchError,
+      transactionId 
+    });
+
+    if (fetchError) {
+      logStep("Database error fetching transaction", { transactionId, error: fetchError });
+      return new Response(`
+        <!DOCTYPE html>
+        <html><head><title>Database Error</title></head>
+        <body>
+          <h1>Database Error</h1>
+          <p>Error fetching transaction: ${fetchError.message}</p>
+          <p>Transaction ID: ${transactionId}</p>
+          <p><a href="/">Return to Home</a></p>
+        </body></html>
+      `, { 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'text/html' }
       });
+    }
+
+    if (!transactionData) {
+      // Check if transaction exists with any status
+      const { data: anyStatusTransaction, error: anyStatusError } = await supabaseClient
+        .from('bumper_transactions')
+        .select('*')
+        .eq('transaction_id', transactionId)
+        .maybeSingle();
+      
+      if (anyStatusTransaction) {
+        logStep("Transaction found but with different status", { 
+          transactionId, 
+          status: anyStatusTransaction.status,
+          createdAt: anyStatusTransaction.created_at
+        });
+        
+        return new Response(`
+          <!DOCTYPE html>
+          <html><head><title>Payment Already Processed</title></head>
+          <body>
+            <h1>Payment Already Processed</h1>
+            <p>This payment has already been processed.</p>
+            <p>Status: ${anyStatusTransaction.status}</p>
+            <p><a href="/customer-dashboard">View Your Policies</a></p>
+          </body></html>
+        `, { 
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'text/html' }
+        });
+      } else {
+        logStep("Transaction not found in database at all", { transactionId, anyStatusError });
+        
+        return new Response(`
+          <!DOCTYPE html>
+          <html><head><title>Transaction Not Found</title></head>
+          <body>
+            <h1>Transaction Not Found</h1>
+            <p>We couldn't find your payment transaction in our system.</p>
+            <p>Transaction ID: ${transactionId}</p>
+            <p>This might be because:</p>
+            <ul>
+              <li>The payment process was interrupted</li>
+              <li>There was a temporary system issue</li>
+              <li>The transaction ID format is incorrect</li>
+            </ul>
+            <p>Please contact our support team with this transaction ID.</p>
+            <p><a href="/contact">Contact Support</a> | <a href="/">Return to Home</a></p>
+          </body></html>
+        `, { 
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'text/html' }
+        });
+      }
     }
 
     // Extract data from stored transaction
