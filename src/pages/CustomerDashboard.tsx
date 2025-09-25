@@ -29,6 +29,16 @@ interface CustomerPolicy {
   pdf_platinum_url?: string;
   payment_amount?: number;
   document_url?: string; // Add this for fetched documents
+  mot_fee?: boolean;
+  tyre_cover?: boolean;
+  wear_tear?: boolean;
+  europe_cover?: boolean;
+  transfer_cover?: boolean;
+  breakdown_recovery?: boolean;
+  vehicle_rental?: boolean;
+  mot_repair?: boolean;
+  lost_key?: boolean;
+  consequential?: boolean;
 }
 
 interface PolicyDocument {
@@ -888,13 +898,9 @@ const CustomerDashboard = () => {
                         <>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy Number</Label>
-                              <p className="font-semibold text-sm sm:text-base">{selectedPolicy.policy_number}</p>
-                            </div>
-                            <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan</Label>
                               <p className="font-semibold text-sm sm:text-base">
-                                {selectedPolicy.plan_type.includes('motorbike') || selectedPolicy.plan_type.includes('Motorbike') 
+                                Platinum {selectedPolicy.plan_type.includes('motorbike') || selectedPolicy.plan_type.includes('Motorbike') 
                                   ? 'Motorbike Plan' 
                                   : selectedPolicy.plan_type.includes('van') || selectedPolicy.plan_type.includes('Van')
                                   ? 'Van Plan'
@@ -904,15 +910,29 @@ const CustomerDashboard = () => {
                               </p>
                             </div>
                             <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Duration</Label>
+                              <p className="font-semibold text-sm sm:text-base">
+                                {getWarrantyDurationDisplay(selectedPolicy.payment_type)}
+                              </p>
+                            </div>
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle</Label>
+                              <p className="font-semibold text-sm sm:text-base text-black">
+                                {customerData?.vehicle_make && customerData?.vehicle_model 
+                                  ? `${customerData.vehicle_make} ${customerData.vehicle_model}`.toUpperCase()
+                                  : 'Not provided'}
+                              </p>
+                            </div>
+                            <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
                               <p className="font-semibold text-sm sm:text-base text-black">
                                 {customerData?.registration_plate || 'Not provided'}
                               </p>
                             </div>
                             <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Warranty Duration</Label>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Mileage</Label>
                               <p className="font-semibold text-sm sm:text-base">
-                                {getWarrantyDurationDisplay(selectedPolicy.payment_type)}
+                                {customerData?.mileage ? `${Number(customerData.mileage).toLocaleString()} miles` : 'Not provided'}
                               </p>
                             </div>
                             <div>
@@ -926,6 +946,55 @@ const CustomerDashboard = () => {
                                 {selectedPolicy.status === 'pending' && <AlertCircle className="h-4 w-4" />}
                                 {selectedPolicy.status}
                               </p>
+                            </div>
+                          </div>
+
+                          {/* Included Protection */}
+                          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                            <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Included Protection</Label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              {selectedPolicy.breakdown_recovery && (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                  <span className="text-sm text-gray-700">Vehicle Recovery</span>
+                                  <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
+                                </div>
+                              )}
+                              {selectedPolicy.mot_fee && (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                  <span className="text-sm text-gray-700">MOT Test Fee</span>
+                                  <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
+                                </div>
+                              )}
+                              {selectedPolicy.tyre_cover && (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                  <span className="text-sm text-gray-700">Tyre Cover</span>
+                                  <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
+                                </div>
+                              )}
+                              {selectedPolicy.europe_cover && (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                  <span className="text-sm text-gray-700">Europe Cover</span>
+                                  <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
+                                </div>
+                              )}
+                              {selectedPolicy.vehicle_rental && (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                  <span className="text-sm text-gray-700">Vehicle Rental</span>
+                                  <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
+                                </div>
+                              )}
+                              {selectedPolicy.lost_key && (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                  <span className="text-sm text-gray-700">Lost Key Cover</span>
+                                  <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                           
@@ -973,7 +1042,7 @@ const CustomerDashboard = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => window.open("/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf", "_blank")}
+                                onClick={() => window.open("/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf", "_blank")}
                               >
                                 <FileText className="mr-2 h-4 w-4" />
                                 View T's and C's
@@ -981,7 +1050,7 @@ const CustomerDashboard = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => window.open("/lovable-uploads/Platinum-warranty-plan_v2.2.pdf", "_blank")}
+                                onClick={() => window.open("/Platinum-warranty-plan_v2.2.pdf", "_blank")}
                               >
                                 <FileText className="mr-2 h-4 w-4" />
                                 View your warranty plan
@@ -1307,7 +1376,7 @@ const CustomerDashboard = () => {
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => window.open("/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf", "_blank")}
+                            onClick={() => window.open("/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf", "_blank")}
                           >
                             <FileText className="mr-2 h-4 w-4" />
                             View T's and C's
@@ -1315,7 +1384,7 @@ const CustomerDashboard = () => {
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => window.open("/lovable-uploads/Platinum-warranty-plan_v2.2.pdf", "_blank")}
+                            onClick={() => window.open("/Platinum-warranty-plan_v2.2.pdf", "_blank")}
                           >
                             <FileText className="mr-2 h-4 w-4" />
                             View your warranty plan
