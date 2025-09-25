@@ -919,6 +919,18 @@ const CustomerDashboard = () => {
                             </div>
                           </div>
                           
+                          {/* Claim Details */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-700">Claim Limit</Label>
+                              <p className="font-bold text-lg text-blue-900">£1250 per claim</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-700">Excess</Label>
+                              <p className="font-bold text-lg text-blue-900">£50</p>
+                            </div>
+                          </div>
+                          
                           <div className="pt-4 border-t">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                               <div className="sm:text-right">
@@ -936,22 +948,18 @@ const CustomerDashboard = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                asChild
+                                onClick={() => window.open("/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf", "_blank")}
                               >
-                                <a href="/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf" target="_blank" rel="noopener noreferrer">
-                                  <FileText className="mr-2 h-4 w-4" />
-                                  View T's and C's
-                                </a>
+                                <FileText className="mr-2 h-4 w-4" />
+                                View T's and C's
                               </Button>
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                asChild
+                                onClick={() => window.open("/lovable-uploads/Platinum-warranty-plan_v2.2.pdf", "_blank")}
                               >
-                                <a href="/lovable-uploads/Platinum-warranty-plan_v2.2.pdf" target="_blank" rel="noopener noreferrer">
-                                  <FileText className="mr-2 h-4 w-4" />
-                                  View your warranty plan
-                                </a>
+                                <FileText className="mr-2 h-4 w-4" />
+                                View your warranty plan
                               </Button>
                             </div>
                           </div>
@@ -978,94 +986,124 @@ const CustomerDashboard = () => {
                       </CardTitle>
                     </CardHeader>
                      <CardContent>
-                       {editingAddress ? (
-                         <div className="space-y-4">
-                           <div className="grid grid-cols-2 gap-4">
-                             <div>
-                               <Label htmlFor="firstName">First Name</Label>
-                               <Input
-                                 id="firstName"
-                                 value={address.firstName}
-                                 onChange={(e) => setAddress({...address, firstName: e.target.value})}
-                               />
-                             </div>
-                             <div>
-                               <Label htmlFor="lastName">Last Name</Label>
-                               <Input
-                                 id="lastName"
-                                 value={address.lastName}
-                                 onChange={(e) => setAddress({...address, lastName: e.target.value})}
-                               />
-                             </div>
-                           </div>
-                           <div>
-                             <Label htmlFor="phone">Phone Number</Label>
-                             <Input
-                               id="phone"
-                               value={address.phone}
-                               onChange={(e) => setAddress({...address, phone: e.target.value})}
-                             />
-                           </div>
+                        {editingAddress ? (
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="firstName">First Name</Label>
+                                <Input
+                                  id="firstName"
+                                  value={address.firstName}
+                                  onChange={(e) => setAddress({...address, firstName: e.target.value})}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="lastName">Last Name</Label>
+                                <Input
+                                  id="lastName"
+                                  value={address.lastName}
+                                  onChange={(e) => setAddress({...address, lastName: e.target.value})}
+                                />
+                              </div>
+                            </div>
                             <div>
-                              <Label htmlFor="street">Full Address</Label>
+                              <Label htmlFor="phone">Phone Number</Label>
                               <Input
-                                id="street"
-                                placeholder="Flat/Building Number, Building Name, Street"
-                                value={address.street}
-                                onChange={(e) => setAddress({...address, street: e.target.value})}
+                                id="phone"
+                                value={address.phone}
+                                onChange={(e) => setAddress({...address, phone: e.target.value})}
                               />
                             </div>
-                           <div className="grid grid-cols-2 gap-4">
                              <div>
-                               <Label htmlFor="city">City</Label>
+                               <Label htmlFor="street">Address Line 1</Label>
                                <Input
-                                 id="city"
-                                 value={address.city}
-                                 onChange={(e) => setAddress({...address, city: e.target.value})}
+                                 id="street"
+                                 placeholder="Flat/Building Number, Building Name, Street"
+                                 value={address.street}
+                                 onChange={(e) => setAddress({...address, street: e.target.value})}
                                />
                              </div>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="city">City/Town</Label>
+                                <Input
+                                  id="city"
+                                  value={address.city}
+                                  onChange={(e) => setAddress({...address, city: e.target.value})}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="postcode">Post Code</Label>
+                                <Input
+                                  id="postcode"
+                                  value={address.postcode}
+                                  onChange={(e) => setAddress({...address, postcode: e.target.value})}
+                                />
+                              </div>
+                            </div>
+                            <Button onClick={updateAddress} className="w-full">
+                              Update Address
+                            </Button>
+                          </div>
+                         ) : (
+                           <div className="space-y-3">
+                             {/* Customer Name */}
                              <div>
-                               <Label htmlFor="postcode">Postcode</Label>
-                               <Input
-                                 id="postcode"
-                                 value={address.postcode}
-                                 onChange={(e) => setAddress({...address, postcode: e.target.value})}
-                               />
+                               <Label className="text-sm font-medium text-gray-500">Full Name</Label>
+                               <p className="font-semibold text-base">
+                                 {address.firstName && address.lastName 
+                                   ? `${address.firstName} ${address.lastName}` 
+                                   : (address.firstName || address.lastName || 'N/A')}
+                               </p>
+                             </div>
+                             
+                             {/* Email Address */}
+                             <div>
+                               <Label className="text-sm font-medium text-gray-500">Email Address</Label>
+                               <p className="font-semibold text-base">{user?.email}</p>
+                             </div>
+                             
+                             {/* Phone Number */}
+                             <div>
+                               <Label className="text-sm font-medium text-gray-500">Phone Number</Label>
+                               <p className="font-semibold text-base">
+                                 {address.phone || 'N/A'}
+                               </p>
+                             </div>
+                             
+                             {/* Address Line 1 */}
+                             <div>
+                               <Label className="text-sm font-medium text-gray-500">Address Line 1</Label>
+                               <p className="font-semibold text-base">
+                                 {address.street || 'N/A'}
+                               </p>
+                             </div>
+                             
+                             {/* Post Code */}
+                             <div>
+                               <Label className="text-sm font-medium text-gray-500">Post Code</Label>
+                               <p className="font-semibold text-base">
+                                 {address.postcode || 'N/A'}
+                               </p>
+                             </div>
+                             
+                             {/* City/Town */}
+                             <div>
+                               <Label className="text-sm font-medium text-gray-500">City/Town</Label>
+                               <p className="font-semibold text-base">
+                                 {address.city || 'N/A'}
+                               </p>
+                             </div>
+                             
+                             {/* Country */}
+                             <div>
+                               <Label className="text-sm font-medium text-gray-500">Country</Label>
+                               <p className="font-semibold text-base">
+                                 {address.country || 'United Kingdom'}
+                               </p>
                              </div>
                            </div>
-                           <Button onClick={updateAddress} className="w-full">
-                             Update Address
-                           </Button>
-                         </div>
-                        ) : (
-                          <div className="space-y-2">
-                            {(address.firstName || address.lastName) && (
-                              <p className="font-medium">{address.firstName} {address.lastName}</p>
-                            )}
-                            {address.phone && (
-                              <p className="flex items-center gap-2">
-                                <Phone className="h-4 w-4" />
-                                {address.phone}
-                              </p>
-                            )}
-                            {address.street && (
-                              <p>{address.street}</p>
-                            )}
-                            {(address.city || address.postcode) && (
-                              <p>
-                                {[address.city, customerData?.county, address.postcode]
-                                  .filter(Boolean)
-                                  .join(', ')}
-                              </p>
-                            )}
-                            {address.country && (
-                              <p>{address.country}</p>
-                            )}
-                            {!address.street && !address.city && !address.postcode && (
-                              <p className="text-gray-500 italic">No address information available</p>
-                            )}
-                          </div>
-                        )}
+                         )}
                      </CardContent>
                   </Card>
                 </div>
@@ -1157,11 +1195,7 @@ const CustomerDashboard = () => {
                               </div>
                               <div className="flex gap-2">
                                 <Button size="sm" variant="outline" onClick={() => {
-                                  const iframe = document.createElement('iframe');
-                                  iframe.src = "/lovable-uploads/Platinum-warranty-plan_v2.2.pdf";
-                                  iframe.style.display = 'none';
-                                  document.body.appendChild(iframe);
-                                  setTimeout(() => document.body.removeChild(iframe), 100);
+                                  window.open("/lovable-uploads/Platinum-warranty-plan_v2.2.pdf", "_blank");
                                 }}>
                                   <FileText className="h-4 w-4 mr-1" />
                                   View
@@ -1191,11 +1225,7 @@ const CustomerDashboard = () => {
                               </div>
                               <div className="flex gap-2">
                                 <Button size="sm" variant="outline" onClick={() => {
-                                  const iframe = document.createElement('iframe');
-                                  iframe.src = "/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf";
-                                  iframe.style.display = 'none';
-                                  document.body.appendChild(iframe);
-                                  setTimeout(() => document.body.removeChild(iframe), 100);
+                                  window.open("/lovable-uploads/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2.pdf", "_blank");
                                 }}>
                                   <FileText className="h-4 w-4 mr-1" />
                                   View
