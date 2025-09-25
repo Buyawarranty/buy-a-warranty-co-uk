@@ -306,10 +306,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           });
           
           return; // Don't automatically process Stripe - let user decide
-        } else if (checkoutData?.checkoutUrl) {
-          console.log('🌐 Redirecting to Bumper checkout:', checkoutData.checkoutUrl);
+        } else if (checkoutData?.url) {
+          console.log('🌐 Redirecting to Bumper checkout:', checkoutData.url);
           // Redirect to Bumper checkout
-          window.location.href = checkoutData.checkoutUrl;
+          window.location.href = checkoutData.url;
         } else {
           console.log('❌ No checkout URL received from Bumper');
           toast.error('Payment setup failed. Please try again.');
