@@ -979,9 +979,8 @@ const CustomerDashboard = () => {
           </Card>
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="policies">All Policies</TabsTrigger>
               <TabsTrigger value="support">Support</TabsTrigger>
             </TabsList>
 
@@ -1363,126 +1362,6 @@ const CustomerDashboard = () => {
                 </div>
               </div>
             </TabsContent>
-
-            <TabsContent value="policies" className="space-y-6">
-              <div className="space-y-6">
-                {policies.map((policy) => (
-                  <Card 
-                    key={policy.id} 
-                    className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
-                    onClick={() => {
-                      setSelectedPolicy(policy);
-                      setActiveTab('overview');
-                    }}
-                  >
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between text-lg">
-                        <span className="flex items-center">
-                          <FileText className="mr-2 h-5 w-5" />
-                          Your Active Policy
-                        </span>
-                        <span className="text-sm font-normal text-gray-600">
-                          {policies.length} total policies
-                        </span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy Number</Label>
-                          <p className="font-semibold text-sm sm:text-base">{policy.policy_number}</p>
-                        </div>
-                        <div>
-                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
-                          <p className="font-semibold text-sm sm:text-base">
-                            {policy.plan_type.includes('motorbike') || policy.plan_type.includes('Motorbike') 
-                              ? 'Motorbike Plan' 
-                              : policy.plan_type.includes('van') || policy.plan_type.includes('Van')
-                              ? 'Van Plan'
-                              : policy.plan_type.includes('phev') || policy.plan_type.includes('electric') || policy.plan_type.includes('Electric')
-                              ? 'Electric/Hybrid Plan'
-                              : 'Car Plan'}
-                          </p>
-                        </div>
-                        <div>
-                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
-                          <p className="font-semibold text-sm sm:text-base text-black">
-                            {customerData?.registration_plate || 'Not provided'}
-                          </p>
-                        </div>
-                        <div>
-                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Warranty Duration</Label>
-                          <p className="font-semibold text-sm sm:text-base">
-                            {getWarrantyDurationDisplay(policy.payment_type)}
-                          </p>
-                        </div>
-                        <div>
-                          <Label className="text-xs sm:text-sm font-medium text-gray-500">Status</Label>
-                          <p className={`font-semibold capitalize text-sm sm:text-base flex items-center gap-2 ${
-                            policy.status === 'active' ? 'text-green-600' : 
-                            policy.status === 'expired' ? 'text-red-600' : 'text-yellow-600'
-                          }`}>
-                            {policy.status === 'active' && <CheckCircle className="h-4 w-4" />}
-                            {policy.status === 'expired' && <X className="h-4 w-4" />}
-                            {policy.status === 'pending' && <AlertCircle className="h-4 w-4" />}
-                            {policy.status}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* Order Summary */}
-                      {policy.payment_amount && (
-                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                          <Label className="text-xs sm:text-sm font-medium text-gray-700">Order Summary</Label>
-                          <div className="flex justify-between items-center mt-2">
-                            <span className="text-sm text-gray-600">Total Amount Paid</span>
-                            <span className="font-bold text-lg text-gray-900">£{policy.payment_amount}</span>
-                          </div>
-                          <div className="flex justify-between items-center mt-1">
-                            <span className="text-sm text-gray-600">Payment Type</span>
-                            <span className="text-sm text-gray-900">{getPaymentTypeDisplay(policy.payment_type)}</span>
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className="pt-4 border-t">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                          <div className="sm:text-right">
-                            <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
-                            <p className="font-semibold text-sm sm:text-base">
-                              {new Date(policy.policy_end_date).toLocaleDateString('en-GB')}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="pt-4 border-t">
-                        <div className="flex flex-wrap gap-3">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => window.open("/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-8.pdf", "_blank")}
-                          >
-                            <FileText className="mr-2 h-4 w-4" />
-                            View T's and C's
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => window.open("/Platinum-warranty-plan_v2.2-8.pdf", "_blank")}
-                          >
-                            <FileText className="mr-2 h-4 w-4" />
-                            View your warranty plan
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
 
             <TabsContent value="support" className="space-y-6">
               <div className="max-w-2xl">
