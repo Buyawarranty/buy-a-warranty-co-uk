@@ -32,6 +32,15 @@ interface CustomerPolicy {
   claim_limit?: number;
   voluntary_excess?: number;
   warranty_number?: string;
+  registration_plate?: string;
+  phone?: string;
+  first_name?: string;
+  last_name?: string;
+  street?: string;
+  town?: string;
+  postcode?: string;
+  country?: string;
+  mileage?: string;
   mot_fee?: boolean;
   tyre_cover?: boolean;
   wear_tear?: boolean;
@@ -42,6 +51,23 @@ interface CustomerPolicy {
   mot_repair?: boolean;
   lost_key?: boolean;
   consequential?: boolean;
+  customers?: {
+    id: string;
+    vehicle_make?: string;
+    vehicle_model?: string;
+    registration_plate?: string;
+    mileage?: string;
+    phone?: string;
+    first_name?: string;
+    last_name?: string;
+    street?: string;
+    town?: string;
+    postcode?: string;
+    country?: string;
+    building_number?: string;
+    building_name?: string;
+    flat_number?: string;
+  };
 }
 
 interface PolicyDocument {
@@ -283,10 +309,17 @@ const CustomerDashboard = () => {
     console.log("fetchPolicies: Fetching policies for user:", user.id, "email:", user.email);
     
     try {
-      // Always fetch by email first for better data consistency
+      // Fetch policies with joined customer data for complete information
       let { data, error } = await supabase
         .from('customer_policies')
-        .select('*')
+        .select(`
+          *,
+          customers!customer_id (
+            id, vehicle_make, vehicle_model, registration_plate, mileage, 
+            phone, first_name, last_name, street, town, postcode, country,
+            building_number, building_name, flat_number
+          )
+        `)
         .eq('email', user.email)
         .order('created_at', { ascending: false });
 
@@ -297,7 +330,14 @@ const CustomerDashboard = () => {
         console.log("fetchPolicies: No policies found by email, trying by user_id");
         const userIdResult = await supabase
           .from('customer_policies')
-          .select('*')
+          .select(`
+            *,
+            customers!customer_id (
+              id, vehicle_make, vehicle_model, registration_plate, mileage, 
+              phone, first_name, last_name, street, town, postcode, country,
+              building_number, building_name, flat_number
+            )
+          `)
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
         
@@ -318,6 +358,7 @@ const CustomerDashboard = () => {
 
       if (data && data.length > 0) {
         console.log("fetchPolicies: Found policies:", data.length);
+        console.log("fetchPolicies: Policy data:", data);
         
         // Fetch documents for policies
         const policiesWithDocuments = await fetchPolicyDocuments(data);
@@ -325,19 +366,43 @@ const CustomerDashboard = () => {
         setPolicies(policiesWithDocuments);
         setSelectedPolicy(policiesWithDocuments[0]); // Set first policy as selected (latest)
         
-        // Fetch customer data for address and phone
-        await fetchCustomerData(user.email);
-        
-        // Set address from the first policy
+        // Set customer data from the first policy's linked customer data
         const firstPolicy = policiesWithDocuments[0];
-        if (firstPolicy.address && typeof firstPolicy.address === 'object') {
-          const addressData = firstPolicy.address as Record<string, any>;
+        if (firstPolicy?.customers) {
+          const customerData = firstPolicy.customers;
+          console.log('Setting customer data from policy:', customerData);
+          setCustomerData(customerData);
+          
+          // Set address from customer data
           setAddress(prev => ({
             ...prev,
-            street: addressData.street || prev.street,
-            city: addressData.city || prev.city,
-            postcode: addressData.postcode || prev.postcode,
-            country: addressData.country || 'United Kingdom'
+            phone: customerData.phone || '',
+            firstName: customerData.first_name || firstPolicy.first_name || '',
+            lastName: customerData.last_name || firstPolicy.last_name || '',
+            street: (() => {
+              const addressParts = [
+                customerData.flat_number,
+                customerData.building_name,
+                customerData.building_number,
+                customerData.street
+              ].filter(part => part && part.trim() && part !== ',');
+              return addressParts.length > 0 ? addressParts.join(', ') : (firstPolicy.street || '');
+            })(),
+            city: customerData.town || firstPolicy.town || '',
+            postcode: customerData.postcode || firstPolicy.postcode || '',
+            country: customerData.country || firstPolicy.country || 'United Kingdom'
+          }));
+        } else {
+          // Fallback to policy data if no linked customer data
+          setAddress(prev => ({
+            ...prev,
+            phone: firstPolicy.phone || '',
+            firstName: firstPolicy.first_name || '',
+            lastName: firstPolicy.last_name || '',
+            street: firstPolicy.street || '',
+            city: firstPolicy.town || '',
+            postcode: firstPolicy.postcode || '',
+            country: firstPolicy.country || 'United Kingdom'
           }));
         }
 
@@ -1123,13 +1188,13 @@ const CustomerDashboard = () => {
                             <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-700">Claim Limit</Label>
                               <p className="font-bold text-lg text-blue-900">
-                                £{(selectedPolicy.claim_limit || customerData?.claim_limit || 1250).toLocaleString()} per claim
+                                £{(selectedPolicy?.claim_limit || customerData?.claim_limit || 1250).toLocaleString()} per claim
                               </p>
                             </div>
                             <div>
                               <Label className="text-xs sm:text-sm font-medium text-gray-700">Voluntary Excess</Label>
                               <p className="font-bold text-lg text-blue-900">
-                                £{(selectedPolicy.voluntary_excess || customerData?.voluntary_excess || 0)}
+                                £{selectedPolicy?.voluntary_excess || customerData?.voluntary_excess || 0}
                               </p>
                             </div>
                           </div>
@@ -1138,41 +1203,41 @@ const CustomerDashboard = () => {
                           <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                             <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Order Summary</Label>
                             <div className="space-y-2">
-                              {(selectedPolicy.payment_amount || customerData?.final_amount) && (
+                              {(selectedPolicy?.payment_amount || customerData?.final_amount) && (
                                 <div className="flex justify-between items-center">
                                   <span className="text-sm text-gray-600">Total Amount Paid</span>
                                   <span className="font-bold text-lg text-gray-900">
-                                    £{selectedPolicy.payment_amount || customerData?.final_amount}
+                                    £{selectedPolicy?.payment_amount || customerData?.final_amount}
                                   </span>
                                 </div>
                               )}
                               <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Payment Duration</span>
-                                <span className="text-sm text-gray-900">{getPaymentTypeDisplay(selectedPolicy.payment_type)}</span>
+                                <span className="text-sm text-gray-900">{getPaymentTypeDisplay(selectedPolicy?.payment_type)}</span>
                               </div>
                               <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Policy Number</span>
-                                <span className="text-sm font-mono text-gray-900">{selectedPolicy.policy_number}</span>
+                                <span className="text-sm font-mono text-gray-900">{selectedPolicy?.policy_number}</span>
                               </div>
                               <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Warranty Reference</span>
                                 <span className="text-sm font-mono text-gray-900">
-                                  {selectedPolicy.warranty_number || customerData?.warranty_reference_number}
+                                  {selectedPolicy?.warranty_number || customerData?.warranty_reference_number}
                                 </span>
                               </div>
                             </div>
                           </div>
                           
                           <div className="pt-4 border-t">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                              <div className="sm:text-right">
-                                <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
-                                <p className="font-semibold text-sm sm:text-base">
-                                  {new Date(selectedPolicy.policy_end_date).toLocaleDateString('en-GB')}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
+                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                             <div className="sm:text-right">
+                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
+                               <p className="font-semibold text-sm sm:text-base">
+                                 {selectedPolicy?.policy_end_date ? new Date(selectedPolicy.policy_end_date).toLocaleDateString('en-GB') : 'N/A'}
+                               </p>
+                             </div>
+                           </div>
+                         </div>
 
                           {/* Actions */}
                           <div className="pt-4 border-t">
