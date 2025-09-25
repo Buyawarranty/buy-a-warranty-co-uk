@@ -330,36 +330,27 @@ serve(async (req) => {
 
 // Generate signature exactly like Bumper API documentation requires
 async function generateSignature(payload: any, secretKey: string): Promise<string> {
-  // Define the exact fields that Bumper expects in signature (based on API documentation)
-  const signatureFields = [
-    'amount',
-    'building_name',
-    'building_number', 
-    'country',
-    'county',
-    'currency',
-    'email',
-    'failure_url',
-    'first_name',
-    'flat_number',
-    'last_name',
-    'mobile',
-    'order_reference',
-    'postcode',
-    'product_id', // Keep product_id for signature generation even though we use instalments in payload
-    'send_email',
-    'send_sms',
-    'street',
-    'success_url',
-    'town',
-    'vehicle_reg'
-  ];
+  // CRITICAL: According to Bumper API docs, exclude these fields from signature:
+  // api_key, signature, product_description, preferred_product_type, additional_data, instalments
+  const excludedFields = new Set([
+    'api_key', 
+    'signature', 
+    'product_description', 
+    'preferred_product_type', 
+    'additional_data',
+    'instalments' // This is our custom field, not part of signature
+  ]);
 
-  // Build the signature payload exactly as Bumper expects
+  // Build the signature payload with ALL payload fields EXCEPT excluded ones
   const signaturePayload: any = {};
   
-  for (const field of signatureFields) {
-    let value = payload[field];
+  for (const [field, fieldValue] of Object.entries(payload)) {
+    // Skip excluded fields
+    if (excludedFields.has(field)) {
+      continue;
+    }
+    
+    let value = fieldValue;
     
     // Handle missing values - convert to empty string
     if (value === null || value === undefined) {
@@ -417,36 +408,27 @@ async function generateSignature(payload: any, secretKey: string): Promise<strin
 
 // Debug function to see exact signature string
 async function debugSignatureString(payload: any): Promise<string> {
-  // Define the exact fields that Bumper expects in signature (based on API documentation)
-  const signatureFields = [
-    'amount',
-    'building_name',
-    'building_number', 
-    'country',
-    'county',
-    'currency',
-    'email',
-    'failure_url',
-    'first_name',
-    'flat_number',
-    'last_name',
-    'mobile',
-    'order_reference',
-    'postcode',
-    'product_id', // Keep product_id for signature generation
-    'send_email',
-    'send_sms',
-    'street',
-    'success_url',
-    'town',
-    'vehicle_reg'
-  ];
+  // CRITICAL: According to Bumper API docs, exclude these fields from signature:
+  // api_key, signature, product_description, preferred_product_type, additional_data, instalments
+  const excludedFields = new Set([
+    'api_key', 
+    'signature', 
+    'product_description', 
+    'preferred_product_type', 
+    'additional_data',
+    'instalments' // This is our custom field, not part of signature
+  ]);
 
-  // Build the signature payload exactly as Bumper expects
+  // Build the signature payload with ALL payload fields EXCEPT excluded ones
   const signaturePayload: any = {};
   
-  for (const field of signatureFields) {
-    let value = payload[field];
+  for (const [field, fieldValue] of Object.entries(payload)) {
+    // Skip excluded fields
+    if (excludedFields.has(field)) {
+      continue;
+    }
+    
+    let value = fieldValue;
     
     // Handle missing values - convert to empty string
     if (value === null || value === undefined) {
@@ -463,7 +445,7 @@ async function debugSignatureString(payload: any): Promise<string> {
       if (field === 'success_url' || field === 'failure_url') {
         // Decode URLs to ensure they're not double-encoded
         try {
-          value = decodeURIComponent(value);
+          value = decodeURIComponent(String(value));
         } catch (e) {
           // If decoding fails, use the original value
           console.log(`BUMPER DEBUG: Failed to decode URL ${field}: ${value}`);
