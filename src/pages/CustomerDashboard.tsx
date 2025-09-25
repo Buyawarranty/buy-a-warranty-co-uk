@@ -970,12 +970,12 @@ const CustomerDashboard = () => {
                                    : 'Vehicle Details Not Provided'}
                                </p>
                              </div>
-                             <div>
-                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
-                               <p className="font-semibold text-sm sm:text-base text-black">
-                                 {customerData?.registration_plate || 'Not provided'}
-                               </p>
-                             </div>
+                            <div>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
+                              <p className="font-semibold text-sm sm:text-base text-black">
+                                {customerData?.registration_plate || selectedPolicy?.policy_number?.split('-').pop() || 'Not provided'}
+                              </p>
+                            </div>
                              <div>
                                <Label className="text-xs sm:text-sm font-medium text-gray-500">Mileage</Label>
                                <p className="font-semibold text-sm sm:text-base">
@@ -996,52 +996,125 @@ const CustomerDashboard = () => {
                             </div>
                           </div>
 
-                          {/* Included Protection */}
-                          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                            <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Included Protection</Label>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              {selectedPolicy.breakdown_recovery && (
+                          {/* Protection Add-ons */}
+                          <div className="space-y-4">
+                            {/* Paid Protection Add-ons */}
+                            {(selectedPolicy.breakdown_recovery || selectedPolicy.mot_fee || selectedPolicy.tyre_cover || 
+                              selectedPolicy.europe_cover || selectedPolicy.vehicle_rental || selectedPolicy.lost_key ||
+                              selectedPolicy.mot_repair || selectedPolicy.wear_tear || selectedPolicy.consequential ||
+                              selectedPolicy.transfer_cover) && (
+                              <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                                <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Paid Protection Add-ons</Label>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  {selectedPolicy.breakdown_recovery && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">24/7 Vehicle Recovery</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.mot_fee && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">MOT Test Fee</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.tyre_cover && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">Tyre Cover</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.europe_cover && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">Europe Cover</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.vehicle_rental && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">Vehicle Rental</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.lost_key && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">Lost Key Cover</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.mot_repair && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">MOT Repair Cover</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.wear_tear && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">Wear & Tear Cover</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.consequential && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">Consequential Damage</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                  {selectedPolicy.transfer_cover && (
+                                    <div className="flex items-center gap-2">
+                                      <CheckCircle className="h-4 w-4 text-orange-600" />
+                                      <span className="text-sm text-gray-700">Transfer Cover</span>
+                                      <span className="text-xs text-orange-600 font-medium ml-auto">PAID</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Free Included Protection */}
+                            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                              <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Included Protection (Standard)</Label>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div className="flex items-center gap-2">
                                   <CheckCircle className="h-4 w-4 text-green-600" />
-                                  <span className="text-sm text-gray-700">Vehicle Recovery</span>
+                                  <span className="text-sm text-gray-700">Engine & Gearbox Coverage</span>
                                   <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
                                 </div>
-                              )}
-                              {selectedPolicy.mot_fee && (
                                 <div className="flex items-center gap-2">
                                   <CheckCircle className="h-4 w-4 text-green-600" />
-                                  <span className="text-sm text-gray-700">MOT Test Fee</span>
+                                  <span className="text-sm text-gray-700">Electrical System Coverage</span>
                                   <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
                                 </div>
-                              )}
-                              {selectedPolicy.tyre_cover && (
                                 <div className="flex items-center gap-2">
                                   <CheckCircle className="h-4 w-4 text-green-600" />
-                                  <span className="text-sm text-gray-700">Tyre Cover</span>
+                                  <span className="text-sm text-gray-700">Air Conditioning</span>
                                   <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
                                 </div>
-                              )}
-                              {selectedPolicy.europe_cover && (
                                 <div className="flex items-center gap-2">
                                   <CheckCircle className="h-4 w-4 text-green-600" />
-                                  <span className="text-sm text-gray-700">Europe Cover</span>
+                                  <span className="text-sm text-gray-700">Steering & Suspension</span>
                                   <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
                                 </div>
-                              )}
-                              {selectedPolicy.vehicle_rental && (
                                 <div className="flex items-center gap-2">
                                   <CheckCircle className="h-4 w-4 text-green-600" />
-                                  <span className="text-sm text-gray-700">Vehicle Rental</span>
+                                  <span className="text-sm text-gray-700">Braking System</span>
                                   <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
                                 </div>
-                              )}
-                              {selectedPolicy.lost_key && (
                                 <div className="flex items-center gap-2">
                                   <CheckCircle className="h-4 w-4 text-green-600" />
-                                  <span className="text-sm text-gray-700">Lost Key Cover</span>
+                                  <span className="text-sm text-gray-700">Fuel System</span>
                                   <span className="text-xs text-green-600 font-medium ml-auto">FREE</span>
                                 </div>
-                              )}
+                              </div>
                             </div>
                           </div>
                           
