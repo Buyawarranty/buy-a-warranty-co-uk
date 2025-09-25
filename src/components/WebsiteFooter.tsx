@@ -109,7 +109,7 @@ const WebsiteFooter = () => {
                 <img 
                   src={companyRegistrationFooter} 
                   alt="Buyawarranty.co.uk trading information and registered address" 
-                  className="max-w-full h-auto"
+                  className="max-w-[50%] h-auto mx-auto"
                 />
               </div>
             </div>
