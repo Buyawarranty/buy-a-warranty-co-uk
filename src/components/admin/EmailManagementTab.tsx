@@ -11,6 +11,10 @@ import { Mail, Plus, Edit, Eye, Send, Users, Calendar, TrendingUp } from 'lucide
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TestEmailFunctionDirect } from "./TestEmailFunctionDirect";
+import { TestAutomatedEmail } from "./TestAutomatedEmail";
+import { EmailFunctionDiagnostics } from "./EmailFunctionDiagnostics";
+import { ResendWelcomeEmailTool } from "./ResendWelcomeEmailTool";
 
 interface EmailTemplate {
   id: string;
@@ -668,6 +672,19 @@ const EmailManagementTab = () => {
                 <div className="text-2xl font-bold">{templates.filter(t => t.is_active).length}</div>
               </CardContent>
             </Card>
+          </div>
+          
+          {/* Email Tools Section */}
+          <div className="space-y-6 mt-8">
+            <h3 className="text-lg font-semibold">Email Tools & Diagnostics</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ResendWelcomeEmailTool />
+              <TestEmailFunctionDirect />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <TestAutomatedEmail />
+              <EmailFunctionDiagnostics />
+            </div>
           </div>
         </TabsContent>
       </Tabs>

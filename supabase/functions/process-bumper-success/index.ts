@@ -406,9 +406,9 @@ serve(async (req) => {
         error: emailError
       });
 
-      if (emailError) {
+      if (emailError || (emailResult && emailResult.error)) {
         logStep("ERROR: Welcome email failed", { 
-          error: emailError,
+          error: emailError || emailResult?.error,
           policyId: policy.id
         });
         
@@ -420,7 +420,7 @@ serve(async (req) => {
             email_sent_at: new Date().toISOString()
           })
           .eq('id', policy.id);
-      } else {
+      } else if (emailResult && emailResult.success) {
         logStep("SUCCESS: Welcome email sent successfully", emailResult);
         
         // Update policy status to reflect email success
@@ -428,6 +428,20 @@ serve(async (req) => {
           .from('customer_policies')
           .update({ 
             email_sent_status: 'sent',
+            email_sent_at: new Date().toISOString()
+          })
+          .eq('id', policy.id);
+      } else {
+        logStep("WARNING: Welcome email status unclear", { 
+          emailResult,
+          policyId: policy.id
+        });
+        
+        // Mark as failed if response is unclear
+        await supabaseClient
+          .from('customer_policies')
+          .update({ 
+            email_sent_status: 'failed',
             email_sent_at: new Date().toISOString()
           })
           .eq('id', policy.id);
