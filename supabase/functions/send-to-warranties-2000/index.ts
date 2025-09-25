@@ -373,23 +373,46 @@ serve(async (req) => {
       }
     });
 
-    // Build the registration data with validation (using same format as working manual function)
+    // Build the registration data with proper address and data mapping
     const registrationData: Warranties2000Registration = {
       Title: "Mr",
       First: customer.first_name || customer.name?.split(' ')[0] || "Customer",
       Surname: customer.last_name || customer.name?.split(' ').slice(1).join(' ') || "Name",
-      Addr1: customer.building_number && customer.street 
-        ? `${customer.building_number} ${customer.street}` 
-        : customer.street || "Address Line 1",
-      Addr2: customer.building_name || customer.flat_number || "",
+      // Fix address mapping - handle all address field combinations properly
+      Addr1: (() => {
+        let address1 = "";
+        if (customer.building_number && customer.street) {
+          address1 = `${customer.building_number} ${customer.street}`;
+        } else if (customer.street) {
+          address1 = customer.street;
+        } else if (customer.building_name) {
+          address1 = customer.building_name;
+        } else {
+          address1 = "Address Line 1";
+        }
+        return address1;
+      })(),
+      Addr2: (() => {
+        // Use flat number, building name, or leave empty if already used in Addr1
+        if (customer.flat_number && customer.building_name && !customer.street) {
+          return `${customer.flat_number}, ${customer.building_name}`;
+        } else if (customer.flat_number) {
+          return customer.flat_number;
+        } else if (customer.building_name && customer.street) {
+          return customer.building_name;
+        }
+        return "";
+      })(),
       Town: customer.town || "Town",
       PCode: customer.postcode || "UNKNOWN",
-      Tel: customer.phone || "N/A",
-      Mobile: customer.phone || "N/A",
+      // Fix phone mapping - ensure phone number is properly sent
+      Tel: customer.phone && customer.phone.trim() ? customer.phone.trim() : "N/A",
+      Mobile: customer.phone && customer.phone.trim() ? customer.phone.trim() : "N/A", 
       EMail: customer.email,
       PurDate: new Date().toISOString().split('T')[0], // Today's date
-      Make: customer.vehicle_make || "UNKNOWN",
-      Model: customer.vehicle_model || "UNKNOWN",
+      // Fix vehicle data mapping - ensure make/model are properly sent
+      Make: customer.vehicle_make && customer.vehicle_make.trim() ? customer.vehicle_make.trim() : "UNKNOWN",
+      Model: customer.vehicle_model && customer.vehicle_model.trim() ? customer.vehicle_model.trim() : "UNKNOWN",
       RegNum: customer.registration_plate || "UNKNOWN",
       Mileage: customer.mileage || "50000",
       EngSize: "1968", // Default engine size
@@ -404,8 +427,8 @@ serve(async (req) => {
         return nextYear.toISOString().split('T')[0];
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
-      VolEx: (customer.voluntary_excess || 0).toString(),
-      Notes: `Plan: ${customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${maxClaimAmount} | VolExcess: ${customer.voluntary_excess || 0}`
+      VolEx: (policy?.voluntary_excess || customer.voluntary_excess || 0).toString(),
+      Notes: `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${maxClaimAmount} | VolExcess: ${policy?.voluntary_excess || customer.voluntary_excess || 0}`
       // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
 
