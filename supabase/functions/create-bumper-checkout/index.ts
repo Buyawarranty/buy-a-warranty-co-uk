@@ -155,7 +155,7 @@ serve(async (req) => {
       town: customerData.city || customerData.town || "",
       county: customerData.county || "",
       postcode: customerData.postcode || "",
-      country: customerData.country || "",
+      country: customerData.country || "UK", // Default to UK as per Bumper example
       product_id: "4", // Use product_id for signature generation (Bumper's legacy field)
       send_sms: false, // Required by Bumper API
       send_email: false // Required by Bumper API
@@ -175,7 +175,7 @@ serve(async (req) => {
       email: customerData.email || "",
       mobile: customerData.phone || customerData.mobile || "",
       vehicle_reg: customerData.vehicle_reg || vehicleData.regNumber || "",
-      // Address fields directly (not nested in object)
+      // Address fields directly (not nested in object) with proper defaults
       flat_number: customerData.flat_number || "",
       building_name: customerData.building_name || "",
       building_number: customerData.building_number || "",
@@ -183,8 +183,8 @@ serve(async (req) => {
       town: customerData.city || customerData.town || "",
       county: customerData.county || "",
       postcode: customerData.postcode || "",
-      country: customerData.country || "",
-      instalments: instalmentCount, // Changed from product_id to instalments (Feb 2025 API update)
+      country: customerData.country || "UK", // Default to UK as per Bumper requirements
+      product_id: "4", // Use product_id instead of instalments for API request
       send_sms: false, // Required by Bumper API
       send_email: false, // Required by Bumper API
       // product_description should be an array of objects as per Bumper documentation
