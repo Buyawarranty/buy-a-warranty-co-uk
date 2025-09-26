@@ -557,7 +557,20 @@ const Index = () => {
       {/* Removed CarJourneyProgress component to eliminate progress bar animation between steps */}
       
       {currentStep === 1 && (
-        <Homepage onRegistrationSubmit={handleHomepageRegistration} />
+        <>
+          <Homepage onRegistrationSubmit={handleHomepageRegistration} />
+          
+          {/* Debug navigation for testing - remove in production */}
+          <div className="fixed bottom-4 right-4 bg-red-100 p-4 rounded shadow z-50">
+            <p className="text-xs mb-2">Debug Navigation (Current Step: {currentStep})</p>
+            <div className="flex gap-2">
+              <button onClick={() => handleStepChange(1)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Step 1</button>
+              <button onClick={() => handleStepChange(2)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Step 2</button>
+              <button onClick={() => handleStepChange(3)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Step 3</button>
+              <button onClick={() => handleStepChange(4)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Step 4</button>
+            </div>
+          </div>
+        </>
       )}
 
       {currentStep === 2 && vehicleData && (
@@ -580,70 +593,32 @@ const Index = () => {
           <PerformanceOptimizedSuspense height="16">
             <MaintenanceBanner />
           </PerformanceOptimizedSuspense>
-          {(() => {
-            console.log('🔧 Step 3 Debug - vehicleData:', vehicleData);
-            console.log('🔧 Step 3 Debug - currentStep:', currentStep);
-            console.log('🔧 Step 3 Debug - formData:', formData);
-            return vehicleData ? (
-              <PerformanceOptimizedSuspense height="60vh">
-                <PricingTable 
-                  vehicleData={vehicleData} 
-                  onBack={() => handleBackToStep(2)} 
-                  onPlanSelected={handlePlanSelected}
-                />
-              </PerformanceOptimizedSuspense>
-            ) : (
-              <div className="w-full px-4 py-8">
-                <div className="max-w-4xl mx-auto text-center space-y-6">
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    Vehicle Details Required
-                  </h2>
-                  <p className="text-gray-600">
-                    To view our warranty plans, we need your vehicle details first.
-                  </p>
-                  <div className="bg-red-100 border border-red-300 rounded p-4 my-4">
-                    <p className="text-sm text-red-700">
-                      Debug Info: vehicleData is {vehicleData === null ? 'null' : vehicleData === undefined ? 'undefined' : 'present but falsy'}
-                    </p>
-                    <p className="text-sm text-red-700">
-                      formData: {JSON.stringify(formData, null, 2)}
-                    </p>
-                  </div>
-                  <div className="flex gap-4 justify-center">
-                    <Button 
-                      onClick={() => {
-                        console.log('🔧 Attempting recovery from localStorage');
-                        const savedVehicleData = localStorage.getItem('buyawarranty_vehicleData');
-                        const savedFormData = localStorage.getItem('buyawarranty_formData');
-                        console.log('🔧 Saved vehicle data:', savedVehicleData);
-                        console.log('🔧 Saved form data:', savedFormData);
-                        
-                        if (savedVehicleData) {
-                          try {
-                            const parsed = JSON.parse(savedVehicleData);
-                            setVehicleData(parsed);
-                            setFormData(prev => ({ ...prev, ...parsed }));
-                            console.log('🔧 Recovery successful:', parsed);
-                          } catch (e) {
-                            console.error('🔧 Recovery failed:', e);
-                          }
-                        }
-                      }}
-                      className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
-                    >
-                      Try Recovery
-                    </Button>
-                    <Button 
-                      onClick={() => handleStepChange(1)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
-                    >
-                      Enter Vehicle Details
-                    </Button>
-                  </div>
-                </div>
+          {vehicleData ? (
+            <PerformanceOptimizedSuspense height="60vh">
+              <PricingTable 
+                vehicleData={vehicleData} 
+                onBack={() => handleBackToStep(2)} 
+                onPlanSelected={handlePlanSelected}
+              />
+            </PerformanceOptimizedSuspense>
+          ) : (
+            <div className="w-full px-4 py-8">
+              <div className="max-w-4xl mx-auto text-center space-y-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Vehicle Details Required
+                </h2>
+                <p className="text-gray-600">
+                  To view our warranty plans, we need your vehicle details first.
+                </p>
+                <Button 
+                  onClick={() => handleStepChange(1)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                >
+                  Enter Vehicle Details
+                </Button>
               </div>
-            );
-          })()}
+            </div>
+          )}
         </div>
       )}
 
