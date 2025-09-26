@@ -43,28 +43,83 @@ serve(async (req) => {
         return '1000';
       }
       
-      // Normalize payment type for consistent comparison
-      const normalizedPaymentType = paymentType?.toLowerCase() || '';
-      const is36Month = normalizedPaymentType === '36months' || normalizedPaymentType === 'three_yearly' || normalizedPaymentType === 'threeyear';
-      const is24Month = normalizedPaymentType === '24months' || normalizedPaymentType === 'two_yearly' || normalizedPaymentType === 'twoyear';
-      const is12Month = normalizedPaymentType === '12months' || normalizedPaymentType === 'yearly' || normalizedPaymentType === 'monthly';
+      // Get duration in months for consistent comparison
+      const duration = getWarrantyDurationInMonths(paymentType || '');
       
       // Standardized claim limits based on plan type and duration
       if (normalizedPlan.includes('basic')) {
-        if (is36Month) return '500';   // 3-year Basic: £500
-        if (is24Month) return '750';   // 2-year Basic: £750  
-        return '1000';                 // 1-year Basic: £1000
+        if (duration === 36) return '350';   // 3-year Basic: £350
+        if (duration === 24) return '750';   // 2-year Basic: £750  
+        return '1000';                       // 1-year Basic: £1000
       } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
-        if (is36Month) return '750';   // 3-year Gold/Premium: £750
-        if (is24Month) return '1000';  // 2-year Gold/Premium: £1000
-        return '1250';                 // 1-year Gold/Premium: £1250
+        if (duration === 36) return '500';   // 3-year Gold/Premium: £500
+        if (duration === 24) return '1000';  // 2-year Gold/Premium: £1000
+        return '1250';                       // 1-year Gold/Premium: £1250
       } else if (normalizedPlan.includes('platinum')) {
-        if (is36Month) return '750';   // 3-year Platinum: £750
-        if (is24Month) return '1000';  // 2-year Platinum: £1000
-        return '1250';                 // 1-year Platinum: £1250
+        if (duration === 36) return '750';   // 3-year Platinum: £750
+        if (duration === 24) return '1000';  // 2-year Platinum: £1000
+        return '1250';                       // 1-year Platinum: £1250
       }
       
       return '750'; // Default fallback for 3-year plans
+    }
+
+    // Helper function to get warranty duration in months
+    function getWarrantyDurationInMonths(paymentType: string): number {
+      const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
+      
+      switch (normalizedPaymentType) {
+        case 'monthly':
+        case '1month':
+        case 'month':
+        case '12months':
+        case '12month':
+        case 'yearly':
+        case 'annual':
+        case 'year':
+          return 12;
+        case '24months':
+        case '24month':
+        case 'twomonthly':
+        case '2monthly':
+        case 'twoyear':
+        case 'twoyearly':
+        case '2yearly':
+        case '2years':
+        case '2year':
+          return 24;
+        case '36months':
+        case '36month':
+        case 'threemonthly':
+        case '3monthly':
+        case 'threeyear':
+        case 'threeyearly':
+        case '3yearly':
+        case '3years':
+        case '3year':
+          return 36;
+        case '48months':
+        case '48month':
+        case 'fourmonthly':
+        case '4monthly':
+        case 'fouryearly':
+        case '4yearly':
+        case '4years':
+        case '4year':
+          return 48;
+        case '60months':
+        case '60month':
+        case 'fivemonthly':
+        case '5monthly':
+        case 'fiveyearly':
+        case '5yearly':
+        case '5years':
+        case '5year':
+          return 60;
+        default:
+          console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+          return 12;
+      }
     }
 
     // Get plan data from database

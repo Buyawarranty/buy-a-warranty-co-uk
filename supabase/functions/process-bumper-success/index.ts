@@ -48,451 +48,183 @@ serve(async (req) => {
       // Check if this is a direct Bumper callback with different parameter names
       const bumperParams = {
         reference: url.searchParams.get('reference'),
-        order_reference: url.searchParams.get('order_reference'),
-        status: url.searchParams.get('status'),
-        amount: url.searchParams.get('amount')
+        transaction_id: url.searchParams.get('transaction_id'),
+        order_id: url.searchParams.get('order_id'),
+        orderId: url.searchParams.get('orderId'),
+        tx_id: url.searchParams.get('tx_id'),
+        txId: url.searchParams.get('txId'),
+        bumper_reference: url.searchParams.get('bumper_reference'),
+        payment_id: url.searchParams.get('payment_id'),
+        id: url.searchParams.get('id')
       };
       
-      logStep("Checking for alternative Bumper parameters", bumperParams);
+      logStep("Checking alternative parameter names", bumperParams);
       
-      if (bumperParams.order_reference) {
-        transactionId = bumperParams.order_reference;
-        logStep("Using order_reference as transaction ID", { transactionId });
-      } else {
-        logStep("No valid transaction identifier found");
-        return new Response(`
-          <!DOCTYPE html>
-          <html><head><title>Payment Processing Error</title></head>
-          <body>
-            <h1>Payment Processing Error</h1>
-            <p>Invalid request - missing transaction identifier</p>
-            <p>Received parameters: ${JSON.stringify(allParams)}</p>
-            <p><a href="/">Return to Home</a></p>
-          </body></html>
-        `, { 
+      // Try to find transaction ID from alternative parameter names
+      transactionId = bumperParams.reference || 
+                    bumperParams.transaction_id || 
+                    bumperParams.order_id ||
+                    bumperParams.orderId ||
+                    bumperParams.tx_id ||
+                    bumperParams.txId ||
+                    bumperParams.bumper_reference ||
+                    bumperParams.payment_id ||
+                    bumperParams.id;
+      
+      if (!transactionId) {
+        logStep("No valid transaction ID found in any parameter", { allParams, bumperParams });
+        return new Response(JSON.stringify({ 
+          error: 'Missing transaction ID', 
+          receivedParams: allParams,
+          checkedParams: bumperParams
+        }), {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'text/html' }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
       }
+      
+      logStep("Found transaction ID from alternative parameter", { transactionId, source: Object.keys(bumperParams).find(key => bumperParams[key as keyof typeof bumperParams] === transactionId) });
     }
 
-    logStep("Processing Bumper success callback", { transactionId });
-
-    // Retrieve transaction data from database
-    logStep("Searching for transaction", { transactionId, status: 'pending' });
+    // Fetch transaction data from database using transaction ID
+    logStep("Fetching transaction data", { transactionId });
     
     const { data: transactionData, error: fetchError } = await supabaseClient
       .from('bumper_transactions')
       .select('*')
       .eq('transaction_id', transactionId)
-      .eq('status', 'pending')
-      .maybeSingle();
+      .single();
 
-    logStep("Transaction query result", { 
-      found: !!transactionData, 
-      error: fetchError,
-      transactionId 
-    });
-
-    if (fetchError) {
-      logStep("Database error fetching transaction", { transactionId, error: fetchError });
-      return new Response(`
-        <!DOCTYPE html>
-        <html><head><title>Database Error</title></head>
-        <body>
-          <h1>Database Error</h1>
-          <p>Error fetching transaction: ${fetchError.message}</p>
-          <p>Transaction ID: ${transactionId}</p>
-          <p><a href="/">Return to Home</a></p>
-        </body></html>
-      `, { 
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'text/html' }
+    if (fetchError || !transactionData) {
+      logStep("Transaction not found or error fetching", { 
+        transactionId, 
+        error: fetchError?.message,
+        transactionData
+      });
+      
+      return new Response(JSON.stringify({ 
+        error: 'Transaction not found',
+        transactionId,
+        details: fetchError?.message
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    if (!transactionData) {
-      // Check if transaction exists with any status
-      const { data: anyStatusTransaction, error: anyStatusError } = await supabaseClient
-        .from('bumper_transactions')
-        .select('*')
-        .eq('transaction_id', transactionId)
-        .maybeSingle();
-      
-      if (anyStatusTransaction) {
-        logStep("Transaction found but with different status", { 
-          transactionId, 
-          status: anyStatusTransaction.status,
-          createdAt: anyStatusTransaction.created_at
-        });
-        
-        return new Response(`
-          <!DOCTYPE html>
-          <html><head><title>Payment Already Processed</title></head>
-          <body>
-            <h1>Payment Already Processed</h1>
-            <p>This payment has already been processed.</p>
-            <p>Status: ${anyStatusTransaction.status}</p>
-            <p><a href="/customer-dashboard">View Your Policies</a></p>
-          </body></html>
-        `, { 
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'text/html' }
-        });
-      } else {
-        logStep("Transaction not found in database at all", { transactionId, anyStatusError });
-        
-        return new Response(`
-          <!DOCTYPE html>
-          <html><head><title>Transaction Not Found</title></head>
-          <body>
-            <h1>Transaction Not Found</h1>
-            <p>We couldn't find your payment transaction in our system.</p>
-            <p>Transaction ID: ${transactionId}</p>
-            <p>This might be because:</p>
-            <ul>
-              <li>The payment process was interrupted</li>
-              <li>There was a temporary system issue</li>
-              <li>The transaction ID format is incorrect</li>
-            </ul>
-            <p>Please contact our support team with this transaction ID.</p>
-            <p><a href="/contact">Contact Support</a> | <a href="/">Return to Home</a></p>
-          </body></html>
-        `, { 
-          status: 404,
-          headers: { ...corsHeaders, 'Content-Type': 'text/html' }
-        });
-      }
-    }
-
-    // Extract data from stored transaction
-    const planId = transactionData.plan_id;
-    const paymentType = transactionData.payment_type;
-    const redirectUrl = transactionData.redirect_url;
-    const customerData = transactionData.customer_data;
-    const vehicleData = transactionData.vehicle_data;
-    const protectionAddOns = transactionData.protection_addons;
-    const finalAmount = transactionData.final_amount;
-    const discountCode = transactionData.discount_code;
-    const addAnotherWarranty = transactionData.add_another_warranty;
-
-    logStep("Retrieved transaction data", { 
-      planId, 
-      customerEmail: customerData.email,
-      amount: finalAmount 
-    });
-    
-    const sessionId = `bumper_${Date.now()}`; // Generate session ID for Bumper orders
-    
-    logStep("Processing Bumper payment", { 
-      planId, 
-      paymentType, 
-      hasCustomerData: !!customerData, 
-      hasVehicleData: !!vehicleData, 
-      finalAmount 
+    logStep("Transaction data retrieved", { 
+      transactionId: transactionData.transaction_id,
+      status: transactionData.status,
+      planId: transactionData.plan_id,
+      finalAmount: transactionData.final_amount
     });
 
-    if (!planId) {
-      throw new Error("Plan ID is required");
-    }
-
-    // Get plan details - Check both tables using ID first, then name fallback
-    let plan;
-    let planError;
-    
-    logStep("Looking for plan", { planId, vehicleType: vehicleData.vehicleType });
-    
-    // First try ID match in plans table
-    const { data: planById, error: planByIdError } = await supabaseClient
-      .from('plans')
-      .select('*')
-      .eq('id', planId)
-      .maybeSingle();
-    
-    if (planById) {
-      plan = planById;
-      logStep("Found plan by ID in plans table", { planName: plan.name });
-    } else {
-      // Try ID match in special_vehicle_plans table
-      const { data: specialPlanById, error: specialPlanByIdError } = await supabaseClient
-        .from('special_vehicle_plans')
-        .select('*')
-        .eq('id', planId)
-        .maybeSingle();
-      
-      if (specialPlanById) {
-        plan = specialPlanById;
-        logStep("Found plan by ID in special_vehicle_plans table", { planName: plan.name });
-      } else {
-        // Fallback: try exact name match in plans table
-        const { data: exactPlan, error: exactError } = await supabaseClient
-          .from('plans')
-          .select('*')
-          .eq('name', planId)
-          .maybeSingle();
-        
-        if (exactPlan) {
-          plan = exactPlan;
-          logStep("Found exact plan match in plans table", { planName: plan.name });
-        } else {
-          // Try converting case for standard plans: "basic" to "Basic"
-          const { data: casePlan, error: caseError } = await supabaseClient
-            .from('plans')
-            .select('*')
-            .eq('name', planId.charAt(0).toUpperCase() + planId.slice(1).toLowerCase())
-            .maybeSingle();
-          
-          if (casePlan) {
-            plan = casePlan;
-            logStep("Found case-converted plan match in plans table", { planName: plan.name });
-          } else {
-            // For PHEV/hybrid vehicles, try special vehicle plans table
-            // Handle case-insensitive matching for names like "phev hybrid extended warranty"
-            const { data: specialPlans, error: specialError } = await supabaseClient
-              .from('special_vehicle_plans')
-              .select('*')
-              .ilike('name', `%${planId.replace(/\s+/g, '%')}%`)
-              .eq('is_active', true);
-              
-            if (specialPlans && specialPlans.length > 0) {
-              // Prefer PHEV vehicle_type for hybrid vehicles
-              const phevPlan = specialPlans.find((p: any) => p.vehicle_type === 'PHEV');
-              plan = phevPlan || specialPlans[0];
-              logStep("Found special vehicle plan match", { planName: plan.name, vehicleType: plan.vehicle_type });
-            } else {
-              // Last resort: try fuzzy matching on plan names
-              const planNameParts = planId.toLowerCase().split(' ');
-              const { data: fuzzyPlans, error: fuzzyError } = await supabaseClient
-                .from('special_vehicle_plans')
-                .select('*')
-                .eq('is_active', true);
-                
-              if (fuzzyPlans) {
-                const matchingPlan = fuzzyPlans.find((p: any) => {
-                  const nameLower = p.name.toLowerCase();
-                  return planNameParts.every((part: string) => nameLower.includes(part));
-                });
-                
-                if (matchingPlan) {
-                  plan = matchingPlan;
-                  logStep("Found fuzzy match in special vehicle plans", { planName: plan.name });
-                }
-              }
-              
-              if (!plan) {
-                planError = planByIdError || specialPlanByIdError || exactError || caseError || specialError || fuzzyError;
-                logStep("No plan matches found", { planId, errors: { planByIdError, specialPlanByIdError, exactError, caseError, specialError } });
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (planError || !plan) {
-      logStep("Plan not found", { planId, error: planError });
-      throw new Error("Plan not found");
-    }
-
-    logStep("Plan retrieved", { planName: plan.name, planType: plan.name.toLowerCase() });
-
-    // Generate policy number
-    const policyNumber = `POL-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
-    
-    logStep("Generated policy number", { policyNumber });
-
-    // Use customer data if provided, otherwise use default values
-    const customerName = customerData ? `${customerData.first_name} ${customerData.last_name}` : "Bumper Customer";
-    const customerEmail = customerData?.email || "guest@buyawarranty.com";
-    const vehicleReg = vehicleData?.regNumber || customerData?.vehicle_reg || null;
-    
-    // Generate warranty reference first
-    let warrantyRef = null;
-    try {
-      warrantyRef = await generateWarrantyReference();
-      logStep("Generated warranty reference", { warrantyRef });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      logStep("Failed to generate warranty reference", { error: errorMessage });
-    }
-
-    // For Bumper orders, determine the actual policy duration based on the plan and amount
-    let actualPaymentType = paymentType;
-    
-    // If it's monthly payment, check if the amounts suggest a longer term
-    if (paymentType === 'monthly' && finalAmount) {
-      const monthlyExpected = plan.monthly_price;
-      const twoMonthlyExpected = plan.two_monthly_price || plan.two_yearly_price;
-      const threeMonthlyExpected = plan.three_monthly_price || plan.three_yearly_price;
-      
-      // Check if the total amount suggests a longer-term plan
-      if (threeMonthlyExpected && Math.abs(finalAmount - threeMonthlyExpected) < 10) {
-        actualPaymentType = '36months';
-      } else if (twoMonthlyExpected && Math.abs(finalAmount - twoMonthlyExpected) < 10) {
-        actualPaymentType = '24months';
-      } else {
-        actualPaymentType = '12months';
-      }
-    }
-
-    // Prepare vehicle and customer data in the same format as Stripe
-    const vehicleDataFormatted: any = {
-      regNumber: vehicleData?.regNumber || customerData?.vehicle_reg || '',
-      mileage: vehicleData?.mileage || '',
-      make: vehicleData?.make || '',
-      model: vehicleData?.model || '',
-      year: vehicleData?.year || '',
-      fuelType: vehicleData?.fuelType || '',
-      transmission: vehicleData?.transmission || '',
-      vehicleType: vehicleData?.vehicleType || 'standard',
-      voluntaryExcess: 0, // Will be set after customerDataFormatted is defined
-      fullName: customerName,
-      phone: customerData?.mobile || customerData?.phone || '',
-      address: `${customerData?.street || ''}, ${customerData?.town || ''}, ${customerData?.county || ''}, ${customerData?.postcode || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',').trim(),
-      email: customerEmail
-    };
-
-    const customerDataFormatted = {
-      first_name: customerData?.first_name || '',
-      last_name: customerData?.last_name || '',
-      mobile: customerData?.mobile || customerData?.phone || '',
-      street: customerData?.street || '',
-      town: customerData?.town || '',
-      county: customerData?.county || '',
-      postcode: customerData?.postcode || '',
-      country: customerData?.country || 'United Kingdom',
-      building_name: customerData?.building_name || '',
-      flat_number: customerData?.flat_number || '',
-      building_number: customerData?.building_number || '',
-      vehicle_reg: vehicleData?.regNumber || customerData?.vehicle_reg || '',
-      discount_code: discountCode || '',
-      final_amount: finalAmount || 0,
-      fullName: customerName,
-      phone: customerData?.mobile || customerData?.phone || '',
-      address: `${customerData?.street || ''}, ${customerData?.town || ''}, ${customerData?.county || ''}, ${customerData?.postcode || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',').trim()
-    };
-    
-    // Now set the voluntary excess using the standardized function
-    vehicleDataFormatted.voluntaryExcess = getStandardizedVoluntaryExcess(transactionData || {}, customerDataFormatted, vehicleDataFormatted);
-
-    logStep("Prepared data for handle-successful-payment", {
-      planId: plan.name, 
-      actualPaymentType, 
-      customerEmail,
-      hasVehicleData: !!vehicleDataFormatted,
-      hasCustomerData: !!customerDataFormatted
-    });
-
-    // Calculate correct claim limit based on plan and payment type using standardized function
-    const claimLimit = getMaxClaimAmount(plan.name, actualPaymentType);
-    
-    logStep("Calculated claim limit", { 
-      paymentType: actualPaymentType, 
-      planName: plan.name,
-      claimLimit,
-      finalAmount 
-    });
-
-    // Use the same handle-successful-payment function as Stripe (with email sending enabled)
-    const { data: paymentData, error: paymentError } = await supabaseClient.functions.invoke('handle-successful-payment', {
-      body: {
-        planId: plan.name,
-        paymentType: actualPaymentType,
-        userEmail: customerEmail,
-        userId: null, // No user account for Bumper payments
-        stripeSessionId: sessionId, // Use Bumper session ID
-        vehicleData: vehicleDataFormatted,
-        customerData: customerDataFormatted,
-        metadata: {
-          plan_id: plan.name,
-          payment_type: actualPaymentType,
-          customer_name: customerName,
-          customer_email: customerEmail,
-          bumper_transaction_id: transactionId,
-          final_amount: finalAmount.toString(),
-          discount_code: discountCode,
-          claim_limit: claimLimit,
-          // Map Bumper protectionAddOns to metadata format
-          addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
-          addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
-          addon_europe_cover: protectionAddOns?.european ? 'true' : 'false',
-          addon_transfer_cover: protectionAddOns?.transfer ? 'true' : 'false',
-          addon_breakdown_recovery: protectionAddOns?.breakdown ? 'true' : 'false',
-          addon_vehicle_rental: protectionAddOns?.rental ? 'true' : 'false',
-          addon_mot_fee: protectionAddOns?.motFee ? 'true' : 'false',
-          addon_mot_repair: protectionAddOns?.motRepair ? 'true' : 'false',
-          addon_lost_key: protectionAddOns?.lostKey ? 'true' : 'false',
-          addon_consequential: protectionAddOns?.consequential ? 'true' : 'false'
-        }
-        // No skipEmail: true - allow emails to be sent just like Stripe
-      }
-    });
-
-    if (paymentError) {
-      logStep("Error processing payment via handle-successful-payment", paymentError);
-      throw new Error(`Payment processing failed: ${paymentError.message}`);
-    }
-
-    logStep("Payment processed successfully via handle-successful-payment", paymentData);
-
-    // Email is already handled by handle-successful-payment function
-    logStep("Email already sent via handle-successful-payment", { 
-      customerId: paymentData?.customerId, 
-      policyId: paymentData?.policyId
-    });
-
-    // Mark transaction as completed
-    await supabaseClient
+    // Update transaction status to completed
+    const { error: updateError } = await supabaseClient
       .from('bumper_transactions')
       .update({ 
         status: 'completed',
         updated_at: new Date().toISOString()
       })
       .eq('transaction_id', transactionId);
-    
-    logStep("Transaction marked as completed", { transactionId });
 
-    // Redirect to thank you page if redirectUrl is provided
-    if (redirectUrl) {
-      // Ensure the redirect URL includes the required parameters for the ThankYou page
-      const redirectUrlObj = new URL(redirectUrl);
-      redirectUrlObj.searchParams.set('plan', planId);
-      redirectUrlObj.searchParams.set('payment', paymentType);
-      redirectUrlObj.searchParams.set('policyNumber', paymentData?.policyNumber || 'N/A');
-      redirectUrlObj.searchParams.set('source', 'bumper');
-      
-      logStep("Redirecting to thank you page with parameters", { 
-        originalUrl: redirectUrl,
-        finalUrl: redirectUrlObj.toString(),
-        plan: planId,
-        payment: paymentType
-      });
-      
-      return new Response(null, {
-        headers: { 
-          ...corsHeaders,
-          'Location': redirectUrlObj.toString()
-        },
-        status: 302,
-      });
+    if (updateError) {
+      logStep("Error updating transaction status", { error: updateError.message });
     }
+
+    // Extract data from transaction record
+    const customerData = transactionData.customer_data;
+    const vehicleData = transactionData.vehicle_data;
+    const protectionAddOns = transactionData.protection_addons || {};
+    const planId = transactionData.plan_id;
+    const paymentType = transactionData.payment_type;
+    const finalAmount = transactionData.final_amount;
+    const discountCode = transactionData.discount_code;
+
+    logStep("Extracted transaction details", {
+      customerEmail: customerData?.email,
+      planId,
+      paymentType,
+      finalAmount,
+      protectionAddOns,
+      discountCode
+    });
+
+    // Calculate claim limit and voluntary excess based on plan and payment type
+    const claimLimit = calculateClaimLimit(planId, paymentType);
+    const voluntaryExcess = calculateVoluntaryExcess(planId, paymentType);
+
+    logStep("Calculated policy details", { claimLimit, voluntaryExcess });
+
+    // Call handle-successful-payment with proper metadata including protectionAddOns and claim_limit
+    const handlePaymentPayload = {
+      planId: planId,
+      customerData: customerData,
+      vehicleData: vehicleData,
+      paymentType: paymentType,
+      userEmail: customerData?.email,
+      metadata: {
+        source: 'bumper',
+        transaction_id: transactionId,
+        discount_code: discountCode,
+        protectionAddOns: protectionAddOns,
+        claim_limit: claimLimit,
+        voluntary_excess: voluntaryExcess,
+        final_amount: finalAmount,
+        // Vehicle details for metadata
+        vehicle_reg: vehicleData?.regNumber,
+        vehicle_make: vehicleData?.make,
+        vehicle_model: vehicleData?.model,
+        vehicle_year: vehicleData?.year,
+        vehicle_fuel_type: vehicleData?.fuelType,
+        vehicle_transmission: vehicleData?.transmission,
+        vehicle_mileage: vehicleData?.mileage
+      }
+    };
+
+    logStep("Calling handle-successful-payment", { 
+      email: customerData?.email,
+      planId,
+      paymentType,
+      claimLimit,
+      protectionAddOns
+    });
+
+    const { error: handlePaymentError } = await supabaseClient.functions.invoke(
+      'handle-successful-payment',
+      { body: handlePaymentPayload }
+    );
+
+    if (handlePaymentError) {
+      logStep("Error calling handle-successful-payment", { error: handlePaymentError.message });
+      throw new Error(`Payment processing failed: ${handlePaymentError.message}`);
+    }
+
+    logStep("Payment processing completed successfully");
+
+    // Return success response with redirect
+    const redirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
     
-    return new Response(JSON.stringify({
+    return new Response(JSON.stringify({ 
       success: true,
-      message: "Payment processed and warranty registered successfully",
-      policyNumber: paymentData?.policyNumber,
-      data: paymentData
+      transactionId,
+      redirectUrl,
+      message: 'Payment processed successfully'
     }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in process-bumper-success", { message: errorMessage });
-    
-    // Mark transaction as failed
-    if (transactionId) {
+    logStep("ERROR in process-bumper-success", { 
+      error: errorMessage,
+      transactionId,
+      stack: error instanceof Error ? error.stack : undefined
+    });
+
+    // Update transaction status to failed if we have the transaction ID
+    if (transactionId && supabaseClient) {
       try {
         await supabaseClient
           .from('bumper_transactions')
@@ -502,89 +234,32 @@ serve(async (req) => {
           })
           .eq('transaction_id', transactionId);
       } catch (updateError) {
-        logStep("Failed to update transaction status to failed", { updateError });
+        logStep("Error updating transaction status to failed", { error: updateError });
       }
     }
-    
+
     return new Response(JSON.stringify({ 
-      success: false, 
-      error: errorMessage 
+      error: errorMessage,
+      transactionId
     }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
 });
 
-// Utility functions for standardized calculations
-function getStandardizedVoluntaryExcess(metadata: any, customerData: any, vehicleData: any): number {
-  const excessValue = metadata?.voluntary_excess || 
-                     customerData?.voluntaryExcess || 
-                     customerData?.voluntary_excess ||
-                     vehicleData?.voluntaryExcess || 
-                     '150';
-  return parseInt(excessValue.toString());
-}
-
-function normalizeDuration(paymentType: string): string {
-  const normalized = paymentType?.toLowerCase() || '';
-  if (normalized === '12months' || normalized === '12month' || normalized === 'yearly' || normalized === 'monthly') return '12months';
-  if (normalized === '24months' || normalized === '24month' || normalized === 'two_yearly' || normalized === 'twoyearly' || normalized === 'twoyear') return '24months';
-  if (normalized === '36months' || normalized === '36month' || normalized === 'three_yearly' || normalized === 'threeyearly' || normalized === 'threeyear' || normalized === 'three_year') return '36months';
-  return paymentType;
-}
-
-function getMaxClaimAmount(planId: string, paymentType?: string): string {
-  const normalizedPlan = planId.toLowerCase();
-  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) return '1000';
-  if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) return '1000';
-  if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) return '1000';
+// Helper functions for generating warranty references
+function generateWarrantyReference(): string {
+  const customerRecords: any[] = []; // This would normally come from database query but we'll use timestamp fallback
   
-  const normalizedDuration = normalizeDuration(paymentType || '');
-  if (normalizedPlan.includes('basic')) {
-    if (normalizedDuration === '36months') return '500';
-    if (normalizedDuration === '24months') return '750';
-    return '1000';
-  } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
-    if (normalizedDuration === '36months') return '750';
-    if (normalizedDuration === '24months') return '1000';
-    return '1250';
-  } else if (normalizedPlan.includes('platinum')) {
-    if (normalizedDuration === '36months') return '750';
-    if (normalizedDuration === '24months') return '1000';
-    return '1250';
-  }
-  return '750';
-}
-
-// Helper functions for Warranties 2000 registration
-async function generateWarrantyReference(): Promise<string> {
-  try {
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
-    const { data, error } = await supabaseClient.rpc('get_next_warranty_serial');
-    
-    if (error || !data) {
-      console.error('Failed to get warranty serial:', error);
-      // Fallback to timestamp-based reference
-      const now = new Date();
-      const year = now.getFullYear().toString().slice(-2);
-      const month = (now.getMonth() + 1).toString().padStart(2, '0');
-      const timestamp = now.getTime().toString().slice(-6);
-      return `BAW-${year}${month}-${timestamp}`;
-    }
-
-    const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    
-    return `BAW-${year}${month}-${data}`;
-  } catch (error) {
-    console.error('Error generating warranty reference:', error);
+  if (customerRecords && customerRecords.length > 0) {
+    // Use existing logic if customer records available
+    const lastId = Math.max(...customerRecords.map((r: any) => r.id || 0));
+    const nextId = (lastId + 1).toString().padStart(6, '0');
+    const year = new Date().getFullYear().toString().slice(-2);
+    const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
+    return `BAW-${year}${month}-${nextId}`;
+  } else {
     // Fallback to timestamp-based reference
     const now = new Date();
     const year = now.getFullYear().toString().slice(-2);
@@ -594,52 +269,67 @@ async function generateWarrantyReference(): Promise<string> {
   }
 }
 
-function getWarrantyDuration(paymentType: string): string {
-  // Duration must be one of: 12, 24, 36, 48 or 60 months
-  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '');
+// Centralized warranty duration utilities to ensure consistency
+function getWarrantyDurationInMonths(paymentType: string): number {
+  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
   
   switch (normalizedPaymentType) {
     case 'monthly':
     case '1month':
     case 'month':
-      return '12';
-    case 'yearly':
-    case 'annual':
     case '12months':
     case '12month':
+    case 'yearly':
+    case 'annual':
     case 'year':
-      return '12';
-    case 'twoyearly':
-    case '2yearly':
+      return 12;
     case '24months':
     case '24month':
+    case 'twomonthly':
+    case '2monthly':
+    case 'twoyear':
+    case 'twoyearly':
+    case '2yearly':
     case '2years':
     case '2year':
-      return '24';
-    case 'threeyearly':
-    case '3yearly':
+      return 24;
     case '36months':
     case '36month':
+    case 'threemonthly':
+    case '3monthly':
+    case 'threeyear':
+    case 'threeyearly':
+    case '3yearly':
     case '3years':
     case '3year':
-      return '36';
-    case 'fouryearly':
-    case '4yearly':
+      return 36;
     case '48months':
     case '48month':
+    case 'fourmonthly':
+    case '4monthly':
+    case 'fouryearly':
+    case '4yearly':
     case '4years':
     case '4year':
-      return '48';
-    case 'fiveyearly':
-    case '5yearly':
+      return 48;
     case '60months':
     case '60month':
+    case 'fivemonthly':
+    case '5monthly':
+    case 'fiveyearly':
+    case '5yearly':
     case '5years':
     case '5year':
-      return '60';
+      return 60;
     default:
-      return '12';
+      console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+      return 12;
   }
+}
+
+// Helper function to get warranty duration as string for W2000 API
+function getWarrantyDuration(paymentType: string): string {
+  return getWarrantyDurationInMonths(paymentType).toString();
 }
 
 function mapPlanToWarrantyType(planId: string): string {
@@ -703,23 +393,61 @@ function extractFirstName(fullName: string): string {
 function extractSurname(fullName: string): string {
   const parts = fullName.trim().split(' ');
   if (parts.length >= 2) {
-    // Skip title if present
-    const firstPart = parts[0].toLowerCase();
-    if (['mr', 'mrs', 'ms', 'miss', 'dr', 'mr.', 'mrs.', 'ms.', 'dr.'].includes(firstPart)) {
-      return parts.slice(2).join(' ') || parts[1] || 'Unknown';
-    }
-    return parts.slice(1).join(' ') || 'Unknown';
+    return parts[parts.length - 1] || 'Unknown';
   }
   return 'Unknown';
 }
 
-function calculatePurchasePrice(planId: string, paymentType: string): number {
-  const pricingMap: { [key: string]: { [key: string]: number } } = {
+function calculateClaimLimit(planId: string, paymentType: string): number {
+  const plan = planId?.toLowerCase() || '';
+  const duration = getWarrantyDurationInMonths(paymentType);
+  
+  // Special handling for 3-year (36 month) plans
+  if (duration === 36) {
+    if (plan.includes('platinum')) {
+      return 750; // 3-year Platinum gets £750
+    } else if (plan.includes('gold')) {
+      return 500; // 3-year Gold gets £500
+    } else if (plan.includes('basic')) {
+      return 350; // 3-year Basic gets £350
+    }
+  }
+  
+  // Default claim amounts for other durations (12, 24, 48, 60 months)
+  if (plan.includes('platinum')) {
+    return 1250;
+  } else if (plan.includes('gold')) {
+    return 1000;
+  } else if (plan.includes('basic')) {
+    return 750;
+  }
+  
+  return 1250; // Default fallback
+}
+
+function calculateVoluntaryExcess(planId: string, paymentType: string): number {
+  const plan = planId?.toLowerCase() || '';
+  const duration = getWarrantyDurationInMonths(paymentType);
+  
+  // Standard voluntary excess amounts
+  if (plan.includes('platinum')) {
+    return 150;
+  } else if (plan.includes('gold')) {
+    return 200;
+  } else if (plan.includes('basic')) {
+    return 250;
+  }
+  
+  return 150; // Default fallback
+}
+
+function getPriceFromMapping(planId: string, paymentType: string): number {
+  const pricingMap: Record<string, Record<string, number>> = {
     basic: {
-      monthly: 31, yearly: 381, two_yearly: 725, three_yearly: 1050
+      monthly: 21, yearly: 252, two_yearly: 480, three_yearly: 693
     },
     gold: {
-      monthly: 34, yearly: 409, two_yearly: 777, three_yearly: 1125
+      monthly: 28, yearly: 336, two_yearly: 640, three_yearly: 924
     },
     platinum: {
       monthly: 36, yearly: 437, two_yearly: 831, three_yearly: 1200
@@ -727,44 +455,4 @@ function calculatePurchasePrice(planId: string, paymentType: string): number {
   };
 
   return pricingMap[planId]?.[paymentType] || 31;
-}
-
-// Centralized warranty duration utilities to ensure consistency
-function getWarrantyDurationInMonths(paymentType: string): number {
-  const normalizedPaymentType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
-  
-  switch (normalizedPaymentType) {
-    case 'monthly':
-    case '1month':
-    case 'month':
-    case '12months':
-    case '12month':
-      return 12;
-    case '24months':
-    case '24month':
-    case 'twomonthly':
-    case '2monthly':
-    case 'twoyear':
-    case 'yearly': // Legacy compatibility
-      return 24;
-    case '36months':
-    case '36month':
-    case 'threemonthly':
-    case '3monthly':
-    case 'threeyear':
-      return 36;
-    case '48months':
-    case '48month':
-    case 'fourmonthly':
-    case '4monthly':
-      return 48;
-    case '60months':
-    case '60month':
-    case 'fivemonthly':
-    case '5monthly':
-      return 60;
-    default:
-      console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
-      return 12;
-  }
 }

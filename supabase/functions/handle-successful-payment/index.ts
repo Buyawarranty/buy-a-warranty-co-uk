@@ -469,22 +469,22 @@ function getMaxClaimAmount(planId: string, paymentType?: string): string {
     return '1000';
   }
   
-  // Normalize payment type for consistent comparison
-  const normalizedDuration = normalizeDuration(paymentType || '');
+  // Get duration in months for consistent comparison
+  const duration = getWarrantyDurationInMonths(paymentType || '');
   
   // Standardized claim limits based on plan type and duration
   if (normalizedPlan.includes('basic')) {
-    if (normalizedDuration === '36months') return '500';   // 3-year Basic: £500
-    if (normalizedDuration === '24months') return '750';   // 2-year Basic: £750  
-    return '1000';                                         // 1-year Basic: £1000
+    if (duration === 36) return '350';   // 3-year Basic: £350
+    if (duration === 24) return '750';   // 2-year Basic: £750  
+    return '1000';                       // 1-year Basic: £1000
   } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
-    if (normalizedDuration === '36months') return '750';   // 3-year Gold/Premium: £750
-    if (normalizedDuration === '24months') return '1000';  // 2-year Gold/Premium: £1000
-    return '1250';                                         // 1-year Gold/Premium: £1250
+    if (duration === 36) return '500';   // 3-year Gold/Premium: £500
+    if (duration === 24) return '1000';  // 2-year Gold/Premium: £1000
+    return '1250';                       // 1-year Gold/Premium: £1250
   } else if (normalizedPlan.includes('platinum')) {
-    if (normalizedDuration === '36months') return '750';   // 3-year Platinum: £750
-    if (normalizedDuration === '24months') return '1000';  // 2-year Platinum: £1000
-    return '1250';                                         // 1-year Platinum: £1250
+    if (duration === 36) return '750';   // 3-year Platinum: £750
+    if (duration === 24) return '1000';  // 2-year Platinum: £1000
+    return '1250';                       // 1-year Platinum: £1250
   }
   
   return '750'; // Default fallback for 3-year plans
