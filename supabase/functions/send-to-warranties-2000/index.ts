@@ -494,15 +494,13 @@ serve(async (req) => {
       coverage: registrationData.Month,
       addOns: {
         "Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-        "MotRepair": registrationData.mot_repair ? "Y" : "N", 
+        "MOTFee": registrationData.mot_fee ? "Y" : "N",
         "TyreCover": registrationData.tyre_cover ? "Y" : "N",
-        "WearAndTear": registrationData.wear_tear ? "Y" : "N",
+        "WearTear": registrationData.wear_tear ? "Y" : "N",
         "LostKey": registrationData.lost_key ? "Y" : "N",
-        "MotFee": registrationData.mot_fee ? "Y" : "N",
-        "EuropeCover": registrationData.europe_cover ? "Y" : "N",
-        "VehicleRental": registrationData.vehicle_rental ? "Y" : "N",
-        "ConsequentialDamage": registrationData.consequential ? "Y" : "N",
-        "TransferFee": registrationData.transfer_cover ? "Y" : "N"
+        "EuroCover": registrationData.europe_cover ? "Y" : "N",
+        "Rental": registrationData.vehicle_rental ? "Y" : "N",
+        "Transfer": registrationData.transfer_cover ? "Y" : "N"
       }
     });
 
