@@ -488,15 +488,16 @@ serve(async (req) => {
       voluntaryExcess: registrationData.VolEx,
       coverage: registrationData.Month,
       addOns: {
-        "24/7Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-        "MOTRepair": registrationData.mot_repair ? "Y" : "N", 
-        "Tyrecover": registrationData.tyre_cover ? "Y" : "N",
-        "Wearandtear": registrationData.wear_tear ? "Y" : "N",
-        "Lostkey": registrationData.lost_key ? "Y" : "N",
-        "MOTfee": registrationData.mot_fee ? "Y" : "N",
-        "Europecover": registrationData.europe_cover ? "Y" : "N",
-        "Vehiclerental": registrationData.vehicle_rental ? "Y" : "N",
-        "Transferfee": registrationData.transfer_cover ? "Y" : "N"
+        "24/7 Recovery": registrationData.breakdown_recovery ? "Y" : "N",
+        "MOT Repair": registrationData.mot_repair ? "Y" : "N", 
+        "Tyre cover": registrationData.tyre_cover ? "Y" : "N",
+        "Wear and tear": registrationData.wear_tear ? "Y" : "N",
+        "Lost key": registrationData.lost_key ? "Y" : "N",
+        "MOT fee": registrationData.mot_fee ? "Y" : "N",
+        "Europe cover": registrationData.europe_cover ? "Y" : "N",
+        "Vehicle rental": registrationData.vehicle_rental ? "Y" : "N",
+        "Consequential damage": registrationData.consequential ? "Y" : "N",
+        "Transfer fee": registrationData.transfer_cover ? "Y" : "N"
       }
     });
 
@@ -514,15 +515,16 @@ serve(async (req) => {
       paymentTypeUsed: paymentType,
       calculatedMonths: getWarrantyDurationInMonths(paymentType),
       w2000AddOns: {
-        "24/7Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-        "MOTRepair": registrationData.mot_repair ? "Y" : "N",
-        "Tyrecover": registrationData.tyre_cover ? "Y" : "N", 
-        "Wearandtear": registrationData.wear_tear ? "Y" : "N",
-        "Lostkey": registrationData.lost_key ? "Y" : "N",
-        "MOTfee": registrationData.mot_fee ? "Y" : "N",
-        "Europecover": registrationData.europe_cover ? "Y" : "N",
-        "Vehiclerental": registrationData.vehicle_rental ? "Y" : "N",
-        "Transferfee": registrationData.transfer_cover ? "Y" : "N"
+        "24/7 Recovery": registrationData.breakdown_recovery ? "Y" : "N",
+        "MOT Repair": registrationData.mot_repair ? "Y" : "N",
+        "Tyre cover": registrationData.tyre_cover ? "Y" : "N", 
+        "Wear and tear": registrationData.wear_tear ? "Y" : "N",
+        "Lost key": registrationData.lost_key ? "Y" : "N",
+        "MOT fee": registrationData.mot_fee ? "Y" : "N",
+        "Europe cover": registrationData.europe_cover ? "Y" : "N",
+        "Vehicle rental": registrationData.vehicle_rental ? "Y" : "N",
+        "Consequential damage": registrationData.consequential ? "Y" : "N",
+        "Transfer fee": registrationData.transfer_cover ? "Y" : "N"
       }
     });
 
