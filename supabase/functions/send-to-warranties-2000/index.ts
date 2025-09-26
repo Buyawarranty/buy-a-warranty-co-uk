@@ -519,6 +519,21 @@ serve(async (req) => {
 
     console.log(`[WARRANTIES-2000] Making API call to: ${apiUrl}`);
 
+    // Convert boolean add-on values to Y/N strings for W2000 API to show as checked
+    const w2000Data = {
+      ...registrationData,
+      mot_fee: registrationData.mot_fee ? "Y" : "N",
+      tyre_cover: registrationData.tyre_cover ? "Y" : "N", 
+      wear_tear: registrationData.wear_tear ? "Y" : "N",
+      europe_cover: registrationData.europe_cover ? "Y" : "N",
+      transfer_cover: registrationData.transfer_cover ? "Y" : "N",
+      breakdown_recovery: registrationData.breakdown_recovery ? "Y" : "N",
+      vehicle_rental: registrationData.vehicle_rental ? "Y" : "N",
+      mot_repair: registrationData.mot_repair ? "Y" : "N",
+      lost_key: registrationData.lost_key ? "Y" : "N",
+      consequential: registrationData.consequential ? "Y" : "N"
+    };
+
     const response = await retryFetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -527,7 +542,7 @@ serve(async (req) => {
         'User-Agent': 'BuyAWarranty-Integration/1.0',
         'Accept': 'application/json, text/plain, */*',
       },
-      body: JSON.stringify(registrationData),
+      body: JSON.stringify(w2000Data),
     });
 
     const responseText = await response.text();
