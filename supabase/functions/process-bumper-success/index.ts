@@ -196,70 +196,94 @@ serve(async (req) => {
       throw new Error("Plan ID is required");
     }
 
-    // Get plan details - For special vehicles, Bumper might send the full plan name
+    // Get plan details - Check both tables using ID first, then name fallback
     let plan;
     let planError;
     
     logStep("Looking for plan", { planId, vehicleType: vehicleData.vehicleType });
     
-    // First try exact match in plans table
-    const { data: exactPlan, error: exactError } = await supabaseClient
+    // First try ID match in plans table
+    const { data: planById, error: planByIdError } = await supabaseClient
       .from('plans')
       .select('*')
-      .eq('name', planId)
-      .single();
+      .eq('id', planId)
+      .maybeSingle();
     
-    if (exactPlan) {
-      plan = exactPlan;
-      logStep("Found exact plan match in plans table", { planName: plan.name });
+    if (planById) {
+      plan = planById;
+      logStep("Found plan by ID in plans table", { planName: plan.name });
     } else {
-      // Try converting case for standard plans: "basic" to "Basic"
-      const { data: casePlan, error: caseError } = await supabaseClient
-        .from('plans')
+      // Try ID match in special_vehicle_plans table
+      const { data: specialPlanById, error: specialPlanByIdError } = await supabaseClient
+        .from('special_vehicle_plans')
         .select('*')
-        .eq('name', planId.charAt(0).toUpperCase() + planId.slice(1).toLowerCase())
-        .single();
+        .eq('id', planId)
+        .maybeSingle();
       
-      if (casePlan) {
-        plan = casePlan;
-        logStep("Found case-converted plan match in plans table", { planName: plan.name });
+      if (specialPlanById) {
+        plan = specialPlanById;
+        logStep("Found plan by ID in special_vehicle_plans table", { planName: plan.name });
       } else {
-        // For PHEV/hybrid vehicles, try special vehicle plans table
-        // Handle case-insensitive matching for names like "phev hybrid extended warranty"
-        const { data: specialPlans, error: specialError } = await supabaseClient
-          .from('special_vehicle_plans')
+        // Fallback: try exact name match in plans table
+        const { data: exactPlan, error: exactError } = await supabaseClient
+          .from('plans')
           .select('*')
-          .ilike('name', `%${planId.replace(/\s+/g, '%')}%`)
-          .eq('is_active', true);
-          
-        if (specialPlans && specialPlans.length > 0) {
-          // Prefer PHEV vehicle_type for hybrid vehicles
-          const phevPlan = specialPlans.find((p: any) => p.vehicle_type === 'PHEV');
-          plan = phevPlan || specialPlans[0];
-          logStep("Found special vehicle plan match", { planName: plan.name, vehicleType: plan.vehicle_type });
+          .eq('name', planId)
+          .maybeSingle();
+        
+        if (exactPlan) {
+          plan = exactPlan;
+          logStep("Found exact plan match in plans table", { planName: plan.name });
         } else {
-          // Last resort: try fuzzy matching on plan names
-          const planNameParts = planId.toLowerCase().split(' ');
-          const { data: fuzzyPlans, error: fuzzyError } = await supabaseClient
-            .from('special_vehicle_plans')
+          // Try converting case for standard plans: "basic" to "Basic"
+          const { data: casePlan, error: caseError } = await supabaseClient
+            .from('plans')
             .select('*')
-            .eq('is_active', true);
-            
-          if (fuzzyPlans) {
-            const matchingPlan = fuzzyPlans.find((p: any) => {
-              const nameLower = p.name.toLowerCase();
-              return planNameParts.every((part: string) => nameLower.includes(part));
-            });
-            
-            if (matchingPlan) {
-              plan = matchingPlan;
-              logStep("Found fuzzy match in special vehicle plans", { planName: plan.name });
-            }
-          }
+            .eq('name', planId.charAt(0).toUpperCase() + planId.slice(1).toLowerCase())
+            .maybeSingle();
           
-          if (!plan) {
-            planError = exactError || caseError || specialError || fuzzyError;
-            logStep("No plan matches found", { planId, errors: { exactError, caseError, specialError } });
+          if (casePlan) {
+            plan = casePlan;
+            logStep("Found case-converted plan match in plans table", { planName: plan.name });
+          } else {
+            // For PHEV/hybrid vehicles, try special vehicle plans table
+            // Handle case-insensitive matching for names like "phev hybrid extended warranty"
+            const { data: specialPlans, error: specialError } = await supabaseClient
+              .from('special_vehicle_plans')
+              .select('*')
+              .ilike('name', `%${planId.replace(/\s+/g, '%')}%`)
+              .eq('is_active', true);
+              
+            if (specialPlans && specialPlans.length > 0) {
+              // Prefer PHEV vehicle_type for hybrid vehicles
+              const phevPlan = specialPlans.find((p: any) => p.vehicle_type === 'PHEV');
+              plan = phevPlan || specialPlans[0];
+              logStep("Found special vehicle plan match", { planName: plan.name, vehicleType: plan.vehicle_type });
+            } else {
+              // Last resort: try fuzzy matching on plan names
+              const planNameParts = planId.toLowerCase().split(' ');
+              const { data: fuzzyPlans, error: fuzzyError } = await supabaseClient
+                .from('special_vehicle_plans')
+                .select('*')
+                .eq('is_active', true);
+                
+              if (fuzzyPlans) {
+                const matchingPlan = fuzzyPlans.find((p: any) => {
+                  const nameLower = p.name.toLowerCase();
+                  return planNameParts.every((part: string) => nameLower.includes(part));
+                });
+                
+                if (matchingPlan) {
+                  plan = matchingPlan;
+                  logStep("Found fuzzy match in special vehicle plans", { planName: plan.name });
+                }
+              }
+              
+              if (!plan) {
+                planError = planByIdError || specialPlanByIdError || exactError || caseError || specialError || fuzzyError;
+                logStep("No plan matches found", { planId, errors: { planByIdError, specialPlanByIdError, exactError, caseError, specialError } });
+              }
+            }
           }
         }
       }
