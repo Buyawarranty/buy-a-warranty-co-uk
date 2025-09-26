@@ -318,6 +318,14 @@ serve(async (req) => {
     }
     
     const coverageMonths = getWarrantyDurationInMonths(paymentType).toString();
+    
+    console.log(`[WARRANTIES-2000] DURATION CALCULATION DEBUG:`, {
+      originalPaymentType: paymentType,
+      normalizedPaymentType: paymentType?.toLowerCase().replace(/[_-]/g, '').trim(),
+      calculatedMonths: getWarrantyDurationInMonths(paymentType),
+      coverageMonthsString: coverageMonths,
+      warrantyType: warrantyType
+    });
 
     // Get claim limit from policy or customer data
     // Valid claim limits are 750, 1250, 2000
@@ -471,6 +479,17 @@ serve(async (req) => {
     const credentials = btoa(`${warrantiesUsername}:${warrantiesPassword}`);
 
     const apiUrl = Deno.env.get('W2K_API_URL') || 'https://warranties-epf.co.uk/api.php';
+
+    console.log(`[WARRANTIES-2000] COMPLETE API PAYLOAD DEBUG:`, {
+      apiUrl,
+      Month: registrationData.Month,
+      WarType: registrationData.WarType,
+      MaxClm: registrationData.MaxClm,
+      VolEx: registrationData.VolEx,
+      paymentTypeUsed: paymentType,
+      calculatedMonths: getWarrantyDurationInMonths(paymentType),
+      fullPayload: registrationData
+    });
 
     console.log(`[WARRANTIES-2000] Making API call to: ${apiUrl}`);
 
