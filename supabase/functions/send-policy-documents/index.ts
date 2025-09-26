@@ -72,30 +72,36 @@ serve(async (req) => {
     logStep("Found policy documents template", { templateId: template.id });
 
     // Check if we should skip sending duplicate emails (unless forced)
-    if (!forceResend) {
-      // Check if an email was already sent for this plan/customer combination recently
+    if (!forceResend && policyNumber) {
+      // Check if an email was already sent for this SPECIFIC policy recently
+      // This prevents duplicate emails for the same purchase but allows multiple purchases
       const { data: recentEmail } = await supabaseClient
         .from('email_logs')
-        .select('id, created_at')
+        .select('id, created_at, metadata')
         .eq('recipient_email', recipientEmail)
         .eq('template_id', template.id)
         .eq('status', 'sent')
         .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+        .order('created_at', { ascending: false });
 
-      if (recentEmail) {
-        logStep("Email already sent recently, skipping duplicate", { 
-          lastSentAt: recentEmail.created_at,
-          emailLogId: recentEmail.id 
+      // Check if any recent email was for the same policy number
+      const duplicateForSamePolicy = recentEmail?.find(email => 
+        email.metadata?.policy_number === policyNumber
+      );
+
+      if (duplicateForSamePolicy) {
+        logStep("Email already sent recently for this policy, skipping duplicate", { 
+          lastSentAt: duplicateForSamePolicy.created_at,
+          emailLogId: duplicateForSamePolicy.id,
+          policyNumber 
         });
         
         return new Response(JSON.stringify({ 
           success: true, 
-          message: "Email already sent recently, duplicate prevented",
+          message: "Email already sent recently for this policy, duplicate prevented",
           skipped: true,
-          lastSentAt: recentEmail.created_at
+          lastSentAt: duplicateForSamePolicy.created_at,
+          policyNumber
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
@@ -448,6 +454,8 @@ serve(async (req) => {
         status: 'sent',
         metadata: {
           plan_type: planType,
+          policy_number: policyNumber,
+          registration_plate: registrationPlate,
           attachments_count: attachments.length
         }
       });
