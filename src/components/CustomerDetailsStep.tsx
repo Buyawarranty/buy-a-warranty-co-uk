@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, CheckCircle, Edit, User, CreditCard, MapPin } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Edit, User, CreditCard, MapPin, X } from 'lucide-react';
 import { PostcodeAutocomplete } from '@/components/ui/uk-postcode-autocomplete';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -14,7 +14,7 @@ import AddAnotherWarrantyOffer from '@/components/AddAnotherWarrantyOffer';
 import { useAuth } from '@/hooks/useAuth';
 import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
-import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType } from '@/lib/addOnsUtils';
+import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType, calculateAddOnPrice } from '@/lib/addOnsUtils';
 import { EmailCapturePopup } from '@/components/EmailCapturePopup';
 
 export interface CustomerDetailsStepProps {
@@ -112,10 +112,52 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [promoCodeError, setPromoCodeError] = useState<string>('');
   const [showEmailPopup, setShowEmailPopup] = useState(false);
   const { user } = useAuth();
+  
+  // State for managing updated pricing data when add-ons are removed
+  const [updatedPricingData, setUpdatedPricingData] = useState(pricingData);
+
+  // Function to remove add-on and recalculate pricing
+  const removeAddOn = (addOnKey: string) => {
+    if (!updatedPricingData.protectionAddOns) return;
+    
+    // Get current add-on total price
+    const durationMonths = getWarrantyDurationInMonths(paymentType);
+    const currentAddOnPrice = calculateAddOnPrice(updatedPricingData.protectionAddOns, paymentType, durationMonths);
+    
+    // Update protection add-ons by removing the selected one
+    const updatedAddOns = { ...updatedPricingData.protectionAddOns };
+    
+    // Handle both possible key formats
+    if (addOnKey === 'wearTear' || addOnKey === 'wearAndTear') {
+      updatedAddOns.wearTear = false;
+      updatedAddOns.wearAndTear = false;
+    } else {
+      updatedAddOns[addOnKey as keyof typeof updatedAddOns] = false;
+    }
+    
+    // Calculate new add-on total price
+    const newAddOnPrice = calculateAddOnPrice(updatedAddOns, paymentType, durationMonths);
+    const priceReduction = currentAddOnPrice - newAddOnPrice;
+    
+    // Update pricing data
+    const newTotalPrice = updatedPricingData.totalPrice - priceReduction;
+    setUpdatedPricingData({
+      ...updatedPricingData,
+      protectionAddOns: updatedAddOns,
+      totalPrice: newTotalPrice
+    });
+    
+    // Get add-on name for toast message
+    const addOnInfos = getAddOnInfo(normalizePaymentType(paymentType), durationMonths);
+    const addOnInfo = addOnInfos.find(addon => addon.key === addOnKey || 
+      (addOnKey === 'wearTear' && addon.key === 'wearAndTear'));
+    
+    toast.success(`${addOnInfo?.name || 'Add-on'} removed from your policy`);
+  };
 
   // Calculate pricing with discounts
-  const bumperTotalPrice = pricingData.totalPrice;
-  const stripeTotalPrice = Math.round(pricingData.totalPrice * 0.95);
+  const bumperTotalPrice = updatedPricingData.totalPrice;
+  const stripeTotalPrice = Math.round(updatedPricingData.totalPrice * 0.95);
 
   // Check for discount code on component mount and set up email popup timer
   useEffect(() => {
@@ -299,7 +341,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             planId,
             vehicleData,
             paymentType,
-            voluntaryExcess: pricingData.voluntaryExcess || 150,
+            voluntaryExcess: updatedPricingData.voluntaryExcess || 150,
             customerData: {
               ...customerData,
               final_amount: finalPrice
@@ -307,7 +349,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             discountCode: appliedDiscountCodes.map(code => code.code).join(', '),
             finalAmount: finalPrice,
             addAnotherWarrantyRequested,
-            protectionAddOns: pricingData.protectionAddOns || {}
+            protectionAddOns: updatedPricingData.protectionAddOns || {}
           }
         });
 
@@ -379,20 +421,20 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         planId,
         vehicleData,
         paymentType,
-        voluntaryExcess: pricingData.voluntaryExcess || 150,
+        voluntaryExcess: updatedPricingData.voluntaryExcess || 150,
         customerData: {
           ...customerData,
           final_amount: finalPrice
         },
         protectionAddOns: {
-          tyre: pricingData.protectionAddOns?.tyre || false,
-          wearTear: pricingData.protectionAddOns?.wearTear || pricingData.protectionAddOns?.wearAndTear || false,
-          european: pricingData.protectionAddOns?.european || false,
-          breakdown: pricingData.protectionAddOns?.breakdown || false,
-          rental: pricingData.protectionAddOns?.rental || false,
-          transfer: pricingData.protectionAddOns?.transfer || false,
-          motRepair: pricingData.protectionAddOns?.motRepair || false,
-          motFee: pricingData.protectionAddOns?.motFee || false,
+          tyre: updatedPricingData.protectionAddOns?.tyre || false,
+          wearTear: updatedPricingData.protectionAddOns?.wearTear || updatedPricingData.protectionAddOns?.wearAndTear || false,
+          european: updatedPricingData.protectionAddOns?.european || false,
+          breakdown: updatedPricingData.protectionAddOns?.breakdown || false,
+          rental: updatedPricingData.protectionAddOns?.rental || false,
+          transfer: updatedPricingData.protectionAddOns?.transfer || false,
+          motRepair: updatedPricingData.protectionAddOns?.motRepair || false,
+          motFee: updatedPricingData.protectionAddOns?.motFee || false,
           lostKey: false, // Not available in current pricing data type
           consequential: false // Not available in current pricing data type
         },
@@ -715,7 +757,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                      </div>
                     
                     {/* Add-ons Section */}
-                    {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (
+                    {updatedPricingData.protectionAddOns && Object.values(updatedPricingData.protectionAddOns).some(Boolean) && (
                       <div className="border-t pt-4">
                         {(() => {
                           // Get duration in months and normalize payment type
@@ -739,10 +781,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             const mappedKey = keyMappings[addOn.key] || addOn.key;
                             
                             // Check both the original key and mapped key
-                            if (pricingData.protectionAddOns) {
+                            if (updatedPricingData.protectionAddOns) {
                               isSelected = Boolean(
-                                pricingData.protectionAddOns[addOn.key as keyof typeof pricingData.protectionAddOns] || 
-                                pricingData.protectionAddOns[mappedKey as keyof typeof pricingData.protectionAddOns]
+                                updatedPricingData.protectionAddOns[addOn.key as keyof typeof updatedPricingData.protectionAddOns] || 
+                                updatedPricingData.protectionAddOns[mappedKey as keyof typeof updatedPricingData.protectionAddOns]
                               );
                             }
                             
@@ -765,14 +807,24 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                   </div>
                                   <div className="space-y-1">
                                     {paidAddOns.map(addOn => (
-                                      <div key={addOn.key} className="flex items-center justify-between">
+                                      <div key={addOn.key} className="flex items-center justify-between group hover:bg-gray-50 -mx-2 px-2 py-1 rounded">
                                         <div className="flex items-center">
                                           <span className="text-blue-600 mr-2">+</span>
                                           <span className="text-sm text-gray-700">{addOn.name}</span>
                                         </div>
-                                        <span className="text-sm text-gray-900 font-medium">
-                                          {addOn.displayPrice}
-                                        </span>
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-sm text-gray-900 font-medium">
+                                            {addOn.displayPrice}
+                                          </span>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => removeAddOn(addOn.key)}
+                                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                          >
+                                            <X className="h-3 w-3" />
+                                          </Button>
+                                        </div>
                                       </div>
                                     ))}
                                   </div>
