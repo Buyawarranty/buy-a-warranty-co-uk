@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { getAutoIncludedAddOns } from '@/lib/addOnsUtils';
 
 interface AddOnProtectionPackagesProps {
   selectedAddOns: {[key: string]: boolean};
@@ -121,15 +122,7 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
   const [expandedItems, setExpandedItems] = useState<{[key: string]: boolean}>({});
 
   // Define auto-included add-ons based on payment type - use imported utility for consistency
-  const getAutoIncludedAddOns = () => {
-    // Import and use the centralized utility function
-    const { getAutoIncludedAddOns } = require('@/lib/addOnsUtils');
-    return getAutoIncludedAddOns(paymentType);
-  };
-
-  // Import the centralized utility function
-  const { getAutoIncludedAddOns: getAutoIncludedFromUtils } = require('@/lib/addOnsUtils');
-  const autoIncludedAddOns = getAutoIncludedFromUtils(paymentType);
+  const autoIncludedAddOns = getAutoIncludedAddOns(paymentType);
   
   // Check if an add-on is auto-included
   const isAutoIncluded = (addonKey: string) => autoIncludedAddOns.includes(addonKey);
