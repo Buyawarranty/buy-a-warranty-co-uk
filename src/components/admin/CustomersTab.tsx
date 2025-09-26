@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
+import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -19,6 +20,7 @@ import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { MOTHistorySection } from './MOTHistorySection';
+import { W2000DataPreview } from './W2000DataPreview';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 import { format } from 'date-fns';
@@ -2375,26 +2377,26 @@ export const CustomersTab = () => {
                 </div>
               </div>
 
-              {/* Add-On Protection Packages Section */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Add-On Protection Packages</h3>
-                <AddOnProtectionDisplay
-                  mot_fee={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).mot_fee : selectedCustomer.mot_fee}
-                  tyre_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).tyre_cover : selectedCustomer.tyre_cover}
-                  wear_tear={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).wear_tear : selectedCustomer.wear_tear}
-                  europe_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).europe_cover : selectedCustomer.europe_cover}
-                  transfer_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).transfer_cover : selectedCustomer.transfer_cover}
-                  breakdown_recovery={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).breakdown_recovery : selectedCustomer.breakdown_recovery}
-                  vehicle_rental={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).vehicle_rental : selectedCustomer.vehicle_rental}
-                  mot_repair={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).mot_repair : selectedCustomer.mot_repair}
-                  lost_key={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).lost_key : selectedCustomer.lost_key}
-                  consequential={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).consequential : selectedCustomer.consequential}
-                  claim_limit={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).claim_limit : selectedCustomer.claim_limit}
-                  voluntary_excess={selectedCustomer.voluntary_excess}
-                  payment_type={selectedCustomer.payment_type}
-                  className="mt-4"
-                />
-              </div>
+                              {/* Add-On Protection Packages Section */}
+                              <div className="space-y-4">
+                                <h3 className="text-lg font-semibold">Add-On Protection Packages</h3>
+                                <AddOnProtectionDisplay
+                                  mot_fee={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).mot_fee : selectedCustomer.mot_fee}
+                                  tyre_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).tyre_cover : selectedCustomer.tyre_cover}
+                                  wear_tear={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).wear_tear : selectedCustomer.wear_tear}
+                                  europe_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).europe_cover : selectedCustomer.europe_cover}
+                                  transfer_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).transfer_cover : selectedCustomer.transfer_cover}
+                                  breakdown_recovery={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).breakdown_recovery : selectedCustomer.breakdown_recovery}
+                                  vehicle_rental={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).vehicle_rental : selectedCustomer.vehicle_rental}
+                                  mot_repair={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).mot_repair : selectedCustomer.mot_repair}
+                                  lost_key={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).lost_key : selectedCustomer.lost_key}
+                                  consequential={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).consequential : selectedCustomer.consequential}
+                                  claim_limit={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).claim_limit : selectedCustomer.claim_limit}
+                                  voluntary_excess={selectedCustomer.voluntary_excess}
+                                  payment_type={selectedCustomer.payment_type}
+                                  className="mt-4"
+                                />
+                              </div>
 
                               {/* Notes Section */}
                               <div className="space-y-4">
@@ -2405,6 +2407,12 @@ export const CustomersTab = () => {
                                   }}
                                 />
                               </div>
+                            </div>
+
+                            {/* W2000 Data Preview Section - Full Width */}
+                            <div className="mt-6">
+                              <h3 className="text-lg font-semibold mb-4">Warranties 2000 Data</h3>
+                              <W2000DataPreview customer={selectedCustomer} />
                             </div>
                             
                             {/* MOT History Section - Full Width */}
