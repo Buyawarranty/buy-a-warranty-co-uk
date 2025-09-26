@@ -73,7 +73,7 @@ serve(async (req) => {
       discount_amount: customerData?.discount_amount || 0,
       original_amount: customerData?.original_amount || null,
       final_amount: customerData?.final_amount || null,
-      voluntary_excess: parseInt(metadata?.voluntary_excess || customerData?.voluntaryExcess || vehicleData?.voluntaryExcess || '150'),
+      voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, vehicleData),
       claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId, paymentType)), // Use plan and duration-based claim limit
       warranty_reference_number: warrantyReference,
       // Add addon data to customer record too - fixed field names to match create-checkout
@@ -157,7 +157,7 @@ serve(async (req) => {
         policy_end_date: calculatePolicyEndDate(paymentType),
         status: 'active',
         claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId, paymentType)), // Use plan and duration-based claim limit
-        voluntary_excess: parseInt(metadata?.voluntary_excess || customerData?.voluntary_excess || '150'), // Fixed field name
+        voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, {}), // Fixed field name
         // Include add-ons
         ...addOnsData
       };
@@ -428,10 +428,39 @@ function getWarrantyDuration(paymentType: string): string {
   }
 }
 
+function getStandardizedVoluntaryExcess(metadata: any, customerData: any, vehicleData: any): number {
+  // Priority: metadata > customerData > vehicleData > default
+  const excessValue = metadata?.voluntary_excess || 
+                     customerData?.voluntaryExcess || 
+                     customerData?.voluntary_excess ||
+                     vehicleData?.voluntaryExcess || 
+                     vehicleData?.voluntary_excess ||
+                     '150'; // Standard default
+  
+  return parseInt(excessValue.toString());
+}
+
+function normalizeDuration(paymentType: string): string {
+  const normalized = paymentType?.toLowerCase() || '';
+  
+  // Standardize all variations to consistent format
+  if (normalized === '12months' || normalized === '12month' || normalized === 'yearly' || normalized === 'monthly') {
+    return '12months';
+  }
+  if (normalized === '24months' || normalized === '24month' || normalized === 'two_yearly' || normalized === 'twoyearly' || normalized === 'twoyear') {
+    return '24months';
+  }
+  if (normalized === '36months' || normalized === '36month' || normalized === 'three_yearly' || normalized === 'threeyearly' || normalized === 'threeyear' || normalized === 'three_year') {
+    return '36months';
+  }
+  
+  return paymentType; // Return original if no match
+}
+
 function getMaxClaimAmount(planId: string, paymentType?: string): string {
   const normalizedPlan = planId.toLowerCase();
   
-  // Handle special vehicle types
+  // Handle special vehicle types - consistent across all plans
   if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
     return '1000';
   } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
@@ -440,28 +469,25 @@ function getMaxClaimAmount(planId: string, paymentType?: string): string {
     return '1000';
   }
   
-  // Handle standard plan types based on duration
-  // 3-year plans typically have lower claim limits
-  if (paymentType === '36months' || paymentType === 'three_yearly') {
-    if (normalizedPlan.includes('basic')) {
-      return '500';
-    } else if (normalizedPlan.includes('gold')) {
-      return '750';
-    } else if (normalizedPlan.includes('platinum')) {
-      return '750'; // Platinum 3-year gets £750 claim limit
-    }
-  } else {
-    // Standard durations (12/24 months)
-    if (normalizedPlan.includes('basic')) {
-      return '500';
-    } else if (normalizedPlan.includes('gold')) {
-      return '1000';
-    } else if (normalizedPlan.includes('platinum')) {
-      return '1250'; // Standard platinum gets £1250
-    }
+  // Normalize payment type for consistent comparison
+  const normalizedDuration = normalizeDuration(paymentType || '');
+  
+  // Standardized claim limits based on plan type and duration
+  if (normalizedPlan.includes('basic')) {
+    if (normalizedDuration === '36months') return '500';   // 3-year Basic: £500
+    if (normalizedDuration === '24months') return '750';   // 2-year Basic: £750  
+    return '1000';                                         // 1-year Basic: £1000
+  } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
+    if (normalizedDuration === '36months') return '750';   // 3-year Gold/Premium: £750
+    if (normalizedDuration === '24months') return '1000';  // 2-year Gold/Premium: £1000
+    return '1250';                                         // 1-year Gold/Premium: £1250
+  } else if (normalizedPlan.includes('platinum')) {
+    if (normalizedDuration === '36months') return '750';   // 3-year Platinum: £750
+    if (normalizedDuration === '24months') return '1000';  // 2-year Platinum: £1000
+    return '1250';                                         // 1-year Platinum: £1250
   }
   
-  return '500'; // Default fallback
+  return '750'; // Default fallback for 3-year plans
 }
 
 function getWarrantyType(planId: string): string {

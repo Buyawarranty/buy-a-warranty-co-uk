@@ -336,7 +336,7 @@ serve(async (req) => {
     }
 
     // Prepare vehicle and customer data in the same format as Stripe
-    const vehicleDataFormatted = {
+    const vehicleDataFormatted: any = {
       regNumber: vehicleData?.regNumber || customerData?.vehicle_reg || '',
       mileage: vehicleData?.mileage || '',
       make: vehicleData?.make || '',
@@ -345,7 +345,7 @@ serve(async (req) => {
       fuelType: vehicleData?.fuelType || '',
       transmission: vehicleData?.transmission || '',
       vehicleType: vehicleData?.vehicleType || 'standard',
-      voluntaryExcess: vehicleData?.voluntaryExcess || 0,
+      voluntaryExcess: 0, // Will be set after customerDataFormatted is defined
       fullName: customerName,
       phone: customerData?.mobile || customerData?.phone || '',
       address: `${customerData?.street || ''}, ${customerData?.town || ''}, ${customerData?.county || ''}, ${customerData?.postcode || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',').trim(),
@@ -371,8 +371,11 @@ serve(async (req) => {
       phone: customerData?.mobile || customerData?.phone || '',
       address: `${customerData?.street || ''}, ${customerData?.town || ''}, ${customerData?.county || ''}, ${customerData?.postcode || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',').trim()
     };
+    
+    // Now set the voluntary excess using the standardized function
+    vehicleDataFormatted.voluntaryExcess = getStandardizedVoluntaryExcess(transactionData || {}, customerDataFormatted, vehicleDataFormatted);
 
-    logStep("Prepared data for handle-successful-payment", { 
+    logStep("Prepared data for handle-successful-payment", {
       planId: plan.name, 
       actualPaymentType, 
       customerEmail,
@@ -380,18 +383,8 @@ serve(async (req) => {
       hasCustomerData: !!customerDataFormatted
     });
 
-    // Calculate correct claim limit based on plan and payment type
-    let claimLimit = '750'; // Default for most plans
-    
-    // Calculate claim limit based on plan pricing structure
-    if (actualPaymentType === '36months' && plan.three_yearly_price) {
-      // For 3-year plans, claim limit is often lower (750)
-      claimLimit = '750';
-    } else if (actualPaymentType === '24months' && plan.two_yearly_price) {
-      claimLimit = '1000';
-    } else {
-      claimLimit = '1250'; // Default for 12-month plans
-    }
+    // Calculate correct claim limit based on plan and payment type using standardized function
+    const claimLimit = getMaxClaimAmount(plan.name, actualPaymentType);
     
     logStep("Calculated claim limit", { 
       paymentType: actualPaymentType, 
@@ -523,6 +516,47 @@ serve(async (req) => {
   }
 });
 
+// Utility functions for standardized calculations
+function getStandardizedVoluntaryExcess(metadata: any, customerData: any, vehicleData: any): number {
+  const excessValue = metadata?.voluntary_excess || 
+                     customerData?.voluntaryExcess || 
+                     customerData?.voluntary_excess ||
+                     vehicleData?.voluntaryExcess || 
+                     '150';
+  return parseInt(excessValue.toString());
+}
+
+function normalizeDuration(paymentType: string): string {
+  const normalized = paymentType?.toLowerCase() || '';
+  if (normalized === '12months' || normalized === '12month' || normalized === 'yearly' || normalized === 'monthly') return '12months';
+  if (normalized === '24months' || normalized === '24month' || normalized === 'two_yearly' || normalized === 'twoyearly' || normalized === 'twoyear') return '24months';
+  if (normalized === '36months' || normalized === '36month' || normalized === 'three_yearly' || normalized === 'threeyearly' || normalized === 'threeyear' || normalized === 'three_year') return '36months';
+  return paymentType;
+}
+
+function getMaxClaimAmount(planId: string, paymentType?: string): string {
+  const normalizedPlan = planId.toLowerCase();
+  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) return '1000';
+  if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) return '1000';
+  if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) return '1000';
+  
+  const normalizedDuration = normalizeDuration(paymentType || '');
+  if (normalizedPlan.includes('basic')) {
+    if (normalizedDuration === '36months') return '500';
+    if (normalizedDuration === '24months') return '750';
+    return '1000';
+  } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
+    if (normalizedDuration === '36months') return '750';
+    if (normalizedDuration === '24months') return '1000';
+    return '1250';
+  } else if (normalizedPlan.includes('platinum')) {
+    if (normalizedDuration === '36months') return '750';
+    if (normalizedDuration === '24months') return '1000';
+    return '1250';
+  }
+  return '750';
+}
+
 // Helper functions for Warranties 2000 registration
 async function generateWarrantyReference(): Promise<string> {
   try {
@@ -607,32 +641,6 @@ function getWarrantyDuration(paymentType: string): string {
       return '12';
   }
 }
-
-function getMaxClaimAmount(planId: string): string {
-  const normalizedPlan = planId.toLowerCase();
-  
-  // Handle special vehicle types
-  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
-    return '1000';
-  } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
-    return '1000';
-  } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
-    return '1000';
-  }
-  
-  // Handle standard plan types
-  if (normalizedPlan.includes('basic')) {
-    return '500';
-  } else if (normalizedPlan.includes('gold')) {
-    return '1000';
-  } else if (normalizedPlan.includes('platinum')) {
-    return '1200';
-  }
-  
-  return '500'; // Default fallback
-}
-
-function getWarrantyType(planId: string): string {
   const normalizedPlan = planId.toLowerCase();
   
   // Handle special vehicle types - check if plan name contains these terms

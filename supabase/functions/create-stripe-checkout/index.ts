@@ -31,28 +31,40 @@ serve(async (req) => {
     logStep("Request data", { planId, vehicleData, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns, claimLimit });
 
     // Function to calculate claim limit based on plan type
-    function getMaxClaimAmount(planName: string): string {
+    function getMaxClaimAmount(planName: string, paymentType?: string): string {
       const normalizedPlan = planName.toLowerCase();
       
-      // Handle special vehicle types
+      // Handle special vehicle types - consistent across all plans
       if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
         return '1000';
       } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
-        return '2000';
+        return '1000';
       } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
         return '1000';
       }
       
-      // Handle standard plan types
+      // Normalize payment type for consistent comparison
+      const normalizedPaymentType = paymentType?.toLowerCase() || '';
+      const is36Month = normalizedPaymentType === '36months' || normalizedPaymentType === 'three_yearly' || normalizedPaymentType === 'threeyear';
+      const is24Month = normalizedPaymentType === '24months' || normalizedPaymentType === 'two_yearly' || normalizedPaymentType === 'twoyear';
+      const is12Month = normalizedPaymentType === '12months' || normalizedPaymentType === 'yearly' || normalizedPaymentType === 'monthly';
+      
+      // Standardized claim limits based on plan type and duration
       if (normalizedPlan.includes('basic')) {
-        return '1250';
-      } else if (normalizedPlan.includes('gold')) {
-        return '2000';
+        if (is36Month) return '500';   // 3-year Basic: £500
+        if (is24Month) return '750';   // 2-year Basic: £750  
+        return '1000';                 // 1-year Basic: £1000
+      } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
+        if (is36Month) return '750';   // 3-year Gold/Premium: £750
+        if (is24Month) return '1000';  // 2-year Gold/Premium: £1000
+        return '1250';                 // 1-year Gold/Premium: £1250
       } else if (normalizedPlan.includes('platinum')) {
-        return '2500';
+        if (is36Month) return '750';   // 3-year Platinum: £750
+        if (is24Month) return '1000';  // 2-year Platinum: £1000
+        return '1250';                 // 1-year Platinum: £1250
       }
       
-      return '1250'; // Default fallback
+      return '750'; // Default fallback for 3-year plans
     }
 
     // Get plan data from database
@@ -221,7 +233,7 @@ serve(async (req) => {
         voluntary_excess: voluntaryExcess.toString(),
         customer_email: customerEmail,
         original_amount: totalAmount.toString(),
-        claim_limit: claimLimit?.toString() || getMaxClaimAmount(planData.name),
+        claim_limit: claimLimit?.toString() || getMaxClaimAmount(planData.name, paymentType),
         // Add-ons data - using correct field names that match handle-successful-payment
         addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
         addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
