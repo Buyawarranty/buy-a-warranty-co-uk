@@ -384,6 +384,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           ...customerData,
           final_amount: finalPrice
         },
+        protectionAddOns: {
+          tyre: pricingData.protectionAddOns?.tyre || false,
+          wearTear: pricingData.protectionAddOns?.wearTear || pricingData.protectionAddOns?.wearAndTear || false,
+          european: pricingData.protectionAddOns?.european || false,
+          breakdown: pricingData.protectionAddOns?.breakdown || false,
+          rental: pricingData.protectionAddOns?.rental || false,
+          transfer: pricingData.protectionAddOns?.transfer || false,
+          motRepair: pricingData.protectionAddOns?.motRepair || false,
+          motFee: pricingData.protectionAddOns?.motFee || false,
+          lostKey: false, // Not available in current pricing data type
+          consequential: false // Not available in current pricing data type
+        },
         discountCode: appliedDiscountCodes.map(code => code.code).join(', '),
         finalAmount: finalPrice
       }
