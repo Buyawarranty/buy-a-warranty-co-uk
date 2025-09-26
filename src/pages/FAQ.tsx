@@ -906,9 +906,25 @@ const FAQ = () => {
 
               {filteredFAQs.map((category) => (
                 <section key={category.id} id={category.id} className="mb-12">
-                  <h2 className="text-2xl font-bold text-brand-dark-text mb-6 pb-3 border-b-2 border-primary">
-                    {category.category}
-                  </h2>
+                  <div className="flex items-center justify-between mb-6 pb-3 border-b-2 border-primary">
+                    <h2 className="text-2xl font-bold text-brand-dark-text">
+                      {category.category}
+                    </h2>
+                    {category.category === 'Getting Started' && (
+                      <a 
+                        href="https://uk.trustpilot.com/review/buyawarranty.co.uk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block hover:opacity-80 transition-opacity"
+                      >
+                        <img 
+                          src="/lovable-uploads/trustpilot-excellent-box.webp" 
+                          alt="Trustpilot Excellent Rating"
+                          className="h-12 w-auto"
+                        />
+                      </a>
+                    )}
+                  </div>
                   
                   <div className="space-y-4">
                     {category.questions.map((faq) => (
