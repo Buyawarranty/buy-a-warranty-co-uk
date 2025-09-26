@@ -126,6 +126,41 @@ serve(async (req) => {
 
     logStep("Payment processed successfully", paymentData);
 
+    // CRITICAL: Log warranty selection for audit trail and verification
+    try {
+      const { data: auditLog, error: auditError } = await supabaseClient.functions.invoke(
+        'warranty-selection-logger',
+        {
+          body: {
+            action: 'log',
+            sessionId: sessionId,
+            customerEmail: vehicleData.email,
+            selectedPlanId: planId,
+            selectedPlanName: session.metadata?.plan_name || planId,
+            paymentType: paymentType,
+            quotedPrice: session.amount_total ? session.amount_total / 100 : customerData.final_amount,
+            vehicleData: vehicleData,
+            customerData: customerData,
+            addOns: {
+              breakdown: session.metadata?.breakdown_recovery === 'true',
+              tyreCover: session.metadata?.tyre_cover === 'true',
+              vehicleRental: session.metadata?.vehicle_rental === 'true',
+              motFee: session.metadata?.mot_fee === 'true'
+            },
+            discountApplied: { code: customerData.discount_code }
+          }
+        }
+      );
+      
+      if (auditError) {
+        console.error('Failed to log warranty selection for audit:', auditError);
+      } else {
+        logStep("Warranty selection logged for audit", { auditId: auditLog?.data?.id });
+      }
+    } catch (error) {
+      console.error('Error logging warranty selection:', error);
+    }
+
     // Email is already handled by handle-successful-payment function
     logStep("Email already sent via handle-successful-payment", { 
       customerId: paymentData?.customerId, 
