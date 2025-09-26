@@ -157,6 +157,7 @@ serve(async (req) => {
         policy_end_date: calculatePolicyEndDate(paymentType),
         status: 'active',
         claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || '750'), // Add claim limit to policy
+        voluntary_excess: parseInt(metadata?.voluntary_excess || customerData?.voluntary_excess || '150'), // Add voluntary excess to policy
         // Include add-ons
         ...addOnsData
       };
