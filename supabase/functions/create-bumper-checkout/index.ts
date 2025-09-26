@@ -135,8 +135,28 @@ serve(async (req) => {
       transaction_id: transactionId,
       plan_id: planId,
       payment_type: paymentType,
-      customer_data: customerData,
-      vehicle_data: vehicleData,
+      customer_data: {
+        ...customerData,
+        // Ensure vehicle registration is available in customer data
+        vehicle_reg: customerData?.vehicle_reg || vehicleData?.regNumber || vehicleData?.registration,
+        vehicle_make: customerData?.vehicle_make || vehicleData?.make,
+        vehicle_model: customerData?.vehicle_model || vehicleData?.model,
+        vehicle_year: customerData?.vehicle_year || vehicleData?.year,
+        vehicle_fuel_type: customerData?.vehicle_fuel_type || vehicleData?.fuelType,
+        vehicle_transmission: customerData?.vehicle_transmission || vehicleData?.transmission,
+        vehicle_mileage: customerData?.vehicle_mileage || vehicleData?.mileage
+      },
+      vehicle_data: {
+        ...vehicleData,
+        // Ensure consistent field names
+        regNumber: vehicleData?.regNumber || vehicleData?.registration || customerData?.vehicle_reg,
+        make: vehicleData?.make || customerData?.vehicle_make,
+        model: vehicleData?.model || customerData?.vehicle_model,
+        year: vehicleData?.year || customerData?.vehicle_year,
+        fuelType: vehicleData?.fuelType || customerData?.vehicle_fuel_type,
+        transmission: vehicleData?.transmission || customerData?.vehicle_transmission,
+        mileage: vehicleData?.mileage || customerData?.vehicle_mileage
+      },
       protection_addons: protectionAddOns,
       final_amount: totalAmount,
       discount_code: discountCode || '',

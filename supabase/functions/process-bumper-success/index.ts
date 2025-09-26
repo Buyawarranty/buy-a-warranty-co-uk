@@ -147,6 +147,7 @@ serve(async (req) => {
       paymentType,
       finalAmount,
       protectionAddOns,
+      vehicleData: vehicleData,
       discountCode
     });
 
@@ -187,15 +188,6 @@ serve(async (req) => {
     if (autoIncludedAddOns.includes('rental')) addOnFields.vehicle_rental = true;
     if (autoIncludedAddOns.includes('tyre')) addOnFields.tyre_cover = true;
 
-    logStep("Extracted transaction details", {
-      customerEmail: customerData?.email,
-      planId,
-      paymentType,
-      finalAmount,
-      protectionAddOns,
-      discountCode
-    });
-
     // Get claim limit from transaction data instead of calculating it
     const claimLimit = transactionData.claim_limit || calculateClaimLimit(planId, paymentType);
     const voluntaryExcess = calculateVoluntaryExcess(planId, paymentType);
@@ -209,22 +201,33 @@ serve(async (req) => {
       vehicleData: vehicleData,
       paymentType: paymentType,
       userEmail: customerData?.email,
+      protectionAddOns: addOnFields, // Use processed add-ons with auto-inclusions
       metadata: {
         source: 'bumper',
         transaction_id: transactionId,
         discount_code: discountCode,
-        protectionAddOns: protectionAddOns,
         claim_limit: claimLimit,
         voluntary_excess: voluntaryExcess,
         final_amount: finalAmount,
-        // Vehicle details for metadata
-        vehicle_reg: vehicleData?.regNumber,
-        vehicle_make: vehicleData?.make,
-        vehicle_model: vehicleData?.model,
-        vehicle_year: vehicleData?.year,
-        vehicle_fuel_type: vehicleData?.fuelType,
-        vehicle_transmission: vehicleData?.transmission,
-        vehicle_mileage: vehicleData?.mileage
+        // Vehicle details for metadata - ensure these are populated
+        vehicle_reg: vehicleData?.regNumber || vehicleData?.registration || customerData?.vehicle_reg,
+        vehicle_make: vehicleData?.make || customerData?.vehicle_make,
+        vehicle_model: vehicleData?.model || customerData?.vehicle_model,
+        vehicle_year: vehicleData?.year || customerData?.vehicle_year,
+        vehicle_fuel_type: vehicleData?.fuelType || customerData?.vehicle_fuel_type,
+        vehicle_transmission: vehicleData?.transmission || customerData?.vehicle_transmission,
+        vehicle_mileage: vehicleData?.mileage || customerData?.vehicle_mileage,
+        // Add-ons metadata for W2000 compatibility
+        addon_tyre_cover: addOnFields.tyre_cover ? 'true' : 'false',
+        addon_wear_tear: addOnFields.wear_tear ? 'true' : 'false',
+        addon_europe_cover: addOnFields.europe_cover ? 'true' : 'false',
+        addon_transfer_cover: addOnFields.transfer_cover ? 'true' : 'false',
+        addon_breakdown_recovery: addOnFields.breakdown_recovery ? 'true' : 'false',
+        addon_vehicle_rental: addOnFields.vehicle_rental ? 'true' : 'false',
+        addon_mot_fee: addOnFields.mot_fee ? 'true' : 'false',
+        addon_mot_repair: addOnFields.mot_repair ? 'true' : 'false',
+        addon_lost_key: addOnFields.lost_key ? 'true' : 'false',
+        addon_consequential: addOnFields.consequential ? 'true' : 'false'
       }
     };
 
