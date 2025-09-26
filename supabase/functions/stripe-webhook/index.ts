@@ -139,19 +139,40 @@ serve(async (req) => {
 
           logStep("Extracted customer and vehicle data from webhook", { vehicleData, customerData });
 
-          // Call handle-successful-payment directly
-          const { data: processData, error: processError } = await supabaseClient.functions.invoke('handle-successful-payment', {
-            body: {
-              planId: fullSession.metadata?.plan_id || planId,
-              paymentType: fullSession.metadata?.payment_type || paymentType,
-              userEmail: vehicleData.email,
-              userId: fullSession.metadata?.user_id || null,
-              stripeSessionId: session.id,
-              vehicleData: vehicleData,
-              customerData: customerData,
-              skipEmail: false // Allow email sending
-            }
-          });
+           // Extract add-ons and claim limit from metadata
+           const protectionAddOns = {
+             tyre: fullSession.metadata?.addon_tyre_cover === 'true',
+             wearTear: fullSession.metadata?.addon_wear_tear === 'true',
+             european: fullSession.metadata?.addon_europe_cover === 'true',
+             transfer: fullSession.metadata?.addon_transfer_cover === 'true',
+             breakdown: fullSession.metadata?.addon_breakdown_recovery === 'true',
+             rental: fullSession.metadata?.addon_vehicle_rental === 'true',
+             motFee: fullSession.metadata?.addon_mot_fee === 'true',
+             motRepair: fullSession.metadata?.addon_mot_repair === 'true',
+             lostKey: fullSession.metadata?.addon_lost_key === 'true',
+             consequential: fullSession.metadata?.addon_consequential === 'true'
+           };
+
+           const claimLimit = parseInt(fullSession.metadata?.claim_limit || '1250');
+           
+           logStep("Extracted add-ons and claim limit", { protectionAddOns, claimLimit });
+
+           // Call handle-successful-payment directly
+           const { data: processData, error: processError } = await supabaseClient.functions.invoke('handle-successful-payment', {
+             body: {
+               planId: fullSession.metadata?.plan_id || planId,
+               paymentType: fullSession.metadata?.payment_type || paymentType,
+               userEmail: vehicleData.email,
+               userId: fullSession.metadata?.user_id || null,
+               stripeSessionId: session.id,
+               vehicleData: vehicleData,
+               customerData: customerData,
+               protectionAddOns: protectionAddOns,
+               claim_limit: claimLimit,
+               metadata: fullSession.metadata || {},
+               skipEmail: false // Allow email sending
+             }
+           });
 
           if (processError) {
             logStep("Error processing payment via handle-successful-payment", processError);
