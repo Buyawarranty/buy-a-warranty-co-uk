@@ -628,47 +628,6 @@ const CustomerDashboard = () => {
     }
   };
 
-  const getTimeRemaining = (policy: CustomerPolicy) => {
-    if (!policy) return '';
-    
-    const endDate = new Date(policy.policy_end_date);
-    const now = new Date();
-    const diffTime = endDate.getTime() - now.getTime();
-    
-    if (diffTime < 0) return 'Expired';
-    
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return 'Expires today';
-    if (diffDays === 1) return '1 day remaining';
-    if (diffDays < 30) return `${diffDays} days remaining`;
-    
-    // Calculate years, months, and days
-    let years = 0;
-    let months = 0;
-    let days = diffDays;
-    
-    // Calculate years
-    while (days >= 365) {
-      years++;
-      days -= 365;
-    }
-    
-    // Calculate months  
-    while (days >= 30) {
-      months++;
-      days -= 30;
-    }
-    
-    // Build the display string
-    const parts = [];
-    if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
-    if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
-    if (days > 0 && years === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
-    
-    return parts.length > 0 ? `${parts.join(', ')} remaining` : 'Less than a day remaining';
-  };
-
   const fetchCustomerData = async (email: string) => {
     try {
       // Get the most recent customer record for this email
@@ -1171,10 +1130,6 @@ const CustomerDashboard = () => {
                               <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Payment Duration</span>
                                 <span className="text-sm text-gray-900">{getPaymentTypeDisplay(selectedPolicy?.payment_type)}</span>
-                              </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Time Remaining</span>
-                                <span className="text-sm font-medium text-gray-900">{getTimeRemaining(selectedPolicy)}</span>
                               </div>
                             </div>
                           </div>
