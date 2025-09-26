@@ -15,6 +15,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType } from '@/lib/addOnsUtils';
+import { EmailCapturePopup } from '@/components/EmailCapturePopup';
 
 export interface CustomerDetailsStepProps {
   vehicleData: {
@@ -99,32 +100,49 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const [showValidation, setShowValidation] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [addAnotherWarrantyRequested, setAddAnotherWarrantyRequested] = useState(false);
-  const [appliedDiscountCode, setAppliedDiscountCode] = useState<string>('');
-  const [discountAmount, setDiscountAmount] = useState<number>(0);
+  const [appliedDiscountCodes, setAppliedDiscountCodes] = useState<Array<{
+    code: string;
+    type: 'percentage' | 'fixed';
+    value: number;
+    discountAmount: number;
+  }>>([]);
   const [promoCodeInput, setPromoCodeInput] = useState<string>('');
   const [promoCodeError, setPromoCodeError] = useState<string>('');
+  const [showEmailPopup, setShowEmailPopup] = useState(false);
   const { user } = useAuth();
-
-  // Check for discount code on component mount
-  useEffect(() => {
-    const savedDiscountCode = localStorage.getItem('secondWarrantyDiscountCode');
-    if (savedDiscountCode && savedDiscountCode.startsWith('SECOND10-')) {
-      setAppliedDiscountCode(savedDiscountCode);
-      setDiscountAmount(0.10); // 10% discount
-    }
-  }, []);
 
   // Calculate pricing with discounts
   const bumperTotalPrice = pricingData.totalPrice;
   const stripeTotalPrice = Math.round(pricingData.totalPrice * 0.95);
 
-  // Only apply discount if customer has a valid discount code (from completed purchase)
-  const hasValidDiscountCode = appliedDiscountCode && discountAmount > 0;
-  const discountedPrice = hasValidDiscountCode ? bumperTotalPrice * (1 - discountAmount) : bumperTotalPrice;
-  const discountedBumperPrice = Math.round(discountedPrice);
+  // Check for discount code on component mount and set up email popup timer
+  useEffect(() => {
+    const savedDiscountCode = localStorage.getItem('secondWarrantyDiscountCode');
+    if (savedDiscountCode && savedDiscountCode.startsWith('SECOND10-')) {
+      setAppliedDiscountCodes([{
+        code: savedDiscountCode,
+        type: 'percentage',
+        value: 10,
+        discountAmount: bumperTotalPrice * 0.10
+      }]);
+    }
+
+    // Show email capture popup after 35 seconds
+    const timer = setTimeout(() => {
+      setShowEmailPopup(true);
+    }, 35000);
+
+    return () => clearTimeout(timer);
+  }, [bumperTotalPrice]);
+
+  // Calculate total discount from all applied codes
+  const totalDiscountAmount = appliedDiscountCodes.reduce((total, code) => total + code.discountAmount, 0);
+  const hasValidDiscountCodes = appliedDiscountCodes.length > 0;
+  const discountedPrice = hasValidDiscountCodes ? bumperTotalPrice - totalDiscountAmount : bumperTotalPrice;
+  const discountedBumperPrice = Math.round(Math.max(discountedPrice, 0)); // Ensure price doesn't go negative
   const discountedStripePrice = Math.round(discountedPrice * 0.95); // 5% upfront discount on discounted price
 
-  const hasSecondWarrantyDiscount = hasValidDiscountCode;
+  const hasSecondWarrantyDiscount = appliedDiscountCodes.some(code => code.code.startsWith('SECOND10-'));
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setCustomerData(prev => ({ ...prev, [field]: value }));
@@ -136,6 +154,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const applyPromoCode = async () => {
     if (!promoCodeInput.trim()) {
       setPromoCodeError('Please enter a promo code');
+      return;
+    }
+
+    // Check if code is already applied
+    if (appliedDiscountCodes.some(code => code.code === promoCodeInput.trim())) {
+      setPromoCodeError('This promo code is already applied');
       return;
     }
 
@@ -151,12 +175,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
       if (error) throw error;
 
       if (data.valid) {
-        setAppliedDiscountCode(promoCodeInput.trim());
-        // Use the actual discount amount or calculate percentage discount
-        const discountPercentage = data.discountCode.type === 'percentage' 
-          ? data.discountCode.value 
-          : (data.discountAmount / bumperTotalPrice) * 100;
-        setDiscountAmount(discountPercentage / 100);
+        const newDiscountCode = {
+          code: promoCodeInput.trim(),
+          type: data.discountCode.type,
+          value: data.discountCode.value,
+          discountAmount: data.discountCode.type === 'percentage' 
+            ? (bumperTotalPrice * data.discountCode.value / 100)
+            : data.discountCode.value
+        };
+
+        setAppliedDiscountCodes(prev => [...prev, newDiscountCode]);
         setPromoCodeInput('');
         setPromoCodeError('');
         
@@ -173,12 +201,21 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     }
   };
 
-  const removePromoCode = () => {
-    setAppliedDiscountCode('');
-    setDiscountAmount(0);
-    setPromoCodeInput('');
-    setPromoCodeError('');
+  const removePromoCode = (codeToRemove: string) => {
+    setAppliedDiscountCodes(prev => prev.filter(code => code.code !== codeToRemove));
     toast.success('Promo code removed');
+  };
+
+  const handleEmailPopupDiscountCode = (generatedCode: string) => {
+    // Auto-apply the discount code from email popup
+    const newDiscountCode = {
+      code: generatedCode,
+      type: 'fixed' as const,
+      value: 25,
+      discountAmount: 25
+    };
+    setAppliedDiscountCodes(prev => [...prev, newDiscountCode]);
+    toast.success('£25 discount code applied automatically!');
   };
 
   const validateForm = () => {
@@ -265,7 +302,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               ...customerData,
               final_amount: finalPrice
             },
-            discountCode: appliedDiscountCode,
+            discountCode: appliedDiscountCodes.map(code => code.code).join(', '),
             finalAmount: finalPrice,
             addAnotherWarrantyRequested,
             protectionAddOns: pricingData.protectionAddOns || {}
@@ -320,8 +357,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         await processStripeCheckout();
       }
 
-      // Clear the discount code after use
-      if (appliedDiscountCode) {
+      // Clear the discount codes after use
+      if (appliedDiscountCodes.length > 0) {
         localStorage.removeItem('secondWarrantyDiscountCode');
         localStorage.removeItem('addAnotherWarrantyDiscount');
       }
@@ -345,7 +382,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           ...customerData,
           final_amount: finalPrice
         },
-        discountCode: appliedDiscountCode,
+        discountCode: appliedDiscountCodes.map(code => code.code).join(', '),
         finalAmount: finalPrice
       }
     });
@@ -748,50 +785,72 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     {/* Promo Code Section */}
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-gray-600">Promo Code</span>
-                        {hasValidDiscountCode && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={removePromoCode}
-                            className="text-red-600 hover:text-red-800 h-auto p-1"
-                          >
-                            Remove
-                          </Button>
+                        <span className="text-gray-600">Promo Codes</span>
+                        {hasValidDiscountCodes && (
+                          <span className="text-sm text-gray-500">
+                            {appliedDiscountCodes.length} applied
+                          </span>
                         )}
                       </div>
                       
-                      {hasValidDiscountCode ? (
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      {/* Applied Discount Codes */}
+                      {appliedDiscountCodes.map((discount, index) => (
+                        <div key={discount.code} className="bg-green-50 border border-green-200 rounded-lg p-3 mb-2">
                           <div className="flex items-center justify-between">
-                            <span className="font-semibold text-green-800">{appliedDiscountCode}</span>
-                            <span className="text-green-600 font-medium">{Math.round(discountAmount * 100)}% OFF</span>
+                            <div className="flex flex-col">
+                              <span className="font-semibold text-green-800">{discount.code}</span>
+                              <span className="text-xs text-green-600">
+                                {discount.type === 'percentage' ? `${discount.value}% OFF` : `£${discount.value} OFF`}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-green-600 font-medium">-£{discount.discountAmount.toFixed(2)}</span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removePromoCode(discount.code)}
+                                className="text-red-600 hover:text-red-800 h-auto p-1"
+                              >
+                                Remove
+                              </Button>
+                            </div>
                           </div>
                         </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <div className="flex gap-2">
-                            <Input
-                              placeholder="Enter promo code"
-                              value={promoCodeInput}
-                              onChange={(e) => {
-                                setPromoCodeInput(e.target.value.toUpperCase());
-                                setPromoCodeError('');
-                              }}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={applyPromoCode}
-                              variant="outline"
-                              size="sm"
-                              disabled={!promoCodeInput.trim()}
-                            >
-                              Apply
-                            </Button>
+                      ))}
+                      
+                      {/* Add New Promo Code */}
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="Enter another promo code"
+                            value={promoCodeInput}
+                            onChange={(e) => {
+                              setPromoCodeInput(e.target.value.toUpperCase());
+                              setPromoCodeError('');
+                            }}
+                            className="flex-1"
+                          />
+                          <Button
+                            onClick={applyPromoCode}
+                            variant="outline"
+                            size="sm"
+                            disabled={!promoCodeInput.trim()}
+                          >
+                            Apply
+                          </Button>
+                        </div>
+                        {promoCodeError && (
+                          <p className="text-red-500 text-xs">{promoCodeError}</p>
+                        )}
+                      </div>
+
+                      {/* Total Discount Summary */}
+                      {hasValidDiscountCodes && (
+                        <div className="mt-3 pt-3 border-t border-green-200">
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="font-medium text-gray-700">Total Discount:</span>
+                            <span className="font-bold text-green-600">-£{totalDiscountAmount.toFixed(2)}</span>
                           </div>
-                          {promoCodeError && (
-                            <p className="text-red-500 text-xs">{promoCodeError}</p>
-                          )}
                         </div>
                       )}
                     </div>
@@ -901,14 +960,19 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <p className="text-sm text-gray-600">
                               Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
                               {hasSecondWarrantyDiscount && (
-                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% discount applied)</span>
+                                <span className="text-orange-600"> (second warranty discount applied)</span>
                               )}
-                              {hasSecondWarrantyDiscount && (
+                              {hasValidDiscountCodes && !hasSecondWarrantyDiscount && (
+                                <span className="text-green-600"> (discount codes applied)</span>
+                              )}
+                              {hasValidDiscountCodes && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
-                              {hasSecondWarrantyDiscount && (
+                              {hasValidDiscountCodes && (
                                 <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded text-xs">
-                                  <span className="font-semibold text-orange-800">Discount Code Applied: {appliedDiscountCode}</span>
+                                  <span className="font-semibold text-orange-800">
+                                    Discount Codes Applied: {appliedDiscountCodes.map(code => code.code).join(', ')}
+                                  </span>
                                 </div>
                               )}
                             </p>
@@ -930,17 +994,22 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                              <p className="text-sm text-gray-600">
                               Pay £{discountedStripePrice} upfront via card
                               {hasSecondWarrantyDiscount && (
-                                <span className="text-orange-600"> ({Math.round(discountAmount * 100)}% discount + 5% upfront discount)</span>
+                                <span className="text-orange-600"> (second warranty discount + 5% upfront discount)</span>
                               )}
-                              {!hasSecondWarrantyDiscount && (
+                              {hasValidDiscountCodes && !hasSecondWarrantyDiscount && (
+                                <span className="text-green-600"> (discount codes + 5% upfront discount)</span>
+                              )}
+                              {!hasValidDiscountCodes && (
                                 <span className="text-green-600"> (5% upfront discount)</span>
                               )}
-                              {hasSecondWarrantyDiscount && (
+                              {hasValidDiscountCodes && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
-                              {hasSecondWarrantyDiscount && (
+                              {hasValidDiscountCodes && (
                                 <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded text-xs">
-                                  <span className="font-semibold text-orange-800">Discount Code Applied: {appliedDiscountCode}</span>
+                                  <span className="font-semibold text-orange-800">
+                                    Discount Codes Applied: {appliedDiscountCodes.map(code => code.code).join(', ')}
+                                  </span>
                                 </div>
                               )}
                              </p>
@@ -969,6 +1038,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             </div>
           </CardContent>
         </Card>
+
+        {/* Email Capture Popup */}
+        <EmailCapturePopup
+          isOpen={showEmailPopup}
+          onClose={() => setShowEmailPopup(false)}
+          onDiscountCodeGenerated={handleEmailPopupDiscountCode}
+        />
       </div>
     </div>
   );
