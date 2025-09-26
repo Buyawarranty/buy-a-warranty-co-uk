@@ -259,12 +259,26 @@ const ContactUs = () => {
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
               {/* Panda Image */}
-              <div className="flex justify-center lg:justify-start order-2 lg:order-1">
+              <div className="flex flex-col items-center lg:items-start order-2 lg:order-1 space-y-4">
                 <img 
                   src="/lovable-uploads/dd63a384-ee39-4b63-8b4a-0789f2b81de1.png" 
                   alt="Panda on motorcycle mascot" 
                   className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
                 />
+                
+                {/* Trustpilot Section */}
+                <a 
+                  href="https://uk.trustpilot.com/review/buyawarranty.co.uk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block hover:opacity-80 transition-opacity"
+                >
+                  <img 
+                    src="/lovable-uploads/trustpilot-excellent-box.webp" 
+                    alt="Trustpilot Excellent Rating"
+                    className="h-16 w-auto"
+                  />
+                </a>
               </div>
               
               {/* Contact Information */}
