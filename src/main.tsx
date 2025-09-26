@@ -2,8 +2,10 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Preload critical resources
+// Preload critical resources with improved performance
 const preloadResources = () => {
+  // Create document fragment for better performance
+  const fragment = document.createDocumentFragment();
   
   // DNS prefetch for external resources
   const prefetchLinks = [
@@ -16,8 +18,11 @@ const preloadResources = () => {
     const link = document.createElement('link');
     link.rel = 'dns-prefetch';
     link.href = url;
-    document.head.appendChild(link);
+    fragment.appendChild(link);
   });
+  
+  // Batch DOM updates
+  document.head.appendChild(fragment);
 };
 
 // Start preloading immediately

@@ -25,7 +25,8 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     exclude: ['fsevents'],
-    include: ['react', 'react-dom', 'react-router-dom'],
+    include: ['react', 'react-dom', 'react-router-dom', '@supabase/supabase-js'],
+    force: true
   },
   build: {
     rollupOptions: {
@@ -35,10 +36,14 @@ export default defineConfig(({ mode }) => ({
           router: ['react-router-dom'],
           supabase: ['@supabase/supabase-js'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-tooltip', '@radix-ui/react-slot'],
+          utils: ['clsx', 'class-variance-authority', 'tailwind-merge'],
         },
       },
     },
     chunkSizeWarningLimit: 1600,
+    sourcemap: mode === 'development',
+    minify: mode === 'production' ? 'esbuild' : false,
+    target: 'esnext'
   },
   esbuild: {
     drop: mode === 'production' ? ['console', 'debugger'] : [],

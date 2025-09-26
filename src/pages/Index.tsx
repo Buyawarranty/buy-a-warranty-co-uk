@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, lazy } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Homepage from '@/components/Homepage';
@@ -7,6 +7,9 @@ import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
 import { useMobileBackNavigation } from '@/hooks/useMobileBackNavigation';
+import { useQuoteRestoration } from '@/hooks/useQuoteRestoration';
+import { batchLocalStorageWrite, safeLocalStorageRemove, parseLocalStorageJSON } from '@/utils/localStorage';
+import PerformanceOptimizedSuspense from '@/components/PerformanceOptimizedSuspense';
 
 // Lazy load heavy components that are not immediately visible
 const RegistrationForm = lazy(() => import('@/components/RegistrationForm'));
@@ -184,114 +187,72 @@ const Index = () => {
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   
-  // Quote restoration effect - runs immediately when component loads
+  const { restoreQuoteData } = useQuoteRestoration();
+
+  // Quote restoration effect - optimized with memoization
   useEffect(() => {
-    console.log('QUOTE RESTORATION: useEffect triggered', { quoteParam, emailParam });
-    
     if (quoteParam && emailParam) {
-      console.log('QUOTE RESTORATION: Found quote params, fetching data...', { quoteParam, emailParam });
-      
-      const fetchQuoteData = async () => {
-        try {
-          console.log('QUOTE RESTORATION: Fetching from database with params:', { quoteParam, emailParam });
+      restoreQuoteData(quoteParam, emailParam).then(restoredData => {
+        if (restoredData) {
+          setVehicleData(restoredData);
+          setFormData(prev => ({ ...prev, ...restoredData }));
           
-          const { data, error } = await supabase
-            .from('quote_data')
-            .select('*')
-            .eq('quote_id', quoteParam)
-            .eq('customer_email', emailParam)
-            .maybeSingle();
-
-          console.log('QUOTE RESTORATION: Database response:', { data, error, quoteParam, emailParam });
-
-          if (error) {
-            console.error('QUOTE RESTORATION: Database error:', error);
-            return;
-          }
-
-          if (!data) {
-            console.warn('QUOTE RESTORATION: No quote data found for:', { quoteParam, emailParam });
-            return;
-          }
-
-          // Restore the vehicle data from the stored quote
-          const vehicleDataJson = data.vehicle_data as any;
-          console.log('QUOTE RESTORATION: Raw vehicle data from DB:', vehicleDataJson);
-          
-          const restoredVehicleData = {
-            regNumber: vehicleDataJson.regNumber || '',
-            mileage: vehicleDataJson.mileage || '',
-            email: emailParam,
-            phone: '',
-            firstName: '',
-            lastName: '',
-            address: '',
-            make: vehicleDataJson.make || '',
-            model: vehicleDataJson.model || '',
-            year: vehicleDataJson.year || '',
-            vehicleType: vehicleDataJson.vehicleType || 'car',
-            fuelType: vehicleDataJson.fuelType || '',
-            transmission: vehicleDataJson.transmission || ''
+          // Batch localStorage operations
+          const updates = {
+            buyawarranty_vehicleData: JSON.stringify(restoredData),
+            buyawarranty_formData: JSON.stringify(restoredData),
+            buyawarranty_currentStep: '3'
           };
-          
-          console.log('QUOTE RESTORATION: Restoring vehicle data and going to step 3:', restoredVehicleData);
-          setVehicleData(restoredVehicleData);
-          setFormData(prev => ({ ...prev, ...restoredVehicleData }));
-          
-          // Save to localStorage for persistence
-          localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(restoredVehicleData));
-          localStorage.setItem('buyawarranty_formData', JSON.stringify(restoredVehicleData));
-          localStorage.setItem('buyawarranty_currentStep', '3');
+          Object.entries(updates).forEach(([key, value]) => 
+            localStorage.setItem(key, value)
+          );
           
           setCurrentStep(3);
           updateStepInUrl(3);
-          
-          console.log('QUOTE RESTORATION: Successfully restored quote and set step to 3');
-          
-        } catch (error) {
-          console.error('QUOTE RESTORATION: Error in fetchQuoteData:', error);
         }
-      };
-
-      fetchQuoteData();
-    } else {
-      console.log('QUOTE RESTORATION: No quote params found, skipping restoration');
+      });
     }
-  }, [quoteParam, emailParam]);
+  }, [quoteParam, emailParam, restoreQuoteData]);
   
-  // Save state to localStorage
-  const saveStateToLocalStorage = (step?: number) => {
+  // Optimized localStorage operations with batching
+  const saveStateToLocalStorage = useCallback((step?: number) => {
+    const currentStepValue = step || currentStep;
     const state = {
-      step: step || currentStep,
+      step: currentStepValue,
       vehicleData,
       selectedPlan,
       formData
     };
-    localStorage.setItem('warrantyJourneyState', JSON.stringify(state));
     
-    // Also save individual items for better recovery
+    // Batch all localStorage operations to reduce I/O
+    const updates: Record<string, string> = {
+      warrantyJourneyState: JSON.stringify(state),
+      buyawarranty_formData: JSON.stringify(formData),
+      buyawarranty_currentStep: String(currentStepValue)
+    };
+    
     if (vehicleData) {
-      localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(vehicleData));
+      updates.buyawarranty_vehicleData = JSON.stringify(vehicleData);
     }
     if (selectedPlan) {
-      localStorage.setItem('buyawarranty_selectedPlan', JSON.stringify(selectedPlan));
+      updates.buyawarranty_selectedPlan = JSON.stringify(selectedPlan);
     }
-    localStorage.setItem('buyawarranty_formData', JSON.stringify(formData));
-    localStorage.setItem('buyawarranty_currentStep', String(step || currentStep));
-  };
+    
+    Object.entries(updates).forEach(([key, value]) => 
+      localStorage.setItem(key, value)
+    );
+  }, [currentStep, vehicleData, selectedPlan, formData]);
   
-  // Load state from localStorage
-  const loadStateFromLocalStorage = () => {
+  // Memoized localStorage operations
+  const loadStateFromLocalStorage = useCallback(() => {
     try {
       const savedState = localStorage.getItem('warrantyJourneyState');
-      if (savedState) {
-        return JSON.parse(savedState);
-      }
+      return savedState ? JSON.parse(savedState) : null;
     } catch (error) {
       console.error('Error loading state from localStorage:', error);
+      return null;
     }
-    return null;
-  };
+  }, []);
   
   // Update URL when step changes
   const updateStepInUrl = (step: number) => {
@@ -315,12 +276,15 @@ const Index = () => {
     totalSteps: 5
   });
   
-  // Save state when important data changes
+  // Debounced state saving to reduce localStorage writes
   useEffect(() => {
     if (vehicleData || selectedPlan) {
-      saveStateToLocalStorage();
+      const timeoutId = setTimeout(() => {
+        saveStateToLocalStorage();
+      }, 300);
+      return () => clearTimeout(timeoutId);
     }
-  }, [vehicleData, selectedPlan]);
+  }, [vehicleData, selectedPlan, saveStateToLocalStorage]);
   
   
   useEffect(() => {
@@ -335,72 +299,7 @@ const Index = () => {
     
     console.log('URL params check:', { quoteParam, emailParam, currentUrl: window.location.href });
     
-    if (quoteParam && emailParam) {
-      console.log('Quote params found, fetching quote data...');
-      // User is returning from a quote email - fetch the stored quote data
-      // User is returning from a quote email - fetch the stored quote data
-      const fetchQuoteData = async () => {
-        try {
-          console.log('Fetching quote data:', { quoteParam, emailParam });
-          
-          const { data, error } = await supabase
-            .from('quote_data')
-            .select('*')
-            .eq('quote_id', quoteParam)
-            .eq('customer_email', emailParam)
-            .maybeSingle();
-
-          console.log('Quote data response:', { data, error });
-
-          if (error) {
-            console.error('Error fetching quote data:', error);
-            setCurrentStep(1);
-            updateStepInUrl(1);
-            return;
-          }
-
-          if (!data) {
-            console.error('Quote not found or expired');
-            // Show error message and redirect to step 1
-            setCurrentStep(1);
-            updateStepInUrl(1);
-            return;
-          }
-
-          // Restore the vehicle data from the stored quote
-          const vehicleDataJson = data.vehicle_data as any;
-          const restoredVehicleData = {
-            regNumber: vehicleDataJson.regNumber || '',
-            mileage: vehicleDataJson.mileage || '',
-            email: emailParam,
-            phone: '',
-            firstName: '',
-            lastName: '',
-            address: '',
-            make: vehicleDataJson.make || '',
-            model: vehicleDataJson.model || '',
-            year: vehicleDataJson.year || '',
-            vehicleType: vehicleDataJson.vehicleType || 'car',
-            fuelType: vehicleDataJson.fuelType || '',
-            transmission: vehicleDataJson.transmission || ''
-          };
-          
-          setVehicleData(restoredVehicleData);
-          setFormData(prev => ({ ...prev, ...restoredVehicleData }));
-          setCurrentStep(3); // Go to step 3 (choose your plan)
-          updateStepInUrl(3);
-          
-          console.log('Quote data restored successfully:', restoredVehicleData);
-        } catch (error) {
-          console.error('Error fetching quote data:', error);
-          setCurrentStep(1);
-          updateStepInUrl(1);
-        }
-      };
-
-      fetchQuoteData();
-      return;
-    }
+    // Quote restoration is now handled by the earlier effect to avoid duplication
 
     // Show discount popup after 20 seconds of scrolling (not on homepage)
     if (currentStep !== 1) {
@@ -611,8 +510,8 @@ const Index = () => {
     console.log('Customer details completed:', customerData);
   };
 
-  // Function to track abandoned cart events
-  const trackAbandonedCart = async (data: VehicleData, step: number, planName?: string, paymentType?: string) => {
+  // Memoized abandoned cart tracking to avoid unnecessary calls
+  const trackAbandonedCart = useCallback(async (data: VehicleData, step: number, planName?: string, paymentType?: string) => {
     try {
       await supabase.functions.invoke('track-abandoned-cart', {
         body: {
@@ -623,7 +522,7 @@ const Index = () => {
           vehicle_make: data.make,
           vehicle_model: data.model,
           vehicle_year: data.year,
-          vehicle_type: data.vehicleType, // Include vehicle type for special vehicles
+          vehicle_type: data.vehicleType,
           mileage: data.mileage,
           plan_name: planName,
           payment_type: paymentType,
@@ -632,9 +531,8 @@ const Index = () => {
       });
     } catch (error) {
       console.error('Error tracking abandoned cart:', error);
-      // Don't throw error to avoid disrupting user flow
     }
-  };
+  }, []);
 
   // All vehicles now use the modern PricingTable layout
 
@@ -665,31 +563,31 @@ const Index = () => {
       {currentStep === 2 && vehicleData && (
         <div className="bg-[#e8f4fb] w-full px-4 py-2 sm:py-4">
           <div className="max-w-4xl mx-auto">
-            <Suspense fallback={<div className="min-h-[40vh]"></div>}>
-              <QuoteDeliveryStep 
-                vehicleData={vehicleData}
-                onNext={handleQuoteDeliveryComplete}
-                onBack={() => handleBackToStep(1)}
-                onSkip={() => handleStepChange(3)}
-              />
-            </Suspense>
+        <PerformanceOptimizedSuspense height="40vh">
+          <QuoteDeliveryStep 
+            vehicleData={vehicleData}
+            onNext={handleQuoteDeliveryComplete}
+            onBack={() => handleBackToStep(1)}
+            onSkip={() => handleStepChange(3)}
+          />
+        </PerformanceOptimizedSuspense>
           </div>
         </div>
       )}
 
       {currentStep === 3 && (
         <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
-          <Suspense fallback={<div className="h-16 bg-[#e8f4fb]"></div>}>
+          <PerformanceOptimizedSuspense height="16">
             <MaintenanceBanner />
-          </Suspense>
+          </PerformanceOptimizedSuspense>
           {vehicleData ? (
-            <Suspense fallback={<div className="min-h-[60vh]"></div>}>
+            <PerformanceOptimizedSuspense height="60vh">
               <PricingTable 
                 vehicleData={vehicleData} 
                 onBack={() => handleBackToStep(2)} 
                 onPlanSelected={handlePlanSelected}
               />
-            </Suspense>
+            </PerformanceOptimizedSuspense>
           ) : (
             <div className="w-full px-4 py-8">
               <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -715,7 +613,7 @@ const Index = () => {
       {currentStep === 4 && (
         <div className="bg-[#e8f4fb]">
           {vehicleData && selectedPlan ? (
-            <Suspense fallback={<div className="min-h-[60vh]"></div>}>
+            <PerformanceOptimizedSuspense height="60vh">
               <CustomerDetailsStep
                 vehicleData={{
                   ...vehicleData,
@@ -732,7 +630,7 @@ const Index = () => {
                 onNext={handleCustomerDetailsComplete}
                 onBack={() => handleBackToStep(3)}
               />
-            </Suspense>
+            </PerformanceOptimizedSuspense>
           ) : (
             <RecoveryFallback 
               onRecovered={(recoveredVehicleData, recoveredSelectedPlan) => {
