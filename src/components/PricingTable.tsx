@@ -121,10 +121,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   // Add-ons state
   const [selectedProtectionAddOns, setSelectedProtectionAddOns] = useState<{[key: string]: boolean}>({
     breakdown: false,
-    motRepair: false,
     motFee: false,
     tyre: false,
-    wearTear: false,
+    wearAndTear: false,
     european: false,
     rental: false,
     transfer: false
@@ -259,10 +258,21 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         updated[addonKey] = true;
       });
       
-      // For add-ons that are no longer auto-included, keep user selection but don't force them off
-      // This allows users to keep add-ons they explicitly selected when changing payment types
+      // For add-ons that are NOT auto-included for this payment type,
+      // reset them to false (but only if they were previously auto-included)
+      allPossibleAutoIncluded.forEach(addonKey => {
+        if (!newAutoIncluded.includes(addonKey)) {
+          // Only reset to false if this add-on was previously auto-included
+          // This preserves user manual selections while clearing previously auto-included ones
+          const wasAutoIncludedBefore = getAutoIncludedAddOns(paymentType === '12months' ? '24months' : '12months').includes(addonKey);
+          if (wasAutoIncludedBefore) {
+            updated[addonKey] = false;
+          }
+        }
+      });
       
       console.log('🔧 Updated protection add-ons:', updated);
+      
       return updated;
     });
   }, [paymentType]);
