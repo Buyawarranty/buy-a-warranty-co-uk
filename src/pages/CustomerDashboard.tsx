@@ -993,21 +993,88 @@ const CustomerDashboard = () => {
                       <CardTitle className="flex items-center justify-between text-lg">
                         <span className="flex items-center">
                           <FileText className="mr-2 h-5 w-5" />
-                          Your Active Policy
+                          {policies.length > 1 ? 'Your Warranties' : 'Your Active Policy'}
                         </span>
                         {policies.length > 1 && (
                           <span className="text-sm font-normal text-gray-600">
-                            {policies.length} total policies
+                            {policies.length} total warranties
                           </span>
                         )}
                       </CardTitle>
+                      {policies.length > 1 && (
+                        <CardDescription>
+                          <div className="mt-4">
+                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                              Select warranty to view details:
+                            </Label>
+                            <select
+                              className="w-full p-2 border border-gray-300 rounded-md bg-white text-sm"
+                              value={selectedPolicy?.id || ''}
+                              onChange={(e) => {
+                                const policy = policies.find(p => p.id === e.target.value);
+                                if (policy) setSelectedPolicy(policy);
+                              }}
+                            >
+                              {policies.map((policy, index) => {
+                                const vehicleReg = policy.customers?.registration_plate || 
+                                                 policy.policy_number?.split('-').pop() || 
+                                                 'Unknown Vehicle';
+                                const vehicleName = policy.customers?.vehicle_make && policy.customers?.vehicle_model
+                                  ? `${policy.customers.vehicle_make} ${policy.customers.vehicle_model}`.toUpperCase()
+                                  : (policy.plan_type?.includes('motorbike') || policy.plan_type?.includes('Motorbike'))
+                                  ? 'Motorbike'
+                                  : 'Vehicle';
+                                const policyDate = new Date(policy.policy_start_date).toLocaleDateString('en-GB');
+                                const warrantyRef = policy.warranty_number || policy.policy_number;
+                                
+                                return (
+                                  <option key={policy.id} value={policy.id}>
+                                    {vehicleReg} - {vehicleName} (Ref: {warrantyRef}, Started: {policyDate})
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </div>
+                        </CardDescription>
+                      )}
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-6">
                       {selectedPolicy && (
                         <>
+                          {/* Warranty Header with Key Information */}
+                          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                              <div className="text-center sm:text-left">
+                                <Label className="text-xs font-medium text-blue-700 uppercase tracking-wide">Vehicle Registration</Label>
+                                <p className="text-lg font-bold text-blue-900 mt-1">
+                                  {customerData?.registration_plate || selectedPolicy?.policy_number?.split('-').pop() || 'Not provided'}
+                                </p>
+                              </div>
+                              <div className="text-center">
+                                <Label className="text-xs font-medium text-blue-700 uppercase tracking-wide">Warranty Reference</Label>
+                                <p className="text-lg font-bold text-blue-900 mt-1 font-mono">
+                                  {selectedPolicy?.warranty_number || customerData?.warranty_reference_number || selectedPolicy?.policy_number}
+                                </p>
+                              </div>
+                              <div className="text-center sm:text-right">
+                                <Label className="text-xs font-medium text-blue-700 uppercase tracking-wide">Status</Label>
+                                <p className={`text-lg font-bold mt-1 flex items-center justify-center sm:justify-end gap-2 ${
+                                  selectedPolicy.status === 'active' ? 'text-green-600' : 
+                                  selectedPolicy.status === 'expired' ? 'text-red-600' : 'text-yellow-600'
+                                }`}>
+                                  {selectedPolicy.status === 'active' && <CheckCircle className="h-5 w-5" />}
+                                  {selectedPolicy.status === 'expired' && <X className="h-5 w-5" />}
+                                  {selectedPolicy.status === 'pending' && <AlertCircle className="h-5 w-5" />}
+                                  {selectedPolicy.status.toUpperCase()}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Policy Details Grid */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan</Label>
+                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Plan Type</Label>
                               <p className="font-semibold text-sm sm:text-base">
                                 Platinum {selectedPolicy.plan_type.includes('motorbike') || selectedPolicy.plan_type.includes('Motorbike') 
                                   ? 'Motorbike Plan' 
@@ -1035,30 +1102,24 @@ const CustomerDashboard = () => {
                                    : 'Vehicle Details Not Provided'}
                                </p>
                              </div>
-                            <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Vehicle Registration</Label>
-                              <p className="font-semibold text-sm sm:text-base text-black">
-                                {customerData?.registration_plate || selectedPolicy?.policy_number?.split('-').pop() || 'Not provided'}
-                              </p>
-                            </div>
                              <div>
                                <Label className="text-xs sm:text-sm font-medium text-gray-500">Mileage</Label>
                                <p className="font-semibold text-sm sm:text-base">
                                  {customerData?.mileage && customerData.mileage.trim() ? `${Number(customerData.mileage).toLocaleString()} miles` : 'Not provided'}
                                </p>
                              </div>
-                            <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-500">Status</Label>
-                              <p className={`font-semibold capitalize text-sm sm:text-base flex items-center gap-2 ${
-                                selectedPolicy.status === 'active' ? 'text-green-600' : 
-                                selectedPolicy.status === 'expired' ? 'text-red-600' : 'text-yellow-600'
-                              }`}>
-                                {selectedPolicy.status === 'active' && <CheckCircle className="h-4 w-4" />}
-                                {selectedPolicy.status === 'expired' && <X className="h-4 w-4" />}
-                                {selectedPolicy.status === 'pending' && <AlertCircle className="h-4 w-4" />}
-                                {selectedPolicy.status}
-                              </p>
-                            </div>
+                             <div>
+                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy Start Date</Label>
+                               <p className="font-semibold text-sm sm:text-base">
+                                 {selectedPolicy?.policy_start_date ? new Date(selectedPolicy.policy_start_date).toLocaleDateString('en-GB') : 'N/A'}
+                               </p>
+                             </div>
+                             <div>
+                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy End Date</Label>
+                               <p className="font-semibold text-sm sm:text-base">
+                                 {selectedPolicy?.policy_end_date ? new Date(selectedPolicy.policy_end_date).toLocaleDateString('en-GB') : 'N/A'}
+                               </p>
+                             </div>
                           </div>
 
                           {/* Protection Add-ons */}
@@ -1095,7 +1156,7 @@ const CustomerDashboard = () => {
                           
                           {/* Order Summary */}
                           <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Order Summary</Label>
+                            <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Payment & Duration Summary</Label>
                             <div className="space-y-2">
                               {(selectedPolicy?.payment_amount || customerData?.final_amount) && (
                                 <div className="flex justify-between items-center">
@@ -1110,29 +1171,11 @@ const CustomerDashboard = () => {
                                 <span className="text-sm text-gray-900">{getPaymentTypeDisplay(selectedPolicy?.payment_type)}</span>
                               </div>
                               <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Policy Number</span>
-                                <span className="text-sm font-mono text-gray-900">{selectedPolicy?.policy_number}</span>
-                              </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Warranty Reference</span>
-                                <span className="text-sm font-mono text-gray-900">
-                                  {selectedPolicy?.warranty_number || customerData?.warranty_reference_number}
-                                </span>
+                                <span className="text-sm text-gray-600">Time Remaining</span>
+                                <span className="text-sm font-medium text-gray-900">{getTimeRemaining(selectedPolicy)}</span>
                               </div>
                             </div>
                           </div>
-                          
-                          <div className="pt-4 border-t">
-                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                             <div className="sm:text-right">
-                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Expires On</Label>
-                               <p className="font-semibold text-sm sm:text-base">
-                                 {selectedPolicy?.policy_end_date ? new Date(selectedPolicy.policy_end_date).toLocaleDateString('en-GB') : 'N/A'}
-                               </p>
-                             </div>
-                           </div>
-                         </div>
-
                           {/* Actions */}
                           <div className="pt-4 border-t">
                             <div className="flex flex-wrap gap-3">
