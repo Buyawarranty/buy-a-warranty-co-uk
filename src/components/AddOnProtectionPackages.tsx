@@ -120,22 +120,23 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
 }) => {
   const [expandedItems, setExpandedItems] = useState<{[key: string]: boolean}>({});
 
-  // Define auto-included add-ons based on payment type
+  // Define auto-included add-ons based on payment type - use imported utility for consistency
   const getAutoIncludedAddOns = () => {
-    switch (paymentType) {
-      case '24months':
-        return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
-      case '36months':
-        return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
-      default:
-        return []; // 1-Year: No auto-included add-ons
-    }
+    // Import and use the centralized utility function
+    const { getAutoIncludedAddOns } = require('@/lib/addOnsUtils');
+    return getAutoIncludedAddOns(paymentType);
   };
 
-  const autoIncludedAddOns = getAutoIncludedAddOns();
+  // Import the centralized utility function
+  const { getAutoIncludedAddOns: getAutoIncludedFromUtils } = require('@/lib/addOnsUtils');
+  const autoIncludedAddOns = getAutoIncludedFromUtils(paymentType);
   
   // Check if an add-on is auto-included
   const isAutoIncluded = (addonKey: string) => autoIncludedAddOns.includes(addonKey);
+  
+  console.log('🔧 AddOnProtectionPackages - Payment Type:', paymentType);
+  console.log('🔧 AddOnProtectionPackages - Auto-included add-ons:', autoIncludedAddOns);
+  console.log('🔧 AddOnProtectionPackages - Selected add-ons:', selectedAddOns);
 
   const toggleExpanded = (key: string) => {
     setExpandedItems(prev => {

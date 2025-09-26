@@ -26,8 +26,8 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { planId, paymentType, userEmail, userId, stripeSessionId, vehicleData, customerData, skipEmail, metadata } = await req.json();
-    logStep("Request data", { planId, paymentType, userEmail, userId, stripeSessionId, skipEmail, hasMetadata: !!metadata });
+    const { planId, paymentType, userEmail, userId, stripeSessionId, vehicleData, customerData, skipEmail, metadata, protectionAddOns } = await req.json();
+    logStep("Request data", { planId, paymentType, userEmail, userId, stripeSessionId, skipEmail, hasMetadata: !!metadata, hasProtectionAddOns: !!protectionAddOns });
 
     if (!planId || !paymentType || !userEmail) {
       throw new Error("Missing required parameters");
@@ -131,19 +131,61 @@ serve(async (req) => {
     } else {
       logStep("Customer record created successfully", { customerId: customerData2.id });
       
-      // Extract add-ons data from metadata (with safe fallback) - fixed field names
-      const addOnsData = {
-        tyre_cover: metadata?.addon_tyre_cover === 'true',
-        wear_tear: metadata?.addon_wear_tear === 'true',
-        europe_cover: metadata?.addon_europe_cover === 'true', 
-        transfer_cover: metadata?.addon_transfer_cover === 'true',
-        breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
-        vehicle_rental: metadata?.addon_vehicle_rental === 'true',
-        mot_fee: metadata?.addon_mot_fee === 'true',
-        mot_repair: metadata?.addon_mot_repair === 'true',
-        lost_key: metadata?.addon_lost_key === 'true',
-        consequential: metadata?.addon_consequential === 'true'
-      };
+      // Extract add-ons data from protectionAddOns (Stripe) or metadata (legacy) with auto-inclusion logic
+      let addOnsData: any = {};
+      
+      if (protectionAddOns && typeof protectionAddOns === 'object') {
+        // New format from Stripe webhook with protectionAddOns object
+        addOnsData = {
+          tyre_cover: protectionAddOns.tyre || false,
+          wear_tear: protectionAddOns.wearAndTear || protectionAddOns.wearTear || false,
+          europe_cover: protectionAddOns.european || false, 
+          transfer_cover: protectionAddOns.transfer || false,
+          breakdown_recovery: protectionAddOns.breakdown || false,
+          vehicle_rental: protectionAddOns.rental || false,
+          mot_fee: protectionAddOns.motFee || false,
+          mot_repair: protectionAddOns.motRepair || false,
+          lost_key: protectionAddOns.lostKey || false,
+          consequential: protectionAddOns.consequential || false
+        };
+        
+        logStep("Extracted add-ons from protectionAddOns object", { 
+          protectionAddOns, 
+          addOnsData 
+        });
+      } else {
+        // Legacy format from metadata
+        addOnsData = {
+          tyre_cover: metadata?.addon_tyre_cover === 'true',
+          wear_tear: metadata?.addon_wear_tear === 'true',
+          europe_cover: metadata?.addon_europe_cover === 'true', 
+          transfer_cover: metadata?.addon_transfer_cover === 'true',
+          breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
+          vehicle_rental: metadata?.addon_vehicle_rental === 'true',
+          mot_fee: metadata?.addon_mot_fee === 'true',
+          mot_repair: metadata?.addon_mot_repair === 'true',
+          lost_key: metadata?.addon_lost_key === 'true',
+          consequential: metadata?.addon_consequential === 'true'
+        };
+        
+        logStep("Extracted add-ons from metadata", { 
+          metadata, 
+          addOnsData 
+        });
+      }
+      
+      // Auto-include add-ons based on payment type
+      const autoIncludedAddOns = getAutoIncludedAddOnsForPayment(paymentType);
+      logStep("Auto-including add-ons for payment type", { 
+        paymentType, 
+        autoIncluded: autoIncludedAddOns 
+      });
+      
+      // Set auto-included add-ons to true (override any previous values)
+      if (autoIncludedAddOns.includes('breakdown')) addOnsData.breakdown_recovery = true;
+      if (autoIncludedAddOns.includes('motFee')) addOnsData.mot_fee = true;
+      if (autoIncludedAddOns.includes('rental')) addOnsData.vehicle_rental = true;
+      if (autoIncludedAddOns.includes('tyre')) addOnsData.tyre_cover = true;
 
       // Create policy record
       const policyRecord = {
@@ -640,4 +682,42 @@ function calculatePolicyEndDate(paymentType: string): string {
 function getPaymentTypeDisplay(paymentType: string): string {
   const months = getWarrantyDurationInMonths(paymentType);
   return `${months} months`;
+}
+
+// Map frontend add-on keys to database/W2000 field names with "Y"/"N" values for Stripe metadata
+function mapAddOnsToFields(protectionAddOns: { [key: string]: boolean }): any {
+  const result = {
+    // Map frontend keys to backend field names
+    breakdown_recovery: protectionAddOns.breakdown ? "Y" : "N",
+    mot_fee: protectionAddOns.motFee ? "Y" : "N", 
+    tyre_cover: protectionAddOns.tyre ? "Y" : "N",
+    wear_tear: protectionAddOns.wearAndTear || protectionAddOns.wearTear ? "Y" : "N", // Handle both variants
+    europe_cover: protectionAddOns.european ? "Y" : "N",
+    transfer_cover: protectionAddOns.transfer ? "Y" : "N",
+    vehicle_rental: protectionAddOns.rental ? "Y" : "N",
+    mot_repair: protectionAddOns.motRepair ? "Y" : "N",
+    lost_key: protectionAddOns.lostKey ? "Y" : "N",
+    consequential: protectionAddOns.consequential ? "Y" : "N"
+  };
+  
+  console.log('[HANDLE-PAYMENT] Add-on mapping debug:', {
+    inputProtectionAddOns: protectionAddOns,
+    mappedFields: result
+  });
+  
+  return result;
+}
+
+// Helper function to get auto-included add-ons for payment type (consistent with frontend)
+function getAutoIncludedAddOnsForPayment(paymentType: string): string[] {
+  const normalizedType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
+  
+  switch (normalizedType) {
+    case '24months':
+      return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+    case '36months':
+      return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
+    default:
+      return []; // 12-month plans have no auto-included add-ons
+  }
 }

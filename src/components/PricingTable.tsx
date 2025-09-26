@@ -244,27 +244,25 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
     // Use the imported function to get auto-included add-ons for consistency
     const newAutoIncluded = getAutoIncludedAddOns(paymentType);
     
-    console.log('Payment type changed:', paymentType);
-    console.log('New auto-included add-ons:', newAutoIncluded);
+    console.log('🔧 Payment type changed:', paymentType);
+    console.log('🔧 New auto-included add-ons:', newAutoIncluded);
     
     setSelectedProtectionAddOns(prev => {
       // Get all possible auto-included add-ons from all plans (complete list)
       const allPossibleAutoIncluded = ['breakdown', 'motFee', 'rental', 'tyre'];
       
-      // Start with current selections but reset all auto-included options
+      // Start with current selections but preserve manually selected add-ons
       const updated = { ...prev };
       
-      // First, uncheck all previously auto-included add-ons
-      allPossibleAutoIncluded.forEach(addonKey => {
-        updated[addonKey] = false;
-      });
-      
-      // Then, check the new auto-included add-ons for the selected payment type
+      // Set auto-included add-ons to true (these should always be checked for the selected payment type)
       newAutoIncluded.forEach(addonKey => {
         updated[addonKey] = true;
       });
       
-      console.log('Updated protection add-ons:', updated);
+      // For add-ons that are no longer auto-included, keep user selection but don't force them off
+      // This allows users to keep add-ons they explicitly selected when changing payment types
+      
+      console.log('🔧 Updated protection add-ons:', updated);
       return updated;
     });
   }, [paymentType]);

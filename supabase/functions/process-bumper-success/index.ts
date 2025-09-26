@@ -150,6 +150,52 @@ serve(async (req) => {
       discountCode
     });
 
+    // Convert protection add-ons to consistent boolean format and map to database fields
+    let addOnFields: any = {};
+    
+    if (protectionAddOns && typeof protectionAddOns === 'object') {
+      // Direct mapping from protectionAddOns object (from Bumper flow)
+      addOnFields = {
+        breakdown_recovery: protectionAddOns.breakdown || false,
+        mot_fee: protectionAddOns.motFee || false,
+        tyre_cover: protectionAddOns.tyre || false,
+        wear_tear: protectionAddOns.wearAndTear || protectionAddOns.wearTear || false,
+        europe_cover: protectionAddOns.european || false,
+        transfer_cover: protectionAddOns.transfer || false,
+        vehicle_rental: protectionAddOns.rental || false,
+        mot_repair: protectionAddOns.motRepair || false,
+        lost_key: protectionAddOns.lostKey || false,
+        consequential: protectionAddOns.consequential || false
+      };
+      
+      logStep("Mapped protection add-ons from object", { 
+        input: protectionAddOns, 
+        mapped: addOnFields 
+      });
+    }
+    
+    // Auto-include add-ons based on payment type using the same logic as other functions
+    const autoIncludedAddOns = getAutoIncludedAddOnsForPayment(paymentType);
+    logStep("Auto-including add-ons for payment type", { 
+      paymentType, 
+      autoIncluded: autoIncludedAddOns 
+    });
+    
+    // Set auto-included add-ons to true
+    if (autoIncludedAddOns.includes('breakdown')) addOnFields.breakdown_recovery = true;
+    if (autoIncludedAddOns.includes('motFee')) addOnFields.mot_fee = true;
+    if (autoIncludedAddOns.includes('rental')) addOnFields.vehicle_rental = true;
+    if (autoIncludedAddOns.includes('tyre')) addOnFields.tyre_cover = true;
+
+    logStep("Extracted transaction details", {
+      customerEmail: customerData?.email,
+      planId,
+      paymentType,
+      finalAmount,
+      protectionAddOns,
+      discountCode
+    });
+
     // Calculate claim limit and voluntary excess based on plan and payment type
     const claimLimit = calculateClaimLimit(planId, paymentType);
     const voluntaryExcess = calculateVoluntaryExcess(planId, paymentType);
@@ -247,6 +293,20 @@ serve(async (req) => {
     });
   }
 });
+
+// Helper function to get auto-included add-ons for payment type (consistent with frontend)
+function getAutoIncludedAddOnsForPayment(paymentType: string): string[] {
+  const normalizedType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
+  
+  switch (normalizedType) {
+    case '24months':
+      return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+    case '36months':
+      return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
+    default:
+      return []; // 12-month plans have no auto-included add-ons
+  }
+}
 
 // Helper functions for generating warranty references
 function generateWarrantyReference(): string {
