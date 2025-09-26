@@ -355,13 +355,18 @@ serve(async (req) => {
     // Valid claim limits are 750, 1250, 2000
     const policyClaimLimit = policy?.claim_limit;
     const customerClaimLimit = customer?.claim_limit;
-    const rawClaimLimit = policyClaimLimit || customerClaimLimit || 1250;
+    const finalClaimLimit = policyClaimLimit || customerClaimLimit || 1250;
     
-    // Ensure claim limit is one of the valid values, default to 1250 if invalid
-    const validClaimLimits = [750, 1250, 2000];
-    const maxClaimAmount = validClaimLimits.includes(rawClaimLimit) ? rawClaimLimit.toString() : '1250';
+    console.log(`[WARRANTIES-2000] Claim limit processing: Policy: ${policyClaimLimit}, Customer: ${customerClaimLimit}, Final: ${finalClaimLimit}`);
     
-    console.log(`[WARRANTIES-2000] Claim limit processing: Policy: ${policyClaimLimit}, Customer: ${customerClaimLimit}, Raw: ${rawClaimLimit}, Final: ${maxClaimAmount}`);
+    console.log(`[WARRANTIES-2000] Plan type determination: {
+      originalPlanType: "${policy?.plan_type || customer.plan_type}",
+      correctedPlanType: "${planType}",
+      vehicleMake: "${vehicleMake}",
+      vehicleModel: "${vehicleModel}",
+      isActualMotorbike: ${isActualMotorbike},
+      isCommercialVehicle: ${isCommercialVehicle}
+    }`);
 
     // Enhanced addon debugging - check both policy and customer tables
     console.log(`[WARRANTIES-2000] Enhanced add-on debug:`, {
@@ -452,7 +457,7 @@ serve(async (req) => {
       RegDate: customer.vehicle_year ? `${customer.vehicle_year}-01-01` : "2020-01-01",
       WarType: warrantyType,
       Month: coverageMonths,
-      MaxClm: maxClaimAmount,
+      MaxClm: String(finalClaimLimit),
       MOTDue: (() => {
         const nextYear = new Date();
         nextYear.setFullYear(nextYear.getFullYear() + 1);
@@ -460,7 +465,7 @@ serve(async (req) => {
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: (policy?.voluntary_excess || customer.voluntary_excess || 0).toString(),
-      Notes: `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${maxClaimAmount} | VolExcess: ${policy?.voluntary_excess || customer.voluntary_excess || 0}`
+      Notes: `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${finalClaimLimit} | VolExcess: ${policy?.voluntary_excess || customer.voluntary_excess || 0}`
       // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
 
@@ -488,16 +493,16 @@ serve(async (req) => {
       voluntaryExcess: registrationData.VolEx,
       coverage: registrationData.Month,
       addOns: {
-        "24/7 Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-        "MOT Repair": registrationData.mot_repair ? "Y" : "N", 
-        "Tyre cover": registrationData.tyre_cover ? "Y" : "N",
-        "Wear and tear": registrationData.wear_tear ? "Y" : "N",
-        "Lost key": registrationData.lost_key ? "Y" : "N",
-        "MOT fee": registrationData.mot_fee ? "Y" : "N",
-        "Europe cover": registrationData.europe_cover ? "Y" : "N",
-        "Vehicle rental": registrationData.vehicle_rental ? "Y" : "N",
-        "Consequential damage": registrationData.consequential ? "Y" : "N",
-        "Transfer fee": registrationData.transfer_cover ? "Y" : "N"
+        "Recovery": registrationData.breakdown_recovery ? "Y" : "N",
+        "MotRepair": registrationData.mot_repair ? "Y" : "N", 
+        "TyreCover": registrationData.tyre_cover ? "Y" : "N",
+        "WearAndTear": registrationData.wear_tear ? "Y" : "N",
+        "LostKey": registrationData.lost_key ? "Y" : "N",
+        "MotFee": registrationData.mot_fee ? "Y" : "N",
+        "EuropeCover": registrationData.europe_cover ? "Y" : "N",
+        "VehicleRental": registrationData.vehicle_rental ? "Y" : "N",
+        "ConsequentialDamage": registrationData.consequential ? "Y" : "N",
+        "TransferFee": registrationData.transfer_cover ? "Y" : "N"
       }
     });
 
@@ -515,16 +520,16 @@ serve(async (req) => {
       paymentTypeUsed: paymentType,
       calculatedMonths: getWarrantyDurationInMonths(paymentType),
       w2000AddOns: {
-        "24/7 Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-        "MOT Repair": registrationData.mot_repair ? "Y" : "N",
-        "Tyre cover": registrationData.tyre_cover ? "Y" : "N", 
-        "Wear and tear": registrationData.wear_tear ? "Y" : "N",
-        "Lost key": registrationData.lost_key ? "Y" : "N",
-        "MOT fee": registrationData.mot_fee ? "Y" : "N",
-        "Europe cover": registrationData.europe_cover ? "Y" : "N",
-        "Vehicle rental": registrationData.vehicle_rental ? "Y" : "N",
-        "Consequential damage": registrationData.consequential ? "Y" : "N",
-        "Transfer fee": registrationData.transfer_cover ? "Y" : "N"
+        "Recovery": registrationData.breakdown_recovery ? "Y" : "N",
+        "MotRepair": registrationData.mot_repair ? "Y" : "N",
+        "TyreCover": registrationData.tyre_cover ? "Y" : "N", 
+        "WearAndTear": registrationData.wear_tear ? "Y" : "N",
+        "LostKey": registrationData.lost_key ? "Y" : "N",
+        "MotFee": registrationData.mot_fee ? "Y" : "N",
+        "EuropeCover": registrationData.europe_cover ? "Y" : "N",
+        "VehicleRental": registrationData.vehicle_rental ? "Y" : "N",
+        "ConsequentialDamage": registrationData.consequential ? "Y" : "N",
+        "TransferFee": registrationData.transfer_cover ? "Y" : "N"
       }
     });
 
@@ -533,16 +538,17 @@ serve(async (req) => {
     // Convert boolean add-on values to Y/N strings for W2000 API with correct field names
     const w2000Data = {
       ...registrationData,
-      // W2000 API field names (these must match exactly what W2000 expects)
-      "24/7Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-      "MOTRepair": registrationData.mot_repair ? "Y" : "N",
-      "Tyrecover": registrationData.tyre_cover ? "Y" : "N",
-      "Wearandtear": registrationData.wear_tear ? "Y" : "N",
-      "Lostkey": registrationData.lost_key ? "Y" : "N",
-      "MOTfee": registrationData.mot_fee ? "Y" : "N",
-      "Europecover": registrationData.europe_cover ? "Y" : "N",
-      "Vehiclerental": registrationData.vehicle_rental ? "Y" : "N",
-      "Transferfee": registrationData.transfer_cover ? "Y" : "N",
+      // W2000 API field names (capitalized without spaces as requested)
+      "Recovery": registrationData.breakdown_recovery ? "Y" : "N",
+      "MotRepair": registrationData.mot_repair ? "Y" : "N",
+      "TyreCover": registrationData.tyre_cover ? "Y" : "N",
+      "WearAndTear": registrationData.wear_tear ? "Y" : "N",
+      "LostKey": registrationData.lost_key ? "Y" : "N",
+      "MotFee": registrationData.mot_fee ? "Y" : "N",
+      "EuropeCover": registrationData.europe_cover ? "Y" : "N",
+      "VehicleRental": registrationData.vehicle_rental ? "Y" : "N",
+      "ConsequentialDamage": registrationData.consequential ? "Y" : "N",
+      "TransferFee": registrationData.transfer_cover ? "Y" : "N",
       // Remove the old field names to avoid confusion
       mot_fee: undefined,
       tyre_cover: undefined,
