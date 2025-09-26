@@ -154,6 +154,35 @@ serve(async (req) => {
       country: customerData.country,
       product_description: productDescription
     };
+
+    // Store complete item data for later processing (before signature generation)
+    const orderRef = signaturePayload.order_reference;
+    const { error: storeError } = await supabaseClient
+      .from('bumper_transactions')
+      .insert({
+        transaction_id: orderRef,
+        plan_id: items[0]?.planName || 'multi-warranty',
+        payment_type: '12months',
+        customer_data: customerData,
+        vehicle_data: items.map(item => item.vehicleData),
+        protection_addons: items.reduce((acc, item, index) => {
+          acc[`warranty_${index + 1}`] = item.protectionAddOns;
+          return acc;
+        }, {}),
+        claim_limit: items[0]?.claimLimit || 1250,
+        final_amount: actualTotalAmount,
+        discount_code: discountCode || '',
+        redirect_url: `${origin}/thank-you`,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+
+    if (storeError) {
+      logStep("Error storing Bumper transaction", storeError);
+    } else {
+      logStep("Bumper transaction stored", { orderRef, itemCount: items.length });
+    }
     
     // Create payload for actual HTTP request (with encoded URLs)
     const bumperRequestData = {

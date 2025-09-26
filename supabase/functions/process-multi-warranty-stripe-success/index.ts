@@ -153,12 +153,21 @@ serve(async (req) => {
               vehicle_reg: vehicleReg,
               final_amount: totalPrice
             },
-            // Extract add-on data from product metadata
+            // Extract claim limit and voluntary excess from product metadata
+            claimLimit: parseInt(product?.metadata?.claim_limit || '1250'),
+            voluntaryExcess: parseInt(product?.metadata?.voluntary_excess || '150'),
+            // Extract all add-on data from product metadata
             metadata: {
               addon_tyre_cover: product?.metadata?.addon_tyre_cover || 'false',
               addon_wear_tear: product?.metadata?.addon_wear_tear || 'false',
               addon_europe_cover: product?.metadata?.addon_europe_cover || 'false',
-              addon_transfer_cover: product?.metadata?.addon_transfer_cover || 'false'
+              addon_transfer_cover: product?.metadata?.addon_transfer_cover || 'false',
+              addon_breakdown_recovery: product?.metadata?.addon_breakdown_recovery || 'false',
+              addon_vehicle_rental: product?.metadata?.addon_vehicle_rental || 'false',
+              addon_mot_fee: product?.metadata?.addon_mot_fee || 'false',
+              addon_mot_repair: product?.metadata?.addon_mot_repair || 'false',
+              addon_lost_key: product?.metadata?.addon_lost_key || 'false',
+              addon_consequential: product?.metadata?.addon_consequential || 'false'
             }
             // Don't skip email - we want individual emails for each warranty
           }

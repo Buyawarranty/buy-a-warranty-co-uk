@@ -41,7 +41,7 @@ serve(async (req) => {
       redirectUrl
     });
 
-    // Process each warranty item
+    // Process each warranty item using handle-successful-payment for consistency
     const processedWarranties = [];
     
     for (let i = 0; i < items.length; i++) {
@@ -49,79 +49,123 @@ serve(async (req) => {
       logStep(`Processing warranty ${i + 1}`, { 
         planName: item.planName, 
         vehicleReg: item.vehicleData.regNumber,
-        totalPrice: item.totalPrice
+        totalPrice: item.totalPrice,
+        claimLimit: item.claimLimit,
+        protectionAddOns: item.protectionAddOns
       });
 
       try {
-        // Generate warranty number
-        const warrantyNumber = await generateWarrantyNumber(supabaseService);
-        
-        // Insert warranty record
-        const { data: warrantyData, error: warrantyError } = await supabaseService
-          .from('warranties')
-          .insert({
-            warranty_number: warrantyNumber,
-            customer_email: customerData.email,
-            customer_first_name: customerData.first_name,
-            customer_last_name: customerData.last_name,
-            customer_mobile: customerData.mobile,
-            customer_address_line_1: customerData.street,
-            customer_town: customerData.town,
-            customer_county: customerData.county,
-            customer_postcode: customerData.postcode,
-            customer_country: customerData.country,
-            vehicle_reg: item.vehicleData.regNumber,
-            vehicle_make: item.vehicleData.make,
-            vehicle_model: item.vehicleData.model,
-            vehicle_year: item.vehicleData.year,
-            vehicle_fuel_type: item.vehicleData.fuelType,
-            vehicle_transmission: item.vehicleData.transmission,
-            mileage: item.vehicleData.mileage,
-            plan_type: item.planName.toLowerCase(),
-            payment_type: 'monthly', // Bumper always uses monthly
-            voluntary_excess: item.voluntaryExcess || 0,
-            total_price: item.totalPrice,
-            payment_method: 'bumper',
-            payment_status: 'completed',
-            policy_start_date: new Date().toISOString(),
-            policy_end_date: calculatePolicyEndDate('yearly'), // Default to yearly for warranties
-            status: 'active',
-            // Add-on coverage mapping
-            tyre_cover: item.protectionAddOns?.tyre || false,
-            wear_tear: item.protectionAddOns?.wearTear || false,
-            europe_cover: item.protectionAddOns?.european || false,
-            transfer_cover: item.protectionAddOns?.transfer || false
-          })
-          .select()
-          .single();
+        // Process this individual warranty using the existing handle-successful-payment function
+        const { data: paymentData, error: paymentError } = await supabaseService.functions.invoke('handle-successful-payment', {
+          body: {
+            planId: item.planName,
+            paymentType: item.paymentType || '12months',
+            userEmail: customerData.email,
+            userId: null,
+            bumperOrderId: `MULTI-VW-${Date.now()}-${i}`,
+            vehicleData: item.vehicleData,
+            customerData: {
+              ...customerData,
+              vehicle_reg: item.vehicleData.regNumber,
+              final_amount: item.totalPrice
+            },
+            // Use the claim limit and voluntary excess from the item
+            claimLimit: item.claimLimit || 1250,
+            voluntaryExcess: item.voluntaryExcess || 150,
+            // Convert protectionAddOns to metadata format for consistency
+            metadata: {
+              addon_tyre_cover: item.protectionAddOns?.tyre ? 'true' : 'false',
+              addon_wear_tear: item.protectionAddOns?.wearTear ? 'true' : 'false',
+              addon_europe_cover: item.protectionAddOns?.european ? 'true' : 'false',
+              addon_transfer_cover: item.protectionAddOns?.transfer ? 'true' : 'false',
+              addon_breakdown_recovery: item.protectionAddOns?.breakdown ? 'true' : 'false',
+              addon_vehicle_rental: item.protectionAddOns?.rental ? 'true' : 'false',
+              addon_mot_fee: item.protectionAddOns?.motFee ? 'true' : 'false',
+              addon_mot_repair: item.protectionAddOns?.motRepair ? 'true' : 'false',
+              addon_lost_key: item.protectionAddOns?.lostKey ? 'true' : 'false',
+              addon_consequential: item.protectionAddOns?.consequential ? 'true' : 'false'
+            }
+          }
+        });
 
-        if (warrantyError) {
-          logStep(`Error creating warranty ${i + 1}`, { error: warrantyError });
-          throw warrantyError;
+        if (paymentError) {
+          logStep(`Error processing warranty ${i + 1}`, paymentError);
+          throw new Error(`Payment processing failed for warranty ${i + 1}: ${paymentError.message}`);
         }
 
+        logStep(`Warranty ${i + 1} processed successfully`, paymentData);
+
         processedWarranties.push({
-          warrantyNumber,
+          warrantyNumber: paymentData?.policyNumber || `Policy_${i + 1}`,
           vehicleReg: item.vehicleData.regNumber,
           planName: item.planName,
-          totalPrice: item.totalPrice
+          totalPrice: item.totalPrice,
+          customerId: paymentData?.customerId,
+          policyId: paymentData?.policyId
         });
 
-        logStep(`Warranty ${i + 1} created successfully`, { 
-          warrantyNumber, 
-          vehicleReg: item.vehicleData.regNumber 
-        });
+        // Send individual welcome email for this specific warranty
+        if (paymentData?.customerId && paymentData?.policyId) {
+          try {
+            logStep(`Sending individual welcome email for warranty ${i + 1}`, { 
+              customerId: paymentData.customerId, 
+              policyId: paymentData.policyId,
+              vehicleReg: item.vehicleData.regNumber,
+              planName: item.planName
+            });
+
+            const emailPayload = {
+              customerId: paymentData.customerId,
+              policyId: paymentData.policyId
+            };
+
+            // Use the manual welcome email function for this specific warranty
+            const { data: emailResult, error: emailError } = await supabaseService.functions.invoke('send-welcome-email-manual', {
+              body: emailPayload
+            });
+            
+            logStep(`Email function response for warranty ${i + 1}`, {
+              data: emailResult,
+              error: emailError
+            });
+
+            if (emailError) {
+              logStep(`ERROR: Welcome email failed for warranty ${i + 1}`, { 
+                error: emailError,
+                policyId: paymentData.policyId,
+                vehicleReg: item.vehicleData.regNumber
+              });
+            } else {
+              logStep(`SUCCESS: Welcome email sent for warranty ${i + 1}`, {
+                result: emailResult,
+                vehicleReg: item.vehicleData.regNumber,
+                planName: item.planName
+              });
+            }
+
+          } catch (emailError) {
+            logStep(`Welcome email failed for warranty ${i + 1}`, { 
+              error: emailError,
+              message: emailError instanceof Error ? emailError.message : String(emailError),
+              policyId: paymentData.policyId,
+              vehicleReg: item.vehicleData.regNumber
+            });
+          }
+        }
 
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logStep(`Failed to process warranty ${i + 1}`, { error: errorMessage });
-        throw error;
+        // Don't throw here - continue processing other warranties
+        processedWarranties.push({
+          warrantyNumber: `Error_${i + 1}`,
+          vehicleReg: item.vehicleData.regNumber,
+          planName: item.planName,
+          totalPrice: item.totalPrice,
+          error: errorMessage
+        });
       }
     }
-
-    // Email will be sent by the single warranty processing (send-welcome-email-manual)
-    // Multi-warranty emails are handled individually per policy
-    logStep("Multi-warranty email handling deferred to individual policy processing");
 
     logStep("Multi-warranty Bumper success processing completed", { 
       processedCount: processedWarranties.length,

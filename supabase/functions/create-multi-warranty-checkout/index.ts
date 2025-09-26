@@ -78,12 +78,19 @@ serve(async (req) => {
             vehicle_transmission: item.vehicleData.transmission || '',
             vehicle_mileage: item.vehicleData.mileage || '',
             vehicle_type: item.vehicleData.vehicleType || 'standard',
-            voluntary_excess: item.voluntaryExcess?.toString() || '0',
-            // Add-on metadata
+            claim_limit: item.claimLimit?.toString() || '1250',
+            voluntary_excess: item.voluntaryExcess?.toString() || '150',
+            // Add-on metadata - from user selections
             addon_tyre_cover: item.protectionAddOns?.tyre ? 'true' : 'false',
             addon_wear_tear: item.protectionAddOns?.wearTear ? 'true' : 'false',
             addon_europe_cover: item.protectionAddOns?.european ? 'true' : 'false',
-            addon_transfer_cover: item.protectionAddOns?.transfer ? 'true' : 'false'
+            addon_transfer_cover: item.protectionAddOns?.transfer ? 'true' : 'false',
+            addon_breakdown_recovery: item.protectionAddOns?.breakdown ? 'true' : 'false',
+            addon_vehicle_rental: item.protectionAddOns?.rental ? 'true' : 'false',
+            addon_mot_fee: item.protectionAddOns?.motFee ? 'true' : 'false',
+            addon_mot_repair: item.protectionAddOns?.motRepair ? 'true' : 'false',
+            addon_lost_key: item.protectionAddOns?.lostKey ? 'true' : 'false',
+            addon_consequential: item.protectionAddOns?.consequential ? 'true' : 'false'
           },
         },
         unit_amount: Math.round(item.totalPrice * 100), // Convert to pence
