@@ -41,8 +41,41 @@ serve(async (req) => {
     const customerName = `${customerData?.first_name || ''} ${customerData?.last_name || ''}`.trim() || 
                         customerData?.fullName || vehicleData?.fullName || 'Unknown Customer';
     
-    // Keep plan type as provided (it comes from the plans table with correct casing)
-    const normalizedPlanType = planId;
+    // Fetch plan name from database instead of using UUID
+    let planName = planId; // fallback to planId if fetch fails
+    
+    try {
+      console.log(`[HANDLE-PAYMENT] Fetching plan name for planId: ${planId}`);
+      
+      // First try special_vehicle_plans
+      let { data: planData, error: planError } = await supabaseClient
+        .from('special_vehicle_plans')
+        .select('name')
+        .eq('id', planId)
+        .single();
+      
+      if (planError || !planData) {
+        console.log(`[HANDLE-PAYMENT] Plan not found in special_vehicle_plans, trying plans table`);
+        // Try regular plans table
+        const { data: regularPlanData, error: regularPlanError } = await supabaseClient
+          .from('plans')
+          .select('name')
+          .eq('id', planId)
+          .single();
+          
+        if (regularPlanError || !regularPlanData) {
+          console.log(`[HANDLE-PAYMENT] Plan not found in either table, using planId as fallback: ${planId}`);
+        } else {
+          planName = regularPlanData.name;
+          console.log(`[HANDLE-PAYMENT] Found plan name in plans table: ${planName}`);
+        }
+      } else {
+        planName = planData.name;
+        console.log(`[HANDLE-PAYMENT] Found plan name in special_vehicle_plans: ${planName}`);
+      }
+    } catch (error) {
+      console.log(`[HANDLE-PAYMENT] Error fetching plan name, using planId: ${error}`);
+    }
     
     const customerRecord = {
       name: customerName,
@@ -58,7 +91,7 @@ serve(async (req) => {
       county: customerData?.county || '',
       postcode: customerData?.postcode || extractPostcode(customerData?.address || vehicleData?.address || ''),
       country: customerData?.country || 'United Kingdom',
-      plan_type: normalizedPlanType,
+      plan_type: planName, // Use the actual plan name, not UUID
       payment_type: paymentType,
       stripe_session_id: stripeSessionId,
       registration_plate: vehicleData?.regNumber || customerData?.vehicle_reg || metadata?.vehicle_reg || 'Unknown',
@@ -192,7 +225,7 @@ serve(async (req) => {
         customer_id: customerData2.id,
         user_id: userId,
         email: userEmail,
-        plan_type: planId.toLowerCase(), // customer_policies table expects lowercase
+        plan_type: planName.toLowerCase(), // Use the actual plan name in lowercase for customer_policies table
         payment_type: paymentType,
         policy_number: warrantyReference,
         policy_start_date: new Date().toISOString(),
@@ -249,7 +282,7 @@ serve(async (req) => {
             recipientEmail: userEmail,
             variables: {
               customerName: customerName,
-              planType: planId,
+              planType: planName, // Use actual plan name instead of UUID
               policyNumber: warrantyReference,
               registrationPlate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
               paymentType: paymentTypeDisplay,

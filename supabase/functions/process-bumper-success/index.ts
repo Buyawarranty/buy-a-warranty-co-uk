@@ -192,7 +192,12 @@ serve(async (req) => {
     const claimLimit = transactionData.claim_limit || calculateClaimLimit(planId, paymentType);
     const voluntaryExcess = calculateVoluntaryExcess(planId, paymentType);
 
-    logStep("Calculated policy details", { claimLimit, voluntaryExcess });
+    logStep("Using claim limit from transaction data", { 
+      transactionClaimLimit: transactionData.claim_limit, 
+      calculatedClaimLimit: calculateClaimLimit(planId, paymentType), 
+      finalClaimLimit: claimLimit, 
+      voluntaryExcess 
+    });
 
     // Call handle-successful-payment with proper metadata including protectionAddOns and claim_limit
     const handlePaymentPayload = {
