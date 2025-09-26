@@ -260,15 +260,20 @@ export const CustomersTab = () => {
   const applyFiltersAndSort = () => {
     let filtered = [...customers];
 
-    // Apply search filter
-    if (searchTerm) {
-      filtered = filtered.filter(customer =>
-        customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.registration_plate?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.warranty_reference_number?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+      // Apply search filter
+      if (searchTerm) {
+        filtered = filtered.filter(customer =>
+          customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.registration_plate?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.warranty_reference_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          // Also search in policy numbers from related policies
+          customer.customer_policies?.some(policy => 
+            policy.policy_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            policy.warranty_number?.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
+      }
 
     // Apply plan filter
     if (filterByPlan !== 'all') {
