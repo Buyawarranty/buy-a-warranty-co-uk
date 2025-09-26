@@ -48,9 +48,14 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
         });
 
         autocomplete.addListener('place_changed', () => {
-          const place = autocomplete.getPlace();
+          const place = autocomplete.getPlace() as any; // Cast to any for full Google Places API access
+          console.log('Google Places API response:', place);
+          
           if (place.formatted_address) {
             setAddress(place.formatted_address);
+          } else if (place.name && place.vicinity) {
+            // Fallback for partial matches
+            setAddress(`${place.name}, ${place.vicinity}`);
           }
         });
       }
