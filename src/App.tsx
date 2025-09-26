@@ -68,7 +68,7 @@ const App = () => (
           <BrowserRouter>
             <ScrollToTop />
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
-              <main className="flex-1 pb-32 w-full">
+              <main className="flex-1 pb-16 w-full">
                 <Suspense fallback={
                   <div className="min-h-screen flex items-center justify-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
