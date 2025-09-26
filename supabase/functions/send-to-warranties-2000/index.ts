@@ -14,6 +14,7 @@ const supabase = createClient(
 interface Warranties2000Request {
   policyId?: string;
   customerId?: string;
+  force?: boolean;
 }
 
 interface Warranties2000Registration {
@@ -115,14 +116,37 @@ serve(async (req) => {
   }
 
   const body: Warranties2000Request = await req.json();
-  const { policyId, customerId } = body;
+  const { policyId, customerId, force = false } = body;
   
   console.log(`[WARRANTIES-2000] Function started with:`, { 
     policyId, 
     customerId,
     hasPolicyId: !!policyId,
-    hasCustomerId: !!customerId
+    hasCustomerId: !!customerId,
+    force
   });
+
+  // Check for duplicate submissions unless forced
+  if (!force && policyId) {
+    console.log(`[WARRANTIES-2000] Checking for duplicate submission`);
+    const { data: existingPolicy } = await supabase
+      .from('customer_policies')
+      .select('warranties_2000_status')
+      .eq('id', policyId)
+      .single();
+
+    if (existingPolicy?.warranties_2000_status === 'sent') {
+      console.log('⚠️ [WARRANTIES-2000] Warranty already sent to W2000, preventing duplicate');
+      return new Response(JSON.stringify({ 
+        success: true, 
+        message: 'Warranty already sent to Warranties 2000',
+        duplicate_prevented: true
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200
+      });
+    }
+  }
   
   try {
     let policy = null;

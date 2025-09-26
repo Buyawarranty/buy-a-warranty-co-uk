@@ -286,14 +286,25 @@ serve(async (req) => {
         if (policyData?.id) {
           logStep("Found policy for warranty registration", { policyId: policyData.id });
 
-          const { data: warrantyData, error: warrantyError } = await supabaseClient.functions.invoke('send-to-warranties-2000', {
-            body: { policyId: policyData.id, customerId: customerData2.id }
-          });
+          // Check if warranty has already been sent to W2000 to prevent duplicates
+          const { data: existingPolicy } = await supabaseClient
+            .from('customer_policies')
+            .select('warranties_2000_status')
+            .eq('id', policyData.id)
+            .single();
 
-          if (warrantyError) {
-            logStep("Warning: Warranty registration failed", warrantyError);
+          if (existingPolicy?.warranties_2000_status === 'sent') {
+            logStep("Warranty already sent to W2000, skipping duplicate call", { policyId: policyData.id });
           } else {
-            logStep("Warranty registration successful", warrantyData);
+            const { data: warrantyData, error: warrantyError } = await supabaseClient.functions.invoke('send-to-warranties-2000', {
+              body: { policyId: policyData.id, customerId: customerData2.id }
+            });
+
+            if (warrantyError) {
+              logStep("Warning: Warranty registration failed", warrantyError);
+            } else {
+              logStep("Warranty registration successful", warrantyData);
+            }
           }
         } else {
           logStep("Warning: Could not find policy ID for warranty registration");

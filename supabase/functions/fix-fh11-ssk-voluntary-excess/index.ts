@@ -48,12 +48,24 @@ serve(async (req) => {
         .single();
 
       if (!policyError && policyData) {
-        console.log('Found policy, sending to Warranties 2000:', policyData.id);
+        console.log('Found policy, checking W2000 status:', policyData.id);
+        
+        // Check if warranty has already been sent to W2000 to prevent duplicates
+        const { data: existingPolicy } = await supabase
+          .from('customer_policies')
+          .select('warranties_2000_status')
+          .eq('id', policyData.id)
+          .single();
+
+        if (existingPolicy?.warranties_2000_status === 'sent') {
+          console.log('Warranty already sent to W2000, forcing re-send due to voluntary excess fix');
+        }
         
         const { data: w2kData, error: w2kError } = await supabase.functions.invoke('send-to-warranties-2000', {
           body: { 
             policyId: policyData.id,
-            customerId: customer.id
+            customerId: customer.id,
+            force: true // Force re-send for this specific fix
           }
         });
 
