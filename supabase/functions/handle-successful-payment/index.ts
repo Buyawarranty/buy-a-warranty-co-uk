@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // Import addons utility functions
-const getAutoIncludedAddOns = (paymentType: string): string[] => {
+const getAutoIncludedAddOns = (paymentType: string, planType?: string): string[] => {
   const normalizedType = paymentType?.toLowerCase().replace(/[^a-z0-9]/g, '');
   
   const mapping: { [key: string]: string } = {
@@ -21,14 +21,27 @@ const getAutoIncludedAddOns = (paymentType: string): string[] => {
   
   const normalized = mapping[normalizedType] || '12months';
   
+  // For EV plans, always include MOT fee regardless of payment type
+  const isEVPlan = planType?.toLowerCase().includes('ev') || planType?.toLowerCase().includes('electric');
+  let autoIncluded: string[] = [];
+  
   switch (normalized) {
     case '24months':
-      return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+      autoIncluded = ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+      break;
     case '36months':
-      return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
+      autoIncluded = ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
+      break;
     default:
-      return []; // 12-month plans have no auto-included add-ons
+      autoIncluded = []; // 12-month plans have no auto-included add-ons by default
   }
+  
+  // For EV plans, always include MOT fee
+  if (isEVPlan && !autoIncluded.includes('motFee')) {
+    autoIncluded.push('motFee');
+  }
+  
+  return autoIncluded;
 };
 
 const corsHeaders = {
@@ -137,8 +150,8 @@ serve(async (req) => {
       };
     }
     
-    // Get auto-included add-ons and combine with user selections
-    const autoIncludedAddOns = getAutoIncludedAddOns(paymentType);
+    // Get auto-included add-ons and combine with user selections (include plan type for EV logic)
+    const autoIncludedAddOns = getAutoIncludedAddOns(paymentType, planName);
     const finalAddOnsForCustomer = {
       tyre_cover: userSelectedAddOns.tyre_cover || autoIncludedAddOns.includes('tyre'),
       wear_tear: userSelectedAddOns.wear_tear || autoIncludedAddOns.includes('wearTear'),

@@ -488,16 +488,15 @@ serve(async (req) => {
       voluntaryExcess: registrationData.VolEx,
       coverage: registrationData.Month,
       addOns: {
-        mot_fee: registrationData.mot_fee,
-        tyre_cover: registrationData.tyre_cover,
-        wear_tear: registrationData.wear_tear,
-        europe_cover: registrationData.europe_cover,
-        transfer_cover: registrationData.transfer_cover,
-        breakdown_recovery: registrationData.breakdown_recovery,
-        vehicle_rental: registrationData.vehicle_rental,
-        mot_repair: registrationData.mot_repair,
-        lost_key: registrationData.lost_key,
-        consequential: registrationData.consequential
+        "24/7Recovery": registrationData.breakdown_recovery ? "Y" : "N",
+        "MOTRepair": registrationData.mot_repair ? "Y" : "N", 
+        "Tyrecover": registrationData.tyre_cover ? "Y" : "N",
+        "Wearandtear": registrationData.wear_tear ? "Y" : "N",
+        "Lostkey": registrationData.lost_key ? "Y" : "N",
+        "MOTfee": registrationData.mot_fee ? "Y" : "N",
+        "Europecover": registrationData.europe_cover ? "Y" : "N",
+        "Vehiclerental": registrationData.vehicle_rental ? "Y" : "N",
+        "Transferfee": registrationData.transfer_cover ? "Y" : "N"
       }
     });
 
@@ -514,7 +513,17 @@ serve(async (req) => {
       VolEx: registrationData.VolEx,
       paymentTypeUsed: paymentType,
       calculatedMonths: getWarrantyDurationInMonths(paymentType),
-      fullPayload: registrationData
+      w2000AddOns: {
+        "24/7Recovery": registrationData.breakdown_recovery ? "Y" : "N",
+        "MOTRepair": registrationData.mot_repair ? "Y" : "N",
+        "Tyrecover": registrationData.tyre_cover ? "Y" : "N", 
+        "Wearandtear": registrationData.wear_tear ? "Y" : "N",
+        "Lostkey": registrationData.lost_key ? "Y" : "N",
+        "MOTfee": registrationData.mot_fee ? "Y" : "N",
+        "Europecover": registrationData.europe_cover ? "Y" : "N",
+        "Vehiclerental": registrationData.vehicle_rental ? "Y" : "N",
+        "Transferfee": registrationData.transfer_cover ? "Y" : "N"
+      }
     });
 
     console.log(`[WARRANTIES-2000] Making API call to: ${apiUrl}`);
