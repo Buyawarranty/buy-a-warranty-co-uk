@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar, Pencil, Trash2, Plus, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -47,6 +48,8 @@ export function DiscountCodesTab() {
   const [loading, setLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingCode, setEditingCode] = useState<DiscountCode | null>(null);
+  const [selectedCodes, setSelectedCodes] = useState<Set<string>>(new Set());
+  const [isSelectAll, setIsSelectAll] = useState(false);
   const [formData, setFormData] = useState<DiscountCodeFormData>({
     code: '',
     type: 'percentage',
@@ -235,6 +238,59 @@ export function DiscountCodesTab() {
     setFormData({ ...formData, code: result });
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    setIsSelectAll(checked);
+    if (checked) {
+      setSelectedCodes(new Set(discountCodes.map(code => code.id)));
+    } else {
+      setSelectedCodes(new Set());
+    }
+  };
+
+  const handleSelectCode = (codeId: string, checked: boolean) => {
+    const newSelected = new Set(selectedCodes);
+    if (checked) {
+      newSelected.add(codeId);
+    } else {
+      newSelected.delete(codeId);
+    }
+    setSelectedCodes(newSelected);
+    setIsSelectAll(newSelected.size === discountCodes.length);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedCodes.size === 0) return;
+
+    try {
+      setLoading(true);
+      
+      // Delete all selected codes
+      for (const codeId of selectedCodes) {
+        await supabase.functions.invoke('delete-discount-code', {
+          body: { id: codeId }
+        });
+      }
+
+      toast({
+        title: "Success",
+        description: `${selectedCodes.size} discount code(s) deleted successfully`,
+      });
+
+      setSelectedCodes(new Set());
+      setIsSelectAll(false);
+      fetchDiscountCodes();
+    } catch (error) {
+      console.error('Error deleting discount codes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete discount codes",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading && discountCodes.length === 0) {
     return <div className="p-6">Loading discount codes...</div>;
   }
@@ -249,13 +305,39 @@ export function DiscountCodesTab() {
           </p>
         </div>
         
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Code
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          {selectedCodes.size > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Selected ({selectedCodes.size})
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-white z-50">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Selected Discount Codes</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete {selectedCodes.size} discount code(s)? This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-600">
+                    Delete All
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+          
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={resetForm}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Code
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>
@@ -291,7 +373,7 @@ export function DiscountCodesTab() {
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border shadow-lg z-50">
                       <SelectItem value="percentage">Percentage</SelectItem>
                       <SelectItem value="fixed">Fixed Amount</SelectItem>
                     </SelectContent>
@@ -378,6 +460,7 @@ export function DiscountCodesTab() {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       <Card>
@@ -391,6 +474,13 @@ export function DiscountCodesTab() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">
+                  <Checkbox
+                    checked={isSelectAll}
+                    onCheckedChange={handleSelectAll}
+                    aria-label="Select all"
+                  />
+                </TableHead>
                 <TableHead>Code</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Value</TableHead>
@@ -403,6 +493,13 @@ export function DiscountCodesTab() {
             <TableBody>
               {discountCodes.map((code) => (
                 <TableRow key={code.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedCodes.has(code.id)}
+                      onCheckedChange={(checked) => handleSelectCode(code.id, checked as boolean)}
+                      aria-label={`Select ${code.code}`}
+                    />
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-semibold">{code.code}</span>
@@ -461,7 +558,7 @@ export function DiscountCodesTab() {
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent>
+                        <AlertDialogContent className="bg-white z-50">
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Discount Code</AlertDialogTitle>
                             <AlertDialogDescription>
