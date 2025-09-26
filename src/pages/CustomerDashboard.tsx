@@ -15,6 +15,7 @@ import { getWarrantyDurationDisplay, getPaymentTypeDisplay } from '@/lib/warrant
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
+import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 
 interface CustomerPolicy {
   id: string;
@@ -1122,8 +1123,8 @@ const CustomerDashboard = () => {
                              </div>
                           </div>
 
-                          {/* Protection Add-ons */}
-                          <CoverageDetailsDisplay
+                          {/* Add-On Protection Packages */}
+                          <AddOnProtectionDisplay
                             mot_fee={selectedPolicy.mot_fee}
                             tyre_cover={selectedPolicy.tyre_cover}
                             wear_tear={selectedPolicy.wear_tear}
@@ -1135,6 +1136,7 @@ const CustomerDashboard = () => {
                             lost_key={selectedPolicy.lost_key}
                             consequential={selectedPolicy.consequential}
                             claim_limit={selectedPolicy.claim_limit}
+                            voluntary_excess={selectedPolicy.voluntary_excess}
                             payment_type={selectedPolicy.payment_type}
                           />
                           
