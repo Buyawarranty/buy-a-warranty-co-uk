@@ -600,6 +600,7 @@ export type Database = {
           updated_at: string
           user_id: string | null
           vehicle_rental: boolean | null
+          voluntary_excess: number | null
           warranties_2000_response: Json | null
           warranties_2000_sent_at: string | null
           warranties_2000_status: string | null
@@ -643,6 +644,7 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           vehicle_rental?: boolean | null
+          voluntary_excess?: number | null
           warranties_2000_response?: Json | null
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
@@ -686,6 +688,7 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           vehicle_rental?: boolean | null
+          voluntary_excess?: number | null
           warranties_2000_response?: Json | null
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
