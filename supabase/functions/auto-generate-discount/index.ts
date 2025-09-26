@@ -48,76 +48,74 @@ serve(async (req) => {
 
     logStep("Auto-generating discount code", { customerEmail, orderAmount });
 
-    // Generate a unique discount code
-    let discountCode = generateRandomCode();
-    let attempts = 0;
-    const maxAttempts = 10;
-
-    // Ensure code is unique
-    while (attempts < maxAttempts) {
-      const { data: existingCode } = await supabaseClient
-        .from('discount_codes')
-        .select('id')
-        .eq('code', discountCode)
-        .single();
-
-      if (!existingCode) break;
-      
-      discountCode = generateRandomCode();
-      attempts++;
-    }
-
-    if (attempts >= maxAttempts) {
-      throw new Error("Failed to generate unique discount code");
-    }
-
-    // Create the discount code with 24 hour expiry and single use
-    const validFrom = new Date();
-    const validTo = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
-
-    const { data: newDiscountCode, error: createError } = await supabaseClient
+    // Check for existing active campaign code for email capture
+    const campaignCode = "EMAIL25SAVE";
+    const { data: existingCampaignCode } = await supabaseClient
       .from('discount_codes')
-      .insert({
-        code: discountCode,
-        type: 'percentage',
-        value: 25,
-        valid_from: validFrom.toISOString(),
-        valid_to: validTo.toISOString(),
-        usage_limit: 1,
-        used_count: 0,
-        active: true,
-        applicable_products: ["all"]
-      })
-      .select()
+      .select('*')
+      .eq('code', campaignCode)
+      .eq('active', true)
+      .gte('valid_to', new Date().toISOString())
       .single();
 
-    if (createError) {
-      logStep("Error creating discount code", { error: createError });
-      throw new Error("Failed to create discount code");
+    let discountCodeData;
+
+    if (existingCampaignCode) {
+      logStep("Using existing campaign code", { code: campaignCode });
+      discountCodeData = existingCampaignCode;
+    } else {
+      logStep("Creating new campaign code", { code: campaignCode });
+      
+      // Create the campaign discount code with longer expiry and unlimited use
+      const validFrom = new Date();
+      const validTo = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+
+      const { data: newDiscountCode, error: createError } = await supabaseClient
+        .from('discount_codes')
+        .insert({
+          code: campaignCode,
+          type: 'percentage',
+          value: 25,
+          valid_from: validFrom.toISOString(),
+          valid_to: validTo.toISOString(),
+          usage_limit: null, // Unlimited uses
+          used_count: 0,
+          active: true,
+          applicable_products: ["all"]
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        logStep("Error creating campaign discount code", { error: createError });
+        throw new Error("Failed to create campaign discount code");
+      }
+
+      discountCodeData = newDiscountCode;
     }
 
     // Calculate discount amount
     const discountAmount = (orderAmount * 25) / 100;
     const finalAmount = orderAmount - discountAmount;
 
-    logStep("Auto-generated discount code successfully", {
-      code: discountCode,
+    logStep("Campaign discount code ready", {
+      code: discountCodeData.code,
       discountAmount,
       finalAmount,
-      validTo
+      validTo: discountCodeData.valid_to
     });
 
     return new Response(JSON.stringify({
       success: true,
       discountCode: {
-        id: newDiscountCode.id,
-        code: newDiscountCode.code,
-        type: newDiscountCode.type,
-        value: newDiscountCode.value
+        id: discountCodeData.id,
+        code: discountCodeData.code,
+        type: discountCodeData.type,
+        value: discountCodeData.value
       },
       discountAmount,
       finalAmount,
-      expiresAt: validTo.toISOString()
+      expiresAt: discountCodeData.valid_to
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
