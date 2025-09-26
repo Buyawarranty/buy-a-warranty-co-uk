@@ -37,11 +37,10 @@ export default defineConfig(({ mode }) => ({
           supabase: ['@supabase/supabase-js'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-tooltip', '@radix-ui/react-slot'],
           utils: ['clsx', 'class-variance-authority', 'tailwind-merge'],
-          homepage: ['src/components/Homepage.tsx', 'src/components/homepage/HeroSection.tsx'],
         },
       },
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 1600,
     sourcemap: mode === 'development',
     minify: mode === 'production' ? 'esbuild' : false,
     target: 'esnext'

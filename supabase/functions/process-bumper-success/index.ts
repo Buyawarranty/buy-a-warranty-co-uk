@@ -182,38 +182,6 @@ serve(async (req) => {
       amount: finalAmount 
     });
     
-    // CRITICAL: Log warranty selection for audit trail and verification
-    try {
-      const { data: auditLog, error: auditError } = await supabaseClient.functions.invoke(
-        'warranty-selection-logger',
-        {
-          body: {
-            action: 'log',
-            sessionId: transactionId,
-            customerEmail: customerData.email,
-            selectedPlanId: planId,
-            selectedPlanName: planId, // Will be resolved to actual name in logger
-            paymentType: paymentType,
-            quotedPrice: finalAmount,
-            vehicleData: vehicleData,
-            customerData: customerData,
-            addOns: protectionAddOns || {},
-            discountApplied: { code: discountCode }
-          }
-        }
-      );
-      
-      if (auditError) {
-        console.error('Failed to log warranty selection for audit:', auditError);
-        // Continue processing but log the failure
-      } else {
-        logStep("Warranty selection logged for audit", { auditId: auditLog?.data?.id });
-      }
-    } catch (error) {
-      console.error('Error logging warranty selection:', error);
-      // Continue processing - audit logging failure shouldn't block payment
-    }
-    
     const sessionId = `bumper_${Date.now()}`; // Generate session ID for Bumper orders
     
     logStep("Processing Bumper payment", { 

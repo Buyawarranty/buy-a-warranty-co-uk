@@ -19,10 +19,10 @@ export default {
 			}
 		},
 		extend: {
-      fontFamily: {
-        sans: ['Inter', 'Arial', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        inter: ['Inter', 'Arial', 'sans-serif'],
-      },
+			fontFamily: {
+				sans: ['Helvetica Neue', 'Arial', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+				helvetica: ['Helvetica Neue', 'Arial', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

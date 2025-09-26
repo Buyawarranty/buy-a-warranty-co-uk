@@ -72,18 +72,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
       description: 'View reports and analytics'
     },
     {
-      id: 'security',
-      label: 'Security',
-      icon: Shield,
-      description: 'Monitor click fraud and security issues'
-    },
-    {
-      id: 'warranty-audit',
-      label: 'Warranty Audit',
-      icon: Shield,
-      description: 'Monitor warranty selections and verification'
-    },
-    {
       id: 'user-permissions',
       label: 'User Permissions',
       icon: Shield,

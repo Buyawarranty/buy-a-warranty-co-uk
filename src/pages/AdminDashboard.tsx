@@ -33,7 +33,6 @@ import { TestEmailFunctionDirect } from '@/components/admin/TestEmailFunctionDir
 import { EmailFunctionDiagnostics } from '@/components/admin/EmailFunctionDiagnostics';
 import { TestPolicyDocumentsEmail } from '@/components/admin/TestPolicyDocumentsEmail';
 import { ClickFraudTab } from '@/components/admin/ClickFraudTab';
-import { WarrantyAuditTab } from '@/components/admin/WarrantyAuditTab';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const AdminDashboard = () => {
@@ -118,8 +117,6 @@ const AdminDashboard = () => {
         return <AnalyticsTab />;
       case 'security':
         return <ClickFraudTab />;
-      case 'warranty-audit':
-        return <WarrantyAuditTab />;
       case 'user-permissions':
         return <UserPermissionsTab />;
       case 'document-mapping':
