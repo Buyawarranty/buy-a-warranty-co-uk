@@ -419,7 +419,7 @@ serve(async (req) => {
       // Handle customer login credentials
       loginUrl: "https://buyawarranty.co.uk/customer-dashboard",
       loginEmail: recipientEmail,
-      temporaryPassword: await ensureCustomerPassword(supabaseClient, recipientEmail, policyNumber)
+      ...(await getCustomerCredentials(supabaseClient, recipientEmail, policyNumber))
     };
 
     const emailPayload: any = {
@@ -478,28 +478,35 @@ serve(async (req) => {
   }
 });
 
-// Ensure customer has a proper password for login
-async function ensureCustomerPassword(supabaseClient: any, email: string, policyNumber: string): Promise<string> {
+// Get customer credentials - password only if user hasn't reset it
+async function getCustomerCredentials(supabaseClient: any, email: string, policyNumber: string): Promise<{temporaryPassword?: string}> {
   try {
-    logStep("Ensuring customer password", { email });
+    logStep("Getting customer credentials", { email });
     
-    // Check if customer already has a welcome email record with password
+    // Check if customer has reset their password
     const { data: existingWelcome } = await supabaseClient
       .from('welcome_emails')
-      .select('temporary_password')
+      .select('temporary_password, password_reset_by_user')
       .eq('email', email)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
     
-    if (existingWelcome?.temporary_password) {
-      logStep("Using existing temporary password");
-      return existingWelcome.temporary_password;
+    // If user has reset their password, don't include password in email
+    if (existingWelcome?.password_reset_by_user) {
+      logStep("User has reset password, omitting credentials from email");
+      return {}; // No password field in email
     }
     
-    // Generate new temporary password
+    // If existing password exists and user hasn't reset it, use it
+    if (existingWelcome?.temporary_password) {
+      logStep("Using existing temporary password");
+      return { temporaryPassword: existingWelcome.temporary_password };
+    }
+    
+    // Generate new temporary password for first-time customer
     const tempPassword = generateTempPassword();
-    logStep("Generated new temporary password");
+    logStep("Generated new temporary password for first-time customer");
     
     // Check if user exists in auth
     const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
@@ -540,14 +547,16 @@ async function ensureCustomerPassword(supabaseClient: any, email: string, policy
         user_id: userExists?.id || null,
         email: email,
         temporary_password: tempPassword,
-        email_sent_at: new Date().toISOString()
+        email_sent_at: new Date().toISOString(),
+        password_reset_by_user: false // New customers haven't reset yet
       });
     
-    return tempPassword;
+    return { temporaryPassword: tempPassword };
     
   } catch (error) {
-    logStep("Error ensuring customer password", error);
-    // Fallback to policy number as password for backward compatibility
-    return policyNumber || 'temp123';
+    logStep("Error getting customer credentials", error);
+    // For errors, don't include password in email rather than sending wrong info
+    logStep("Omitting password due to error to prevent sending incorrect credentials");
+    return {};
   }
 }
