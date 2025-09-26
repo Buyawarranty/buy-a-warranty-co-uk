@@ -17,6 +17,7 @@ export interface CartItem {
     totalPrice: number;
     monthlyPrice: number;
     voluntaryExcess: number;
+    claimLimit?: number;
     selectedAddOns: {[addon: string]: boolean};
   };
   addedAt: Date;

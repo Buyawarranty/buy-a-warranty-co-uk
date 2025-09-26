@@ -40,6 +40,8 @@ export interface CustomerDetailsStepProps {
   pricingData: {
     basePrice: number;
     totalPrice: number;
+    voluntaryExcess?: number;
+    claimLimit?: number;
     protectionAddOns?: {
       breakdown?: boolean;
       motFee?: boolean;
@@ -297,7 +299,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             planId,
             vehicleData,
             paymentType,
-            voluntaryExcess: pricingData.protectionAddOns?.wearTear ? 0 : 250,
+            voluntaryExcess: pricingData.voluntaryExcess || 150,
             customerData: {
               ...customerData,
               final_amount: finalPrice
@@ -377,7 +379,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         planId,
         vehicleData,
         paymentType,
-        voluntaryExcess: pricingData.protectionAddOns?.wearTear ? 0 : 250,
+        voluntaryExcess: pricingData.voluntaryExcess || 150,
         customerData: {
           ...customerData,
           final_amount: finalPrice
@@ -687,10 +689,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       <span className="text-gray-600">Vehicle Registration</span>
                       <span className="font-semibold">{vehicleData.regNumber}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Mileage</span>
-                      <span className="font-semibold">{parseInt(vehicleData.mileage || '0').toLocaleString()} miles</span>
-                    </div>
+                     <div className="flex justify-between">
+                       <span className="text-gray-600">Mileage</span>
+                       <span className="font-semibold">{parseInt(vehicleData.mileage || '0').toLocaleString()} miles</span>
+                     </div>
+                     <div className="flex justify-between">
+                       <span className="text-gray-600">Claim Limit</span>
+                       <span className="font-semibold">£{(pricingData.claimLimit || 2000).toLocaleString()}</span>
+                     </div>
+                     <div className="flex justify-between">
+                       <span className="text-gray-600">Voluntary Excess</span>
+                       <span className="font-semibold">£{pricingData.voluntaryExcess || 150}</span>
+                     </div>
                     
                     {/* Add-ons Section */}
                     {pricingData.protectionAddOns && Object.values(pricingData.protectionAddOns).some(Boolean) && (

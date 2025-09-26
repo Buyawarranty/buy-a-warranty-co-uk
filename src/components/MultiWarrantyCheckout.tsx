@@ -253,6 +253,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             items: items.map(item => ({
               planName: item.planName.toLowerCase(),
               paymentType: item.paymentType,
+              claimLimit: item.pricingData.claimLimit,
               voluntaryExcess: item.pricingData.voluntaryExcess,
               vehicleData: item.vehicleData,
               selectedAddOns: item.pricingData.selectedAddOns,
@@ -338,6 +339,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             items: items.map(item => ({
               planName: item.planName.toLowerCase(),
               paymentType: item.paymentType,
+              claimLimit: item.pricingData.claimLimit,
               voluntaryExcess: item.pricingData.voluntaryExcess,
               vehicleData: item.vehicleData,
               selectedAddOns: item.pricingData.selectedAddOns,
@@ -720,6 +722,11 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                           {item.paymentType === 'yearly' ? '12 months' : 
                            item.paymentType === 'two_yearly' ? '24 months' : '36 months'}
                         </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-gray-600">Claim Limit:</span>
+                        <span className="text-gray-900 font-medium">£{(item.pricingData.claimLimit || 2000).toLocaleString()}</span>
                       </div>
                       
                       <div className="flex justify-between items-center py-2">
