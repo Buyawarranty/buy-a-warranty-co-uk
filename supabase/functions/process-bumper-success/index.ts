@@ -641,6 +641,8 @@ function getWarrantyDuration(paymentType: string): string {
       return '12';
   }
 }
+
+function mapPlanToWarrantyType(planId: string): string {
   const normalizedPlan = planId.toLowerCase();
   
   // Handle special vehicle types - check if plan name contains these terms
