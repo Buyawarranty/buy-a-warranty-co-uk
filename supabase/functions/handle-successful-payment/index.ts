@@ -2,6 +2,35 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
+// Import addons utility functions
+const getAutoIncludedAddOns = (paymentType: string): string[] => {
+  const normalizedType = paymentType?.toLowerCase().replace(/[^a-z0-9]/g, '');
+  
+  const mapping: { [key: string]: string } = {
+    '12months': '12months',
+    'monthly': '12months',
+    '1year': '12months',
+    'yearly': '12months',
+    '24months': '24months',
+    '2year': '24months',
+    'twoyearly': '24months',
+    '36months': '36months',
+    '3year': '36months',
+    'threeyearly': '36months'
+  };
+  
+  const normalized = mapping[normalizedType] || '12months';
+  
+  switch (normalized) {
+    case '24months':
+      return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+    case '36months':
+      return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
+    default:
+      return []; // 12-month plans have no auto-included add-ons
+  }
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -77,6 +106,58 @@ serve(async (req) => {
       console.log(`[HANDLE-PAYMENT] Error fetching plan name, using planId: ${error}`);
     }
     
+    // Process addons early to ensure consistent data throughout
+    let userSelectedAddOns: any = {};
+    
+    if (protectionAddOns && typeof protectionAddOns === 'object') {
+      userSelectedAddOns = {
+        tyre_cover: protectionAddOns.tyre || false,
+        wear_tear: protectionAddOns.wearAndTear || protectionAddOns.wearTear || false,
+        europe_cover: protectionAddOns.european || false, 
+        transfer_cover: protectionAddOns.transfer || false,
+        breakdown_recovery: protectionAddOns.breakdown || false,
+        vehicle_rental: protectionAddOns.rental || false,
+        mot_fee: protectionAddOns.motFee || false,
+        mot_repair: protectionAddOns.motRepair || false,
+        lost_key: protectionAddOns.lostKey || false,
+        consequential: protectionAddOns.consequential || false
+      };
+    } else {
+      userSelectedAddOns = {
+        tyre_cover: metadata?.addon_tyre_cover === 'true',
+        wear_tear: metadata?.addon_wear_tear === 'true',
+        europe_cover: metadata?.addon_europe_cover === 'true', 
+        transfer_cover: metadata?.addon_transfer_cover === 'true',
+        breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
+        vehicle_rental: metadata?.addon_vehicle_rental === 'true',
+        mot_fee: metadata?.addon_mot_fee === 'true',
+        mot_repair: metadata?.addon_mot_repair === 'true',
+        lost_key: metadata?.addon_lost_key === 'true',
+        consequential: metadata?.addon_consequential === 'true'
+      };
+    }
+    
+    // Get auto-included add-ons and combine with user selections
+    const autoIncludedAddOns = getAutoIncludedAddOns(paymentType);
+    const finalAddOnsForCustomer = {
+      tyre_cover: userSelectedAddOns.tyre_cover || autoIncludedAddOns.includes('tyre'),
+      wear_tear: userSelectedAddOns.wear_tear || autoIncludedAddOns.includes('wearTear'),
+      europe_cover: userSelectedAddOns.europe_cover || autoIncludedAddOns.includes('european'),
+      transfer_cover: userSelectedAddOns.transfer_cover || autoIncludedAddOns.includes('transfer'),
+      breakdown_recovery: userSelectedAddOns.breakdown_recovery || autoIncludedAddOns.includes('breakdown'),
+      vehicle_rental: userSelectedAddOns.vehicle_rental || autoIncludedAddOns.includes('rental'),
+      mot_fee: userSelectedAddOns.mot_fee || autoIncludedAddOns.includes('motFee'),
+      mot_repair: userSelectedAddOns.mot_repair || autoIncludedAddOns.includes('motRepair'),
+      lost_key: userSelectedAddOns.lost_key || autoIncludedAddOns.includes('lostKey'),
+      consequential: userSelectedAddOns.consequential || autoIncludedAddOns.includes('consequential')
+    };
+
+    logStep("Early addon processing", { 
+      userSelected: userSelectedAddOns,
+      autoIncluded: autoIncludedAddOns,
+      finalCombined: finalAddOnsForCustomer
+    });
+    
     const customerRecord = {
       name: customerName,
       email: userEmail,
@@ -109,17 +190,8 @@ serve(async (req) => {
       voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, vehicleData),
       claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
       warranty_reference_number: warrantyReference,
-      // Add addon data to customer record too - fixed field names to match create-checkout
-      tyre_cover: metadata?.addon_tyre_cover === 'true',
-      wear_tear: metadata?.addon_wear_tear === 'true',
-      europe_cover: metadata?.addon_europe_cover === 'true', 
-      transfer_cover: metadata?.addon_transfer_cover === 'true',
-      breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
-      vehicle_rental: metadata?.addon_vehicle_rental === 'true',
-      mot_fee: metadata?.addon_mot_fee === 'true',
-      mot_repair: metadata?.addon_mot_repair === 'true',
-      lost_key: metadata?.addon_lost_key === 'true',
-      consequential: metadata?.addon_consequential === 'true'
+      // Store final combined add-ons in customer record (user selections + auto-inclusions)
+      ...finalAddOnsForCustomer
     };
 
     // Debug addon metadata parsing
@@ -164,61 +236,12 @@ serve(async (req) => {
     } else {
       logStep("Customer record created successfully", { customerId: customerData2.id });
       
-      // Extract add-ons data from protectionAddOns (Stripe) or metadata (legacy) with auto-inclusion logic
-      let addOnsData: any = {};
+      // Use the same final addon data that was calculated earlier
+      const finalAddOnsData = finalAddOnsForCustomer;
       
-      if (protectionAddOns && typeof protectionAddOns === 'object') {
-        // New format from Stripe webhook with protectionAddOns object
-        addOnsData = {
-          tyre_cover: protectionAddOns.tyre || false,
-          wear_tear: protectionAddOns.wearAndTear || protectionAddOns.wearTear || false,
-          europe_cover: protectionAddOns.european || false, 
-          transfer_cover: protectionAddOns.transfer || false,
-          breakdown_recovery: protectionAddOns.breakdown || false,
-          vehicle_rental: protectionAddOns.rental || false,
-          mot_fee: protectionAddOns.motFee || false,
-          mot_repair: protectionAddOns.motRepair || false,
-          lost_key: protectionAddOns.lostKey || false,
-          consequential: protectionAddOns.consequential || false
-        };
-        
-        logStep("Extracted add-ons from protectionAddOns object", { 
-          protectionAddOns, 
-          addOnsData 
-        });
-      } else {
-        // Legacy format from metadata
-        addOnsData = {
-          tyre_cover: metadata?.addon_tyre_cover === 'true',
-          wear_tear: metadata?.addon_wear_tear === 'true',
-          europe_cover: metadata?.addon_europe_cover === 'true', 
-          transfer_cover: metadata?.addon_transfer_cover === 'true',
-          breakdown_recovery: metadata?.addon_breakdown_recovery === 'true',
-          vehicle_rental: metadata?.addon_vehicle_rental === 'true',
-          mot_fee: metadata?.addon_mot_fee === 'true',
-          mot_repair: metadata?.addon_mot_repair === 'true',
-          lost_key: metadata?.addon_lost_key === 'true',
-          consequential: metadata?.addon_consequential === 'true'
-        };
-        
-        logStep("Extracted add-ons from metadata", { 
-          metadata, 
-          addOnsData 
-        });
-      }
-      
-      // Auto-include add-ons based on payment type
-      const autoIncludedAddOns = getAutoIncludedAddOnsForPayment(paymentType);
-      logStep("Auto-including add-ons for payment type", { 
-        paymentType, 
-        autoIncluded: autoIncludedAddOns 
+      logStep("Using previously calculated addon data for policy record", { 
+        finalAddOns: finalAddOnsData
       });
-      
-      // Set auto-included add-ons to true (override any previous values)
-      if (autoIncludedAddOns.includes('breakdown')) addOnsData.breakdown_recovery = true;
-      if (autoIncludedAddOns.includes('motFee')) addOnsData.mot_fee = true;
-      if (autoIncludedAddOns.includes('rental')) addOnsData.vehicle_rental = true;
-      if (autoIncludedAddOns.includes('tyre')) addOnsData.tyre_cover = true;
 
       // Create policy record
       const policyRecord = {
@@ -233,19 +256,15 @@ serve(async (req) => {
         status: 'active',
         claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
         voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, {}), // Fixed field name
-        // Include add-ons
-        ...addOnsData
+        // Include final combined add-ons in policy record
+        ...finalAddOnsData
       };
 
       const { error: policyError } = await supabaseClient
         .from('customer_policies')
         .insert(policyRecord);
 
-      if (policyError) {
-        logStep("Warning: Policy record creation failed", policyError);
-      } else {
-        logStep("Policy record created successfully");
-      }
+      // Update customer record with final addon values is no longer needed since they're set correctly from the start
     }
 
   // Send welcome email using the manual system (unless skipEmail is true)

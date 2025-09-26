@@ -519,19 +519,30 @@ serve(async (req) => {
 
     console.log(`[WARRANTIES-2000] Making API call to: ${apiUrl}`);
 
-    // Convert boolean add-on values to Y/N strings for W2000 API to show as checked
+    // Convert boolean add-on values to Y/N strings for W2000 API with correct field names
     const w2000Data = {
       ...registrationData,
-      mot_fee: registrationData.mot_fee ? "Y" : "N",
-      tyre_cover: registrationData.tyre_cover ? "Y" : "N", 
-      wear_tear: registrationData.wear_tear ? "Y" : "N",
-      europe_cover: registrationData.europe_cover ? "Y" : "N",
-      transfer_cover: registrationData.transfer_cover ? "Y" : "N",
-      breakdown_recovery: registrationData.breakdown_recovery ? "Y" : "N",
-      vehicle_rental: registrationData.vehicle_rental ? "Y" : "N",
-      mot_repair: registrationData.mot_repair ? "Y" : "N",
-      lost_key: registrationData.lost_key ? "Y" : "N",
-      consequential: registrationData.consequential ? "Y" : "N"
+      // W2000 API field names (these must match exactly what W2000 expects)
+      "24/7Recovery": registrationData.breakdown_recovery ? "Y" : "N",
+      "MOTRepair": registrationData.mot_repair ? "Y" : "N",
+      "Tyrecover": registrationData.tyre_cover ? "Y" : "N",
+      "Wearandtear": registrationData.wear_tear ? "Y" : "N",
+      "Lostkey": registrationData.lost_key ? "Y" : "N",
+      "MOTfee": registrationData.mot_fee ? "Y" : "N",
+      "Europecover": registrationData.europe_cover ? "Y" : "N",
+      "Vehiclerental": registrationData.vehicle_rental ? "Y" : "N",
+      "Transferfee": registrationData.transfer_cover ? "Y" : "N",
+      // Remove the old field names to avoid confusion
+      mot_fee: undefined,
+      tyre_cover: undefined,
+      wear_tear: undefined,
+      europe_cover: undefined,
+      transfer_cover: undefined,
+      breakdown_recovery: undefined,
+      vehicle_rental: undefined,
+      mot_repair: undefined,
+      lost_key: undefined,
+      consequential: undefined
     };
 
     const response = await retryFetch(apiUrl, {
