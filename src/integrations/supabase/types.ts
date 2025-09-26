@@ -1627,6 +1627,84 @@ export type Database = {
           },
         ]
       }
+      warranty_selection_audit: {
+        Row: {
+          add_ons: Json | null
+          admin_sync_at: string | null
+          admin_sync_status: string
+          checksum: string
+          created_at: string
+          customer_data: Json
+          customer_email: string
+          discount_applied: Json | null
+          id: string
+          last_retry_at: string | null
+          payment_type: string
+          quoted_price: number
+          retry_count: number
+          selected_plan_id: string | null
+          selected_plan_name: string
+          session_id: string
+          updated_at: string
+          vehicle_data: Json
+          verification_errors: Json | null
+          verification_status: string
+          w2000_response: Json | null
+          w2000_sync_at: string | null
+          w2000_sync_status: string
+        }
+        Insert: {
+          add_ons?: Json | null
+          admin_sync_at?: string | null
+          admin_sync_status?: string
+          checksum: string
+          created_at?: string
+          customer_data: Json
+          customer_email: string
+          discount_applied?: Json | null
+          id?: string
+          last_retry_at?: string | null
+          payment_type: string
+          quoted_price: number
+          retry_count?: number
+          selected_plan_id?: string | null
+          selected_plan_name: string
+          session_id: string
+          updated_at?: string
+          vehicle_data: Json
+          verification_errors?: Json | null
+          verification_status?: string
+          w2000_response?: Json | null
+          w2000_sync_at?: string | null
+          w2000_sync_status?: string
+        }
+        Update: {
+          add_ons?: Json | null
+          admin_sync_at?: string | null
+          admin_sync_status?: string
+          checksum?: string
+          created_at?: string
+          customer_data?: Json
+          customer_email?: string
+          discount_applied?: Json | null
+          id?: string
+          last_retry_at?: string | null
+          payment_type?: string
+          quoted_price?: number
+          retry_count?: number
+          selected_plan_id?: string | null
+          selected_plan_name?: string
+          session_id?: string
+          updated_at?: string
+          vehicle_data?: Json
+          verification_errors?: Json | null
+          verification_status?: string
+          w2000_response?: Json | null
+          w2000_sync_at?: string | null
+          w2000_sync_status?: string
+        }
+        Relationships: []
+      }
       warranty_serials: {
         Row: {
           id: number
@@ -1710,6 +1788,16 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      generate_warranty_audit_checksum: {
+        Args: {
+          customer_email: string
+          payment_type: string
+          quoted_price: number
+          selected_plan_name: string
+          session_id: string
+        }
+        Returns: string
+      }
       generate_warranty_number: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -1753,6 +1841,10 @@ export type Database = {
       make_user_admin: {
         Args: { user_email: string }
         Returns: undefined
+      }
+      verify_warranty_selection: {
+        Args: { audit_id: string }
+        Returns: Json
       }
     }
     Enums: {
