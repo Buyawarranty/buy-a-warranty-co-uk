@@ -113,9 +113,8 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
     }
   ];
 
-  // Separate active and inactive add-ons
+  // Filter for active add-ons only
   const activeAddOns = addOnItems.filter(item => item.value);
-  const inactiveAddOns = addOnItems.filter(item => !item.value);
 
   return (
     <Card className={className}>
@@ -194,34 +193,6 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
           </div>
         )}
 
-        {/* Inactive Add-Ons */}
-        {inactiveAddOns.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="font-semibold text-gray-600 flex items-center gap-2">
-              <AlertCircle className="h-4 w-4" />
-              Not Included ({inactiveAddOns.length})
-            </h4>
-            <div className="grid grid-cols-1 gap-2">
-              {inactiveAddOns.map((item) => (
-                <div 
-                  key={item.key} 
-                  className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-md opacity-60"
-                >
-                  <div className="flex items-start gap-3 flex-1">
-                    <span className="text-lg grayscale">{item.icon}</span>
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-700">{item.label}</div>
-                      <div className="text-xs text-gray-600 mt-1">{item.description}</div>
-                    </div>
-                  </div>
-                  <Badge variant="outline" className="text-xs font-semibold text-gray-500 bg-gray-100">
-                    NOT COVERED
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* No Add-Ons Message */}
         {activeAddOns.length === 0 && (
