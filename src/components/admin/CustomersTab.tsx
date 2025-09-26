@@ -2288,6 +2288,87 @@ export const CustomersTab = () => {
                                 />
                               </div>
 
+              {/* Step 4 Order Summary Replication */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Order Summary (Customer View)</h3>
+                <div className="bg-gray-50 border rounded-lg p-4 space-y-4">
+                  {/* Plan Details */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Plan</span>
+                      <span className="font-semibold">{selectedCustomer.plan_type}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Payment Duration</span>
+                      <span className="font-semibold">{selectedCustomer.payment_type}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Vehicle</span>
+                      <span className="font-semibold">
+                        {selectedCustomer.vehicle_make} {selectedCustomer.vehicle_model}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Registration</span>
+                      <span className="font-semibold">{selectedCustomer.registration_plate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Mileage</span>
+                      <span className="font-semibold">
+                        {selectedCustomer.mileage ? `${parseInt(selectedCustomer.mileage).toLocaleString()} miles` : 'N/A'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Voluntary Excess</span>
+                      <span className="font-semibold">£{selectedCustomer.voluntary_excess || 0}</span>
+                    </div>
+                  </div>
+
+                  {/* Promo Codes Applied */}
+                  {selectedCustomer.discount_code && (
+                    <div className="border-t pt-3">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-gray-600 font-medium">Applied Promo Code</span>
+                      </div>
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-green-800">{selectedCustomer.discount_code}</span>
+                            <span className="text-xs text-green-600">Discount Applied</span>
+                          </div>
+                          <span className="text-green-600 font-medium">
+                            -£{selectedCustomer.discount_amount?.toFixed(2) || '0.00'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Pricing Breakdown */}
+                  <div className="border-t pt-3 space-y-2">
+                    <h4 className="font-medium text-gray-900">Pricing Breakdown</h4>
+                    {selectedCustomer.original_amount && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Original Price</span>
+                        <span className="text-gray-600">£{selectedCustomer.original_amount.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {selectedCustomer.discount_amount && selectedCustomer.discount_amount > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-red-600">Total Discount</span>
+                        <span className="text-red-600 font-medium">-£{selectedCustomer.discount_amount.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-lg font-bold border-t pt-2">
+                      <span className="text-gray-900">Final Amount</span>
+                      <span className="text-gray-900">
+                        £{selectedCustomer.final_amount?.toFixed(2) || selectedCustomer.original_amount?.toFixed(2) || '0.00'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Coverage Details Section */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Coverage Details & Add-ons</h3>
@@ -2303,6 +2384,7 @@ export const CustomersTab = () => {
                    lost_key={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).lost_key : selectedCustomer.lost_key}
                    consequential={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).consequential : selectedCustomer.consequential}
                    claim_limit={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).claim_limit : selectedCustomer.claim_limit}
+                   payment_type={selectedCustomer.payment_type}
                  />
               </div>
 
