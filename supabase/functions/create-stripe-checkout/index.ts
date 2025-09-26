@@ -30,6 +30,31 @@ serve(async (req) => {
     const { planId, vehicleData, paymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount, protectionAddOns, claimLimit } = body;
     logStep("Request data", { planId, vehicleData, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns, claimLimit });
 
+    // Function to calculate claim limit based on plan type
+    function getMaxClaimAmount(planName: string): string {
+      const normalizedPlan = planName.toLowerCase();
+      
+      // Handle special vehicle types
+      if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
+        return '1000';
+      } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
+        return '2000';
+      } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
+        return '1000';
+      }
+      
+      // Handle standard plan types
+      if (normalizedPlan.includes('basic')) {
+        return '1250';
+      } else if (normalizedPlan.includes('gold')) {
+        return '2000';
+      } else if (normalizedPlan.includes('platinum')) {
+        return '2500';
+      }
+      
+      return '1250'; // Default fallback
+    }
+
     // Get plan data from database
     const supabaseService = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -196,7 +221,7 @@ serve(async (req) => {
         voluntary_excess: voluntaryExcess.toString(),
         customer_email: customerEmail,
         original_amount: totalAmount.toString(),
-        claim_limit: claimLimit?.toString() || '2000',
+        claim_limit: claimLimit?.toString() || getMaxClaimAmount(planData.name),
         // Add-ons data - using correct field names that match handle-successful-payment
         addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
         addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',

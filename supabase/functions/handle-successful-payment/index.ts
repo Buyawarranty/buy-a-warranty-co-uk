@@ -74,7 +74,7 @@ serve(async (req) => {
       original_amount: customerData?.original_amount || null,
       final_amount: customerData?.final_amount || null,
       voluntary_excess: parseInt(metadata?.voluntary_excess || customerData?.voluntaryExcess || vehicleData?.voluntaryExcess || '150'),
-      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || '2000'), // Default to higher claim limit
+      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId)), // Use plan-based claim limit
       warranty_reference_number: warrantyReference,
       // Add addon data to customer record too - fixed field names to match create-checkout
       tyre_cover: metadata?.addon_tyre_cover === 'true',
@@ -156,7 +156,7 @@ serve(async (req) => {
         policy_start_date: new Date().toISOString(),
         policy_end_date: calculatePolicyEndDate(paymentType),
         status: 'active',
-        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || '2000'), // Default to higher claim limit
+        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId)), // Use plan-based claim limit
         voluntary_excess: parseInt(metadata?.voluntary_excess || customerData?.voluntary_excess || '150'), // Fixed field name
         // Include add-ons
         ...addOnsData

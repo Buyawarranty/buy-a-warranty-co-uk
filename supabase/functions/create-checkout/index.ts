@@ -35,6 +35,31 @@ serve(async (req) => {
     const body = await req.json();
     const { planName, paymentType, voluntaryExcess = 0, vehicleData, customerData, discountCode, finalAmount, addAnotherWarrantyRequested, protectionAddOns, claimLimit } = body;
     logStep("Request data", { planName, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns });
+
+    // Function to calculate claim limit based on plan type
+    function getMaxClaimAmount(planName: string): string {
+      const normalizedPlan = planName.toLowerCase();
+      
+      // Handle special vehicle types
+      if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
+        return '1000';
+      } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
+        return '2000';
+      } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
+        return '1000';
+      }
+      
+      // Handle standard plan types
+      if (normalizedPlan.includes('basic')) {
+        return '1250';
+      } else if (normalizedPlan.includes('gold')) {
+        return '2000';
+      } else if (normalizedPlan.includes('platinum')) {
+        return '2500';
+      }
+      
+      return '1250'; // Default fallback
+    }
     
     // Use planName for pricing lookup (basic, gold, platinum)
     const planType = planName?.toLowerCase() || 'basic';
@@ -194,7 +219,7 @@ serve(async (req) => {
         discount_code: discountCode || '',
         voluntary_excess: voluntaryExcess?.toString() || '0',
         final_amount: finalAmount?.toString() || totalAmount?.toString(),
-        claim_limit: claimLimit?.toString() || '1250',
+        claim_limit: claimLimit?.toString() || getMaxClaimAmount(planName),
         // Add-ons data - using correct field names that match handle-successful-payment
         addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
         addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
