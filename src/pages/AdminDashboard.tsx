@@ -3,6 +3,7 @@ import ContactSubmissionsTab from '@/components/admin/ContactSubmissionsTab';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { SEOHead } from '@/components/SEOHead';
 import { CustomersTab } from '@/components/admin/CustomersTab';
 import { PlansTab } from '@/components/admin/PlansTab';
@@ -37,26 +38,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('customers');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isCheckingRole, setIsCheckingRole] = useState(true);
+  const [hasAdminAccess, setHasAdminAccess] = useState(false);
   const navigate = useNavigate();
+  const { session, loading: authLoading } = useAuth();
 
   useEffect(() => {
     checkAdminAccess();
-  }, []);
+  }, [session, authLoading]);
 
   const checkAdminAccess = async () => {
-    try {
-      console.log('Checking admin access...');
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      console.log('Session:', session?.user?.email);
-      
-      if (!session?.user) {
-        console.log('No session found, redirecting to auth');
-        navigate('/auth');
-        return;
-      }
+    // Wait for auth to finish loading
+    if (authLoading) {
+      return;
+    }
 
+    // If no session after auth loading is complete, redirect to auth
+    if (!session?.user) {
+      console.log('No session found, redirecting to auth');
+      navigate('/auth', { replace: true });
+      return;
+    }
+
+    try {
       console.log('Checking user role for:', session.user.id);
       const { data, error } = await supabase
         .from('user_roles')
@@ -70,24 +74,28 @@ const AdminDashboard = () => {
       if (error || !data || !['admin', 'member', 'viewer', 'guest'].includes(data.role)) {
         console.error('Access denied - not an admin user', error, data);
         console.log('Redirecting to homepage');
-        navigate('/');
+        navigate('/', { replace: true });
         return;
       }
 
       console.log('Access granted for role:', data.role);
-      setIsLoading(false);
+      setHasAdminAccess(true);
+      setIsCheckingRole(false);
     } catch (error) {
       console.error('Error checking admin access:', error);
-      navigate('/');
+      navigate('/', { replace: true });
     }
   };
 
-  if (isLoading) {
+  // Show loading while checking auth or role
+  if (authLoading || isCheckingRole || !hasAdminAccess) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Checking permissions...</p>
+          <p className="text-gray-600">
+            {authLoading ? 'Authenticating...' : isCheckingRole ? 'Checking permissions...' : 'Loading dashboard...'}
+          </p>
         </div>
       </div>
     );
