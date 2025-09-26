@@ -412,7 +412,7 @@ serve(async (req) => {
         return "";
       })(),
       Town: customer.town || "Town",
-      PCode: customer.postcode || "UNKNOWN",
+      PCode: customer.postcode && customer.postcode.trim() ? customer.postcode.trim() : "UNKNOWN",
       // Fix phone mapping - ensure phone number is properly sent
       Tel: customer.phone && customer.phone.trim() ? customer.phone.trim() : "N/A",
       Mobile: customer.phone && customer.phone.trim() ? customer.phone.trim() : "N/A", 

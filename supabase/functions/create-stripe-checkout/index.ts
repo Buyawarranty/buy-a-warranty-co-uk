@@ -185,6 +185,14 @@ serve(async (req) => {
         plan_type: planType,
         payment_type: paymentType,
         vehicle_reg: vehicleData?.regNumber || customerData?.vehicle_reg || '',
+        // Vehicle data
+        vehicle_make: vehicleData?.make || '',
+        vehicle_model: vehicleData?.model || '',
+        vehicle_year: vehicleData?.year || '',
+        vehicle_mileage: vehicleData?.mileage || '',
+        vehicle_fuel_type: vehicleData?.fuelType || '',
+        vehicle_transmission: vehicleData?.transmission || '',
+        vehicle_type: vehicleData?.vehicleType || 'standard',
         voluntary_excess: voluntaryExcess.toString(),
         customer_email: customerEmail,
         original_amount: totalAmount.toString(),
@@ -221,8 +229,19 @@ serve(async (req) => {
         sessionData.metadata = {
           ...sessionData.metadata,
           customer_name: `${customerData.first_name || ''} ${customerData.last_name || ''}`.trim(),
+          customer_first_name: customerData.first_name || '',
+          customer_last_name: customerData.last_name || '',
           customer_phone: customerData.phone || customerData.mobile || '',
-          customer_address: `${customerData.address_line_1 || ''}, ${customerData.address_line_2 || ''}, ${customerData.city || ''}, ${customerData.postcode || ''}`.trim().replace(/,+/g, ',').replace(/^,|,$/g, '')
+          customer_address: `${customerData.address_line_1 || ''}, ${customerData.address_line_2 || ''}, ${customerData.city || ''}, ${customerData.postcode || ''}`.trim().replace(/,+/g, ',').replace(/^,|,$/g, ''),
+          // Individual address components for W2000
+          customer_street: customerData.address_line_1 || '',
+          customer_town: customerData.city || '',
+          customer_county: customerData.county || '',
+          customer_postcode: customerData.postcode || '',
+          customer_country: customerData.country || 'United Kingdom',
+          customer_building_name: customerData.building_name || '',
+          customer_flat_number: customerData.flat_number || '',
+          customer_building_number: customerData.building_number || ''
         };
       }
 

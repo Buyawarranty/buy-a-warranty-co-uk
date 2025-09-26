@@ -53,21 +53,21 @@ serve(async (req) => {
       flat_number: customerData?.flat_number || '',
       building_name: customerData?.building_name || '',
       building_number: customerData?.building_number || '',
-      street: customerData?.address_line_1 || extractStreet(customerData?.address || vehicleData?.address || ''),
-      town: customerData?.city || extractTown(customerData?.address || vehicleData?.address || ''),
+      street: customerData?.street || customerData?.address_line_1 || extractStreet(customerData?.address || vehicleData?.address || ''),
+      town: customerData?.town || customerData?.city || extractTown(customerData?.address || vehicleData?.address || ''),
       county: customerData?.county || '',
       postcode: customerData?.postcode || extractPostcode(customerData?.address || vehicleData?.address || ''),
       country: customerData?.country || 'United Kingdom',
       plan_type: normalizedPlanType,
       payment_type: paymentType,
       stripe_session_id: stripeSessionId,
-      registration_plate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
-      vehicle_make: vehicleData?.make || 'Unknown',
-      vehicle_model: vehicleData?.model || 'Unknown',
-      vehicle_year: vehicleData?.year || '',
-      vehicle_fuel_type: vehicleData?.fuelType || '',
-      vehicle_transmission: vehicleData?.transmission || '',
-      mileage: vehicleData?.mileage || '',
+      registration_plate: vehicleData?.regNumber || customerData?.vehicle_reg || metadata?.vehicle_reg || 'Unknown',
+      vehicle_make: vehicleData?.make || metadata?.vehicle_make || 'Unknown',
+      vehicle_model: vehicleData?.model || metadata?.vehicle_model || 'Unknown',
+      vehicle_year: vehicleData?.year || metadata?.vehicle_year || '',
+      vehicle_fuel_type: vehicleData?.fuelType || metadata?.vehicle_fuel_type || '',
+      vehicle_transmission: vehicleData?.transmission || metadata?.vehicle_transmission || '',
+      mileage: vehicleData?.mileage || metadata?.vehicle_mileage || '',
       status: 'Active',
       discount_code: customerData?.discount_code || null,
       discount_amount: customerData?.discount_amount || 0,
@@ -514,7 +514,7 @@ function extractPostcode(address: string): string {
   // Try to extract UK postcode from address
   const postcodeRegex = /([A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2})/gi;
   const match = address.match(postcodeRegex);
-  return match ? match[0] : 'SW1A 1AA'; // Default to a valid UK postcode
+  return match ? match[0] : ''; // Return empty string instead of fallback postcode
 }
 
 function calculatePurchasePrice(planId: string, paymentType: string): number {
