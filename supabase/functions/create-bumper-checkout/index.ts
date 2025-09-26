@@ -52,7 +52,8 @@ serve(async (req) => {
       discountCode,
       finalAmount,
       addAnotherWarrantyRequested,
-      protectionAddOns = {}
+      protectionAddOns = {},
+      claimLimit = 1250
     } = requestData;
 
     // Force payment to monthly for Bumper (they handle installments internally)
@@ -141,7 +142,8 @@ serve(async (req) => {
       discount_code: discountCode || '',
       add_another_warranty: addAnotherWarrantyRequested || false,
       redirect_url: redirectUrl,
-      status: 'pending'
+      status: 'pending',
+      claim_limit: claimLimit
     };
     
     logStep("Transaction data to insert", { 

@@ -30,38 +30,11 @@ serve(async (req) => {
     const { planId, vehicleData, paymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount, protectionAddOns, claimLimit } = body;
     logStep("Request data", { planId, vehicleData, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns, claimLimit });
 
-    // Function to calculate claim limit based on plan type
+    // Function to get default claim limit - user selection should override this
     function getMaxClaimAmount(planName: string, paymentType?: string): string {
-      const normalizedPlan = planName.toLowerCase();
-      
-      // Handle special vehicle types - use consistent claim limits with W2000
-      if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
-        return '1250'; // Changed from 1000 to match W2000 valid limits
-      } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
-        return '1250'; // Changed from 1000 to match W2000 valid limits
-      } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
-        return '1250'; // Changed from 1000 to match W2000 valid limits
-      }
-      
-      // Get duration in months for consistent comparison
-      const duration = getWarrantyDurationInMonths(paymentType || '');
-      
-      // Standardized claim limits based on plan type and duration
-      if (normalizedPlan.includes('basic')) {
-        if (duration === 36) return '750';   // 3-year Basic: £750
-        if (duration === 24) return '750';   // 2-year Basic: £750
-        return '1250';                       // 1-year Basic: £1250
-      } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
-        if (duration === 36) return '750';   // 3-year Gold/Premium: £750
-        if (duration === 24) return '1250';  // 2-year Gold/Premium: £1250
-        return '1250';                       // 1-year Gold/Premium: £1250
-      } else if (normalizedPlan.includes('platinum')) {
-        if (duration === 36) return '750';   // 3-year Platinum: £750
-        if (duration === 24) return '1250';  // 2-year Platinum: £1250
-        return '1250';                       // 1-year Platinum: £1250
-      }
-      
-      return '750'; // Default fallback - valid limit
+      // Return default claim limit of 1250 - user selection should override this
+      // Valid claim limits are 750, 1250, 2000
+      return '1250';
     }
 
     // Helper function to get warranty duration in months

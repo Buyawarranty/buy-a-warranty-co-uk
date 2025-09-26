@@ -36,29 +36,11 @@ serve(async (req) => {
     const { planName, paymentType, voluntaryExcess = 0, vehicleData, customerData, discountCode, finalAmount, addAnotherWarrantyRequested, protectionAddOns, claimLimit } = body;
     logStep("Request data", { planName, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns });
 
-    // Function to calculate claim limit based on plan type
+    // Function to get default claim limit - user selection should override this
     function getMaxClaimAmount(planName: string): string {
-      const normalizedPlan = planName.toLowerCase();
-      
-      // Handle special vehicle types
-      if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
-        return '1000';
-      } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
-        return '2000';
-      } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
-        return '1000';
-      }
-      
-      // Handle standard plan types
-      if (normalizedPlan.includes('basic')) {
-        return '1250';
-      } else if (normalizedPlan.includes('gold')) {
-        return '2000';
-      } else if (normalizedPlan.includes('platinum')) {
-        return '2500';
-      }
-      
-      return '1250'; // Default fallback
+      // Return default claim limit of 1250 - user selection should override this
+      // Valid claim limits are 750, 1250, 2000
+      return '1250';
     }
     
     // Use planName for pricing lookup (basic, gold, platinum)

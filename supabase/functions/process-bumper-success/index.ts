@@ -196,8 +196,8 @@ serve(async (req) => {
       discountCode
     });
 
-    // Calculate claim limit and voluntary excess based on plan and payment type
-    const claimLimit = calculateClaimLimit(planId, paymentType);
+    // Get claim limit from transaction data instead of calculating it
+    const claimLimit = transactionData.claim_limit || calculateClaimLimit(planId, paymentType);
     const voluntaryExcess = calculateVoluntaryExcess(planId, paymentType);
 
     logStep("Calculated policy details", { claimLimit, voluntaryExcess });

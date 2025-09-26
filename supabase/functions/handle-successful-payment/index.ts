@@ -74,7 +74,7 @@ serve(async (req) => {
       original_amount: customerData?.original_amount || null,
       final_amount: customerData?.final_amount || null,
       voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, vehicleData),
-      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId, paymentType)), // Use plan and duration-based claim limit
+      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
       warranty_reference_number: warrantyReference,
       // Add addon data to customer record too - fixed field names to match create-checkout
       tyre_cover: metadata?.addon_tyre_cover === 'true',
@@ -198,7 +198,7 @@ serve(async (req) => {
         policy_start_date: new Date().toISOString(),
         policy_end_date: calculatePolicyEndDate(paymentType),
         status: 'active',
-        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId, paymentType)), // Use plan and duration-based claim limit
+        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
         voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, {}), // Fixed field name
         // Include add-ons
         ...addOnsData
@@ -500,36 +500,9 @@ function normalizeDuration(paymentType: string): string {
 }
 
 function getMaxClaimAmount(planId: string, paymentType?: string): string {
-  const normalizedPlan = planId.toLowerCase();
-  
-  // Handle special vehicle types - use consistent claim limits with W2000
-  if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
-    return '1250'; // Changed from 1000 to match W2000 valid limits
-  } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
-    return '1250'; // Changed from 1000 to match W2000 valid limits
-  } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
-    return '1250'; // Changed from 1000 to match W2000 valid limits
-  }
-  
-  // Get duration in months for consistent comparison
-  const duration = getWarrantyDurationInMonths(paymentType || '');
-  
-  // Standardized claim limits based on plan type and duration
-  if (normalizedPlan.includes('basic')) {
-    if (duration === 36) return '750';   // 3-year Basic: £750 (valid limit)
-    if (duration === 24) return '750';   // 2-year Basic: £750 (changed from 750 to valid limit)
-    return '1250';                       // 1-year Basic: £1250 (changed from 1000 to valid limit)
-  } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
-    if (duration === 36) return '750';   // 3-year Gold/Premium: £750 (changed from 500 to valid limit)
-    if (duration === 24) return '1250';  // 2-year Gold/Premium: £1250 (changed from 1000 to valid limit)
-    return '1250';                       // 1-year Gold/Premium: £1250
-  } else if (normalizedPlan.includes('platinum')) {
-    if (duration === 36) return '750';   // 3-year Platinum: £750
-    if (duration === 24) return '1250';  // 2-year Platinum: £1250 (changed from 1000 to valid limit)
-    return '1250';                       // 1-year Platinum: £1250
-  }
-  
-  return '750'; // Default fallback - valid limit
+  // Return default claim limit of 1250 - user selection should override this
+  // Valid claim limits are 750, 1250, 2000
+  return '1250';
 }
 
 function getWarrantyType(planId: string): string {
