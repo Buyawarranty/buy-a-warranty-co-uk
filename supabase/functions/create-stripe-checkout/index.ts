@@ -27,8 +27,8 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { planId, vehicleData, paymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount } = body;
-    logStep("Request data", { planId, vehicleData, paymentType, voluntaryExcess, discountCode, finalAmount });
+    const { planId, vehicleData, paymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount, protectionAddOns, claimLimit } = body;
+    logStep("Request data", { planId, vehicleData, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns, claimLimit });
 
     // Get plan data from database
     const supabaseService = createClient(
@@ -187,7 +187,19 @@ serve(async (req) => {
         vehicle_reg: vehicleData?.regNumber || customerData?.vehicle_reg || '',
         voluntary_excess: voluntaryExcess.toString(),
         customer_email: customerEmail,
-        original_amount: totalAmount.toString()
+        original_amount: totalAmount.toString(),
+        claim_limit: claimLimit?.toString() || '2000',
+        // Add-ons data - using correct field names that match handle-successful-payment
+        addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
+        addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
+        addon_europe_cover: protectionAddOns?.european ? 'true' : 'false',
+        addon_transfer_cover: protectionAddOns?.transfer ? 'true' : 'false',
+        addon_breakdown_recovery: protectionAddOns?.breakdown ? 'true' : 'false',
+        addon_vehicle_rental: protectionAddOns?.rental ? 'true' : 'false',
+        addon_mot_fee: protectionAddOns?.motFee ? 'true' : 'false',
+        addon_mot_repair: protectionAddOns?.motRepair ? 'true' : 'false',
+        addon_lost_key: protectionAddOns?.lostKey ? 'true' : 'false',
+        addon_consequential: protectionAddOns?.consequential ? 'true' : 'false'
       }
     };
 
