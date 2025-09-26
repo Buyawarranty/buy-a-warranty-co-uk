@@ -462,27 +462,31 @@ function calculateClaimLimit(planId: string, paymentType: string): number {
   const plan = planId?.toLowerCase() || '';
   const duration = getWarrantyDurationInMonths(paymentType);
   
-  // Special handling for 3-year (36 month) plans
-  if (duration === 36) {
-    if (plan.includes('platinum')) {
-      return 750; // 3-year Platinum gets £750
-    } else if (plan.includes('gold')) {
-      return 500; // 3-year Gold gets £500
-    } else if (plan.includes('basic')) {
-      return 350; // 3-year Basic gets £350
-    }
+  // Handle special vehicle types - use consistent claim limits with W2000
+  if (plan.includes('phev') || plan.includes('hybrid')) {
+    return 1250; // Changed to match W2000 valid limits
+  } else if (plan.includes('electric') || plan.includes('ev')) {
+    return 1250; // Changed to match W2000 valid limits
+  } else if (plan.includes('motorbike') || plan.includes('motorcycle')) {
+    return 1250; // Changed to match W2000 valid limits
   }
   
-  // Default claim amounts for other durations (12, 24, 48, 60 months)
-  if (plan.includes('platinum')) {
-    return 1250;
-  } else if (plan.includes('gold')) {
-    return 1000;
-  } else if (plan.includes('basic')) {
-    return 750;
+  // Standardized claim limits based on plan type and duration - consistent with W2000
+  if (plan.includes('basic')) {
+    if (duration === 36) return 750;   // 3-year Basic: £750 (valid W2000 limit)
+    if (duration === 24) return 750;   // 2-year Basic: £750 (valid W2000 limit)
+    return 1250;                       // 1-year Basic: £1250 (valid W2000 limit)
+  } else if (plan.includes('gold') || plan.includes('premium')) {
+    if (duration === 36) return 750;   // 3-year Gold/Premium: £750 (valid W2000 limit)
+    if (duration === 24) return 1250;  // 2-year Gold/Premium: £1250 (changed from 1000)
+    return 1250;                       // 1-year Gold/Premium: £1250
+  } else if (plan.includes('platinum')) {
+    if (duration === 36) return 750;   // 3-year Platinum: £750 (valid W2000 limit)
+    if (duration === 24) return 1250;  // 2-year Platinum: £1250 (changed from 1000)
+    return 1250;                       // 1-year Platinum: £1250
   }
   
-  return 1250; // Default fallback
+  return 750; // Default fallback - valid W2000 limit
 }
 
 function calculateVoluntaryExcess(planId: string, paymentType: string): number {

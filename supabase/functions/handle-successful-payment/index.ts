@@ -502,13 +502,13 @@ function normalizeDuration(paymentType: string): string {
 function getMaxClaimAmount(planId: string, paymentType?: string): string {
   const normalizedPlan = planId.toLowerCase();
   
-  // Handle special vehicle types - consistent across all plans
+  // Handle special vehicle types - use consistent claim limits with W2000
   if (normalizedPlan.includes('phev') || normalizedPlan.includes('hybrid')) {
-    return '1000';
+    return '1250'; // Changed from 1000 to match W2000 valid limits
   } else if (normalizedPlan.includes('electric') || normalizedPlan.includes('ev')) {
-    return '1000';
+    return '1250'; // Changed from 1000 to match W2000 valid limits
   } else if (normalizedPlan.includes('motorbike') || normalizedPlan.includes('motorcycle')) {
-    return '1000';
+    return '1250'; // Changed from 1000 to match W2000 valid limits
   }
   
   // Get duration in months for consistent comparison
@@ -516,20 +516,20 @@ function getMaxClaimAmount(planId: string, paymentType?: string): string {
   
   // Standardized claim limits based on plan type and duration
   if (normalizedPlan.includes('basic')) {
-    if (duration === 36) return '350';   // 3-year Basic: £350
-    if (duration === 24) return '750';   // 2-year Basic: £750  
-    return '1000';                       // 1-year Basic: £1000
+    if (duration === 36) return '750';   // 3-year Basic: £750 (valid limit)
+    if (duration === 24) return '750';   // 2-year Basic: £750 (changed from 750 to valid limit)
+    return '1250';                       // 1-year Basic: £1250 (changed from 1000 to valid limit)
   } else if (normalizedPlan.includes('gold') || normalizedPlan.includes('premium')) {
-    if (duration === 36) return '500';   // 3-year Gold/Premium: £500
-    if (duration === 24) return '1000';  // 2-year Gold/Premium: £1000
+    if (duration === 36) return '750';   // 3-year Gold/Premium: £750 (changed from 500 to valid limit)
+    if (duration === 24) return '1250';  // 2-year Gold/Premium: £1250 (changed from 1000 to valid limit)
     return '1250';                       // 1-year Gold/Premium: £1250
   } else if (normalizedPlan.includes('platinum')) {
     if (duration === 36) return '750';   // 3-year Platinum: £750
-    if (duration === 24) return '1000';  // 2-year Platinum: £1000
+    if (duration === 24) return '1250';  // 2-year Platinum: £1250 (changed from 1000 to valid limit)
     return '1250';                       // 1-year Platinum: £1250
   }
   
-  return '750'; // Default fallback for 3-year plans
+  return '750'; // Default fallback - valid limit
 }
 
 function getWarrantyType(planId: string): string {
