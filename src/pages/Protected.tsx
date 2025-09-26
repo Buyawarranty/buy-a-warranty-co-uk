@@ -316,6 +316,22 @@ const Protected = () => {
           <p className="text-lg text-gray-900 font-semibold mt-8">
             If something goes wrong, we look for reasons to say yes!
           </p>
+          
+          {/* Trustpilot Section */}
+          <div className="flex justify-center mt-6">
+            <a 
+              href="https://uk.trustpilot.com/review/buyawarranty.co.uk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block hover:opacity-80 transition-opacity"
+            >
+              <img 
+                src="/lovable-uploads/trustpilot-excellent-box.webp" 
+                alt="Trustpilot Excellent Rating"
+                className="h-16 w-auto"
+              />
+            </a>
+          </div>
         </div>
       </section>
 
