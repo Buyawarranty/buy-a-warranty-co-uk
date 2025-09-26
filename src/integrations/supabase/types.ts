@@ -295,6 +295,7 @@ export type Database = {
       bumper_transactions: {
         Row: {
           add_another_warranty: boolean | null
+          claim_limit: number | null
           created_at: string
           customer_data: Json
           discount_code: string | null
@@ -311,6 +312,7 @@ export type Database = {
         }
         Insert: {
           add_another_warranty?: boolean | null
+          claim_limit?: number | null
           created_at?: string
           customer_data: Json
           discount_code?: string | null
@@ -327,6 +329,7 @@ export type Database = {
         }
         Update: {
           add_another_warranty?: boolean | null
+          claim_limit?: number | null
           created_at?: string
           customer_data?: Json
           discount_code?: string | null
