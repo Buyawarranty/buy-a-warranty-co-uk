@@ -380,6 +380,26 @@ serve(async (req) => {
       hasCustomerData: !!customerDataFormatted
     });
 
+    // Calculate correct claim limit based on plan and payment type
+    let claimLimit = '750'; // Default for most plans
+    
+    // Calculate claim limit based on plan pricing structure
+    if (actualPaymentType === '36months' && plan.three_yearly_price) {
+      // For 3-year plans, claim limit is often lower (750)
+      claimLimit = '750';
+    } else if (actualPaymentType === '24months' && plan.two_yearly_price) {
+      claimLimit = '1000';
+    } else {
+      claimLimit = '1250'; // Default for 12-month plans
+    }
+    
+    logStep("Calculated claim limit", { 
+      paymentType: actualPaymentType, 
+      planName: plan.name,
+      claimLimit,
+      finalAmount 
+    });
+
     // Use the same handle-successful-payment function as Stripe (with email sending enabled)
     const { data: paymentData, error: paymentError } = await supabaseClient.functions.invoke('handle-successful-payment', {
       body: {
@@ -397,7 +417,19 @@ serve(async (req) => {
           customer_email: customerEmail,
           bumper_transaction_id: transactionId,
           final_amount: finalAmount.toString(),
-          discount_code: discountCode
+          discount_code: discountCode,
+          claim_limit: claimLimit,
+          // Map Bumper protectionAddOns to metadata format
+          addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
+          addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
+          addon_europe_cover: protectionAddOns?.european ? 'true' : 'false',
+          addon_transfer_cover: protectionAddOns?.transfer ? 'true' : 'false',
+          addon_breakdown_recovery: protectionAddOns?.breakdown ? 'true' : 'false',
+          addon_vehicle_rental: protectionAddOns?.rental ? 'true' : 'false',
+          addon_mot_fee: protectionAddOns?.motFee ? 'true' : 'false',
+          addon_mot_repair: protectionAddOns?.motRepair ? 'true' : 'false',
+          addon_lost_key: protectionAddOns?.lostKey ? 'true' : 'false',
+          addon_consequential: protectionAddOns?.consequential ? 'true' : 'false'
         }
         // No skipEmail: true - allow emails to be sent just like Stripe
       }

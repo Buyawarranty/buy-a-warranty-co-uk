@@ -74,7 +74,7 @@ serve(async (req) => {
       original_amount: customerData?.original_amount || null,
       final_amount: customerData?.final_amount || null,
       voluntary_excess: parseInt(metadata?.voluntary_excess || customerData?.voluntaryExcess || vehicleData?.voluntaryExcess || '150'),
-      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId)), // Use plan-based claim limit
+      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId, paymentType)), // Use plan and duration-based claim limit
       warranty_reference_number: warrantyReference,
       // Add addon data to customer record too - fixed field names to match create-checkout
       tyre_cover: metadata?.addon_tyre_cover === 'true',
@@ -156,7 +156,7 @@ serve(async (req) => {
         policy_start_date: new Date().toISOString(),
         policy_end_date: calculatePolicyEndDate(paymentType),
         status: 'active',
-        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId)), // Use plan-based claim limit
+        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || getMaxClaimAmount(planId, paymentType)), // Use plan and duration-based claim limit
         voluntary_excess: parseInt(metadata?.voluntary_excess || customerData?.voluntary_excess || '150'), // Fixed field name
         // Include add-ons
         ...addOnsData
@@ -428,7 +428,7 @@ function getWarrantyDuration(paymentType: string): string {
   }
 }
 
-function getMaxClaimAmount(planId: string): string {
+function getMaxClaimAmount(planId: string, paymentType?: string): string {
   const normalizedPlan = planId.toLowerCase();
   
   // Handle special vehicle types
@@ -440,13 +440,25 @@ function getMaxClaimAmount(planId: string): string {
     return '1000';
   }
   
-  // Handle standard plan types
-  if (normalizedPlan.includes('basic')) {
-    return '500';
-  } else if (normalizedPlan.includes('gold')) {
-    return '1000';
-  } else if (normalizedPlan.includes('platinum')) {
-    return '1200';
+  // Handle standard plan types based on duration
+  // 3-year plans typically have lower claim limits
+  if (paymentType === '36months' || paymentType === 'three_yearly') {
+    if (normalizedPlan.includes('basic')) {
+      return '500';
+    } else if (normalizedPlan.includes('gold')) {
+      return '750';
+    } else if (normalizedPlan.includes('platinum')) {
+      return '750'; // Platinum 3-year gets £750 claim limit
+    }
+  } else {
+    // Standard durations (12/24 months)
+    if (normalizedPlan.includes('basic')) {
+      return '500';
+    } else if (normalizedPlan.includes('gold')) {
+      return '1000';
+    } else if (normalizedPlan.includes('platinum')) {
+      return '1250'; // Standard platinum gets £1250
+    }
   }
   
   return '500'; // Default fallback
