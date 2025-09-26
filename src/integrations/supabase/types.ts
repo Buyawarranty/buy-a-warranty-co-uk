@@ -911,6 +911,10 @@ export type Database = {
         Row: {
           active: boolean
           applicable_products: Json
+          archived: boolean | null
+          auto_archived_at: string | null
+          auto_archived_reason: string | null
+          campaign_source: string | null
           code: string
           created_at: string
           created_by: string | null
@@ -928,6 +932,10 @@ export type Database = {
         Insert: {
           active?: boolean
           applicable_products?: Json
+          archived?: boolean | null
+          auto_archived_at?: string | null
+          auto_archived_reason?: string | null
+          campaign_source?: string | null
           code: string
           created_at?: string
           created_by?: string | null
@@ -945,6 +953,10 @@ export type Database = {
         Update: {
           active?: boolean
           applicable_products?: Json
+          archived?: boolean | null
+          auto_archived_at?: string | null
+          auto_archived_reason?: string | null
+          campaign_source?: string | null
           code?: string
           created_at?: string
           created_by?: string | null
@@ -1682,6 +1694,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auto_expire_discount_codes: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       calculate_policy_end_date: {
         Args: { payment_type: string; start_date: string }
         Returns: string

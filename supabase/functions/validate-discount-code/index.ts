@@ -30,12 +30,17 @@ serve(async (req) => {
 
     logStep("Validating discount code", { code, customerEmail, orderAmount });
 
-    // Get the discount code details
+    // Auto-expire codes before validation
+    logStep("Auto-expiring codes before validation");
+    await supabaseClient.rpc('auto_expire_discount_codes');
+
+    // Get the discount code details (including archived status)
     const { data: discountCode, error: fetchError } = await supabaseClient
       .from('discount_codes')
       .select('*')
       .eq('code', code.toUpperCase())
       .eq('active', true)
+      .eq('archived', false)
       .single();
 
     if (fetchError || !discountCode) {
