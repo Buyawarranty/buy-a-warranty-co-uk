@@ -557,20 +557,7 @@ const Index = () => {
       {/* Removed CarJourneyProgress component to eliminate progress bar animation between steps */}
       
       {currentStep === 1 && (
-        <>
-          <Homepage onRegistrationSubmit={handleHomepageRegistration} />
-          
-          {/* Debug navigation for testing - remove in production */}
-          <div className="fixed bottom-4 right-4 bg-red-100 p-4 rounded shadow z-50">
-            <p className="text-xs mb-2">Debug Navigation (Current Step: {currentStep})</p>
-            <div className="flex gap-2">
-              <button onClick={() => handleStepChange(1)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Step 1</button>
-              <button onClick={() => handleStepChange(2)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Step 2</button>
-              <button onClick={() => handleStepChange(3)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Step 3</button>
-              <button onClick={() => handleStepChange(4)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Step 4</button>
-            </div>
-          </div>
-        </>
+        <Homepage onRegistrationSubmit={handleHomepageRegistration} />
       )}
 
       {currentStep === 2 && vehicleData && (
