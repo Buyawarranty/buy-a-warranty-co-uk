@@ -248,17 +248,15 @@ serve(async (req) => {
 
     logStep("Payment processing completed successfully");
 
-    // Return success response with redirect
+    // Perform actual HTTP redirect instead of returning JSON
     const redirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
     
-    return new Response(JSON.stringify({ 
-      success: true,
-      transactionId,
-      redirectUrl,
-      message: 'Payment processed successfully'
-    }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    return new Response(null, {
+      status: 302,
+      headers: {
+        ...corsHeaders,
+        'Location': redirectUrl
+      }
     });
 
   } catch (error) {
@@ -284,12 +282,14 @@ serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ 
-      error: errorMessage,
-      transactionId
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    // Redirect to error page instead of showing JSON
+    const errorRedirect = 'https://buyawarranty.co.uk/payment-fallback?error=processing_failed';
+    return new Response(null, {
+      status: 302,
+      headers: {
+        ...corsHeaders,
+        'Location': errorRedirect
+      }
     });
   }
 });
