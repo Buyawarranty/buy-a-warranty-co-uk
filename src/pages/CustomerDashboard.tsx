@@ -1165,7 +1165,7 @@ const CustomerDashboard = () => {
                       <CardTitle className="flex items-center justify-between">
                         <span className="flex items-center">
                           <MapPin className="mr-2 h-5 w-5" />
-                          Address Details
+                          Your details
                         </span>
                         <Button 
                           variant="outline" 
@@ -1185,16 +1185,20 @@ const CustomerDashboard = () => {
                                 <Input
                                   id="firstName"
                                   value={address.firstName}
-                                  onChange={(e) => setAddress({...address, firstName: e.target.value})}
+                                  disabled
+                                  className="bg-gray-100"
                                 />
+                                <p className="text-xs text-gray-500 mt-1">Contact support to change your name</p>
                               </div>
                               <div>
                                 <Label htmlFor="lastName">Last Name</Label>
                                 <Input
                                   id="lastName"
                                   value={address.lastName}
-                                  onChange={(e) => setAddress({...address, lastName: e.target.value})}
+                                  disabled
+                                  className="bg-gray-100"
                                 />
+                                <p className="text-xs text-gray-500 mt-1">Contact support to change your name</p>
                               </div>
                             </div>
                             <div>
@@ -1232,9 +1236,18 @@ const CustomerDashboard = () => {
                                 />
                               </div>
                             </div>
-                            <Button onClick={updateAddress} className="w-full">
-                              Update Address
-                            </Button>
+                            <div className="flex gap-3">
+                              <Button onClick={updateAddress} className="flex-1">
+                                Save Changes
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                onClick={() => setEditingAddress(false)}
+                                className="flex-1"
+                              >
+                                Cancel
+                              </Button>
+                            </div>
                           </div>
                          ) : (
                            <div className="space-y-3">
