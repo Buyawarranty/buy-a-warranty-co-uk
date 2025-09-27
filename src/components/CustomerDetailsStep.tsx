@@ -946,8 +946,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                    {/* Pricing Information */}
                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                      {(() => {
-                       const months = getWarrantyDurationInMonths(paymentType);
-                       const monthlyPayment = Math.round(discountedBumperPrice / 12);
+                        const months = getWarrantyDurationInMonths(paymentType);
+                        // Always calculate monthly payment based on 12 monthly payments, regardless of warranty duration
+                        const monthlyPayment = Math.round(discountedBumperPrice / 12);
                        
                        if (months === 12) {
                          return (
