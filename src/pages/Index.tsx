@@ -580,7 +580,20 @@ const Index = () => {
           <PerformanceOptimizedSuspense height="16">
             <MaintenanceBanner />
           </PerformanceOptimizedSuspense>
-          {vehicleData ? (
+          {(() => {
+            console.log('🚗 Step 3 rendering - vehicleData:', vehicleData);
+            console.log('🚗 vehicleData exists:', !!vehicleData);
+            if (vehicleData) {
+              console.log('✅ Rendering PricingTable with vehicleData:', {
+                regNumber: vehicleData.regNumber,
+                make: vehicleData.make,
+                model: vehicleData.model
+              });
+            } else {
+              console.log('❌ No vehicleData available, showing fallback');
+            }
+            return vehicleData;
+          })() ? (
             <PerformanceOptimizedSuspense height="60vh">
               <PricingTable 
                 vehicleData={vehicleData} 
