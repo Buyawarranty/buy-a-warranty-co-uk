@@ -349,7 +349,18 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             discountCode: appliedDiscountCodes.map(code => code.code).join(', '),
             finalAmount: finalPrice,
             addAnotherWarrantyRequested,
-            protectionAddOns: updatedPricingData.protectionAddOns || {}
+            protectionAddOns: {
+              tyre: updatedPricingData.protectionAddOns?.tyre || false,
+              wearTear: updatedPricingData.protectionAddOns?.wearAndTear || false, // Fixed key mapping
+              european: updatedPricingData.protectionAddOns?.european || false,
+              breakdown: updatedPricingData.protectionAddOns?.breakdown || false,
+              rental: updatedPricingData.protectionAddOns?.rental || false,
+              transfer: updatedPricingData.protectionAddOns?.transfer || false,
+              motRepair: false, // Not available in frontend selection
+              motFee: updatedPricingData.protectionAddOns?.motFee || false,
+              lostKey: false, // Not available in frontend selection
+              consequential: false // Not available in frontend selection
+            }
           }
         });
 
@@ -428,15 +439,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         },
         protectionAddOns: {
           tyre: updatedPricingData.protectionAddOns?.tyre || false,
-          wearTear: updatedPricingData.protectionAddOns?.wearTear || updatedPricingData.protectionAddOns?.wearAndTear || false,
+          wearTear: updatedPricingData.protectionAddOns?.wearAndTear || false, // Fixed key mapping
           european: updatedPricingData.protectionAddOns?.european || false,
           breakdown: updatedPricingData.protectionAddOns?.breakdown || false,
           rental: updatedPricingData.protectionAddOns?.rental || false,
           transfer: updatedPricingData.protectionAddOns?.transfer || false,
-          motRepair: updatedPricingData.protectionAddOns?.motRepair || false,
+          motRepair: false, // Not available in frontend selection
           motFee: updatedPricingData.protectionAddOns?.motFee || false,
-          lostKey: false, // Not available in current pricing data type
-          consequential: false // Not available in current pricing data type
+          lostKey: false, // Not available in frontend selection
+          consequential: false // Not available in frontend selection
         },
         discountCode: appliedDiscountCodes.map(code => code.code).join(', '),
         finalAmount: finalPrice
