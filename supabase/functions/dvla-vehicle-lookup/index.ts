@@ -121,8 +121,6 @@ const MANUAL_OVERRIDES: Record<string, { make: string; model?: string; fuelType?
   'WA57FOC': { make: 'Bentley' },
   'NK59AGY': { make: 'Bentley' },
   'KM68HLD': { make: 'Audi', model: 'S8' },
-  'B11 CSD': { make: 'BMW', model: '320d', fuelType: 'Diesel', colour: 'Black', year: 2020 },
-  'B11CSD': { make: 'BMW', model: '320d', fuelType: 'Diesel', colour: 'Black', year: 2020 },
 };
 
 function validateVehicleEligibility(vehicleData: any): { isValid: boolean; errorMessage?: string } {
