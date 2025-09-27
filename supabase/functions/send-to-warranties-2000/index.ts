@@ -494,12 +494,14 @@ serve(async (req) => {
       coverage: registrationData.Month,
       addOns: {
         "Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-        "MOTFee": registrationData.mot_fee ? "Y" : "N",
+        "MOTRepair": registrationData.mot_repair ? "Y" : "N",
         "TyreCover": registrationData.tyre_cover ? "Y" : "N",
         "WearTear": registrationData.wear_tear ? "Y" : "N",
         "LostKey": registrationData.lost_key ? "Y" : "N",
+        "MOTFee": registrationData.mot_fee ? "Y" : "N",
         "EuroCover": registrationData.europe_cover ? "Y" : "N",
         "Rental": registrationData.vehicle_rental ? "Y" : "N",
+        "Consequential": registrationData.consequential ? "Y" : "N",
         "Transfer": registrationData.transfer_cover ? "Y" : "N"
       }
     });
@@ -519,15 +521,15 @@ serve(async (req) => {
       calculatedMonths: getWarrantyDurationInMonths(paymentType),
       w2000AddOns: {
         "Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-        "MotRepair": registrationData.mot_repair ? "Y" : "N",
+        "MOTRepair": registrationData.mot_repair ? "Y" : "N",
         "TyreCover": registrationData.tyre_cover ? "Y" : "N", 
-        "WearAndTear": registrationData.wear_tear ? "Y" : "N",
+        "WearTear": registrationData.wear_tear ? "Y" : "N",
         "LostKey": registrationData.lost_key ? "Y" : "N",
-        "MotFee": registrationData.mot_fee ? "Y" : "N",
-        "EuropeCover": registrationData.europe_cover ? "Y" : "N",
-        "VehicleRental": registrationData.vehicle_rental ? "Y" : "N",
-        "ConsequentialDamage": registrationData.consequential ? "Y" : "N",
-        "TransferFee": registrationData.transfer_cover ? "Y" : "N"
+        "MOTFee": registrationData.mot_fee ? "Y" : "N",
+        "EuroCover": registrationData.europe_cover ? "Y" : "N",
+        "Rental": registrationData.vehicle_rental ? "Y" : "N",
+        "Consequential": registrationData.consequential ? "Y" : "N",
+        "Transfer": registrationData.transfer_cover ? "Y" : "N"
       }
     });
 
@@ -538,15 +540,15 @@ serve(async (req) => {
       ...registrationData,
       // W2000 API field names (capitalized without spaces as requested)
       "Recovery": registrationData.breakdown_recovery ? "Y" : "N",
-      "MotRepair": registrationData.mot_repair ? "Y" : "N",
+      "MOTRepair": registrationData.mot_repair ? "Y" : "N",
       "TyreCover": registrationData.tyre_cover ? "Y" : "N",
-      "WearAndTear": registrationData.wear_tear ? "Y" : "N",
+      "WearTear": registrationData.wear_tear ? "Y" : "N",
       "LostKey": registrationData.lost_key ? "Y" : "N",
-      "MotFee": registrationData.mot_fee ? "Y" : "N",
-      "EuropeCover": registrationData.europe_cover ? "Y" : "N",
-      "VehicleRental": registrationData.vehicle_rental ? "Y" : "N",
-      "ConsequentialDamage": registrationData.consequential ? "Y" : "N",
-      "TransferFee": registrationData.transfer_cover ? "Y" : "N",
+      "MOTFee": registrationData.mot_fee ? "Y" : "N",
+      "EuroCover": registrationData.europe_cover ? "Y" : "N",
+      "Rental": registrationData.vehicle_rental ? "Y" : "N",
+      "Consequential": registrationData.consequential ? "Y" : "N",
+      "Transfer": registrationData.transfer_cover ? "Y" : "N",
       // Remove the old field names to avoid confusion
       mot_fee: undefined,
       tyre_cover: undefined,
