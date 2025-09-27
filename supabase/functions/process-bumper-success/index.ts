@@ -137,15 +137,13 @@ serve(async (req) => {
     const vehicleData = transactionData.vehicle_data;
     const protectionAddOns = transactionData.protection_addons || {};
     const planId = transactionData.plan_id;
-    const bumperPaymentType = transactionData.payment_type; // This is "monthly" for Bumper
-    const originalWarrantyDuration = customerData?.original_warranty_duration || '12months'; // Fallback to 12 months
+    const originalWarrantyDuration = transactionData.payment_type || '12months'; // Use stored payment_type as warranty duration
     const finalAmount = transactionData.final_amount;
     const discountCode = transactionData.discount_code;
 
     logStep("Extracted transaction details", {
       customerEmail: customerData?.email,
       planId,
-      bumperPaymentType,
       originalWarrantyDuration,
       finalAmount,
       protectionAddOns,
@@ -181,7 +179,6 @@ serve(async (req) => {
     const autoIncludedAddOns = getAutoIncludedAddOnsForPayment(originalWarrantyDuration);
     logStep("Auto-including add-ons for warranty duration", { 
       warrantyDuration: originalWarrantyDuration, 
-      bumperPaymentType,
       autoIncluded: autoIncludedAddOns 
     });
     
@@ -206,7 +203,11 @@ serve(async (req) => {
     // Call handle-successful-payment with proper metadata including protectionAddOns and claim_limit
     const handlePaymentPayload = {
       planId: planId,
-      customerData: customerData,
+      customerData: {
+        ...customerData,
+        // Ensure Bumper order ID is stored for payment method identification
+        bumper_order_id: transactionId
+      },
       vehicleData: vehicleData,
       paymentType: originalWarrantyDuration, // Use original warranty duration, not Bumper payment frequency
       userEmail: customerData?.email,
@@ -214,6 +215,7 @@ serve(async (req) => {
       metadata: {
         source: 'bumper',
         transaction_id: transactionId,
+        bumper_order_id: transactionId, // Store Bumper order ID for payment method identification
         discount_code: discountCode,
         claim_limit: claimLimit,
         voluntary_excess: voluntaryExcess,
@@ -244,9 +246,9 @@ serve(async (req) => {
       email: customerData?.email,
       planId,
       warrantyDuration: originalWarrantyDuration,
-      bumperPaymentType,
       claimLimit,
-      protectionAddOns: addOnFields
+      protectionAddOns: addOnFields,
+      hasBumperOrderId: !!transactionId
     });
 
     const { error: handlePaymentError } = await supabaseClient.functions.invoke(

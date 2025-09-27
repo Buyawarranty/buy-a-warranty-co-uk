@@ -188,6 +188,7 @@ serve(async (req) => {
       plan_type: planName, // Use the actual plan name, not UUID
       payment_type: paymentType,
       stripe_session_id: stripeSessionId,
+      bumper_order_id: metadata?.bumper_order_id, // Store Bumper order ID if present
       registration_plate: vehicleData?.regNumber || customerData?.vehicle_reg || metadata?.vehicle_reg || 'Unknown',
       vehicle_make: vehicleData?.make || metadata?.vehicle_make || 'Unknown',
       vehicle_model: vehicleData?.model || metadata?.vehicle_model || 'Unknown',
@@ -269,6 +270,8 @@ serve(async (req) => {
         status: 'active',
         claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
         voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, {}), // Fixed field name
+        bumper_order_id: metadata?.bumper_order_id, // Store Bumper order ID if present
+        stripe_session_id: stripeSessionId,
         // Include final combined add-ons in policy record
         ...finalAddOnsData
       };

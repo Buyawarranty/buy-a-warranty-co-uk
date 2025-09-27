@@ -138,7 +138,7 @@ serve(async (req) => {
     const transactionInsertData = {
       transaction_id: transactionId,
       plan_id: planId,
-      payment_type: bumperPaymentType, // Bumper payment frequency (monthly)
+      payment_type: originalPaymentType, // Store original warranty duration, not Bumper payment frequency
       customer_data: {
         ...customerData,
         // Store the original warranty duration for later processing
