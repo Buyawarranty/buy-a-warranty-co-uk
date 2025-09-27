@@ -97,7 +97,7 @@ function checkIfMotorbike(make: string, model: string, vehicleType: string): boo
   console.log('🔍 Lowercase values:', { makeLC, modelLC, vehicleTypeLC });
 
   // CRITICAL: Explicit exclusion for ALL non-motorbike vehicle types FIRST
-  if (vehicleTypeLC && ['van', 'truck', 'lorry', 'bus', 'coach', 'trailer', 'caravan', 'car', 'suv', 'estate', 'hatchback', 'saloon', 'coupe', 'convertible'].includes(vehicleTypeLC)) {
+  if (vehicleTypeLC && ['van', 'truck', 'lorry', 'bus', 'coach', 'trailer', 'caravan', 'car', 'suv', 'estate', 'hatchback', 'saloon', 'coupe', 'convertible', 'phev', 'hybrid', 'electric', 'ev'].includes(vehicleTypeLC)) {
     console.log('🚗 Vehicle type indicates non-motorbike:', vehicleTypeLC);
     return false;
   }
