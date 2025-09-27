@@ -30,18 +30,17 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   onNext,
   onBack
 }) => {
-  const [selectedPaymentType, setSelectedPaymentType] = useState('24months');
+  const [selectedPaymentType, setSelectedPaymentType] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // State to manage protection add-ons with auto-inclusion logic
   const [currentProtectionAddOns, setCurrentProtectionAddOns] = useState<{[key: string]: boolean}>(() => {
-    // Initialize with passed data or defaults with auto-included items for the default payment type
+    // Initialize with passed data or defaults (no auto-inclusion until plan is selected)
     if (pricingData?.protectionAddOns) {
       return { ...pricingData.protectionAddOns };
     }
     
-    // Set default auto-included add-ons for the default payment type (24months)
-    const autoIncluded = getAutoIncludedAddOns('24months');
+    // Default all add-ons to false until a plan is selected
     const defaultAddOns: {[key: string]: boolean} = {
       breakdown: false,
       motRepair: false,
@@ -53,16 +52,13 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       transfer: false
     };
     
-    // Auto-include add-ons for the default payment type
-    autoIncluded.forEach(addonKey => {
-      defaultAddOns[addonKey] = true;
-    });
-    
     return defaultAddOns;
   });
 
   // Update protection add-ons when payment type changes within this step
   useEffect(() => {
+    if (!selectedPaymentType) return; // Don't update if no plan is selected
+    
     const newAutoIncluded = getAutoIncludedAddOns(selectedPaymentType);
     
     console.log('WarrantyDurationStep - Payment type changed:', selectedPaymentType);
@@ -284,7 +280,9 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   ], [pricingData12, pricingData24, pricingData36]);
 
   const handleContinue = () => {
-    onNext(selectedPaymentType);
+    if (selectedPaymentType) {
+      onNext(selectedPaymentType);
+    }
   };
 
   return (
@@ -515,80 +513,82 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
             </div>
           </div>
 
-          {/* One Last Thing Section */}
-          <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              One last thing before we take your payment...
-            </h3>
-            
-            <p className="text-gray-700 mb-6">
-              By submitting this payment and checking the box in this section, I agree to the terms and conditions, fare rules applicable to my booking and general conditions of carriage.
-            </p>
+          {/* One Last Thing Section - Only show when plan is selected */}
+          {selectedPaymentType && (
+            <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-lg">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                One last thing before we take your payment...
+              </h3>
+              
+              <p className="text-gray-700 mb-6">
+                By submitting this payment and checking the box in this section, I agree to the terms and conditions, fare rules applicable to my booking and general conditions of carriage.
+              </p>
 
-            <div className="space-y-4">
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                  <span>Terms and conditions</span>
-                  <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                  <p>Complete terms and conditions for your warranty coverage, including coverage details, claim procedures, and policy limitations.</p>
-                </CollapsibleContent>
-              </Collapsible>
-
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                  <span>Fare rules</span>
-                  <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                  <p>Pricing structure, payment terms, and billing information for your selected warranty plan.</p>
-                </CollapsibleContent>
-              </Collapsible>
-
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                  <span>General conditions of carriage</span>
-                  <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                  <p>Standard terms that apply to the provision of warranty services and customer obligations.</p>
-                </CollapsibleContent>
-              </Collapsible>
-
-              <div className="pt-4 border-t border-gray-200">
-                <p className="text-gray-900 mb-4">
-                  I agree that the personal data, which has been provided in connection with this booking, may be passed to government authorities for border control and aviation security purposes.
-                </p>
-
+              <div className="space-y-4">
                 <Collapsible>
                   <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                    <span>Government access to booking records</span>
+                    <span>Terms and conditions</span>
                     <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                    <p>Information about how your personal data may be shared with relevant authorities as required by law.</p>
+                    <p>Complete terms and conditions for your warranty coverage, including coverage details, claim procedures, and policy limitations.</p>
                   </CollapsibleContent>
                 </Collapsible>
-              </div>
-
-              <div className="pt-4 border-t border-gray-200">
-                <p className="text-gray-900 mb-4">
-                  I agree that I have read and understood the forbidden articles and substances list.
-                </p>
 
                 <Collapsible>
                   <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
-                    <span>Forbidden articles and substances list</span>
+                    <span>Fare rules</span>
                     <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2 text-gray-900 text-sm">
-                    <p>List of prohibited items and substances that are not covered under the warranty policy.</p>
+                    <p>Pricing structure, payment terms, and billing information for your selected warranty plan.</p>
                   </CollapsibleContent>
                 </Collapsible>
+
+                <Collapsible>
+                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
+                    <span>General conditions of carriage</span>
+                    <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="pt-2 text-gray-900 text-sm">
+                    <p>Standard terms that apply to the provision of warranty services and customer obligations.</p>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                <div className="pt-4 border-t border-gray-200">
+                  <p className="text-gray-900 mb-4">
+                    I agree that the personal data, which has been provided in connection with this booking, may be passed to government authorities for border control and aviation security purposes.
+                  </p>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
+                      <span>Government access to booking records</span>
+                      <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pt-2 text-gray-900 text-sm">
+                      <p>Information about how your personal data may be shared with relevant authorities as required by law.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+
+                <div className="pt-4 border-t border-gray-200">
+                  <p className="text-gray-900 mb-4">
+                    I agree that I have read and understood the forbidden articles and substances list.
+                  </p>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
+                      <span>Forbidden articles and substances list</span>
+                      <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pt-2 text-gray-900 text-sm">
+                      <p>List of prohibited items and substances that are not covered under the warranty policy.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Continue Button */}
           <div className="flex items-center justify-between">
@@ -603,9 +603,14 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
             
             <Button 
               onClick={handleContinue}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-12 py-4 text-lg rounded-lg"
+              disabled={!selectedPaymentType}
+              className={`font-bold px-12 py-4 text-lg rounded-lg ${
+                selectedPaymentType 
+                  ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
             >
-              Continue to Checkout
+              {selectedPaymentType ? 'Continue to Checkout' : 'Select a Plan'}
             </Button>
           </div>
         </div>
