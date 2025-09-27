@@ -123,18 +123,36 @@ serve(async (req) => {
     let userSelectedAddOns: any = {};
     
     if (protectionAddOns && typeof protectionAddOns === 'object') {
-      userSelectedAddOns = {
-        tyre_cover: protectionAddOns.tyre || false,
-        wear_tear: protectionAddOns.wearAndTear || protectionAddOns.wearTear || false,
-        europe_cover: protectionAddOns.european || false, 
-        transfer_cover: protectionAddOns.transfer || false,
-        breakdown_recovery: protectionAddOns.breakdown || false,
-        vehicle_rental: protectionAddOns.rental || false,
-        mot_fee: protectionAddOns.motFee || false,
-        mot_repair: protectionAddOns.motRepair || false,
-        lost_key: protectionAddOns.lostKey || false,
-        consequential: protectionAddOns.consequential || false
-      };
+      // Check if it's the new database format (from Bumper flow)
+      if ('vehicle_rental' in protectionAddOns || 'mot_fee' in protectionAddOns || 'breakdown_recovery' in protectionAddOns) {
+        // New format - use directly
+        userSelectedAddOns = {
+          tyre_cover: protectionAddOns.tyre_cover || false,
+          wear_tear: protectionAddOns.wear_tear || false,
+          europe_cover: protectionAddOns.europe_cover || false,
+          transfer_cover: protectionAddOns.transfer_cover || false,
+          breakdown_recovery: protectionAddOns.breakdown_recovery || false,
+          vehicle_rental: protectionAddOns.vehicle_rental || false,
+          mot_fee: protectionAddOns.mot_fee || false,
+          mot_repair: protectionAddOns.mot_repair || false,
+          lost_key: protectionAddOns.lost_key || false,
+          consequential: protectionAddOns.consequential || false
+        };
+      } else {
+        // Old format - map from legacy keys
+        userSelectedAddOns = {
+          tyre_cover: protectionAddOns.tyre || false,
+          wear_tear: protectionAddOns.wearAndTear || protectionAddOns.wearTear || false,
+          europe_cover: protectionAddOns.european || false, 
+          transfer_cover: protectionAddOns.transfer || false,
+          breakdown_recovery: protectionAddOns.breakdown || false,
+          vehicle_rental: protectionAddOns.rental || false,
+          mot_fee: protectionAddOns.motFee || false,
+          mot_repair: protectionAddOns.motRepair || false,
+          lost_key: protectionAddOns.lostKey || false,
+          consequential: protectionAddOns.consequential || false
+        };
+      }
     } else {
       userSelectedAddOns = {
         tyre_cover: metadata?.addon_tyre_cover === 'true',
