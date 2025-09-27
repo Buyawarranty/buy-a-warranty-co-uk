@@ -765,6 +765,22 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     <span className="text-base text-brand-dark-text"><strong>Backed</strong> by trusted repair networks</span>
                   </div>
                 </div>
+                
+                {/* Trustpilot Logo */}
+                <div className="mt-6 flex justify-start">
+                  <a 
+                    href="https://uk.trustpilot.com/review/buyawarranty.co.uk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block hover:opacity-80 transition-opacity"
+                  >
+                    <img 
+                      src="/lovable-uploads/trustpilot-logo-correct.png" 
+                      alt="Trustpilot 5 Star Rating"
+                      className="h-8 w-auto"
+                    />
+                  </a>
+                </div>
               </div>
             </div>
 
