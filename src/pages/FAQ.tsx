@@ -921,8 +921,8 @@ const FAQ = () => {
                         className="inline-block hover:opacity-80 transition-opacity"
                       >
                         <img 
-                          src="/lovable-uploads/trustpilot-excellent-box.webp" 
-                          alt="Trustpilot Excellent Rating"
+                          src="/lovable-uploads/trustpilot-logo-correct.png" 
+                          alt="Trustpilot 5 Star Rating"
                           className="h-12 w-auto"
                         />
                       </a>
