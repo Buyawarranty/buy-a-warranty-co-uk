@@ -116,6 +116,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // State for managing updated pricing data when add-ons are removed
   const [updatedPricingData, setUpdatedPricingData] = useState(pricingData);
 
+  // Recalculate pricing when initial pricingData changes (e.g., when add-ons are selected)
+  useEffect(() => {
+    console.log('🔧 CustomerDetailsStep - Pricing data updated:', {
+      initialPricingData: pricingData,
+      currentUpdatedPricingData: updatedPricingData
+    });
+    setUpdatedPricingData(pricingData);
+  }, [pricingData]);
+
   // Function to remove add-on and recalculate pricing
   const removeAddOn = (addOnKey: string) => {
     if (!updatedPricingData.protectionAddOns) return;
@@ -159,6 +168,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const bumperTotalPrice = updatedPricingData.totalPrice;
   const stripeTotalPrice = Math.round(updatedPricingData.totalPrice * 0.95);
 
+  console.log('💰 CustomerDetailsStep - Pricing calculation:', {
+    updatedPricingDataTotal: updatedPricingData.totalPrice,
+    bumperTotalPrice,
+    stripeTotalPrice
+  });
+
   // Check for discount code on component mount and set up email popup timer
   useEffect(() => {
     const savedDiscountCode = localStorage.getItem('secondWarrantyDiscountCode');
@@ -185,6 +200,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const discountedPrice = hasValidDiscountCodes ? bumperTotalPrice - totalDiscountAmount : bumperTotalPrice;
   const discountedBumperPrice = Math.round(Math.max(discountedPrice, 0)); // Ensure price doesn't go negative
   const discountedStripePrice = Math.round(discountedPrice * 0.95); // 5% upfront discount on discounted price
+
+  console.log('💸 CustomerDetailsStep - Final pricing:', {
+    bumperTotalPrice,
+    totalDiscountAmount,
+    discountedPrice,
+    discountedBumperPrice,
+    monthlyPayment: Math.round(discountedBumperPrice / 12)
+  });
 
   const hasSecondWarrantyDiscount = appliedDiscountCodes.some(code => code.code.startsWith('SECOND10-'));
 
