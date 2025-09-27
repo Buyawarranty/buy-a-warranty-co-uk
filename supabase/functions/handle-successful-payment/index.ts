@@ -150,17 +150,26 @@ serve(async (req) => {
       };
     }
     
+    // Get auto-included add-ons for the payment type
+    const autoIncludedAddOns = getAutoIncludedAddOnsForPayment(paymentType);
+    const autoIncludedMap = {
+      tyre_cover: autoIncludedAddOns.includes('tyre'),
+      breakdown_recovery: autoIncludedAddOns.includes('breakdown'), 
+      vehicle_rental: autoIncludedAddOns.includes('rental'),
+      mot_fee: autoIncludedAddOns.includes('motFee')
+    };
+    
     // Use USER SELECTIONS as priority - only auto-include if user didn't make an explicit choice
     // This ensures user's actual choices are respected, not overridden by defaults
     const finalAddOnsForCustomer = {
       // For each add-on, use user selection if available, otherwise check auto-included
-      tyre_cover: userSelectedAddOns.tyre_cover,
+      tyre_cover: userSelectedAddOns.tyre_cover || autoIncludedMap.tyre_cover,
       wear_tear: userSelectedAddOns.wear_tear,
       europe_cover: userSelectedAddOns.europe_cover,
       transfer_cover: userSelectedAddOns.transfer_cover,
-      breakdown_recovery: userSelectedAddOns.breakdown_recovery,
-      vehicle_rental: userSelectedAddOns.vehicle_rental,
-      mot_fee: userSelectedAddOns.mot_fee,
+      breakdown_recovery: userSelectedAddOns.breakdown_recovery || autoIncludedMap.breakdown_recovery,
+      vehicle_rental: userSelectedAddOns.vehicle_rental || autoIncludedMap.vehicle_rental,
+      mot_fee: userSelectedAddOns.mot_fee || autoIncludedMap.mot_fee,
       mot_repair: userSelectedAddOns.mot_repair,
       lost_key: userSelectedAddOns.lost_key,
       consequential: userSelectedAddOns.consequential
