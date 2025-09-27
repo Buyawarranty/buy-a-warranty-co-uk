@@ -519,27 +519,37 @@ const EmailManagementTab = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex justify-between items-center">
-                    <div className="text-sm text-muted-foreground">
-                      From: {template.from_email}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm text-muted-foreground">
+                        From: {template.from_email}
+                      </div>
+                      <div className="space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePreviewTemplate(template)}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          Preview
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEditTemplate(template)}
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Edit
+                        </Button>
+                      </div>
                     </div>
-                    <div className="space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handlePreviewTemplate(template)}
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        Preview
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditTemplate(template)}
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Edit
-                      </Button>
+                    <div className="flex justify-between items-center text-xs text-muted-foreground">
+                      <div>
+                        Created: {new Date(template.created_at).toLocaleDateString()} {new Date(template.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </div>
+                      <div>
+                        Updated: {new Date(template.updated_at).toLocaleDateString()} {new Date(template.updated_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
