@@ -890,9 +890,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   className="inline-block hover:opacity-80 transition-opacity"
                 >
                   <img 
-                    src="/lovable-uploads/trustpilot-excellent-box.webp" 
-                    alt="Trustpilot Excellent Rating"
-                    className="h-16 w-auto"
+                    src="/lovable-uploads/trustpilot-logo-correct.png" 
+                    alt="Trustpilot 5 Star Rating"
+                    className="h-10 w-auto"
                   />
                 </a>
               </div>
