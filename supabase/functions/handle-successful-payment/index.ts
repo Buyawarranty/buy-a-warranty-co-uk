@@ -150,24 +150,24 @@ serve(async (req) => {
       };
     }
     
-    // Get auto-included add-ons and combine with user selections (include plan type for EV logic)
-    const autoIncludedAddOns = getAutoIncludedAddOns(paymentType, planName);
+    // Use USER SELECTIONS as priority - only auto-include if user didn't make an explicit choice
+    // This ensures user's actual choices are respected, not overridden by defaults
     const finalAddOnsForCustomer = {
-      tyre_cover: userSelectedAddOns.tyre_cover || autoIncludedAddOns.includes('tyre'),
-      wear_tear: userSelectedAddOns.wear_tear || autoIncludedAddOns.includes('wearTear'),
-      europe_cover: userSelectedAddOns.europe_cover || autoIncludedAddOns.includes('european'),
-      transfer_cover: userSelectedAddOns.transfer_cover || autoIncludedAddOns.includes('transfer'),
-      breakdown_recovery: userSelectedAddOns.breakdown_recovery || autoIncludedAddOns.includes('breakdown'),
-      vehicle_rental: userSelectedAddOns.vehicle_rental || autoIncludedAddOns.includes('rental'),
-      mot_fee: userSelectedAddOns.mot_fee || autoIncludedAddOns.includes('motFee'),
-      mot_repair: userSelectedAddOns.mot_repair || autoIncludedAddOns.includes('motRepair'),
-      lost_key: userSelectedAddOns.lost_key || autoIncludedAddOns.includes('lostKey'),
-      consequential: userSelectedAddOns.consequential || autoIncludedAddOns.includes('consequential')
+      // For each add-on, use user selection if available, otherwise check auto-included
+      tyre_cover: userSelectedAddOns.tyre_cover,
+      wear_tear: userSelectedAddOns.wear_tear,
+      europe_cover: userSelectedAddOns.europe_cover,
+      transfer_cover: userSelectedAddOns.transfer_cover,
+      breakdown_recovery: userSelectedAddOns.breakdown_recovery,
+      vehicle_rental: userSelectedAddOns.vehicle_rental,
+      mot_fee: userSelectedAddOns.mot_fee,
+      mot_repair: userSelectedAddOns.mot_repair,
+      lost_key: userSelectedAddOns.lost_key,
+      consequential: userSelectedAddOns.consequential
     };
 
     logStep("Early addon processing", { 
       userSelected: userSelectedAddOns,
-      autoIncluded: autoIncludedAddOns,
       finalCombined: finalAddOnsForCustomer
     });
     
