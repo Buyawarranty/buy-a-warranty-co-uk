@@ -577,9 +577,6 @@ const Index = () => {
 
       {currentStep === 3 && (
         <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
-          <PerformanceOptimizedSuspense height="16">
-            <MaintenanceBanner />
-          </PerformanceOptimizedSuspense>
           {(() => {
             console.log('🚗 Step 3 rendering - vehicleData:', vehicleData);
             console.log('🚗 vehicleData exists:', !!vehicleData);
