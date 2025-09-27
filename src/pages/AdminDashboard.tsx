@@ -43,6 +43,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('customers');
   const [isCheckingRole, setIsCheckingRole] = useState(true);
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { session, loading: authLoading } = useAuth();
 
@@ -215,8 +216,6 @@ const AdminDashboard = () => {
       }
     }, 100);
   };
-
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
