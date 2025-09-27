@@ -11,7 +11,12 @@ export interface AddOnInfo {
 }
 
 // Normalize payment type to consistent format
-export const normalizePaymentType = (paymentType: string): string => {
+export const normalizePaymentType = (paymentType: string | null | undefined): string => {
+  if (!paymentType) {
+    console.warn('normalizePaymentType received null/undefined paymentType, defaulting to "monthly"');
+    return '12months';
+  }
+  
   const normalized = paymentType.toLowerCase().replace(/[^a-z0-9]/g, '');
   
   // Map various formats to consistent ones
