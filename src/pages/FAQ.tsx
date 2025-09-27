@@ -737,79 +737,93 @@ const FAQ = () => {
                 Can't find what you're looking for? We're here to help.
               </p>
               
-              {/* Search Bar with Auto-suggestions */}
-              <div className="max-w-2xl mx-auto relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
-                <Input
-                  type="text"
-                  placeholder="Search frequently asked questions..."
-                  value={searchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  onFocus={() => setShowSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Escape') {
-                      setShowSuggestions(false);
-                    }
-                  }}
-                  className="pl-12 pr-4 py-3 text-lg border-2 border-gray-200 focus:border-primary"
-                  role="combobox"
-                  aria-expanded={showSuggestions}
-                  aria-haspopup="listbox"
-                  autoComplete="off"
-                />
-                
-                {/* Enhanced Auto-suggestions Dropdown */}
-                {showSuggestions && (
-                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl mt-1 z-50 max-h-80 overflow-y-auto">
-                    <div className="p-2">
-                      <div className="text-xs font-medium text-gray-500 px-3 py-2 uppercase tracking-wide">
-                        {searchTerm.length > 0 ? `${getSearchSuggestions(searchTerm).length} Suggestions` : 'Popular Searches'}
-                      </div>
-                      {getSearchSuggestions(searchTerm).map((suggestion, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleSuggestionClick(suggestion)}
-                          className="w-full text-left px-3 py-2.5 hover:bg-gray-50 rounded-md text-sm text-gray-700 hover:text-primary transition-colors group focus:outline-none focus:bg-gray-50 focus:text-primary"
-                          role="option"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handleSuggestionClick(suggestion);
-                            }
-                          }}
-                        >
-                          <div className="flex items-start gap-2">
-                            <Search className="w-4 h-4 text-gray-400 group-hover:text-primary mt-0.5 flex-shrink-0" />
-                            <div className="flex-1">
-                              <div className="font-medium">
-                                {typeof suggestion === 'string' ? suggestion : suggestion.question}
-                              </div>
-                              {typeof suggestion !== 'string' && (
-                                <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                                  <span className="px-2 py-0.5 bg-gray-100 rounded-full text-xs">
-                                    {suggestion.category}
-                                  </span>
-                                  {suggestion.popular && (
-                                    <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                                      Popular
-                                    </span>
+              {/* Search Bar with Panda Image */}
+              <div className="max-w-4xl mx-auto relative">
+                <div className="flex items-center gap-6">
+                  {/* Search Bar Container */}
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                    <Input
+                      type="text"
+                      placeholder="Search frequently asked questions..."
+                      value={searchTerm}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      onFocus={() => setShowSuggestions(true)}
+                      onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                          setShowSuggestions(false);
+                        }
+                      }}
+                      className="pl-12 pr-4 py-3 text-lg border-2 border-gray-200 focus:border-primary"
+                      role="combobox"
+                      aria-expanded={showSuggestions}
+                      aria-haspopup="listbox"
+                      autoComplete="off"
+                    />
+                    
+                    {/* Enhanced Auto-suggestions Dropdown */}
+                    {showSuggestions && (
+                      <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl mt-1 z-50 max-h-80 overflow-y-auto">
+                        <div className="p-2">
+                          <div className="text-xs font-medium text-gray-500 px-3 py-2 uppercase tracking-wide">
+                            {searchTerm.length > 0 ? `${getSearchSuggestions(searchTerm).length} Suggestions` : 'Popular Searches'}
+                          </div>
+                          {getSearchSuggestions(searchTerm).map((suggestion, index) => (
+                            <button
+                              key={index}
+                              onClick={() => handleSuggestionClick(suggestion)}
+                              className="w-full text-left px-3 py-2.5 hover:bg-gray-50 rounded-md text-sm text-gray-700 hover:text-primary transition-colors group focus:outline-none focus:bg-gray-50 focus:text-primary"
+                              role="option"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  handleSuggestionClick(suggestion);
+                                }
+                              }}
+                            >
+                              <div className="flex items-start gap-2">
+                                <Search className="w-4 h-4 text-gray-400 group-hover:text-primary mt-0.5 flex-shrink-0" />
+                                <div className="flex-1">
+                                  <div className="font-medium">
+                                    {typeof suggestion === 'string' ? suggestion : suggestion.question}
+                                  </div>
+                                  {typeof suggestion !== 'string' && (
+                                    <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                      <span className="px-2 py-0.5 bg-gray-100 rounded-full text-xs">
+                                        {suggestion.category}
+                                      </span>
+                                      {suggestion.popular && (
+                                        <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                                          Popular
+                                        </span>
+                                      )}
+                                    </div>
                                   )}
                                 </div>
-                              )}
+                              </div>
+                            </button>
+                          ))}
+                          {getSearchSuggestions(searchTerm).length === 0 && searchTerm.length > 0 && (
+                            <div className="px-3 py-4 text-center text-gray-500 text-sm">
+                              No suggestions found for "{searchTerm}"
                             </div>
-                          </div>
-                        </button>
-                      ))}
-                      {getSearchSuggestions(searchTerm).length === 0 && searchTerm.length > 0 && (
-                        <div className="px-3 py-4 text-center text-gray-500 text-sm">
-                          No suggestions found for "{searchTerm}"
+                          )}
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                  
+                  {/* Panda with Coins Image */}
+                  <div className="flex-shrink-0 hidden md:block">
+                    <img 
+                      src={pandaSavingsFaq} 
+                      alt="Panda mascot saving money with warranty protection" 
+                      className="w-32 h-32 object-contain"
+                    />
+                  </div>
+                </div>
               </div>
               
               {/* Quick Category Chips */}
@@ -873,21 +887,10 @@ const FAQ = () => {
                 {/* Savings Section */}
                 {!searchTerm && (
                   <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg shadow-lg p-6 mt-6">
-                    <div className="flex flex-col md:flex-row items-center gap-6">
-                      <div className="flex-1">
-                        <h3 className="font-bold text-xl text-orange-800 mb-3">Save Money with Extended Warranty</h3>
-                        <p className="text-orange-700 leading-relaxed">
-                          Protect yourself from unexpected repair costs! Our extended warranty plans can save you thousands compared to paying for major repairs out of pocket. Small monthly payments give you peace of mind and big savings when you need it most.
-                        </p>
-                      </div>
-                      <div className="flex-shrink-0">
-                        <img 
-                          src={pandaSavingsFaq} 
-                          alt="Panda mascot saving money with warranty protection" 
-                          className="w-48 h-48 object-contain"
-                        />
-                      </div>
-                    </div>
+                    <h3 className="font-bold text-xl text-orange-800 mb-3">Save Money with Extended Warranty</h3>
+                    <p className="text-orange-700 leading-relaxed">
+                      Protect yourself from unexpected repair costs! Our extended warranty plans can save you thousands compared to paying for major repairs out of pocket. Small monthly payments give you peace of mind and big savings when you need it most.
+                    </p>
                   </div>
                 )}
               </div>
