@@ -204,7 +204,7 @@ serve(async (req) => {
         claim_limit: claimLimit?.toString() || getMaxClaimAmount(planName),
         // Add-ons data - using correct field names that match handle-successful-payment
         addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
-        addon_wear_tear: protectionAddOns?.wearTear ? 'true' : 'false',
+        addon_wear_tear: protectionAddOns?.wearAndTear ? 'true' : 'false',
         addon_europe_cover: protectionAddOns?.european ? 'true' : 'false',
         addon_transfer_cover: protectionAddOns?.transfer ? 'true' : 'false',
         addon_breakdown_recovery: protectionAddOns?.breakdown ? 'true' : 'false',

@@ -160,7 +160,7 @@ serve(async (req) => {
         breakdown_recovery: protectionAddOns.breakdown || false,
         mot_fee: protectionAddOns.motFee || false,
         tyre_cover: protectionAddOns.tyre || false,
-        wear_tear: protectionAddOns.wearAndTear || protectionAddOns.wearTear || false,
+        wear_tear: protectionAddOns.wearAndTear || false,
         europe_cover: protectionAddOns.european || false,
         transfer_cover: protectionAddOns.transfer || false,
         vehicle_rental: protectionAddOns.rental || false,

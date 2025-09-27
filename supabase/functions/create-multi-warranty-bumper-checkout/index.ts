@@ -169,7 +169,7 @@ serve(async (req) => {
           acc[`warranty_${index + 1}`] = item.protectionAddOns;
           return acc;
         }, {}),
-        claim_limit: items[0]?.claimLimit || 1250,
+        claim_limit: Math.max(...items.map(item => item.claimLimit || 1250)),
         final_amount: actualTotalAmount,
         discount_code: discountCode || '',
         redirect_url: `${origin}/thank-you`,

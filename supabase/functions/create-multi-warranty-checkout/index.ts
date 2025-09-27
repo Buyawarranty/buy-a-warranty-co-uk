@@ -82,7 +82,7 @@ serve(async (req) => {
             voluntary_excess: item.voluntaryExcess?.toString() || '150',
             // Add-on metadata - from user selections
             addon_tyre_cover: item.protectionAddOns?.tyre ? 'true' : 'false',
-            addon_wear_tear: item.protectionAddOns?.wearTear ? 'true' : 'false',
+            addon_wear_tear: item.protectionAddOns?.wearAndTear ? 'true' : 'false',
             addon_europe_cover: item.protectionAddOns?.european ? 'true' : 'false',
             addon_transfer_cover: item.protectionAddOns?.transfer ? 'true' : 'false',
             addon_breakdown_recovery: item.protectionAddOns?.breakdown ? 'true' : 'false',
