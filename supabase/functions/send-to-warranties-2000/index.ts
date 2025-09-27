@@ -312,18 +312,23 @@ serve(async (req) => {
         case '12months':
         case '12month':
         case 'yearly':
+        case '1year':
           return 12;
         case '24months':
         case '24month':
         case 'twomonthly':
         case '2monthly':
         case 'twoyearly':
+        case '2year':
+        case 'twoyear':
           return 24;
         case '36months':
         case '36month':
         case 'threemonthly':
         case '3monthly':
         case 'threeyearly':
+        case '3year':
+        case 'threeyear':
           return 36;
         case '48months':
         case '48month':
@@ -336,7 +341,7 @@ serve(async (req) => {
         case '5monthly':
           return 60;
         default:
-          console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+          console.warn(`[WARRANTIES-2000] Unknown payment type: ${paymentType}, defaulting to 12 months`);
           return 12;
       }
     }
@@ -469,20 +474,36 @@ serve(async (req) => {
       // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
 
-    // W2000 API requires add-on fields to match the registration API format
-    // Use the same field names and boolean values as the working registration function
-    registrationData.mot_fee = (policy?.mot_fee === true || customer?.mot_fee === true); // MOT fee
-    registrationData.tyre_cover = (policy?.tyre_cover === true || customer?.tyre_cover === true); // Tyre cover  
-    registrationData.wear_tear = (policy?.wear_tear === true || customer?.wear_tear === true); // Wear & tear
-    registrationData.europe_cover = (policy?.europe_cover === true || customer?.europe_cover === true); // Europe cover
-    registrationData.transfer_cover = (policy?.transfer_cover === true || customer?.transfer_cover === true); // Transfer cover
+    // Auto-include addons for multi-year plans if not already set
+    const autoIncludedAddons = getAutoIncludedAddonsForDuration(coverageMonths);
     
-    // Additional add-ons not in original registration but needed for completeness
-    registrationData.breakdown_recovery = (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true); // 24/7 Recovery
-    registrationData.vehicle_rental = (policy?.vehicle_rental === true || customer?.vehicle_rental === true); // Vehicle rental
-    registrationData.mot_repair = (policy?.mot_repair === true || customer?.mot_repair === true); // MOT Repair
-    registrationData.lost_key = (policy?.lost_key === true || customer?.lost_key === true); // Lost key
-    registrationData.consequential = (policy?.consequential === true || customer?.consequential === true); // Consequential damage
+    // W2000 API requires add-on fields to match the registration API format
+    // Priority: 1. Policy data (from handle-successful-payment), 2. Customer data, 3. Auto-inclusion for duration
+    registrationData.mot_fee = (policy?.mot_fee === true || customer?.mot_fee === true || autoIncludedAddons.includes('motFee')); 
+    registrationData.tyre_cover = (policy?.tyre_cover === true || customer?.tyre_cover === true || autoIncludedAddons.includes('tyre'));
+    registrationData.wear_tear = (policy?.wear_tear === true || customer?.wear_tear === true); 
+    registrationData.europe_cover = (policy?.europe_cover === true || customer?.europe_cover === true); 
+    registrationData.transfer_cover = (policy?.transfer_cover === true || customer?.transfer_cover === true); 
+    
+    // Additional add-ons with auto-inclusion support
+    registrationData.breakdown_recovery = (policy?.breakdown_recovery === true || customer?.breakdown_recovery === true || autoIncludedAddons.includes('breakdown'));
+    registrationData.vehicle_rental = (policy?.vehicle_rental === true || customer?.vehicle_rental === true || autoIncludedAddons.includes('rental'));
+    registrationData.mot_repair = (policy?.mot_repair === true || customer?.mot_repair === true); 
+    registrationData.lost_key = (policy?.lost_key === true || customer?.lost_key === true); 
+    registrationData.consequential = (policy?.consequential === true || customer?.consequential === true);
+
+    // Helper function to get auto-included addons based on coverage duration
+    function getAutoIncludedAddonsForDuration(months: string): string[] {
+      const monthsNum = parseInt(months);
+      switch (monthsNum) {
+        case 24:
+          return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
+        case 36:
+          return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
+        default:
+          return []; // 12-month plans have no auto-included add-ons
+      }
+    }
 
     console.log(`[WARRANTIES-2000] Final registration data sent to W2000:`, {
       regNum: registrationData.RegNum,

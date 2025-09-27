@@ -306,13 +306,26 @@ serve(async (req) => {
 function getAutoIncludedAddOnsForPayment(paymentType: string): string[] {
   const normalizedType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
   
+  // Handle various payment type formats from Bumper
   switch (normalizedType) {
+    case 'monthly':
+    case '12months':
+    case 'yearly':
+    case '1year':
+      return []; // 12-month plans have no auto-included add-ons
     case '24months':
+    case '2year':
+    case 'twoyear':
+    case 'twoyearly':
       return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
     case '36months':
+    case '3year':
+    case 'threeyear':
+    case 'threeyearly':
       return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
     default:
-      return []; // 12-month plans have no auto-included add-ons
+      console.warn(`[PROCESS-BUMPER-SUCCESS] Unknown payment type for auto-addons: ${paymentType}, defaulting to no auto-addons`);
+      return []; // Default to no auto-addons for unknown payment types
   }
 }
 
