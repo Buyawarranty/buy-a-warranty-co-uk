@@ -1828,7 +1828,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
       )}
 
       {/* Sticky Total Bar */}
-      {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && (
+      {!plansLoading && !plansError && !vehicleAgeError && displayPlans.length > 0 && paymentType && (
         <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-50 to-blue-50 border-t-2 border-orange-200 shadow-lg z-50">
           <div className="flex items-center justify-between p-4 max-w-6xl mx-auto">
             {/* Trustpilot Logo - Moved to left */}
