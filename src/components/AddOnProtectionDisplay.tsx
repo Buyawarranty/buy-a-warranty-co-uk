@@ -127,8 +127,12 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
     }
   ];
 
-  // Filter for active add-ons only
-  const activeAddOns = addOnItems.filter(item => item.value);
+  // Filter for active add-ons: either explicitly purchased OR auto-included
+  const activeAddOns = addOnItems.filter(item => {
+    const mappedKey = keyMapping[item.key] || item.key;
+    const isAutoIncluded = autoIncludedAddOnKeys.includes(mappedKey);
+    return item.value || isAutoIncluded; // Show if purchased OR auto-included
+  });
 
   return (
     <Card className={className}>
