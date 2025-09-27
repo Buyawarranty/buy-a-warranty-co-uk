@@ -354,7 +354,7 @@ const ContactUs = () => {
                     <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Opening Hours:</h2>
                   </div>
                   <div className="ml-11 sm:ml-14">
-                    <p className="text-gray-600 text-sm sm:text-base">Monday – Saturday : 9am to 6pm</p>
+                    <p className="text-gray-600 text-sm sm:text-base">Monday – Saturday : 9am to 5:30pm</p>
                   </div>
                 </div>
               </div>
