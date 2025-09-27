@@ -342,6 +342,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             vehicleData,
             paymentType,
             voluntaryExcess: updatedPricingData.voluntaryExcess || 150,
+            claimLimit: updatedPricingData.claimLimit || 1250,
             customerData: {
               ...customerData,
               final_amount: finalPrice
@@ -351,7 +352,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             addAnotherWarrantyRequested,
             protectionAddOns: {
               tyre: updatedPricingData.protectionAddOns?.tyre || false,
-              wearTear: updatedPricingData.protectionAddOns?.wearAndTear || false, // Fixed key mapping
+              wearAndTear: updatedPricingData.protectionAddOns?.wearAndTear || false,
               european: updatedPricingData.protectionAddOns?.european || false,
               breakdown: updatedPricingData.protectionAddOns?.breakdown || false,
               rental: updatedPricingData.protectionAddOns?.rental || false,
@@ -433,13 +434,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         vehicleData,
         paymentType,
         voluntaryExcess: updatedPricingData.voluntaryExcess || 150,
+        claimLimit: updatedPricingData.claimLimit || 1250,
         customerData: {
           ...customerData,
           final_amount: finalPrice
         },
         protectionAddOns: {
           tyre: updatedPricingData.protectionAddOns?.tyre || false,
-          wearTear: updatedPricingData.protectionAddOns?.wearAndTear || false, // Fixed key mapping
+          wearAndTear: updatedPricingData.protectionAddOns?.wearAndTear || false,
           european: updatedPricingData.protectionAddOns?.european || false,
           breakdown: updatedPricingData.protectionAddOns?.breakdown || false,
           rental: updatedPricingData.protectionAddOns?.rental || false,
