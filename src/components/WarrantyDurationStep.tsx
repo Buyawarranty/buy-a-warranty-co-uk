@@ -30,6 +30,19 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   onNext,
   onBack
 }) => {
+  console.log('🎯 WarrantyDurationStep - Component rendered with props:', {
+    vehicleData: vehicleData?.regNumber,
+    planId,
+    planName,
+    pricingData: {
+      voluntaryExcess: pricingData?.voluntaryExcess,
+      claimLimit: pricingData?.claimLimit,
+      protectionAddOns: pricingData?.protectionAddOns,
+      selectedAddOns: pricingData?.selectedAddOns,
+      totalPrice: pricingData?.totalPrice
+    }
+  });
+  
   const [selectedPaymentType, setSelectedPaymentType] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -181,16 +194,38 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
 
   // Memoize pricing calculations with stable dependencies to prevent fluctuations on re-render
   const vehicleDataStable = useMemo(() => vehicleData, [vehicleData?.regNumber, vehicleData?.make, vehicleData?.model, vehicleData?.vehicleType]);
-  const pricingDataStable = useMemo(() => pricingData, [
+  const pricingDataStable = useMemo(() => {
+    console.log('🔄 WarrantyDurationStep - pricingData dependency changed:', {
+      voluntaryExcess: pricingData?.voluntaryExcess,
+      claimLimit: pricingData?.claimLimit,
+      selectedAddOns: pricingData?.selectedAddOns,
+      protectionAddOns: pricingData?.protectionAddOns
+    });
+    return pricingData;
+  }, [
     pricingData?.voluntaryExcess, 
     pricingData?.claimLimit, 
     JSON.stringify(pricingData?.selectedAddOns),
     JSON.stringify(pricingData?.protectionAddOns)
   ]);
   
-  const pricingData12 = useMemo(() => getPricingForDuration('12months'), [vehicleDataStable, pricingDataStable]);
-  const pricingData24 = useMemo(() => getPricingForDuration('24months'), [vehicleDataStable, pricingDataStable]);
-  const pricingData36 = useMemo(() => getPricingForDuration('36months'), [vehicleDataStable, pricingDataStable]);
+  const pricingData12 = useMemo(() => {
+    const result = getPricingForDuration('12months');
+    console.log('📊 WarrantyDurationStep - 12 months pricing calculated:', result);
+    return result;
+  }, [vehicleDataStable, pricingDataStable]);
+  
+  const pricingData24 = useMemo(() => {
+    const result = getPricingForDuration('24months');
+    console.log('📊 WarrantyDurationStep - 24 months pricing calculated:', result);
+    return result;
+  }, [vehicleDataStable, pricingDataStable]);
+  
+  const pricingData36 = useMemo(() => {
+    const result = getPricingForDuration('36months');
+    console.log('📊 WarrantyDurationStep - 36 months pricing calculated:', result);
+    return result;
+  }, [vehicleDataStable, pricingDataStable]);
 
   const durationOptions = useMemo(() => [
     {
