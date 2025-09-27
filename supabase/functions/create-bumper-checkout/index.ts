@@ -57,12 +57,16 @@ serve(async (req) => {
     } = requestData;
 
     // Force payment to monthly for Bumper (they handle installments internally)
-    const paymentType = "monthly";
+    // But preserve the original warranty duration for add-on calculations and W2000
+    const bumperPaymentType = "monthly";
     const instalmentCount = "12"; // Default to 12 installments for Bumper
+    
+    // Keep original warranty duration for proper add-on logic and W2000 registration
+    const warrantyDuration = originalPaymentType;
 
     logStep("Forcing monthly payment for Bumper", {
-      originalSelection: originalPaymentType,
-      forcedPaymentType: paymentType,
+      originalWarrantyDuration: originalPaymentType,
+      bumperPaymentType: bumperPaymentType,
       instalmentCount
     });
 
@@ -119,8 +123,8 @@ serve(async (req) => {
       monthlyAmount,
       customerEmail: customerData?.email,
       origin,
-      originalUserSelection: originalPaymentType,
-      forcedBumperPayment: paymentType
+      originalWarrantyDuration: originalPaymentType,
+      bumperPaymentType: bumperPaymentType
     });
 
     // Create transaction ID for tracking
@@ -134,9 +138,11 @@ serve(async (req) => {
     const transactionInsertData = {
       transaction_id: transactionId,
       plan_id: planId,
-      payment_type: paymentType,
+      payment_type: bumperPaymentType, // Bumper payment frequency (monthly)
       customer_data: {
         ...customerData,
+        // Store the original warranty duration for later processing
+        original_warranty_duration: warrantyDuration,
         // Ensure vehicle registration is available in customer data
         vehicle_reg: customerData?.vehicle_reg || vehicleData?.regNumber || vehicleData?.registration,
         vehicle_make: customerData?.vehicle_make || vehicleData?.make,

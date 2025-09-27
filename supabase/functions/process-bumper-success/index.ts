@@ -137,14 +137,16 @@ serve(async (req) => {
     const vehicleData = transactionData.vehicle_data;
     const protectionAddOns = transactionData.protection_addons || {};
     const planId = transactionData.plan_id;
-    const paymentType = transactionData.payment_type;
+    const bumperPaymentType = transactionData.payment_type; // This is "monthly" for Bumper
+    const originalWarrantyDuration = customerData?.original_warranty_duration || '12months'; // Fallback to 12 months
     const finalAmount = transactionData.final_amount;
     const discountCode = transactionData.discount_code;
 
     logStep("Extracted transaction details", {
       customerEmail: customerData?.email,
       planId,
-      paymentType,
+      bumperPaymentType,
+      originalWarrantyDuration,
       finalAmount,
       protectionAddOns,
       vehicleData: vehicleData,
@@ -175,10 +177,11 @@ serve(async (req) => {
       });
     }
     
-    // Auto-include add-ons based on payment type using the same logic as other functions
-    const autoIncludedAddOns = getAutoIncludedAddOnsForPayment(paymentType);
-    logStep("Auto-including add-ons for payment type", { 
-      paymentType, 
+    // Auto-include add-ons based on WARRANTY DURATION (not payment frequency)
+    const autoIncludedAddOns = getAutoIncludedAddOnsForPayment(originalWarrantyDuration);
+    logStep("Auto-including add-ons for warranty duration", { 
+      warrantyDuration: originalWarrantyDuration, 
+      bumperPaymentType,
       autoIncluded: autoIncludedAddOns 
     });
     
@@ -188,15 +191,16 @@ serve(async (req) => {
     if (autoIncludedAddOns.includes('rental')) addOnFields.vehicle_rental = true;
     if (autoIncludedAddOns.includes('tyre')) addOnFields.tyre_cover = true;
 
-    // Get claim limit from transaction data instead of calculating it
-    const claimLimit = transactionData.claim_limit || calculateClaimLimit(planId, paymentType);
-    const voluntaryExcess = calculateVoluntaryExcess(planId, paymentType);
+    // Get claim limit from transaction data, but use original warranty duration for fallback calculation
+    const claimLimit = transactionData.claim_limit || calculateClaimLimit(planId, originalWarrantyDuration);
+    const voluntaryExcess = calculateVoluntaryExcess(planId, originalWarrantyDuration);
 
-    logStep("Using claim limit from transaction data", { 
+    logStep("Using claim limit with correct warranty duration", { 
       transactionClaimLimit: transactionData.claim_limit, 
-      calculatedClaimLimit: calculateClaimLimit(planId, paymentType), 
+      calculatedClaimLimit: calculateClaimLimit(planId, originalWarrantyDuration), 
       finalClaimLimit: claimLimit, 
-      voluntaryExcess 
+      voluntaryExcess,
+      warrantyDuration: originalWarrantyDuration
     });
 
     // Call handle-successful-payment with proper metadata including protectionAddOns and claim_limit
@@ -204,7 +208,7 @@ serve(async (req) => {
       planId: planId,
       customerData: customerData,
       vehicleData: vehicleData,
-      paymentType: paymentType,
+      paymentType: originalWarrantyDuration, // Use original warranty duration, not Bumper payment frequency
       userEmail: customerData?.email,
       protectionAddOns: addOnFields, // Use processed add-ons with auto-inclusions
       metadata: {
@@ -239,9 +243,10 @@ serve(async (req) => {
     logStep("Calling handle-successful-payment", { 
       email: customerData?.email,
       planId,
-      paymentType,
+      warrantyDuration: originalWarrantyDuration,
+      bumperPaymentType,
       claimLimit,
-      protectionAddOns
+      protectionAddOns: addOnFields
     });
 
     const { error: handlePaymentError } = await supabaseClient.functions.invoke(
