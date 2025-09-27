@@ -567,18 +567,24 @@ function getWarrantyDurationInMonths(paymentType: string): number {
     case 'month':
     case '12months':
     case '12month':
+    case 'yearly':
+    case '1year':
+    case 'year':
       return 12;
     case '24months':
     case '24month':
     case 'twomonthly':
     case '2monthly':
+    case 'twoyearly':
+    case '2year':
     case 'twoyear':
-    case 'yearly': // Legacy compatibility
       return 24;
     case '36months':
     case '36month':
     case 'threemonthly':
     case '3monthly':
+    case 'threeyearly':
+    case '3year':
     case 'threeyear':
       return 36;
     case '48months':
@@ -592,11 +598,10 @@ function getWarrantyDurationInMonths(paymentType: string): number {
     case '5monthly':
       return 60;
     default:
-      console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+      console.warn(`[SEND-WELCOME-EMAIL] Unknown payment type: ${paymentType}, defaulting to 12 months`);
       return 12;
   }
 }
-
 // Helper function to get coverage period in months - updated to use centralized logic
 function getCoverageInMonths(paymentType: string): number {
   return getWarrantyDurationInMonths(paymentType);

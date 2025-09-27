@@ -679,18 +679,24 @@ function getWarrantyDurationInMonths(paymentType: string): number {
     case '12months':
     case '12month':
     case 'yearly':
+    case '1year':
+    case 'year':
       return 12;
     case '24months':
     case '24month':
     case 'twomonthly':
     case '2monthly':
     case 'twoyearly':
+    case '2year':
+    case 'twoyear':
       return 24;
     case '36months':
     case '36month':
     case 'threemonthly':
     case '3monthly':
     case 'threeyearly':
+    case '3year':
+    case 'threeyear':
       return 36;
     case '48months':
     case '48month':
@@ -703,11 +709,10 @@ function getWarrantyDurationInMonths(paymentType: string): number {
     case '5monthly':
       return 60;
     default:
-      console.warn(`Unknown payment type: ${paymentType}, defaulting to 12 months`);
+      console.warn(`[HANDLE-PAYMENT] Unknown payment type: ${paymentType}, defaulting to 12 months`);
       return 12;
   }
 }
-
 // Helper function to calculate policy end date using centralized logic
 function calculatePolicyEndDate(paymentType: string): string {
   const months = getWarrantyDurationInMonths(paymentType);
@@ -750,12 +755,30 @@ function mapAddOnsToFields(protectionAddOns: { [key: string]: boolean }): any {
 function getAutoIncludedAddOnsForPayment(paymentType: string): string[] {
   const normalizedType = paymentType?.toLowerCase().replace(/[_-]/g, '').trim();
   
+  // Handle various payment type formats from all sources (Stripe, Bumper, manual entry)
   switch (normalizedType) {
+    case 'monthly':
+    case '12months':
+    case 'yearly':
+    case '1year':
+    case 'year':
+      return []; // 12-month plans have no auto-included add-ons
     case '24months':
+    case '2year':
+    case 'twoyear':
+    case 'twoyearly':
+    case 'twomonthly':
+    case '2monthly':
       return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
     case '36months':
+    case '3year':
+    case 'threeyear':
+    case 'threeyearly':
+    case 'threemonthly':
+    case '3monthly':
       return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
     default:
-      return []; // 12-month plans have no auto-included add-ons
+      console.warn(`[HANDLE-PAYMENT] Unknown payment type for auto-addons: ${paymentType}, defaulting to no auto-addons`);
+      return []; // Default to no auto-addons for unknown payment types
   }
 }
