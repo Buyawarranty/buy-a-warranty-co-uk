@@ -745,7 +745,7 @@ const CustomerDashboard = () => {
                   className="flex items-center hover:opacity-80 transition-opacity"
                 >
                   <img 
-                    src="/lovable-uploads/baw-logo-new-2025.png" 
+                    src="/lovable-uploads/baw_logo_new_2025_copy_2-2.png" 
                     alt="BuyAWarranty" 
                     className="h-6 sm:h-8 w-auto mr-3 sm:mr-4"
                   />
