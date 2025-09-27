@@ -40,6 +40,20 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
   // Get auto-included add-ons based on payment type
   const autoIncludedAddOnKeys = getAutoIncludedAddOns(payment_type);
   
+  // Map component keys to utility keys for consistency
+  const keyMapping: { [key: string]: string } = {
+    'mot_fee': 'motFee',
+    'tyre_cover': 'tyre',
+    'wear_tear': 'wearAndTear',
+    'europe_cover': 'european',
+    'transfer_cover': 'transfer',
+    'breakdown_recovery': 'breakdown',
+    'vehicle_rental': 'rental',
+    'mot_repair': 'motRepair',
+    'lost_key': 'lostKey',
+    'consequential': 'consequential'
+  };
+  
   const addOnItems = [
     { 
       key: 'mot_fee', 
@@ -165,7 +179,8 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
             </h4>
             <div className="grid grid-cols-1 gap-2">
               {activeAddOns.map((item) => {
-                const isAutoIncluded = autoIncludedAddOnKeys.includes(item.key);
+                const mappedKey = keyMapping[item.key] || item.key;
+                const isAutoIncluded = autoIncludedAddOnKeys.includes(mappedKey);
                 const statusLabel = isAutoIncluded ? 'FREE' : 'PAID';
                 const statusColor = isAutoIncluded 
                   ? 'bg-green-100 text-green-800 border-green-200' 
