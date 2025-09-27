@@ -51,41 +51,46 @@ const AdminDashboard = () => {
   }, [session, authLoading]);
 
   const checkAdminAccess = async () => {
+    console.log('🔍 checkAdminAccess called - authLoading:', authLoading, 'session:', !!session);
+    
     // Wait for auth to finish loading
     if (authLoading) {
+      console.log('⏳ Auth still loading, waiting...');
       return;
     }
 
     // If no session after auth loading is complete, redirect to auth
     if (!session?.user) {
-      console.log('No session found, redirecting to auth');
+      console.log('❌ No session found, redirecting to auth');
       navigate('/auth', { replace: true });
       return;
     }
 
     try {
-      console.log('Checking user role for:', session.user.id);
+      console.log('✅ Session found for user:', session.user.email, 'ID:', session.user.id);
+      console.log('🔍 Checking user role for:', session.user.id);
+      
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', session.user.id)
         .maybeSingle();
 
-      console.log('Role query result:', { data, error });
+      console.log('📊 Role query result:', { data, error });
 
       // Allow all admin role types: admin, member, viewer, guest
       if (error || !data || !['admin', 'member', 'viewer', 'guest'].includes(data.role)) {
-        console.error('Access denied - not an admin user', error, data);
-        console.log('Redirecting to homepage');
+        console.error('❌ Access denied - not an admin user', error, data);
+        console.log('🏠 User has no admin role, redirecting to homepage');
         navigate('/', { replace: true });
         return;
       }
 
-      console.log('Access granted for role:', data.role);
+      console.log('✅ Access granted for role:', data.role);
       setHasAdminAccess(true);
       setIsCheckingRole(false);
     } catch (error) {
-      console.error('Error checking admin access:', error);
+      console.error('💥 Error checking admin access:', error);
       navigate('/', { replace: true });
     }
   };
