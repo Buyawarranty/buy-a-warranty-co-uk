@@ -1581,11 +1581,11 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                          <span className="line-through text-gray-500 ml-1">£{originalPrice}</span>
                        )}
                        <span className="text-orange-600 ml-1">£{planAdjustedBasePrice}</span>
-                       {paymentType === option.id && protectionAddOnPrice > 0 && (
-                         <span className="text-gray-600 text-xs block mt-1">
-                           + £{Math.round(protectionAddOnPrice)} add-ons = £{Math.round(totalPriceWithAddOns)} total
-                         </span>
-                       )}
+                        {paymentType === option.id && protectionAddOnPrice > 0 && (
+                          <span className="text-gray-600 text-xs block mt-1">
+                            Total: £{Math.round(totalPriceWithAddOns)}
+                          </span>
+                        )}
                      </div>
                    </div>
                   
@@ -1805,14 +1805,9 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   }
                 </div>
                 
-                {/* Total Cost - Show base + add-ons breakdown */}
+                 {/* Total Cost - Show final total only */}
                 <div className="text-sm font-semibold text-gray-400">
-                  Total: £{basePlanPrice}
-                  {addOnPrice > 0 && (
-                    <span className="text-xs block text-gray-500">
-                      + £{Math.round(addOnPrice)} add-ons = £{Math.round(totalPrice)}
-                    </span>
-                  )}
+                  Total: £{Math.round(totalPrice)}
                 </div>
               </div>
               <Button
@@ -1871,12 +1866,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                 </span>
                 <span className="text-gray-400">•</span>
                 <span className="font-semibold text-gray-400">
-                  Total: £{basePlanPrice}
-                  {addOnPrice > 0 && (
-                    <span className="text-xs block text-gray-500">
-                      + £{Math.round(addOnPrice)} add-ons = £{Math.round(totalPrice)}
-                    </span>
-                  )}
+                  Total: £{Math.round(totalPrice)}
                 </span>
               </div>
             </div>
