@@ -1,7 +1,7 @@
 import { ClaimsTab } from '@/components/admin/ClaimsTab';
 import ContactSubmissionsTab from '@/components/admin/ContactSubmissionsTab';
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { SEOHead } from '@/components/SEOHead';
@@ -35,6 +35,9 @@ import { EmailFunctionDiagnostics } from '@/components/admin/EmailFunctionDiagno
 import { TestPolicyDocumentsEmail } from '@/components/admin/TestPolicyDocumentsEmail';
 import { ClickFraudTab } from '@/components/admin/ClickFraudTab';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('customers');
@@ -198,41 +201,180 @@ const AdminDashboard = () => {
     }
   };
 
+  const navigateToQuoteForm = () => {
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <SEOHead 
         title="Admin Dashboard | BuyAWarranty Management"
         description="Administrative dashboard for managing warranties, customers, and business operations. Secure access for authorized personnel only."
         keywords="admin, dashboard, warranty management, customer management"
       />
-      <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       
-      <div className="flex-1 lg:ml-64 overflow-hidden">
-        <header className="bg-white shadow-sm border-b px-4 lg:px-6 py-4 flex-shrink-0">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
-              Admin Dashboard
-            </h1>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-              <span className="text-sm text-gray-600">
-                Welcome, Admin
-              </span>
+      {/* Header with same navigation as homepage */}
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link to="/" className="hover:opacity-80 transition-opacity">
+                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+              </Link>
+            </div>
+            
+            {/* Navigation - Hidden on mobile, visible on lg+ */}
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+              <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
+              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+              <span className="text-orange-500 font-semibold text-sm xl:text-base">Admin Dashboard</span>
+            </nav>
+
+            {/* Desktop CTA Buttons - Show on desktop */}
+            <div className="hidden lg:flex items-center space-x-3">
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
+                >
+                  WhatsApp Us
+                </Button>
+              </a>
+              <Button 
+                size="sm"
+                onClick={navigateToQuoteForm}
+                className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
+              >
+                Get my quote
+              </Button>
               <button
                 onClick={async () => {
                   await supabase.auth.signOut();
                   navigate('/auth');
                 }}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
+                className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
               >
                 Sign Out
               </button>
             </div>
-          </div>
-        </header>
 
-        <main className="p-4 lg:p-6 overflow-y-auto h-[calc(100vh-80px)]">
-          {renderContent()}
-        </main>
+            {/* Mobile Menu Button */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="lg:hidden p-2"
+                >
+                  <Menu className="h-8 w-8" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <div className="flex flex-col h-full">
+                  {/* Header with logo */}
+                  <div className="flex items-center justify-between pb-6">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
+                      <img 
+                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                        alt="Buy a Warranty" 
+                        className="h-8 w-auto"
+                      />
+                    </Link>
+                  </div>
+
+                  {/* Navigation Links */}
+                  <nav className="flex flex-col space-y-6 flex-1">
+                    <Link 
+                      to="/what-is-covered"
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      What's Covered
+                    </Link>
+                    <Link 
+                      to="/make-a-claim" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Make a Claim
+                    </Link>
+                    <Link 
+                      to="/faq" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                       FAQs
+                    </Link>
+                    <Link 
+                      to="/contact-us" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Contact Us
+                    </Link>
+                    <span className="text-orange-500 font-semibold text-sm py-2 border-b border-gray-200">
+                      Admin Dashboard
+                    </span>
+                  </nav>
+
+                  {/* CTA Buttons */}
+                  <div className="space-y-4 pt-6 mt-auto">
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                    </a>
+                    <Button 
+                      className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        navigateToQuoteForm();
+                      }}
+                    >
+                      Get my quote
+                    </Button>
+                    <button
+                      onClick={async () => {
+                        await supabase.auth.signOut();
+                        navigate('/auth');
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-colors text-lg"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </header>
+      
+      <div className="flex-1 flex flex-col lg:flex-row">
+        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        
+        <div className="flex-1 lg:ml-64 overflow-hidden">
+          <main className="p-4 lg:p-6 overflow-y-auto h-[calc(100vh-80px)]">
+            {renderContent()}
+          </main>
+        </div>
       </div>
     </div>
   );
