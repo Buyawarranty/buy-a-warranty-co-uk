@@ -79,8 +79,8 @@ interface PricingTableProps {
 
 const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months'>('24months');
-  const [voluntaryExcess, setVoluntaryExcess] = useState<number>(50);
+  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months' | null>(null);
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number | null>(null);
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [plansLoading, setPlansLoading] = useState(true);
@@ -114,7 +114,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
-  const [selectedClaimLimit, setSelectedClaimLimit] = useState<number>(1250);
+  const [selectedClaimLimit, setSelectedClaimLimit] = useState<number | null>(null);
   const [summaryDismissed, setSummaryDismissed] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   

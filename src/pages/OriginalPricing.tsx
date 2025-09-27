@@ -3,9 +3,9 @@ import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const OriginalPricing = () => {
-  const [selectedDuration, setSelectedDuration] = useState('24');
-  const [selectedExcess, setSelectedExcess] = useState('50');
-  const [selectedPlan, setSelectedPlan] = useState('advantage');
+  const [selectedDuration, setSelectedDuration] = useState('');
+  const [selectedExcess, setSelectedExcess] = useState('');
+  const [selectedPlan, setSelectedPlan] = useState('');
 
   const durationOptions = [
     { value: '12', label: '12 months', discount: null },
