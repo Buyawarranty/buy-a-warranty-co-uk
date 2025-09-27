@@ -328,7 +328,7 @@ const Protected = () => {
               <img 
                 src="/lovable-uploads/trustpilot-logo-correct.png" 
                 alt="Trustpilot 5 Star Rating"
-                className="h-16 w-auto"
+                className="h-10 w-auto"
               />
             </a>
           </div>
