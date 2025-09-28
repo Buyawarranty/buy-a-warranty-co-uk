@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Shield, AlertCircle } from 'lucide-react';
 import { getAutoIncludedAddOns } from '@/lib/addOnsUtils';
+import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 
 interface AddOnProtectionDisplayProps {
   mot_fee?: boolean;
@@ -39,6 +40,15 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
 }) => {
   // Get auto-included add-ons based on payment type
   const autoIncludedAddOnKeys = getAutoIncludedAddOns(payment_type);
+  
+  // Calculate duration text based on payment type
+  const getDurationText = () => {
+    const months = getWarrantyDurationInMonths(payment_type);
+    const years = Math.floor(months / 12);
+    return years === 1 ? '1 Year' : `${years} Year${years > 1 ? 's' : ''}`;
+  };
+  
+  const durationText = getDurationText();
   
   // Map component keys to utility keys for consistency
   const keyMapping: { [key: string]: string } = {
@@ -198,7 +208,7 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
                     <div className="flex items-start gap-3 flex-1">
                       <span className="text-lg">{item.icon}</span>
                       <div className="flex-1">
-                        <div className="font-medium text-green-900">{item.label}</div>
+                        <div className="font-medium text-green-900">{item.label} - {durationText}</div>
                         <div className="text-xs text-green-700 mt-1">{item.description}</div>
                       </div>
                     </div>
