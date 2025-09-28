@@ -331,7 +331,7 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   <Mail className="w-5 h-5 sm:w-6 sm:h-6 absolute left-4 sm:left-8" />
                   <div className="text-center px-8 sm:px-12">
                     <div className="text-base sm:text-xl leading-tight">
-                      Instant quote ⚡ + Sent to email
+                      See now + Get email
                     </div>
                   </div>
                   <span className="text-xl sm:text-2xl absolute right-4 sm:right-8">→</span>
