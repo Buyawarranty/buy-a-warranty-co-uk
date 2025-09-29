@@ -31,55 +31,9 @@ const CookiePolicy = lazy(() => import(/* webpackChunkName: "legal-pages" */ "./
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "legal-pages" */ "./pages/PrivacyPolicy"));
 const WarrantyPlan = lazy(() => import(/* webpackChunkName: "public-pages" */ "./pages/WarrantyPlan"));
 
-// Debug component for route matching
-const RouteDebug = ({ routeName, children }: { routeName: string; children: React.ReactNode }) => {
-  console.log(`🚀 ${routeName} route matched`);
-  return <>{children}</>;
-};
-
-// Error boundary for lazy loading
-class LazyLoadErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ReactNode },
-  { hasError: boolean; error?: Error }
-> {
-  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    console.error('🚨 Lazy loading error:', error);
-    return { hasError: true, error };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      console.error('🚨 Component failed to load:', this.state.error);
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
-// Temporary eager loading for debugging - remove after fixing
-import AdminDashboardEager from "./pages/AdminDashboard";
-import AuthEager from "./pages/Auth";
-
-// Admin pages (heavy, separate chunks) - with debugging
-const AdminDashboard = lazy(() => {
-  console.log('🔥 Loading AdminDashboard component');
-  return import(/* webpackChunkName: "admin" */ "./pages/AdminDashboard").catch(error => {
-    console.error('💥 Failed to load AdminDashboard:', error);
-    throw error;
-  });
-});
-const Auth = lazy(() => {
-  console.log('🔥 Loading Auth component'); 
-  return import(/* webpackChunkName: "auth" */ "./pages/Auth").catch(error => {
-    console.error('💥 Failed to load Auth:', error);
-    throw error;
-  });
-});
+// Admin pages (heavy, separate chunks)
+const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin" */ "./pages/AdminDashboard"));
+const Auth = lazy(() => import(/* webpackChunkName: "auth" */ "./pages/Auth"));
 const CustomerDashboard = lazy(() => import(/* webpackChunkName: "customer" */ "./pages/CustomerDashboard"));
 const AdminTest = lazy(() => import(/* webpackChunkName: "admin" */ "./pages/AdminTest"));
 const PasswordReset = lazy(() => import(/* webpackChunkName: "auth" */ "./components/PasswordReset"));
@@ -129,27 +83,9 @@ const App = () => (
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/widget" element={<Widget />} />
                     
-                    <Route path="/auth" element={
-                      <RouteDebug routeName="Auth">
-                        <LazyLoadErrorBoundary fallback={<div>Failed to load Auth page</div>}>
-                          <AuthEager />
-                        </LazyLoadErrorBoundary>
-                      </RouteDebug>
-                    } />
-                    <Route path="/admin" element={
-                      <RouteDebug routeName="Admin">
-                        <LazyLoadErrorBoundary fallback={<div>Failed to load Admin page</div>}>
-                          <AdminDashboardEager />
-                        </LazyLoadErrorBoundary>
-                      </RouteDebug>
-                    } />
-                    <Route path="/admin-dashboard" element={
-                      <RouteDebug routeName="Admin-dashboard">
-                        <LazyLoadErrorBoundary fallback={<div>Failed to load Admin page</div>}>
-                          <AdminDashboardEager />
-                        </LazyLoadErrorBoundary>
-                      </RouteDebug>
-                    } />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="/admin-dashboard" element={<AdminDashboard />} />
                     <Route path="/admin-test" element={<AdminTest />} />
                     <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
