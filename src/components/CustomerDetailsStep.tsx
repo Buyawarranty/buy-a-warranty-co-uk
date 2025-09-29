@@ -525,8 +525,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         </div>
 
         {/* Almost Done Heading */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-2">
+        <div className="text-left mb-8">
+          <div className="flex items-center justify-start gap-3 mb-2">
             <CheckCircle className="w-6 h-6 text-black" />
             <h1 className="text-3xl font-bold text-black">Almost done! Just confirm your details</h1>
           </div>
