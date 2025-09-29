@@ -450,13 +450,13 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 <div className="space-y-2 mb-4">
                   {option.features.map((feature, index) => (
                     <div key={index} className="flex items-start text-sm text-gray-700">
-                      <span className="mr-2 mt-0.5 text-green-500 font-bold">✅</span>
+                      <Check className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                       <span>{feature}</span>
                     </div>
                   ))}
                   {option.exclusions.map((exclusion, index) => (
                     <div key={`exclusion-${index}`} className="flex items-start text-sm text-gray-700">
-                      <span className="mr-2 mt-0.5 text-red-500 font-bold">❌</span>
+                      <X className="w-4 h-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
                       <span>{exclusion}</span>
                     </div>
                   ))}
