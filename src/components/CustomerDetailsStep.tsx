@@ -115,6 +115,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   
   // State for managing updated pricing data when add-ons are removed
   const [updatedPricingData, setUpdatedPricingData] = useState(pricingData);
+  const [isLoadingPayment, setIsLoadingPayment] = useState(false);
 
   // Recalculate pricing when initial pricingData changes (e.g., when add-ons are selected)
   useEffect(() => {
@@ -344,6 +345,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     }
 
     console.log('✅ Form validation passed');
+    setIsLoadingPayment(true);
 
     // Track customer details form submission
     trackFormSubmission('customer_details', {
@@ -393,6 +395,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         if (checkoutError) {
           console.error('Bumper checkout error:', checkoutError);
           toast.error('Payment processing failed. Please try again.');
+          setIsLoadingPayment(false);
           return;
         }
 
@@ -421,6 +424,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             }
           });
           
+          setIsLoadingPayment(false);
           return; // Don't automatically process Stripe - let user decide
         } else if (checkoutData?.url) {
           console.log('🌐 Redirecting to Bumper checkout:', checkoutData.url);
@@ -429,6 +433,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         } else {
           console.log('❌ No checkout URL received from Bumper');
           toast.error('Payment setup failed. Please try again.');
+          setIsLoadingPayment(false);
         }
       } else {
         console.log('💳 Processing Stripe payment...');
@@ -444,6 +449,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     } catch (error) {
       console.error('Error processing payment:', error);
       toast.error('Payment processing failed. Please try again.');
+      setIsLoadingPayment(false);
     }
   };
 
@@ -484,6 +490,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (checkoutError) {
       console.error('Stripe checkout error:', checkoutError);
       toast.error('Payment processing failed. Please try again.');
+      setIsLoadingPayment(false);
       return;
     }
 
@@ -494,6 +501,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     } else {
       console.log('❌ No checkout URL received from Stripe');
       toast.error('Payment setup failed. Please try again.');
+      setIsLoadingPayment(false);
     }
   };
 
@@ -1135,8 +1143,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       onClick={handleSubmit}
                       className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 text-lg rounded-lg"
                       size="lg"
+                      disabled={isLoadingPayment}
+                      loading={isLoadingPayment}
                     >
-                      Complete Purchase
+                      {isLoadingPayment ? 'Loading Payment Gateway...' : 'Complete Purchase'}
                     </ProtectedButton>
 
                     <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
