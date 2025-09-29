@@ -73,10 +73,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       localStorage.setItem('secondWarrantyDiscountCode', code);
     }
 
-    // Show email popup after 3 seconds on homepage load
+    // Show email popup after 40 seconds on homepage load
     const timer = setTimeout(() => {
       setShowEmailPopup(true);
-    }, 3000);
+    }, 40000);
 
     return () => clearTimeout(timer);
   }, []);
