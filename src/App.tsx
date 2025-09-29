@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { CartProvider } from "@/contexts/CartContext";
-import PerformanceOptimizedSuspense from "@/components/PerformanceOptimizedSuspense";
 
 // Eager load critical components
 import Index from "./pages/Index";
@@ -14,51 +13,47 @@ import WebsiteFooter from "@/components/WebsiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
 import NotFound from "./pages/NotFound";
 
-// Lazy load public pages with optimized chunking
-const FAQ = lazy(() => import(/* webpackChunkName: "public-pages" */ "./pages/FAQ"));
-const ThankYou = lazy(() => import(/* webpackChunkName: "payment-pages" */ "./pages/ThankYou"));
-const PaymentFallback = lazy(() => import(/* webpackChunkName: "payment-pages" */ "./pages/PaymentFallback"));
-const Cart = lazy(() => import(/* webpackChunkName: "cart" */ "./pages/Cart"));
-const Widget = lazy(() => import(/* webpackChunkName: "widget" */ "./pages/Widget"));
-const Terms = lazy(() => import(/* webpackChunkName: "legal-pages" */ "./pages/Terms"));
-const Protected = lazy(() => import(/* webpackChunkName: "public-pages" */ "./pages/Protected"));
-const Claims = lazy(() => import(/* webpackChunkName: "public-pages" */ "./pages/Claims"));
-const ContactUs = lazy(() => import(/* webpackChunkName: "public-pages" */ "./pages/ContactUs"));
-const Complaints = lazy(() => import(/* webpackChunkName: "public-pages" */ "./pages/Complaints"));
-const Blog = lazy(() => import(/* webpackChunkName: "blog" */ "./pages/Blog"));
-const BlogArticle = lazy(() => import(/* webpackChunkName: "blog" */ "./pages/BlogArticle"));
-const CookiePolicy = lazy(() => import(/* webpackChunkName: "legal-pages" */ "./pages/CookiePolicy"));
-const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "legal-pages" */ "./pages/PrivacyPolicy"));
-const WarrantyPlan = lazy(() => import(/* webpackChunkName: "public-pages" */ "./pages/WarrantyPlan"));
+// Lazy load pages
+const FAQ = lazy(() => import("./pages/FAQ"));
+const ThankYou = lazy(() => import("./pages/ThankYou"));
+const PaymentFallback = lazy(() => import("./pages/PaymentFallback"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Widget = lazy(() => import("./pages/Widget"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Protected = lazy(() => import("./pages/Protected"));
+const Claims = lazy(() => import("./pages/Claims"));
+const ContactUs = lazy(() => import("./pages/ContactUs"));
+const Complaints = lazy(() => import("./pages/Complaints"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogArticle = lazy(() => import("./pages/BlogArticle"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const WarrantyPlan = lazy(() => import("./pages/WarrantyPlan"));
 
-// Admin pages (heavy, separate chunks)
-const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin" */ "./pages/AdminDashboard"));
-const Auth = lazy(() => import(/* webpackChunkName: "auth" */ "./pages/Auth"));
-const CustomerDashboard = lazy(() => import(/* webpackChunkName: "customer" */ "./pages/CustomerDashboard"));
-const AdminTest = lazy(() => import(/* webpackChunkName: "admin" */ "./pages/AdminTest"));
-const PasswordReset = lazy(() => import(/* webpackChunkName: "auth" */ "./components/PasswordReset"));
-const ResetPassword = lazy(() => import(/* webpackChunkName: "auth" */ "./pages/ResetPassword"));
-const QuickPasswordReset = lazy(() => import(/* webpackChunkName: "auth" */ "./pages/QuickPasswordReset"));
-const ForgotPassword = lazy(() => import(/* webpackChunkName: "auth" */ "./pages/ForgotPassword"));
+// Admin and auth pages
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const Auth = lazy(() => import("./pages/Auth"));
+const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
+const AdminTest = lazy(() => import("./pages/AdminTest"));
+const PasswordReset = lazy(() => import("./components/PasswordReset"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const QuickPasswordReset = lazy(() => import("./pages/QuickPasswordReset"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
-// Demo and preview components (separate chunk)
-const CarJourneyDemo = lazy(() => import(/* webpackChunkName: "demo" */ "./pages/CarJourneyDemo"));
-const CarSpinnerPreview = lazy(() => import(/* webpackChunkName: "demo" */ "./components/CarSpinnerPreview"));
-const OriginalPricing = lazy(() => import(/* webpackChunkName: "demo" */ "./pages/OriginalPricing"));
+// Demo components
+const CarJourneyDemo = lazy(() => import("./pages/CarJourneyDemo"));
+const CarSpinnerPreview = lazy(() => import("./components/CarSpinnerPreview"));
+const OriginalPricing = lazy(() => import("./pages/OriginalPricing"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 10 * 60 * 1000, // 10 minutes - increased for better caching
-      gcTime: 30 * 60 * 1000, // 30 minutes - keep data longer
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
       retry: (failureCount, error) => {
         if (failureCount < 2) return true;
         return false;
       },
-      refetchOnWindowFocus: false, // Reduce unnecessary refetches
-    },
-    mutations: {
-      retry: false,
     },
   },
 });
@@ -74,7 +69,7 @@ const App = () => (
             <ScrollToTop />
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
               <main className="flex-1 pb-16 w-full">
-                <PerformanceOptimizedSuspense height="100vh">
+                <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/faq" element={<FAQ />} />
@@ -109,7 +104,7 @@ const App = () => (
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                </PerformanceOptimizedSuspense>
+                </Suspense>
               </main>
               <WebsiteFooter />
             </div>
