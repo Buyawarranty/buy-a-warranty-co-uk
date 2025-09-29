@@ -341,13 +341,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   WhatsApp Us
                 </Button>
               </a>
-              <Button 
-                size="sm"
-                onClick={scrollToQuoteForm}
-                className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
-              >
-                Get my quote
-              </Button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -458,15 +451,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                         WhatsApp Us
                       </Button>
                     </a>
-                     <Button 
-                      className="w-full bg-primary text-white hover:bg-primary/90 text-base py-4 min-h-[48px]"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        scrollToQuoteForm();
-                      }}
-                    >
-                      Get my quote
-                    </Button>
                   </div>
                 </div>
               </SheetContent>
