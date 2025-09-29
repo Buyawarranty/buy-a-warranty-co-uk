@@ -849,28 +849,60 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                   <div className="mb-2">
                                     <span className="text-black font-medium">Additional Protection</span>
                                   </div>
-                                  <div className="space-y-1">
-                                    {paidAddOns.map(addOn => (
-                                      <div key={addOn.key} className="flex items-center justify-between group hover:bg-gray-50 -mx-2 px-2 py-1 rounded">
-                                        <div className="flex items-center">
-                                          <span className="text-blue-600 mr-2">+</span>
-                                          <span className="text-sm text-gray-700">{addOn.name}</span>
+                                  <div className="space-y-3">
+                                    {paidAddOns.map(addOn => {
+                                      // Calculate display price matching step 3 format
+                                      let priceDisplay;
+                                      let priceSubtext;
+                                      
+                                      if (addOn.oneTimePrice) {
+                                        // One-time fee (e.g., Transfer Cover)
+                                        priceDisplay = `Just £${addOn.oneTimePrice} one-time fee`;
+                                        priceSubtext = null;
+                                      } else {
+                                        // Monthly add-on - spread over 12 payments
+                                        const totalCost = addOn.monthlyPrice * durationMonths;
+                                        const monthlyPayment = totalCost / 12;
+                                        priceDisplay = `Only £${monthlyPayment.toFixed(2)} per month`;
+                                        
+                                        // Determine duration text
+                                        const durationText = paymentType === '12months' ? '1 year' : 
+                                                           paymentType === '24months' ? '2 year' : 
+                                                           '3 year';
+                                        priceSubtext = `Spread over 12 interest-free payments for full ${durationText} coverage.`;
+                                      }
+                                      
+                                      return (
+                                        <div key={addOn.key} className="group hover:bg-gray-50 -mx-2 px-2 py-2 rounded">
+                                          <div className="flex items-start justify-between">
+                                            <div className="flex items-start flex-1">
+                                              <span className="text-blue-600 mr-2 mt-0.5">+</span>
+                                              <div className="flex-1">
+                                                <span className="text-sm text-gray-700 block">{addOn.name}</span>
+                                                <div className="mt-1">
+                                                  <div className="text-sm text-gray-900 font-medium">
+                                                    {priceDisplay}
+                                                  </div>
+                                                  {priceSubtext && (
+                                                    <div className="text-xs text-gray-600 mt-0.5">
+                                                      {priceSubtext}
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() => removeAddOn(addOn.key)}
+                                              className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity ml-2 flex-shrink-0"
+                                            >
+                                              <X className="h-3 w-3" />
+                                            </Button>
+                                          </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                          <span className="text-sm text-gray-900 font-medium">
-                                            {addOn.displayPrice}
-                                          </span>
-                                          <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => removeAddOn(addOn.key)}
-                                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                                          >
-                                            <X className="h-3 w-3" />
-                                          </Button>
-                                        </div>
-                                      </div>
-                                    ))}
+                                      );
+                                    })}
                                   </div>
                                 </div>
                               )}

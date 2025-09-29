@@ -781,19 +781,52 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                                      <div className="mb-2">
                                        <span className="text-gray-600 font-medium">Additional Protection:</span>
                                      </div>
-                                     <div className="space-y-1">
-                                       {paidAddOns.map(addOn => (
-                                         <div key={addOn.key} className="flex items-center justify-between text-sm text-gray-700">
-                                           <div className="flex items-center gap-2">
-                                             <span className="text-blue-600">+</span>
-                                             <span>{addOn.name}</span>
-                                           </div>
-                                           <span className="text-gray-900 font-medium">
-                                             {addOn.oneTimePrice ? `£${addOn.oneTimePrice}` : `£${addOn.monthlyPrice}/month`}
-                                           </span>
-                                         </div>
-                                       ))}
-                                     </div>
+                                      <div className="space-y-3">
+                                        {paidAddOns.map(addOn => {
+                                          // Calculate display price matching step 3 format
+                                          let priceDisplay;
+                                          let priceSubtext;
+                                          
+                                          if (addOn.oneTimePrice) {
+                                            // One-time fee (e.g., Transfer Cover)
+                                            priceDisplay = `Just £${addOn.oneTimePrice} one-time fee`;
+                                            priceSubtext = null;
+                                          } else {
+                                            // Monthly add-on - spread over 12 payments
+                                            const totalCost = addOn.monthlyPrice * durationMonths;
+                                            const monthlyPayment = totalCost / 12;
+                                            priceDisplay = `Only £${monthlyPayment.toFixed(2)} per month`;
+                                            
+                                            // Determine duration text
+                                            const paymentTypeNormalized = normalizePaymentType(item.paymentType);
+                                            const durationText = paymentTypeNormalized === '12months' ? '1 year' : 
+                                                               paymentTypeNormalized === '24months' ? '2 year' : 
+                                                               '3 year';
+                                            priceSubtext = `Spread over 12 interest-free payments for full ${durationText} coverage.`;
+                                          }
+                                          
+                                          return (
+                                            <div key={addOn.key} className="text-sm">
+                                              <div className="flex items-start gap-2">
+                                                <span className="text-blue-600 mt-0.5">+</span>
+                                                <div className="flex-1">
+                                                  <span className="text-gray-700 block">{addOn.name}</span>
+                                                  <div className="mt-1">
+                                                    <div className="text-gray-900 font-medium">
+                                                      {priceDisplay}
+                                                    </div>
+                                                    {priceSubtext && (
+                                                      <div className="text-xs text-gray-600 mt-0.5">
+                                                        {priceSubtext}
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
                                    </div>
                                  )}
                                  
