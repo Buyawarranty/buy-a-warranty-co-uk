@@ -8,6 +8,7 @@ import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { VoucherBanner } from './VoucherBanner';
+import { EmailCapturePopup } from './EmailCapturePopup';
 
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -49,6 +50,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [showVoucherBanner, setShowVoucherBanner] = useState(false);
   const [showSecondWarrantyDiscount, setShowSecondWarrantyDiscount] = useState(false);
   const [discountCode, setDiscountCode] = useState('');
+  const [showEmailPopup, setShowEmailPopup] = useState(false);
 
   useEffect(() => {
     // Check if user is returning from a successful purchase
@@ -70,6 +72,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       setDiscountCode(code);
       localStorage.setItem('secondWarrantyDiscountCode', code);
     }
+
+    // Show email popup after 3 seconds on homepage load
+    const timer = setTimeout(() => {
+      setShowEmailPopup(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const formatRegNumber = (value: string) => {
@@ -1089,6 +1098,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           </a>
         </div>
       )}
+
+      {/* Email Capture Popup */}
+      <EmailCapturePopup 
+        isOpen={showEmailPopup}
+        onClose={() => setShowEmailPopup(false)}
+      />
     </div>
   );
 };
