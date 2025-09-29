@@ -712,7 +712,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Left - Video */}
             <div className="relative aspect-video">
               <iframe 
-                src="https://www.youtube.com/embed/G9QuVoxckbw" 
+                src="https://www.youtube.com/embed/poiqZLF2MVg" 
                 title="Extended warranty explainer video"
                 className="w-full h-full rounded-md shadow-lg"
                 frameBorder="0"
