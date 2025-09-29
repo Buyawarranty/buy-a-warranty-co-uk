@@ -439,7 +439,15 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                     {option.id === '12months' && '✅ '}
                     {option.id === '24months' && '⭐️ '}
                     {option.id === '36months' && '🏆 '}
-                    {option.title}
+                    {option.title.split('—')[0].trim()}
+                    {option.title.includes('—') && (
+                      <>
+                        {' — '}
+                        <span className="text-orange-600 bg-orange-50 px-2 py-1 rounded">
+                          {option.title.split('—')[1].trim()}
+                        </span>
+                      </>
+                    )}
                   </h4>
                   <p className="text-sm text-gray-600 mb-2">{option.description}</p>
                   <h5 className="text-sm font-semibold text-gray-800 mb-2">{option.planTitle}</h5>
