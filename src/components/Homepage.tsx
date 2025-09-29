@@ -73,12 +73,36 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       localStorage.setItem('secondWarrantyDiscountCode', code);
     }
 
-    // Show email popup after 40 seconds on homepage load
-    const timer = setTimeout(() => {
-      setShowEmailPopup(true);
-    }, 40000);
+    // Show email popup after 60 seconds OR when user scrolls 70% down the page
+    let hasTriggered = false;
+    
+    const showPopup = () => {
+      if (!hasTriggered) {
+        hasTriggered = true;
+        setShowEmailPopup(true);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    // Timer trigger (60 seconds)
+    const timer = setTimeout(showPopup, 60000);
+
+    // Scroll trigger (70% down the page)
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const documentHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPercentage = (scrollTop / documentHeight) * 100;
+      
+      if (scrollPercentage >= 70) {
+        showPopup();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const formatRegNumber = (value: string) => {
