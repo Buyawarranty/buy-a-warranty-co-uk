@@ -661,7 +661,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <img 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating" 
-                    className="h-12 sm:h-15 w-auto"
+                    className="h-10 sm:h-15 w-auto"
                   />
                 </a>
               </div>
@@ -670,7 +670,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <img 
                   src="/lovable-uploads/d5f9a604-cacf-42fd-9ab5-a387dedf8a3b.png" 
                   alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
-                  className="h-16 w-auto"
+                  className="h-11 sm:h-16 w-auto"
                 />
               </div>
               
