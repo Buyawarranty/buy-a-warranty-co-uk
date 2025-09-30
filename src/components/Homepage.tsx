@@ -540,6 +540,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <br className="hidden sm:block" />
                   <span className="sm:hidden"> </span><span className="text-brand-orange">in 60 seconds!</span>
                 </h1>
+                
+                {/* Instant Activation Badge */}
+                <div className="inline-flex items-center gap-2 bg-green-100 border-2 border-green-500 rounded-full px-4 py-2 mt-3">
+                  <Check className="w-5 h-5 text-green-600" />
+                  <span className="text-sm sm:text-base font-bold text-green-800">✅ Instant Activation</span>
+                </div>
               </div>
 
               {/* Benefits */}
