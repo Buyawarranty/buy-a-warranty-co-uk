@@ -842,28 +842,6 @@ const FAQ = () => {
           </div>
         </section>
 
-        {/* FAQ Hero Images */}
-        <section className="bg-gradient-to-b from-gray-50 to-white py-12">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="flex justify-center">
-                <img 
-                  src="/car-warranty-uk-extended-warranty.png" 
-                  alt="Car warranty UK extended warranty - Mobile friendly instant quotes with Audi A3 vehicle coverage"
-                  className="w-full h-auto max-w-md rounded-lg shadow-lg"
-                />
-              </div>
-              <div className="flex justify-center">
-                <img 
-                  src="/car-warranty-uk-cheap-cover.png" 
-                  alt="Car warranty UK cheap cover - Affordable warranty protection with savings and panda mascot"
-                  className="w-full h-auto max-w-md rounded-lg shadow-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Sidebar Navigation */}
@@ -1096,6 +1074,17 @@ const FAQ = () => {
                   </Button>
                 </section>
               )}
+
+              {/* Vehicle Coverage Image Section */}
+              <section className="my-12">
+                <div className="flex justify-center">
+                  <img 
+                    src="/car-warranty-uk-suv-warranty-uk-2.png" 
+                    alt="Car warranty UK SUV warranty - Affordable vehicle protection with savings for cars, motorcycles, and SUVs with panda mascot"
+                    className="w-full h-auto max-w-4xl"
+                  />
+                </div>
+              </section>
 
               {/* Contact Section */}
               <section id="contact" className="bg-white rounded-lg shadow-lg p-8 mt-12">
