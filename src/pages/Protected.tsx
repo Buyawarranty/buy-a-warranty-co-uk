@@ -298,6 +298,19 @@ const Protected = () => {
             At Buy-a-Warranty, we like to keep things straightforward. One solid plan that works for cars, vans, and motorbikes - whether you're driving electric, hybrid, petrol or diesel.
           </p>
           
+          {/* Instant Activation Notice */}
+          <div className="max-w-2xl mx-auto mb-8">
+            <div className="bg-green-50 border-2 border-green-500 rounded-lg p-6 shadow-md">
+              <div className="flex items-center justify-center mb-2">
+                <CheckCircle className="w-8 h-8 text-green-600 mr-3" />
+                <h3 className="text-2xl font-bold text-gray-900">✅ Instant Activation</h3>
+              </div>
+              <p className="text-base text-gray-700 text-center">
+                Starts immediately after purchase - excludes pre-existing conditions.
+              </p>
+            </div>
+          </div>
+          
           <div className="grid md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
             <div className="flex items-center justify-center space-x-3 bg-white p-4 rounded-lg shadow-sm">
               <Shield className="w-6 h-6 text-green-500" />
