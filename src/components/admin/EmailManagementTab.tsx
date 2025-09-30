@@ -36,6 +36,7 @@ interface EmailLog {
   sent_at: string | null;
   created_at: string;
   error_message: string | null;
+  template_id: string | null;
   template: {
     name: string;
     template_type: string;
@@ -61,6 +62,9 @@ const EmailManagementTab = () => {
   const [isSending, setIsSending] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [sendEmailOpen, setSendEmailOpen] = useState(false);
+  const [customerEmailSearch, setCustomerEmailSearch] = useState('');
+  const [customerEmailHistory, setCustomerEmailHistory] = useState<EmailLog[]>([]);
+  const [isResending, setIsResending] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Form state for template editing
@@ -311,6 +315,100 @@ const EmailManagementTab = () => {
       });
     } finally {
       setIsSending(false);
+    }
+  };
+
+  const searchCustomerEmails = async () => {
+    if (!customerEmailSearch.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a customer email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('email_logs')
+        .select(`
+          *,
+          email_templates!email_logs_template_id_fkey(name, template_type)
+        `)
+        .eq('recipient_email', customerEmailSearch.trim())
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      const formattedLogs = data?.map(log => ({
+        ...log,
+        template: log.email_templates
+      })) || [];
+      
+      setCustomerEmailHistory(formattedLogs);
+      
+      if (formattedLogs.length === 0) {
+        toast({
+          title: "No emails found",
+          description: `No email history found for ${customerEmailSearch}`,
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: `Found ${formattedLogs.length} email(s) for this customer`,
+        });
+      }
+    } catch (error) {
+      console.error('Error searching customer emails:', error);
+      toast({
+        title: "Error",
+        description: "Failed to search customer email history",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleResendEmail = async (log: EmailLog) => {
+    setIsResending(log.id);
+    try {
+      // If it's a welcome email, use the welcome email resend function
+      if (log.template?.template_type === 'welcome') {
+        const { error } = await supabase.functions.invoke('resend-welcome-email', {
+          body: { customerEmail: log.recipient_email }
+        });
+        
+        if (error) throw error;
+      } else {
+        // For other email types, use the general send-email function
+        const { error } = await supabase.functions.invoke('send-email', {
+          body: {
+            templateId: log.template_id,
+            recipientEmail: log.recipient_email,
+            variables: {}
+          }
+        });
+        
+        if (error) throw error;
+      }
+
+      toast({
+        title: "Success",
+        description: `Email resent successfully to ${log.recipient_email}`,
+      });
+      
+      fetchEmailLogs();
+      if (customerEmailSearch) {
+        searchCustomerEmails();
+      }
+    } catch (error) {
+      console.error('Error resending email:', error);
+      toast({
+        title: "Error",
+        description: "Failed to resend email",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResending(null);
     }
   };
 
@@ -623,17 +721,32 @@ const EmailManagementTab = () => {
               <div className="space-y-4">
                 {emailLogs.map((log) => (
                   <div key={log.id} className="flex justify-between items-center p-3 border rounded-lg">
-                    <div className="space-y-1">
+                    <div className="space-y-1 flex-1">
                       <div className="font-medium">{log.subject}</div>
                       <div className="text-sm text-muted-foreground">
                         To: {log.recipient_email}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {log.template?.name} • {new Date(log.sent_at || log.created_at).toLocaleString()}
+                        {log.template?.template_type && (
+                          <Badge variant="outline" className="ml-2 text-xs">
+                            {log.template.template_type}
+                          </Badge>
+                        )}
                       </div>
                     </div>
-                    <div className="text-right space-y-1">
+                    <div className="text-right space-y-2 flex flex-col items-end">
                       {getStatusBadge(log.status)}
+                      {log.status === 'sent' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleResendEmail(log)}
+                          disabled={isResending === log.id}
+                        >
+                          {isResending === log.id ? 'Resending...' : 'Resend'}
+                        </Button>
+                      )}
                       {log.error_message && (
                         <div className="text-xs text-red-600 max-w-48 truncate">
                           {log.error_message}
@@ -683,6 +796,76 @@ const EmailManagementTab = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Customer Email History Lookup */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                Customer Email History Lookup
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Enter customer email address..."
+                  value={customerEmailSearch}
+                  onChange={(e) => setCustomerEmailSearch(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && searchCustomerEmails()}
+                  className="flex-1"
+                />
+                <Button onClick={searchCustomerEmails}>
+                  Search
+                </Button>
+              </div>
+
+              {customerEmailHistory.length > 0 && (
+                <div className="space-y-3 mt-4">
+                  <div className="font-medium">
+                    Email History for {customerEmailSearch} ({customerEmailHistory.length} email{customerEmailHistory.length !== 1 ? 's' : ''})
+                  </div>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {customerEmailHistory.map((log) => (
+                      <div key={log.id} className="flex justify-between items-center p-3 border rounded-lg bg-muted/50">
+                        <div className="space-y-1 flex-1">
+                          <div className="font-medium">{log.subject}</div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-2">
+                            {log.template?.name}
+                            {log.template?.template_type && (
+                              <Badge variant="outline" className="text-xs">
+                                {log.template.template_type}
+                              </Badge>
+                            )}
+                            <span>•</span>
+                            <span>{new Date(log.sent_at || log.created_at).toLocaleString()}</span>
+                          </div>
+                        </div>
+                        <div className="text-right space-y-2 flex flex-col items-end">
+                          {getStatusBadge(log.status)}
+                          {log.status === 'sent' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleResendEmail(log)}
+                              disabled={isResending === log.id}
+                            >
+                              {isResending === log.id ? 'Resending...' : 'Resend'}
+                            </Button>
+                          )}
+                          {log.error_message && (
+                            <div className="text-xs text-red-600 max-w-48 truncate">
+                              {log.error_message}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
           
           {/* Email Tools Section */}
           <div className="space-y-6 mt-8">
