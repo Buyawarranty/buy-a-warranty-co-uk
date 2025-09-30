@@ -787,6 +787,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                   <h2 className="text-2xl font-bold text-black">
                     What's Covered?
                   </h2>
+                </div>
+                <div className="flex items-center gap-4">
                   <TooltipProvider delayDuration={0}>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -799,8 +801,8 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
+                  <ChevronDown className="w-6 h-6 text-gray-600 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </div>
-                <ChevronDown className="w-6 h-6 text-gray-600 transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </div>
             </CollapsibleTrigger>
             
