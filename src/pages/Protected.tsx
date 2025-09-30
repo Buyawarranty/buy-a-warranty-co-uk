@@ -332,6 +332,24 @@ const Protected = () => {
               />
             </a>
           </div>
+
+          {/* Hero Images */}
+          <div className="grid md:grid-cols-2 gap-8 mt-12 max-w-5xl mx-auto">
+            <div className="flex justify-center">
+              <img 
+                src="/car-warranty-uk-warranty-quotes.png" 
+                alt="Car warranty UK warranty quotes - Panda mascot with cars vans and motorcycles coverage"
+                className="w-full h-auto max-w-md rounded-lg shadow-lg"
+              />
+            </div>
+            <div className="flex justify-center">
+              <img 
+                src="/car-warranty-uk-used-car-warranty.png" 
+                alt="Car warranty UK used car warranty - Mobile-friendly instant quotes for vehicle protection"
+                className="w-full h-auto max-w-md rounded-lg shadow-lg"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
