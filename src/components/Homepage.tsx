@@ -711,14 +711,15 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Video */}
             <div className="relative aspect-video">
-              <iframe 
-                src="https://www.youtube.com/embed/poiqZLF2MVg" 
+              <video 
+                src="/warranty-explainer.mp4" 
                 title="Extended warranty explainer video"
                 className="w-full h-full rounded-md shadow-lg"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+                controls
+                preload="metadata"
+              >
+                Your browser does not support the video tag.
+              </video>
             </div>
 
             {/* Right - Content */}
