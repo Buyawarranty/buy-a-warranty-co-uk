@@ -838,10 +838,15 @@ Issue Timing: ${formData.issueTiming}
               <p className="leading-relaxed">
                 In our experience at Buy-A-Warranty, this situation is very rare - especially if you've selected a claim limit that suits your vehicle and driving habits.
               </p>
-              <div className="bg-white p-8 rounded-xl shadow-sm border-l-4 border-orange-500 mt-8">
-                <p className="font-semibold text-xl text-gray-900">
-                  We cover what we promise - no hidden surprises.
-                </p>
+              <div className="bg-white p-8 rounded-xl shadow-lg border border-orange-100 mt-8 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-4 justify-center">
+                  <div className="p-3 bg-orange-100 rounded-full">
+                    <Check className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <p className="font-semibold text-xl text-gray-900">
+                    We cover what we promise - no hidden surprises.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
