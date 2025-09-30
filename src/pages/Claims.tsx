@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Menu, Upload, X, Mail, Phone, Clock, Shield, FileText, User, Wrench, AlertTriangle, Heart, Zap } from 'lucide-react';
+import { Check, Menu, Upload, X, Mail, Phone, Clock, Shield, FileText, User, Wrench, AlertTriangle, Zap } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -355,13 +355,9 @@ Issue Timing: ${formData.issueTiming}
                 Making a Claim
               </h1>
             </div>
-            <div className="flex justify-center items-center gap-2 mb-8">
-              <Heart className="w-6 h-6 text-orange-500" />
-              <p className="text-xl lg:text-2xl font-semibold text-orange-600">
-                Simple, Supportive and Stress Free
-              </p>
-              <Heart className="w-6 h-6 text-orange-500" />
-            </div>
+            <p className="text-xl lg:text-2xl font-semibold text-orange-600 mb-8">
+              Simple, Supportive and Stress Free
+            </p>
             <div className="max-w-3xl mx-auto">
               <p className="text-lg lg:text-xl text-gray-600 mb-8 leading-relaxed">
                 We know that vehicle issues can be stressful, but making a claim shouldn't be. At 
@@ -517,7 +513,7 @@ Issue Timing: ${formData.issueTiming}
                 <img 
                   src="/car-warranty-uk-claims-petrol-car.png" 
                   alt="Car warranty UK petrol car claims - Volkswagen Golf GTI with buyawarranty branding showing professional UK warranty claims support" 
-                  className="w-full max-w-2xl h-auto rounded-lg shadow-lg"
+                  className="w-full max-w-sm h-auto"
                 />
               </div>
             </div>
