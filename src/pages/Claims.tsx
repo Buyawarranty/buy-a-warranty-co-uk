@@ -833,10 +833,10 @@ Issue Timing: ${formData.issueTiming}
             </h2>
             <div className="space-y-6 text-lg text-gray-600 max-w-3xl mx-auto">
               <p className="leading-relaxed">
-                Your maximum repair limit is clearly outlined in your warranty email and in your online account. If a repair goes over your limit, you can simply top it up.
+                At Buyawarranty.co.uk, your maximum repair limit is clearly outlined in your warranty email and visible in your online account. If a repair exceeds your limit, you can simply top it up.
               </p>
               <p className="leading-relaxed">
-                In our experience, that's very rare, especially if you've chosen a claim limit that suits your vehicle and driving habits.
+                In our experience at Buy-A-Warranty, this situation is very rare - especially if you've selected a claim limit that suits your vehicle and driving habits.
               </p>
               <div className="bg-white p-8 rounded-xl shadow-sm border-l-4 border-orange-500 mt-8">
                 <p className="font-semibold text-xl text-gray-900">
