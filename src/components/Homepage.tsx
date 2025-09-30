@@ -9,6 +9,7 @@ import WebsiteFooter from './WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { VoucherBanner } from './VoucherBanner';
 import { EmailCapturePopup } from './EmailCapturePopup';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -699,9 +700,18 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   </div>
                   
                   {/* Instant Activation Badge */}
-                  <div className="inline-flex items-center gap-2 bg-green-50 border border-green-300 rounded-md px-3.5 py-2">
-                    <span className="text-sm font-semibold text-green-700">⚡ Instant activation</span>
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="inline-flex items-center gap-2 bg-green-50 border border-green-300 rounded-md px-3.5 py-2 cursor-pointer">
+                          <span className="text-sm font-semibold text-green-700">⚡ Instant activation</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>🛡️ Cover starts immediately after purchase – excludes pre-existing conditions.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
             </div>
