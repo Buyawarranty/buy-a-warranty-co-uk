@@ -384,27 +384,27 @@ Issue Timing: ${formData.issueTiming}
                     <div className="p-2 bg-orange-100 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
                       <Zap className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
                     </div>
-                    <h3 className="font-semibold text-gray-900">Quick Response</h3>
+                    <h3 className="text-xl font-bold text-gray-900">Quick Response</h3>
                   </div>
-                  <p className="text-gray-700">We respond to claims quickly and fairly, with no unnecessary delays</p>
+                  <p className="text-sm text-gray-700">We respond to claims quickly and fairly, with no unnecessary delays</p>
                 </div>
                 <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100 hover:border-orange-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-orange-100 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
                       <User className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
                     </div>
-                    <h3 className="font-semibold text-gray-900">UK-Based Team</h3>
+                    <h3 className="text-xl font-bold text-gray-900">UK-Based Team</h3>
                   </div>
-                  <p className="text-gray-700">Our UK-based claims team is here to guide you every step of the way</p>
+                  <p className="text-sm text-gray-700">Our UK-based claims team is here to guide you every step of the way</p>
                 </div>
                 <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-orange-100 hover:border-orange-200">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-orange-100 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
                       <Check className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-300" />
                     </div>
-                    <h3 className="font-semibold text-gray-900">Simple Process</h3>
+                    <h3 className="text-xl font-bold text-gray-900">Simple Process</h3>
                   </div>
-                  <p className="text-gray-700">We keep things simple, with no confusing jargon or hidden terms</p>
+                  <p className="text-sm text-gray-700">We keep things simple, with no confusing jargon or hidden terms</p>
                 </div>
               </div>
             </div>
