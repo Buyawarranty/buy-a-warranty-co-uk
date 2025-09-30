@@ -513,7 +513,7 @@ Issue Timing: ${formData.issueTiming}
                 <img 
                   src="/car-warranty-uk-claims-petrol-car.png" 
                   alt="Car warranty UK petrol car claims - Volkswagen Golf GTI with buyawarranty branding showing professional UK warranty claims support" 
-                  className="w-full max-w-sm h-auto"
+                  className="w-full max-w-[192px] h-auto"
                 />
               </div>
             </div>
