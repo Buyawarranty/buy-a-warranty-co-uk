@@ -887,10 +887,47 @@ const FAQ = () => {
                 {/* Savings Section */}
                 {!searchTerm && (
                   <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg shadow-lg p-6 mt-6">
-                    <h3 className="font-bold text-xl text-orange-800 mb-3">Save Money with Extended Warranty</h3>
-                    <p className="text-orange-700 leading-relaxed">
-                      Protect yourself from unexpected repair costs! Our extended warranty plans can save you thousands compared to paying for major repairs out of pocket. Small monthly payments give you peace of mind and big savings when you need it most.
+                    <h3 className="font-bold text-xl text-orange-800 mb-4">Save Money with an Extended Car Warranty from Buyawarranty.co.uk</h3>
+                    <p className="text-orange-700 leading-relaxed mb-4">
+                      Protect your vehicle and your wallet with our trusted UK car warranty plans. Here's why thousands of drivers choose Buyawarranty:
                     </p>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-semibold text-orange-800 mb-1">Save Money on Repairs</h4>
+                        <p className="text-orange-700 text-sm">
+                          Avoid unexpected garage bills. With Buyawarranty, our extended car warranty can save you thousands compared to paying for major repairs out of pocket.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-semibold text-orange-800 mb-1">Affordable Monthly Payments</h4>
+                        <p className="text-orange-700 text-sm">
+                          Spread the cost with small, manageable payments from Buy-A-Warranty that give you peace of mind.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-semibold text-orange-800 mb-1">Comprehensive UK Coverage</h4>
+                        <p className="text-orange-700 text-sm">
+                          From engine to electrics, Buyawarranty.co.uk offers plans that cover the essentials that matter most.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-semibold text-orange-800 mb-1">Instant Activation</h4>
+                        <p className="text-orange-700 text-sm">
+                          Your protection starts immediately after purchase (excludes pre-existing conditions).
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-semibold text-orange-800 mb-1">Trusted by UK Drivers</h4>
+                        <p className="text-orange-700 text-sm">
+                          Join thousands who rely on Buyawarranty.co.uk for reliable, affordable cover.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
