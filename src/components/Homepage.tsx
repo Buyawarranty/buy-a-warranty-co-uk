@@ -15,8 +15,6 @@ import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIconNew from '@/assets/whatsapp-icon-new.png';
-import pandaVehicleCollection from '@/assets/panda-vehicle-collection-hero.png';
-import pandaCelebratingCar from '@/assets/panda-celebrating-orange-car.png';
 import { trackButtonClick, trackEvent } from '@/utils/analytics';
 
 interface VehicleData {
@@ -646,8 +644,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
  {/* Right Content - Hero Image */}
             <div className="relative">
               <img 
-                src={pandaVehicleCollection} 
-                alt="Panda mascot with vehicle collection including cars, van, and motorcycle" 
+                src="/extended_warranty_uk-car-trustworthy-reviews.png" 
+                alt="Extended warranty UK - Car trustworthy reviews - Panda mascot with vehicle collection" 
                 className="w-full h-auto"
               />
               {/* Trustpilot Logo positioned to align with van */}
@@ -789,8 +787,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Right - Panda with vehicles */}
             <div className="relative text-center order-1 lg:order-2">
               <img 
-                src={pandaCelebratingCar} 
-                alt="Panda mascot celebrating with orange car" 
+                src="/car-warranty-uk-compare-quotes.png" 
+                alt="Car warranty UK - Compare quotes - Panda mascot celebrating with orange car" 
                 className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
               />
               
@@ -821,8 +819,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Left - Panda with plan badges */}
             <div className="relative text-center">
               <img 
-                src="/lovable-uploads/c7cd8118-a835-41a0-befa-88809afcde40.png" 
-                alt="Panda mascot with Monthly, Yearly, 1,2,3 Years options" 
+                src="/extended-warranty-uk-car-reliable.png" 
+                alt="Extended warranty UK - Car reliable - Panda mascot with Monthly, Yearly, 1,2,3 Years options" 
                 className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
               />
             </div>
@@ -926,8 +924,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Right - Panda with warranty active */}
             <div className="relative text-center order-1 lg:order-2">
               <img 
-                src="/lovable-uploads/panda-celebrating-new.png" 
-                alt="Panda with EV charging station - Warranty Active" 
+                src="/car-warranty-uk-trusted-provider.png" 
+                alt="Car warranty UK - Trusted provider - Panda with EV charging station" 
                 className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
               />
             </div>
