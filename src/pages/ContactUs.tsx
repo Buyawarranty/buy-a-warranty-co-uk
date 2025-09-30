@@ -261,8 +261,8 @@ const ContactUs = () => {
               {/* Panda Image */}
               <div className="flex flex-col items-center lg:items-start order-2 lg:order-1 space-y-4">
                 <img 
-                  src="/lovable-uploads/dd63a384-ee39-4b63-8b4a-0789f2b81de1.png" 
-                  alt="Panda on motorcycle mascot" 
+                  src="/car-warranty-uk-suv-warranty-uk.png" 
+                  alt="Car warranty UK SUV warranty - Panda mascot with cars vans motorcycles and savings jar showing affordable protection" 
                   className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
                 />
                 
@@ -377,8 +377,8 @@ const ContactUs = () => {
                 
                 <div className="flex justify-center">
                   <img 
-                    src="/lovable-uploads/ed51aa4b-5f6d-454b-aa7f-50b001a95926.png" 
-                    alt="Panda with car and mechanic" 
+                    src="/car-warranty-uk-petrol-car-warranty.png" 
+                    alt="Car warranty UK petrol car warranty - Volkswagen Golf GTI with buyawarranty branding showing professional coverage" 
                     className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
                   />
                 </div>
