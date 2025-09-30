@@ -343,9 +343,9 @@ Issue Timing: ${formData.issueTiming}
         </div>
       </header>
 
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-white">
         {/* Hero Section - UX Optimized with Orange Branding */}
-        <section className="bg-gradient-to-br from-orange-50 via-orange-25 to-white py-16 lg:py-24 px-4">
+        <section className="bg-white py-16 lg:py-24 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center items-center gap-3 mb-6">
               <div className="p-3 bg-orange-100 rounded-full">
@@ -510,11 +510,22 @@ Issue Timing: ${formData.issueTiming}
                 </Button>
               </div>
             </div>
+
+            {/* SEO-Friendly Image */}
+            <div className="mt-16">
+              <div className="flex justify-center">
+                <img 
+                  src="/car-warranty-uk-claims-petrol-car.png" 
+                  alt="Car warranty UK petrol car claims - Volkswagen Golf GTI with buyawarranty branding showing professional UK warranty claims support" 
+                  className="w-full max-w-2xl h-auto rounded-lg shadow-lg"
+                />
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Form Section */}
-        <section className="py-16 lg:py-24 px-4 bg-gray-50" id="claim-form">
+        <section className="py-16 lg:py-24 px-4 bg-white" id="claim-form">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Left Side - Form */}
@@ -819,7 +830,7 @@ Issue Timing: ${formData.issueTiming}
         </section>
 
         {/* Your Repair Limit Explained */}
-        <section className="py-16 lg:py-24 px-4 bg-gray-50">
+        <section className="py-16 lg:py-24 px-4 bg-white">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8">
               Your Repair Limit Explained
