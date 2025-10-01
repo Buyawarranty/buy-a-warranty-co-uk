@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Menu, Upload, X, Mail, Phone, Clock, Shield, FileText, User, Wrench, AlertTriangle, Zap } from 'lucide-react';
+import { Check, Menu, Upload, X, Mail, Phone, Clock, Shield, FileText, User, Wrench, AlertTriangle, Zap, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -39,6 +39,7 @@ const Claims = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [isDragging, setIsDragging] = useState(false);
 
   // Validation functions
   const validateEmail = (email: string): boolean => {
@@ -101,6 +102,52 @@ const Claims = () => {
     const fileInput = document.getElementById('file-upload') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      
+      // Validate file size (20MB max)
+      if (file.size > 20 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please upload a file smaller than 20MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload a PDF, DOC, DOCX, JPG, or PNG file.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setUploadedFile(file);
     }
   };
 
@@ -171,7 +218,11 @@ Issue Timing: ${formData.issueTiming}
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          message: claimMessage,
+          vehicleReg: formData.vehicleReg,
+          faultDescription: formData.faultDescription,
+          dateOccurred: formData.dateOccurred,
+          faultDetails: formData.faultDetails,
+          issueTiming: formData.issueTiming,
           file: fileData
         }
       });
@@ -181,8 +232,9 @@ Issue Timing: ${formData.issueTiming}
       }
 
       toast({
-        title: "Claim Submitted Successfully",
+        title: "✓ Claim Submitted Successfully",
         description: "Thank you! We'll contact you within 1-2 business days.",
+        className: "bg-green-500 text-white border-green-600",
       });
 
       // Reset form
@@ -684,7 +736,16 @@ Issue Timing: ${formData.issueTiming}
                           {!uploadedFile ? (
                             <div className="mt-1.5">
                               <label htmlFor="file-upload" className="cursor-pointer">
-                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-orange-500 transition-colors">
+                                <div 
+                                  className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                                    isDragging 
+                                      ? 'border-orange-500 bg-orange-50' 
+                                      : 'border-gray-300 hover:border-orange-500'
+                                  }`}
+                                  onDragOver={handleDragOver}
+                                  onDragLeave={handleDragLeave}
+                                  onDrop={handleDrop}
+                                >
                                   <Upload className="mx-auto h-8 w-8 text-gray-400" />
                                   <p className="mt-2 text-sm text-gray-600">
                                     Click to upload or drag and drop

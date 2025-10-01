@@ -14,7 +14,11 @@ interface ClaimSubmissionRequest {
   name: string;
   email: string;
   phone?: string;
-  message?: string;
+  vehicleReg?: string;
+  faultDescription?: string;
+  dateOccurred?: string;
+  faultDetails?: string;
+  issueTiming?: string;
   file?: {
     name: string;
     size: number;
@@ -42,9 +46,9 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { name, email, phone, message, file }: ClaimSubmissionRequest = await req.json();
+    const { name, email, phone, vehicleReg, faultDescription, dateOccurred, faultDetails, issueTiming, file }: ClaimSubmissionRequest = await req.json();
 
-    console.log('Received claim submission:', { name, email, phone: phone || 'N/A', message: message || 'N/A' });
+    console.log('Received claim submission:', { name, email, phone: phone || 'N/A', vehicleReg: vehicleReg || 'N/A' });
 
     let fileUrl = null;
     let fileName = null;
@@ -84,6 +88,15 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
+    // Combine claim details into message for database storage
+    const claimMessage = [
+      vehicleReg && `Vehicle: ${vehicleReg}`,
+      faultDescription && `Fault: ${faultDescription}`,
+      dateOccurred && `Date: ${dateOccurred}`,
+      faultDetails && `Details: ${faultDetails}`,
+      issueTiming && `Timing: ${issueTiming}`
+    ].filter(Boolean).join('\n');
+
     // Store submission in database
     const { data: submissionData, error: dbError } = await supabase
       .from('claims_submissions')
@@ -92,7 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
           name,
           email,
           phone: phone || null,
-          message: message || null,
+          message: claimMessage || null,
           file_url: fileUrl,
           file_name: fileName,
           file_size: fileSize,
@@ -109,7 +122,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Submission stored in database:', submissionData.id);
 
-    // Prepare email content
+    // Prepare email content with all form fields
     const emailSubject = `New Claim Submission from ${name}`;
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -123,16 +136,26 @@ const handler = async (req: Request): Promise<Response> => {
         </div>
         
         <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h2 style="color: #333; margin-top: 0;">Message</h2>
-          <p>${message || 'No message provided'}</p>
+          <h2 style="color: #333; margin-top: 0;">Vehicle Details</h2>
+          <p><strong>Vehicle Reg/Make/Model:</strong> ${vehicleReg || 'Not provided'}</p>
+        </div>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h2 style="color: #333; margin-top: 0;">Claim Details</h2>
+          <p><strong>Fault Description:</strong> ${faultDescription || 'Not provided'}</p>
+          <p><strong>Date Issue Occurred:</strong> ${dateOccurred || 'Not provided'}</p>
+          <p><strong>Fault Details:</strong></p>
+          <p style="white-space: pre-wrap;">${faultDetails || 'Not provided'}</p>
+          <p><strong>When Issue Was Noticed:</strong></p>
+          <p style="white-space: pre-wrap;">${issueTiming || 'Not provided'}</p>
         </div>
         
         ${fileName ? `
-        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h2 style="color: #333; margin-top: 0;">Attachment</h2>
+        <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+          <h2 style="color: #333; margin-top: 0;">📎 Attachment</h2>
           <p><strong>File:</strong> ${fileName}</p>
           <p><strong>Size:</strong> ${fileSize ? Math.round(fileSize / 1024) + ' KB' : 'Unknown'}</p>
-          ${fileUrl ? `<p><strong>File URL:</strong> ${fileUrl}</p>` : ''}
+          ${fileUrl ? `<p><a href="https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/${fileUrl}" style="color: #eb4b00; text-decoration: underline;">Download Attachment</a></p>` : ''}
         </div>
         ` : ''}
         
