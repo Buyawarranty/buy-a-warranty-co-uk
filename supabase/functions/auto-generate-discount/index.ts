@@ -74,7 +74,7 @@ serve(async (req) => {
         .from('discount_codes')
         .insert({
           code: campaignCode,
-          type: 'percentage',
+          type: 'fixed',
           value: 25,
           valid_from: validFrom.toISOString(),
           valid_to: validTo.toISOString(),
@@ -94,9 +94,9 @@ serve(async (req) => {
       discountCodeData = newDiscountCode;
     }
 
-    // Calculate discount amount
-    const discountAmount = (orderAmount * 25) / 100;
-    const finalAmount = orderAmount - discountAmount;
+    // Calculate discount amount (fixed £25)
+    const discountAmount = 25;
+    const finalAmount = Math.max(0, orderAmount - discountAmount);
 
     logStep("Campaign discount code ready", {
       code: discountCodeData.code,
