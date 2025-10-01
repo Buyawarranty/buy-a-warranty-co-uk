@@ -2060,8 +2060,15 @@ export const CustomersTab = () => {
                                         <SelectValue />
                                       </SelectTrigger>
                                       <SelectContent>
+                                        <SelectItem value="500">£500</SelectItem>
+                                        <SelectItem value="750">£750</SelectItem>
+                                        <SelectItem value="1000">£1,000</SelectItem>
+                                        <SelectItem value="1200">£1,200</SelectItem>
                                         <SelectItem value="1250">£1,250</SelectItem>
+                                        <SelectItem value="1500">£1,500</SelectItem>
+                                        <SelectItem value="2000">£2,000</SelectItem>
                                         <SelectItem value="2500">£2,500</SelectItem>
+                                        <SelectItem value="3000">£3,000</SelectItem>
                                         <SelectItem value="5000">£5,000</SelectItem>
                                       </SelectContent>
                                     </Select>
