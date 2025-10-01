@@ -728,6 +728,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <div className="relative aspect-video">
               <video 
                 src="/warranty-explainer.mp4" 
+                poster="/warranty-explainer-thumbnail.jpg"
                 title="Extended warranty explainer video"
                 className="w-full h-full rounded-md shadow-lg"
                 controls
