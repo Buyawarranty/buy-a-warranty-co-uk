@@ -11,6 +11,7 @@ import { TrophySpinner } from '@/components/ui/trophy-spinner';
 import { SEOHead } from '@/components/SEOHead';
 import bawLogo from '@/assets/baw-logo-new-2025.png';
 import pandaCelebratingOrangeCar from '@/assets/panda-celebrating-orange-car.png';
+import { trackPurchaseComplete } from '@/utils/analytics';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -115,6 +116,24 @@ const ThankYou = () => {
             setPolicyNumber(data.policyNumber);
           }
           toast.success('Your warranty policy has been created successfully!');
+          
+          // Track Google Ads purchase conversion with enhanced data
+          const transactionId = data?.policyNumber || sessionId || `ORDER_${Date.now()}`;
+          const finalAmount = searchParams.get('final_amount') 
+            ? parseFloat(searchParams.get('final_amount')!) 
+            : data?.amount || 0;
+          
+          trackPurchaseComplete(
+            finalAmount,
+            transactionId,
+            {
+              email: searchParams.get('email') || data?.customerEmail,
+              phone: searchParams.get('mobile') || data?.customerPhone,
+              firstName: searchParams.get('first_name') || data?.firstName,
+              lastName: searchParams.get('last_name') || data?.lastName,
+              address: searchParams.get('street') || data?.address
+            }
+          );
           
           // Check if user enabled "Add Another Warranty" during checkout
           const addAnotherWarranty = searchParams.get('addAnotherWarranty');

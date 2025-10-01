@@ -16,7 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIconNew from '@/assets/whatsapp-icon-new.png';
-import { trackButtonClick, trackEvent } from '@/utils/analytics';
+import { trackButtonClick, trackEvent, trackQuoteRequest } from '@/utils/analytics';
 
 interface VehicleData {
   regNumber: string;
@@ -263,6 +263,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           vehicleData.blockReason = data.blockReason;
         }
       }
+      
+      // Track quote request with enhanced data for Google Ads
+      trackQuoteRequest(undefined, undefined, undefined);
 
       // Submit to parent component
       onRegistrationSubmit(vehicleData);

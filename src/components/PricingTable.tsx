@@ -18,6 +18,7 @@ import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPrice
 import { calculateAddOnPrice, getAutoIncludedAddOns } from '@/lib/addOnsUtils';
 import pandaCarWarranty from "@/assets/panda-car-warranty-transparent.png";
 import trustpilotLogo from "@/assets/trustpilot-excellent-box.webp";
+import { trackStepCompletion, trackBeginCheckout } from '@/utils/analytics';
 
 type VehicleType = 'car' | 'motorbike' | 'phev' | 'hybrid' | 'ev';
 
@@ -621,6 +622,28 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         selectedClaimLimit,
         selectedAddOns: selectedAddOns[selectedPlan.id],
         protectionAddOns: selectedProtectionAddOns
+      });
+      
+      // Track step 3 completion and begin checkout for Google Ads
+      trackStepCompletion(3, 'plan_selection', {
+        email: vehicleData?.email,
+        phone: vehicleData?.phone,
+        firstName: vehicleData?.firstName,
+        lastName: vehicleData?.lastName,
+        address: vehicleData?.address
+      });
+      
+      trackBeginCheckout(totalPrice, [{
+        item_name: selectedPlan.name,
+        item_id: selectedPlan.id,
+        price: totalPrice,
+        quantity: 1
+      }], {
+        email: vehicleData?.email,
+        phone: vehicleData?.phone,
+        firstName: vehicleData?.firstName,
+        lastName: vehicleData?.lastName,
+        address: vehicleData?.address
       });
       
       // Call onPlanSelected with the correct pricing data and selected options

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Check } from 'lucide-react';
-import { trackFormSubmission } from '@/utils/analytics';
+import { trackFormSubmission, trackStepCompletion } from '@/utils/analytics';
 
 interface ContactDetailsStepProps {
   onNext: (data: { email: string; phone: string; firstName: string; lastName: string; address: string }) => void;
@@ -72,6 +72,15 @@ const ContactDetailsStep: React.FC<ContactDetailsStepProps> = ({ onNext, onBack,
         has_email: !!email,
         has_phone: !!phone,
         has_address: !!address
+      });
+      
+      // Track step 2 completion for Google Ads with enhanced conversion data
+      trackStepCompletion(2, 'contact_details', {
+        email,
+        phone,
+        firstName,
+        lastName,
+        address
       });
       
       onNext({ 

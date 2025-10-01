@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ProtectedButton } from '@/components/ui/protected-button';
 import { validateVehicleEligibility } from '@/lib/vehicleValidation';
 import { isHighPerformanceModel, getHighPerformanceBlockMessage } from '@/lib/highPerformanceModels';
-import { trackFormSubmission, trackEvent } from '@/utils/analytics';
+import { trackFormSubmission, trackEvent, trackStepCompletion } from '@/utils/analytics';
 
 
 interface VehicleDetailsStepProps {
@@ -304,6 +304,13 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           vehicle_type: vehicleType
         });
         
+        // Track step 1 completion for Google Ads
+        trackStepCompletion(1, 'vehicle_details', {
+          make,
+          year,
+          vehicleType
+        });
+        
         onNext({ 
           regNumber, 
           mileage: rawMileage,
@@ -338,6 +345,12 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           make: vehicleData?.make,
           year: vehicleData?.yearOfManufacture,
           vehicle_found: !!vehicleData?.found
+        });
+        
+        // Track step 1 completion for Google Ads
+        trackStepCompletion(1, 'vehicle_details', {
+          make: vehicleData?.make,
+          year: vehicleData?.yearOfManufacture
         });
         
         onNext(submitData);
