@@ -793,7 +793,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="inline-flex items-center gap-2 bg-green-50 border border-green-300 rounded-md px-3.5 py-2 cursor-pointer">
-                          <span className="text-sm font-semibold text-green-700">⚡ Instant activation</span>
+                          <span className="text-sm font-semibold text-green-700">⚡ Instant cover protection</span>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
