@@ -540,6 +540,43 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   };
 
   const handleSelectPlan = async () => {
+    // Validation: Check if all required selections are made
+    const missingSelections = [];
+    
+    if (voluntaryExcess === null) {
+      missingSelections.push('Excess Amount');
+    }
+    
+    if (!selectedClaimLimit) {
+      missingSelections.push('Claim Limit');
+    }
+    
+    if (!paymentType) {
+      missingSelections.push('Warranty Duration and Price');
+    }
+    
+    // If any selections are missing, show error and scroll to first missing section
+    if (missingSelections.length > 0) {
+      const message = missingSelections.length === 1 
+        ? `Please select your ${missingSelections[0]} before continuing`
+        : `Please select the following before continuing: ${missingSelections.join(', ')}`;
+      
+      toast.error(message, {
+        duration: 5000,
+      });
+      
+      // Scroll to the first missing selection section
+      if (voluntaryExcess === null) {
+        document.getElementById('excess-amount-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (!selectedClaimLimit) {
+        document.getElementById('claim-limit-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (!paymentType) {
+        document.getElementById('duration-price-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      return;
+    }
+    
     const selectedPlan = getSelectedPlan();
     if (!selectedPlan) return;
     
@@ -1152,7 +1189,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Choose Your Excess Amount */}
-        <div className="section-header rounded-lg p-6">
+        <div id="excess-amount-section" className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
               2
@@ -1181,7 +1218,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
         </div>
 
         {/* Claim Limit Selection */}
-        <div className="section-header rounded-lg p-6">
+        <div id="claim-limit-section" className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
               3
@@ -1372,7 +1409,7 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
 
         {/* Choose Warranty Duration */}
-        <div className="section-header rounded-lg p-6">
+        <div id="duration-price-section" className="section-header rounded-lg p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
               4
