@@ -26,34 +26,9 @@ const SetupAdmin = () => {
 
     setLoading(true);
     try {
-      // Get the admin user by email
-      const { data: adminData, error: adminError } = await supabase
-        .from('admin_users')
-        .select('user_id, id')
-        .eq('email', email)
-        .maybeSingle();
-
-      if (adminError) {
-        console.error('Error fetching admin:', adminError);
-      }
-
-      if (!adminData || !adminData.user_id) {
-        toast({
-          title: "Admin Not Found",
-          description: `No admin user found with email ${email}. The admin record must be created first.`,
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Call the edge function to set password
-      const { data, error } = await supabase.functions.invoke('set-admin-password', {
-        body: {
-          userId: adminData.user_id,
-          email: email,
-          password: password
-        }
+      // Call edge function to setup admin user
+      const { data, error } = await supabase.functions.invoke('setup-admin-user', {
+        body: { email, password }
       });
 
       if (error) {
@@ -66,10 +41,10 @@ const SetupAdmin = () => {
 
       toast({
         title: "Success!",
-        description: `Password set for ${email}. Redirecting to login...`,
+        description: `Admin user setup complete. You can now login with ${email}. Redirecting...`,
       });
 
-      console.log("Password set successfully. Response:", data);
+      console.log("Admin setup successful:", data);
 
       // Redirect to auth page after 2 seconds
       setTimeout(() => {
@@ -77,10 +52,10 @@ const SetupAdmin = () => {
       }, 2000);
       
     } catch (error: any) {
-      console.error('Error setting password:', error);
+      console.error('Error setting up admin:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to set password. Check console for details.",
+        description: error.message || "Failed to setup admin. Check console for details.",
         variant: "destructive",
       });
     } finally {
