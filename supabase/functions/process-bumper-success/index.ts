@@ -119,14 +119,58 @@ serve(async (req) => {
       finalAmount: transactionData.final_amount
     });
 
-    // Update transaction status to completed
+    // CRITICAL: Check if transaction has already been processed to prevent duplicates
+    if (transactionData.status === 'completed') {
+      logStep("DUPLICATE DETECTED: Transaction already processed", { 
+        transactionId,
+        previousStatus: 'completed'
+      });
+      
+      // Still redirect to success page, but don't process again
+      const redirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+      return new Response(null, {
+        status: 302,
+        headers: {
+          ...corsHeaders,
+          'Location': redirectUrl
+        }
+      });
+    }
+
+    // Check if customer already exists with this bumper_order_id to prevent duplicates
+    const { data: existingCustomer, error: checkError } = await supabaseClient
+      .from('customers')
+      .select('id, email, bumper_order_id')
+      .eq('bumper_order_id', transactionId)
+      .maybeSingle();
+
+    if (existingCustomer) {
+      logStep("DUPLICATE DETECTED: Customer already exists with this Bumper order ID", {
+        transactionId,
+        existingCustomerId: existingCustomer.id,
+        existingEmail: existingCustomer.email
+      });
+      
+      // Redirect to success page without processing again
+      const redirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+      return new Response(null, {
+        status: 302,
+        headers: {
+          ...corsHeaders,
+          'Location': redirectUrl
+        }
+      });
+    }
+
+    // Update transaction status to completed BEFORE processing to prevent race conditions
     const { error: updateError } = await supabaseClient
       .from('bumper_transactions')
       .update({ 
         status: 'completed',
         updated_at: new Date().toISOString()
       })
-      .eq('transaction_id', transactionId);
+      .eq('transaction_id', transactionId)
+      .eq('status', 'pending'); // Only update if still pending (prevents race condition)
 
     if (updateError) {
       logStep("Error updating transaction status", { error: updateError.message });

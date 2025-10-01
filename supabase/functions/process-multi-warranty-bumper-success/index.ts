@@ -41,11 +41,62 @@ serve(async (req) => {
       redirectUrl
     });
 
+    // Check for duplicate multi-warranty orders
+    const uniqueOrderId = `MULTI-${customerData.email}-${items.map((i: any) => i.vehicleData.regNumber).join('-')}-${totalAmount}`;
+    
+    const { data: existingOrder, error: checkError } = await supabaseService
+      .from('customers')
+      .select('id, email, bumper_order_id')
+      .eq('email', customerData.email)
+      .eq('bumper_order_id', uniqueOrderId)
+      .maybeSingle();
+
+    if (existingOrder) {
+      logStep("DUPLICATE DETECTED: Multi-warranty order already processed", {
+        uniqueOrderId,
+        existingEmail: existingOrder.email
+      });
+      
+      // Redirect to success page without processing again
+      return new Response(null, {
+        status: 302,
+        headers: {
+          ...corsHeaders,
+          'Location': redirectUrl
+        }
+      });
+    }
+
     // Process each warranty item using handle-successful-payment for consistency
     const processedWarranties = [];
     
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
+      
+      // Check if this specific warranty already exists
+      const { data: existingWarranty, error: warrantyCheckError } = await supabaseService
+        .from('customers')
+        .select('id, registration_plate')
+        .eq('email', customerData.email)
+        .eq('registration_plate', item.vehicleData.regNumber)
+        .maybeSingle();
+
+      if (existingWarranty) {
+        logStep(`DUPLICATE DETECTED: Warranty ${i + 1} already exists`, {
+          vehicleReg: item.vehicleData.regNumber,
+          existingId: existingWarranty.id
+        });
+        
+        processedWarranties.push({
+          warrantyNumber: 'DUPLICATE',
+          vehicleReg: item.vehicleData.regNumber,
+          planName: item.planName,
+          totalPrice: item.totalPrice,
+          skipped: true
+        });
+        continue; // Skip to next warranty
+      }
+      
       logStep(`Processing warranty ${i + 1}`, { 
         planName: item.planName, 
         vehicleReg: item.vehicleData.regNumber,
@@ -55,6 +106,9 @@ serve(async (req) => {
       });
 
       try {
+        // Use unique order ID for multi-warranty tracking
+        const bumperOrderId = `${uniqueOrderId}-${i}`;
+        
         // Process this individual warranty using the existing handle-successful-payment function
         const { data: paymentData, error: paymentError } = await supabaseService.functions.invoke('handle-successful-payment', {
           body: {
@@ -62,7 +116,7 @@ serve(async (req) => {
             paymentType: item.paymentType || '12months',
             userEmail: customerData.email,
             userId: null,
-            bumperOrderId: `MULTI-VW-${Date.now()}-${i}`,
+            bumperOrderId: bumperOrderId, // Use consistent unique ID
             vehicleData: item.vehicleData,
             customerData: {
               ...customerData,
