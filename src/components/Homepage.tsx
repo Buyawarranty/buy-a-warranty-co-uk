@@ -500,11 +500,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Second Warranty Discount Banner */}
       {showSecondWarrantyDiscount && (
-        <div className="bg-orange-50 border-b border-orange-200 py-4">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
-            <div className="flex items-center gap-4 text-center">
-              <span className="text-xl font-bold text-orange-800">🎉 Your 10% Discount is Ready!</span>
-              <div className="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold text-lg">
+        <div className="bg-orange-50 border-b border-orange-200 py-3 sm:py-4">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center">
+              <span className="text-sm sm:text-xl font-bold text-orange-800">🎉 Your 10% Discount is Ready!</span>
+              <div className="bg-orange-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-bold text-base sm:text-lg">
                 {discountCode}
               </div>
               <Button
@@ -514,16 +514,16 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 }}
                 variant="outline"
                 size="sm"
-                className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white"
+                className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white w-auto sm:w-auto min-h-[40px]"
               >
                 Copy Code
               </Button>
             </div>
-          </div>
-          <div className="text-center mt-2">
-            <p className="text-sm text-orange-700">
-              This code will be automatically applied at checkout for your second warranty
-            </p>
+            <div className="text-center mt-2">
+              <p className="text-xs sm:text-sm text-orange-700 px-2">
+                This code will be automatically applied at checkout for your second warranty
+              </p>
+            </div>
           </div>
         </div>
       )}
