@@ -795,10 +795,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                        <span className="text-gray-600">Claim Limit</span>
                        <span className="font-semibold">£{(pricingData.claimLimit || 2000).toLocaleString()}</span>
                      </div>
-                     <div className="flex justify-between">
-                       <span className="text-gray-600">Voluntary Excess</span>
-                       <span className="font-semibold">£{pricingData.voluntaryExcess || 150}</span>
-                     </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Voluntary Excess</span>
+                        <span className="font-semibold">£{pricingData.voluntaryExcess ?? 150}</span>
+                      </div>
                     
                     {/* Add-ons Section */}
                     {updatedPricingData.protectionAddOns && Object.values(updatedPricingData.protectionAddOns).some(Boolean) && (
