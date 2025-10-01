@@ -53,12 +53,16 @@ const handler = async (req: Request): Promise<Response> => {
     let fileUrl = null;
     let fileName = null;
     let fileSize = null;
+    let fileBase64Content = null; // Store base64 content for email attachment
 
     // Handle file upload if present
     if (file && file.data) {
       try {
-        // Convert base64 to Uint8Array
-        const binaryString = atob(file.data.split(',')[1]);
+        // Extract base64 content (remove data URL prefix)
+        fileBase64Content = file.data.split(',')[1];
+        
+        // Convert base64 to Uint8Array for storage upload
+        const binaryString = atob(fileBase64Content);
         const fileData = new Uint8Array(binaryString.length);
         for (let i = 0; i < binaryString.length; i++) {
           fileData[i] = binaryString.charCodeAt(i);
@@ -172,19 +176,33 @@ const handler = async (req: Request): Promise<Response> => {
       </div>
     `;
 
-    // Send email to claims team
-    const emailResponse = await resend.emails.send({
+    // Prepare email with attachment
+    const emailPayload: any = {
       from: "Claims System <noreply@buyawarranty.co.uk>",
       to: ["claims@buyawarranty.co.uk"],
       subject: emailSubject,
       html: emailHtml,
-    });
+    };
+
+    // Add attachment if file was uploaded
+    if (fileBase64Content && fileName) {
+      emailPayload.attachments = [
+        {
+          filename: fileName,
+          content: fileBase64Content,
+        }
+      ];
+      console.log('Adding attachment to email:', fileName);
+    }
+
+    // Send email to claims team
+    const emailResponse = await resend.emails.send(emailPayload);
 
     if (emailResponse.error) {
       console.error('Email sending error:', emailResponse.error);
       // Don't fail the submission if email fails, just log the error
     } else {
-      console.log('Email sent successfully:', emailResponse.data?.id);
+      console.log('Email sent successfully with attachment:', emailResponse.data?.id);
     }
 
     // Send confirmation email to customer
