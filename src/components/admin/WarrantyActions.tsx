@@ -38,13 +38,21 @@ export const WarrantyActions: React.FC<WarrantyActionsProps> = ({
   const [showAuditLogs, setShowAuditLogs] = useState(false);
 
   const handleSendWelcomeEmail = async () => {
+    if (!customerId) {
+      toast.error('Customer ID is missing. Cannot send email.');
+      return;
+    }
+
     setIsLoading(prev => ({ ...prev, email: true }));
     
     try {
+      console.log('Sending welcome email to:', customerEmail, 'Policy ID:', policyId, 'Customer ID:', customerId);
+      
       const { data, error } = await supabase.functions.invoke('send-welcome-email-manual', {
         body: { 
           policyId: policyId || undefined,
-          customerId: customerId 
+          customerId: customerId,
+          forceResend: true  // Always force resend
         }
       });
 
@@ -62,22 +70,35 @@ export const WarrantyActions: React.FC<WarrantyActionsProps> = ({
             // Use original error message
           }
         }
-        toast.error(`Failed to send email: ${errorMessage}`);
+        toast.error(`Failed to send email: ${errorMessage}`, {
+          duration: 5000,
+          description: 'Please check the console for more details or contact support.'
+        });
       } else if (data?.ok) {
         if (data.already) {
-          toast.success('Email was already sent for this policy');
+          toast.success('Email was already sent for this policy', {
+            description: 'No new email was sent to avoid duplicates.'
+          });
         } else {
-          toast.success('Welcome email sent successfully!');
+          toast.success('Welcome email sent successfully!', {
+            description: `Email sent to ${customerEmail}`
+          });
         }
         onActionComplete?.();
       } else {
         const errorMsg = `${data?.code || 'Unknown error'}: ${data?.error || data?.message || 'Failed to send email'}`;
         console.error('Welcome email error:', data);
-        toast.error(errorMsg);
+        toast.error(errorMsg, {
+          duration: 5000,
+          description: 'Please try again or contact support if the issue persists.'
+        });
       }
     } catch (error: any) {
       console.error('Unexpected error sending welcome email:', error);
-      toast.error(`Unexpected error: ${error.message}`);
+      toast.error(`Unexpected error: ${error.message || 'Unknown error'}`, {
+        duration: 5000,
+        description: 'Please check your internet connection and try again.'
+      });
     } finally {
       setIsLoading(prev => ({ ...prev, email: false }));
     }
