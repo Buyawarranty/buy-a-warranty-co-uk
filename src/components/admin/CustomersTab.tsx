@@ -1995,7 +1995,212 @@ export const CustomersTab = () => {
                           
                           {editingCustomer && (
                             <>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> {/* Customer Details */}
+                              {/* Warranty Details Section - MOVED TO TOP */}
+                              <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
+                                <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center">
+                                  <span className="bg-blue-600 text-white px-2 py-1 rounded mr-2">✓</span>
+                                  Warranty Details (Editable)
+                                </h3>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                  <div>
+                                    <Label htmlFor="payment_type">Warranty Duration</Label>
+                                    <Select
+                                      value={editingCustomer.payment_type || 'monthly'}
+                                      onValueChange={(value) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        payment_type: value
+                                      })}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="monthly">12 Months</SelectItem>
+                                        <SelectItem value="12months">12 Months</SelectItem>
+                                        <SelectItem value="24months">24 Months</SelectItem>
+                                        <SelectItem value="36months">36 Months</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor="excess">Voluntary Excess (£)</Label>
+                                    <Select
+                                      value={editingCustomer.voluntary_excess?.toString() || '150'}
+                                      onValueChange={(value) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        voluntary_excess: parseFloat(value)
+                                      })}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="0">£0</SelectItem>
+                                        <SelectItem value="50">£50</SelectItem>
+                                        <SelectItem value="100">£100</SelectItem>
+                                        <SelectItem value="150">£150</SelectItem>
+                                        <SelectItem value="200">£200</SelectItem>
+                                        <SelectItem value="250">£250</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  
+                                  <div>
+                                    <Label htmlFor="claim_limit">Claim Limit (£)</Label>
+                                    <Select
+                                      value={editingCustomer.claim_limit?.toString() || '1250'}
+                                      onValueChange={(value) => setEditingCustomer({
+                                        ...editingCustomer,
+                                        claim_limit: parseInt(value)
+                                      })}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="1250">£1,250</SelectItem>
+                                        <SelectItem value="2500">£2,500</SelectItem>
+                                        <SelectItem value="5000">£5,000</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </div>
+
+                                {/* Add-on Protection Checkboxes */}
+                                <div className="mt-4">
+                                  <Label className="text-sm font-medium">Add-On Protection</Label>
+                                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-2">
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="mot_fee"
+                                        checked={editingCustomer.mot_fee || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          mot_fee: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="mot_fee" className="text-sm cursor-pointer">MOT Fee</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="tyre_cover"
+                                        checked={editingCustomer.tyre_cover || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          tyre_cover: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="tyre_cover" className="text-sm cursor-pointer">Tyre Cover</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="wear_tear"
+                                        checked={editingCustomer.wear_tear || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          wear_tear: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="wear_tear" className="text-sm cursor-pointer">Wear & Tear</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="europe_cover"
+                                        checked={editingCustomer.europe_cover || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          europe_cover: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="europe_cover" className="text-sm cursor-pointer">Europe Cover</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="transfer_cover"
+                                        checked={editingCustomer.transfer_cover || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          transfer_cover: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="transfer_cover" className="text-sm cursor-pointer">Transfer Cover</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="breakdown_recovery"
+                                        checked={editingCustomer.breakdown_recovery || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          breakdown_recovery: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="breakdown_recovery" className="text-sm cursor-pointer">Breakdown Recovery</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="vehicle_rental"
+                                        checked={editingCustomer.vehicle_rental || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          vehicle_rental: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="vehicle_rental" className="text-sm cursor-pointer">Vehicle Rental</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="mot_repair"
+                                        checked={editingCustomer.mot_repair || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          mot_repair: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="mot_repair" className="text-sm cursor-pointer">MOT Repair</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="lost_key"
+                                        checked={editingCustomer.lost_key || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          lost_key: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="lost_key" className="text-sm cursor-pointer">Lost Key</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id="consequential"
+                                        checked={editingCustomer.consequential || false}
+                                        onCheckedChange={(checked) => setEditingCustomer({
+                                          ...editingCustomer,
+                                          consequential: checked as boolean
+                                        })}
+                                      />
+                                      <Label htmlFor="consequential" className="text-sm cursor-pointer">Consequential Loss</Label>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <Button onClick={updateCustomer} className="w-full mt-4" size="lg">
+                                  <Save className="h-4 w-4 mr-2" />
+                                  Save Warranty Changes
+                                </Button>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-4">
                                   <h3 className="text-lg font-semibold">Customer Details</h3>
                                 
@@ -2311,209 +2516,7 @@ export const CustomersTab = () => {
                                       </SelectContent>
                                     </Select>
                                   </div>
-                                  
-                                  {/* Warranty Details Section */}
-                                  <div className="space-y-3 border-t pt-4">
-                                    <h4 className="font-medium text-gray-900">Warranty Details</h4>
-                                    
-                                    <div>
-                                      <Label htmlFor="payment_type">Warranty Duration</Label>
-                                      <Select
-                                        value={editingCustomer.payment_type || 'monthly'}
-                                        onValueChange={(value) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          payment_type: value
-                                        })}
-                                      >
-                                        <SelectTrigger>
-                                          <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          <SelectItem value="monthly">12 Months</SelectItem>
-                                          <SelectItem value="12months">12 Months</SelectItem>
-                                          <SelectItem value="24months">24 Months</SelectItem>
-                                          <SelectItem value="36months">36 Months</SelectItem>
-                                        </SelectContent>
-                                      </Select>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-3">
-                                      <div>
-                                        <Label htmlFor="excess">Voluntary Excess (£)</Label>
-                                        <Select
-                                          value={editingCustomer.voluntary_excess?.toString() || '150'}
-                                          onValueChange={(value) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            voluntary_excess: parseFloat(value)
-                                          })}
-                                        >
-                                          <SelectTrigger>
-                                            <SelectValue />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="0">£0</SelectItem>
-                                            <SelectItem value="50">£50</SelectItem>
-                                            <SelectItem value="100">£100</SelectItem>
-                                            <SelectItem value="150">£150</SelectItem>
-                                            <SelectItem value="200">£200</SelectItem>
-                                            <SelectItem value="250">£250</SelectItem>
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                      
-                                      <div>
-                                        <Label htmlFor="claim_limit">Claim Limit (£)</Label>
-                                        <Select
-                                          value={editingCustomer.claim_limit?.toString() || '1250'}
-                                          onValueChange={(value) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            claim_limit: parseInt(value)
-                                          })}
-                                        >
-                                          <SelectTrigger>
-                                            <SelectValue />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="1250">£1,250</SelectItem>
-                                            <SelectItem value="2500">£2,500</SelectItem>
-                                            <SelectItem value="5000">£5,000</SelectItem>
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                    </div>
-
-                                    {/* Add-on Protection Checkboxes */}
-                                    <div className="space-y-2">
-                                      <Label className="text-sm font-medium">Add-On Protection</Label>
-                                      <div className="grid grid-cols-2 gap-2">
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="mot_fee"
-                                            checked={editingCustomer.mot_fee || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              mot_fee: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="mot_fee" className="text-sm cursor-pointer">MOT Fee</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="tyre_cover"
-                                            checked={editingCustomer.tyre_cover || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              tyre_cover: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="tyre_cover" className="text-sm cursor-pointer">Tyre Cover</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="wear_tear"
-                                            checked={editingCustomer.wear_tear || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              wear_tear: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="wear_tear" className="text-sm cursor-pointer">Wear & Tear</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="europe_cover"
-                                            checked={editingCustomer.europe_cover || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              europe_cover: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="europe_cover" className="text-sm cursor-pointer">Europe Cover</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="transfer_cover"
-                                            checked={editingCustomer.transfer_cover || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              transfer_cover: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="transfer_cover" className="text-sm cursor-pointer">Transfer Cover</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="breakdown_recovery"
-                                            checked={editingCustomer.breakdown_recovery || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              breakdown_recovery: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="breakdown_recovery" className="text-sm cursor-pointer">Breakdown Recovery</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="vehicle_rental"
-                                            checked={editingCustomer.vehicle_rental || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              vehicle_rental: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="vehicle_rental" className="text-sm cursor-pointer">Vehicle Rental</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="mot_repair"
-                                            checked={editingCustomer.mot_repair || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              mot_repair: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="mot_repair" className="text-sm cursor-pointer">MOT Repair</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="lost_key"
-                                            checked={editingCustomer.lost_key || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              lost_key: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="lost_key" className="text-sm cursor-pointer">Lost Key</Label>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id="consequential"
-                                            checked={editingCustomer.consequential || false}
-                                            onCheckedChange={(checked) => setEditingCustomer({
-                                              ...editingCustomer,
-                                              consequential: checked as boolean
-                                            })}
-                                          />
-                                          <Label htmlFor="consequential" className="text-sm cursor-pointer">Consequential Loss</Label>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
                                 </div>
-                                
-                                <Button onClick={updateCustomer} className="w-full">
-                                  <Save className="h-4 w-4 mr-2" />
-                                  Save Changes
-                                </Button>
                               </div>
                               
                               {/* Warranty Actions Section */}
