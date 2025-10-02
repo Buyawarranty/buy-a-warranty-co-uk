@@ -21,6 +21,7 @@ import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { MOTHistorySection } from './MOTHistorySection';
 import { W2000DataPreview } from './W2000DataPreview';
+import { SendNotificationDialog } from './SendNotificationDialog';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 import { format } from 'date-fns';
@@ -1990,7 +1991,15 @@ export const CustomersTab = () => {
                         )}
                         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
-                            <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
+                            <div className="flex items-center justify-between">
+                              <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
+                              {selectedCustomer && (
+                                <SendNotificationDialog 
+                                  customerId={selectedCustomer.id}
+                                  customerName={selectedCustomer.name}
+                                />
+                              )}
+                            </div>
                           </DialogHeader>
                           
                           {editingCustomer && (

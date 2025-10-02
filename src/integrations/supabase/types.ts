@@ -565,6 +565,50 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_notifications: {
+        Row: {
+          attachment_url: string | null
+          created_at: string | null
+          created_by: string | null
+          customer_id: string
+          id: string
+          is_important: boolean | null
+          is_read: boolean | null
+          message: string
+          read_at: string | null
+        }
+        Insert: {
+          attachment_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_id: string
+          id?: string
+          is_important?: boolean | null
+          is_read?: boolean | null
+          message: string
+          read_at?: string | null
+        }
+        Update: {
+          attachment_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_id?: string
+          id?: string
+          is_important?: boolean | null
+          is_read?: boolean | null
+          message?: string
+          read_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_notifications_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customer_policies: {
         Row: {
           address: Json | null

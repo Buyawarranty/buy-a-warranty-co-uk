@@ -16,6 +16,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
+import { NotificationBell } from '@/components/NotificationBell';
+import { useCustomerNotifications } from '@/hooks/useCustomerNotifications';
 
 interface CustomerPolicy {
   id: string;
@@ -124,6 +126,14 @@ const CustomerDashboard = () => {
   const [password, setPassword] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Notification system
+  const { 
+    notifications, 
+    unreadCount, 
+    markAsRead, 
+    markAllAsRead 
+  } = useCustomerNotifications(user?.email);
 
   useEffect(() => {
     console.log("CustomerDashboard: useEffect triggered");
@@ -878,6 +888,12 @@ const CustomerDashboard = () => {
                 <TrustpilotHeader />
               </div>
               <span className="text-xs sm:text-sm text-gray-600">Welcome, {user?.email}</span>
+              <NotificationBell
+                notifications={notifications}
+                unreadCount={unreadCount}
+                onMarkAsRead={markAsRead}
+                onMarkAllAsRead={markAllAsRead}
+              />
               <Button variant="outline" onClick={handleSignOut} size="sm">
                 Sign Out
               </Button>
