@@ -188,13 +188,29 @@ export const BlogEditor = ({ postId }: BlogEditorProps) => {
               <CardDescription>Write and format your content with professional tools</CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <Eye className="w-4 h-4 mr-2" />
-                Preview
-              </Button>
-              <Button variant="default" size="sm">
+              {lastSaved && (
+                <span className="text-xs text-muted-foreground mr-2 flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  Saved {lastSaved.toLocaleTimeString()}
+                </span>
+              )}
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleSave(false)}
+                disabled={isSaving}
+              >
                 <Save className="w-4 h-4 mr-2" />
-                Save Draft
+                {isSaving ? 'Saving...' : 'Save Draft'}
+              </Button>
+              <Button 
+                variant="default" 
+                size="sm"
+                onClick={() => handleSave(true)}
+                disabled={isSaving}
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                {status === 'published' ? 'Update' : 'Publish'}
               </Button>
             </div>
           </div>
