@@ -92,14 +92,20 @@ serve(async (req) => {
       logStep("User already exists", { userId: userExists.id });
       userId = userExists.id;
       
-    // Update existing user's password
-      await supabaseClient.auth.admin.updateUserById(userExists.id, {
+      // Update existing user's password
+      const { data: updateData, error: updateError } = await supabaseClient.auth.admin.updateUserById(userExists.id, {
         password: tempPassword,
         user_metadata: {
           plan_type: planType,
           policy_number: policyNumber
         }
       });
+
+      if (updateError) {
+        logStep("Failed to update user password", updateError);
+        throw new Error(`Failed to update user password: ${updateError.message}`);
+      }
+      
       logStep("Updated existing user password and metadata", { userId: userExists.id, tempPasswordLength: tempPassword.length });
     } else {
       // Create user with Supabase Auth
@@ -126,6 +132,11 @@ serve(async (req) => {
       userId = userData.user.id;
       logStep("User created successfully", { userId, email, tempPasswordLength: tempPassword.length });
     }
+
+    // Add a brief delay to ensure password is fully propagated in Supabase Auth
+    logStep("Waiting for auth system to propagate password changes");
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    logStep("Password propagation wait complete");
 
     // Store welcome email record for audit
     try {

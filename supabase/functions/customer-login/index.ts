@@ -35,17 +35,46 @@ serve(async (req) => {
 
     console.log('Customer login attempt for:', email);
 
-    // Sign in the user
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    // Sign in the user - with retry logic for race conditions
+    let authData, authError;
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (attempts < maxAttempts) {
+      const result = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      authData = result.data;
+      authError = result.error;
+      
+      // If successful or error is not "Invalid login credentials", break
+      if (!authError || authError.message !== 'Invalid login credentials') {
+        break;
+      }
+      
+      // Wait briefly before retry (in case password update is still processing)
+      if (attempts < maxAttempts - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      attempts++;
+      console.log(`Login retry attempt ${attempts} for:`, email);
+    }
 
     if (authError) {
-      console.error('Authentication failed:', authError);
+      console.error('Authentication failed after', attempts, 'attempts:', authError);
+      
+      // Provide more specific error messages
+      let errorMessage = authError.message;
+      if (authError.message === 'Invalid login credentials') {
+        errorMessage = 'Invalid email or password. Please check your credentials and try again. If you just received your welcome email, please wait a moment and try again.';
+      }
+      
       return new Response(
         JSON.stringify({ 
-          error: authError.message,
+          error: errorMessage,
           success: false 
         }),
         { 
