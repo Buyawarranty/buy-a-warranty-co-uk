@@ -567,11 +567,12 @@ function getWarrantyDuration(paymentType: string): string {
 
 function getStandardizedVoluntaryExcess(metadata: any, customerData: any, vehicleData: any): number {
   // Priority: metadata > customerData > vehicleData > default
-  const excessValue = metadata?.voluntary_excess || 
-                     customerData?.voluntaryExcess || 
-                     customerData?.voluntary_excess ||
-                     vehicleData?.voluntaryExcess || 
-                     vehicleData?.voluntary_excess ||
+  // Use ?? to properly handle 0 values (|| treats 0 as falsy)
+  const excessValue = metadata?.voluntary_excess ?? 
+                     customerData?.voluntaryExcess ?? 
+                     customerData?.voluntary_excess ??
+                     vehicleData?.voluntaryExcess ?? 
+                     vehicleData?.voluntary_excess ??
                      '150'; // Standard default
   
   return parseInt(excessValue.toString());

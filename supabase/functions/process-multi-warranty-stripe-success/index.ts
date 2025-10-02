@@ -154,8 +154,8 @@ serve(async (req) => {
               final_amount: totalPrice
             },
             // Extract claim limit and voluntary excess from product metadata
-            claimLimit: parseInt(product?.metadata?.claim_limit || '1250'),
-            voluntaryExcess: parseInt(product?.metadata?.voluntary_excess || '150'),
+            claimLimit: parseInt(product?.metadata?.claim_limit ?? '1250'),
+            voluntaryExcess: parseInt(product?.metadata?.voluntary_excess ?? '150'),
             // Extract all add-on data from product metadata
             metadata: {
               addon_tyre_cover: product?.metadata?.addon_tyre_cover || 'false',

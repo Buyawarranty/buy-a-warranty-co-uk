@@ -366,7 +366,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             planId,
             vehicleData,
             paymentType,
-            voluntaryExcess: updatedPricingData.voluntaryExcess || 150,
+            voluntaryExcess: updatedPricingData.voluntaryExcess ?? 150,
             claimLimit: updatedPricingData.claimLimit || 1250,
             customerData: {
               ...customerData,
@@ -462,7 +462,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         planId,
         vehicleData,
         paymentType,
-        voluntaryExcess: updatedPricingData.voluntaryExcess || 150,
+        voluntaryExcess: updatedPricingData.voluntaryExcess ?? 150,
         claimLimit: updatedPricingData.claimLimit || 1250,
         customerData: {
           ...customerData,

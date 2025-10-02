@@ -124,8 +124,8 @@ serve(async (req) => {
               final_amount: item.totalPrice
             },
             // Use the claim limit and voluntary excess from the item
-            claimLimit: item.claimLimit || 1250,
-            voluntaryExcess: item.voluntaryExcess || 150,
+            claimLimit: item.claimLimit ?? 1250,
+            voluntaryExcess: item.voluntaryExcess ?? 150,
             // Convert protectionAddOns to metadata format for consistency
             metadata: {
               addon_tyre_cover: item.protectionAddOns?.tyre ? 'true' : 'false',
