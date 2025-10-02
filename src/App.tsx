@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import WebsiteFooter from "@/components/WebsiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
 import NotFound from "./pages/NotFound";
+import { CookieBanner } from "@/components/CookieBanner";
 
 // Lazy load pages
 const FAQ = lazy(() => import("./pages/FAQ"));
@@ -68,6 +69,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
+            <CookieBanner />
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
               <main className="flex-1 pb-16 w-full">
                 <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
