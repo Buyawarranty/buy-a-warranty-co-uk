@@ -1560,19 +1560,19 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
                      </div>
                    )}
 
-                    {/* Top-right savings tags */}
-                    <div className="absolute top-4 right-4 flex gap-2">
-                      {option.id === '24months' && (
-                        <span className="bg-gradient-to-r from-red-600 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg shadow-red-500/50 animate-pulse">
-                          Save £100 Today
-                        </span>
-                      )}
-                      {option.id === '36months' && (
-                        <span className="bg-gradient-to-r from-red-600 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg shadow-red-500/50 animate-pulse">
-                          Save £200 Today
-                        </span>
-                      )}
-                    </div>
+                     {/* Top-right savings tags */}
+                     <div className="absolute top-4 right-4 flex gap-2">
+                       {option.id === '24months' && (
+                         <span className="bg-gradient-to-r from-red-600 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg shadow-red-500/50">
+                           Save £100 Today
+                         </span>
+                       )}
+                       {option.id === '36months' && (
+                         <span className="bg-gradient-to-r from-red-600 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg shadow-red-500/50">
+                           Save £200 Today
+                         </span>
+                       )}
+                     </div>
 
                    {/* Badge Pills */}
                    <div className="flex flex-wrap gap-2 mb-4 mt-8">
