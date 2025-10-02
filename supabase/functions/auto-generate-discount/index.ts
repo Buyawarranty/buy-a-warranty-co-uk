@@ -62,7 +62,24 @@ serve(async (req) => {
 
     if (existingCampaignCode) {
       logStep("Using existing campaign code", { code: campaignCode });
-      discountCodeData = existingCampaignCode;
+      
+      // Ensure the code has the correct type (fixed £25, not percentage)
+      if (existingCampaignCode.type !== 'fixed' || existingCampaignCode.value !== 25) {
+        logStep("Updating campaign code to correct type", { oldType: existingCampaignCode.type, oldValue: existingCampaignCode.value });
+        const { data: updatedCode } = await supabaseClient
+          .from('discount_codes')
+          .update({
+            type: 'fixed',
+            value: 25
+          })
+          .eq('id', existingCampaignCode.id)
+          .select()
+          .single();
+        
+        discountCodeData = updatedCode || existingCampaignCode;
+      } else {
+        discountCodeData = existingCampaignCode;
+      }
     } else {
       logStep("Creating new campaign code", { code: campaignCode });
       
