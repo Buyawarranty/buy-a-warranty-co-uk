@@ -1,145 +1,124 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { ArrowLeft, Calendar, User, Clock, Share2 } from 'lucide-react';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: any;
+  featured_image_url: string | null;
+  published_at: string;
+  read_time_minutes: number;
+  seo_title: string | null;
+  seo_description: string | null;
+  seo_keywords: string[] | null;
+  canonical_url: string | null;
+  structured_data: any;
+  blog_authors: { name: string; bio: string } | null;
+  blog_categories: { name: string } | null;
+}
 
 const BlogArticle = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Article data - in a real app this would come from a database
-  const articles = {
-    "1": {
-      id: 1,
-      title: "5 Common Car Repairs That Cost UK Drivers Thousands – And How to Avoid Them",
-      excerpt: "Discover the top car repairs that hit UK drivers hardest – and how a vehicle warranty can save you from surprise bills.",
-      author: "Steve Wilkinson",
-      date: "2024-01-12",
-      readTime: "5 min read",
-      category: "Car Maintenance",
-      image: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=800&h=400&fit=crop&crop=entropy&auto=format&q=60",
-      content: [
-        {
-          title: "Introduction",
-          content: "Car ownership comes with freedom – but also unexpected costs. From engine faults to electrical issues, UK drivers often face repair bills that stretch into the thousands. The good news? A vehicle warranty can protect you from these financial shocks."
-        },
-        {
-          title: "1. Engine Repairs – £1,500+",
-          content: "The engine is the heart of your car. When it fails, repairs can be extensive and expensive. Common issues include timing belt failures, oil leaks, and overheating – all of which can be covered under a comprehensive warranty."
-        },
-        {
-          title: "2. Gearbox Replacement – £1,200–£3,000",
-          content: "Automatic and manual gearboxes are complex systems. Replacing one can cost more than a month's salary. A good warranty plan will cover both parts and labour, saving you from a major financial hit."
-        },
-        {
-          title: "3. Electrical Faults – £300–£1,000",
-          content: "Modern cars rely heavily on electronics – from dashboard displays to sensors and control units. Diagnosing and fixing electrical faults often requires specialist equipment and expertise, which can be costly without cover."
-        },
-        {
-          title: "4. Suspension Issues – £400–£1,500",
-          content: "Worn-out shocks, struts, or control arms can affect your car's handling and safety. These repairs are common, especially in older vehicles, and are often covered under extended warranty plans."
-        },
-        {
-          title: "5. Turbocharger Failure – £800–£2,000",
-          content: "Turbochargers boost engine performance but are prone to wear. Replacing one is a major job, and without a warranty, you'll be footing the entire bill."
-        },
-        {
-          title: "How a Vehicle Warranty Can Help",
-          content: "With a Buy-a-Warranty plan, you're protected from these costly repairs. Our cover includes: Parts & Labour, Breakdown Recovery, Flexible Monthly Plans, £0 Excess, Nationwide Cover. Even if your car is older or has high mileage, you can still get protected."
-        },
-        {
-          title: "Real Story: \"I Saved Over £1,200 on My Engine Repair\"",
-          content: "Corey, a UK driver, shares: \"I thought I'd be stuck with a massive bill. But Buy-a-Warranty covered everything – diagnostics, parts, labour. I didn't pay a penny.\""
-        },
-        {
-          title: "Final Thoughts",
-          content: "Car repairs are inevitable – but paying for them out of pocket doesn't have to be. With the right warranty, you can drive with confidence and peace of mind."
+  useEffect(() => {
+    if (slug) {
+      loadPost();
+    }
+  }, [slug]);
+
+  const loadPost = async () => {
+    setLoading(true);
+    try {
+      // Load main post
+      const { data: postData, error: postError } = await supabase
+        .from('blog_posts')
+        .select(`
+          *,
+          blog_authors(name, bio),
+          blog_categories(name, id)
+        `)
+        .eq('slug', slug)
+        .eq('status', 'published')
+        .single();
+
+      if (postError) throw postError;
+      if (postData) {
+        setPost(postData);
+
+        // Increment view count
+        await supabase
+          .from('blog_posts')
+          .update({ view_count: (postData.view_count || 0) + 1 })
+          .eq('id', postData.id);
+
+        // Load related posts from same category
+        if (postData.blog_categories) {
+          const { data: relatedData } = await supabase
+            .from('blog_posts')
+            .select(`
+              *,
+              blog_authors(name, bio),
+              blog_categories(name)
+            `)
+            .eq('status', 'published')
+            .eq('category_id', postData.blog_categories.id)
+            .neq('id', postData.id)
+            .limit(2);
+
+          if (relatedData) setRelatedPosts(relatedData);
         }
-      ]
-    },
-    "2": {
-      id: 2,
-      title: "Winter Driving: Essential Tips to Avoid Costly Breakdowns",
-      excerpt: "Prepare your vehicle for winter with our expert guide to avoiding seasonal breakdowns and repair bills.",
-      author: "Gary Flinch",
-      date: "2024-01-09",
-      readTime: "4 min read",
-      category: "Seasonal Advice",
-      image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=400&fit=crop&crop=entropy&auto=format&q=60",
-      content: [
-        {
-          title: "Introduction",
-          content: "Winter driving in the UK brings unique challenges. Cold temperatures, wet roads, and shorter days can take a toll on your vehicle. Here's how to prepare and protect yourself from costly winter breakdowns."
-        },
-        {
-          title: "Battery Care in Cold Weather",
-          content: "Cold weather is your car battery's worst enemy. Batteries lose up to 50% of their power in freezing conditions. Check your battery regularly, clean the terminals, and consider a battery warmer for extreme conditions."
-        },
-        {
-          title: "Tyre Maintenance",
-          content: "Proper tyre pressure is crucial in winter. Cold air causes pressure to drop, affecting grip and fuel economy. Check weekly and consider winter tyres if you regularly drive in harsh conditions."
-        },
-        {
-          title: "Engine Protection",
-          content: "Use the right grade of oil for winter conditions. Consider a winter-grade oil if you live in particularly cold areas. This helps your engine start more easily and protects components during warm-up."
-        },
-        {
-          title: "Emergency Kit Essentials",
-          content: "Always carry: jump leads, torch, first aid kit, warm blankets, food and water, ice scraper, and de-icer. Being prepared can save you from expensive recovery charges."
-        },
-        {
-          title: "Warranty Protection",
-          content: "Winter breakdowns are more common and often more expensive due to emergency call-out charges. A comprehensive warranty with breakdown cover gives you peace of mind during the coldest months."
-        }
-      ]
-    },
-    "3": {
-      id: 3,
-      title: "Used Car Buying Guide: Questions to Ask About Warranty Cover",
-      excerpt: "Essential questions every UK driver should ask when buying a used car to ensure proper warranty protection.",
-      author: "Steve Wilkinson",
-      date: "2024-01-05",
-      readTime: "6 min read",
-      category: "Buying Guide",
-      image: "https://images.unsplash.com/photo-1493238792000-8113da705763?w=800&h=400&fit=crop&crop=entropy&auto=format&q=60",
-      content: [
-        {
-          title: "Introduction",
-          content: "Buying a used car is exciting, but it's essential to understand what warranty protection you're getting. The right questions can save you thousands in unexpected repair bills."
-        },
-        {
-          title: "What's Covered Under Existing Warranty?",
-          content: "Ask the seller for full warranty details. Check what's included, excluded, and how long coverage lasts. Don't assume anything – get it in writing."
-        },
-        {
-          title: "Can the Warranty Be Transferred?",
-          content: "Some manufacturer warranties are transferable, others aren't. Extended warranties often can be transferred but may require a fee. Clarify this before purchase."
-        },
-        {
-          title: "What About Independent Warranty Options?",
-          content: "Even if the car comes without warranty, you can still get protection. Independent warranty providers like Buy-a-Warranty offer comprehensive cover for vehicles up to 15 years old."
-        },
-        {
-          title: "Service History Requirements",
-          content: "Most warranties require proof of regular servicing. Check if the service history is complete and meets warranty requirements. Missing services could void your cover."
-        },
-        {
-          title: "Understanding Excess and Claims",
-          content: "Know what you'll pay if you need to claim. Some warranties have high excess charges or complex claims processes. Look for £0 excess options for better value."
-        },
-        {
-          title: "Making the Right Choice",
-          content: "Don't let warranty concerns stop you buying the right car. With flexible, affordable warranty options available, you can protect any vehicle and drive with confidence."
-        }
-      ]
+      }
+    } catch (error: any) {
+      toast.error('Failed to load article');
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const article = articles[id as keyof typeof articles];
+  const handleShare = async () => {
+    if (navigator.share && post) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: post.excerpt || '',
+          url: window.location.href
+        });
+      } catch (error) {
+        // User cancelled or share failed
+      }
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard!');
+    }
+  };
 
-  if (!article) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading article...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <SEOHead 
@@ -168,15 +147,55 @@ const BlogArticle = () => {
     );
   }
 
+  // Generate structured data
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": post.featured_image_url,
+    "datePublished": post.published_at,
+    "author": {
+      "@type": "Person",
+      "name": post.blog_authors?.name
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Buy a Warranty",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://buyawarranty.co.uk/lovable-uploads/baw-logo-new-2025.png"
+      }
+    },
+    "wordCount": post.content?.raw?.split(/\s+/).length || 0,
+    "timeRequired": `PT${post.read_time_minutes}M`,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": post.canonical_url || `https://buyawarranty.co.uk/thewarrantyhub/${post.slug}`
+    }
+  };
+
+  // Parse content
+  const contentText = typeof post.content === 'object' && post.content.raw 
+    ? post.content.raw 
+    : (typeof post.content === 'string' ? post.content : '');
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title={`${article.title} | The Warranty Hub`}
-        description={article.excerpt}
-        keywords={`${article.category.toLowerCase()}, car warranty, vehicle warranty, ${article.title.toLowerCase()}`}
-        canonical={`https://buyawarranty.co.uk/thewarrantyhub/article/${article.id}`}
+        title={post.seo_title || `${post.title} | The Warranty Hub`}
+        description={post.seo_description || post.excerpt || ''}
+        keywords={(post.seo_keywords || []).join(', ')}
+        canonical={post.canonical_url || `https://buyawarranty.co.uk/thewarrantyhub/${post.slug}`}
+        ogImage={post.featured_image_url || undefined}
       />
       
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+
       {/* Trustpilot header */}
       <div className="w-full px-4 pt-4">
         <div className="max-w-6xl mx-auto">
@@ -194,24 +213,26 @@ const BlogArticle = () => {
         {/* Article header */}
         <header className="mb-8">
           <Badge variant="secondary" className="mb-4">
-            {article.category}
+            {post.blog_categories?.name}
           </Badge>
           <h1 className="text-4xl font-bold text-foreground mb-4 leading-tight">
-            {article.title}
+            {post.title}
           </h1>
-          <p className="text-xl text-muted-foreground mb-6">
-            {article.excerpt}
-          </p>
+          {post.excerpt && (
+            <p className="text-xl text-muted-foreground mb-6">
+              {post.excerpt}
+            </p>
+          )}
           
           {/* Meta info */}
           <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center">
               <User className="mr-2 h-4 w-4" />
-              {article.author}
+              {post.blog_authors?.name}
             </div>
             <div className="flex items-center">
               <Calendar className="mr-2 h-4 w-4" />
-              {new Date(article.date).toLocaleDateString('en-GB', {
+              {new Date(post.published_at).toLocaleDateString('en-GB', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
@@ -219,33 +240,73 @@ const BlogArticle = () => {
             </div>
             <div className="flex items-center">
               <Clock className="mr-2 h-4 w-4" />
-              {article.readTime}
+              {post.read_time_minutes} min read
             </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleShare}
+              className="flex items-center gap-2"
+            >
+              <Share2 className="h-4 w-4" />
+              Share
+            </Button>
           </div>
         </header>
 
         {/* Featured image */}
-        <div className="mb-8">
-          <img 
-            src={article.image} 
-            alt={article.title}
-            className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
-          />
-        </div>
+        {post.featured_image_url && (
+          <div className="mb-8">
+            <img 
+              src={post.featured_image_url} 
+              alt={post.title}
+              className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+            />
+          </div>
+        )}
+
+        {/* Key Takeaways */}
+        {post.excerpt && (
+          <Card className="mb-8 p-6 bg-primary/5 border-primary/20">
+            <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
+              <span className="text-primary">✓</span> Key Takeaways
+            </h2>
+            <p className="text-muted-foreground leading-relaxed">
+              {post.excerpt}
+            </p>
+          </Card>
+        )}
 
         {/* Article content */}
         <article className="prose prose-lg max-w-none">
-          {article.content.map((section, index) => (
-            <div key={index} className="mb-8">
-              <h2 className="text-2xl font-bold text-foreground mb-4">
-                {section.title}
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                {section.content}
+          <div 
+            className="whitespace-pre-wrap text-muted-foreground leading-relaxed"
+            style={{ lineHeight: '1.8' }}
+          >
+            {contentText.split('\n\n').map((paragraph, index) => (
+              <p key={index} className="mb-6">
+                {paragraph}
               </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </article>
+
+        {/* Author bio */}
+        {post.blog_authors?.bio && (
+          <Card className="mt-12 p-6 bg-muted/50">
+            <div className="flex items-start gap-4">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <User className="w-8 h-8 text-primary-foreground" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold mb-2">About {post.blog_authors.name}</h3>
+                <p className="text-muted-foreground">
+                  {post.blog_authors.bio}
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Call to action */}
         <div className="mt-12 p-8 bg-primary/5 rounded-lg border">
@@ -263,40 +324,41 @@ const BlogArticle = () => {
         </div>
 
         {/* Related articles */}
-        <div className="mt-12">
-          <h3 className="text-2xl font-bold text-foreground mb-6">More from The Warranty Hub</h3>
-          <div className="grid gap-6 md:grid-cols-2">
-            {Object.values(articles)
-              .filter(a => a.id !== article.id)
-              .slice(0, 2)
-              .map((relatedArticle) => (
-              <Link 
-                key={relatedArticle.id} 
-                to={`/thewarrantyhub/article/${relatedArticle.id}`}
-                className="group"
-              >
-                <div className="bg-card rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition-shadow">
-                  <img 
-                    src={relatedArticle.image} 
-                    alt={relatedArticle.title}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="p-4">
-                    <Badge variant="outline" className="mb-2">
-                      {relatedArticle.category}
-                    </Badge>
-                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors mb-2">
-                      {relatedArticle.title}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {relatedArticle.excerpt}
-                    </p>
+        {relatedPosts.length > 0 && (
+          <div className="mt-12">
+            <h3 className="text-2xl font-bold text-foreground mb-6">More from The Warranty Hub</h3>
+            <div className="grid gap-6 md:grid-cols-2">
+              {relatedPosts.map((relatedPost) => (
+                <Link 
+                  key={relatedPost.id} 
+                  to={`/thewarrantyhub/${relatedPost.slug}`}
+                  className="group"
+                >
+                  <div className="bg-card rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition-shadow">
+                    {relatedPost.featured_image_url && (
+                      <img 
+                        src={relatedPost.featured_image_url} 
+                        alt={relatedPost.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    )}
+                    <div className="p-4">
+                      <Badge variant="outline" className="mb-2">
+                        {relatedPost.blog_categories?.name}
+                      </Badge>
+                      <h4 className="font-bold text-foreground group-hover:text-primary transition-colors mb-2">
+                        {relatedPost.title}
+                      </h4>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {relatedPost.excerpt}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   );
