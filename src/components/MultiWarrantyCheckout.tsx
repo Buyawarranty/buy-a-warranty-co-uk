@@ -73,27 +73,30 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     }))
   });
 
-  // Check for URL discount parameters
+  // Check for URL discount parameters (existing and return discount)
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const discountParam = urlParams.get('discount');
     const discountMessage = urlParams.get('discountMessage');
+    const returnDiscount = urlParams.get('returnDiscount');
     
-    if (discountParam === '10') {
+    if (discountParam === '10' || returnDiscount === 'true') {
       const discountAmount = subtotalAfterMultiDiscount * 0.1;
       const finalAmount = subtotalAfterMultiDiscount - discountAmount;
       
       setDiscountValidation({
         valid: true,
-        message: discountMessage || 'Your 10% discount has been applied!',
+        message: returnDiscount === 'true' 
+          ? '10% Off 2nd Purchase - Automatically Applied!'
+          : (discountMessage || 'Your 10% discount has been applied!'),
         discountAmount: discountAmount,
         finalAmount: finalAmount
       });
       
-      setCustomerData(prev => ({ ...prev, discount_code: '10OFF' }));
+      setCustomerData(prev => ({ ...prev, discount_code: returnDiscount === 'true' ? 'RETURN10' : '10OFF' }));
       
       if (!discountValidation) {
-        toast.success('10% discount automatically applied!');
+        toast.success(returnDiscount === 'true' ? '10% return discount applied!' : '10% discount automatically applied!');
       }
     }
   }, [totalPrice]);
@@ -361,6 +364,12 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             amount: finalPrice,
             item_count: items.length 
           });
+          
+          // Mark return discount as used if applicable
+          if (customerData.discount_code === 'RETURN10') {
+            localStorage.setItem('returnDiscount_used', 'true');
+          }
+          
           // Redirect to Bumper checkout
           window.location.href = data.url;
         } else {
@@ -410,6 +419,12 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             amount: stripeDiscountedPrice,
             item_count: items.length 
           });
+          
+          // Mark return discount as used if applicable
+          if (customerData.discount_code === 'RETURN10') {
+            localStorage.setItem('returnDiscount_used', 'true');
+          }
+          
           // Redirect to Stripe checkout
           window.location.href = data.url;
         } else {
