@@ -8,17 +8,29 @@ import { SEOHead } from '@/components/SEOHead';
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const { items } = useCart();
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(() => {
+    // Check if returning from payment - restore checkout view
+    return sessionStorage.getItem('wasInCheckout') === 'true';
+  });
+
+  // Clear checkout flag when component unmounts
+  React.useEffect(() => {
+    return () => {
+      sessionStorage.removeItem('wasInCheckout');
+    };
+  }, []);
 
   const handleAddMore = () => {
     navigate('/?step=1');
   };
 
   const handleProceedToCheckout = (cartItems: CartItem[]) => {
+    sessionStorage.setItem('wasInCheckout', 'true');
     setShowCheckout(true);
   };
 
   const handleBackToCart = () => {
+    sessionStorage.removeItem('wasInCheckout');
     setShowCheckout(false);
   };
 

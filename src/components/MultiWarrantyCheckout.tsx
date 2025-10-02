@@ -117,18 +117,47 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     }
   }, [discountValidation]);
 
-  // Handle page visibility to detect when user returns from payment
+  // Handle page visibility and popstate to detect when user returns from payment
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        // User returned to the page - data will be restored from localStorage
-        console.log('User returned to checkout page');
+        // User returned to the page - restore data from localStorage
+        console.log('User returned to checkout page - restoring data');
+        const savedData = localStorage.getItem('multiWarrantyCheckoutData');
+        const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod');
+        const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+        
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          setCustomerData(parsed);
+          console.log('Restored customer data:', parsed);
+        }
+        if (savedPaymentMethod) {
+          setSelectedPaymentMethod(savedPaymentMethod as 'stripe' | 'bumper');
+        }
+        if (savedDiscount) {
+          setDiscountValidation(JSON.parse(savedDiscount));
+        }
+      }
+    };
+
+    const handlePopState = () => {
+      // User clicked back button - restore data
+      console.log('Back button detected - restoring checkout data');
+      const savedData = localStorage.getItem('multiWarrantyCheckoutData');
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        setCustomerData(parsed);
+        console.log('Restored customer data from back navigation:', parsed);
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('popstate', handlePopState);
+    
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
@@ -223,6 +252,13 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       toast.error('Please complete all required fields correctly');
       trackEvent('checkout_error', { error_type: 'validation_failed' });
       return;
+    }
+
+    // Explicitly save all data before redirect to ensure persistence
+    localStorage.setItem('multiWarrantyCheckoutData', JSON.stringify(customerData));
+    localStorage.setItem('multiWarrantyPaymentMethod', selectedPaymentMethod);
+    if (discountValidation) {
+      localStorage.setItem('multiWarrantyDiscountValidation', JSON.stringify(discountValidation));
     }
 
     setLoading(true);
