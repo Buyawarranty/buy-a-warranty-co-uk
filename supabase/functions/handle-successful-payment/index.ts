@@ -75,6 +75,20 @@ serve(async (req) => {
       throw new Error("Missing required parameters");
     }
 
+    // Validate vehicle age (must be 15 years or newer)
+    const vehicleYear = vehicleData?.year || metadata?.vehicle_year;
+    if (vehicleYear) {
+      const currentYear = new Date().getFullYear();
+      const yearInt = parseInt(vehicleYear);
+      const vehicleAge = currentYear - yearInt;
+      
+      if (vehicleAge > 15) {
+        logStep("Vehicle age validation failed", { vehicleYear, vehicleAge });
+        throw new Error(`We cannot offer warranties for vehicles over 15 years old. This vehicle is ${vehicleAge} years old.`);
+      }
+      logStep("Vehicle age validation passed", { vehicleYear, vehicleAge });
+    }
+
     // Generate BAW warranty reference number for Warranties 2000
     const warrantyReference = await generateWarrantyReference();
     logStep("Generated warranty reference", { warrantyReference });

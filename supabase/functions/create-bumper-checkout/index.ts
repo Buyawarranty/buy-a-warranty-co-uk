@@ -56,6 +56,23 @@ serve(async (req) => {
       claimLimit = 1250
     } = requestData;
 
+    // Validate vehicle age (must be 15 years or newer)
+    const vehicleYear = vehicleData?.year;
+    if (vehicleYear) {
+      const currentYear = new Date().getFullYear();
+      const yearInt = parseInt(vehicleYear);
+      const vehicleAge = currentYear - yearInt;
+      
+      if (vehicleAge > 15) {
+        logStep("Vehicle age validation failed", { vehicleYear, vehicleAge });
+        return new Response(
+          JSON.stringify({ error: `We cannot offer warranties for vehicles over 15 years old. This vehicle is ${vehicleAge} years old.` }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      logStep("Vehicle age validation passed", { vehicleYear, vehicleAge });
+    }
+
     // Force payment to monthly for Bumper (they handle installments internally)
     // But preserve the original warranty duration for add-on calculations and W2000
     const bumperPaymentType = "monthly";

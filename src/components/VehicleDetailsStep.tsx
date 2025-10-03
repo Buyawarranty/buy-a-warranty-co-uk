@@ -283,7 +283,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           make: make.toLowerCase().trim(),
           model: model.toLowerCase().trim(), 
           vehicleType: vehicleType.toLowerCase().trim(),
-          regNumber
+          regNumber,
+          year: year
         });
         
         if (!vehicleEligibility.isValid) {

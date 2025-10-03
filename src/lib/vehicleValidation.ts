@@ -5,6 +5,7 @@ export interface VehicleData {
   model?: string;
   vehicleType?: string;
   regNumber: string;
+  year?: string;
 }
 
 export interface PriceAdjustment {
@@ -189,6 +190,20 @@ function checkIfMotorbike(make: string, model: string, vehicleType: string): boo
 export function validateVehicleEligibility(vehicleData: VehicleData): { isValid: boolean; errorMessage?: string } {
   const make = vehicleData.make?.toLowerCase().trim() || '';
   const model = vehicleData.model?.toLowerCase().trim() || '';
+  
+  // Check vehicle age (must be 15 years or newer)
+  if (vehicleData.year) {
+    const currentYear = new Date().getFullYear();
+    const vehicleYear = parseInt(vehicleData.year);
+    const vehicleAge = currentYear - vehicleYear;
+    
+    if (vehicleAge > 15) {
+      return {
+        isValid: false,
+        errorMessage: 'We cannot offer warranties for vehicles over 15 years old. This applies to all vehicle types including cars, vans, SUVs, motorbikes, and special vehicles.'
+      };
+    }
+  }
   
   // Check excluded makes
   if (EXCLUDED_MAKES.includes(make)) {

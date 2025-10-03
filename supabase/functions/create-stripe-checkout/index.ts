@@ -30,6 +30,23 @@ serve(async (req) => {
     const { planId, vehicleData, paymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount, protectionAddOns, claimLimit } = body;
     logStep("Request data", { planId, vehicleData, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns, claimLimit });
 
+    // Validate vehicle age (must be 15 years or newer)
+    const vehicleYear = vehicleData?.year;
+    if (vehicleYear) {
+      const currentYear = new Date().getFullYear();
+      const yearInt = parseInt(vehicleYear);
+      const vehicleAge = currentYear - yearInt;
+      
+      if (vehicleAge > 15) {
+        logStep("Vehicle age validation failed", { vehicleYear, vehicleAge });
+        return new Response(
+          JSON.stringify({ error: `We cannot offer warranties for vehicles over 15 years old. This vehicle is ${vehicleAge} years old.` }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      logStep("Vehicle age validation passed", { vehicleYear, vehicleAge });
+    }
+
     // Function to get default claim limit - user selection should override this
     function getMaxClaimAmount(planName: string, paymentType?: string): string {
       // Return default claim limit of 1250 - user selection should override this

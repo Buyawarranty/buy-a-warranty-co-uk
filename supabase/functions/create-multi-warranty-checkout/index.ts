@@ -15,6 +15,26 @@ serve(async (req) => {
   try {
     const { items, customerData, discountCode, originalAmount, finalAmount } = await req.json();
 
+    // Validate vehicle age for all items (must be 15 years or newer)
+    for (const item of items) {
+      const vehicleYear = item.vehicleData?.year;
+      if (vehicleYear) {
+        const currentYear = new Date().getFullYear();
+        const yearInt = parseInt(vehicleYear);
+        const vehicleAge = currentYear - yearInt;
+        
+        if (vehicleAge > 15) {
+          console.log(`Vehicle age validation failed for ${item.vehicleData.regNumber}:`, { vehicleYear, vehicleAge });
+          return new Response(
+            JSON.stringify({ 
+              error: `We cannot offer warranties for vehicles over 15 years old. Vehicle ${item.vehicleData.regNumber} is ${vehicleAge} years old.` 
+            }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+      }
+    }
+
     // Create Supabase client
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
