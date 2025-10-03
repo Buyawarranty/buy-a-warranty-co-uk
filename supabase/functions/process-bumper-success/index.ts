@@ -175,18 +175,50 @@ serve(async (req) => {
     }
 
     // Update transaction status to completed BEFORE processing to prevent race conditions
-    const { error: updateError } = await supabaseClient
+    // This acts as a lock - only one request can successfully update from 'pending' to 'completed'
+    const { data: updatedTransaction, error: updateError } = await supabaseClient
       .from('bumper_transactions')
       .update({ 
         status: 'completed',
         updated_at: new Date().toISOString()
       })
       .eq('transaction_id', transactionId)
-      .eq('status', 'pending'); // Only update if still pending (prevents race condition)
+      .eq('status', 'pending') // Only update if still pending (prevents race condition)
+      .select();
 
     if (updateError) {
       logStep("Error updating transaction status", { error: updateError.message });
+      throw new Error(`Failed to update transaction status: ${updateError.message}`);
     }
+
+    // Critical check: If no rows were updated, another request already processed this
+    if (!updatedTransaction || updatedTransaction.length === 0) {
+      logStep("RACE CONDITION DETECTED: Transaction already being processed by another request", {
+        transactionId,
+        note: "Another concurrent request already updated the status - stopping to prevent duplicate"
+      });
+      
+      // Build redirect URL - the other request is handling the actual processing
+      const baseRedirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+      const redirectUrl = new URL(baseRedirectUrl);
+      redirectUrl.searchParams.set('plan', transactionData.plan_id);
+      redirectUrl.searchParams.set('payment', transactionData.payment_type);
+      redirectUrl.searchParams.set('source', 'bumper');
+      redirectUrl.searchParams.set('session_id', transactionId);
+      
+      return new Response(null, {
+        status: 302,
+        headers: {
+          ...corsHeaders,
+          'Location': redirectUrl.toString()
+        }
+      });
+    }
+
+    logStep("Transaction status successfully updated to completed", { 
+      transactionId,
+      rowsUpdated: updatedTransaction.length 
+    });
 
     // Extract data from transaction record
     const customerData = transactionData.customer_data;
