@@ -261,7 +261,51 @@ const Index = () => {
     setSearchParams(newSearchParams, { replace: true });
   };
   
+  // Restore state from localStorage for a specific step
+  const restoreStateFromStep = useCallback((step: number) => {
+    console.log('🔄 Restoring state for step', step);
+    const savedState = loadStateFromLocalStorage();
+    
+    if (savedState) {
+      console.log('✅ Found saved state:', savedState);
+      if (savedState.vehicleData) setVehicleData(savedState.vehicleData);
+      if (savedState.selectedPlan) setSelectedPlan(savedState.selectedPlan);
+      if (savedState.formData) setFormData(savedState.formData);
+    } else {
+      console.log('⚠️ No saved state found, checking individual items');
+      // Try individual localStorage items as fallback
+      const savedVehicleData = localStorage.getItem('buyawarranty_vehicleData');
+      const savedSelectedPlan = localStorage.getItem('buyawarranty_selectedPlan');
+      const savedFormData = localStorage.getItem('buyawarranty_formData');
+      
+      if (savedVehicleData) {
+        try {
+          setVehicleData(JSON.parse(savedVehicleData));
+        } catch (e) {
+          console.error('Error parsing vehicleData:', e);
+        }
+      }
+      
+      if (savedSelectedPlan) {
+        try {
+          setSelectedPlan(JSON.parse(savedSelectedPlan));
+        } catch (e) {
+          console.error('Error parsing selectedPlan:', e);
+        }
+      }
+      
+      if (savedFormData) {
+        try {
+          setFormData(JSON.parse(savedFormData));
+        } catch (e) {
+          console.error('Error parsing formData:', e);
+        }
+      }
+    }
+  }, [loadStateFromLocalStorage]);
+  
   const handleStepChange = (step: number) => {
+    console.log('📍 Step change:', currentStep, '->', step);
     setCurrentStep(step);
     updateStepInUrl(step);
     // Store current state in localStorage for persistence
@@ -273,7 +317,8 @@ const Index = () => {
   useMobileBackNavigation({
     currentStep,
     onStepChange: handleStepChange,
-    totalSteps: 5
+    totalSteps: 5,
+    restoreStateFromStep
   });
   
   // Debounced state saving to reduce localStorage writes
@@ -340,13 +385,8 @@ const Index = () => {
       };
     }
     
-    // Handle browser back/forward navigation
-    const handlePopState = () => {
-      const stepFromUrl = getStepFromUrl();
-      setCurrentStep(stepFromUrl);
-    };
-    
-    window.addEventListener('popstate', handlePopState);
+    // Note: popstate is now handled by useMobileBackNavigation hook
+    // which includes state restoration logic
     
     // Load saved state on initial load
     const savedState = loadStateFromLocalStorage();
@@ -426,10 +466,8 @@ const Index = () => {
       }
     }
     
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [searchParams]);
+    // Cleanup handled by useMobileBackNavigation hook
+  }, [searchParams, quoteParam, emailParam, restoreQuoteData, currentStep, vehicleData, selectedPlan, loadStateFromLocalStorage, setSearchParams]);
   
   const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Review & Confirm'];
 

@@ -5,45 +5,55 @@ interface UseMobileBackNavigationProps {
   currentStep: number;
   onStepChange: (step: number) => void;
   totalSteps: number;
+  restoreStateFromStep?: (step: number) => void;
 }
 
 export const useMobileBackNavigation = ({ 
   currentStep, 
   onStepChange, 
-  totalSteps 
+  totalSteps,
+  restoreStateFromStep
 }: UseMobileBackNavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleBackNavigation = useCallback((event: PopStateEvent) => {
-    event.preventDefault();
+    console.log('📱 Mobile back navigation triggered', { currentStep });
     
-    // If we're on step 1, stay on the homepage
-    if (currentStep <= 1) {
+    // Get the step from URL to determine if we're going back or forward
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlStep = parseInt(urlParams.get('step') || '1');
+    
+    console.log('📱 URL step:', urlStep, 'Current step:', currentStep);
+    
+    // If URL step differs from current step, restore state for that step
+    if (urlStep !== currentStep && restoreStateFromStep) {
+      console.log('📱 Restoring state for step', urlStep);
+      restoreStateFromStep(urlStep);
+    }
+    
+    // Update current step to match URL
+    if (urlStep !== currentStep) {
+      onStepChange(urlStep);
+    }
+    
+    // If we're on step 1 and trying to go back further, stay on homepage
+    if (urlStep <= 1 && currentStep <= 1) {
       // Push the current state back to prevent leaving the site
       window.history.pushState(null, '', window.location.href);
       return;
     }
     
-    // Navigate to previous step instead of leaving the site
-    const previousStep = Math.max(1, currentStep - 1);
-    onStepChange(previousStep);
-    
-    // Update the URL to reflect the new step
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('step', previousStep.toString());
-    window.history.pushState(null, '', newUrl.toString());
-    
-  }, [currentStep, onStepChange]);
+  }, [currentStep, onStepChange, restoreStateFromStep]);
 
   useEffect(() => {
-    // Add an extra history entry to prevent immediate exit
-    window.history.pushState(null, '', window.location.href);
+    console.log('📱 Setting up mobile navigation listeners');
     
-    // Listen for popstate events (back button presses)
+    // Listen for popstate events (back/forward button presses)
     window.addEventListener('popstate', handleBackNavigation);
     
     return () => {
+      console.log('📱 Cleaning up mobile navigation listeners');
       window.removeEventListener('popstate', handleBackNavigation);
     };
   }, [handleBackNavigation]);
