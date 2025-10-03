@@ -23,6 +23,32 @@ const ThankYou = () => {
   const source = searchParams.get('source');
   const [isProcessing, setIsProcessing] = useState(true);
   const [policyNumber, setPolicyNumber] = useState<string>('');
+  const [timeRemaining, setTimeRemaining] = useState<string>('');
+
+  // Calculate 24-hour expiry time
+  useEffect(() => {
+    const expiryTime = Date.now() + (24 * 60 * 60 * 1000); // 24 hours from now
+    
+    const updateTimer = () => {
+      const now = Date.now();
+      const remaining = expiryTime - now;
+      
+      if (remaining <= 0) {
+        setTimeRemaining('Expired');
+        return;
+      }
+      
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      
+      setTimeRemaining(`${hours}h ${minutes}m`);
+    };
+    
+    updateTimer();
+    const interval = setInterval(updateTimer, 60000); // Update every minute
+    
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const processPayment = async () => {
@@ -274,11 +300,13 @@ const ThankYou = () => {
                   🚗 Got Another Vehicle?
                 </h2>
                 <p className="text-lg text-gray-700 mb-3">
-                  Get <span className="font-bold text-orange-600">10% off</span> a second warranty – today only!
+                  Get <span className="font-bold text-orange-600">10% off</span> a second warranty – valid for 24 hours!
                 </p>
                 <p className="text-orange-600 font-semibold mb-6 flex items-center justify-center gap-2">
                   <Clock className="w-5 h-5" />
-                  Offer ends at midnight
+                  {timeRemaining && timeRemaining !== 'Expired' 
+                    ? `Offer expires in ${timeRemaining}` 
+                    : 'Limited time offer'}
                 </p>
                 <Button
                   onClick={handleGetSecondWarranty}
