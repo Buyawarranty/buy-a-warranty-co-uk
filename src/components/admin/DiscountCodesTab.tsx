@@ -152,9 +152,18 @@ export function DiscountCodesTab() {
         finalCode = `${formData.campaign_source}${formData.value}${month}${year}`;
       }
 
+      // Convert date strings to ISO timestamps
+      const validFromDate = new Date(formData.valid_from);
+      validFromDate.setHours(0, 0, 0, 0);
+      
+      const validToDate = new Date(formData.valid_to);
+      validToDate.setHours(23, 59, 59, 999);
+
       const submitData = {
         ...formData,
-        code: finalCode
+        code: finalCode,
+        valid_from: validFromDate.toISOString(),
+        valid_to: validToDate.toISOString()
       };
 
       if (editingCode) {
@@ -195,11 +204,12 @@ export function DiscountCodesTab() {
 
       resetForm();
       fetchDiscountCodes();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving discount code:', error);
+      const errorMessage = error?.message || error?.error || "Failed to save discount code";
       toast({
         title: "Error",
-        description: "Failed to save discount code",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
