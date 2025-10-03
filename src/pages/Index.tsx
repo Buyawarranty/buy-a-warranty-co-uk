@@ -596,6 +596,11 @@ const Index = () => {
                 vehicleData={vehicleData} 
                 onBack={() => handleBackToStep(2)} 
                 onPlanSelected={handlePlanSelected}
+                previousPaymentType={selectedPlan?.paymentType as '12months' | '24months' | '36months' | undefined}
+                previousVoluntaryExcess={selectedPlan?.pricingData?.voluntaryExcess}
+                previousClaimLimit={selectedPlan?.pricingData?.claimLimit}
+                previousSelectedAddOns={selectedPlan?.pricingData?.selectedAddOns}
+                previousProtectionAddOns={selectedPlan?.pricingData?.protectionAddOns}
               />
             </PerformanceOptimizedSuspense>
           ) : (

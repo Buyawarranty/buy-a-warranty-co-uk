@@ -76,16 +76,37 @@ interface PricingTableProps {
       transferAmount: number
     }
   }) => void;
+  // Props to restore previously selected options when navigating back
+  previousPaymentType?: '12months' | '24months' | '36months';
+  previousVoluntaryExcess?: number;
+  previousClaimLimit?: number;
+  previousSelectedAddOns?: {[addon: string]: boolean};
+  previousProtectionAddOns?: {[key: string]: boolean};
 }
 
-const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlanSelected }) => {
+const PricingTable: React.FC<PricingTableProps> = ({ 
+  vehicleData, 
+  onBack, 
+  onPlanSelected,
+  previousPaymentType,
+  previousVoluntaryExcess,
+  previousClaimLimit,
+  previousSelectedAddOns,
+  previousProtectionAddOns
+}) => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months' | null>('24months');
-  const [voluntaryExcess, setVoluntaryExcess] = useState<number | null>(100);
-  const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>({});
+  const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months' | null>(previousPaymentType || '24months');
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number | null>(previousVoluntaryExcess ?? 100);
+  const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>(
+    previousSelectedAddOns ? { 'platinum': previousSelectedAddOns } : {}
+  );
   const [loading, setLoading] = useState<{[key: string]: boolean}>({});
   const [plansLoading, setPlansLoading] = useState(true);
   const [plansError, setPlansError] = useState<string | null>(null);
+  
+  // Track if we're restoring from previous selections to avoid overriding them
+  const isRestoringFromPrevious = React.useRef(!!previousProtectionAddOns);
+  const hasInitializedAddOns = React.useRef(false);
   
   // Vehicle validation
   const vehicleValidation = useMemo(() => {
@@ -115,20 +136,22 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
-  const [selectedClaimLimit, setSelectedClaimLimit] = useState<number | null>(1250);
+  const [selectedClaimLimit, setSelectedClaimLimit] = useState<number | null>(previousClaimLimit ?? 1250);
   const [summaryDismissed, setSummaryDismissed] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   
-  // Add-ons state
-  const [selectedProtectionAddOns, setSelectedProtectionAddOns] = useState<{[key: string]: boolean}>({
-    breakdown: false,
-    motFee: false,
-    tyre: false,
-    wearAndTear: false,
-    european: false,
-    rental: false,
-    transfer: false
-  });
+  // Add-ons state - restore from previous selections if available
+  const [selectedProtectionAddOns, setSelectedProtectionAddOns] = useState<{[key: string]: boolean}>(
+    previousProtectionAddOns || {
+      breakdown: false,
+      motFee: false,
+      tyre: false,
+      wearAndTear: false,
+      european: false,
+      rental: false,
+      transfer: false
+    }
+  );
   
   // Benefits expansion state
   const [expandedBenefits, setExpandedBenefits] = useState<Record<string, boolean>>({});
@@ -241,6 +264,15 @@ const PricingTable: React.FC<PricingTableProps> = ({ vehicleData, onBack, onPlan
 
   // Auto-include add-ons for 2-year and 3-year plans using imported utility
   useEffect(() => {
+    // Skip auto-inclusion on initial mount if we're restoring from previous selections
+    if (isRestoringFromPrevious.current && !hasInitializedAddOns.current) {
+      console.log('🔧 Skipping auto-inclusion - restoring from previous selections');
+      hasInitializedAddOns.current = true;
+      return;
+    }
+    
+    hasInitializedAddOns.current = true;
+    
     // Use the imported function to get auto-included add-ons for consistency
     const newAutoIncluded = getAutoIncludedAddOns(paymentType);
     
