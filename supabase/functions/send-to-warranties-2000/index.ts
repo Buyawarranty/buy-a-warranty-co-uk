@@ -469,8 +469,8 @@ serve(async (req) => {
         return nextYear.toISOString().split('T')[0];
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
-      VolEx: (policy?.voluntary_excess || customer.voluntary_excess || 0).toString(),
-      Notes: `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${finalClaimLimit} | VolExcess: ${policy?.voluntary_excess || customer.voluntary_excess || 0}`
+      VolEx: String(policy?.voluntary_excess ?? customer?.voluntary_excess ?? 0),
+      Notes: `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${finalClaimLimit} | VolExcess: ${policy?.voluntary_excess ?? customer?.voluntary_excess ?? 0}`
       // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
 
