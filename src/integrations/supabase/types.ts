@@ -594,6 +594,71 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_analytics: {
+        Row: {
+          bounce_rate: number | null
+          campaign_id: string
+          click_rate: number | null
+          created_at: string
+          id: string
+          last_calculated_at: string | null
+          open_rate: number | null
+          total_bounced: number | null
+          total_clicked: number | null
+          total_complained: number | null
+          total_delivered: number | null
+          total_failed: number | null
+          total_opened: number | null
+          total_sent: number | null
+          total_unsubscribed: number | null
+          unsubscribe_rate: number | null
+        }
+        Insert: {
+          bounce_rate?: number | null
+          campaign_id: string
+          click_rate?: number | null
+          created_at?: string
+          id?: string
+          last_calculated_at?: string | null
+          open_rate?: number | null
+          total_bounced?: number | null
+          total_clicked?: number | null
+          total_complained?: number | null
+          total_delivered?: number | null
+          total_failed?: number | null
+          total_opened?: number | null
+          total_sent?: number | null
+          total_unsubscribed?: number | null
+          unsubscribe_rate?: number | null
+        }
+        Update: {
+          bounce_rate?: number | null
+          campaign_id?: string
+          click_rate?: number | null
+          created_at?: string
+          id?: string
+          last_calculated_at?: string | null
+          open_rate?: number | null
+          total_bounced?: number | null
+          total_clicked?: number | null
+          total_complained?: number | null
+          total_delivered?: number | null
+          total_failed?: number | null
+          total_opened?: number | null
+          total_sent?: number | null
+          total_unsubscribed?: number | null
+          unsubscribe_rate?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_analytics_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: true
+            referencedRelation: "email_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       claims_submissions: {
         Row: {
           assigned_to: string | null
@@ -1286,8 +1351,116 @@ export type Database = {
         }
         Relationships: []
       }
+      email_campaigns: {
+        Row: {
+          ab_test_parent_id: string | null
+          ab_variant: string | null
+          campaign_type: string
+          content: string
+          created_at: string
+          created_by: string | null
+          from_email: string
+          id: string
+          is_ab_test: boolean | null
+          metadata: Json | null
+          name: string
+          scheduled_for: string | null
+          segment_filters: Json | null
+          sent_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          ab_test_parent_id?: string | null
+          ab_variant?: string | null
+          campaign_type?: string
+          content: string
+          created_at?: string
+          created_by?: string | null
+          from_email?: string
+          id?: string
+          is_ab_test?: boolean | null
+          metadata?: Json | null
+          name: string
+          scheduled_for?: string | null
+          segment_filters?: Json | null
+          sent_at?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          ab_test_parent_id?: string | null
+          ab_variant?: string | null
+          campaign_type?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          from_email?: string
+          id?: string
+          is_ab_test?: boolean | null
+          metadata?: Json | null
+          name?: string
+          scheduled_for?: string | null
+          segment_filters?: Json | null
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_campaigns_ab_test_parent_id_fkey"
+            columns: ["ab_test_parent_id"]
+            isOneToOne: false
+            referencedRelation: "email_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_consents: {
+        Row: {
+          consent_date: string
+          consent_given: boolean | null
+          double_opt_in: boolean | null
+          email: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          source: string | null
+          unsubscribe_reason: string | null
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          consent_date?: string
+          consent_given?: boolean | null
+          double_opt_in?: boolean | null
+          email: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          source?: string | null
+          unsubscribe_reason?: string | null
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          consent_date?: string
+          consent_given?: boolean | null
+          double_opt_in?: boolean | null
+          email?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          source?: string | null
+          unsubscribe_reason?: string | null
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
       email_logs: {
         Row: {
+          campaign_id: string | null
           created_at: string
           customer_id: string | null
           error_message: string | null
@@ -1300,6 +1473,7 @@ export type Database = {
           template_id: string | null
         }
         Insert: {
+          campaign_id?: string | null
           created_at?: string
           customer_id?: string | null
           error_message?: string | null
@@ -1312,6 +1486,7 @@ export type Database = {
           template_id?: string | null
         }
         Update: {
+          campaign_id?: string | null
           created_at?: string
           customer_id?: string | null
           error_message?: string | null
@@ -1324,6 +1499,13 @@ export type Database = {
           template_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "email_logs_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "email_campaigns"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "email_logs_customer_id_fkey"
             columns: ["customer_id"]
@@ -1833,6 +2015,63 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriber_segments: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          filters: Json
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          filters?: Json
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          filters?: Json
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriber_tags: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          email: string
+          id: string
+          tag: string
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          email: string
+          id?: string
+          tag: string
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          email?: string
+          id?: string
+          tag?: string
+        }
+        Relationships: []
+      }
       triggered_emails_log: {
         Row: {
           created_at: string | null
@@ -2161,6 +2400,10 @@ export type Database = {
       }
       soft_delete_customer: {
         Args: { admin_uuid: string; customer_uuid: string }
+        Returns: undefined
+      }
+      update_campaign_analytics: {
+        Args: { p_campaign_id: string }
         Returns: undefined
       }
       verify_warranty_selection: {
