@@ -10,8 +10,7 @@ import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
 import { DiscountCodesTab } from '@/components/admin/DiscountCodesTab';
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
-import EmailManagementTab from '@/components/admin/EmailManagementTab';
-import EmailMarketingTab from '@/components/admin/EmailMarketingTab';
+import UnifiedEmailHub from '@/components/admin/UnifiedEmailHub';
 import AccountSettings from '@/components/admin/AccountSettings';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import CreateTestCustomer from '@/components/CreateTestCustomer';
@@ -127,9 +126,7 @@ const AdminDashboard = () => {
       case 'contact':
         return <ContactSubmissionsTab />;
       case 'emails':
-        return <EmailManagementTab />;
-      case 'email-marketing':
-        return <EmailMarketingTab />;
+        return <UnifiedEmailHub />;
       case 'analytics':
         return <AnalyticsTab />;
       case 'security':
