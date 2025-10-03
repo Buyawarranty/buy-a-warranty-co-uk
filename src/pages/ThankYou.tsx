@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
@@ -9,9 +10,9 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { CarDrivingSpinner } from '@/components/ui/car-driving-spinner';
 import { TrophySpinner } from '@/components/ui/trophy-spinner';
 import { SEOHead } from '@/components/SEOHead';
-import bawLogo from '@/assets/baw-logo-new-2025.png';
+import { ArrowRight, Check, Shield, Star, Users, Clock } from 'lucide-react';
 import pandaCelebratingOrangeCar from '@/assets/panda-celebrating-orange-car.png';
-import { trackPurchaseComplete } from '@/utils/analytics';
+import { trackPurchaseComplete, trackButtonClick } from '@/utils/analytics';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -159,18 +160,18 @@ const ThankYou = () => {
 
     processPayment();
 
-    // Trigger confetti animation on load
-    const duration = 3000;
+    // Trigger elegant confetti animation on load (5 seconds like Canva)
+    const duration = 5000;
     const animationEnd = Date.now() + duration;
     const defaults = { 
-      startVelocity: 30, 
+      startVelocity: 20, 
       spread: 360, 
-      ticks: 60, 
+      ticks: 80, 
       zIndex: 0,
-      scalar: 2.5, // Make confetti pieces much larger
-      gravity: 0.6,
-      drift: 0.1,
-      colors: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'] // Vibrant colors
+      scalar: 1.8,
+      gravity: 0.5,
+      drift: 0,
+      colors: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4']
     };
 
     function randomInRange(min: number, max: number) {
@@ -184,7 +185,7 @@ const ThankYou = () => {
         return clearInterval(interval);
       }
 
-      const particleCount = 50 * (timeLeft / duration);
+      const particleCount = 30 * (timeLeft / duration);
       
       confetti({
         ...defaults,
@@ -196,143 +197,175 @@ const ThankYou = () => {
         particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
       });
-    }, 250);
+    }, 300);
 
     return () => clearInterval(interval);
   }, [sessionId, plan, paymentType, source]);
 
+  const handleGetSecondWarranty = () => {
+    // Track CTA click
+    trackButtonClick('second_warranty_cta', {
+      page: 'thank_you',
+      discount: '10%'
+    });
+    
+    // Set the localStorage flag for the 10% discount
+    localStorage.setItem('addAnotherWarrantyDiscount', 'true');
+    
+    const url = new URL(window.location.origin);
+    url.searchParams.set('step', '1');
+    window.location.href = url.toString();
+  };
+
   const handleReturnHome = () => {
+    trackButtonClick('return_home', { page: 'thank_you' });
     window.location.href = 'https://www.buyawarranty.co.uk';
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-orange-50 min-h-screen flex flex-col">
+    <div className="bg-gradient-to-br from-blue-50 via-white to-orange-50 min-h-screen">
       <SEOHead 
-        title="Thank You! | Warranty Purchase Complete"
-        description="Your car warranty purchase is complete! Access your policy documents and manage your coverage through your customer dashboard."
-        keywords="warranty purchase complete, policy confirmation, warranty documents"
+        title="You're All Set! | Warranty Purchase Complete"
+        description="Your car warranty is active and ready to protect you. Access your policy documents and explore additional coverage options."
+        keywords="warranty purchase complete, policy confirmation, car warranty active"
       />
+      
       {/* Trustpilot header */}
-      <div className="w-full px-4 pt-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="w-full px-4 pt-4 pb-2">
+        <div className="max-w-5xl mx-auto">
           <TrustpilotHeader />
         </div>
       </div>
       
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="max-w-6xl w-full">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            {/* Left column - Main content */}
-            <div className="text-center space-y-6">
-              <div className="space-y-3">
-                <div className="flex justify-center mb-4">
-                  <img 
-                    src={bawLogo}
-                    alt="BuyAWarranty Logo" 
-                    className="h-10 sm:h-12 w-auto"
-                  />
-                </div>
-                <div className="text-4xl mb-3">🎉</div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-                  Thanks for your purchase!
-                </h1>
-                <h2 className="text-lg md:text-xl font-semibold text-blue-600 mb-4">
-                  Your warranty is successfully registered
-                </h2>
-                
-                {isProcessing ? (
-                  <div className="space-y-3">
-                    <TrophySpinner />
-                    <h3 className="text-base text-gray-600">
-                      Processing your warranty registration...
-                    </h3>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <h3 className="text-base text-gray-600 max-w-md mx-auto leading-relaxed mb-3">
-                      Check your inbox for your plan details and terms & conditions.
-                    </h3>
-                    {policyNumber && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 max-w-md mx-auto">
-                        <p className="text-sm text-green-800 font-semibold">
-                          {source === 'bumper' ? 'BAW Policy Number:' : 'Policy Number:'}
-                        </p>
-                        <p className="text-base text-green-900 font-mono">{policyNumber}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-                
-                {paymentType && !isProcessing && (
-                  <p className="text-sm text-gray-500">
-                    {paymentType === 'monthly' && 'Monthly billing cycle activated'}
-                    {paymentType === 'yearly' && 'Annual billing cycle activated'}
-                    {paymentType === 'two_yearly' && '2-year billing cycle activated'}
-                    {paymentType === 'three_yearly' && '3-year billing cycle activated'}
-                  </p>
-                )}
-              </div>
-              
-              <div className="space-y-4">
-                {searchParams.get('addAnotherWarranty') === 'true' ? (
-                  <div className="text-center">
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-3">
-                      <p className="text-orange-800 font-bold text-lg mb-1">
-                        🎉 Redirecting you to add your next vehicle
-                      </p>
-                      <p className="text-orange-700 font-semibold text-base">
-                        with 10% discount applied!
-                      </p>
-                    </div>
-                    <CarDrivingSpinner />
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {/* Professional CTA Section */}
-                    <div className="bg-white border border-gray-200 rounded-lg p-4 text-center shadow-sm">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        Need coverage for another vehicle?
-                      </h3>
-                      <p className="text-gray-600 mb-4 text-sm">
-                        Protect your other vehicles with the same comprehensive warranty coverage.
-                      </p>
-                      <Button
-                        onClick={() => {
-                          // Set the localStorage flag for the 10% discount on next warranty
-                          localStorage.setItem('addAnotherWarrantyDiscount', 'true');
-                          
-                          const url = new URL(window.location.origin);
-                          url.searchParams.set('step', '1');
-                          window.location.href = url.toString();
-                        }}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 text-sm font-medium rounded-lg mb-3"
-                      >
-                        Get Quote for Another Vehicle
-                      </Button>
-                    </div>
-                    
-                    <Button 
-                      onClick={handleReturnHome}
-                      variant="outline"
-                      className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm font-medium"
-                    >
-                      Return to BuyAWarranty.co.uk
-                    </Button>
-                  </div>
-                )}
-              </div>
+      <div className="max-w-5xl mx-auto px-4 py-8 md:py-12">
+        {/* Celebration Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-3">
+            🎉 You're All Set – and Covered!
+          </h1>
+          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+            Your warranty is active. We've sent your plan details to your inbox.
+          </p>
+          
+          {isProcessing ? (
+            <div className="mt-6 space-y-3">
+              <TrophySpinner />
+              <p className="text-gray-600">Processing your warranty registration...</p>
             </div>
-            
-            {/* Right column - Car image */}
-            <div className="hidden md:flex justify-center items-center">
-              <img 
-                src={pandaCelebratingOrangeCar}
-                alt="Celebrating panda with orange car" 
-                className="w-full max-w-24 h-auto"
-              />
+          ) : policyNumber && (
+            <div className="mt-6 inline-block bg-green-50 border-2 border-green-500 rounded-lg px-6 py-4">
+              <p className="text-sm text-green-700 font-medium mb-1">
+                {source === 'bumper' ? 'BAW Policy Number' : 'Policy Number'}
+              </p>
+              <p className="text-2xl font-bold text-green-900 font-mono">{policyNumber}</p>
             </div>
-          </div>
+          )}
         </div>
+
+        {/* Image - Max 30-35% vertical space */}
+        <div className="flex justify-center mb-8">
+          <img 
+            src={pandaCelebratingOrangeCar}
+            alt="Celebrating panda with orange car" 
+            className="w-full max-w-md h-auto object-contain"
+            style={{ maxHeight: '35vh' }}
+          />
+        </div>
+
+        {/* Check if redirecting to second warranty */}
+        {searchParams.get('addAnotherWarranty') === 'true' ? (
+          <div className="text-center mb-8">
+            <Card className="bg-orange-50 border-2 border-orange-500">
+              <CardContent className="p-6">
+                <p className="text-orange-900 font-bold text-xl mb-2">
+                  🎉 Redirecting you to add your next vehicle
+                </p>
+                <p className="text-orange-800 text-lg mb-4">
+                  with 10% discount applied!
+                </p>
+                <CarDrivingSpinner />
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <>
+            {/* Second Purchase Offer */}
+            <Card className="mb-8 border-2 border-blue-500 shadow-lg">
+              <CardContent className="p-6 md:p-8 text-center">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  🚗 Got Another Vehicle?
+                </h2>
+                <p className="text-lg text-gray-700 mb-3">
+                  Get <span className="font-bold text-orange-600">10% off</span> a second warranty – today only!
+                </p>
+                <p className="text-orange-600 font-semibold mb-6 flex items-center justify-center gap-2">
+                  <Clock className="w-5 h-5" />
+                  Offer ends at midnight
+                </p>
+                <Button
+                  onClick={handleGetSecondWarranty}
+                  size="lg"
+                  className="w-full md:w-auto bg-orange-600 hover:bg-orange-700 text-white text-lg px-8 py-6 font-semibold shadow-lg hover:shadow-xl transition-all"
+                >
+                  Get 10% off a 2nd warranty
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Trust Section */}
+            <Card className="mb-8 bg-white shadow-md">
+              <CardContent className="p-6 md:p-8">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 text-center">
+                  🔒 Why Choose Us Again?
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Trusted by thousands</p>
+                      <p className="text-sm text-gray-600">Join our community of satisfied customers</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-semibold text-gray-900">UK-based support</p>
+                      <p className="text-sm text-gray-600">Expert help when you need it</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-semibold text-gray-900">No hidden fees</p>
+                      <p className="text-sm text-gray-600">Transparent pricing, always</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Rated ★★★★★</p>
+                      <p className="text-sm text-gray-600">Excellent customer reviews</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Footer */}
+            <div className="text-center">
+              <Button
+                onClick={handleReturnHome}
+                variant="outline"
+                size="lg"
+                className="text-gray-700 border-gray-300 hover:bg-gray-50"
+              >
+                🔁 Return to Buy-A-Warranty.co.uk
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
