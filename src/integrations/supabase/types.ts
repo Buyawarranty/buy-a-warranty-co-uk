@@ -1460,39 +1460,66 @@ export type Database = {
       }
       email_logs: {
         Row: {
+          bounced_at: string | null
           campaign_id: string | null
+          clicked_at: string | null
+          content: string | null
           created_at: string
           customer_id: string | null
+          delivery_status: string | null
           error_message: string | null
+          failed_reason: string | null
           id: string
+          last_resent_at: string | null
           metadata: Json | null
+          opened_at: string | null
           recipient_email: string
+          recipient_name: string | null
+          resend_count: number | null
           sent_at: string | null
           status: string
           subject: string
           template_id: string | null
         }
         Insert: {
+          bounced_at?: string | null
           campaign_id?: string | null
+          clicked_at?: string | null
+          content?: string | null
           created_at?: string
           customer_id?: string | null
+          delivery_status?: string | null
           error_message?: string | null
+          failed_reason?: string | null
           id?: string
+          last_resent_at?: string | null
           metadata?: Json | null
+          opened_at?: string | null
           recipient_email: string
+          recipient_name?: string | null
+          resend_count?: number | null
           sent_at?: string | null
           status?: string
           subject: string
           template_id?: string | null
         }
         Update: {
+          bounced_at?: string | null
           campaign_id?: string | null
+          clicked_at?: string | null
+          content?: string | null
           created_at?: string
           customer_id?: string | null
+          delivery_status?: string | null
           error_message?: string | null
+          failed_reason?: string | null
           id?: string
+          last_resent_at?: string | null
           metadata?: Json | null
+          opened_at?: string | null
           recipient_email?: string
+          recipient_name?: string | null
+          resend_count?: number | null
           sent_at?: string | null
           status?: string
           subject?: string

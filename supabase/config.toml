@@ -121,3 +121,9 @@ verify_jwt = false
 
 [functions.reset-customer-password]
 verify_jwt = true
+
+[functions.send-marketing-email]
+verify_jwt = true
+
+[functions.generate-email-suggestions]
+verify_jwt = true

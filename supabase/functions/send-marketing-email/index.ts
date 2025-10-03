@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -9,6 +10,7 @@ const corsHeaders = {
 };
 
 interface MarketingEmailRequest {
+  campaignId?: string;
   emails: string[];
   subject: string;
   content: string;
@@ -23,7 +25,13 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log("Marketing email request received");
     
-    const { emails, subject, content }: MarketingEmailRequest = await req.json();
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+    
+    const { campaignId, emails, subject, content }: MarketingEmailRequest = await req.json();
 
     console.log(`Sending marketing email to ${emails.length} recipients`);
     console.log(`Subject: ${subject}`);
@@ -49,6 +57,20 @@ const handler = async (req: Request): Promise<Response> => {
       console.log(`Sending batch ${Math.floor(i/batchSize) + 1}: ${batch.length} emails`);
       
       try {
+        // Log each email before sending
+        const emailLogsPromises = batch.map(email => 
+          supabaseClient.from('email_logs').insert({
+            campaign_id: campaignId || null,
+            recipient_email: email,
+            subject: subject,
+            content: content,
+            delivery_status: 'sent',
+            sent_at: new Date().toISOString()
+          })
+        );
+        
+        await Promise.all(emailLogsPromises);
+
         const emailResponse = await resend.emails.send({
           from: "Marketing <marketing@buyawarranty.co.uk>",
           to: batch,
@@ -74,6 +96,16 @@ const handler = async (req: Request): Promise<Response> => {
         });
 
         console.log(`Batch ${Math.floor(i/batchSize) + 1} sent successfully:`, emailResponse);
+
+        // Update email logs with delivery confirmation
+        await Promise.all(
+          batch.map(email =>
+            supabaseClient.from('email_logs')
+              .update({ delivery_status: 'delivered' })
+              .eq('recipient_email', email)
+              .eq('sent_at', new Date().toISOString())
+          )
+        );
         
       } catch (batchError) {
         const errorMessage = batchError instanceof Error ? batchError.message : String(batchError);
@@ -96,6 +128,22 @@ const handler = async (req: Request): Promise<Response> => {
     const totalSuccessful = results.filter(r => r.success).reduce((sum, r) => sum + r.count, 0);
 
     console.log(`Marketing email campaign completed: ${successfulBatches}/${results.length} batches successful, ${totalSuccessful}/${emails.length} emails sent`);
+
+    // Update campaign status if campaignId provided
+    if (campaignId) {
+      await supabaseClient
+        .from('email_campaigns')
+        .update({ 
+          status: 'sent',
+          sent_at: new Date().toISOString()
+        })
+        .eq('id', campaignId);
+
+      // Update campaign analytics
+      await supabaseClient.rpc('update_campaign_analytics', { 
+        p_campaign_id: campaignId 
+      });
+    }
 
     return new Response(JSON.stringify({
       success: true,
