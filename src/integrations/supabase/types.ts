@@ -867,12 +867,15 @@ export type Database = {
           created_at: string
           customer_full_name: string | null
           customer_id: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           document_type: string | null
           email: string
           email_sent_at: string | null
           email_sent_status: string | null
           europe_cover: boolean | null
           id: string
+          is_deleted: boolean | null
           lost_key: boolean | null
           mot_fee: boolean | null
           mot_repair: boolean | null
@@ -911,12 +914,15 @@ export type Database = {
           created_at?: string
           customer_full_name?: string | null
           customer_id?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           document_type?: string | null
           email: string
           email_sent_at?: string | null
           email_sent_status?: string | null
           europe_cover?: boolean | null
           id?: string
+          is_deleted?: boolean | null
           lost_key?: boolean | null
           mot_fee?: boolean | null
           mot_repair?: boolean | null
@@ -955,12 +961,15 @@ export type Database = {
           created_at?: string
           customer_full_name?: string | null
           customer_id?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           document_type?: string | null
           email?: string
           email_sent_at?: string | null
           email_sent_status?: string | null
           europe_cover?: boolean | null
           id?: string
+          is_deleted?: boolean | null
           lost_key?: boolean | null
           mot_fee?: boolean | null
           mot_repair?: boolean | null
@@ -1012,6 +1021,8 @@ export type Database = {
           country: string | null
           county: string | null
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           discount_amount: number | null
           discount_code: string | null
           email: string
@@ -1020,6 +1031,7 @@ export type Database = {
           first_name: string | null
           flat_number: string | null
           id: string
+          is_deleted: boolean | null
           last_name: string | null
           lost_key: boolean | null
           mileage: string | null
@@ -1063,6 +1075,8 @@ export type Database = {
           country?: string | null
           county?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           discount_amount?: number | null
           discount_code?: string | null
           email: string
@@ -1071,6 +1085,7 @@ export type Database = {
           first_name?: string | null
           flat_number?: string | null
           id?: string
+          is_deleted?: boolean | null
           last_name?: string | null
           lost_key?: boolean | null
           mileage?: string | null
@@ -1114,6 +1129,8 @@ export type Database = {
           country?: string | null
           county?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           discount_amount?: number | null
           discount_code?: string | null
           email?: string
@@ -1122,6 +1139,7 @@ export type Database = {
           first_name?: string | null
           flat_number?: string | null
           id?: string
+          is_deleted?: boolean | null
           last_name?: string | null
           lost_key?: boolean | null
           mileage?: string | null
@@ -2135,6 +2153,14 @@ export type Database = {
       }
       make_user_admin: {
         Args: { user_email: string }
+        Returns: undefined
+      }
+      restore_customer: {
+        Args: { customer_uuid: string }
+        Returns: undefined
+      }
+      soft_delete_customer: {
+        Args: { admin_uuid: string; customer_uuid: string }
         Returns: undefined
       }
       verify_warranty_selection: {

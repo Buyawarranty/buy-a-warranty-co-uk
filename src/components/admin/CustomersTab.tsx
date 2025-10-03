@@ -13,7 +13,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { CustomerNotesSection } from './CustomerNotesSection';
@@ -119,6 +119,9 @@ interface Customer {
   activation_email_status?: 'sent' | 'not_sent';
   assigned_to?: string;
   assigned_admin_name?: string;
+  is_deleted?: boolean;
+  deleted_at?: string;
+  deleted_by?: string;
   // Add-on coverage fields
   tyre_cover?: boolean;
   wear_tear?: boolean;
@@ -221,11 +224,15 @@ const NumberPlate = ({ plateNumber }: { plateNumber: string }) => {
 export const CustomersTab = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
+  const [deletedCustomers, setDeletedCustomers] = useState<Customer[]>([]);
+  const [filteredDeletedCustomers, setFilteredDeletedCustomers] = useState<Customer[]>([]);
   const [incompleteCustomers, setIncompleteCustomers] = useState<IncompleteCustomer[]>([]);
   const [filteredIncompleteCustomers, setFilteredIncompleteCustomers] = useState<IncompleteCustomer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletedLoading, setDeletedLoading] = useState(true);
   const [incompleteLoading, setIncompleteLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deletedSearchTerm, setDeletedSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest'); // Default to newest first
   const [filterByPlan, setFilterByPlan] = useState('all');
   const [filterByStatus, setFilterByStatus] = useState('all');
@@ -247,9 +254,11 @@ export const CustomersTab = () => {
   const [assignmentLoading, setAssignmentLoading] = useState<{ [key: string]: boolean }>({});
   const [selectedCustomers, setSelectedCustomers] = useState<Set<string>>(new Set());
   const [bulkDeleteLoading, setBulkDeleteLoading] = useState(false);
+  const [restoreLoading, setRestoreLoading] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     fetchCustomers();
+    fetchDeletedCustomers();
     fetchIncompleteCustomers();
     fetchPlans();
     fetchEmailStatuses();
@@ -405,7 +414,7 @@ export const CustomersTab = () => {
       // Query both customers and orphaned policies (policies without customer records)
       console.log('📊 Attempting query with policy data and real customers only...');
       
-      // First get customers with their policies and assigned admin details
+      // First get customers with their policies and assigned admin details (exclude soft-deleted)
       const { data: customersData, error: customersError } = await supabase
         .from('customers')
         .select(`
@@ -442,6 +451,7 @@ export const CustomersTab = () => {
         .not('email', 'ilike', '%guest%')
         .not('name', 'ilike', '%test customer%')
         .not('name', 'ilike', '%guest customer%')
+        .eq('is_deleted', false)
         .order('updated_at', { ascending: false });
 
       // Then get orphaned policies (policies without customer records)
@@ -497,6 +507,9 @@ export const CustomersTab = () => {
           stripe_customer_id: null,
           warranty_number: null,
           admin_users: null,
+          is_deleted: false,
+          deleted_at: undefined,
+          deleted_by: undefined,
           // Add missing add-on columns
           tyre_cover: false,
           wear_tear: false,
@@ -610,6 +623,104 @@ export const CustomersTab = () => {
       toast.error('Failed to load incomplete customers');
     } finally {
       setIncompleteLoading(false);
+    }
+  };
+
+  const fetchDeletedCustomers = async () => {
+    try {
+      setDeletedLoading(true);
+      console.log('🔍 Fetching deleted customers...');
+      
+      const { data: customersData, error: customersError } = await supabase
+        .from('customers')
+        .select(`
+          *,
+          customer_policies!customer_id(
+            id,
+            policy_number,
+            policy_end_date,
+            policy_start_date,
+            status,
+            warranty_number,
+            email_sent_status,
+            warranties_2000_status,
+            mot_fee,
+            tyre_cover,
+            wear_tear,
+            europe_cover,
+            transfer_cover,
+            breakdown_recovery,
+            vehicle_rental,
+            claim_limit,
+            mot_repair,
+            lost_key,
+            consequential
+          ),
+          admin_users!deleted_by(
+            id,
+            first_name,
+            last_name,
+            email
+          )
+        `)
+        .eq('is_deleted', true)
+        .order('deleted_at', { ascending: false });
+
+      if (customersError) {
+        console.error('Error fetching deleted customers:', customersError);
+        throw customersError;
+      }
+
+      const processedData = customersData?.map((customer: any) => ({
+        ...customer,
+        warranty_expiry: customer.customer_policies?.[0]?.policy_end_date || null,
+        warranty_reference_number: customer.warranty_reference_number || null,
+        policy_number: customer.customer_policies?.[0]?.policy_number || null,
+        policy_status: customer.customer_policies?.[0]?.status || null
+      })) || [];
+
+      console.log('✅ Found deleted customers:', processedData.length);
+      setDeletedCustomers(processedData);
+      setFilteredDeletedCustomers(processedData);
+    } catch (error) {
+      console.error('Error fetching deleted customers:', error);
+      toast.error('Failed to load deleted customers');
+    } finally {
+      setDeletedLoading(false);
+    }
+  };
+
+  const restoreCustomer = async (customerId: string, customerName: string) => {
+    if (!isAdmin()) {
+      toast.error('Only administrators can restore customer records');
+      return;
+    }
+
+    if (!confirm(`Restore "${customerName}"? This will make the order active again.`)) {
+      return;
+    }
+
+    setRestoreLoading(prev => ({ ...prev, [customerId]: true }));
+
+    try {
+      const { error } = await supabase.rpc('restore_customer', {
+        customer_uuid: customerId
+      });
+
+      if (error) {
+        console.error('Error restoring customer:', error);
+        toast.error('Failed to restore customer: ' + error.message);
+        return;
+      }
+
+      toast.success(`"${customerName}" restored successfully!`);
+      fetchCustomers();
+      fetchDeletedCustomers();
+    } catch (error) {
+      console.error('Unexpected error restoring record:', error);
+      toast.error('An unexpected error occurred while restoring the record');
+    } finally {
+      setRestoreLoading(prev => ({ ...prev, [customerId]: false }));
     }
   };
 
@@ -911,103 +1022,65 @@ export const CustomersTab = () => {
       return;
     }
 
-    if (!confirm(`Are you sure you want to delete "${customerName}"? This action cannot be undone and will also delete all associated data.`)) {
+    if (!confirm(`Are you sure you want to archive "${customerName}"? You can restore it anytime from the Order Archive.`)) {
       return;
     }
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const adminId = user?.id;
+
+      if (!adminId) {
+        toast.error('Unable to identify admin user');
+        return;
+      }
+
       // Check if this is an orphaned policy (fake customer record)
       const isOrphanedPolicy = customerName === 'Unknown Customer';
       
       if (isOrphanedPolicy) {
-        // This is an orphaned policy - delete the policy record directly
-        console.log('Deleting orphaned policy with ID:', customerId);
+        // This is an orphaned policy - soft delete the policy record directly
+        console.log('Soft deleting orphaned policy with ID:', customerId);
         
         const { error: policyError } = await supabase
           .from('customer_policies')
-          .delete()
+          .update({
+            is_deleted: true,
+            deleted_at: new Date().toISOString(),
+            deleted_by: adminId
+          })
           .eq('id', customerId);
 
         if (policyError) {
-          console.error('Error deleting orphaned policy:', policyError);
-          toast.error('Failed to delete policy record: ' + policyError.message);
+          console.error('Error archiving orphaned policy:', policyError);
+          toast.error('Failed to archive policy record: ' + policyError.message);
           return;
         }
 
-        toast.success('Orphaned policy record has been deleted successfully');
+        toast.success('Policy archived successfully. Find it in Order Archive.');
       } else {
-        // This is a real customer - delete related records first, then customer
-        console.log('Deleting real customer with ID:', customerId);
+        // Use the database function for soft delete
+        console.log('Soft deleting customer with ID:', customerId);
         
-        // 1. Delete warranty audit logs first (they reference both customer and policies)
-        const { error: auditLogsError } = await supabase
-          .from('warranty_audit_log')
-          .delete()
-          .eq('customer_id', customerId);
+        const { error } = await supabase.rpc('soft_delete_customer', {
+          customer_uuid: customerId,
+          admin_uuid: adminId
+        });
 
-        if (auditLogsError) {
-          console.error('Error deleting warranty audit logs:', auditLogsError);
-        }
-
-        // 2. Delete email logs
-        const { error: emailLogsError } = await supabase
-          .from('email_logs')
-          .delete()
-          .eq('customer_id', customerId);
-
-        if (emailLogsError) {
-          console.error('Error deleting email logs:', emailLogsError);
-        }
-
-        // 3. Delete customer policies
-        const { error: policiesError } = await supabase
-          .from('customer_policies')
-          .delete()
-          .eq('customer_id', customerId);
-
-        if (policiesError) {
-          console.error('Error deleting customer policies:', policiesError);
-        }
-
-        // 4. Delete admin notes
-        const { error: notesError } = await supabase
-          .from('admin_notes')
-          .delete()
-          .eq('customer_id', customerId);
-
-        if (notesError) {
-          console.error('Error deleting admin notes:', notesError);
-        }
-
-        // 5. Delete payments
-        const { error: paymentsError } = await supabase
-          .from('payments')
-          .delete()
-          .eq('customer_id', customerId);
-
-        if (paymentsError) {
-          console.error('Error deleting payments:', paymentsError);
-        }
-
-        // 6. Finally, delete the customer
-        const { error: customerError } = await supabase
-          .from('customers')
-          .delete()
-          .eq('id', customerId);
-
-        if (customerError) {
-          console.error('Error deleting customer:', customerError);
-          toast.error('Failed to delete customer: ' + customerError.message);
+        if (error) {
+          console.error('Error archiving customer:', error);
+          toast.error('Failed to archive customer: ' + error.message);
           return;
         }
 
-        toast.success(`Customer "${customerName}" has been deleted successfully`);
+        toast.success(`"${customerName}" archived successfully. Find it in Order Archive.`);
       }
       
       fetchCustomers(); // Refresh the customer list
+      fetchDeletedCustomers(); // Refresh deleted list
     } catch (error) {
-      console.error('Unexpected error deleting record:', error);
-      toast.error('An unexpected error occurred while deleting the record');
+      console.error('Unexpected error archiving record:', error);
+      toast.error('An unexpected error occurred while archiving the record');
     }
   };
 
@@ -1036,17 +1109,26 @@ export const CustomersTab = () => {
     }
 
     if (selectedCustomers.size === 0) {
-      toast.error('No customers selected for deletion');
+      toast.error('No customers selected for archiving');
       return;
     }
 
     const selectedCount = selectedCustomers.size;
-    if (!confirm(`Are you sure you want to delete ${selectedCount} customer(s)? This action cannot be undone and will also delete all associated data.`)) {
+    if (!confirm(`Archive ${selectedCount} customer(s)? You can restore them anytime from Order Archive.`)) {
       return;
     }
 
     setBulkDeleteLoading(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const adminId = user?.id;
+
+      if (!adminId) {
+        toast.error('Unable to identify admin user');
+        setBulkDeleteLoading(false);
+        return;
+      }
+
       const errors = [];
       let successCount = 0;
 
@@ -1060,51 +1142,48 @@ export const CustomersTab = () => {
           if (isOrphanedPolicy) {
             const { error: policyError } = await supabase
               .from('customer_policies')
-              .delete()
+              .update({
+                is_deleted: true,
+                deleted_at: new Date().toISOString(),
+                deleted_by: adminId
+              })
               .eq('id', customerId);
 
             if (policyError) {
-              errors.push(`Failed to delete policy ${customerId}: ${policyError.message}`);
+              errors.push(`Failed to archive policy ${customerId}: ${policyError.message}`);
             } else {
               successCount++;
             }
           } else {
-            // Delete related records first
-            await supabase.from('warranty_audit_log').delete().eq('customer_id', customerId);
-            await supabase.from('email_logs').delete().eq('customer_id', customerId);
-            await supabase.from('customer_policies').delete().eq('customer_id', customerId);
-            await supabase.from('admin_notes').delete().eq('customer_id', customerId);
-            await supabase.from('payments').delete().eq('customer_id', customerId);
+            const { error } = await supabase.rpc('soft_delete_customer', {
+              customer_uuid: customerId,
+              admin_uuid: adminId
+            });
 
-            // Delete customer
-            const { error: customerError } = await supabase
-              .from('customers')
-              .delete()
-              .eq('id', customerId);
-
-            if (customerError) {
-              errors.push(`Failed to delete customer ${customer.name}: ${customerError.message}`);
+            if (error) {
+              errors.push(`Failed to archive customer ${customer.name}: ${error.message}`);
             } else {
               successCount++;
             }
           }
         } catch (error) {
-          errors.push(`Error deleting ${customer.name}: ${error}`);
+          errors.push(`Error archiving ${customer.name}: ${error}`);
         }
       }
 
       if (errors.length > 0) {
-        console.error('Bulk delete errors:', errors);
-        toast.error(`${successCount} customers deleted, ${errors.length} failed`);
+        console.error('Bulk archive errors:', errors);
+        toast.error(`${successCount} customers archived, ${errors.length} failed`);
       } else {
-        toast.success(`Successfully deleted ${successCount} customer(s)`);
+        toast.success(`Successfully archived ${successCount} customer(s). Find them in Order Archive.`);
       }
 
       setSelectedCustomers(new Set());
       fetchCustomers();
+      fetchDeletedCustomers();
     } catch (error) {
-      console.error('Bulk delete error:', error);
-      toast.error('An error occurred during bulk deletion');
+      console.error('Bulk archive error:', error);
+      toast.error('An error occurred during bulk archiving');
     } finally {
       setBulkDeleteLoading(false);
     }
@@ -1536,12 +1615,38 @@ export const CustomersTab = () => {
       )}
 
       <Tabs defaultValue="complete" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="complete">Complete Customers</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="complete">Active Orders</TabsTrigger>
+          <TabsTrigger value="deleted">
+            <Archive className="h-4 w-4 mr-2" />
+            Order Archive
+          </TabsTrigger>
           <TabsTrigger value="incomplete">Incomplete Customers</TabsTrigger>
         </TabsList>
 
         <TabsContent value="complete" className="space-y-4">
+          {/* Info Banner */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start space-x-3">
+              <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div className="flex-1">
+                <h3 className="font-semibold text-blue-900 mb-1">Easily manage your vehicle warranty orders.</h3>
+                <p className="text-sm text-blue-700 mb-2">
+                  Need to delete an order? You can do that anytime — and if you change your mind, it's not gone forever.
+                </p>
+                <div className="space-y-1 text-sm text-blue-700">
+                  <div className="flex items-center gap-2">
+                    <Archive className="h-4 w-4" />
+                    <span><strong>Deleted orders are safely stored</strong> — You'll find them in your Order Archive, where you can restore or review them whenever you like.</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RotateCcw className="h-4 w-4" />
+                    <span><strong>Restore with one click</strong> — Mistakes happen. That's why we've made it easy to bring back any deleted order.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           {/* Enhanced Search and Filter Controls */}
           <div className="bg-white p-4 rounded-lg border space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -2705,6 +2810,121 @@ export const CustomersTab = () => {
         </Table>
           </div>
         </div>
+        </TabsContent>
+
+        <TabsContent value="deleted" className="space-y-4">
+          {/* Info Banner for Deleted Orders */}
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div className="flex items-start space-x-3">
+              <Archive className="h-5 w-5 text-amber-600 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-amber-900 mb-1">Order Archive</h3>
+                <p className="text-sm text-amber-700">
+                  These orders have been deleted but can be restored anytime. Orders remain in the archive until permanently removed.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="bg-white p-4 rounded-lg border">
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search deleted orders..."
+                value={deletedSearchTerm}
+                onChange={(e) => {
+                  setDeletedSearchTerm(e.target.value);
+                  const filtered = deletedCustomers.filter(customer =>
+                    customer.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                    customer.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                    customer.registration_plate?.toLowerCase().includes(e.target.value.toLowerCase())
+                  );
+                  setFilteredDeletedCustomers(filtered);
+                }}
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          {deletedLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+              <span className="ml-2">Loading archived orders...</span>
+            </div>
+          ) : filteredDeletedCustomers.length === 0 ? (
+            <div className="bg-white rounded-lg shadow p-8">
+              <div className="text-center space-y-4">
+                <Archive className="h-12 w-12 text-gray-400 mx-auto" />
+                <div>
+                  <p className="text-gray-500 text-lg">No archived orders</p>
+                  <p className="text-gray-400 text-sm mt-2">
+                    {deletedSearchTerm ? 'No orders match your search' : 'Deleted orders will appear here'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Registration</TableHead>
+                      <TableHead>Plan Type</TableHead>
+                      <TableHead>Deleted Date</TableHead>
+                      <TableHead>Deleted By</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredDeletedCustomers.map((customer) => (
+                      <TableRow key={customer.id} className="bg-gray-50">
+                        <TableCell className="font-medium">{customer.name}</TableCell>
+                        <TableCell>{customer.email}</TableCell>
+                        <TableCell>
+                          <NumberPlate plateNumber={customer.registration_plate} />
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">{customer.plan_type}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          {customer.deleted_at ? format(new Date(customer.deleted_at), 'dd/MM/yyyy HH:mm') : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          {customer.admin_users ? (
+                            <span className="text-sm">
+                              {customer.admin_users.first_name} {customer.admin_users.last_name}
+                            </span>
+                          ) : (
+                            <span className="text-gray-400 text-sm">System</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => restoreCustomer(customer.id, customer.name)}
+                            disabled={restoreLoading[customer.id]}
+                            className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                          >
+                            {restoreLoading[customer.id] ? (
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-green-600 mr-2"></div>
+                            ) : (
+                              <RotateCcw className="h-3 w-3 mr-2" />
+                            )}
+                            Restore
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="incomplete" className="space-y-4">
