@@ -126,13 +126,19 @@ serve(async (req) => {
         previousStatus: 'completed'
       });
       
-      // Still redirect to success page, but don't process again
-      const redirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+      // Build redirect URL with parameters even for duplicate detection
+      const baseRedirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+      const redirectUrl = new URL(baseRedirectUrl);
+      redirectUrl.searchParams.set('plan', transactionData.plan_id);
+      redirectUrl.searchParams.set('payment', transactionData.payment_type);
+      redirectUrl.searchParams.set('source', 'bumper');
+      redirectUrl.searchParams.set('session_id', transactionId);
+      
       return new Response(null, {
         status: 302,
         headers: {
           ...corsHeaders,
-          'Location': redirectUrl
+          'Location': redirectUrl.toString()
         }
       });
     }
@@ -151,13 +157,19 @@ serve(async (req) => {
         existingEmail: existingCustomer.email
       });
       
-      // Redirect to success page without processing again
-      const redirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+      // Build redirect URL with parameters even for duplicate detection
+      const baseRedirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+      const redirectUrl = new URL(baseRedirectUrl);
+      redirectUrl.searchParams.set('plan', transactionData.plan_id);
+      redirectUrl.searchParams.set('payment', transactionData.payment_type);
+      redirectUrl.searchParams.set('source', 'bumper');
+      redirectUrl.searchParams.set('session_id', transactionId);
+      
       return new Response(null, {
         status: 302,
         headers: {
           ...corsHeaders,
-          'Location': redirectUrl
+          'Location': redirectUrl.toString()
         }
       });
     }
@@ -295,7 +307,7 @@ serve(async (req) => {
       hasBumperOrderId: !!transactionId
     });
 
-    const { error: handlePaymentError } = await supabaseClient.functions.invoke(
+    const { data: paymentResult, error: handlePaymentError } = await supabaseClient.functions.invoke(
       'handle-successful-payment',
       { body: handlePaymentPayload }
     );
@@ -305,16 +317,65 @@ serve(async (req) => {
       throw new Error(`Payment processing failed: ${handlePaymentError.message}`);
     }
 
-    logStep("Payment processing completed successfully");
+    logStep("Payment processing completed successfully", { 
+      policyNumber: paymentResult?.policyNumber,
+      warrantyNumber: paymentResult?.warrantyNumber
+    });
 
-    // Perform actual HTTP redirect instead of returning JSON
-    const redirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+    // Build redirect URL with all necessary parameters for ThankYou page
+    const baseRedirectUrl = transactionData.redirect_url || 'https://buyawarranty.co.uk/thank-you';
+    const redirectUrl = new URL(baseRedirectUrl);
+    
+    // Add required parameters that ThankYou page expects
+    redirectUrl.searchParams.set('plan', planId);
+    redirectUrl.searchParams.set('payment', originalWarrantyDuration);
+    redirectUrl.searchParams.set('source', 'bumper');
+    redirectUrl.searchParams.set('session_id', transactionId);
+    
+    // Add policy number if available
+    if (paymentResult?.policyNumber) {
+      redirectUrl.searchParams.set('policy_number', paymentResult.policyNumber);
+    }
+    if (paymentResult?.warrantyNumber) {
+      redirectUrl.searchParams.set('warranty_number', paymentResult.warrantyNumber);
+    }
+    
+    // Add customer data to URL for display on thank you page
+    if (customerData?.email) redirectUrl.searchParams.set('email', customerData.email);
+    if (customerData?.first_name) redirectUrl.searchParams.set('first_name', customerData.first_name);
+    if (customerData?.last_name) redirectUrl.searchParams.set('last_name', customerData.last_name);
+    if (customerData?.mobile || customerData?.phone) {
+      redirectUrl.searchParams.set('mobile', customerData.mobile || customerData.phone);
+    }
+    if (customerData?.street || customerData?.address_line_1) {
+      redirectUrl.searchParams.set('street', customerData.street || customerData.address_line_1);
+    }
+    if (customerData?.town || customerData?.city) {
+      redirectUrl.searchParams.set('town', customerData.town || customerData.city);
+    }
+    if (customerData?.postcode) redirectUrl.searchParams.set('postcode', customerData.postcode);
+    
+    // Add vehicle data
+    const vehicleReg = vehicleData?.regNumber || vehicleData?.registration || customerData?.vehicle_reg;
+    if (vehicleReg) redirectUrl.searchParams.set('vehicle_reg', vehicleReg);
+    if (vehicleData?.make) redirectUrl.searchParams.set('vehicle_make', vehicleData.make);
+    if (vehicleData?.model) redirectUrl.searchParams.set('vehicle_model', vehicleData.model);
+    if (vehicleData?.year) redirectUrl.searchParams.set('vehicle_year', vehicleData.year);
+    if (vehicleData?.mileage) redirectUrl.searchParams.set('mileage', vehicleData.mileage);
+    
+    // Add discount info if present
+    if (discountCode) redirectUrl.searchParams.set('discount_code', discountCode);
+    if (finalAmount) redirectUrl.searchParams.set('final_amount', finalAmount.toString());
+    
+    logStep("Redirecting to thank you page with parameters", { 
+      redirectUrl: redirectUrl.toString() 
+    });
     
     return new Response(null, {
       status: 302,
       headers: {
         ...corsHeaders,
-        'Location': redirectUrl
+        'Location': redirectUrl.toString()
       }
     });
 

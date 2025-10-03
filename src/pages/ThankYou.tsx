@@ -26,7 +26,41 @@ const ThankYou = () => {
 
   useEffect(() => {
     const processPayment = async () => {
+      // For Bumper payments, we get data from URL params
+      if (source === 'bumper') {
+        // Bumper flow already processed - just show success
+        setIsProcessing(false);
+        
+        // Extract policy number if available
+        const policyNum = searchParams.get('policy_number') || searchParams.get('warranty_number');
+        if (policyNum) {
+          setPolicyNumber(policyNum);
+          toast.success('Your warranty policy has been created successfully!');
+        }
+        
+        // Track purchase
+        const email = searchParams.get('email');
+        const finalAmountStr = searchParams.get('final_amount');
+        if (finalAmountStr && sessionId) {
+          trackPurchaseComplete(
+            parseFloat(finalAmountStr),
+            sessionId,
+            {
+              email: email || undefined,
+              phone: searchParams.get('mobile') || undefined,
+              firstName: searchParams.get('first_name') || undefined,
+              lastName: searchParams.get('last_name') || undefined,
+              address: searchParams.get('street') || undefined
+            }
+          );
+        }
+        
+        return;
+      }
+      
+      // For Stripe payments, validate plan and payment type
       if (!plan || !paymentType) {
+        console.error('Missing payment information', { plan, paymentType, source });
         toast.error('Missing payment information');
         setIsProcessing(false);
         return;
@@ -35,64 +69,8 @@ const ThankYou = () => {
       try {
         let data, error;
         
-        // Check if this is a Bumper payment (has source=bumper in URL)
-        if (source === 'bumper') {
-          console.log('🔄 Processing Bumper payment...', { plan, paymentType, sessionId });
-          console.log('📋 All URL params:', Object.fromEntries(searchParams.entries()));
-          
-          // Log all customer data being extracted
-          console.log('👤 Extracting customer data from URL...');
-          
-          // Extract customer and vehicle data from URL parameters
-          const customerData = {
-            first_name: searchParams.get('first_name') || undefined,
-            last_name: searchParams.get('last_name') || undefined,
-            email: searchParams.get('email') || undefined,
-            mobile: searchParams.get('mobile') || undefined,
-            street: searchParams.get('street') || undefined,
-            town: searchParams.get('town') || undefined,
-            postcode: searchParams.get('postcode') || undefined,
-            vehicle_reg: searchParams.get('vehicle_reg') || undefined
-          };
-          
-          const vehicleData = {
-            regNumber: searchParams.get('vehicle_reg') || undefined,
-            make: searchParams.get('vehicle_make') || undefined,
-            model: searchParams.get('vehicle_model') || undefined,
-            year: searchParams.get('vehicle_year') || undefined,
-            mileage: searchParams.get('mileage') || undefined
-          };
-          
-          console.log('📞 Calling process-bumper-success function with data:', {
-            planId: plan,
-            paymentType,
-            customerData,
-            vehicleData,
-            sessionId: sessionId || `BUMPER_${Date.now()}`,
-            discountCode: searchParams.get('discount_code'),
-            discountAmount: searchParams.get('discount_amount') ? parseFloat(searchParams.get('discount_amount')!) : 0,
-            originalAmount: searchParams.get('original_amount') ? parseFloat(searchParams.get('original_amount')!) : null,
-            finalAmount: searchParams.get('final_amount') ? parseFloat(searchParams.get('final_amount')!) : null
-          });
-          
-          const result = await supabase.functions.invoke('process-bumper-success', {
-            body: {
-              planId: plan,
-              paymentType,
-              customerData,
-              vehicleData,
-              sessionId: sessionId || `BUMPER_${Date.now()}`,
-              discountCode: searchParams.get('discount_code'),
-              discountAmount: searchParams.get('discount_amount') ? parseFloat(searchParams.get('discount_amount')!) : 0,
-              originalAmount: searchParams.get('original_amount') ? parseFloat(searchParams.get('original_amount')!) : null,
-              finalAmount: searchParams.get('final_amount') ? parseFloat(searchParams.get('final_amount')!) : null
-            }
-          });
-          console.log('📤 Function call result:', { data: result.data, error: result.error });
-          data = result.data;
-          error = result.error;
-        } else if (sessionId) {
-          // Process Stripe payment
+        // Process Stripe payment
+        if (sessionId) {
           console.log('Processing Stripe payment...', { sessionId, plan, paymentType });
           
           const result = await supabase.functions.invoke('process-stripe-success', {
