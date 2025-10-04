@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, Mail, Clock, Upload, Menu } from 'lucide-react';
+import { MessageCircle, Mail, Clock, Upload, Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -33,6 +33,7 @@ const ContactUs = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -42,8 +43,84 @@ const ContactUs = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      // Validate file size (20MB max)
+      if (selectedFile.size > 20 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please upload a file smaller than 20MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(selectedFile.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload a PDF, DOC, DOCX, JPG, or PNG file.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setFile(selectedFile);
+    }
+  };
+
+  const removeFile = () => {
+    setFile(null);
+    const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const droppedFile = files[0];
+      
+      // Validate file size (20MB max)
+      if (droppedFile.size > 20 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please upload a file smaller than 20MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(droppedFile.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload a PDF, DOC, DOCX, JPG, or PNG file.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setFile(droppedFile);
     }
   };
 
@@ -96,8 +173,9 @@ const ContactUs = () => {
       }
 
       toast({
-        title: "Message Sent Successfully",
+        title: "✓ Message Sent Successfully",
         description: "Thank you for contacting us! We'll get back to you within 1-2 business days.",
+        className: "bg-green-500 text-white border-green-600",
       });
 
       // Reset form
@@ -443,27 +521,68 @@ const ContactUs = () => {
                   
                   {/* File Upload */}
                   <div>
-                    <Label htmlFor="file" className="text-gray-700 font-medium">
-                      File Upload
+                    <Label htmlFor="file-upload" className="text-gray-700 font-medium text-sm sm:text-base">
+                      Attach a File (Optional)
                     </Label>
-                    <div className="mt-1 flex items-center gap-3">
-                      <Label
-                        htmlFor="file-upload"
-                        className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded cursor-pointer inline-flex items-center gap-2"
-                      >
-                        <Upload size={16} />
-                        Choose a file
-                      </Label>
-                      <input
-                        id="file-upload"
-                        type="file"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                      <span className="text-gray-500 text-sm">
-                        {file ? file.name : "No file chosen."}
-                      </span>
-                    </div>
+                    <p className="text-gray-500 text-xs sm:text-sm mb-2">
+                      Documents, photos, or files (Max 20MB)
+                    </p>
+                    
+                    {!file ? (
+                      <div className="mt-1">
+                        <label htmlFor="file-upload" className="cursor-pointer">
+                          <div 
+                            className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                              isDragging 
+                                ? 'border-primary bg-primary/5' 
+                                : 'border-gray-300 hover:border-primary'
+                            }`}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                          >
+                            <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                            <p className="mt-2 text-sm text-gray-600">
+                              Click to upload or drag and drop
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              PDF, DOC, JPG, PNG up to 20MB
+                            </p>
+                          </div>
+                        </label>
+                        <input
+                          id="file-upload"
+                          name="file-upload"
+                          type="file"
+                          className="hidden"
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                          onChange={handleFileChange}
+                        />
+                      </div>
+                    ) : (
+                      <div className="mt-1 p-3 bg-gray-50 rounded-lg border flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="text-primary">
+                            <Upload className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{file.name}</p>
+                            <p className="text-xs text-gray-500">
+                              {(file.size / 1024 / 1024).toFixed(2)} MB
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={removeFile}
+                          className="text-gray-500 hover:text-red-500"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Message Field */}
