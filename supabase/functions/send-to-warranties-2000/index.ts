@@ -360,9 +360,15 @@ serve(async (req) => {
     // Valid claim limits are 750, 1250, 2000
     const policyClaimLimit = policy?.claim_limit;
     const customerClaimLimit = customer?.claim_limit;
-    const finalClaimLimit = policyClaimLimit || customerClaimLimit || 1250;
+    const finalClaimLimit = policyClaimLimit ?? customerClaimLimit ?? 1250;
+    
+    // Get voluntary excess from policy or customer data - EXACT same pattern as claim limit
+    const policyVoluntaryExcess = policy?.voluntary_excess;
+    const customerVoluntaryExcess = customer?.voluntary_excess;
+    const finalVoluntaryExcess = policyVoluntaryExcess ?? customerVoluntaryExcess ?? 0;
     
     console.log(`[WARRANTIES-2000] Claim limit processing: Policy: ${policyClaimLimit}, Customer: ${customerClaimLimit}, Final: ${finalClaimLimit}`);
+    console.log(`[WARRANTIES-2000] Voluntary excess processing: Policy: ${policyVoluntaryExcess}, Customer: ${customerVoluntaryExcess}, Final: ${finalVoluntaryExcess}`);
     
     console.log(`[WARRANTIES-2000] Plan type determination: {
       originalPlanType: "${policy?.plan_type || customer.plan_type}",
@@ -469,8 +475,8 @@ serve(async (req) => {
         return nextYear.toISOString().split('T')[0];
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
-      VolEx: String(policy?.voluntary_excess ?? customer?.voluntary_excess ?? 0),
-      Notes: `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${finalClaimLimit} | VolExcess: ${policy?.voluntary_excess ?? customer?.voluntary_excess ?? 0}`
+      VolEx: String(finalVoluntaryExcess),
+      Notes: `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${finalClaimLimit} | VolExcess: ${finalVoluntaryExcess}`
       // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
 

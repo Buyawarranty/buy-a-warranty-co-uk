@@ -366,7 +366,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             planId,
             vehicleData,
             paymentType,
-            voluntaryExcess: updatedPricingData.voluntaryExcess ?? 150,
+            voluntaryExcess: updatedPricingData.voluntaryExcess,
             claimLimit: updatedPricingData.claimLimit || 1250,
             customerData: {
               ...customerData,
@@ -462,7 +462,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         planId,
         vehicleData,
         paymentType,
-        voluntaryExcess: updatedPricingData.voluntaryExcess ?? 150,
+        voluntaryExcess: updatedPricingData.voluntaryExcess,
         claimLimit: updatedPricingData.claimLimit || 1250,
         customerData: {
           ...customerData,
@@ -797,7 +797,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                      </div>
                      <div className="flex justify-between">
                        <span className="text-gray-600">Voluntary Excess</span>
-                       <span className="font-semibold">£{updatedPricingData.voluntaryExcess ?? 150}</span>
+                       <span className="font-semibold">£{updatedPricingData.voluntaryExcess ?? 0}</span>
                      </div>
                     
                     {/* Add-ons Section */}

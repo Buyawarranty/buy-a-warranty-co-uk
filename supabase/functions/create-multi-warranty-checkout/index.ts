@@ -99,7 +99,7 @@ serve(async (req) => {
             vehicle_mileage: item.vehicleData.mileage || '',
             vehicle_type: item.vehicleData.vehicleType || 'standard',
             claim_limit: item.claimLimit?.toString() || '1250',
-            voluntary_excess: (item.voluntaryExcess !== undefined && item.voluntaryExcess !== null) ? item.voluntaryExcess.toString() : '150',
+            voluntary_excess: (item.voluntaryExcess !== undefined && item.voluntaryExcess !== null) ? item.voluntaryExcess.toString() : '0',
             // Add-on metadata - from user selections
             addon_tyre_cover: item.protectionAddOns?.tyre ? 'true' : 'false',
             addon_wear_tear: item.protectionAddOns?.wearAndTear ? 'true' : 'false',
