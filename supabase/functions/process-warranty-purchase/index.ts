@@ -90,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
       final_amount: amount,
       signup_date: new Date().toISOString(),
       country: 'United Kingdom',
-      voluntary_excess: vehicleDetails?.voluntaryExcess || vehicleDetails?.voluntary_excess || 0,
+      voluntary_excess: vehicleDetails?.voluntaryExcess ?? vehicleDetails?.voluntary_excess ?? 0,
       ...(vehicleDetails || {})
     };
 

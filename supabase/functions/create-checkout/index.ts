@@ -216,7 +216,7 @@ serve(async (req) => {
         vehicle_mileage: vehicleData?.mileage || '',
         vehicle_type: vehicleData?.vehicleType || 'standard',
         discount_code: discountCode || '',
-        voluntary_excess: voluntaryExcess?.toString() || '0',
+        voluntary_excess: voluntaryExcess?.toString() ?? '0',
         final_amount: finalAmount?.toString() || totalAmount?.toString(),
         claim_limit: claimLimit?.toString() || getMaxClaimAmount(planName),
         // Add-ons data - using correct field names that match handle-successful-payment

@@ -2171,7 +2171,7 @@ export const CustomersTab = () => {
                                   <div>
                                     <Label htmlFor="excess">Voluntary Excess (£)</Label>
                                     <Select
-                                      value={editingCustomer.voluntary_excess?.toString() || '150'}
+                                      value={editingCustomer.voluntary_excess?.toString() ?? '150'}
                                       onValueChange={(value) => setEditingCustomer({
                                         ...editingCustomer,
                                         voluntary_excess: parseFloat(value)
