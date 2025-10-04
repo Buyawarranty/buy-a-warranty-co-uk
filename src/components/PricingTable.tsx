@@ -96,7 +96,10 @@ const PricingTable: React.FC<PricingTableProps> = ({
 }) => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months' | null>(previousPaymentType || '24months');
-  const [voluntaryExcess, setVoluntaryExcess] = useState<number | null>(previousVoluntaryExcess ?? 100);
+  // If previousVoluntaryExcess is explicitly set (including 0), use it; otherwise default to null to force selection
+  const [voluntaryExcess, setVoluntaryExcess] = useState<number | null>(
+    previousVoluntaryExcess !== undefined ? previousVoluntaryExcess : null
+  );
   const [selectedAddOns, setSelectedAddOns] = useState<{[planId: string]: {[addon: string]: boolean}}>(
     previousSelectedAddOns ? { 'platinum': previousSelectedAddOns } : {}
   );
