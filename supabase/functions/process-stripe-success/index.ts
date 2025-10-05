@@ -114,6 +114,8 @@ serve(async (req) => {
         stripeSessionId: sessionId,
         vehicleData: vehicleData,
         customerData: customerData,
+        claimLimit: parseInt(session.metadata?.claim_limit || '1250'),
+        voluntaryExcess: parseInt(session.metadata?.voluntary_excess || '0'),
         metadata: session.metadata || {}
         // Removed skipEmail: true to allow emails to be sent
       }

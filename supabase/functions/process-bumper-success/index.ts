@@ -276,15 +276,17 @@ serve(async (req) => {
     if (autoIncludedAddOns.includes('rental')) addOnFields.vehicle_rental = true;
     if (autoIncludedAddOns.includes('tyre')) addOnFields.tyre_cover = true;
 
-    // Get claim limit from transaction data, but use original warranty duration for fallback calculation
+    // Get claim limit and voluntary excess from transaction data - use user's actual selections
     const claimLimit = transactionData.claim_limit || calculateClaimLimit(planId, originalWarrantyDuration);
-    const voluntaryExcess = calculateVoluntaryExcess(planId, originalWarrantyDuration);
+    // CRITICAL: Use user's selected voluntary excess, not a calculated default
+    const voluntaryExcess = protectionAddOns?.voluntaryExcess ?? 0;
 
     logStep("Using claim limit with correct warranty duration", { 
       transactionClaimLimit: transactionData.claim_limit, 
       calculatedClaimLimit: calculateClaimLimit(planId, originalWarrantyDuration), 
       finalClaimLimit: claimLimit, 
-      voluntaryExcess,
+      voluntaryExcess: voluntaryExcess,
+      voluntaryExcessSource: protectionAddOns?.voluntaryExcess !== undefined ? 'user_selection' : 'default',
       warrantyDuration: originalWarrantyDuration
     });
 
@@ -300,6 +302,8 @@ serve(async (req) => {
       paymentType: originalWarrantyDuration, // Use original warranty duration, not Bumper payment frequency
       userEmail: customerData?.email,
       protectionAddOns: addOnFields, // Use processed add-ons with auto-inclusions
+      claimLimit: claimLimit, // Pass as direct parameter
+      voluntaryExcess: voluntaryExcess, // Pass as direct parameter - user's actual selection
       metadata: {
         source: 'bumper',
         transaction_id: transactionId,

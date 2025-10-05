@@ -180,7 +180,10 @@ serve(async (req) => {
         transmission: vehicleData?.transmission || customerData?.vehicle_transmission,
         mileage: vehicleData?.mileage || customerData?.vehicle_mileage
       },
-      protection_addons: protectionAddOns,
+      protection_addons: {
+        ...protectionAddOns,
+        voluntaryExcess: voluntaryExcess // Store user's selection
+      },
       final_amount: totalAmount,
       discount_code: discountCode || '',
       add_another_warranty: addAnotherWarrantyRequested || false,
