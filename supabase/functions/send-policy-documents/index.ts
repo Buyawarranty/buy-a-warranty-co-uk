@@ -475,29 +475,35 @@ serve(async (req) => {
 });
 
 // Get customer credentials - password only if user hasn't reset it
-async function getCustomerCredentials(supabaseClient: any, email: string, policyNumber: string): Promise<{temporaryPassword?: string}> {
+async function getCustomerCredentials(supabaseClient: any, email: string, policyNumber: string): Promise<{temporaryPassword?: string, isExistingCustomer?: boolean}> {
   try {
     logStep("Getting customer credentials", { email });
     
     // Check if customer has reset their password
     const { data: existingWelcome } = await supabaseClient
       .from('welcome_emails')
-      .select('temporary_password, password_reset_by_user')
+      .select('temporary_password, password_reset_by_user, user_id')
       .eq('email', email)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
     
-    // If user has reset their password, don't include password in email
+    // If user has reset their password, show existing customer message
     if (existingWelcome?.password_reset_by_user) {
-      logStep("User has reset password, omitting credentials from email");
-      return {}; // No password field in email
+      logStep("User has reset password, showing existing customer message");
+      return { 
+        temporaryPassword: "Use your existing password that you set previously",
+        isExistingCustomer: true
+      };
     }
     
     // If existing password exists and user hasn't reset it, use it
-    if (existingWelcome?.temporary_password) {
-      logStep("Using existing temporary password");
-      return { temporaryPassword: existingWelcome.temporary_password };
+    if (existingWelcome?.temporary_password && !existingWelcome.password_reset_by_user) {
+      logStep("Using existing temporary password for returning customer");
+      return { 
+        temporaryPassword: existingWelcome.temporary_password,
+        isExistingCustomer: true
+      };
     }
     
     // Generate new temporary password for first-time customer
@@ -508,6 +514,8 @@ async function getCustomerCredentials(supabaseClient: any, email: string, policy
     const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
     const userExists = existingUsers?.users?.find((u: any) => u.email === email);
     
+    let userId = null;
+    
     if (userExists) {
       // Update existing user's password
       await supabaseClient.auth.admin.updateUserById(userExists.id, {
@@ -517,6 +525,7 @@ async function getCustomerCredentials(supabaseClient: any, email: string, policy
           policy_number: policyNumber
         }
       });
+      userId = userExists.id;
       logStep("Updated existing user password");
     } else {
       // Create new user
@@ -533,26 +542,39 @@ async function getCustomerCredentials(supabaseClient: any, email: string, policy
         logStep("User creation failed", userError);
         throw new Error(`Failed to create user: ${userError.message}`);
       }
+      userId = userData.user?.id;
       logStep("Created new user with password");
     }
+    
+    // Add delay to ensure password is propagated
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     // Store password in welcome_emails table for reference
     await supabaseClient
       .from('welcome_emails')
       .insert({
-        user_id: userExists?.id || null,
+        user_id: userId,
         email: email,
         temporary_password: tempPassword,
         email_sent_at: new Date().toISOString(),
         password_reset_by_user: false // New customers haven't reset yet
       });
     
-    return { temporaryPassword: tempPassword };
+    logStep("Stored credentials in welcome_emails table");
+    
+    return { 
+      temporaryPassword: tempPassword,
+      isExistingCustomer: false
+    };
     
   } catch (error) {
     logStep("Error getting customer credentials", error);
-    // For errors, don't include password in email rather than sending wrong info
-    logStep("Omitting password due to error to prevent sending incorrect credentials");
-    return {};
+    // Generate a temporary password even on error to ensure customer can login
+    const emergencyPassword = generateTempPassword();
+    logStep("Using emergency password due to error");
+    return { 
+      temporaryPassword: emergencyPassword,
+      isExistingCustomer: false
+    };
   }
 }
