@@ -68,8 +68,8 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { planId, paymentType, userEmail, userId, stripeSessionId, vehicleData, customerData, skipEmail, metadata, protectionAddOns } = await req.json();
-    logStep("Request data", { planId, paymentType, userEmail, userId, stripeSessionId, skipEmail, hasMetadata: !!metadata, hasProtectionAddOns: !!protectionAddOns });
+    const { planId, paymentType, userEmail, userId, stripeSessionId, vehicleData, customerData, skipEmail, metadata, protectionAddOns, claimLimit, voluntaryExcess } = await req.json();
+    logStep("Request data", { planId, paymentType, userEmail, userId, stripeSessionId, skipEmail, hasMetadata: !!metadata, hasProtectionAddOns: !!protectionAddOns, claimLimit, voluntaryExcess });
 
     if (!planId || !paymentType || !userEmail) {
       throw new Error("Missing required parameters");
@@ -242,8 +242,8 @@ serve(async (req) => {
       discount_amount: customerData?.discount_amount || 0,
       original_amount: customerData?.original_amount || null,
       final_amount: customerData?.final_amount || null,
-      voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, vehicleData),
-      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
+      voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, vehicleData, voluntaryExcess),
+      claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
       warranty_reference_number: warrantyReference,
       // Store final combined add-ons in customer record (user selections + auto-inclusions)
       ...finalAddOnsForCustomer
@@ -309,8 +309,8 @@ serve(async (req) => {
         policy_start_date: new Date().toISOString(),
         policy_end_date: calculatePolicyEndDate(paymentType),
         status: 'active',
-        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
-        voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, {}), // Fixed field name
+        claim_limit: parseInt(metadata?.claim_limit || customerData?.claimLimit || claimLimit || protectionAddOns?.claimLimit || '1250'), // User-selected claim limit
+        voluntary_excess: getStandardizedVoluntaryExcess(metadata, customerData, vehicleData, voluntaryExcess), // Fixed field name
         bumper_order_id: metadata?.bumper_order_id, // Store Bumper order ID if present
         stripe_session_id: stripeSessionId,
         // Include final combined add-ons in policy record
@@ -579,17 +579,18 @@ function getWarrantyDuration(paymentType: string): string {
   }
 }
 
-function getStandardizedVoluntaryExcess(metadata: any, customerData: any, vehicleData: any): number {
-  // Priority: metadata > customerData > vehicleData > default
+function getStandardizedVoluntaryExcess(metadata: any, customerData: any, vehicleData: any, directValue?: number): number {
+  // Priority: directValue > metadata > customerData > vehicleData > default 0
   // Use ?? to properly handle 0 values (|| treats 0 as falsy)
-  const excessValue = metadata?.voluntary_excess ?? 
+  const excessValue = directValue ?? 
+                     metadata?.voluntary_excess ?? 
                      customerData?.voluntaryExcess ?? 
                      customerData?.voluntary_excess ??
                      vehicleData?.voluntaryExcess ?? 
                      vehicleData?.voluntary_excess ??
-                     '150'; // Standard default
+                     0; // Default to 0, not 150
   
-  return parseInt(excessValue.toString());
+  return typeof excessValue === 'number' ? excessValue : parseInt(excessValue.toString());
 }
 
 function normalizeDuration(paymentType: string): string {
