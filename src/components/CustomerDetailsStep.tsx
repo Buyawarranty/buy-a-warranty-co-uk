@@ -177,14 +177,35 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   // Check for discount code on component mount and set up email popup timer
   useEffect(() => {
+    // Check for auto-apply discount code from return banner
+    const autoApplyCode = localStorage.getItem('autoApplyDiscountCode');
+    if (autoApplyCode && autoApplyCode.startsWith('RETURN20-')) {
+      setAppliedDiscountCodes([{
+        code: autoApplyCode,
+        type: 'percentage',
+        value: 20,
+        discountAmount: bumperTotalPrice * 0.20
+      }]);
+      // Clear the auto-apply flag
+      localStorage.removeItem('autoApplyDiscountCode');
+      toast.success('Your 20% return discount has been applied!');
+    }
+    
+    // Check for second warranty discount code
     const savedDiscountCode = localStorage.getItem('secondWarrantyDiscountCode');
     if (savedDiscountCode && savedDiscountCode.startsWith('SECOND10-')) {
-      setAppliedDiscountCodes([{
-        code: savedDiscountCode,
-        type: 'percentage',
-        value: 10,
-        discountAmount: bumperTotalPrice * 0.10
-      }]);
+      setAppliedDiscountCodes(prev => {
+        // Don't add if already applied
+        if (prev.some(code => code.code === savedDiscountCode)) {
+          return prev;
+        }
+        return [...prev, {
+          code: savedDiscountCode,
+          type: 'percentage',
+          value: 10,
+          discountAmount: bumperTotalPrice * 0.10
+        }];
+      });
     }
 
     // Show email capture popup after 35 seconds

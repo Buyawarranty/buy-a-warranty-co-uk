@@ -910,6 +910,7 @@ const CustomerDashboard = () => {
 
       <ReturnDiscountBanner 
         firstPurchaseDate={policies.length > 0 ? policies[policies.length - 1].policy_start_date : null}
+        customerEmail={user?.email || null}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
