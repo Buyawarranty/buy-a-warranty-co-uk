@@ -168,6 +168,19 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
       setVehicleData(data);
       
       if (data.found) {
+        // Block vehicle if year information is missing or unavailable
+        if (!data.yearOfManufacture) {
+          console.log('Vehicle blocked: Year information not available');
+          toast({
+            title: "Vehicle Not Eligible",
+            description: "We cannot verify the age of this vehicle. Please contact support for assistance.",
+            variant: "destructive",
+          });
+          setShowManualEntry(false);
+          setVehicleFound(false);
+          return;
+        }
+        
         setVehicleFound(true);
         
         // Check if this is a high-performance model that should be blocked
