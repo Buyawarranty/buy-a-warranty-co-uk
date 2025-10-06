@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ProtectedButton } from '@/components/ui/protected-button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck, PartyPopper, CheckCircle, Crown, Battery, Bike, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Check, ArrowLeft, Info, FileText, ExternalLink, ChevronDown, ChevronUp, Plus, Infinity, Zap, Car, Cog, Settings, Droplets, Cpu, Snowflake, Search, Users, RotateCcw, MapPin, X, Shield, Hash, Calendar, Gauge, Fuel, Edit, HelpCircle, Gift, ArrowRight, DollarSign, ShieldCheck, PartyPopper, CheckCircle, Crown, Battery, Bike, AlertTriangle, AlertCircle } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -164,6 +165,17 @@ const PricingTable: React.FC<PricingTableProps> = ({
     750: false,
     1250: false,
     2000: false
+  });
+  
+  // Validation error states
+  const [validationErrors, setValidationErrors] = useState<{
+    voluntaryExcess: boolean;
+    claimLimit: boolean;
+    paymentType: boolean;
+  }>({
+    voluntaryExcess: false,
+    claimLimit: false,
+    paymentType: false
   });
   
   // Reliability score state
@@ -577,36 +589,23 @@ const PricingTable: React.FC<PricingTableProps> = ({
 
   const handleSelectPlan = async () => {
     // Validation: Check if all required selections are made
-    const missingSelections = [];
+    // Update validation error states
+    const errors = {
+      voluntaryExcess: voluntaryExcess === null,
+      claimLimit: !selectedClaimLimit,
+      paymentType: !paymentType
+    };
     
-    if (voluntaryExcess === null) {
-      missingSelections.push('Excess Amount');
-    }
+    setValidationErrors(errors);
     
-    if (!selectedClaimLimit) {
-      missingSelections.push('Claim Limit');
-    }
-    
-    if (!paymentType) {
-      missingSelections.push('Warranty Duration and Price');
-    }
-    
-    // If any selections are missing, show error and scroll to first missing section
-    if (missingSelections.length > 0) {
-      const message = missingSelections.length === 1 
-        ? `Please select your ${missingSelections[0]} before continuing`
-        : `Please select the following before continuing: ${missingSelections.join(', ')}`;
-      
-      toast.error(message, {
-        duration: 5000,
-      });
-      
+    // If any selections are missing, scroll to first missing section
+    if (errors.voluntaryExcess || errors.claimLimit || errors.paymentType) {
       // Scroll to the first missing selection section
-      if (voluntaryExcess === null) {
+      if (errors.voluntaryExcess) {
         document.getElementById('excess-amount-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else if (!selectedClaimLimit) {
+      } else if (errors.claimLimit) {
         document.getElementById('claim-limit-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else if (!paymentType) {
+      } else if (errors.paymentType) {
         document.getElementById('duration-price-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
       
@@ -1247,7 +1246,9 @@ const PricingTable: React.FC<PricingTableProps> = ({
         </div>
 
         {/* Choose Your Excess Amount */}
-        <div id="excess-amount-section" className="section-header rounded-lg p-6">
+        <div id="excess-amount-section" className={`section-header rounded-lg p-6 transition-all duration-200 ${
+          validationErrors.voluntaryExcess ? 'border-2 border-red-500' : ''
+        }`}>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
               2
@@ -1258,11 +1259,23 @@ const PricingTable: React.FC<PricingTableProps> = ({
             </h2>
           </div>
           
+          {validationErrors.voluntaryExcess && (
+            <Alert variant="destructive" className="mb-4 ml-11">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="text-red-600 font-medium">
+                Please select your excess amount before continuing.
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <div className="flex gap-1.5 flex-wrap justify-start ml-11">
             {[0, 50, 100, 150].map((amount) => (
               <button
                 key={amount}
-                onClick={() => toggleVoluntaryExcess(amount)}
+                onClick={() => {
+                  toggleVoluntaryExcess(amount);
+                  setValidationErrors(prev => ({ ...prev, voluntaryExcess: false }));
+                }}
                 className={`px-2.5 py-2 rounded-lg transition-all duration-200 text-center relative min-w-[50px] text-sm ${
                   voluntaryExcess === amount
                     ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
@@ -1276,7 +1289,9 @@ const PricingTable: React.FC<PricingTableProps> = ({
         </div>
 
         {/* Claim Limit Selection */}
-        <div id="claim-limit-section" className="section-header rounded-lg p-6">
+        <div id="claim-limit-section" className={`section-header rounded-lg p-6 transition-all duration-200 ${
+          validationErrors.claimLimit ? 'border-2 border-red-500' : ''
+        }`}>
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center">
               3
@@ -1287,6 +1302,15 @@ const PricingTable: React.FC<PricingTableProps> = ({
             </h2>
           </div>
           
+          {validationErrors.claimLimit && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="text-red-600 font-medium">
+                Please choose a claim limit to continue.
+              </AlertDescription>
+            </Alert>
+          )}
+          
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* AutoCare Essential */}
@@ -1296,7 +1320,10 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}>
               <button
-                onClick={() => setSelectedClaimLimit(750)}
+                onClick={() => {
+                  setSelectedClaimLimit(750);
+                  setValidationErrors(prev => ({ ...prev, claimLimit: false }));
+                }}
                 className="w-full text-left"
               >
                 <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Essential</h4>
@@ -1356,7 +1383,10 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 MOST POPULAR
               </div>
               <button
-                onClick={() => setSelectedClaimLimit(1250)}
+                onClick={() => {
+                  setSelectedClaimLimit(1250);
+                  setValidationErrors(prev => ({ ...prev, claimLimit: false }));
+                }}
                 className="w-full text-left"
               >
                 <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Advantage</h4>
@@ -1413,7 +1443,10 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
               }`}>
               <button
-                onClick={() => setSelectedClaimLimit(2000)}
+                onClick={() => {
+                  setSelectedClaimLimit(2000);
+                  setValidationErrors(prev => ({ ...prev, claimLimit: false }));
+                }}
                 className="w-full text-left"
               >
                 <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Elite</h4>
