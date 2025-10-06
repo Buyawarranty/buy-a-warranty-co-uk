@@ -40,7 +40,7 @@ const WebsiteFooter = () => {
                 <li><a href="/customer-dashboard" className="hover:text-[#eb4b00] transition-colors font-semibold">Customer Login</a></li>
                 <li><a href="/make-a-claim" className="hover:text-[#eb4b00] transition-colors">Make a Claim</a></li>
                 <li><a href="/contact-us" className="hover:text-[#eb4b00] transition-colors">Contact Us</a></li>
-                <li><a href="/buy-a-warranty-for-my-car-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Car</a></li>
+                <li><a href="/buy-a-used-car-warranty-reliable-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Car</a></li>
                 <li><a href="/van-warranty-companies-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Van</a></li>
                 <li><a href="/best-warranty-on-ev-cars-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs</a></li>
                 <li><a href="/motorbike-repair-warranty-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Motorbikes UK</a></li>
