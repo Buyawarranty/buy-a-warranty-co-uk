@@ -195,10 +195,25 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
         }
       } else {
         console.log('Vehicle not found in DVLA database for registration:', regNumber);
-        // Show specific error message and offer manual entry
+        
+        // Check if the error is specifically about vehicle age
+        if (data.error && data.error.includes('15 years')) {
+          console.log('Vehicle blocked: Over 15 years old');
+          toast({
+            title: "Vehicle Not Eligible",
+            description: "We cannot offer warranties for vehicles over 15 years of age.",
+            variant: "destructive",
+          });
+          // Do NOT offer manual entry for age-blocked vehicles
+          setShowManualEntry(false);
+          setVehicleFound(false);
+          return;
+        }
+        
+        // For other "not found" cases, show generic error and offer manual entry
         toast({
           title: "Oops! We couldn't find that registration. 🚗💨",
-          description: "Double-check the number and try again. If it's still not working, the vehicle might be over 15 years old or not supported in our cover.",
+          description: "Double-check the number and try again, or enter your vehicle details manually.",
           variant: "destructive",
         });
         setShowManualEntry(true);
@@ -241,10 +256,18 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     if (yearValue) {
       const currentYear = new Date().getFullYear();
       const vehicleYear = parseInt(yearValue);
+      
+      if (isNaN(vehicleYear)) {
+        setYearError('Please enter a valid year');
+        return;
+      }
+      
       const vehicleAge = currentYear - vehicleYear;
       
       if (vehicleAge > 15) {
         setYearError('We cannot offer warranties for vehicles over 15 years of age');
+      } else if (vehicleYear > currentYear) {
+        setYearError('Year cannot be in the future');
       } else {
         setYearError('');
       }
@@ -267,6 +290,20 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     if (showManualEntry) {
       // Manual entry validation
       if (regNumber && mileage && make && model && year && vehicleType && numericMileage <= 150000 && mileageError === '' && yearError === '') {
+        // Double-check vehicle age (defensive check)
+        const currentYear = new Date().getFullYear();
+        const vehicleYear = parseInt(year);
+        const vehicleAge = currentYear - vehicleYear;
+        
+        if (vehicleAge > 15) {
+          toast({
+            title: "Vehicle Not Eligible",
+            description: "We cannot offer warranties for vehicles over 15 years of age.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
         // Check if this is a high-performance model that should be blocked
         if (isHighPerformanceModel(make, model)) {
           console.log('High-performance vehicle detected (manual entry):', `${make} ${model}`);
@@ -325,6 +362,26 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     } else {
       // Auto-detected car validation
       if (regNumber && mileage && numericMileage <= 150000 && mileageError === '') {
+        // Check if vehicle is blocked
+        if (vehicleData?.blocked) {
+          toast({
+            title: "Vehicle Not Eligible",
+            description: vehicleData.blockReason || "This vehicle is not eligible for warranty coverage.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Check if there's an age-related error
+        if (vehicleData?.error && vehicleData.error.includes('15 years')) {
+          toast({
+            title: "Vehicle Not Eligible",
+            description: "We cannot offer warranties for vehicles over 15 years of age.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
         const submitData: any = { regNumber, mileage: rawMileage };
         
         // Include DVLA data if available
@@ -335,10 +392,6 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
           submitData.transmission = vehicleData.transmission;
           submitData.year = vehicleData.yearOfManufacture;
           submitData.vehicleType = vehicleData.vehicleType || 'Car or Van';
-          if (vehicleData.blocked) {
-            submitData.blocked = true;
-            submitData.blockReason = vehicleData.blockReason;
-          }
         }
         
         trackFormSubmission('vehicle_details', {
