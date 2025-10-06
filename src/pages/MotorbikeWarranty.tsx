@@ -254,32 +254,50 @@ const MotorbikeWarranty = () => {
         {/* Bike Types Covered */}
         <section className="bg-card py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center space-y-8">
-              <h2 className="text-3xl md:text-4xl font-bold">
+            <div className="max-w-4xl mx-auto space-y-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-center">
                 Motorcycle Types We Cover
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg text-muted-foreground text-center">
                 Our extended motorbike warranty covers a wide range of motorcycle types across the UK:
               </p>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-4">
                 {[
-                  "Sport Bikes",
-                  "Cruisers",
-                  "Touring Motorcycles",
-                  "Adventure Bikes",
-                  "Naked Bikes",
-                  "Standard Motorcycles",
-                  "Cafe Racers",
-                  "Scooters (125cc+)",
-                  "Custom Bikes"
+                  { 
+                    title: "Standard Motorbikes", 
+                    desc: "Road-legal motorcycles used for personal or commuting purposes" 
+                  },
+                  { 
+                    title: "Scooters (Petrol/Electric)", 
+                    desc: "Small-capacity scooters (typically up to 125cc or equivalent electric models)" 
+                  },
+                  { 
+                    title: "Touring Bikes", 
+                    desc: "Motorbikes designed for long-distance travel" 
+                  },
+                  { 
+                    title: "Cruisers", 
+                    desc: "e.g. Harley-Davidson-style bikes intended for standard road use" 
+                  },
+                  { 
+                    title: "Commuter Bikes", 
+                    desc: "Lightweight, commonly used daily road bikes" 
+                  },
+                  { 
+                    title: "*Electric Motorbikes/Scooters", 
+                    desc: "*Please see our EV vehicle plans" 
+                  }
                 ].map((type, index) => (
-                  <div key={index} className="bg-background p-4 rounded-lg border">
-                    <CheckCircle2 className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <p className="font-semibold">{type}</p>
+                  <div key={index} className="bg-background p-6 rounded-lg border flex items-start gap-4">
+                    <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-lg mb-1">{type.title}</p>
+                      <p className="text-muted-foreground">{type.desc}</p>
+                    </div>
                   </div>
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground italic">
+              <p className="text-sm text-muted-foreground italic text-center">
                 * Standard electric bicycles and pedal-assisted e-bikes are not covered
               </p>
             </div>
