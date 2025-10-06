@@ -809,7 +809,7 @@ Issue Timing: ${formData.issueTiming}
                   <img 
                     src={pandaMechanicFix} 
                     alt="Panda mechanic with tools fixing a car" 
-                    className="w-full max-w-sm h-auto"
+                    className="w-full max-w-48 h-auto"
                   />
                 </div>
                 
