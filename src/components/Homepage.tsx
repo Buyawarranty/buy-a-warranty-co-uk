@@ -229,7 +229,33 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       console.log('DVSA lookup result:', data);
       
-      // Check vehicle age if data found
+      // Check for age-related blocking when vehicle is not found
+      if (!data?.found && data?.error && data.error.includes('15 years')) {
+        console.log('Vehicle blocked: Over 15 years old');
+        toast({
+          title: "Vehicle Not Eligible",
+          description: "We cannot offer warranties for vehicles over 15 years of age.",
+          variant: "destructive",
+        });
+        setVehicleAgeError('We cannot offer warranties for vehicles over 15 years old');
+        setIsLookingUp(false);
+        return;
+      }
+      
+      // Check for missing year information when vehicle is found
+      if (data?.found && !data.yearOfManufacture) {
+        console.log('Vehicle blocked: Year information not available');
+        toast({
+          title: "Vehicle Not Eligible",
+          description: "We cannot verify the age of this vehicle. Please contact support for assistance.",
+          variant: "destructive",
+        });
+        setVehicleAgeError('Cannot verify vehicle age');
+        setIsLookingUp(false);
+        return;
+      }
+      
+      // Check vehicle age if data found and year is available
       if (data?.found && data.yearOfManufacture) {
         const currentYear = new Date().getFullYear();
         const vehicleYear = parseInt(data.yearOfManufacture);
@@ -237,6 +263,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         
         if (vehicleAge > 15) {
           setVehicleAgeError('We cannot offer warranties for vehicles over 15 years old');
+          toast({
+            title: "Vehicle Not Eligible",
+            description: "We cannot offer warranties for vehicles over 15 years of age.",
+            variant: "destructive",
+          });
           setIsLookingUp(false);
           return;
         } else {
