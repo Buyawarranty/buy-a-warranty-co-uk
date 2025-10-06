@@ -54,11 +54,11 @@ const MotorbikeWarranty = () => {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="space-y-6 text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Motorbike Warranty UK
-                <span className="block text-primary mt-2">Trusted Motorcycle Protection</span>
+                Motorcycle Warranty Protection
+                <span className="block text-primary mt-2">Keep Your Bike on the Road</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-                Buy motorbike warranty online with confidence. Comprehensive motorcycle repair warranty UK coverage for all bike types. Get instant quotes and flexible payment options.
+                Comprehensive mechanical cover for motorcycles and scooters across the UK. Get instant quotes online with flexible payment plans designed to fit your budget.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button 
@@ -125,12 +125,12 @@ const MotorbikeWarranty = () => {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {[
-                { icon: Shield, title: "Best Motorbike Warranty UK", desc: "Comprehensive motorcycle repair warranty coverage" },
-                { icon: CheckCircle2, title: "Buy Online in Minutes", desc: "Quick quotes for motorcycle warranty online" },
-                { icon: Clock, title: "Used Motorcycle Cover", desc: "Extended motorbike warranty for used bikes" },
-                { icon: Shield, title: "Flexible Payment Plans", desc: "Pay monthly motorcycle warranty options" },
-                { icon: CheckCircle2, title: "UK-Wide Protection", desc: "Trusted motorbike warranty provider nationwide" },
-                { icon: Shield, title: "All Bike Types", desc: "Sport, cruiser, touring, and adventure bikes covered" }
+                { icon: Shield, title: "Comprehensive Cover", desc: "Full mechanical and electrical protection for your bike" },
+                { icon: CheckCircle2, title: "Instant Quotes", desc: "Get prices online in minutes with no hassle" },
+                { icon: Clock, title: "Used Bikes Welcome", desc: "Protection available for pre-owned motorcycles" },
+                { icon: Shield, title: "Monthly Payments", desc: "Affordable plans with flexible payment options" },
+                { icon: CheckCircle2, title: "Nationwide Support", desc: "Reliable service for riders across the UK" },
+                { icon: Shield, title: "All Bike Styles", desc: "Coverage for sport, cruiser, touring and more" }
               ].map((item, index) => (
                 <div key={index} className="bg-background p-6 rounded-lg border border-border hover:shadow-lg transition-shadow">
                   <item.icon className="w-12 h-12 text-primary mb-4" />
@@ -188,12 +188,10 @@ const MotorbikeWarranty = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold">
-                Is a Motorcycle Warranty Worth It in the UK?
+                Is a Motorcycle Warranty Worth the Investment?
               </h2>
               <p className="text-lg text-muted-foreground">
-                Absolutely. With rising repair costs and complex motorcycle technology, a motorcycle repair warranty UK 
-                provides essential protection. Whether you're buying a used motorcycle warranty or extending cover after 
-                your manufacturer warranty ends, our affordable motorbike warranty plans offer excellent value and peace of mind.
+                Absolutely. Modern motorcycles feature sophisticated technology, and repairs can quickly become expensive. A comprehensive warranty protects you from unexpected bills and gives you confidence to ride worry-free — whether you've bought new, used, or simply want extended cover when your manufacturer's protection runs out.
               </p>
               <div className="grid md:grid-cols-3 gap-6 mt-8">
                 <div className="bg-card p-6 rounded-lg border">
@@ -309,10 +307,10 @@ const MotorbikeWarranty = () => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Best motorbike warranty UK - what's included in motorbike warranty
+                What Makes Our Motorcycle Cover Stand Out
               </h2>
               <p className="text-lg text-muted-foreground">
-                As the best motorbike warranty UK provider and motorbike warranty UK best choice for riders, we offer comprehensive cover. Here is what's included in motorbike warranty plans from us:
+                We've earned a strong reputation among motorcycle riders across the UK by offering genuine protection and exceptional service. Our plans are designed specifically for bikes, and here's what our customers value most:
               </p>
             </div>
             <div className="grid md:grid-cols-2 gap-6">

@@ -131,29 +131,29 @@ const BuyCarWarranty: React.FC = () => {
               </div>
               
               <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-                Protect your car with <span className="text-[#1e40af]">trusted UK</span> vehicle warranty cover
+                Protect Your Vehicle with <span className="text-[#1e40af]">Trusted UK Warranty Cover</span>
               </h1>
               
               <p className="text-xl text-gray-700">
-                Affordable, flexible & reliable car warranty plans
+                Affordable protection for your car, whatever your budget
               </p>
 
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                  <span className="text-gray-700">Best car warranty UK options for used and new vehicles</span>
+                  <span className="text-gray-700">Comprehensive cover for used and new cars</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                  <span className="text-gray-700">Extended car warranty plans with low monthly costs</span>
+                  <span className="text-gray-700">Flexible payment plans from £20 per month</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                  <span className="text-gray-700">Compare car warranty quotes instantly online</span>
+                  <span className="text-gray-700">Get instant quotes online in minutes</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                  <span className="text-gray-700">Transparent pricing with no hidden fees</span>
+                  <span className="text-gray-700">Clear pricing with no surprises</span>
                 </div>
               </div>
 
@@ -200,49 +200,49 @@ const BuyCarWarranty: React.FC = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-blue-50 p-6 rounded-lg">
               <Shield className="h-12 w-12 text-[#1e40af] mb-4" />
-              <h3 className="text-xl font-bold mb-2">Best Car Warranty UK</h3>
+              <h3 className="text-xl font-bold mb-2">Comprehensive Protection</h3>
               <p className="text-gray-700">
-                Options for used and new vehicles with comprehensive coverage you can trust
+                Full mechanical and electrical cover for both used and brand new vehicles
               </p>
             </div>
 
             <div className="bg-orange-50 p-6 rounded-lg">
               <Clock className="h-12 w-12 text-[#eb4b00] mb-4" />
-              <h3 className="text-xl font-bold mb-2">Extended Cover Plans</h3>
+              <h3 className="text-xl font-bold mb-2">Flexible Terms</h3>
               <p className="text-gray-700">
-                Extended car warranty plans with low monthly costs and flexible payment options
+                Choose from short or long-term plans with affordable monthly payments
               </p>
             </div>
 
             <div className="bg-blue-50 p-6 rounded-lg">
               <Star className="h-12 w-12 text-[#1e40af] mb-4" />
-              <h3 className="text-xl font-bold mb-2">Compare Quotes Instantly</h3>
+              <h3 className="text-xl font-bold mb-2">Quick Quotes</h3>
               <p className="text-gray-700">
-                Compare car warranty quotes online in minutes and find the best deal
+                Get multiple quotes in minutes and compare prices easily online
               </p>
             </div>
 
             <div className="bg-orange-50 p-6 rounded-lg">
               <Check className="h-12 w-12 text-[#eb4b00] mb-4" />
-              <h3 className="text-xl font-bold mb-2">Trusted Provider</h3>
+              <h3 className="text-xl font-bold mb-2">Highly Rated</h3>
               <p className="text-gray-700">
-                Trusted independent car warranty provider with excellent customer reviews
+                Independent provider with excellent reviews from thousands of customers
               </p>
             </div>
 
             <div className="bg-blue-50 p-6 rounded-lg">
               <Car className="h-12 w-12 text-[#1e40af] mb-4" />
-              <h3 className="text-xl font-bold mb-2">All Vehicle Types</h3>
+              <h3 className="text-xl font-bold mb-2">All Fuel Types</h3>
               <p className="text-gray-700">
-                Cover for petrol, diesel, hybrid and electric cars across the UK
+                Protection available for petrol, diesel, hybrid and electric vehicles
               </p>
             </div>
 
             <div className="bg-orange-50 p-6 rounded-lg">
               <Shield className="h-12 w-12 text-[#eb4b00] mb-4" />
-              <h3 className="text-xl font-bold mb-2">Transparent Pricing</h3>
+              <h3 className="text-xl font-bold mb-2">No Hidden Costs</h3>
               <p className="text-gray-700">
-                No hidden fees - clear, affordable car warranty UK pricing you can understand
+                Straightforward pricing that's easy to understand from the start
               </p>
             </div>
           </div>
@@ -314,17 +314,17 @@ const BuyCarWarranty: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">
-              Is a car warranty <span className="text-[#eb4b00]">worth it</span> in the UK?
+              Is a Car Warranty <span className="text-[#eb4b00]">Worth the Investment?</span>
             </h2>
             
             <p className="text-xl text-gray-700 leading-relaxed">
-              Absolutely. With rising repair costs and complex vehicle tech, a warranty gives you peace of mind and protects your budget. Whether you're buying a second-hand car or extending cover after your manufacturer warranty ends, our plans offer value for money and trusted protection.
+              Absolutely. Modern vehicles are packed with complex technology, and repair bills can quickly run into thousands of pounds. Whether you've just bought a used car or want to extend your manufacturer's cover, having a warranty gives you financial protection and complete peace of mind on the road.
             </p>
 
             <div className="bg-blue-50 p-8 rounded-lg mt-8">
-              <h3 className="text-2xl font-bold mb-4">UK-wide vehicle warranty cover</h3>
+              <h3 className="text-2xl font-bold mb-4">Nationwide Cover Across the UK</h3>
               <p className="text-lg text-gray-700">
-                We provide car warranties across England, Scotland, Wales and Northern Ireland. No matter where you're based, you can get a car warranty quote online and choose a plan that suits your vehicle and budget.
+                We protect drivers throughout England, Scotland, Wales and Northern Ireland. Get an instant quote online and choose the level of cover that matches your vehicle and driving needs.
               </p>
             </div>
           </div>
@@ -387,11 +387,11 @@ const BuyCarWarranty: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
-              Compare <span className="text-[#1e40af]">car warranty providers</span> - find the best car warranty UK
+              Why Drivers Choose Us Over Other Providers
             </h2>
 
             <p className="text-xl text-center text-gray-700 mb-12">
-              As a top rated car warranty UK provider and recommended car warranty UK company, we're a trusted alternative to Warrantywise, RAC and AA. Our reliable car warranty services and honest car warranty provider approach makes us one of the most popular car warranty companies. We're an independent warranty company UK with award winning warranty company credentials.
+              We're proud to be a highly-rated independent warranty provider in the UK. Our customers choose us as a trusted alternative to household names like Warrantywise, RAC and AA because we offer transparent pricing, genuine care, and comprehensive protection without the corporate overhead.
             </p>
 
             <div className="grid md:grid-cols-2 gap-6">

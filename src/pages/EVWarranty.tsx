@@ -55,11 +55,11 @@ const EVWarranty = () => {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="space-y-6 text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                EV & Hybrid Car Warranty
-                <span className="block text-primary mt-2">Protect Your Electric Future</span>
+                Electric & Hybrid Vehicle Warranty
+                <span className="block text-primary mt-2">Protect Your EV Investment</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-                Comprehensive warranty cover for electric, hybrid and PHEV vehicles across the UK. Get instant quotes and flexible payment options for your EV today.
+                Specialist protection for electric, hybrid and plug-in hybrid vehicles. Get instant quotes with flexible payment plans designed for EV owners across the UK.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button 
@@ -109,12 +109,12 @@ const EVWarranty = () => {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {[
-                { icon: Shield, title: "Best EV Warranty UK", desc: "Comprehensive cover for electric and hybrid vehicles" },
-                { icon: CheckCircle2, title: "Battery Protection", desc: "Specialist cover for EV batteries and electric systems" },
-                { icon: Clock, title: "Buy Online in Minutes", desc: "Quick quotes for electric car warranty online" },
-                { icon: Shield, title: "Flexible Payment Plans", desc: "Pay monthly PHEV warranty options available" },
-                { icon: CheckCircle2, title: "Used EV Cover", desc: "Extended warranty for used electric vehicles" },
-                { icon: Shield, title: "UK-Wide Support", desc: "Trusted EV warranty provider across the UK" }
+                { icon: Shield, title: "Specialist EV Cover", desc: "Tailored protection for electric and hybrid technology" },
+                { icon: CheckCircle2, title: "Battery & Systems", desc: "Advanced cover for batteries and electric drivetrains" },
+                { icon: Clock, title: "Instant Quotes", desc: "Get prices online in minutes with no obligation" },
+                { icon: Shield, title: "Affordable Plans", desc: "Low monthly payments and flexible term options" },
+                { icon: CheckCircle2, title: "Used EVs Welcome", desc: "Protection available for pre-owned electric vehicles" },
+                { icon: Shield, title: "Nationwide Service", desc: "Reliable support for EV drivers across the UK" }
               ].map((item, index) => (
                 <div key={index} className="bg-background p-6 rounded-lg border border-border hover:shadow-lg transition-shadow">
                   <item.icon className="w-12 h-12 text-primary mb-4" />
@@ -171,13 +171,10 @@ const EVWarranty = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold">
-                Is an Electric Car Warranty Worth It in the UK?
+                Is an Electric Vehicle Warranty Worth the Investment?
               </h2>
               <p className="text-lg text-muted-foreground">
-                Absolutely. With advanced EV technology and higher repair costs for electric and hybrid vehicles, 
-                a comprehensive warranty protects your investment. Whether you're buying a used electric car warranty 
-                or extending cover after your manufacturer warranty ends, our PHEV warranty and hybrid car warranty UK 
-                plans offer excellent value and peace of mind.
+                Absolutely. Electric and hybrid vehicles feature sophisticated technology, and specialist repairs can be significantly more expensive than traditional cars. A comprehensive warranty protects your investment and gives you confidence to enjoy your EV without worrying about unexpected bills — whether you've bought new, used, or want to extend your manufacturer's cover.
               </p>
               <div className="grid md:grid-cols-3 gap-6 mt-8">
                 <div className="bg-card p-6 rounded-lg border">
@@ -246,21 +243,21 @@ const EVWarranty = () => {
                 />
               </div>
               <div className="order-1 lg:order-2 space-y-6">
-                <h2 className="text-3xl md:text-4xl font-bold">
-                  Best UK EV warranty provider - top rated electric car warranty UK
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  As a recommended electric car warranty UK company and trustworthy warranty provider, we are a verified EV warranty UK specialist. Our reliable EV warranty services make us one of the most popular EV warranty providers and a highly rated vehicle warranty company. We are UK warranty experts and vehicle warranty specialists offering expert EV warranty advice.
-                </p>
-                <ul className="space-y-4">
-                  {[
-                    "Award winning warranty company for electric vehicles",
-                    "Honest EV warranty provider with transparent vehicle warranty plans",
-                    "Reputable EV warranty UK with best customer service warranty UK",
-                    "Independent warranty company UK providing trusted vehicle protection UK",
-                    "Customer rated EV warranty with excellent reviews",
-                    "Extended Electric car warranty providers expertise"
-                  ].map((item, index) => (
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Why EV Owners Choose Our Service
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                We specialise in electric vehicle protection and have built a strong reputation among EV and hybrid owners across the UK. Our customers trust us because we offer transparent plans, genuine expertise in electric vehicle technology, and customer service that truly cares about keeping you on the road.
+              </p>
+              <ul className="space-y-4">
+                {[
+                  "Award-winning service recognised for EV specialisation",
+                  "Clear, honest pricing with no hidden surprises",
+                  "Excellent customer reviews and satisfaction ratings",
+                  "Independent company focused on driver protection",
+                  "Highly rated for responsive, helpful support",
+                  "Deep expertise in electric and hybrid vehicle systems"
+                ].map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
                       <span className="text-lg">{item}</span>
@@ -280,24 +277,24 @@ const EVWarranty = () => {
           
           <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             <div className="bg-card p-8 rounded-lg border">
-              <h3 className="text-2xl font-bold mb-4">How to get electric car warranty UK</h3>
+              <h3 className="text-2xl font-bold mb-4">Getting Cover for Your Electric Vehicle</h3>
               <p className="text-muted-foreground mb-6">
-                Looking for the best place to get EV warranty? You can buy a electric car warranty online with us in minutes. We specialize in buy a extended electric car warranty, get electric car warranty, buy electric car warranty online, find electric car warranty, get extended electric car warranty, and get used electric car warranty.
+                Protecting your EV or hybrid is straightforward with our online service. Request an instant quote, choose your level of cover, and get protection in place quickly — whether your vehicle is brand new or you've owned it for years.
               </p>
               <ul className="space-y-3">
                 {[
-                  'What does EV warranty cover? Batteries, motors, charging systems',
-                  'Is EV warranty worth it UK? Yes - EV repairs are costly',
-                  'How much is EV warranty? Get instant online quotes',
-                  'Can I get EV warranty anytime? Yes, even years after purchase',
-                  'Do I need EV warranty? Highly recommended for peace of mind',
-                  'Can I extend my EV warranty? Yes, flexible extensions available',
-                  'Buying EV warranty for second hand EV is our specialty',
-                  'Apply for EV warranty online today',
-                  'Do I need warranty on used EV? We strongly recommend it',
-                  'Getting warranty after dealer cover ends',
-                  'Buying warranty after EV purchase is easy',
-                  'Questions to ask EV warranty provider - we answer all'
+                  'Comprehensive coverage includes batteries, motors and charging systems',
+                  'EV repairs can be expensive — warranty protection is valuable',
+                  'Get instant price quotes tailored to your vehicle',
+                  'Cover available anytime, even long after you bought your EV',
+                  'Highly recommended for protecting your investment',
+                  'Flexible terms allow you to extend cover as needed',
+                  'Specialist support for pre-owned electric vehicles',
+                  'Simple online application takes just minutes',
+                  'Used EVs especially benefit from warranty protection',
+                  'Extend your peace of mind when manufacturer cover ends',
+                  'Easy to arrange cover post-purchase',
+                  'Transparent answers to all your warranty questions'
                 ].map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -308,24 +305,24 @@ const EVWarranty = () => {
             </div>
 
             <div className="bg-card p-8 rounded-lg border">
-              <h3 className="text-2xl font-bold mb-4">Used electric vehicle extended warranty</h3>
+              <h3 className="text-2xl font-bold mb-4">Protection for Used Electric Vehicles</h3>
               <p className="text-muted-foreground mb-6">
-                Need buy used EV warranty or second hand EV warranty? Our used vehicle protection uk includes used EV breakdown cover, warranty for pre owned vehicles, best warranty for used EVs, used EV insurance and warranty, warranty for older used EVs, warranty after buying used EV, and used EV warranty company uk services.
+                Bought a pre-owned EV or hybrid? Our specialist plans are designed to protect second-hand electric vehicles from unexpected repair costs. We offer comprehensive mechanical cover, breakdown assistance, and flexible terms for older EVs and high-mileage vehicles.
               </p>
               <ul className="space-y-3">
                 {[
-                  'Warranty for high mileage used EV - we cover high mileage',
-                  'Protect your used EV with comprehensive cover',
-                  'Second owner EV warranty options available',
-                  'Post sale EV warranty protection',
-                  'Used EV mechanical insurance included',
-                  'Used EV engine warranty (motor warranty)',
-                  'Best extended warranty for used vehicles',
-                  'Used EV coverage plans customized for you',
-                  'Used EV warranty insurance at great prices',
-                  'Trusted EV warranty company UK',
-                  'Buy a used electric car warranty today',
-                  'Extended warranty insurance for EVs'
+                  'High-mileage EVs welcomed with appropriate cover options',
+                  'Full mechanical protection for your pre-owned vehicle',
+                  'Flexible plans for second and third owners',
+                  'Cover available even after private sale',
+                  'Comprehensive mechanical and electrical protection',
+                  'Specialist motor and drivetrain coverage',
+                  'Top-rated protection designed for used vehicles',
+                  'Customised plans tailored to your EV',
+                  'Competitive pricing on all warranty packages',
+                  'Trusted by EV owners across the UK',
+                  'Instant quotes for used electric vehicles',
+                  'Extended protection with insurance-backed peace of mind'
                 ].map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />

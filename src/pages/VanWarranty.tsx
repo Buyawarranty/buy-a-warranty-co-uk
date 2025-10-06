@@ -35,12 +35,11 @@ const VanWarranty = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
             <div className="text-center md:text-left space-y-6">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Need van warranty cover in the UK?{" "}
-                <span className="text-primary">We've got you sorted</span>
+                Protect Your Van with <span className="text-primary">Trusted UK Cover</span>
               </h1>
               
               <p className="text-lg md:text-xl text-muted-foreground">
-                Whether you're running a business, delivering goods, or just keeping your van on the road, our van warranty UK plans are built to protect your vehicle and your wallet. From used van warranty options to extended van warranty cover, we make it easy to find the right plan for your needs.
+                Whether you rely on your van for business deliveries, trade work, or personal use, we offer comprehensive protection plans that fit your budget. Get instant quotes for new or used vans, with flexible payment options and no hidden fees.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
@@ -74,12 +73,12 @@ const VanWarranty = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: BadgeCheck, text: "Rated among the best van warranty providers in the UK" },
-              { icon: Shield, text: "Cover for diesel, petrol, hybrid and electric vans" },
-              { icon: Clock, text: "Buy a van warranty online in minutes" },
-              { icon: Check, text: "Flexible plans for older, high-mileage and second-hand vans" },
-              { icon: BadgeCheck, text: "Van warranty insurance with no hidden costs" },
-              { icon: Shield, text: "UK-wide support and fast claims handling" }
+              { icon: BadgeCheck, text: "Highly rated provider trusted by van owners nationwide" },
+              { icon: Shield, text: "Comprehensive cover for all van types and fuel systems" },
+              { icon: Clock, text: "Get instant quotes and buy online in minutes" },
+              { icon: Check, text: "Protection available for older and high-mileage vehicles" },
+              { icon: BadgeCheck, text: "Transparent pricing with zero hidden charges" },
+              { icon: Shield, text: "Fast claims processing backed by UK-wide support" }
             ].map((item, index) => (
               <div key={index} className="flex items-start gap-4 p-6 bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow">
                 <div className="mt-1">
@@ -98,10 +97,10 @@ const VanWarranty = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Get extended van warranty cover that works for you
+                Comprehensive Protection for Your Van
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Our warranties are designed to keep your van moving — whether it's for work or personal use. We partner with leading extended van warranty providers to offer reliable protection for:
+                Our plans are designed to keep your van on the road — whether you use it for business or personal journeys. We provide reliable coverage for all the essential components:
               </p>
 
               <div className="space-y-4">
@@ -214,20 +213,20 @@ const VanWarranty = () => {
 
             <div className="order-1 md:order-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Why we're a top rated van warranty UK provider
+                Why Van Owners Trust Our Service
               </h2>
               <p className="text-lg text-muted-foreground mb-6">
-                As one of the most popular van warranty companies in the UK, we're proud to be a recommended van warranty UK provider. Our reliable van warranty services and transparent vehicle warranty plans make us a trustworthy warranty provider. Our customers love us for:
+                We've built a strong reputation as a reliable van warranty provider in the UK. Our customers appreciate our honest approach, transparent plans, and genuine commitment to keeping their vehicles protected. Here's what sets us apart:
               </p>
 
               <div className="space-y-4">
                 {[
-                  "Award winning warranty company with verified reviews",
-                  "Highly rated vehicle warranty experts",
-                  "Best customer service warranty UK teams",
-                  "Expert van warranty advice from vehicle warranty specialists",
-                  "Honest van warranty provider with no hidden fees",
-                  "Independent warranty company UK owned and operated"
+                  "Award-winning service with verified customer reviews",
+                  "Specialist knowledge of commercial vehicle protection",
+                  "Friendly UK-based customer support team",
+                  "Expert advice tailored to your van and business needs",
+                  "Straightforward pricing with no surprise charges",
+                  "Independent company focused on customer care"
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -251,16 +250,16 @@ const VanWarranty = () => {
           
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             <div className="bg-card p-8 rounded-lg shadow-sm">
-              <h3 className="text-2xl font-bold mb-4">How to get van warranty UK</h3>
+              <h3 className="text-2xl font-bold mb-4">How to Get Cover for Your Van</h3>
               <p className="text-muted-foreground mb-6">
-                Getting warranty cover for your van has never been easier. As the best place to get van warranty online, we make the process simple. You can apply for van warranty right now, whether you want to buy extended van warranty online or get protection for your second-hand van.
+                Protecting your van is quick and simple with our online service. Whether you've just purchased a vehicle or want to extend existing cover, you can get an instant quote and buy protection in minutes — even if your manufacturer's warranty has already expired.
               </p>
               <ul className="space-y-3">
                 {[
-                  "Get instant van warranty quotes online",
-                  "Can I get van warranty anytime? Yes, even after dealer warranty expires",
-                  "Buying warranty after van purchase is easy with us",
-                  "Getting warranty after dealer cover ends protects your investment"
+                  "Request instant quotes online with no obligation",
+                  "Cover available anytime, even years after purchase",
+                  "Easy application process for post-purchase protection",
+                  "Extend your peace of mind when dealer cover runs out"
                 ].map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -271,17 +270,17 @@ const VanWarranty = () => {
             </div>
 
             <div className="bg-card p-8 rounded-lg shadow-sm">
-              <h3 className="text-2xl font-bold mb-4">Buying van warranty for second hand van</h3>
+              <h3 className="text-2xl font-bold mb-4">Protection for Used and Second-Hand Vans</h3>
               <p className="text-muted-foreground mb-6">
-                Do I need warranty on used van? Absolutely. Buying van warranty for second hand van gives you peace of mind. Here is how to choose a warranty that works for you:
+                If you've bought a pre-owned van, warranty cover is highly recommended to protect against unexpected repair bills. Here's what to consider when choosing the right plan:
               </p>
               <ul className="space-y-3">
                 {[
-                  "Check what does van warranty cover before you buy",
-                  "Consider if is van warranty worth it UK for your vehicle age",
-                  "Ask how much is van warranty for your specific van",
-                  "Do I need van warranty? Yes, if you want to avoid costly repairs",
-                  "Can I extend my van warranty? Yes, we offer flexible extensions"
+                  "Review what's covered before making your decision",
+                  "Consider your van's age and typical running costs",
+                  "Get quotes specific to your make, model and mileage",
+                  "Protect yourself from expensive mechanical failures",
+                  "Choose flexible terms that can be extended as needed"
                 ].map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
