@@ -8,7 +8,7 @@ import NewFooter from '@/components/NewFooter';
 import WebsiteFooter from '@/components/WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { trackButtonClick } from '@/utils/analytics';
-import evCarWarrantyHero from '@/assets/ev-car-warranty-uk-electric-vehicle.png';
+import evCarWarrantyHero from '@/assets/ev-car-warranty-uk-hero-new.png';
 import hybridCarWarranty from '@/assets/hybrid-car-warranty-uk-extended.png';
 import evPayMonthly from '@/assets/ev-car-warranty-uk-pay-monthly.png';
 import evTrustedProvider from '@/assets/ev-car-warranty-uk-trusted-provider.png';
@@ -90,7 +90,7 @@ const EVWarranty = () => {
               <img 
                 src={evCarWarrantyHero} 
                 alt="Electric Car Warranty UK - EV and Hybrid Vehicle Protection"
-                className="w-full h-auto rounded-lg shadow-2xl"
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -133,7 +133,7 @@ const EVWarranty = () => {
               <img 
                 src={hybridCarWarranty} 
                 alt="Hybrid Car Warranty UK - Extended EV Warranty Cover"
-                className="w-full h-auto rounded-lg shadow-xl"
+                className="w-full h-auto"
               />
             </div>
             <div className="order-1 lg:order-2 space-y-6">
@@ -228,7 +228,7 @@ const EVWarranty = () => {
               <img 
                 src={evPayMonthly} 
                 alt="EV Car Warranty UK Pay Monthly - PHEV Warranty Payment Plans"
-                className="w-full h-auto rounded-lg shadow-xl"
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -242,24 +242,24 @@ const EVWarranty = () => {
                 <img 
                   src={evTrustedProvider} 
                   alt="Best EV Car Warranty Provider UK - Trusted Electric Vehicle Protection"
-                  className="w-full h-auto rounded-lg shadow-xl"
+                  className="w-full h-auto"
                 />
               </div>
               <div className="order-1 lg:order-2 space-y-6">
                 <h2 className="text-3xl md:text-4xl font-bold">
-                  Compare EV Warranty Providers - Choose the Best
+                  Best UK EV warranty provider - top rated electric car warranty UK
                 </h2>
                 <p className="text-lg text-muted-foreground">
-                  We're proud to be a trusted alternative to other EV warranty providers. Our customers rate us highly for:
+                  As a recommended electric car warranty UK company and trustworthy warranty provider, we are a verified EV warranty UK specialist. Our reliable EV warranty services make us one of the most popular EV warranty providers and a highly rated vehicle warranty company. We are UK warranty experts and vehicle warranty specialists offering expert EV warranty advice.
                 </p>
                 <ul className="space-y-4">
                   {[
-                    "Specialist electric car warranty UK cover",
-                    "Fast claims handling for EVs and hybrids",
-                    "Transparent pricing with no hidden fees",
-                    "Friendly UK-based customer support",
-                    "Comprehensive PHEV warranty options",
-                    "No pushy sales tactics - just honest advice"
+                    "Award winning warranty company for electric vehicles",
+                    "Honest EV warranty provider with transparent vehicle warranty plans",
+                    "Reputable EV warranty UK with best customer service warranty UK",
+                    "Independent warranty company UK providing trusted vehicle protection UK",
+                    "Customer rated EV warranty with excellent reviews",
+                    "Extended Electric car warranty providers expertise"
                   ].map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
@@ -268,6 +268,245 @@ const EVWarranty = () => {
                   ))}
                 </ul>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Comprehensive Coverage Keywords Section */}
+        <section className="container mx-auto px-4 py-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Where to buy EV warranty UK - buy electric car warranty online
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div className="bg-card p-8 rounded-lg border">
+              <h3 className="text-2xl font-bold mb-4">How to get electric car warranty UK</h3>
+              <p className="text-muted-foreground mb-6">
+                Looking for the best place to get EV warranty? You can buy a electric car warranty online with us in minutes. We specialize in buy a extended electric car warranty, get electric car warranty, buy electric car warranty online, find electric car warranty, get extended electric car warranty, and get used electric car warranty.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'What does EV warranty cover? Batteries, motors, charging systems',
+                  'Is EV warranty worth it UK? Yes - EV repairs are costly',
+                  'How much is EV warranty? Get instant online quotes',
+                  'Can I get EV warranty anytime? Yes, even years after purchase',
+                  'Do I need EV warranty? Highly recommended for peace of mind',
+                  'Can I extend my EV warranty? Yes, flexible extensions available',
+                  'Buying EV warranty for second hand EV is our specialty',
+                  'Apply for EV warranty online today',
+                  'Do I need warranty on used EV? We strongly recommend it',
+                  'Getting warranty after dealer cover ends',
+                  'Buying warranty after EV purchase is easy',
+                  'Questions to ask EV warranty provider - we answer all'
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-card p-8 rounded-lg border">
+              <h3 className="text-2xl font-bold mb-4">Used electric vehicle extended warranty</h3>
+              <p className="text-muted-foreground mb-6">
+                Need buy used EV warranty or second hand EV warranty? Our used vehicle protection uk includes used EV breakdown cover, warranty for pre owned vehicles, best warranty for used EVs, used EV insurance and warranty, warranty for older used EVs, warranty after buying used EV, and used EV warranty company uk services.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Warranty for high mileage used EV - we cover high mileage',
+                  'Protect your used EV with comprehensive cover',
+                  'Second owner EV warranty options available',
+                  'Post sale EV warranty protection',
+                  'Used EV mechanical insurance included',
+                  'Used EV engine warranty (motor warranty)',
+                  'Best extended warranty for used vehicles',
+                  'Used EV coverage plans customized for you',
+                  'Used EV warranty insurance at great prices',
+                  'Trusted EV warranty company UK',
+                  'Buy a used electric car warranty today',
+                  'Extended warranty insurance for EVs'
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing and Quotes Section */}
+        <section className="bg-muted/30 py-16">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              Electric car warranty prices UK - compare EV warranty UK
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold">Cheap electric car warranty UK - affordable EV warranty</h3>
+                <p className="text-muted-foreground">
+                  Looking for cheap electric car warranty uk, affordable electric car warranty uk, budget electric car warranty uk, best value electric car warranty, or low cost electric car warranty uk? We offer cheap vehicle warranty uk with pay monthly electric car warranty for all budgets. Get low cost extended warranty and cost effective electric car warranty with value for money electric car warranty pricing.
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    'Cheapest vehicle warranty plans for EVs',
+                    'Extended warranty with low premiums',
+                    'Extended warranty cost uk competitive rates',
+                    'Budget friendly EV protection',
+                    'Discounted electric car warranty',
+                    'Affordable extended vehicle coverage'
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold">Get electric car warranty quote - EV warranty quotes</h3>
+                <p className="text-muted-foreground">
+                  Use our EV warranty comparison site to compare electric car warranty UK options. Get a electric car warranty quote, find electric car warranty UK plans, compare extended electric car warranties, and get extended electric car warranty quote. We provide vehicle warranty quote UK, cheapest electric car warranty quotes, and best electric car warranty quote UK.
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    'Electric car protection plan UK',
+                    'Vehicle protection quotes for EVs',
+                    'Get used electric car warranty quote',
+                    'Extended warranty quote online',
+                    'Compare vehicle warranty providers',
+                    'Warranty quote for old electric cars',
+                    'Warranty plans comparison UK',
+                    'Find best electric car warranty',
+                    'Electric car warranty monthly cost calculator'
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-card p-8 rounded-lg border text-center">
+              <h3 className="text-2xl font-bold mb-4">Electric car warranties UK - online electric car warranty</h3>
+              <p className="text-lg text-muted-foreground mb-4">
+                We offer electric car warranty plans, electric car warranty cover, and work as your trusted electric car warranty company. Get UK electric car warranty and private electric car warranty UK. Read electric car warranty reviews UK before choosing. As leading electric car warranty providers UK and auto warranty providers, we provide comprehensive vehicle warranty services and extended warranty providers expertise.
+              </p>
+              <p className="text-muted-foreground">
+                Compare electric car warranty comparison site options. We provide used electric car warranty, best electric car warranty, and electric car warranty insurance. Get electric car warranty best deals and check electric car warranty prices.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Warranty Durations Section */}
+        <section className="container mx-auto px-4 py-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            12 month, 24 month or 36 month EV warranty - flexible duration warranty UK
+          </h2>
+
+          <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
+            We offer short term EV warranty, long term EV warranty, monthly vehicle warranty, and yearly EV warranty UK options. Need 3 year EV warranty UK or EV warranty after 3 years of dealer cover? We have you covered.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="bg-card p-8 rounded-lg border text-center">
+              <div className="text-5xl font-bold text-primary mb-4">12</div>
+              <h3 className="text-2xl font-bold mb-3">12 month EV warranty</h3>
+              <p className="text-muted-foreground mb-4">Perfect for short term EV warranty needs. Great if you are planning to upgrade your electric vehicle soon.</p>
+              <Button onClick={handleGetQuote} variant="outline" className="w-full">Get 12 Month Quote</Button>
+            </div>
+
+            <div className="bg-card p-8 rounded-lg border-2 border-primary text-center">
+              <div className="text-5xl font-bold text-primary mb-4">24</div>
+              <h3 className="text-2xl font-bold mb-3">24 month EV warranty</h3>
+              <p className="text-muted-foreground mb-4">Most popular choice. Excellent value for money with two years of comprehensive EV protection and peace of mind.</p>
+              <Button onClick={handleGetQuote} className="w-full">Get 24 Month Quote</Button>
+            </div>
+
+            <div className="bg-card p-8 rounded-lg border text-center">
+              <div className="text-5xl font-bold text-primary mb-4">36</div>
+              <h3 className="text-2xl font-bold mb-3">36 month EV warranty</h3>
+              <p className="text-muted-foreground mb-4">Maximum protection with our 3 year EV warranty UK plan. Best long term EV warranty for complete peace of mind.</p>
+              <Button onClick={handleGetQuote} variant="outline" className="w-full">Get 36 Month Quote</Button>
+            </div>
+          </div>
+
+          <div className="mt-12 bg-muted/30 p-8 rounded-lg text-center max-w-4xl mx-auto">
+            <h3 className="text-2xl font-bold mb-4">Warranty post manufacturer - lifetime vehicle warranty UK</h3>
+            <p className="text-lg text-muted-foreground mb-4">
+              Looking for lifetime vehicle warranty UK? While we do not offer truly lifetime cover, our plans can be renewed. We specialize in warranty post manufacturer expiry, post warranty EV protection, and vehicle warranty after expiry.
+            </p>
+            <p className="text-muted-foreground">
+              Need to extend expired EV warranty? We can help with warranty after new EV cover ends, warranty after 60000 miles, warranty after 100000 miles, and long coverage warranty plan options. Just contact us for annual EV warranty UK and flexible duration warranty UK plans.
+            </p>
+          </div>
+        </section>
+
+        {/* Warrantywise Alternative Section */}
+        <section className="bg-card py-16">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+              Warrantywise alternative - better than Warrantywise for EVs
+            </h2>
+
+            <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
+              Comparing Warrantywise vs us? See why EV owners choose us as a Warrantywise alternative and Warrantywise competitors. We are often considered cheaper than Warrantywise and better than Warrantywise with superior Warrantywise customer service for electric vehicles.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-background p-6 rounded-lg border">
+                <h3 className="text-xl font-bold mb-3">Compare Warrantywise</h3>
+                <p className="text-muted-foreground mb-4">
+                  Get a Warrantywise quote comparison for EVs. Read Warrantywise reviews and see who is better than Warrantywise. Compare Warrantywise prices with our EV-specialist rates.
+                </p>
+                <p className="text-sm text-muted-foreground">Warrantywise vs RAC, Warrantywise vs AA - we compete with them all for EV cover.</p>
+              </div>
+
+              <div className="bg-background p-6 rounded-lg border-2 border-primary">
+                <h3 className="text-xl font-bold mb-3">Is Warrantywise any good for EVs?</h3>
+                <p className="text-muted-foreground mb-4">
+                  While Warrantywise UK and Warrantywise extended warranty are popular, many EV owners prefer our Warrantywise used EV warranty alternative and Warrantywise vehicle protection comparison.
+                </p>
+                <p className="text-sm text-muted-foreground">Warrantywise breakdown cover vs our comprehensive EV plans.</p>
+              </div>
+
+              <div className="bg-background p-6 rounded-lg border">
+                <h3 className="text-xl font-bold mb-3">Warrantywise Comparison</h3>
+                <p className="text-muted-foreground mb-4">
+                  Do a full Warrantywise comparison and see why we are rated as a top EV warranty provider UK and vehicle warranty providers choice for electric vehicles.
+                </p>
+                <p className="text-sm text-muted-foreground">Auto warranty providers trust for EV expertise.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Dealer Alternative Section */}
+        <section className="container mx-auto px-4 py-16">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8">
+              RAC EV warranty alternative - AA EV warranty UK alternative
+            </h2>
+
+            <p className="text-xl text-muted-foreground mb-8">
+              Looking for best non dealer EV warranty? We offer independent warranty vs dealer options with third party EV warranty UK expertise. Compare manufacturer warranty vs extended options and explore aftermarket warranty UK choices for electric vehicles.
+            </p>
+
+            <div className="bg-muted/30 p-8 rounded-lg">
+              <h3 className="text-2xl font-bold mb-4">Extended warranty not from dealer for EVs</h3>
+              <p className="text-lg text-muted-foreground mb-4">
+                Our EV warranty comparison vs dealer shows significant savings. We are a VGS EV warranty alternative providing trusted warranty outside dealership and EV warranty coverage without dealer restrictions. Compare vehicle protection plans UK, RAC vs AA warranty, and find the best independent warranty company UK for electric vehicles.
+              </p>
+              <p className="text-muted-foreground">
+                Get electric car warranty insurance, extended warranty insurance, and electric car warranty providers UK expertise. We also cover EV warranty after purchase from any dealer.
+              </p>
             </div>
           </div>
         </section>
