@@ -451,19 +451,6 @@ const Protected = () => {
         </div>
       </section>
 
-      {/* Vehicle Coverage Image Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center">
-            <img 
-              src="/car-warranty-uk-warranty-quotes-3.png" 
-              alt="Car warranty UK - Comprehensive vehicle protection for cars, vans, motorcycles, and electric vehicles with panda mascot"
-              className="w-full h-auto max-w-4xl"
-            />
-          </div>
-        </div>
-      </section>
-
       {/* High Performance Vehicles Not Eligible */}
       <section className="py-12 bg-gray-50/50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -472,11 +459,14 @@ const Protected = () => {
           </h2>
           
           <Accordion type="single" collapsible className="max-w-3xl mx-auto">
-            <AccordionItem value="high-performance-vehicles" className="bg-white/80 rounded-lg border border-gray-200 shadow-sm">
-              <AccordionTrigger className="px-4 py-3 text-left hover:no-underline">
-                <span className="text-sm font-semibold text-gray-700">View restricted vehicle models</span>
+            <AccordionItem value="high-performance-vehicles" className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+              <AccordionTrigger className="px-6 py-4 text-left bg-red-100 hover:bg-red-200 transition-all duration-300 hover:no-underline">
+                <div className="flex items-center">
+                  <X className="w-6 h-6 text-red-800 mr-3 flex-shrink-0" />
+                  <span className="font-bold text-lg text-red-800">View restricted vehicle models</span>
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="px-4 pb-4">
+              <AccordionContent className="px-6 py-4 bg-white">
                 <div className="max-h-[400px] overflow-y-auto space-y-6 text-sm">
                   {/* Disclaimer */}
                   <div className="bg-orange-50 p-3 rounded-md">
@@ -810,6 +800,19 @@ const Protected = () => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+        </div>
+      </section>
+
+      {/* Vehicle Coverage Image Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center">
+            <img 
+              src="/car-warranty-uk-warranty-quotes-3.png" 
+              alt="Car warranty UK - Comprehensive vehicle protection for cars, vans, motorcycles, and electric vehicles with panda mascot"
+              className="w-full h-auto max-w-4xl"
+            />
+          </div>
         </div>
       </section>
     </div>
