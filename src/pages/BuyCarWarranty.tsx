@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowRight, Star, Shield, Clock, Car, Phone, Menu, X, MessageCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import HomepageFAQ from '@/components/HomepageFAQ';
@@ -18,11 +18,18 @@ import companyRegistration from '@/assets/company-registration-footer.png';
 
 const BuyCarWarranty: React.FC = () => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const scrollToQuoteForm = () => {
+  const navigateToQuoteForm = () => {
     trackButtonClick('buy_car_warranty_get_quote');
-    window.location.href = '/#quote-form';
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
@@ -36,88 +43,124 @@ const BuyCarWarranty: React.FC = () => {
 
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold">
-              <span className="text-[#1e40af]">buya</span>
-              <span className="text-[#eb4b00]">warranty</span>
-            </span>
-          </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link to="/">
+                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+              </Link>
+            </div>
+            
+            {/* Navigation - Hidden on mobile, visible on lg+ */}
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+              <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
+              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+            </nav>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/faq" className="text-gray-700 hover:text-[#eb4b00] transition-colors">
-              FAQ
-            </Link>
-            <Link to="/make-a-claim" className="text-gray-700 hover:text-[#eb4b00] transition-colors">
-              Claims
-            </Link>
-            <Link to="/contact-us" className="text-gray-700 hover:text-[#eb4b00] transition-colors">
-              Contact
-            </Link>
-            <Link to="/customer-dashboard">
-              <Button variant="outline" className="border-[#1e40af] text-[#1e40af] hover:bg-[#1e40af] hover:text-white">
-                Customer Login
-              </Button>
-            </Link>
-            <Button 
-              onClick={scrollToQuoteForm}
-              className="bg-[#eb4b00] hover:bg-[#d44400] text-white"
-            >
-              Get Quote
-            </Button>
-          </nav>
-
-          {/* Mobile Menu */}
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col space-y-4 mt-8">
-                <Link 
-                  to="/faq" 
-                  className="text-lg text-gray-700 hover:text-[#eb4b00] transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  FAQ
-                </Link>
-                <Link 
-                  to="/make-a-claim" 
-                  className="text-lg text-gray-700 hover:text-[#eb4b00] transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Claims
-                </Link>
-                <Link 
-                  to="/contact-us" 
-                  className="text-lg text-gray-700 hover:text-[#eb4b00] transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Contact
-                </Link>
-                <Link 
-                  to="/customer-dashboard"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Button variant="outline" className="w-full border-[#1e40af] text-[#1e40af]">
-                    Customer Login
-                  </Button>
-                </Link>
+            {/* Desktop CTA Buttons - Show on desktop */}
+            <div className="hidden lg:flex items-center space-x-3">
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
                 <Button 
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    scrollToQuoteForm();
-                  }}
-                  className="w-full bg-[#eb4b00] hover:bg-[#d44400] text-white"
+                  variant="outline" 
+                  size="sm"
+                  className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
                 >
-                  Get Quote
+                  WhatsApp Us
                 </Button>
-              </nav>
-            </SheetContent>
-          </Sheet>
+              </a>
+              <Button 
+                size="sm"
+                onClick={navigateToQuoteForm}
+                className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
+              >
+                Get my quote
+              </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="lg:hidden p-2"
+                >
+                  <Menu className="h-8 w-8" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <div className="flex flex-col h-full">
+                  {/* Header with logo */}
+                  <div className="flex items-center justify-between pb-6">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
+                      <img 
+                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                        alt="Buy a Warranty" 
+                        className="h-8 w-auto"
+                      />
+                    </Link>
+                  </div>
+
+                  {/* Navigation Links */}
+                  <nav className="flex flex-col space-y-6 flex-1">
+                    <Link 
+                      to="/what-is-covered" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      What's Covered
+                    </Link>
+                    <Link 
+                      to="/make-a-claim" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Make a Claim
+                    </Link>
+                    <Link 
+                      to="/faq" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                       FAQs
+                    </Link>
+                    <Link 
+                      to="/contact-us" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Contact Us
+                    </Link>
+                  </nav>
+
+                  {/* CTA Buttons */}
+                  <div className="space-y-4 pt-6 mt-auto">
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                    </a>
+                    <Button 
+                      className="w-full bg-primary text-white hover:bg-primary/90 text-lg py-3"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        navigateToQuoteForm();
+                      }}
+                    >
+                      Get my quote
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
 
@@ -159,7 +202,7 @@ const BuyCarWarranty: React.FC = () => {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
-                  onClick={scrollToQuoteForm}
+                  onClick={navigateToQuoteForm}
                   size="lg"
                   className="bg-[#eb4b00] hover:bg-[#d44400] text-white text-lg px-8 py-6"
                 >
@@ -362,7 +405,7 @@ const BuyCarWarranty: React.FC = () => {
               </div>
 
               <Button 
-                onClick={scrollToQuoteForm}
+                onClick={navigateToQuoteForm}
                 size="lg"
                 className="bg-[#eb4b00] hover:bg-[#d44400] text-white"
               >
@@ -562,21 +605,21 @@ const BuyCarWarranty: React.FC = () => {
               <div className="text-4xl font-bold text-[#1e40af] mb-4">12</div>
               <h3 className="text-2xl font-bold mb-3">12 month car warranty</h3>
               <p className="text-gray-700 mb-4">Perfect for short term car warranty needs. Great if you are planning to upgrade soon or want to test our service first.</p>
-              <Button onClick={scrollToQuoteForm} variant="outline" className="w-full">Get 12 Month Quote</Button>
+              <Button onClick={navigateToQuoteForm} variant="outline" className="w-full">Get 12 Month Quote</Button>
             </div>
 
             <div className="bg-white p-8 rounded-lg shadow-sm border-2 border-[#eb4b00]">
               <div className="text-4xl font-bold text-[#eb4b00] mb-4">24</div>
               <h3 className="text-2xl font-bold mb-3">24 month car warranty</h3>
               <p className="text-gray-700 mb-4">Most popular option. Excellent value for money with two years of comprehensive protection and peace of mind.</p>
-              <Button onClick={scrollToQuoteForm} className="w-full bg-[#eb4b00] hover:bg-[#d44400]">Get 24 Month Quote</Button>
+              <Button onClick={navigateToQuoteForm} className="w-full bg-[#eb4b00] hover:bg-[#d44400]">Get 24 Month Quote</Button>
             </div>
 
             <div className="bg-white p-8 rounded-lg shadow-sm">
               <div className="text-4xl font-bold text-[#1e40af] mb-4">36</div>
               <h3 className="text-2xl font-bold mb-3">36 month car warranty</h3>
               <p className="text-gray-700 mb-4">Maximum protection with our 3 year car warranty UK plan. Best long term car warranty for complete peace of mind.</p>
-              <Button onClick={scrollToQuoteForm} variant="outline" className="w-full">Get 36 Month Quote</Button>
+              <Button onClick={navigateToQuoteForm} variant="outline" className="w-full">Get 36 Month Quote</Button>
             </div>
           </div>
 
@@ -731,7 +774,7 @@ const BuyCarWarranty: React.FC = () => {
           </p>
 
           <Button 
-            onClick={scrollToQuoteForm}
+            onClick={navigateToQuoteForm}
             size="lg"
             className="bg-[#eb4b00] hover:bg-[#d44400] text-white text-xl px-12 py-8"
           >

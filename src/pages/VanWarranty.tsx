@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { SEOHead } from "@/components/SEOHead";
 import TrustpilotHeader from "@/components/TrustpilotHeader";
 import { Button } from "@/components/ui/button";
-import { Check, Shield, Clock, BadgeCheck, Phone } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Check, Shield, Clock, BadgeCheck, Phone, Menu } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import vanHeroImage from "@/assets/van-warranty-uk-vehicle-protection.png";
 import vanQuotesImage from "@/assets/van-warranty-uk-quotes.png";
 import vanTrustedImage from "@/assets/van-warranty-uk-trusted-cover.png";
@@ -10,14 +12,20 @@ import whatsappIcon from "@/assets/whatsapp-icon.webp";
 
 const VanWarranty = () => {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const scrollToQuote = () => {
-    navigate('/', { state: { scrollToForm: true } });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const navigateToQuoteForm = () => {
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <>
       <SEOHead
         title="Van Warranty UK | Best Van Warranty Companies & Providers"
         description="Buy a van warranty online in minutes. Compare van warranty quotes from trusted UK providers. Extended van warranty cover for used vans, high-mileage vehicles & commercial vans."
@@ -25,6 +33,130 @@ const VanWarranty = () => {
         canonical="https://buyawarranty.co.uk/van-warranty-companies-uk-warranties"
       />
 
+      {/* Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link to="/">
+                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+              </Link>
+            </div>
+            
+            {/* Navigation - Hidden on mobile, visible on lg+ */}
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+              <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
+              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+            </nav>
+
+            {/* Desktop CTA Buttons - Show on desktop */}
+            <div className="hidden lg:flex items-center space-x-3">
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
+                >
+                  WhatsApp Us
+                </Button>
+              </a>
+              <Button 
+                size="sm"
+                onClick={navigateToQuoteForm}
+                className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
+              >
+                Get my quote
+              </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="lg:hidden p-2"
+                >
+                  <Menu className="h-8 w-8" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <div className="flex flex-col h-full">
+                  {/* Header with logo */}
+                  <div className="flex items-center justify-between pb-6">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
+                      <img 
+                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                        alt="Buy a Warranty" 
+                        className="h-8 w-auto"
+                      />
+                    </Link>
+                  </div>
+
+                  {/* Navigation Links */}
+                  <nav className="flex flex-col space-y-6 flex-1">
+                    <Link 
+                      to="/what-is-covered" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      What's Covered
+                    </Link>
+                    <Link 
+                      to="/make-a-claim" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Make a Claim
+                    </Link>
+                    <Link 
+                      to="/faq" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                       FAQs
+                    </Link>
+                    <Link 
+                      to="/contact-us" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Contact Us
+                    </Link>
+                  </nav>
+
+                  {/* CTA Buttons */}
+                  <div className="space-y-4 pt-6 mt-auto">
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                    </a>
+                    <Button 
+                      className="w-full bg-primary text-white hover:bg-primary/90 text-lg py-3"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        navigateToQuoteForm();
+                      }}
+                    >
+                      Get my quote
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </header>
+
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/10">
         <div className="container mx-auto px-4 py-12 md:py-20">
@@ -45,7 +177,7 @@ const VanWarranty = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                 <Button 
                   size="lg" 
-                  onClick={scrollToQuote}
+                  onClick={navigateToQuoteForm}
                   className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
                 >
                   Get Your Van Warranty Quote
@@ -313,7 +445,7 @@ const VanWarranty = () => {
               <p className="text-muted-foreground mb-4">
                 Perfect for those who want short term van warranty cover. Ideal if you are planning to upgrade soon or want to try our service.
               </p>
-              <Button onClick={scrollToQuote} variant="outline" className="w-full">
+              <Button onClick={navigateToQuoteForm} variant="outline" className="w-full">
                 Get 12 Month Quote
               </Button>
             </div>
@@ -326,7 +458,7 @@ const VanWarranty = () => {
               <p className="text-muted-foreground mb-4">
                 Our most popular choice. Great value for money with comprehensive protection for two years of peace of mind.
               </p>
-              <Button onClick={scrollToQuote} className="w-full">
+              <Button onClick={navigateToQuoteForm} className="w-full">
                 Get 24 Month Quote
               </Button>
             </div>
@@ -339,7 +471,7 @@ const VanWarranty = () => {
               <p className="text-muted-foreground mb-4">
                 Maximum protection with our 3 year van warranty UK plan. The best long term van warranty for total peace of mind.
               </p>
-              <Button onClick={scrollToQuote} variant="outline" className="w-full">
+              <Button onClick={navigateToQuoteForm} variant="outline" className="w-full">
                 Get 36 Month Quote
               </Button>
             </div>
@@ -434,7 +566,7 @@ const VanWarranty = () => {
           </p>
           <Button 
             size="lg" 
-            onClick={scrollToQuote}
+            onClick={navigateToQuoteForm}
             className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
           >
             Get Your Van Warranty Quote Now
@@ -462,7 +594,8 @@ const VanWarranty = () => {
           <Phone className="w-6 h-6" />
         </a>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

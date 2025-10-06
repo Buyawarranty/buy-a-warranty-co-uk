@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Shield, Clock, Phone } from 'lucide-react';
+import { CheckCircle2, Shield, Clock, Phone, Menu } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import NewFooter from '@/components/NewFooter';
@@ -20,6 +21,7 @@ const EVWarranty = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,9 +35,15 @@ const EVWarranty = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleGetQuote = () => {
+  const navigateToQuoteForm = () => {
     trackButtonClick('ev_warranty_get_quote_cta');
-    navigate('/#quote-form');
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
@@ -46,6 +54,129 @@ const EVWarranty = () => {
         keywords="EV car warranty UK, electric car warranty, hybrid car warranty UK, PHEV warranty, buy electric car warranty online, extended EV warranty, used electric car warranty, best EV warranty provider UK, affordable hybrid warranty, EV warranty quotes, electric vehicle warranty cover"
         canonical="https://buyawarranty.co.uk/best-warranty-on-ev-cars-uk-warranties"
       />
+
+      {/* Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link to="/">
+                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+              </Link>
+            </div>
+            
+            {/* Navigation - Hidden on mobile, visible on lg+ */}
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+              <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
+              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+            </nav>
+
+            {/* Desktop CTA Buttons - Show on desktop */}
+            <div className="hidden lg:flex items-center space-x-3">
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
+                >
+                  WhatsApp Us
+                </Button>
+              </a>
+              <Button 
+                size="sm"
+                onClick={navigateToQuoteForm}
+                className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
+              >
+                Get my quote
+              </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="lg:hidden p-2"
+                >
+                  <Menu className="h-8 w-8" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <div className="flex flex-col h-full">
+                  {/* Header with logo */}
+                  <div className="flex items-center justify-between pb-6">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
+                      <img 
+                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                        alt="Buy a Warranty" 
+                        className="h-8 w-auto"
+                      />
+                    </Link>
+                  </div>
+
+                  {/* Navigation Links */}
+                  <nav className="flex flex-col space-y-6 flex-1">
+                    <Link 
+                      to="/what-is-covered" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      What's Covered
+                    </Link>
+                    <Link 
+                      to="/make-a-claim" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Make a Claim
+                    </Link>
+                    <Link 
+                      to="/faq" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                       FAQs
+                    </Link>
+                    <Link 
+                      to="/contact-us" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Contact Us
+                    </Link>
+                  </nav>
+
+                  {/* CTA Buttons */}
+                  <div className="space-y-4 pt-6 mt-auto">
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                    </a>
+                    <Button 
+                      className="w-full bg-primary text-white hover:bg-primary/90 text-lg py-3"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        navigateToQuoteForm();
+                      }}
+                    >
+                      Get my quote
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </header>
       
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         <TrustpilotHeader />
@@ -63,14 +194,14 @@ const EVWarranty = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button 
-                  onClick={handleGetQuote}
+                  onClick={navigateToQuoteForm}
                   size="lg"
                   className="text-lg px-8 py-6 bg-primary hover:bg-primary/90"
                 >
                   Get Your EV Warranty Quote
                 </Button>
                 <Button 
-                  onClick={handleGetQuote}
+                  onClick={navigateToQuoteForm}
                   variant="outline"
                   size="lg"
                   className="text-lg px-8 py-6"
@@ -159,7 +290,7 @@ const EVWarranty = () => {
                   </li>
                 ))}
               </ul>
-              <Button onClick={handleGetQuote} size="lg" className="mt-6">
+              <Button onClick={navigateToQuoteForm} size="lg" className="mt-6">
                 Get Your Quote Now
               </Button>
             </div>
@@ -217,7 +348,7 @@ const EVWarranty = () => {
                   </li>
                 ))}
               </ul>
-              <Button onClick={handleGetQuote} size="lg">
+              <Button onClick={navigateToQuoteForm} size="lg">
                 Compare EV Warranty Plans
               </Button>
             </div>
@@ -417,21 +548,21 @@ const EVWarranty = () => {
               <div className="text-5xl font-bold text-primary mb-4">12</div>
               <h3 className="text-2xl font-bold mb-3">12 month EV warranty</h3>
               <p className="text-muted-foreground mb-4">Perfect for short term EV warranty needs. Great if you are planning to upgrade your electric vehicle soon.</p>
-              <Button onClick={handleGetQuote} variant="outline" className="w-full">Get 12 Month Quote</Button>
+              <Button onClick={navigateToQuoteForm} variant="outline" className="w-full">Get 12 Month Quote</Button>
             </div>
 
             <div className="bg-card p-8 rounded-lg border-2 border-primary text-center">
               <div className="text-5xl font-bold text-primary mb-4">24</div>
               <h3 className="text-2xl font-bold mb-3">24 month EV warranty</h3>
               <p className="text-muted-foreground mb-4">Most popular choice. Excellent value for money with two years of comprehensive EV protection and peace of mind.</p>
-              <Button onClick={handleGetQuote} className="w-full">Get 24 Month Quote</Button>
+              <Button onClick={navigateToQuoteForm} className="w-full">Get 24 Month Quote</Button>
             </div>
 
             <div className="bg-card p-8 rounded-lg border text-center">
               <div className="text-5xl font-bold text-primary mb-4">36</div>
               <h3 className="text-2xl font-bold mb-3">36 month EV warranty</h3>
               <p className="text-muted-foreground mb-4">Maximum protection with our 3 year EV warranty UK plan. Best long term EV warranty for complete peace of mind.</p>
-              <Button onClick={handleGetQuote} variant="outline" className="w-full">Get 36 Month Quote</Button>
+              <Button onClick={navigateToQuoteForm} variant="outline" className="w-full">Get 36 Month Quote</Button>
             </div>
           </div>
 
@@ -556,7 +687,7 @@ const EVWarranty = () => {
               Get started in minutes. Enter your registration, choose your hybrid car warranty or EV cover, and get protected today.
             </p>
             <Button 
-              onClick={handleGetQuote}
+              onClick={navigateToQuoteForm}
               size="lg"
               variant="secondary"
               className="text-lg px-8 py-6"
