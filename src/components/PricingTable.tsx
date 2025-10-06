@@ -1314,26 +1314,27 @@ const PricingTable: React.FC<PricingTableProps> = ({
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* AutoCare Essential */}
-            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
+            <div 
+              className={`p-6 rounded-lg transition-all duration-200 text-left relative cursor-pointer ${
                 selectedClaimLimit === 750
                   ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                   : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-              }`}>
-              <button
-                onClick={() => {
-                  setSelectedClaimLimit(750);
-                  setValidationErrors(prev => ({ ...prev, claimLimit: false }));
-                }}
-                className="w-full text-left"
-              >
-                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Essential</h4>
-                <div className="text-2xl font-bold text-black mb-2">£750 per claim</div>
-                <p className="text-sm font-medium text-foreground mb-4">Confidence for the everyday drive.</p>
-              </button>
+              }`}
+              onClick={() => {
+                setSelectedClaimLimit(750);
+                setValidationErrors(prev => ({ ...prev, claimLimit: false }));
+              }}
+            >
+              <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Essential</h4>
+              <div className="text-2xl font-bold text-black mb-2">£750 per claim</div>
+              <p className="text-sm font-medium text-foreground mb-4">Confidence for the everyday drive.</p>
               
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="essential-details" className="border-none">
-                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
+                  <AccordionTrigger 
+                    className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     Read more
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
@@ -1374,29 +1375,30 @@ const PricingTable: React.FC<PricingTableProps> = ({
             </div>
             
             {/* AutoCare Advantage */}
-            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
+            <div 
+              className={`p-6 rounded-lg transition-all duration-200 text-left relative cursor-pointer ${
                 selectedClaimLimit === 1250
                   ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                   : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-              }`}>
+              }`}
+              onClick={() => {
+                setSelectedClaimLimit(1250);
+                setValidationErrors(prev => ({ ...prev, claimLimit: false }));
+              }}
+            >
               <div className="absolute -top-3 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
                 MOST POPULAR
               </div>
-              <button
-                onClick={() => {
-                  setSelectedClaimLimit(1250);
-                  setValidationErrors(prev => ({ ...prev, claimLimit: false }));
-                }}
-                className="w-full text-left"
-              >
-                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Advantage</h4>
-                <div className="text-2xl font-bold text-black mb-2">£1,250 per claim</div>
-                <p className="text-sm font-medium text-foreground mb-4">Balanced protection for life's bigger bumps.</p>
-              </button>
+              <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Advantage</h4>
+              <div className="text-2xl font-bold text-black mb-2">£1,250 per claim</div>
+              <p className="text-sm font-medium text-foreground mb-4">Balanced protection for life's bigger bumps.</p>
               
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="advantage-details" className="border-none">
-                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
+                  <AccordionTrigger 
+                    className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     Read more
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
@@ -1437,26 +1439,27 @@ const PricingTable: React.FC<PricingTableProps> = ({
             </div>
             
             {/* AutoCare Elite */}
-            <div className={`p-6 rounded-lg transition-all duration-200 text-left relative ${
+            <div 
+              className={`p-6 rounded-lg transition-all duration-200 text-left relative cursor-pointer ${
                 selectedClaimLimit === 2000
                   ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30'
                   : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
-              }`}>
-              <button
-                onClick={() => {
-                  setSelectedClaimLimit(2000);
-                  setValidationErrors(prev => ({ ...prev, claimLimit: false }));
-                }}
-                className="w-full text-left"
-              >
-                <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Elite</h4>
-                <div className="text-2xl font-bold text-black mb-2">£2,000 per claim</div>
-                <p className="text-sm font-medium text-foreground mb-4">Top-tier cover for total peace of mind.</p>
-              </button>
+              }`}
+              onClick={() => {
+                setSelectedClaimLimit(2000);
+                setValidationErrors(prev => ({ ...prev, claimLimit: false }));
+              }}
+            >
+              <h4 className="text-xl font-bold text-foreground mb-2">AutoCare Elite</h4>
+              <div className="text-2xl font-bold text-black mb-2">£2,000 per claim</div>
+              <p className="text-sm font-medium text-foreground mb-4">Top-tier cover for total peace of mind.</p>
               
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="elite-details" className="border-none">
-                  <AccordionTrigger className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline">
+                  <AccordionTrigger 
+                    className="text-sm text-primary hover:text-primary/80 py-2 px-0 hover:no-underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     Read more
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-2">
