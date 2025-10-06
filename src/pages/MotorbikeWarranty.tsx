@@ -40,9 +40,9 @@ const MotorbikeWarranty = () => {
   return (
     <>
       <SEOHead
-        title="Motorbike Warranty UK | Motorcycle Repair Cover & Protection"
-        description="Comprehensive motorbike warranty and motorcycle repair cover across the UK. Buy affordable motorbike warranty online with flexible payments. Get instant motorcycle warranty quotes today."
-        keywords="motorbike warranty UK, motorcycle warranty, buy motorbike warranty online, motorcycle repair warranty UK, extended motorbike warranty, used motorcycle warranty, best motorbike warranty provider UK, affordable motorcycle warranty, motorbike warranty quotes, motorcycle warranty cover UK, bike warranty UK"
+        title="Motorbike Warranty UK | Best Motorcycle Repair Cover & Electric Car Warranty Provider"
+        description="Best motorbike warranty UK with comprehensive motorcycle repair cover. What's included in motorbike warranty: engine, gearbox, electrical systems. Also offering best electric car warranty provider services with extended electric car warranties UK, USA, Canada."
+        keywords="motorbike warranty UK, motorbike warranty UK best, whats included in motorbike warranty, motorcycle warranty, buy motorbike warranty online, motorcycle repair warranty UK, extended motorbike warranty, best electric car warranty provider, extended electric car warranty providers, electric car warranty insurance, used electric car warranty, best electric car warranty, extended electric cars warranties UK, extended electric cars warranties USA, best electric cars warranties UK"
         canonical="https://buyawarranty.co.uk/motorbike-repair-warranty-uk-warranties"
       />
       
@@ -89,7 +89,7 @@ const MotorbikeWarranty = () => {
               <img 
                 src={motorcycleSavings} 
                 alt="Motorcycle Warranty UK - Affordable Motorbike Protection and Savings"
-                className="w-full h-auto rounded-lg shadow-2xl"
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -149,7 +149,7 @@ const MotorbikeWarranty = () => {
               <img 
                 src={motorbikeRepair} 
                 alt="Motorbike Warranty UK Repair Cover - Motorcycle Mechanical Protection"
-                className="w-full h-auto rounded-lg shadow-xl"
+                className="w-full h-auto"
               />
             </div>
             <div className="order-1 lg:order-2 space-y-6">
@@ -245,7 +245,7 @@ const MotorbikeWarranty = () => {
               <img 
                 src={motorbikeQuotes} 
                 alt="Motorbike Warranty UK Quotes - Motorcycle Warranty Payment Options"
-                className="w-full h-auto rounded-lg shadow-xl"
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -291,10 +291,10 @@ const MotorbikeWarranty = () => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Compare Motorcycle Warranty Providers - Choose the Best
+                Best motorbike warranty UK - what's included in motorbike warranty
               </h2>
               <p className="text-lg text-muted-foreground">
-                We're proud to be among the best motorbike warranty providers UK. Our customers rate us highly for:
+                As the best motorbike warranty UK provider and motorbike warranty UK best choice for riders, we offer comprehensive cover. Here is what's included in motorbike warranty plans from us:
               </p>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
@@ -316,6 +316,72 @@ const MotorbikeWarranty = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Extended Coverage - Cars Section */}
+        <section className="bg-card py-16">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                We Also Cover Cars - Best Electric Car Warranty Provider
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                While we specialize in motorbike warranty UK, we are also a best electric car warranty provider offering extended electric car warranty providers services. We provide electric car warranty insurance, used electric car warranty, and best electric car warranty options.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-background p-8 rounded-lg border">
+                <h3 className="text-2xl font-bold mb-4">Extended Electric Car Warranties</h3>
+                <p className="text-muted-foreground mb-6">
+                  Looking for extended electric cars warranties UK, extended electric cars warranties USA, or extended electric cars warranties Canada? As one of the best electric cars warranties UK providers and best electric cars warranties USA options, we offer comprehensive electric vehicle protection.
+                </p>
+                <ul className="space-y-3">
+                  {[
+                    'Extended electric car warranties for EVs and hybrids',
+                    'Best electric cars warranties UK with flexible terms',
+                    'Extended electric cars warranties USA coverage available',
+                    'Extended electric cars warranties Canada options',
+                    'Comprehensive electric car warranty insurance',
+                    'Used electric car warranty for pre-owned EVs'
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-background p-8 rounded-lg border">
+                <h3 className="text-2xl font-bold mb-4">Best Electric Car Warranty Coverage</h3>
+                <p className="text-muted-foreground mb-6">
+                  As a best electric car warranty provider and leading extended electric car warranty providers company, we deliver the best electric car warranty options for UK, USA, and Canada customers.
+                </p>
+                <ul className="space-y-3">
+                  {[
+                    'Best electric cars warranties with battery protection',
+                    'Extended electric cars warranties UK comprehensive cover',
+                    'Best electric cars warranties USA dealer alternatives',
+                    'Electric car warranty insurance for peace of mind',
+                    'Used electric car warranty for all EV makes and models',
+                    'Best electric car warranty provider expertise'
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-8 bg-muted/30 p-6 rounded-lg text-center">
+              <p className="text-lg">
+                <strong>Note:</strong> While we offer both motorbike warranty UK and electric car warranty services as a best electric car warranty provider, please remember that standard electric bicycles and pedal-assisted e-bikes are not covered under our motorbike warranty plans.
+              </p>
             </div>
           </div>
         </section>
