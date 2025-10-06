@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, Download, ExternalLink, Check, Menu, Shield, Car, Zap, Wrench } from 'lucide-react';
+import { ChevronDown, Download, ExternalLink, Check, Menu, Shield, Car, Zap, Wrench, Crown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -1249,7 +1249,7 @@ const WarrantyPlan = () => {
         </section>
 
         {/* High Performance Vehicles Not Eligible */}
-        <section className="py-16 lg:py-24 px-4 bg-muted/30">
+        <section className="py-16 lg:py-24 px-4 bg-blue-50">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground text-center mb-12">
               High Performance Vehicles Not Eligible for Our Warranty Cover
@@ -1263,7 +1263,8 @@ const WarrantyPlan = () => {
                 <AccordionContent className="px-6 pb-6">
                   <div className="space-y-8">
                     {/* Disclaimer */}
-                    <div className="bg-orange-50 p-6 rounded-lg">
+                    <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg flex items-start gap-4">
+                      <Crown className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                       <p className="text-muted-foreground leading-relaxed">
                         We're not able to offer warranty cover for high-performance, high-end or luxury vehicles, including those with similar specifications or servicing requirements to the models listed above, as well as newer versions of the same makes and models.
                       </p>
