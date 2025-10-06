@@ -30,6 +30,7 @@ const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const WarrantyPlan = lazy(() => import("./pages/WarrantyPlan"));
+const BuyCarWarranty = lazy(() => import("./pages/BuyCarWarranty"));
 
 // Admin and auth pages
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -105,6 +106,7 @@ const App = () => (
                     <Route path="/thewarrantyhub" element={<Blog />} />
                     <Route path="/thewarrantyhub/:slug" element={<BlogArticle />} />
                     <Route path="/warranty-plan" element={<WarrantyPlan />} />
+                    <Route path="/buy-a-warranty-for-my-car-uk-warranties" element={<BuyCarWarranty />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
