@@ -58,7 +58,7 @@ const VanWarranty = () => {
               <img
                 src={vanHeroImage}
                 alt="Van warranty UK - Mercedes Sprinter van with panda driver"
-                className="w-full h-auto rounded-lg shadow-2xl"
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -126,7 +126,7 @@ const VanWarranty = () => {
               <img
                 src={vanQuotesImage}
                 alt="Van warranty quotes - Compare van warranty providers for cars, vans, and motorcycles"
-                className="w-full h-auto rounded-lg shadow-xl"
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -208,24 +208,26 @@ const VanWarranty = () => {
               <img
                 src={vanTrustedImage}
                 alt="Van warranty providers UK - Trusted cover for vans, cars, and motorcycles"
-                className="w-full h-auto rounded-lg shadow-xl"
+                className="w-full h-auto"
               />
             </div>
 
             <div className="order-1 md:order-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Compare van warranty providers without the hassle
+                Why we're a top rated van warranty UK provider
               </h2>
               <p className="text-lg text-muted-foreground mb-6">
-                We're proud to be a trusted alternative to Warrantywise, RAC, AA and other van warranty providers. Our customers love us for:
+                As one of the most popular van warranty companies in the UK, we're proud to be a recommended van warranty UK provider. Our reliable van warranty services and transparent vehicle warranty plans make us a trustworthy warranty provider. Our customers love us for:
               </p>
 
               <div className="space-y-4">
                 {[
-                  "Straightforward cover",
-                  "Fast claims turnaround",
-                  "Friendly UK-based support",
-                  "No pushy sales calls"
+                  "Award winning warranty company with verified reviews",
+                  "Highly rated vehicle warranty experts",
+                  "Best customer service warranty UK teams",
+                  "Expert van warranty advice from vehicle warranty specialists",
+                  "Honest van warranty provider with no hidden fees",
+                  "Independent warranty company UK owned and operated"
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -236,6 +238,188 @@ const VanWarranty = () => {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Where to Buy & How to Get Section */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Where to buy van warranty UK coverage – and how to get it
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-card p-8 rounded-lg shadow-sm">
+              <h3 className="text-2xl font-bold mb-4">How to get van warranty UK</h3>
+              <p className="text-muted-foreground mb-6">
+                Getting warranty cover for your van has never been easier. As the best place to get van warranty online, we make the process simple. You can apply for van warranty right now, whether you want to buy extended van warranty online or get protection for your second-hand van.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Get instant van warranty quotes online",
+                  "Can I get van warranty anytime? Yes, even after dealer warranty expires",
+                  "Buying warranty after van purchase is easy with us",
+                  "Getting warranty after dealer cover ends protects your investment"
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-card p-8 rounded-lg shadow-sm">
+              <h3 className="text-2xl font-bold mb-4">Buying van warranty for second hand van</h3>
+              <p className="text-muted-foreground mb-6">
+                Do I need warranty on used van? Absolutely. Buying van warranty for second hand van gives you peace of mind. Here is how to choose a warranty that works for you:
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Check what does van warranty cover before you buy",
+                  "Consider if is van warranty worth it UK for your vehicle age",
+                  "Ask how much is van warranty for your specific van",
+                  "Do I need van warranty? Yes, if you want to avoid costly repairs",
+                  "Can I extend my van warranty? Yes, we offer flexible extensions"
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Duration Options Section */}
+      <section className="py-16 bg-secondary/20">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Flexible warranty terms: 12 month, 24 month or 36 month van warranty
+          </h2>
+          
+          <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto">
+            Whether you need short term van warranty or long term van warranty protection, we have options for everyone. Our monthly vehicle warranty plans and yearly van warranty UK packages are designed to fit your needs.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-card p-8 rounded-lg shadow-sm text-center">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary mx-auto mb-4">
+                12
+              </div>
+              <h3 className="text-xl font-bold mb-3">12 month van warranty</h3>
+              <p className="text-muted-foreground mb-4">
+                Perfect for those who want short term van warranty cover. Ideal if you are planning to upgrade soon or want to try our service.
+              </p>
+              <Button onClick={scrollToQuote} variant="outline" className="w-full">
+                Get 12 Month Quote
+              </Button>
+            </div>
+
+            <div className="bg-card p-8 rounded-lg shadow-sm text-center border-2 border-primary">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary mx-auto mb-4">
+                24
+              </div>
+              <h3 className="text-xl font-bold mb-3">24 month van warranty</h3>
+              <p className="text-muted-foreground mb-4">
+                Our most popular choice. Great value for money with comprehensive protection for two years of peace of mind.
+              </p>
+              <Button onClick={scrollToQuote} className="w-full">
+                Get 24 Month Quote
+              </Button>
+            </div>
+
+            <div className="bg-card p-8 rounded-lg shadow-sm text-center">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary mx-auto mb-4">
+                36
+              </div>
+              <h3 className="text-xl font-bold mb-3">36 month van warranty</h3>
+              <p className="text-muted-foreground mb-4">
+                Maximum protection with our 3 year van warranty UK plan. The best long term van warranty for total peace of mind.
+              </p>
+              <Button onClick={scrollToQuote} variant="outline" className="w-full">
+                Get 36 Month Quote
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="text-lg text-muted-foreground mb-4">
+              Looking for lifetime vehicle warranty UK? While we do not offer truly lifetime cover, our 3 year plans can be renewed. We also offer van warranty after 3 years of dealer cover, warranty post manufacturer expiry, and post warranty van protection.
+            </p>
+            <p className="text-base text-muted-foreground">
+              Need to extend expired van warranty? We can help with vehicle warranty after expiry – just get in touch.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Questions to Ask Section */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Questions to ask van warranty provider before you buy
+          </h2>
+          
+          <div className="space-y-6">
+            {[
+              {
+                question: "What does van warranty cover?",
+                answer: "Our plans cover major mechanical and electrical components including engine, gearbox, steering, brakes, and more. We will explain exactly what is included in your quote."
+              },
+              {
+                question: "Is van warranty worth it UK?",
+                answer: "Yes – especially for used vans. One major repair can cost thousands. Our warranty gives you budget certainty and protects you from unexpected bills."
+              },
+              {
+                question: "How much is van warranty?",
+                answer: "Prices vary based on your van age, mileage, and chosen cover level. Get an instant quote online to see exact pricing for your vehicle."
+              },
+              {
+                question: "Can I get van warranty anytime?",
+                answer: "Yes. Unlike manufacturer warranties, you can buy our cover at any time – even years after your van was purchased."
+              },
+              {
+                question: "Do I need warranty on used van?",
+                answer: "We strongly recommend it. Used vans are more likely to need repairs, and warranty cover protects your budget from surprise costs."
+              },
+              {
+                question: "Can I extend my van warranty?",
+                answer: "Absolutely. When your current warranty expires, you can easily extend or renew your cover with us."
+              }
+            ].map((item, index) => (
+              <div key={index} className="bg-card p-6 rounded-lg shadow-sm">
+                <h3 className="text-xl font-bold mb-3 text-primary">{item.question}</h3>
+                <p className="text-muted-foreground">{item.answer}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Signals Section */}
+      <section className="py-16 bg-secondary/20">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            A reputable van warranty UK company you can trust
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { title: "Best UK warranty provider", description: "Consistently rated as a top provider" },
+              { title: "Verified van warranty UK", description: "All claims handled fairly and efficiently" },
+              { title: "Customer rated van warranty", description: "See our genuine customer reviews online" },
+              { title: "Trusted vehicle protection UK", description: "Thousands of happy van owners nationwide" }
+            ].map((item, index) => (
+              <div key={index} className="bg-card p-6 rounded-lg shadow-sm text-center">
+                <BadgeCheck className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h3 className="font-bold mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
