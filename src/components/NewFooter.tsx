@@ -8,7 +8,7 @@ const NewFooter = () => {
     <div className="bg-white border-t border-gray-200">
 
       {/* Main footer section */}
-      <div className="bg-[#224380] text-white py-8">
+      <div className="bg-[#284185] text-white py-8">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h3 className="text-xl font-semibold mb-6">
             Need help? Our team of warranty experts are here to help.
@@ -17,7 +17,7 @@ const NewFooter = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
             <a 
               href="tel:08000014990" 
-              className="flex items-center gap-2 text-[#eb4b00] hover:text-orange-400 transition-colors font-medium"
+              className="flex items-center gap-2 text-white hover:text-white/80 transition-colors font-medium"
             >
               <Phone size={18} />
               Call us: 0800 001 4990
@@ -25,7 +25,7 @@ const NewFooter = () => {
             
             <a 
               href="mailto:info@warrantywise.co.uk" 
-              className="flex items-center gap-2 text-[#eb4b00] hover:text-orange-400 transition-colors font-medium"
+              className="flex items-center gap-2 text-white hover:text-white/80 transition-colors font-medium"
             >
               <Mail size={18} />
               Email us: info@warrantywise.co.uk
@@ -33,7 +33,7 @@ const NewFooter = () => {
 
             <Link 
               to="/blog" 
-              className="flex items-center gap-2 text-[#eb4b00] hover:text-orange-400 transition-colors font-medium"
+              className="flex items-center gap-2 text-white hover:text-white/80 transition-colors font-medium"
             >
               <BookOpen size={18} />
               Drive Smarter
