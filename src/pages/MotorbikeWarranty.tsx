@@ -343,27 +343,23 @@ const MotorbikeWarranty = () => {
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                We Also Cover Cars - Best Electric Car Warranty Provider
+                Extended Electric Car Warranties in the UK
               </h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                While we specialize in motorbike warranty UK, we are also a best electric car warranty provider offering extended electric car warranty providers services. We provide electric car warranty insurance, used electric car warranty, and best electric car warranty options.
+                If you're looking to extend the warranty on your electric car in the UK, we offer tailored protection plans designed for EVs and hybrids. Whether your vehicle is new or used, our extended electric car warranties provide peace of mind with flexible cover options.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-background p-8 rounded-lg border">
-                <h3 className="text-2xl font-bold mb-4">Extended Electric Car Warranties</h3>
-                <p className="text-muted-foreground mb-6">
-                  Looking for extended electric cars warranties UK, extended electric cars warranties USA, or extended electric cars warranties Canada? As one of the best electric cars warranties UK providers and best electric cars warranties USA options, we offer comprehensive electric vehicle protection.
-                </p>
+                <h3 className="text-2xl font-bold mb-4">What's Included</h3>
                 <ul className="space-y-3">
                   {[
-                    'Extended electric car warranties for EVs and hybrids',
-                    'Best electric cars warranties UK with flexible terms',
-                    'Extended electric cars warranties USA coverage available',
-                    'Extended electric cars warranties Canada options',
-                    'Comprehensive electric car warranty insurance',
-                    'Used electric car warranty for pre-owned EVs'
+                    'Comprehensive protection for electric and hybrid vehicles',
+                    'Cover for key components including battery systems',
+                    'Flexible terms to suit your driving habits and budget',
+                    'Options for used electric cars and pre-owned EVs',
+                    'Insurance-backed warranties for added security'
                   ].map((item, index) => (
                     <li key={index} className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -374,31 +370,34 @@ const MotorbikeWarranty = () => {
               </div>
 
               <div className="bg-background p-8 rounded-lg border">
-                <h3 className="text-2xl font-bold mb-4">Best Electric Car Warranty Coverage</h3>
-                <p className="text-muted-foreground mb-6">
-                  As a best electric car warranty provider and leading extended electric car warranty providers company, we deliver the best electric car warranty options for UK, USA, and Canada customers.
+                <h3 className="text-2xl font-bold mb-4">Why Choose Us</h3>
+                <p className="text-muted-foreground mb-4">
+                  As one of the UK's trusted electric car warranty providers, we specialise in extended cover that goes beyond manufacturer warranties. Our plans are designed to support EV owners with reliable, cost-effective protection.
                 </p>
-                <ul className="space-y-3">
-                  {[
-                    'Best electric cars warranties with battery protection',
-                    'Extended electric cars warranties UK comprehensive cover',
-                    'Best electric cars warranties USA dealer alternatives',
-                    'Electric car warranty insurance for peace of mind',
-                    'Used electric car warranty for all EV makes and models',
-                    'Best electric car warranty provider expertise'
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
 
-            <div className="mt-8 bg-muted/30 p-6 rounded-lg text-center">
+            <div className="mt-8 bg-muted/30 p-8 rounded-lg">
+              <h3 className="text-2xl font-bold mb-4 text-center">Popular Features</h3>
+              <ul className="space-y-3 max-w-3xl mx-auto">
+                {[
+                  'Extended electric car warranty for UK drivers',
+                  'Battery and drivetrain cover included',
+                  'Used EV warranty options for all major brands',
+                  'Monthly and annual payment plans available',
+                  'No dealership required, buy online with ease'
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-8 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-6 rounded-lg text-center">
               <p className="text-lg">
-                <strong>Note:</strong> While we offer both motorbike warranty UK and electric car warranty services as a best electric car warranty provider, please remember that standard electric bicycles and pedal-assisted e-bikes are not covered under our motorbike warranty plans.
+                <strong>Note:</strong> While we offer both motorbike warranty UK and electric car warranty services, please remember that standard electric bicycles and pedal-assisted e-bikes are not covered under our motorbike warranty plans.
               </p>
             </div>
           </div>
