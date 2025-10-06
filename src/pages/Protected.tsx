@@ -369,355 +369,6 @@ const Protected = () => {
         </div>
       </section>
 
-      {/* High Performance Vehicles Not Eligible */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-12">
-            High Performance Vehicles Not Eligible for Our Warranty Cover
-          </h2>
-          
-          <Accordion type="single" collapsible className="space-y-4">
-            <AccordionItem value="high-performance-vehicles" className="bg-white rounded-lg border">
-              <AccordionTrigger className="px-6 py-4 text-left hover:no-underline">
-                <h3 className="text-xl font-bold text-gray-900">Read more</h3>
-              </AccordionTrigger>
-              <AccordionContent className="px-6 pb-6">
-                <div className="space-y-8">
-                  {/* Disclaimer */}
-                  <div className="bg-orange-50 p-6 rounded-lg">
-                    <p className="text-gray-700 leading-relaxed">
-                      We're not able to offer warranty cover for high-performance, high-end or luxury vehicles, including those with similar specifications or servicing requirements to the models listed below, as well as newer versions of the same makes and models.
-                    </p>
-                  </div>
-
-                  {/* BMW Models by Series */}
-                  <div className="space-y-6">
-                    <h4 className="text-2xl font-bold text-gray-900">BMW Models</h4>
-                    
-                    {/* 1 Series */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">1 Series</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW M135i xDrive</li>
-                      </ul>
-                    </div>
-
-                    {/* 2 Series */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">2 Series</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW M240i Coupé</li>
-                        <li>• BMW M235i xDrive Gran Coupé</li>
-                        <li>• BMW M2 Coupé</li>
-                        <li>• BMW M2 CS</li>
-                      </ul>
-                    </div>
-
-                    {/* 3 Series */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">3 Series</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW M340i xDrive Sedan</li>
-                        <li>• BMW M340d xDrive Sedan</li>
-                        <li>• BMW M340i xDrive Touring</li>
-                        <li>• BMW M340d xDrive Touring</li>
-                        <li>• BMW M3 Sedan</li>
-                        <li>• BMW M3 Competition Sedan</li>
-                        <li>• BMW M3 CS</li>
-                        <li>• BMW M3 Competition Touring</li>
-                      </ul>
-                    </div>
-
-                    {/* 4 Series */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">4 Series</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW M440i xDrive Coupé</li>
-                        <li>• BMW M440d xDrive Coupé</li>
-                        <li>• BMW M440i xDrive Convertible</li>
-                        <li>• BMW M440d xDrive Convertible</li>
-                        <li>• BMW M440i xDrive Gran Coupé</li>
-                        <li>• BMW M4 Coupé</li>
-                        <li>• BMW M4 Competition Coupé</li>
-                        <li>• BMW M4 CS</li>
-                        <li>• BMW M4 Competition Convertible</li>
-                        <li>• BMW M4 CS Edition VR46</li>
-                      </ul>
-                    </div>
-
-                    {/* 5 Series */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">5 Series</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW M550i xDrive Sedan</li>
-                        <li>• BMW M5 Sedan</li>
-                        <li>• BMW M5 Competition</li>
-                        <li>• BMW M5 CS</li>
-                        <li>• BMW M5 Touring</li>
-                      </ul>
-                    </div>
-
-                    {/* 7 Series */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">7 Series</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW M760e xDrive (Plug-in Hybrid)</li>
-                        <li>• BMW M760Li xDrive (Petrol)</li>
-                      </ul>
-                    </div>
-
-                    {/* 8 Series */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">8 Series</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW M850i xDrive Coupé</li>
-                        <li>• BMW M850i xDrive Convertible</li>
-                        <li>• BMW M850i xDrive Gran Coupé</li>
-                        <li>• BMW M8 Coupé</li>
-                        <li>• BMW M8 Competition Coupé</li>
-                        <li>• BMW M8 Convertible</li>
-                        <li>• BMW M8 Competition Convertible</li>
-                        <li>• BMW M8 Gran Coupé</li>
-                        <li>• BMW M8 Competition Gran Coupé</li>
-                        <li>• BMW M850i Edition M Heritage</li>
-                      </ul>
-                    </div>
-
-                    {/* i Series (Electric) */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">i Series (Electric)</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW i4 M60 xDrive</li>
-                        <li>• BMW i5 M60 Sedan</li>
-                        <li>• BMW i5 M60 Touring</li>
-                        <li>• BMW i7 M70</li>
-                        <li>• BMW iX M70</li>
-                      </ul>
-                    </div>
-
-                    {/* X Series (SUVs) */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">X Series (SUVs)</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW X1 M35i</li>
-                        <li>• BMW X2 M35i</li>
-                        <li>• BMW X3 M40i / M40d</li>
-                        <li>• BMW X3 M / X3 M Competition</li>
-                        <li>• BMW X4 M40i / M40d</li>
-                        <li>• BMW X4 M / X4 M Competition</li>
-                        <li>• BMW X5 M60i</li>
-                        <li>• BMW X5 M / X5 M Competition</li>
-                        <li>• BMW X6 M60i</li>
-                        <li>• BMW X6 M / X6 M Competition</li>
-                        <li>• BMW X7 M60i</li>
-                      </ul>
-                    </div>
-
-                    {/* XM Series */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">XM Series</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW XM</li>
-                        <li>• BMW XM Label</li>
-                        <li>• BMW XM 50e</li>
-                        <li>• BMW XM by Kith</li>
-                      </ul>
-                    </div>
-
-                    {/* Z Series (Roadster) */}
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">Z Series (Roadster)</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• BMW Z4 M40i</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Audi Models */}
-                  <div className="space-y-6">
-                    <h4 className="text-2xl font-bold text-gray-900">Audi Models</h4>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h5 className="text-lg font-bold text-gray-900 mb-3">RS Performance Models</h5>
-                        <ul className="space-y-2 text-gray-700 ml-4">
-                          <li>• Audi RS 3 Sportback</li>
-                          <li>• Audi RS 3 Sedan</li>
-                          <li>• Audi RS 4 Avant</li>
-                          <li>• Audi RS 5 Coupé</li>
-                          <li>• Audi RS 5 Sportback</li>
-                          <li>• Audi RS 6 Avant</li>
-                          <li>• Audi RS 6 Avant Performance</li>
-                          <li>• Audi RS 7 Sportback</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 className="text-lg font-bold text-gray-900 mb-3">RS SUVs & Sports Cars</h5>
-                        <ul className="space-y-2 text-gray-700 ml-4">
-                          <li>• Audi RS Q3</li>
-                          <li>• Audi RS Q3 Sportback</li>
-                          <li>• Audi RS Q5</li>
-                          <li>• Audi RS Q8</li>
-                          <li>• Audi RS e-tron GT</li>
-                          <li>• Audi TT RS Coupé</li>
-                          <li>• Audi TT RS Roadster</li>
-                          <li>• Audi R8 Coupé</li>
-                          <li>• Audi R8 Spyder</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mercedes-AMG Models */}
-                  <div className="space-y-6">
-                    <h4 className="text-2xl font-bold text-gray-900">Mercedes-AMG Models</h4>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h5 className="text-lg font-bold text-gray-900 mb-3">Compact & Mid-Size AMG</h5>
-                        <ul className="space-y-2 text-gray-700 ml-4">
-                          <li>• Mercedes-AMG A 35</li>
-                          <li>• Mercedes-AMG A 45 S</li>
-                          <li>• Mercedes-AMG CLA 35</li>
-                          <li>• Mercedes-AMG CLA 45 S</li>
-                          <li>• Mercedes-AMG C 43</li>
-                          <li>• Mercedes-AMG C 63 S</li>
-                          <li>• Mercedes-AMG C 43 Estate</li>
-                          <li>• Mercedes-AMG C 63 S Estate</li>
-                          <li>• Mercedes-AMG C 43 Coupé</li>
-                          <li>• Mercedes-AMG C 63 S Coupé</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 className="text-lg font-bold text-gray-900 mb-3">Executive AMG</h5>
-                        <ul className="space-y-2 text-gray-700 ml-4">
-                          <li>• Mercedes-AMG E 53</li>
-                          <li>• Mercedes-AMG E 63 S</li>
-                          <li>• Mercedes-AMG E 53 Estate</li>
-                          <li>• Mercedes-AMG E 63 S Estate</li>
-                          <li>• Mercedes-AMG E 53 Coupé</li>
-                          <li>• Mercedes-AMG S 63</li>
-                          <li>• Mercedes-AMG CLE 53</li>
-                          <li>• Mercedes-AMG CLE 63</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                      <div>
-                        <h5 className="text-lg font-bold text-gray-900 mb-3">GT & Sports Cars</h5>
-                        <ul className="space-y-2 text-gray-700 ml-4">
-                          <li>• Mercedes-AMG GT 43 4-Door</li>
-                          <li>• Mercedes-AMG GT 53 4-Door</li>
-                          <li>• Mercedes-AMG GT 63 4-Door</li>
-                          <li>• Mercedes-AMG GT Coupé</li>
-                          <li>• Mercedes-AMG SL 43</li>
-                          <li>• Mercedes-AMG SL 55</li>
-                          <li>• Mercedes-AMG SL 63</li>
-                          <li>• Mercedes-AMG One</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h5 className="text-lg font-bold text-gray-900 mb-3">AMG SUVs</h5>
-                        <ul className="space-y-2 text-gray-700 ml-4">
-                          <li>• Mercedes-AMG GLA 35</li>
-                          <li>• Mercedes-AMG GLA 45</li>
-                          <li>• Mercedes-AMG GLB 35</li>
-                          <li>• Mercedes-AMG GLC 43</li>
-                          <li>• Mercedes-AMG GLC 63</li>
-                          <li>• Mercedes-AMG GLC 43 Coupé</li>
-                          <li>• Mercedes-AMG GLC 63 Coupé</li>
-                          <li>• Mercedes-AMG GLE 53</li>
-                          <li>• Mercedes-AMG GLE 63</li>
-                          <li>• Mercedes-AMG GLE 53 Coupé</li>
-                          <li>• Mercedes-AMG GLE 63 Coupé</li>
-                          <li>• Mercedes-AMG GLS 63</li>
-                          <li>• Mercedes-AMG G 63</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h5 className="text-lg font-bold text-gray-900 mb-3">Electric AMG</h5>
-                      <ul className="space-y-2 text-gray-700 ml-4">
-                        <li>• Mercedes-AMG EQE</li>
-                        <li>• Mercedes-AMG EQE SUV</li>
-                        <li>• Mercedes-AMG EQS SUV</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Ford Performance Models */}
-                  <div className="space-y-6">
-                    <h4 className="text-2xl font-bold text-gray-900">Ford Performance Models</h4>
-                    
-                    <ul className="space-y-2 text-gray-700 ml-4">
-                      <li>• Ford Fiesta ST</li>
-                      <li>• Ford Focus ST</li>
-                      <li>• Ford Focus RS</li>
-                      <li>• Ford Puma ST</li>
-                      <li>• Ford Mustang GT</li>
-                      <li>• Ford Mustang Mach 1</li>
-                      <li>• Ford Mustang Mach-E GT</li>
-                      <li>• Ford GT</li>
-                      <li>• Ford Ranger Raptor</li>
-                    </ul>
-                  </div>
-
-                  {/* Vauxhall Performance Models */}
-                  <div className="space-y-6">
-                    <h4 className="text-2xl font-bold text-gray-900">Vauxhall Performance Models</h4>
-                    
-                    <ul className="space-y-2 text-gray-700 ml-4">
-                      <li>• Vauxhall Corsa VXR</li>
-                      <li>• Vauxhall Astra VXR</li>
-                      <li>• Vauxhall Astra GTC VXR</li>
-                      <li>• Vauxhall Insignia VXR</li>
-                      <li>• Vauxhall Vectra VXR</li>
-                      <li>• Vauxhall Zafira VXR</li>
-                      <li>• Vauxhall Meriva VXR</li>
-                      <li>• Vauxhall VX220 VXR</li>
-                      <li>• Vauxhall Monaro VXR</li>
-                      <li>• Vauxhall VXR8</li>
-                      <li>• Vauxhall GSi</li>
-                    </ul>
-                  </div>
-
-                  {/* MINI Performance Models */}
-                  <div className="space-y-6">
-                    <h4 className="text-2xl font-bold text-gray-900">MINI John Cooper Works (JCW) Models</h4>
-                    
-                    <ul className="space-y-2 text-gray-700 ml-4">
-                      <li>• MINI JCW 3-Door Hatch</li>
-                      <li>• MINI JCW Convertible</li>
-                      <li>• MINI JCW Clubman</li>
-                      <li>• MINI JCW Countryman</li>
-                      <li>• MINI JCW Electric</li>
-                    </ul>
-                  </div>
-
-                  {/* Land Rover Performance Models */}
-                  <div className="space-y-6">
-                    <h4 className="text-2xl font-bold text-gray-900">Land Rover Performance Models</h4>
-                    
-                    <ul className="space-y-2 text-gray-700 ml-4">
-                      <li>• Range Rover Sport SVR</li>
-                      <li>• Range Rover Sport SV</li>
-                      <li>• Range Rover SVAutobiography Dynamic</li>
-                      <li>• Defender V8</li>
-                      <li>• Defender V8 Carpathian Edition</li>
-                      <li>• Range Rover Velar SVAutobiography Dynamic Edition</li>
-                      <li>• Range Rover SV Black</li>
-                      <li>• Range Rover SV Carbon</li>
-                    </ul>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-16 bg-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -810,6 +461,355 @@ const Protected = () => {
               className="w-full h-auto max-w-4xl"
             />
           </div>
+        </div>
+      </section>
+
+      {/* High Performance Vehicles Not Eligible */}
+      <section className="py-12 bg-gray-50/50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            High-End and Performance vehicles not covered
+          </h2>
+          
+          <Accordion type="single" collapsible className="max-w-3xl mx-auto">
+            <AccordionItem value="high-performance-vehicles" className="bg-white/80 rounded-lg border border-gray-200 shadow-sm">
+              <AccordionTrigger className="px-4 py-3 text-left hover:no-underline">
+                <span className="text-sm font-semibold text-gray-700">View restricted vehicle models</span>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="max-h-[400px] overflow-y-auto space-y-6 text-sm">
+                  {/* Disclaimer */}
+                  <div className="bg-orange-50 p-3 rounded-md">
+                    <p className="text-xs text-gray-700 leading-relaxed">
+                      We're not able to offer warranty cover for high-performance, high-end or luxury vehicles, including those with similar specifications or servicing requirements to the models listed below, as well as newer versions of the same makes and models.
+                    </p>
+                  </div>
+
+                  {/* BMW Models by Series */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-gray-900">BMW Models</h4>
+                    
+                    {/* 1 Series */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">1 Series</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW M135i xDrive</li>
+                      </ul>
+                    </div>
+
+                    {/* 2 Series */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">2 Series</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW M240i Coupé</li>
+                        <li>• BMW M235i xDrive Gran Coupé</li>
+                        <li>• BMW M2 Coupé</li>
+                        <li>• BMW M2 CS</li>
+                      </ul>
+                    </div>
+
+                    {/* 3 Series */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">3 Series</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW M340i xDrive Sedan</li>
+                        <li>• BMW M340d xDrive Sedan</li>
+                        <li>• BMW M340i xDrive Touring</li>
+                        <li>• BMW M340d xDrive Touring</li>
+                        <li>• BMW M3 Sedan</li>
+                        <li>• BMW M3 Competition Sedan</li>
+                        <li>• BMW M3 CS</li>
+                        <li>• BMW M3 Competition Touring</li>
+                      </ul>
+                    </div>
+
+                    {/* 4 Series */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">4 Series</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW M440i xDrive Coupé</li>
+                        <li>• BMW M440d xDrive Coupé</li>
+                        <li>• BMW M440i xDrive Convertible</li>
+                        <li>• BMW M440d xDrive Convertible</li>
+                        <li>• BMW M440i xDrive Gran Coupé</li>
+                        <li>• BMW M4 Coupé</li>
+                        <li>• BMW M4 Competition Coupé</li>
+                        <li>• BMW M4 CS</li>
+                        <li>• BMW M4 Competition Convertible</li>
+                        <li>• BMW M4 CS Edition VR46</li>
+                      </ul>
+                    </div>
+
+                    {/* 5 Series */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">5 Series</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW M550i xDrive Sedan</li>
+                        <li>• BMW M5 Sedan</li>
+                        <li>• BMW M5 Competition</li>
+                        <li>• BMW M5 CS</li>
+                        <li>• BMW M5 Touring</li>
+                      </ul>
+                    </div>
+
+                    {/* 7 Series */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">7 Series</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW M760e xDrive (Plug-in Hybrid)</li>
+                        <li>• BMW M760Li xDrive (Petrol)</li>
+                      </ul>
+                    </div>
+
+                    {/* 8 Series */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">8 Series</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW M850i xDrive Coupé</li>
+                        <li>• BMW M850i xDrive Convertible</li>
+                        <li>• BMW M850i xDrive Gran Coupé</li>
+                        <li>• BMW M8 Coupé</li>
+                        <li>• BMW M8 Competition Coupé</li>
+                        <li>• BMW M8 Convertible</li>
+                        <li>• BMW M8 Competition Convertible</li>
+                        <li>• BMW M8 Gran Coupé</li>
+                        <li>• BMW M8 Competition Gran Coupé</li>
+                        <li>• BMW M850i Edition M Heritage</li>
+                      </ul>
+                    </div>
+
+                    {/* i Series (Electric) */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">i Series (Electric)</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW i4 M60 xDrive</li>
+                        <li>• BMW i5 M60 Sedan</li>
+                        <li>• BMW i5 M60 Touring</li>
+                        <li>• BMW i7 M70</li>
+                        <li>• BMW iX M70</li>
+                      </ul>
+                    </div>
+
+                    {/* X Series (SUVs) */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">X Series (SUVs)</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW X1 M35i</li>
+                        <li>• BMW X2 M35i</li>
+                        <li>• BMW X3 M40i / M40d</li>
+                        <li>• BMW X3 M / X3 M Competition</li>
+                        <li>• BMW X4 M40i / M40d</li>
+                        <li>• BMW X4 M / X4 M Competition</li>
+                        <li>• BMW X5 M60i</li>
+                        <li>• BMW X5 M / X5 M Competition</li>
+                        <li>• BMW X6 M60i</li>
+                        <li>• BMW X6 M / X6 M Competition</li>
+                        <li>• BMW X7 M60i</li>
+                      </ul>
+                    </div>
+
+                    {/* XM Series */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">XM Series</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW XM</li>
+                        <li>• BMW XM Label</li>
+                        <li>• BMW XM 50e</li>
+                        <li>• BMW XM by Kith</li>
+                      </ul>
+                    </div>
+
+                    {/* Z Series (Roadster) */}
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">Z Series (Roadster)</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• BMW Z4 M40i</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Audi Models */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-gray-900">Audi Models</h4>
+                    
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <h5 className="text-xs font-semibold text-gray-800 mb-1.5">RS Performance Models</h5>
+                        <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                          <li>• Audi RS 3 Sportback</li>
+                          <li>• Audi RS 3 Sedan</li>
+                          <li>• Audi RS 4 Avant</li>
+                          <li>• Audi RS 5 Coupé</li>
+                          <li>• Audi RS 5 Sportback</li>
+                          <li>• Audi RS 6 Avant</li>
+                          <li>• Audi RS 6 Avant Performance</li>
+                          <li>• Audi RS 7 Sportback</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="text-xs font-semibold text-gray-800 mb-1.5">RS SUVs & Sports Cars</h5>
+                        <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                          <li>• Audi RS Q3</li>
+                          <li>• Audi RS Q3 Sportback</li>
+                          <li>• Audi RS Q5</li>
+                          <li>• Audi RS Q8</li>
+                          <li>• Audi RS e-tron GT</li>
+                          <li>• Audi TT RS Coupé</li>
+                          <li>• Audi TT RS Roadster</li>
+                          <li>• Audi R8 Coupé</li>
+                          <li>• Audi R8 Spyder</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mercedes-AMG Models */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-gray-900">Mercedes-AMG Models</h4>
+                    
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <h5 className="text-xs font-semibold text-gray-800 mb-1.5">Compact & Mid-Size AMG</h5>
+                        <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                          <li>• Mercedes-AMG A 35</li>
+                          <li>• Mercedes-AMG A 45 S</li>
+                          <li>• Mercedes-AMG CLA 35</li>
+                          <li>• Mercedes-AMG CLA 45 S</li>
+                          <li>• Mercedes-AMG C 43</li>
+                          <li>• Mercedes-AMG C 63 S</li>
+                          <li>• Mercedes-AMG C 43 Estate</li>
+                          <li>• Mercedes-AMG C 63 S Estate</li>
+                          <li>• Mercedes-AMG C 43 Coupé</li>
+                          <li>• Mercedes-AMG C 63 S Coupé</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="text-xs font-semibold text-gray-800 mb-1.5">Executive AMG</h5>
+                        <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                          <li>• Mercedes-AMG E 53</li>
+                          <li>• Mercedes-AMG E 63 S</li>
+                          <li>• Mercedes-AMG E 53 Estate</li>
+                          <li>• Mercedes-AMG E 63 S Estate</li>
+                          <li>• Mercedes-AMG E 53 Coupé</li>
+                          <li>• Mercedes-AMG S 63</li>
+                          <li>• Mercedes-AMG CLE 53</li>
+                          <li>• Mercedes-AMG CLE 63</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <h5 className="text-xs font-semibold text-gray-800 mb-1.5">GT & Sports Cars</h5>
+                        <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                          <li>• Mercedes-AMG GT 43 4-Door</li>
+                          <li>• Mercedes-AMG GT 53 4-Door</li>
+                          <li>• Mercedes-AMG GT 63 4-Door</li>
+                          <li>• Mercedes-AMG GT Coupé</li>
+                          <li>• Mercedes-AMG SL 43</li>
+                          <li>• Mercedes-AMG SL 55</li>
+                          <li>• Mercedes-AMG SL 63</li>
+                          <li>• Mercedes-AMG One</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="text-xs font-semibold text-gray-800 mb-1.5">AMG SUVs</h5>
+                        <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                          <li>• Mercedes-AMG GLA 35</li>
+                          <li>• Mercedes-AMG GLA 45</li>
+                          <li>• Mercedes-AMG GLB 35</li>
+                          <li>• Mercedes-AMG GLC 43</li>
+                          <li>• Mercedes-AMG GLC 63</li>
+                          <li>• Mercedes-AMG GLC 43 Coupé</li>
+                          <li>• Mercedes-AMG GLC 63 Coupé</li>
+                          <li>• Mercedes-AMG GLE 53</li>
+                          <li>• Mercedes-AMG GLE 63</li>
+                          <li>• Mercedes-AMG GLE 53 Coupé</li>
+                          <li>• Mercedes-AMG GLE 63 Coupé</li>
+                          <li>• Mercedes-AMG GLS 63</li>
+                          <li>• Mercedes-AMG G 63</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h5 className="text-xs font-semibold text-gray-800 mb-1.5">Electric AMG</h5>
+                      <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                        <li>• Mercedes-AMG EQE</li>
+                        <li>• Mercedes-AMG EQE SUV</li>
+                        <li>• Mercedes-AMG EQS SUV</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Ford Performance Models */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-gray-900">Ford Performance Models</h4>
+                    
+                    <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                      <li>• Ford Fiesta ST</li>
+                      <li>• Ford Focus ST</li>
+                      <li>• Ford Focus RS</li>
+                      <li>• Ford Puma ST</li>
+                      <li>• Ford Mustang GT</li>
+                      <li>• Ford Mustang Mach 1</li>
+                      <li>• Ford Mustang Mach-E GT</li>
+                      <li>• Ford GT</li>
+                      <li>• Ford Ranger Raptor</li>
+                    </ul>
+                  </div>
+
+                  {/* Vauxhall Performance Models */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-gray-900">Vauxhall Performance Models</h4>
+                    
+                    <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                      <li>• Vauxhall Corsa VXR</li>
+                      <li>• Vauxhall Astra VXR</li>
+                      <li>• Vauxhall Astra GTC VXR</li>
+                      <li>• Vauxhall Insignia VXR</li>
+                      <li>• Vauxhall Vectra VXR</li>
+                      <li>• Vauxhall Zafira VXR</li>
+                      <li>• Vauxhall Meriva VXR</li>
+                      <li>• Vauxhall VX220 VXR</li>
+                      <li>• Vauxhall Monaro VXR</li>
+                      <li>• Vauxhall VXR8</li>
+                      <li>• Vauxhall GSi</li>
+                    </ul>
+                  </div>
+
+                  {/* MINI Performance Models */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-gray-900">MINI John Cooper Works (JCW) Models</h4>
+                    
+                    <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                      <li>• MINI JCW 3-Door Hatch</li>
+                      <li>• MINI JCW Convertible</li>
+                      <li>• MINI JCW Clubman</li>
+                      <li>• MINI JCW Countryman</li>
+                      <li>• MINI JCW Electric</li>
+                    </ul>
+                  </div>
+
+                  {/* Land Rover Performance Models */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-gray-900">Land Rover Performance Models</h4>
+                    
+                    <ul className="space-y-0.5 text-gray-600 ml-3 text-xs">
+                      <li>• Range Rover Sport SVR</li>
+                      <li>• Range Rover Sport SV</li>
+                      <li>• Range Rover SVAutobiography Dynamic</li>
+                      <li>• Defender V8</li>
+                      <li>• Defender V8 Carpathian Edition</li>
+                      <li>• Range Rover Velar SVAutobiography Dynamic Edition</li>
+                      <li>• Range Rover SV Black</li>
+                      <li>• Range Rover SV Carbon</li>
+                    </ul>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
     </div>
