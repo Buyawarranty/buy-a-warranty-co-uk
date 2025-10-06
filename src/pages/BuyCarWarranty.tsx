@@ -183,7 +183,7 @@ const BuyCarWarranty: React.FC = () => {
               <img 
                 src={carWarrantyHero} 
                 alt="Buy a car warranty online UK - trusted vehicle protection"
-                className="w-full h-auto rounded-lg shadow-xl"
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -387,43 +387,43 @@ const BuyCarWarranty: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
-              Compare <span className="text-[#1e40af]">car warranty providers</span>
+              Compare <span className="text-[#1e40af]">car warranty providers</span> - find the best car warranty UK
             </h2>
 
             <p className="text-xl text-center text-gray-700 mb-12">
-              We're proud to be a trusted alternative to Warrantywise, RAC and AA warranties. Our customers rate us for:
+              As a top rated car warranty UK provider and recommended car warranty UK company, we're a trusted alternative to Warrantywise, RAC and AA. Our reliable car warranty services and honest car warranty provider approach makes us one of the most popular car warranty companies. We're an independent warranty company UK with award winning warranty company credentials.
             </p>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-start space-x-3 bg-blue-50 p-6 rounded-lg">
                 <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-lg mb-1">Clear Cover Options</h4>
-                  <p className="text-gray-700">Easy to understand plans with transparent terms</p>
+                  <h4 className="font-bold text-lg mb-1">Best UK warranty provider</h4>
+                  <p className="text-gray-700">Highly rated vehicle warranty with transparent vehicle warranty plans</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-3 bg-orange-50 p-6 rounded-lg">
                 <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-lg mb-1">Fast Claims Handling</h4>
-                  <p className="text-gray-700">Quick and efficient claims process when you need it</p>
+                  <h4 className="font-bold text-lg mb-1">UK warranty experts</h4>
+                  <p className="text-gray-700">Vehicle warranty specialists providing expert car warranty advice</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-3 bg-blue-50 p-6 rounded-lg">
                 <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-lg mb-1">UK-Based Support</h4>
-                  <p className="text-gray-700">Friendly customer service team based in the UK</p>
+                  <h4 className="font-bold text-lg mb-1">Best customer service warranty UK</h4>
+                  <p className="text-gray-700">Customer rated car warranty with verified car warranty UK reviews</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-3 bg-orange-50 p-6 rounded-lg">
                 <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-lg mb-1">No Pushy Sales</h4>
-                  <p className="text-gray-700">Honest advice without aggressive sales tactics</p>
+                  <h4 className="font-bold text-lg mb-1">Reputable car warranty UK</h4>
+                  <p className="text-gray-700">Trustworthy warranty provider with trusted vehicle protection UK</p>
                 </div>
               </div>
             </div>
@@ -436,6 +436,285 @@ const BuyCarWarranty: React.FC = () => {
               />
               <p className="text-gray-600">Rated Excellent by our customers</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Vehicle Types Coverage */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Car warranty UK for all vehicle types
+          </h2>
+          
+          <p className="text-xl text-center text-gray-700 mb-12 max-w-3xl mx-auto">
+            Whether you need suv warranty uk, hatchback warranty uk, luxury car warranty uk, electric car warranty uk, hybrid car warranty uk, diesel car warranty uk, petrol car warranty uk, estate car warranty uk, small car warranty uk, mpv car warranty uk, performance car warranty, 4x4 warranty uk, ev warranty cover, crossover car warranty, or saloon car warranty - we have you covered.
+          </p>
+
+          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            {[
+              'SUV Warranty UK',
+              'Hatchback Warranty',
+              'Luxury Car Cover',
+              'Electric Car Warranty',
+              'Hybrid Car Warranty',
+              'Diesel Car Warranty',
+              'Petrol Car Warranty',
+              'Estate Car Warranty',
+              'Small Car Warranty',
+              'MPV Car Warranty',
+              'Performance Car Warranty',
+              '4x4 Warranty UK',
+              'EV Warranty Cover',
+              'Crossover Car Warranty',
+              'Saloon Car Warranty',
+              'Classic Car Warranty UK'
+            ].map((type, index) => (
+              <div key={index} className="bg-white p-4 rounded-lg shadow-sm text-center">
+                <Check className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                <p className="font-medium text-sm">{type}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-gray-700 mt-8">
+            We also cover vintage vehicle warranty, modified car warranty, and sports car extended warranty.
+          </p>
+        </div>
+      </section>
+
+      {/* Used Car Warranty Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Buy used car warranty - second hand car warranty specialists
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-blue-50 p-8 rounded-lg">
+              <h3 className="text-2xl font-bold mb-4">Used car extended warranty</h3>
+              <p className="text-gray-700 mb-6">
+                Looking for the best warranty for used cars? Our used vehicle protection uk plans offer comprehensive second hand car warranty cover. Whether you need warranty for pre owned vehicles, used car breakdown cover, or warranty for older used cars, we provide best extended warranty for used vehicles options.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Warranty after buying used car',
+                  'Used car warranty company UK specialists',
+                  'Warranty for high mileage used car',
+                  'Second owner car warranty options',
+                  'Post sale car warranty protection',
+                  'Used car mechanical insurance',
+                  'Used car engine warranty',
+                  'Used car coverage plans',
+                  'Used car warranty insurance'
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-orange-50 p-8 rounded-lg">
+              <h3 className="text-2xl font-bold mb-4">Where to buy car warranty UK</h3>
+              <p className="text-gray-700 mb-6">
+                How to get car warranty UK? It is simple. As the best place to get car warranty, we make buying warranty after car purchase easy. You can buy extended car warranty online in minutes.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'What does car warranty cover? Engine, gearbox, electrical and more',
+                  'Is car warranty worth it UK? Absolutely - protects against costly repairs',
+                  'How much is car warranty? Get instant quotes online',
+                  'Can I get car warranty anytime? Yes, even years after purchase',
+                  'Do I need car warranty? Highly recommended for peace of mind',
+                  'Can I extend my car warranty? Yes, flexible extension options',
+                  'Buying car warranty for second hand car is our specialty',
+                  'Apply for car warranty online today',
+                  'Do I need warranty on used car? We strongly recommend it',
+                  'Getting warranty after dealer cover ends',
+                  'Questions to ask car warranty provider - we answer them all'
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Warranty Duration Options */}
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Choose your warranty term: 12 month, 24 month or 36 month car warranty
+          </h2>
+
+          <p className="text-xl text-center text-gray-700 mb-12 max-w-3xl mx-auto">
+            We offer flexible duration warranty uk including short term car warranty, long term car warranty, monthly vehicle warranty, and yearly car warranty uk options. Need 3 year car warranty uk or car warranty after 3 years of dealer cover? We have you sorted.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <div className="bg-white p-8 rounded-lg shadow-sm">
+              <div className="text-4xl font-bold text-[#1e40af] mb-4">12</div>
+              <h3 className="text-2xl font-bold mb-3">12 month car warranty</h3>
+              <p className="text-gray-700 mb-4">Perfect for short term car warranty needs. Great if you are planning to upgrade soon or want to test our service first.</p>
+              <Button onClick={scrollToQuoteForm} variant="outline" className="w-full">Get 12 Month Quote</Button>
+            </div>
+
+            <div className="bg-white p-8 rounded-lg shadow-sm border-2 border-[#eb4b00]">
+              <div className="text-4xl font-bold text-[#eb4b00] mb-4">24</div>
+              <h3 className="text-2xl font-bold mb-3">24 month car warranty</h3>
+              <p className="text-gray-700 mb-4">Most popular option. Excellent value for money with two years of comprehensive protection and peace of mind.</p>
+              <Button onClick={scrollToQuoteForm} className="w-full bg-[#eb4b00] hover:bg-[#d44400]">Get 24 Month Quote</Button>
+            </div>
+
+            <div className="bg-white p-8 rounded-lg shadow-sm">
+              <div className="text-4xl font-bold text-[#1e40af] mb-4">36</div>
+              <h3 className="text-2xl font-bold mb-3">36 month car warranty</h3>
+              <p className="text-gray-700 mb-4">Maximum protection with our 3 year car warranty UK plan. Best long term car warranty for complete peace of mind.</p>
+              <Button onClick={scrollToQuoteForm} variant="outline" className="w-full">Get 36 Month Quote</Button>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 p-8 rounded-lg text-center">
+            <h3 className="text-2xl font-bold mb-4">Warranty post manufacturer and beyond</h3>
+            <p className="text-lg text-gray-700 mb-4">
+              Looking for lifetime vehicle warranty UK? While we do not offer truly lifetime cover, our plans can be renewed. We specialize in warranty post manufacturer expiry, post warranty car protection, and vehicle warranty after expiry.
+            </p>
+            <p className="text-gray-700">
+              Need to extend expired car warranty? We can help with warranty after new car cover ends, warranty after 60000 miles, warranty after 100000 miles, and long coverage warranty plan options. Just contact us for annual car warranty UK plans.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Price & Value Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Car warranty prices UK - affordable car warranty for all budgets
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <h3 className="text-2xl font-bold">Cheap car warranty UK without compromising quality</h3>
+              <p className="text-gray-700">
+                Looking for cheap car warranty uk, affordable car warranty uk, or budget car warranty uk? We offer best value car warranty and low cost car warranty uk options. Our cheap vehicle warranty uk plans include pay monthly car warranty for all budgets, ensuring cost effective car warranty and value for money car warranty.
+              </p>
+              <ul className="space-y-2">
+                {[
+                  'Low cost extended warranty',
+                  'Cheapest vehicle warranty plans',
+                  'Extended warranty with low premiums',
+                  'Budget friendly car protection',
+                  'Discounted car warranty',
+                  'Affordable extended vehicle coverage'
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-2xl font-bold">Compare car warranty UK - get the best car warranty quote</h3>
+              <p className="text-gray-700">
+                Use our car warranty comparison site to compare car warranty uk options. Get a car warranty quote, find car warranty uk options, compare extended car warranties, and get extended car warranty quote. We provide vehicle warranty quote uk, cheapest car warranty quotes, and best car warranty quote uk.
+              </p>
+              <ul className="space-y-2">
+                {[
+                  'Car protection plan UK',
+                  'Vehicle protection quotes',
+                  'Get used car warranty quote',
+                  'Extended warranty quote online',
+                  'Compare vehicle warranty providers',
+                  'Warranty quote for old cars',
+                  'Warranty plans comparison uk',
+                  'Find best car warranty',
+                  'Car warranty monthly cost calculator'
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 bg-orange-50 p-8 rounded-lg text-center">
+            <h3 className="text-2xl font-bold mb-4">Private car warranty UK and extended warranty cost uk</h3>
+            <p className="text-lg text-gray-700">
+              As one of the best car warranty providers and extended car warranty providers in the UK, we offer competitive car warranty prices and extended warranty cost uk. Compare our car warranty plans, car warranty cover, and car warranties uk options. We are a leading car warranty company offering uk car warranty and online car warranty services. Get your car warranty reviews uk and car protection plan uk today.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Warrantywise Alternative Section */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+            Warrantywise alternative - better than Warrantywise
+          </h2>
+
+          <p className="text-xl text-center text-gray-700 mb-12 max-w-3xl mx-auto">
+            Comparing Warrantywise vs us? See why customers choose us as a Warrantywise alternative and Warrantywise competitors. We are often considered cheaper than Warrantywise and better than Warrantywise with superior Warrantywise customer service.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <h3 className="text-xl font-bold mb-3">Compare Warrantywise</h3>
+              <p className="text-gray-700 mb-4">
+                Get a Warrantywise quote comparison. Read Warrantywise reviews and see who is better than Warrantywise. Compare Warrantywise prices with ours.
+              </p>
+              <p className="text-sm text-gray-600">Warrantywise vs RAC, Warrantywise vs AA - we compete with them all.</p>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-sm border-2 border-[#eb4b00]">
+              <h3 className="text-xl font-bold mb-3">Is Warrantywise any good?</h3>
+              <p className="text-gray-700 mb-4">
+                While Warrantywise UK and Warrantywise extended warranty are popular, many customers prefer our Warrantywise used car warranty alternative and Warrantywise vehicle protection comparison.
+              </p>
+              <p className="text-sm text-gray-600">Warrantywise breakdown cover vs our comprehensive plans.</p>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <h3 className="text-xl font-bold mb-3">Warrantywise Comparison</h3>
+              <p className="text-gray-700 mb-4">
+                Do a full Warrantywise comparison and see why we are rated as a top car warranty provider UK and vehicle warranty providers choice.
+              </p>
+              <p className="text-sm text-gray-600">Auto warranty providers trust and extended warranty providers expertise.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dealer Alternative Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-4xl text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8">
+            RAC car warranty alternative - AA car warranty UK alternative
+          </h2>
+
+          <p className="text-xl text-gray-700 mb-8">
+            Looking for best non dealer car warranty? We offer independent warranty vs dealer options with third party car warranty uk expertise. Compare manufacturer warranty vs extended options and explore aftermarket warranty uk choices.
+          </p>
+
+          <div className="bg-blue-50 p-8 rounded-lg">
+            <h3 className="text-2xl font-bold mb-4">Extended warranty not from dealer</h3>
+            <p className="text-lg text-gray-700 mb-4">
+              Our car warranty comparison vs dealer shows significant savings. We are a VGS car warranty alternative providing trusted warranty outside dealership and car warranty coverage without dealer restrictions. Compare vehicle protection plans uk, RAC vs AA warranty, and find the best independent warranty company UK.
+            </p>
+            <p className="text-gray-700">
+              Get car warranty insurance, extended warranty insurance, and car warranty providers uk expertise all in one place.
+            </p>
           </div>
         </div>
       </section>
