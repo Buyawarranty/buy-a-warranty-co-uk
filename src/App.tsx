@@ -109,7 +109,7 @@ const App = () => (
                     <Route path="/thewarrantyhub" element={<Blog />} />
                     <Route path="/thewarrantyhub/:slug" element={<BlogArticle />} />
                     <Route path="/warranty-plan" element={<WarrantyPlan />} />
-                    <Route path="/buy-a-warranty-for-my-car-uk-warranties" element={<BuyCarWarranty />} />
+                    <Route path="/buy-a-used-car-warranty-reliable-warranties" element={<BuyCarWarranty />} />
                     <Route path="/van-warranty-companies-uk-warranties" element={<VanWarranty />} />
                     <Route path="/best-warranty-on-ev-cars-uk-warranties" element={<EVWarranty />} />
                     <Route path="/motorbike-repair-warranty-uk-warranties" element={<MotorbikeWarranty />} />
