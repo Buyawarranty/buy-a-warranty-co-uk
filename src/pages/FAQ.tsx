@@ -157,6 +157,30 @@ const FAQ = () => {
     return related;
   };
 
+  // Helper function to render text with clickable links
+  const renderAnswerWithLinks = (text: string) => {
+    // Split text by URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            className="text-brand-orange hover:underline font-medium"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   const faqData = [
     {
       category: 'Getting Started',
@@ -338,6 +362,21 @@ const FAQ = () => {
           id: 'outside-terms',
           question: 'What if something falls outside these terms, do you reject claims?',
           answer: 'We get that life isn\'t always black and white. If something falls outside these terms, we\'ll still look at it fairly and help where we can.'
+        },
+        {
+          id: 'high-performance-cover',
+          question: 'Can I get cover for a high performance or high end vehicle?',
+          answer: 'Some vehicles like Range Rover, BMW M/7 Series, Audi RS, Mercedes-AMG, Porsche, Jaguar, and Maserati may not be eligible due to specialist parts and higher repair costs. Please check our vehicle eligibility guide at: https://buyawarranty.co.uk/what-is-covered'
+        },
+        {
+          id: 'high-performance-purchased',
+          question: 'What if I buy a warranty and my high performance or high end vehicle isn\'t eligible?',
+          answer: 'If your vehicle falls into a restricted category, we\'ll cancel your policy and issue a full refund in line with our terms.'
+        },
+        {
+          id: 'check-vehicle-qualifies',
+          question: 'How do I check if my vehicle qualifies before buying?',
+          answer: 'If you\'re unsure, please check our vehicle eligibility guide at: https://buyawarranty.co.uk/what-is-covered'
         }
       ]
     },
@@ -997,8 +1036,8 @@ const FAQ = () => {
                         }`}>
                           <div className="px-6 pb-5 bg-white border-t border-orange-200">
                             <div className="pt-4 transform translate-y-0">
-                              <p className="text-brand-dark-text leading-relaxed">
-                                {faq.answer}
+                              <p className="text-brand-dark-text leading-relaxed whitespace-pre-line">
+                                {renderAnswerWithLinks(faq.answer)}
                               </p>
                             </div>
                           </div>

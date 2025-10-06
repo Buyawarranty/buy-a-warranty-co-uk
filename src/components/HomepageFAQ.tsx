@@ -13,6 +13,30 @@ const HomepageFAQ = () => {
     }));
   };
 
+  // Helper function to render text with clickable links
+  const renderAnswerWithLinks = (text: string) => {
+    // Split text by URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            className="text-brand-orange hover:underline font-medium"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   // Top 10 FAQs from the main FAQ page - most popular and important questions
   const leftColumnFAQs = [
     {
@@ -90,7 +114,7 @@ const HomepageFAQ = () => {
           : 'max-h-0 opacity-0'
       }`}>
         <div className="px-6 pb-5 text-gray-800 bg-white border-t border-orange-400">
-          <p className="text-base leading-relaxed pt-4 transform translate-y-0">{faq.answer}</p>
+          <p className="text-base leading-relaxed pt-4 transform translate-y-0 whitespace-pre-line">{renderAnswerWithLinks(faq.answer)}</p>
         </div>
       </div>
     </div>
