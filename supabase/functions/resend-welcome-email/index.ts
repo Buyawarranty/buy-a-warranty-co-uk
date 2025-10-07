@@ -37,10 +37,16 @@ serve(async (req) => {
       .from('customers')
       .select('*')
       .eq('email', customerEmail)
-      .single();
+      .maybeSingle();
 
-    if (customerError || !customer) {
-      throw new Error(`Customer not found: ${customerError?.message || 'No customer data'}`);
+    if (customerError) {
+      logStep("Error fetching customer", { error: customerError.message });
+      throw new Error(`Error fetching customer: ${customerError.message}`);
+    }
+
+    if (!customer) {
+      logStep("Customer not found", { email: customerEmail });
+      throw new Error(`Customer not found for email: ${customerEmail}`);
     }
 
     logStep("Customer found", { 

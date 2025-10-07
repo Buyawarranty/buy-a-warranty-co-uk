@@ -699,6 +699,27 @@ const handler = async (req: Request): Promise<Response> => {
     }));
 
     if (!emailResponse.ok) {
+      // Special handling for 403 domain verification errors
+      if (emailResponse.status === 403) {
+        const errorMsg = responseData.message || 'Domain verification required';
+        console.log(JSON.stringify({ evt: "error.domain_verification", rid, msg: errorMsg }));
+        
+        return new Response(JSON.stringify({ 
+          ok: false, 
+          rid,
+          code: 'DOMAIN_VERIFICATION_REQUIRED', 
+          error: 'Resend domain verification required. Please verify buyawarranty.co.uk domain at resend.com/domains or contact support.',
+          details: {
+            status: emailResponse.status,
+            message: errorMsg,
+            action: 'Verify domain at https://resend.com/domains'
+          }
+        }), {
+          status: 403,
+          headers: { "content-type": "application/json", ...corsHeaders },
+        });
+      }
+
       return new Response(JSON.stringify({ 
         ok: false, 
         rid,
