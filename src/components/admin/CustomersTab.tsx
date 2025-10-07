@@ -13,8 +13,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive, ChevronDown, ChevronUp } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
@@ -258,6 +259,7 @@ export const CustomersTab = () => {
   const [customerCredentials, setCustomerCredentials] = useState<{ email: string; password: string } | null>(null);
   const [credentialsLoading, setCredentialsLoading] = useState(false);
   const [sendingCredentials, setSendingCredentials] = useState(false);
+  const [credentialsExpanded, setCredentialsExpanded] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
@@ -1950,106 +1952,123 @@ export const CustomersTab = () => {
                           {editingCustomer && (
                             <>
                               {/* Customer Login Credentials Section */}
-                              <div className="mb-6 p-4 bg-green-50 border-2 border-green-300 rounded-lg">
-                                <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center">
-                                  <Key className="h-5 w-5 mr-2" />
-                                  Customer Login Credentials
-                                </h3>
-                                
-                              {credentialsLoading ? (
-                                  <div className="text-sm text-gray-600">Loading credentials...</div>
-                                ) : customerCredentials ? (
-                                  <div className="space-y-3">
-                                    <div className="bg-white p-3 rounded border border-green-200">
-                                      <Label className="text-sm font-medium text-gray-700">Customer Dashboard URL</Label>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
-                                          https://buyawarranty.co.uk/customer-dashboard
-                                        </code>
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={() => {
-                                            navigator.clipboard.writeText('https://buyawarranty.co.uk/customer-dashboard');
-                                            toast.success('URL copied to clipboard');
-                                          }}
-                                        >
-                                          Copy
-                                        </Button>
+                              <Collapsible 
+                                open={credentialsExpanded} 
+                                onOpenChange={setCredentialsExpanded}
+                                className="mb-6"
+                              >
+                                <div className="p-4 bg-green-50 border-2 border-green-300 rounded-lg">
+                                  <CollapsibleTrigger asChild>
+                                    <button className="w-full flex items-center justify-between text-lg font-semibold text-green-900 hover:text-green-700 transition-colors">
+                                      <div className="flex items-center">
+                                        <Key className="h-5 w-5 mr-2" />
+                                        Customer Login Credentials
                                       </div>
-                                    </div>
-                                    
-                                    <div className="bg-white p-3 rounded border border-green-200">
-                                      <Label className="text-sm font-medium text-gray-700">Username (Email)</Label>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
-                                          {customerCredentials.email}
-                                        </code>
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={() => {
-                                            navigator.clipboard.writeText(customerCredentials.email);
-                                            toast.success('Email copied to clipboard');
-                                          }}
-                                        >
-                                          Copy
-                                        </Button>
+                                      {credentialsExpanded ? (
+                                        <ChevronUp className="h-5 w-5" />
+                                      ) : (
+                                        <ChevronDown className="h-5 w-5" />
+                                      )}
+                                    </button>
+                                  </CollapsibleTrigger>
+                                  
+                                  <CollapsibleContent className="mt-4">
+                                    {credentialsLoading ? (
+                                      <div className="text-sm text-gray-600">Loading credentials...</div>
+                                    ) : customerCredentials ? (
+                                      <div className="space-y-3">
+                                        <div className="bg-white p-3 rounded border border-green-200">
+                                          <Label className="text-sm font-medium text-gray-700">Customer Dashboard URL</Label>
+                                          <div className="flex items-center gap-2 mt-1">
+                                            <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+                                              https://buyawarranty.co.uk/customer-dashboard
+                                            </code>
+                                            <Button
+                                              size="sm"
+                                              variant="outline"
+                                              onClick={() => {
+                                                navigator.clipboard.writeText('https://buyawarranty.co.uk/customer-dashboard');
+                                                toast.success('URL copied to clipboard');
+                                              }}
+                                            >
+                                              Copy
+                                            </Button>
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="bg-white p-3 rounded border border-green-200">
+                                          <Label className="text-sm font-medium text-gray-700">Username (Email)</Label>
+                                          <div className="flex items-center gap-2 mt-1">
+                                            <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+                                              {customerCredentials.email}
+                                            </code>
+                                            <Button
+                                              size="sm"
+                                              variant="outline"
+                                              onClick={() => {
+                                                navigator.clipboard.writeText(customerCredentials.email);
+                                                toast.success('Email copied to clipboard');
+                                              }}
+                                            >
+                                              Copy
+                                            </Button>
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="bg-white p-3 rounded border border-green-200">
+                                          <Label className="text-sm font-medium text-gray-700">Temporary Password</Label>
+                                          <div className="flex items-center gap-2 mt-1">
+                                            <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+                                              {customerCredentials.password}
+                                            </code>
+                                            <Button
+                                              size="sm"
+                                              variant="outline"
+                                              onClick={() => {
+                                                navigator.clipboard.writeText(customerCredentials.password);
+                                                toast.success('Password copied to clipboard');
+                                              }}
+                                            >
+                                              Copy
+                                            </Button>
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mt-3">
+                                          <p className="text-xs text-yellow-800 flex items-center gap-1">
+                                            <AlertCircle className="h-3 w-3" />
+                                            Customer should change password after first login
+                                          </p>
+                                        </div>
+                                        
+                                        <div className="flex gap-2 mt-4">
+                                          <Button
+                                            onClick={() => sendCredentialsEmail(customerCredentials.email)}
+                                            disabled={sendingCredentials}
+                                            className="flex-1"
+                                          >
+                                            {sendingCredentials ? (
+                                              <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                Sending...
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Send className="h-4 w-4 mr-2" />
+                                                Email Login Credentials to Customer
+                                              </>
+                                            )}
+                                          </Button>
+                                        </div>
                                       </div>
-                                    </div>
-                                    
-                                    <div className="bg-white p-3 rounded border border-green-200">
-                                      <Label className="text-sm font-medium text-gray-700">Temporary Password</Label>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
-                                          {customerCredentials.password}
-                                        </code>
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={() => {
-                                            navigator.clipboard.writeText(customerCredentials.password);
-                                            toast.success('Password copied to clipboard');
-                                          }}
-                                        >
-                                          Copy
-                                        </Button>
+                                    ) : (
+                                      <div className="text-sm text-red-600">
+                                        Unable to load credentials. Please try again.
                                       </div>
-                                    </div>
-                                    
-                                    <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mt-3">
-                                      <p className="text-xs text-yellow-800 flex items-center gap-1">
-                                        <AlertCircle className="h-3 w-3" />
-                                        Customer should change password after first login
-                                      </p>
-                                    </div>
-                                    
-                                    <div className="flex gap-2 mt-4">
-                                      <Button
-                                        onClick={() => sendCredentialsEmail(customerCredentials.email)}
-                                        disabled={sendingCredentials}
-                                        className="flex-1"
-                                      >
-                                        {sendingCredentials ? (
-                                          <>
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                            Sending...
-                                          </>
-                                        ) : (
-                                          <>
-                                            <Send className="h-4 w-4 mr-2" />
-                                            Email Login Credentials to Customer
-                                          </>
-                                        )}
-                                      </Button>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="text-sm text-red-600">
-                                    Unable to load credentials. Please try again.
-                                  </div>
-                                )}
-                              </div>
+                                    )}
+                                  </CollapsibleContent>
+                                </div>
+                              </Collapsible>
 
                               <Tabs defaultValue="details" className="w-full">
                                 <TabsList className="grid w-full grid-cols-6">
