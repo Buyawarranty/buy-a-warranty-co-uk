@@ -1164,16 +1164,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                  </div>
                              </div>
                               <p className="text-sm text-gray-600">
-                               Pay £{discountedStripePrice} upfront - get a 5% discount today
-                              {hasSecondWarrantyDiscount && (
-                                <span className="text-orange-600"> (second warranty discount + 5% upfront discount)</span>
-                              )}
-                              {hasValidDiscountCodes && !hasSecondWarrantyDiscount && (
-                                <span className="text-green-600"> (discount codes + 5% upfront discount)</span>
-                              )}
-                              {!hasValidDiscountCodes && (
-                                <span className="text-green-600"> (5% upfront discount)</span>
-                              )}
+                               Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 5% discount today</span>
                               {hasValidDiscountCodes && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
