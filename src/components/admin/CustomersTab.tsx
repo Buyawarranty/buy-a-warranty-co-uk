@@ -257,6 +257,7 @@ export const CustomersTab = () => {
   const [restoreLoading, setRestoreLoading] = useState<{ [key: string]: boolean }>({});
   const [customerCredentials, setCustomerCredentials] = useState<{ email: string; password: string } | null>(null);
   const [credentialsLoading, setCredentialsLoading] = useState(false);
+  const [sendingCredentials, setSendingCredentials] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
@@ -1027,6 +1028,27 @@ export const CustomersTab = () => {
       setCustomerCredentials(null);
     } finally {
       setCredentialsLoading(false);
+    }
+  };
+
+  const sendCredentialsEmail = async (customerEmail: string) => {
+    try {
+      setSendingCredentials(true);
+      const { data, error } = await supabase.functions.invoke('resend-customer-credentials', {
+        body: { customerEmail }
+      });
+      
+      if (error) {
+        toast.error('Failed to send credentials email: ' + error.message);
+        return;
+      }
+      
+      toast.success('Login credentials sent successfully to ' + customerEmail);
+    } catch (error) {
+      console.error('Error sending credentials:', error);
+      toast.error('Failed to send credentials email');
+    } finally {
+      setSendingCredentials(false);
     }
   };
 
@@ -2237,6 +2259,24 @@ export const CustomersTab = () => {
                                         </a>
                                       </p>
                                     </div>
+                                    
+                                    <Button
+                                      className="w-full mt-3"
+                                      onClick={() => sendCredentialsEmail(customerCredentials.email)}
+                                      disabled={sendingCredentials}
+                                    >
+                                      {sendingCredentials ? (
+                                        <>
+                                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                          Sending Email...
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Mail className="h-4 w-4 mr-2" />
+                                          Email Login Credentials to Customer
+                                        </>
+                                      )}
+                                    </Button>
                                   </div>
                                 ) : (
                                   <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
