@@ -167,7 +167,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   // Calculate pricing with discounts
   const bumperTotalPrice = updatedPricingData.totalPrice;
-  const stripeTotalPrice = Math.round(updatedPricingData.totalPrice * 0.95);
+  const stripeTotalPrice = Math.round(updatedPricingData.totalPrice * 0.90);
 
   console.log('💰 CustomerDetailsStep - Pricing calculation:', {
     updatedPricingDataTotal: updatedPricingData.totalPrice,
@@ -221,7 +221,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const hasValidDiscountCodes = appliedDiscountCodes.length > 0;
   const discountedPrice = hasValidDiscountCodes ? bumperTotalPrice - totalDiscountAmount : bumperTotalPrice;
   const discountedBumperPrice = Math.round(Math.max(discountedPrice, 0)); // Ensure price doesn't go negative
-  const discountedStripePrice = Math.round(discountedPrice * 0.95); // 5% upfront discount on discounted price
+  const discountedStripePrice = Math.round(discountedPrice * 0.90); // 10% upfront discount on discounted price
 
   console.log('💸 CustomerDetailsStep - Final pricing:', {
     bumperTotalPrice,
@@ -1160,11 +1160,11 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             <div className="flex items-center justify-between mb-2">
                                <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
                                 <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                                   Save 5% (£{Math.round(discountedPrice * 0.05)}) instantly
+                                   Save 10% (£{Math.round(discountedPrice * 0.10)}) instantly
                                  </div>
                              </div>
                               <p className="text-sm text-gray-600">
-                               Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 5% discount today</span>
+                               Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span>
                               {hasValidDiscountCodes && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
