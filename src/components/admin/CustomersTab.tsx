@@ -1956,10 +1956,29 @@ export const CustomersTab = () => {
                                   Customer Login Credentials
                                 </h3>
                                 
-                                {credentialsLoading ? (
+                              {credentialsLoading ? (
                                   <div className="text-sm text-gray-600">Loading credentials...</div>
                                 ) : customerCredentials ? (
                                   <div className="space-y-3">
+                                    <div className="bg-white p-3 rounded border border-green-200">
+                                      <Label className="text-sm font-medium text-gray-700">Customer Dashboard URL</Label>
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+                                          https://buyawarranty.co.uk/customer-dashboard
+                                        </code>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => {
+                                            navigator.clipboard.writeText('https://buyawarranty.co.uk/customer-dashboard');
+                                            toast.success('URL copied to clipboard');
+                                          }}
+                                        >
+                                          Copy
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    
                                     <div className="bg-white p-3 rounded border border-green-200">
                                       <Label className="text-sm font-medium text-gray-700">Username (Email)</Label>
                                       <div className="flex items-center gap-2 mt-1">
