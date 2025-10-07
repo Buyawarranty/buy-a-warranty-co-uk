@@ -1109,7 +1109,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     
                     <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)}>
                       {/* Monthly Interest Free Credit */}
-                      <div className={`border rounded-lg p-4 ${paymentMethod === 'bumper' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                      <div 
+                        onClick={() => setPaymentMethod('bumper')}
+                        className={`border rounded-lg p-4 cursor-pointer transition-all ${paymentMethod === 'bumper' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                      >
                          <div className="flex items-center space-x-3">
                            <RadioGroupItem value="bumper" id="bumper" className="border-black text-black" />
                            <div className="flex-1">
@@ -1153,7 +1156,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       </div>
 
                       {/* Pay Full Amount */}
-                      <div className={`border rounded-lg p-4 ${paymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                      <div 
+                        onClick={() => setPaymentMethod('stripe')}
+                        className={`border rounded-lg p-4 cursor-pointer transition-all ${paymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                      >
                          <div className="flex items-center space-x-3">
                            <RadioGroupItem value="stripe" id="stripe" className="border-black text-black" />
                            <div className="flex-1">
