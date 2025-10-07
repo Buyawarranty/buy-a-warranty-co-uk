@@ -74,10 +74,10 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
     },
     { 
       key: 'tyre_cover', 
-      label: 'Tyre & Alloy Cover', 
+      label: 'Tyre Cover', 
       value: tyre_cover, 
       icon: '🛞',
-      description: 'Protection for tyres and alloy wheels'
+      description: 'Protection for tyres'
     },
     { 
       key: 'wear_tear', 
@@ -105,7 +105,7 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
       label: 'Vehicle Recovery Service', 
       value: breakdown_recovery, 
       icon: '🚗',
-      description: 'Recovery and roadside assistance'
+      description: 'Recovery claimback'
     },
     { 
       key: 'vehicle_rental', 
@@ -151,9 +151,6 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
           <Shield className="h-5 w-5 text-primary" />
           Add-On Protection Packages
         </CardTitle>
-        <CardDescription>
-          Coverage options selected and automatically included in this warranty
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Policy Limits */}
@@ -161,7 +158,7 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
             <h4 className="font-semibold text-blue-900 flex items-center gap-2">
               <AlertCircle className="h-4 w-4" />
-              Policy Limits
+              Policy Details
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {claim_limit && (
@@ -189,7 +186,7 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
           <div className="space-y-3">
             <h4 className="font-semibold text-green-700 flex items-center gap-2">
               <CheckCircle className="h-4 w-4" />
-              Active Protection ({activeAddOns.length})
+              Add-On Protection Packages
             </h4>
             <div className="grid grid-cols-1 gap-2">
               {activeAddOns.map((item) => {
