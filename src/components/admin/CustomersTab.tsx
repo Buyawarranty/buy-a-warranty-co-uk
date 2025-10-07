@@ -255,6 +255,8 @@ export const CustomersTab = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Set<string>>(new Set());
   const [bulkDeleteLoading, setBulkDeleteLoading] = useState(false);
   const [restoreLoading, setRestoreLoading] = useState<{ [key: string]: boolean }>({});
+  const [customerCredentials, setCustomerCredentials] = useState<{ email: string; password: string } | null>(null);
+  const [credentialsLoading, setCredentialsLoading] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
@@ -995,10 +997,44 @@ export const CustomersTab = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const fetchCustomerCredentials = async (customerEmail: string) => {
+    try {
+      setCredentialsLoading(true);
+      const { data, error } = await supabase
+        .from('welcome_emails')
+        .select('email, temporary_password')
+        .eq('email', customerEmail)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching customer credentials:', error);
+        setCustomerCredentials(null);
+        return;
+      }
+      
+      if (data) {
+        setCustomerCredentials({
+          email: data.email,
+          password: data.temporary_password
+        });
+      } else {
+        setCustomerCredentials(null);
+      }
+    } catch (error) {
+      console.error('Error fetching credentials:', error);
+      setCustomerCredentials(null);
+    } finally {
+      setCredentialsLoading(false);
+    }
+  };
+
   const openCustomerDialog = (customer: Customer) => {
     setSelectedCustomer(customer);
     setEditingCustomer({ ...customer });
     fetchNotes(customer.id);
+    fetchCustomerCredentials(customer.email);
   };
 
   // Check if current user is admin (not just member)
@@ -2139,6 +2175,79 @@ export const CustomersTab = () => {
                           
                           {editingCustomer && (
                             <>
+                              {/* Customer Login Credentials Section */}
+                              <div className="mb-6 p-4 bg-green-50 border-2 border-green-300 rounded-lg">
+                                <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center">
+                                  <Key className="h-5 w-5 mr-2" />
+                                  Customer Login Credentials
+                                </h3>
+                                
+                                {credentialsLoading ? (
+                                  <div className="text-sm text-gray-600">Loading credentials...</div>
+                                ) : customerCredentials ? (
+                                  <div className="space-y-3">
+                                    <div className="bg-white p-3 rounded border border-green-200">
+                                      <Label className="text-sm font-medium text-gray-700">Username (Email)</Label>
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+                                          {customerCredentials.email}
+                                        </code>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => {
+                                            navigator.clipboard.writeText(customerCredentials.email);
+                                            toast.success('Email copied to clipboard');
+                                          }}
+                                        >
+                                          Copy
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="bg-white p-3 rounded border border-green-200">
+                                      <Label className="text-sm font-medium text-gray-700">Temporary Password</Label>
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+                                          {customerCredentials.password}
+                                        </code>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => {
+                                            navigator.clipboard.writeText(customerCredentials.password);
+                                            toast.success('Password copied to clipboard');
+                                          }}
+                                        >
+                                          Copy
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mt-3">
+                                      <p className="text-xs text-yellow-800 flex items-center gap-1">
+                                        <AlertCircle className="h-3 w-3" />
+                                        Use these credentials to test the customer dashboard login at{' '}
+                                        <a 
+                                          href="/customer-dashboard" 
+                                          target="_blank" 
+                                          className="underline font-medium"
+                                        >
+                                          /customer-dashboard
+                                        </a>
+                                      </p>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
+                                    <p className="text-sm text-yellow-800 flex items-center gap-2">
+                                      <AlertCircle className="h-4 w-4" />
+                                      No welcome email found for this customer. They may not have login credentials yet.
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+
                               {/* Warranty Details Section - MOVED TO TOP */}
                               <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
                                 <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center">
