@@ -1920,7 +1920,427 @@ export const CustomersTab = () => {
                       aria-label={`Select ${customer.name}`}
                     />
                   </TableCell>
-                  <TableCell className="font-medium">{customer.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openCustomerDialog(customer)}
+                            title="Edit Customer"
+                            className="h-6 w-6 p-0"
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                          <DialogHeader>
+                            <div className="flex items-center justify-between">
+                              <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
+                              {selectedCustomer && (
+                                <SendNotificationDialog 
+                                  customerId={selectedCustomer.id}
+                                  customerName={selectedCustomer.name}
+                                />
+                              )}
+                            </div>
+                          </DialogHeader>
+                          
+                          {editingCustomer && (
+                            <>
+                              {/* Customer Login Credentials Section */}
+                              <div className="mb-6 p-4 bg-green-50 border-2 border-green-300 rounded-lg">
+                                <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center">
+                                  <Key className="h-5 w-5 mr-2" />
+                                  Customer Login Credentials
+                                </h3>
+                                
+                                {credentialsLoading ? (
+                                  <div className="text-sm text-gray-600">Loading credentials...</div>
+                                ) : customerCredentials ? (
+                                  <div className="space-y-3">
+                                    <div className="bg-white p-3 rounded border border-green-200">
+                                      <Label className="text-sm font-medium text-gray-700">Username (Email)</Label>
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+                                          {customerCredentials.email}
+                                        </code>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => {
+                                            navigator.clipboard.writeText(customerCredentials.email);
+                                            toast.success('Email copied to clipboard');
+                                          }}
+                                        >
+                                          Copy
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="bg-white p-3 rounded border border-green-200">
+                                      <Label className="text-sm font-medium text-gray-700">Temporary Password</Label>
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+                                          {customerCredentials.password}
+                                        </code>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => {
+                                            navigator.clipboard.writeText(customerCredentials.password);
+                                            toast.success('Password copied to clipboard');
+                                          }}
+                                        >
+                                          Copy
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mt-3">
+                                      <p className="text-xs text-yellow-800 flex items-center gap-1">
+                                        <AlertCircle className="h-3 w-3" />
+                                        Customer should change password after first login
+                                      </p>
+                                    </div>
+                                    
+                                    <div className="flex gap-2 mt-4">
+                                      <Button
+                                        onClick={() => sendCredentialsEmail(customerCredentials.email)}
+                                        disabled={sendingCredentials}
+                                        className="flex-1"
+                                      >
+                                        {sendingCredentials ? (
+                                          <>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                            Sending...
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Send className="h-4 w-4 mr-2" />
+                                            Email Login Credentials to Customer
+                                          </>
+                                        )}
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="text-sm text-red-600">
+                                    Unable to load credentials. Please try again.
+                                  </div>
+                                )}
+                              </div>
+
+                              <Tabs defaultValue="details" className="w-full">
+                                <TabsList className="grid w-full grid-cols-6">
+                                  <TabsTrigger value="details">Customer Details</TabsTrigger>
+                                  <TabsTrigger value="warranty">Warranty Details</TabsTrigger>
+                                  <TabsTrigger value="notes">Notes</TabsTrigger>
+                                  <TabsTrigger value="actions">Warranty Actions</TabsTrigger>
+                                  <TabsTrigger value="mot">MOT History</TabsTrigger>
+                                  <TabsTrigger value="w2000">Warranties 2000</TabsTrigger>
+                                </TabsList>
+
+                                <TabsContent value="details" className="space-y-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <Label htmlFor="edit-name">Full Name</Label>
+                                      <Input
+                                        id="edit-name"
+                                        value={editingCustomer.name}
+                                        onChange={(e) => setEditingCustomer({ ...editingCustomer, name: e.target.value })}
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="edit-email">Email</Label>
+                                      <Input
+                                        id="edit-email"
+                                        type="email"
+                                        value={editingCustomer.email}
+                                        onChange={(e) => setEditingCustomer({ ...editingCustomer, email: e.target.value })}
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="edit-phone">Phone</Label>
+                                      <Input
+                                        id="edit-phone"
+                                        value={editingCustomer.phone || ''}
+                                        onChange={(e) => setEditingCustomer({ ...editingCustomer, phone: e.target.value })}
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="edit-registration">Registration Plate</Label>
+                                      <Input
+                                        id="edit-registration"
+                                        value={editingCustomer.registration_plate}
+                                        onChange={(e) => setEditingCustomer({ ...editingCustomer, registration_plate: e.target.value })}
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="space-y-4 pt-4 border-t">
+                                    <h3 className="text-lg font-semibold">Address Details</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label htmlFor="edit-flat-number">Flat Number</Label>
+                                        <Input
+                                          id="edit-flat-number"
+                                          value={editingCustomer.flat_number || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, flat_number: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-building-name">Building Name</Label>
+                                        <Input
+                                          id="edit-building-name"
+                                          value={editingCustomer.building_name || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, building_name: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-building-number">Building Number</Label>
+                                        <Input
+                                          id="edit-building-number"
+                                          value={editingCustomer.building_number || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, building_number: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-street">Street</Label>
+                                        <Input
+                                          id="edit-street"
+                                          value={editingCustomer.street || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, street: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-town">Town</Label>
+                                        <Input
+                                          id="edit-town"
+                                          value={editingCustomer.town || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, town: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-county">County</Label>
+                                        <Input
+                                          id="edit-county"
+                                          value={editingCustomer.county || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, county: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-postcode">Postcode</Label>
+                                        <Input
+                                          id="edit-postcode"
+                                          value={editingCustomer.postcode || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, postcode: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-country">Country</Label>
+                                        <Input
+                                          id="edit-country"
+                                          value={editingCustomer.country || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, country: e.target.value })}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                                    <div>
+                                      <Label htmlFor="edit-plan-type">Plan Type</Label>
+                                      <Input
+                                        id="edit-plan-type"
+                                        value={editingCustomer.plan_type}
+                                        onChange={(e) => setEditingCustomer({ ...editingCustomer, plan_type: e.target.value })}
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="edit-voluntary-excess">Voluntary Excess (£)</Label>
+                                      <Input
+                                        id="edit-voluntary-excess"
+                                        type="number"
+                                        value={editingCustomer.voluntary_excess}
+                                        onChange={(e) => setEditingCustomer({ ...editingCustomer, voluntary_excess: Number(e.target.value) })}
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="edit-status">Status</Label>
+                                      <Select
+                                        value={editingCustomer.status}
+                                        onValueChange={(value) => setEditingCustomer({ ...editingCustomer, status: value })}
+                                      >
+                                        <SelectTrigger id="edit-status">
+                                          <SelectValue placeholder="Select status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="Active">Active</SelectItem>
+                                          <SelectItem value="Inactive">Inactive</SelectItem>
+                                          <SelectItem value="Pending">Pending</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="edit-signup-date">Signup Date</Label>
+                                      <Popover>
+                                        <PopoverTrigger asChild>
+                                          <Button
+                                            id="edit-signup-date"
+                                            variant="outline"
+                                            className={cn(
+                                              "w-full justify-start text-left font-normal",
+                                              !editingCustomer.signup_date && "text-muted-foreground"
+                                            )}
+                                          >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {editingCustomer.signup_date ? (
+                                              format(new Date(editingCustomer.signup_date), 'dd/MM/yyyy')
+                                            ) : (
+                                              <span>Pick a date</span>
+                                            )}
+                                          </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                          <Calendar
+                                            mode="single"
+                                            selected={editingCustomer.signup_date ? new Date(editingCustomer.signup_date) : undefined}
+                                            onSelect={(date) => date && setEditingCustomer({ ...editingCustomer, signup_date: date.toISOString() })}
+                                            initialFocus
+                                          />
+                                        </PopoverContent>
+                                      </Popover>
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="flex justify-end space-x-2 pt-4">
+                                    <Button onClick={updateCustomer}>
+                                      <Save className="h-4 w-4 mr-2" />
+                                      Save Changes
+                                    </Button>
+                                  </div>
+                                </TabsContent>
+
+                                <TabsContent value="warranty">
+                                  {editingCustomer.customer_policies && editingCustomer.customer_policies.length > 0 ? (
+                                    <div className="space-y-4">
+                                      {editingCustomer.customer_policies.map((policy: any, index: number) => (
+                                        <Card key={index} className="p-4">
+                                          <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                              <Label className="text-sm font-medium text-gray-500">Warranty Number</Label>
+                                              <p className="text-sm font-semibold">{policy.warranty_number || 'N/A'}</p>
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm font-medium text-gray-500">Policy Number</Label>
+                                              <p className="text-sm">{policy.policy_number || 'N/A'}</p>
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm font-medium text-gray-500">Start Date</Label>
+                                              <p className="text-sm">{policy.start_date ? format(new Date(policy.start_date), 'dd/MM/yyyy') : 'N/A'}</p>
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm font-medium text-gray-500">Expiry Date</Label>
+                                              <p className="text-sm">{policy.expiry_date ? format(new Date(policy.expiry_date), 'dd/MM/yyyy') : 'N/A'}</p>
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm font-medium text-gray-500">Payment Type</Label>
+                                              <p className="text-sm">{policy.payment_type || 'N/A'}</p>
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm font-medium text-gray-500">Payment Status</Label>
+                                              <Badge variant={policy.payment_status === 'paid' ? 'default' : 'destructive'}>
+                                                {policy.payment_status}
+                                              </Badge>
+                                            </div>
+                                            <div className="col-span-2">
+                                              <Label className="text-sm font-medium text-gray-500 mb-2 block">Coverage Details</Label>
+                                              <CoverageDetailsDisplay 
+                                                mot_fee={editingCustomer.mot_fee}
+                                                tyre_cover={editingCustomer.tyre_cover}
+                                                wear_tear={editingCustomer.wear_tear}
+                                                europe_cover={editingCustomer.europe_cover}
+                                                transfer_cover={editingCustomer.transfer_cover}
+                                                breakdown_recovery={editingCustomer.breakdown_recovery}
+                                                vehicle_rental={editingCustomer.vehicle_rental}
+                                                mot_repair={editingCustomer.mot_repair}
+                                                lost_key={editingCustomer.lost_key}
+                                                consequential={editingCustomer.consequential}
+                                              />
+                                            </div>
+                                            <div className="col-span-2">
+                                              <Label className="text-sm font-medium text-gray-500 mb-2 block">Add-On Protections</Label>
+                                              <AddOnProtectionDisplay 
+                                                mot_fee={policy.mot_fee}
+                                                tyre_cover={policy.tyre_cover}
+                                                wear_tear={policy.wear_tear}
+                                                europe_cover={policy.europe_cover}
+                                                transfer_cover={policy.transfer_cover}
+                                                breakdown_recovery={policy.breakdown_recovery}
+                                                vehicle_rental={policy.vehicle_rental}
+                                                mot_repair={policy.mot_repair}
+                                                lost_key={policy.lost_key}
+                                                consequential={policy.consequential}
+                                                payment_type={editingCustomer.payment_type || 'monthly'}
+                                              />
+                                            </div>
+                                          </div>
+                                        </Card>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <div className="text-center text-gray-500 py-8">
+                                      No warranty policies found for this customer
+                                    </div>
+                                  )}
+                                </TabsContent>
+
+                                <TabsContent value="notes">
+                                  {selectedCustomer && (
+                                    <CustomerNotesSection customerId={selectedCustomer.id} />
+                                  )}
+                                </TabsContent>
+
+                                <TabsContent value="actions">
+                                  {selectedCustomer && (
+                                    <WarrantyActions 
+                                      customerId={selectedCustomer.id}
+                                      customerEmail={selectedCustomer.email}
+                                      policyId={selectedCustomer.customer_policies?.[0]?.id}
+                                      warrantyNumber={selectedCustomer.customer_policies?.[0]?.warranty_number}
+                                      emailStatus={selectedCustomer.customer_policies?.[0]?.email_sent_status}
+                                      warranties2000Status={selectedCustomer.customer_policies?.[0]?.warranties_2000_status}
+                                      onActionComplete={fetchCustomers}
+                                    />
+                                  )}
+                                </TabsContent>
+
+                                <TabsContent value="mot">
+                                  {selectedCustomer && (
+                                    <MOTHistorySection 
+                                      registrationNumber={selectedCustomer.registration_plate}
+                                      customerId={selectedCustomer.id}
+                                    />
+                                  )}
+                                </TabsContent>
+
+                                <TabsContent value="w2000">
+                                  {selectedCustomer && (
+                                    <W2000DataPreview 
+                                      customer={selectedCustomer}
+                                    />
+                                  )}
+                                </TabsContent>
+                              </Tabs>
+                            </>
+                          )}
+                        </DialogContent>
+                      </Dialog>
+                      <span>{customer.name}</span>
+                    </div>
+                  </TableCell>
                   <TableCell>{customer.email}</TableCell>
                   <TableCell>{customer.phone || 'N/A'}</TableCell>
                   <TableCell>
@@ -2159,18 +2579,7 @@ export const CustomersTab = () => {
                           )}
                         </Button>
 
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openCustomerDialog(customer)}
-                              title="Edit Customer"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </DialogTrigger>
-                        
+
                         {isAdmin() && (
                           <Button
                             variant="ghost"
@@ -2182,789 +2591,8 @@ export const CustomersTab = () => {
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         )}
-                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                          <DialogHeader>
-                            <div className="flex items-center justify-between">
-                              <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
-                              {selectedCustomer && (
-                                <SendNotificationDialog 
-                                  customerId={selectedCustomer.id}
-                                  customerName={selectedCustomer.name}
-                                />
-                              )}
-                            </div>
-                          </DialogHeader>
-                          
-                          {editingCustomer && (
-                            <>
-                              {/* Customer Login Credentials Section */}
-                              <div className="mb-6 p-4 bg-green-50 border-2 border-green-300 rounded-lg">
-                                <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center">
-                                  <Key className="h-5 w-5 mr-2" />
-                                  Customer Login Credentials
-                                </h3>
-                                
-                                {credentialsLoading ? (
-                                  <div className="text-sm text-gray-600">Loading credentials...</div>
-                                ) : customerCredentials ? (
-                                  <div className="space-y-3">
-                                    <div className="bg-white p-3 rounded border border-green-200">
-                                      <Label className="text-sm font-medium text-gray-700">Username (Email)</Label>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
-                                          {customerCredentials.email}
-                                        </code>
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={() => {
-                                            navigator.clipboard.writeText(customerCredentials.email);
-                                            toast.success('Email copied to clipboard');
-                                          }}
-                                        >
-                                          Copy
-                                        </Button>
-                                      </div>
-                                    </div>
-                                    
-                                    <div className="bg-white p-3 rounded border border-green-200">
-                                      <Label className="text-sm font-medium text-gray-700">Temporary Password</Label>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
-                                          {customerCredentials.password}
-                                        </code>
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={() => {
-                                            navigator.clipboard.writeText(customerCredentials.password);
-                                            toast.success('Password copied to clipboard');
-                                          }}
-                                        >
-                                          Copy
-                                        </Button>
-                                      </div>
-                                    </div>
-                                    
-                                    <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mt-3">
-                                      <p className="text-xs text-yellow-800 flex items-center gap-1">
-                                        <AlertCircle className="h-3 w-3" />
-                                        Use these credentials to test the customer dashboard login at{' '}
-                                        <a 
-                                          href="/customer-dashboard" 
-                                          target="_blank" 
-                                          className="underline font-medium"
-                                        >
-                                          /customer-dashboard
-                                        </a>
-                                      </p>
-                                    </div>
-                                    
-                                    <Button
-                                      className="w-full mt-3"
-                                      onClick={() => sendCredentialsEmail(customerCredentials.email)}
-                                      disabled={sendingCredentials}
-                                    >
-                                      {sendingCredentials ? (
-                                        <>
-                                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                          Sending Email...
-                                        </>
-                                      ) : (
-                                        <>
-                                          <Mail className="h-4 w-4 mr-2" />
-                                          Email Login Credentials to Customer
-                                        </>
-                                      )}
-                                    </Button>
-                                  </div>
-                                ) : (
-                                  <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
-                                    <p className="text-sm text-yellow-800 flex items-center gap-2">
-                                      <AlertCircle className="h-4 w-4" />
-                                      No welcome email found for this customer. They may not have login credentials yet.
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Warranty Details Section - MOVED TO TOP */}
-                              <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
-                                <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center">
-                                  <span className="bg-blue-600 text-white px-2 py-1 rounded mr-2">✓</span>
-                                  Warranty Details (Editable)
-                                </h3>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                  <div>
-                                    <Label htmlFor="payment_type">Warranty Duration</Label>
-                                    <Select
-                                      value={editingCustomer.payment_type || 'monthly'}
-                                      onValueChange={(value) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        payment_type: value
-                                      })}
-                                    >
-                                      <SelectTrigger>
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="monthly">12 Months</SelectItem>
-                                        <SelectItem value="12months">12 Months</SelectItem>
-                                        <SelectItem value="24months">24 Months</SelectItem>
-                                        <SelectItem value="36months">36 Months</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-
-                                  <div>
-                                    <Label htmlFor="excess">Voluntary Excess (£)</Label>
-                                    <Select
-                                      value={editingCustomer.voluntary_excess?.toString() ?? '150'}
-                                      onValueChange={(value) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        voluntary_excess: parseFloat(value)
-                                      })}
-                                    >
-                                      <SelectTrigger>
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="0">£0</SelectItem>
-                                        <SelectItem value="50">£50</SelectItem>
-                                        <SelectItem value="100">£100</SelectItem>
-                                        <SelectItem value="150">£150</SelectItem>
-                                        <SelectItem value="200">£200</SelectItem>
-                                        <SelectItem value="250">£250</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="claim_limit">Claim Limit (£)</Label>
-                                    <Select
-                                      value={editingCustomer.claim_limit?.toString() || '1250'}
-                                      onValueChange={(value) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        claim_limit: parseInt(value)
-                                      })}
-                                    >
-                                      <SelectTrigger>
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="500">£500</SelectItem>
-                                        <SelectItem value="750">£750</SelectItem>
-                                        <SelectItem value="1000">£1,000</SelectItem>
-                                        <SelectItem value="1200">£1,200</SelectItem>
-                                        <SelectItem value="1250">£1,250</SelectItem>
-                                        <SelectItem value="1500">£1,500</SelectItem>
-                                        <SelectItem value="2000">£2,000</SelectItem>
-                                        <SelectItem value="2500">£2,500</SelectItem>
-                                        <SelectItem value="3000">£3,000</SelectItem>
-                                        <SelectItem value="5000">£5,000</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                </div>
-
-                                {/* Add-on Protection Checkboxes */}
-                                <div className="mt-4">
-                                  <Label className="text-sm font-medium">Add-On Protection</Label>
-                                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-2">
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="mot_fee"
-                                        checked={editingCustomer.mot_fee || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          mot_fee: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="mot_fee" className="text-sm cursor-pointer">MOT Fee</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="tyre_cover"
-                                        checked={editingCustomer.tyre_cover || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          tyre_cover: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="tyre_cover" className="text-sm cursor-pointer">Tyre Cover</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="wear_tear"
-                                        checked={editingCustomer.wear_tear || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          wear_tear: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="wear_tear" className="text-sm cursor-pointer">Wear & Tear</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="europe_cover"
-                                        checked={editingCustomer.europe_cover || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          europe_cover: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="europe_cover" className="text-sm cursor-pointer">Europe Cover</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="transfer_cover"
-                                        checked={editingCustomer.transfer_cover || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          transfer_cover: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="transfer_cover" className="text-sm cursor-pointer">Transfer Cover</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="breakdown_recovery"
-                                        checked={editingCustomer.breakdown_recovery || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          breakdown_recovery: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="breakdown_recovery" className="text-sm cursor-pointer">Breakdown Recovery</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="vehicle_rental"
-                                        checked={editingCustomer.vehicle_rental || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          vehicle_rental: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="vehicle_rental" className="text-sm cursor-pointer">Vehicle Rental</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="mot_repair"
-                                        checked={editingCustomer.mot_repair || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          mot_repair: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="mot_repair" className="text-sm cursor-pointer">MOT Repair</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="lost_key"
-                                        checked={editingCustomer.lost_key || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          lost_key: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="lost_key" className="text-sm cursor-pointer">Lost Key</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id="consequential"
-                                        checked={editingCustomer.consequential || false}
-                                        onCheckedChange={(checked) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          consequential: checked as boolean
-                                        })}
-                                      />
-                                      <Label htmlFor="consequential" className="text-sm cursor-pointer">Consequential Loss</Label>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <Button onClick={updateCustomer} className="w-full mt-4" size="lg">
-                                  <Save className="h-4 w-4 mr-2" />
-                                  Save Warranty Changes
-                                </Button>
-                              </div>
-
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-4">
-                                  <h3 className="text-lg font-semibold">Customer Details</h3>
-                                
-                                <div className="space-y-3">
-                                  <div>
-                                    <Label htmlFor="name">Name</Label>
-                                    <Input
-                                      id="name"
-                                      value={editingCustomer.name}
-                                      onChange={(e) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        name: e.target.value
-                                      })}
-                                    />
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                      id="email"
-                                      type="email"
-                                      value={editingCustomer.email}
-                                      onChange={(e) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        email: e.target.value
-                                      })}
-                                    />
-                                  </div>
-                                  
-                                  <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                      <Label htmlFor="first_name">First Name</Label>
-                                      <Input
-                                        id="first_name"
-                                        value={editingCustomer.first_name || ''}
-                                        onChange={(e) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          first_name: e.target.value
-                                        })}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label htmlFor="last_name">Last Name</Label>
-                                      <Input
-                                        id="last_name"
-                                        value={editingCustomer.last_name || ''}
-                                        onChange={(e) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          last_name: e.target.value
-                                        })}
-                                      />
-                                    </div>
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="phone">Mobile Number</Label>
-                                    <Input
-                                      id="phone"
-                                      value={editingCustomer.phone || ''}
-                                      onChange={(e) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        phone: e.target.value
-                                      })}
-                                    />
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="registration_plate">Vehicle Registration</Label>
-                                    <Input
-                                      id="registration_plate"
-                                      value={editingCustomer.registration_plate || ''}
-                                      onChange={(e) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        registration_plate: e.target.value
-                                      })}
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <Label htmlFor="warranty_reference">Warranty Reference Number</Label>
-                                    <Input
-                                      id="warranty_reference"
-                                      value={editingCustomer.warranty_reference_number || ''}
-                                      readOnly
-                                      className="bg-gray-50 text-gray-700"
-                                      placeholder="Generated automatically"
-                                    />
-                                  </div>
-
-                                  {/* Detailed Address Fields */}
-                                  <div className="space-y-3 border-t pt-4">
-                                    <h4 className="font-medium text-gray-900">Address Details</h4>
-                                    
-                                    <div>
-                                      <Label htmlFor="street">Address Line 1</Label>
-                                      <Input
-                                        id="street"
-                                        placeholder="Street address and house/building number"
-                                        value={editingCustomer.street || ''}
-                                        onChange={(e) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          street: e.target.value
-                                        })}
-                                      />
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-3">
-                                      <div>
-                                        <Label htmlFor="flat_number">Flat Number</Label>
-                                        <Input
-                                          id="flat_number"
-                                          value={editingCustomer.flat_number || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            flat_number: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label htmlFor="building_number">Building Number</Label>
-                                        <Input
-                                          id="building_number"
-                                          value={editingCustomer.building_number || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            building_number: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                    </div>
-
-                                    <div>
-                                      <Label htmlFor="building_name">Building Name</Label>
-                                      <Input
-                                        id="building_name"
-                                        placeholder="Apartment, flat, building name"
-                                        value={editingCustomer.building_name || ''}
-                                        onChange={(e) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          building_name: e.target.value
-                                        })}
-                                      />
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-3">
-                                      <div>
-                                        <Label htmlFor="town">Town/City</Label>
-                                        <Input
-                                          id="town"
-                                          value={editingCustomer.town || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            town: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label htmlFor="county">County</Label>
-                                        <Input
-                                          id="county"
-                                          value={editingCustomer.county || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            county: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-3">
-                                      <div>
-                                        <Label htmlFor="postcode">Postcode</Label>
-                                        <Input
-                                          id="postcode"
-                                          value={editingCustomer.postcode || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            postcode: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label htmlFor="country">Country</Label>
-                                        <Input
-                                          id="country"
-                                          value={editingCustomer.country || 'United Kingdom'}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            country: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {/* Vehicle Details */}
-                                  <div className="space-y-3 border-t pt-4">
-                                    <h4 className="font-medium text-gray-900">Vehicle Details</h4>
-                                    
-                                    <div className="grid grid-cols-2 gap-3">
-                                      <div>
-                                        <Label htmlFor="vehicle_make">Vehicle Make</Label>
-                                        <Input
-                                          id="vehicle_make"
-                                          value={editingCustomer.vehicle_make || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            vehicle_make: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label htmlFor="vehicle_model">Vehicle Model</Label>
-                                        <Input
-                                          id="vehicle_model"
-                                          value={editingCustomer.vehicle_model || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            vehicle_model: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-3 gap-3">
-                                      <div>
-                                        <Label htmlFor="vehicle_year">Vehicle Year</Label>
-                                        <Input
-                                          id="vehicle_year"
-                                          value={editingCustomer.vehicle_year || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            vehicle_year: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label htmlFor="vehicle_fuel_type">Fuel Type</Label>
-                                        <Input
-                                          id="vehicle_fuel_type"
-                                          value={editingCustomer.vehicle_fuel_type || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            vehicle_fuel_type: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label htmlFor="vehicle_transmission">Transmission</Label>
-                                        <Input
-                                          id="vehicle_transmission"
-                                          value={editingCustomer.vehicle_transmission || ''}
-                                          onChange={(e) => setEditingCustomer({
-                                            ...editingCustomer,
-                                            vehicle_transmission: e.target.value
-                                          })}
-                                        />
-                                      </div>
-                                    </div>
-
-                                    <div>
-                                      <Label htmlFor="mileage">Mileage</Label>
-                                      <Input
-                                        id="mileage"
-                                        value={editingCustomer.mileage || ''}
-                                        onChange={(e) => setEditingCustomer({
-                                          ...editingCustomer,
-                                          mileage: e.target.value
-                                        })}
-                                      />
-                                    </div>
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="plan">Plan Type</Label>
-                                    <Select
-                                      value={editingCustomer.plan_type}
-                                      onValueChange={(value) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        plan_type: value
-                                      })}
-                                    >
-                                      <SelectTrigger>
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        {plans.map((plan) => (
-                                          <SelectItem key={plan.name} value={plan.name}>
-                                            {plan.name}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="status">Status</Label>
-                                    <Select
-                                      value={editingCustomer.status}
-                                      onValueChange={(value) => setEditingCustomer({
-                                        ...editingCustomer,
-                                        status: value
-                                      })}
-                                    >
-                                      <SelectTrigger>
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="Active">Active</SelectItem>
-                                        <SelectItem value="Inactive">Inactive</SelectItem>
-                                        <SelectItem value="Cancelled">Cancelled</SelectItem>
-                                        <SelectItem value="Suspended">Suspended</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              {/* Warranty Actions Section */}
-                              <div className="space-y-4">
-                                <h3 className="text-lg font-semibold">Warranty Actions</h3>
-                                <WarrantyActions
-                                  customerId={selectedCustomer.id}
-                                  policyId={selectedCustomer.customer_policies?.[0]?.id}
-                                  customerEmail={selectedCustomer.email}
-                                  warrantyNumber={selectedCustomer.customer_policies?.[0]?.warranty_number}
-                                  emailStatus={selectedCustomer.customer_policies?.[0]?.email_sent_status}
-                                  warranties2000Status={selectedCustomer.customer_policies?.[0]?.warranties_2000_status}
-                                  onActionComplete={fetchCustomers}
-                                />
-                              </div>
-
-              {/* Step 4 Order Summary Replication */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Order Summary (Customer View)</h3>
-                <div className="bg-gray-50 border rounded-lg p-4 space-y-4">
-                  {/* Plan Details */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Plan</span>
-                      <span className="font-semibold">{selectedCustomer.plan_type}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Payment Duration</span>
-                      <span className="font-semibold">{selectedCustomer.payment_type}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Vehicle</span>
-                      <span className="font-semibold">
-                        {selectedCustomer.vehicle_make} {selectedCustomer.vehicle_model}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Registration</span>
-                      <span className="font-semibold">{selectedCustomer.registration_plate}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Mileage</span>
-                      <span className="font-semibold">
-                        {selectedCustomer.mileage ? `${parseInt(selectedCustomer.mileage).toLocaleString()} miles` : 'N/A'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Voluntary Excess</span>
-                      <span className="font-semibold">£{selectedCustomer.voluntary_excess || 0}</span>
-                    </div>
-                  </div>
-
-                  {/* Promo Codes Applied */}
-                  {selectedCustomer.discount_code && (
-                    <div className="border-t pt-3">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-gray-600 font-medium">Applied Promo Code</span>
-                      </div>
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-green-800">{selectedCustomer.discount_code}</span>
-                            <span className="text-xs text-green-600">Discount Applied</span>
-                          </div>
-                          <span className="text-green-600 font-medium">
-                            -£{selectedCustomer.discount_amount?.toFixed(2) || '0.00'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Pricing Breakdown */}
-                  <div className="border-t pt-3 space-y-2">
-                    <h4 className="font-medium text-gray-900">Pricing Breakdown</h4>
-                    {selectedCustomer.original_amount && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Original Price</span>
-                        <span className="text-gray-600">£{selectedCustomer.original_amount.toFixed(2)}</span>
-                      </div>
-                    )}
-                    {selectedCustomer.discount_amount && selectedCustomer.discount_amount > 0 && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-red-600">Total Discount</span>
-                        <span className="text-red-600 font-medium">-£{selectedCustomer.discount_amount.toFixed(2)}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between text-lg font-bold border-t pt-2">
-                      <span className="text-gray-900">Final Amount</span>
-                      <span className="text-gray-900">
-                        £{selectedCustomer.final_amount?.toFixed(2) || selectedCustomer.original_amount?.toFixed(2) || '0.00'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-                              {/* Add-On Protection Packages Section */}
-                              <div className="space-y-4">
-                                <h3 className="text-lg font-semibold">Add-On Protection Packages</h3>
-                                <AddOnProtectionDisplay
-                                  mot_fee={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).mot_fee : selectedCustomer.mot_fee}
-                                  tyre_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).tyre_cover : selectedCustomer.tyre_cover}
-                                  wear_tear={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).wear_tear : selectedCustomer.wear_tear}
-                                  europe_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).europe_cover : selectedCustomer.europe_cover}
-                                  transfer_cover={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).transfer_cover : selectedCustomer.transfer_cover}
-                                  breakdown_recovery={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).breakdown_recovery : selectedCustomer.breakdown_recovery}
-                                  vehicle_rental={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).vehicle_rental : selectedCustomer.vehicle_rental}
-                                  mot_repair={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).mot_repair : selectedCustomer.mot_repair}
-                                  lost_key={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).lost_key : selectedCustomer.lost_key}
-                                  consequential={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).consequential : selectedCustomer.consequential}
-                                  claim_limit={selectedCustomer.customer_policies?.[0] ? (selectedCustomer.customer_policies[0] as any).claim_limit : selectedCustomer.claim_limit}
-                                  voluntary_excess={selectedCustomer.voluntary_excess}
-                                  payment_type={selectedCustomer.payment_type}
-                                  className="mt-4"
-                                />
-                              </div>
-
-                              {/* Notes Section */}
-                              <div className="space-y-4">
-                                <CustomerNotesSection 
-                                  customerId={selectedCustomer.id}
-                                  onNotesChange={(count) => {
-                                    // Optional: Update UI to show note count
-                                  }}
-                                />
-                              </div>
-                            </div>
-
-                            {/* W2000 Data Preview Section - Full Width */}
-                            <div className="mt-6">
-                              <h3 className="text-lg font-semibold mb-4">Warranties 2000 Data</h3>
-                              <W2000DataPreview customer={selectedCustomer} />
-                            </div>
-                            
-                            {/* MOT History Section - Full Width */}
-                            <div className="mt-6">
-                              <MOTHistorySection 
-                                registrationNumber={selectedCustomer.registration_plate}
-                                customerId={selectedCustomer.id}
-                              />
-                            </div>
-                            </>
-                          )}
-                        </DialogContent>
-                      </Dialog>
-                      
-                      <Button
+                       
+                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => resetCustomerPassword(customer.id, customer.email)}
