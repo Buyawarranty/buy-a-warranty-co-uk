@@ -96,7 +96,7 @@ serve(async (req) => {
 
     // Prepare email content
     const loginUrl = "https://buyawarranty.co.uk/customer-dashboard";
-    const supportEmail = "info@buyawarranty.co.uk";
+    const supportEmail = "support@buyawarranty.co.uk";
     
     const emailHtml = `
     <!DOCTYPE html>
@@ -137,14 +137,12 @@ serve(async (req) => {
                 <ul>
                     <li>View your warranty details and coverage</li>
                     <li>Download your policy documents</li>
-                    <li>Submit warranty claims</li>
                     <li>Update your contact information</li>
                 </ul>
                 
                 ${policy ? `
-                <p><strong>Your Current Policy:</strong></p>
+                <p><strong>Your Policy Details:</strong></p>
                 <ul>
-                    <li>Policy Number: ${policy.policy_number}</li>
                     <li>Warranty Number: ${policy.warranty_number}</li>
                     <li>Plan Type: ${policy.plan_type}</li>
                     <li>Vehicle: ${customer.registration_plate}</li>
