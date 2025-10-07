@@ -1035,7 +1035,7 @@ export const CustomersTab = () => {
     try {
       setSendingCredentials(true);
       const { data, error } = await supabase.functions.invoke('resend-customer-credentials', {
-        body: { customerEmail }
+        body: { email: customerEmail }
       });
       
       if (error) {
