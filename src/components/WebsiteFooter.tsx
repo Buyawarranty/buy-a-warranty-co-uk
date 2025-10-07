@@ -43,7 +43,7 @@ const WebsiteFooter = () => {
                 <li><a href="/buy-a-used-car-warranty-reliable-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Car</a></li>
                 <li><a href="/van-warranty-companies-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Van</a></li>
                 <li><a href="/best-warranty-on-ev-cars-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs</a></li>
-                <li><a href="/motorbike-repair-warranty-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Motorbikes UK</a></li>
+                <li><a href="/motorbike-repair-warranty-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Motorbikes</a></li>
               </ul>
             </div>
 
@@ -88,7 +88,7 @@ const WebsiteFooter = () => {
             <div>
               <h3 className="text-lg font-bold text-gray-900 mb-6">Get fast, affordable cover tailored to your needs</h3>
               <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Buyawarranty.co.uk - Get fast, affordable cover tailored to your car, van, SUV or motorbike. Our vehicle warranty plans are designed to suit your driving needs - with simple online quotes, flexible options, and reliable protection. If your vehicle is under 15 years old and has fewer than 150,000 miles, you're eligible for comprehensive warranty cover with Buyawarranty today.
+                Buyawarranty.co.uk - Get fast, affordable cover tailored to your car, van, SUV or motorbike. 'Buy-a-warranty' vehicle warranty plans are designed to suit your driving needs - with simple online quotes, flexible options, and reliable protection. If your vehicle is under 15 years old and has fewer than 150,000 miles, you're eligible for comprehensive warranty cover with Buyawarranty today.
               </p>
               <div className="flex items-center">
                 <a href="/" className="hover:opacity-80 transition-opacity">
