@@ -146,45 +146,11 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
 
   return (
     <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-primary" />
-          Add-On Protection Packages
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Policy Limits */}
-        {(claim_limit || voluntary_excess) && (
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
-            <h4 className="font-semibold text-blue-900 flex items-center gap-2">
-              <AlertCircle className="h-4 w-4" />
-              Policy Details
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {claim_limit && (
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-blue-800">Maximum Claim Limit:</span>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 font-semibold">
-                    £{claim_limit.toLocaleString()}
-                  </Badge>
-                </div>
-              )}
-              {voluntary_excess && (
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-blue-800">Voluntary Excess:</span>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 font-semibold">
-                    £{voluntary_excess.toLocaleString()}
-                  </Badge>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Active Add-Ons */}
+      <CardContent className="space-y-4 pt-6">
+        {/* Add-On Protection Packages */}
         {activeAddOns.length > 0 && (
           <div className="space-y-3">
-            <h4 className="font-semibold text-green-700 flex items-center gap-2">
+            <h4 className="text-lg font-semibold text-green-700 flex items-center gap-2">
               <CheckCircle className="h-4 w-4" />
               Add-On Protection Packages
             </h4>

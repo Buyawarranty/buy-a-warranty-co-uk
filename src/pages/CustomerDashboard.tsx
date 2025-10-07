@@ -1126,37 +1126,24 @@ const CustomerDashboard = () => {
                             payment_type={selectedPolicy.payment_type}
                           />
                           
-                          {/* Claim Details */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                            <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-700">Claim Limit</Label>
-                              <p className="font-bold text-lg text-blue-900">
-                                £{(selectedPolicy?.claim_limit || customerData?.claim_limit || 1250).toLocaleString()} per claim
-                              </p>
-                            </div>
-                            <div>
-                              <Label className="text-xs sm:text-sm font-medium text-gray-700">Voluntary Excess</Label>
-                              <p className="font-bold text-lg text-blue-900">
-                                £{selectedPolicy?.voluntary_excess || customerData?.voluntary_excess || 0}
-                              </p>
-                            </div>
-                          </div>
-                          
-                          {/* Order Summary */}
-                          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <Label className="text-xs sm:text-sm font-medium text-gray-700 mb-3 block">Payment & Duration Summary</Label>
-                            <div className="space-y-2">
-                              {(selectedPolicy?.payment_amount || customerData?.final_amount) && (
-                                <div className="flex justify-between items-center">
-                                  <span className="text-sm text-gray-600">Total Amount Paid</span>
-                                  <span className="font-bold text-lg text-gray-900">
-                                    £{selectedPolicy?.payment_amount || customerData?.final_amount}
-                                  </span>
-                                </div>
-                              )}
-                              <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Payment Duration</span>
-                                <span className="text-sm text-gray-900">{getPaymentTypeDisplay(selectedPolicy?.payment_type)}</span>
+                          {/* Policy Details */}
+                          <div className="space-y-3">
+                            <h4 className="text-lg font-semibold text-blue-900 flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4" />
+                              Policy Details
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                              <div>
+                                <Label className="text-xs sm:text-sm font-medium text-gray-700">Claim Limit</Label>
+                                <p className="font-bold text-lg text-blue-900">
+                                  £{(selectedPolicy?.claim_limit || customerData?.claim_limit || 1250).toLocaleString()} per claim
+                                </p>
+                              </div>
+                              <div>
+                                <Label className="text-xs sm:text-sm font-medium text-gray-700">Voluntary Excess</Label>
+                                <p className="font-bold text-lg text-blue-900">
+                                  £{selectedPolicy?.voluntary_excess || customerData?.voluntary_excess || 0}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -1189,7 +1176,7 @@ const CustomerDashboard = () => {
                   {/* Address Management */}
                   <Card>
                     <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
+                      <CardTitle className="flex items-center justify-between text-lg">
                         <span className="flex items-center">
                           <MapPin className="mr-2 h-5 w-5" />
                           Your details
@@ -1343,7 +1330,7 @@ const CustomerDashboard = () => {
                 <div className="space-y-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="flex items-center">
+                      <CardTitle className="flex items-center text-lg">
                         <User className="mr-2 h-5 w-5" />
                         Account Settings
                       </CardTitle>
