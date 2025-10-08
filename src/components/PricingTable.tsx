@@ -918,6 +918,12 @@ const PricingTable: React.FC<PricingTableProps> = ({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div className="mt-4 p-6 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-4">
+                    <ShieldCheck className="w-5 h-5 text-black flex-shrink-0" />
+                    <p className="text-black font-medium">
+                      Comprehensive cover for your vehicle – Your electrical and mechanical parts protected. Everything you need, all in one place.
+                    </p>
+                  </div>
                   <div className="grid md:grid-cols-2 gap-6">
                     <ul className="space-y-1.5">
                       <li className="flex items-start gap-2">
