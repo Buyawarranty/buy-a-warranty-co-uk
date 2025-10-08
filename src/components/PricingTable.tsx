@@ -1020,9 +1020,12 @@ const PricingTable: React.FC<PricingTableProps> = ({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div className="mt-4 p-6 bg-gray-50 rounded-lg">
-                  <p className="text-gray-700 font-medium mb-4">
-                    Includes all related petrol/diesel engine parts and labour plus:
-                  </p>
+                  <div className="flex items-center gap-2 mb-4">
+                    <ShieldCheck className="w-5 h-5 text-black flex-shrink-0" />
+                    <p className="text-black font-medium">
+                      Covers all major electrical and mechanical components – just like those found in petrol and diesel vehicles, plus additional systems unique to hybrids and EVs.
+                    </p>
+                  </div>
                   <div className="grid md:grid-cols-2 gap-6">
                     <ul className="space-y-1.5">
                       <li className="flex items-start gap-2">
