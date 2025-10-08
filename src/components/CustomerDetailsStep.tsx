@@ -16,6 +16,7 @@ import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType, calculateAddOnPrice } from '@/lib/addOnsUtils';
 import { EmailCapturePopup } from '@/components/EmailCapturePopup';
+import MobileNavigation from '@/components/MobileNavigation';
 
 export interface CustomerDetailsStepProps {
   vehicleData: {
@@ -544,8 +545,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           </Button>
         </div>
 
-        {/* Header with Clickable Logo */}
-        <div className="flex justify-center mb-8">
+        {/* Header with Clickable Logo and Mobile Menu */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex-1"></div>
           <a href="/" className="hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
@@ -553,6 +555,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               className="h-10 w-auto"
             />
           </a>
+          <div className="flex-1 flex justify-end">
+            <MobileNavigation />
+          </div>
         </div>
 
         {/* Almost Done Heading */}

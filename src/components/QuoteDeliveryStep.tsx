@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Zap, Mail, Car, Edit3 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { supabase } from '@/integrations/supabase/client';
+import MobileNavigation from '@/components/MobileNavigation';
 
 interface QuoteDeliveryStepProps {
   vehicleData: {
@@ -177,8 +178,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
     <section className="bg-[#e8f4fb] py-4 sm:py-6 min-h-screen px-3 sm:px-0">
       
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
-        {/* Header with Clickable Logo */}
-        <div className="flex justify-center mb-6">
+        {/* Header with Clickable Logo and Mobile Menu */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex-1"></div>
           <a href="/" className="hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
@@ -186,6 +188,9 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
               className="h-10 w-auto"
             />
           </a>
+          <div className="flex-1 flex justify-end">
+            <MobileNavigation />
+          </div>
         </div>
 
         {/* Vehicle Details Section */}

@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import BackgroundRemovalProcessor from '@/components/BackgroundRemovalProcessor';
+import MobileNavigation from '@/components/MobileNavigation';
 
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
@@ -769,6 +770,11 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   className="h-8 w-auto"
                 />
               </a>
+            </div>
+
+            {/* Mobile Navigation */}
+            <div className="lg:hidden">
+              <MobileNavigation />
             </div>
           </div>
         </div>
