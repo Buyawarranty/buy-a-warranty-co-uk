@@ -1315,29 +1315,24 @@ const PricingTable: React.FC<PricingTableProps> = ({
           </div>
           
           {/* Guide Text */}
-          <div 
-            className="bg-green-50 border border-green-300 rounded-lg p-4 mb-6 cursor-pointer relative transition-all duration-300 hover:shadow-md"
-            onMouseEnter={() => setClaimLimitGuideExpanded(true)}
-          >
-            <h3 className="text-base font-semibold text-green-900">How much should I choose?</h3>
-            {claimLimitGuideExpanded && (
-              <div className="mt-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                <p className="text-sm text-green-800 pr-6">
-                  Think about the last time your car needed a repair e.g if your last repair was £900, a £1200 claim limit would have covered it.
-                </p>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setClaimLimitGuideExpanded(false);
-                  }}
-                  className="absolute top-3 right-3 text-green-700 hover:text-green-900 transition-colors"
-                  aria-label="Close guide"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            )}
-          </div>
+          <Collapsible open={claimLimitGuideExpanded} onOpenChange={setClaimLimitGuideExpanded}>
+            <div className="bg-green-50 border border-green-300 rounded-lg p-4 mb-6">
+              <CollapsibleTrigger className="w-full flex items-center justify-between text-left group">
+                <div className="flex items-center gap-2">
+                  <HelpCircle className="w-5 h-5 text-green-700 flex-shrink-0" />
+                  <h3 className="text-base font-semibold text-green-900">How much should I choose?</h3>
+                </div>
+                <ChevronDown className={`w-5 h-5 text-green-700 transition-transform duration-200 ${claimLimitGuideExpanded ? 'rotate-180' : ''}`} />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="mt-3">
+                  <p className="text-sm text-green-800">
+                    Think about the last time your car needed a repair e.g if your last repair was £900, a £1200 claim limit would have covered it.
+                  </p>
+                </div>
+              </CollapsibleContent>
+            </div>
+          </Collapsible>
           
           {validationErrors.claimLimit && (
             <Alert variant="destructive" className="mb-6">
