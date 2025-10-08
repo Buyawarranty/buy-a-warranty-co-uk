@@ -1208,30 +1208,42 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <h3 className="text-lg font-semibold text-gray-900">Choose Payment Method</h3>
                     
                     <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)}>
-                       {/* Monthly Interest Free Credit */}
+                      {/* Monthly Interest Free Credit */}
                       <div 
                         onClick={() => setPaymentMethod('bumper')}
-                        className={`border rounded-lg p-4 cursor-pointer transition-all ${paymentMethod === 'bumper' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                          paymentMethod === 'bumper' 
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500 ring-offset-2' 
+                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        }`}
                       >
-                         <div className="flex items-center space-x-3">
-                           <RadioGroupItem value="bumper" id="bumper" className="border-black text-black" />
-                           <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <Label htmlFor="bumper" className="font-semibold text-gray-900">Monthly Interest-Free Credit</Label>
-                                <img src={bumperLogo} alt="Bumper" className="h-5 object-contain" />
+                         <div className="flex items-start space-x-3">
+                           <div className="flex-shrink-0 mt-1">
+                             <RadioGroupItem 
+                               value="bumper" 
+                               id="bumper" 
+                               className="border-2 border-gray-400 text-blue-600 w-5 h-5"
+                             />
+                           </div>
+                           <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Label htmlFor="bumper" className="font-semibold text-gray-900 text-base cursor-pointer">
+                                  Monthly Interest-Free Credit
+                                </Label>
+                                <img src={bumperLogo} alt="Bumper" className="h-4 sm:h-5 object-contain" />
                               </div>
-                              <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                              <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded whitespace-nowrap">
                                 0% Interest
                               </div>
                             </div>
-                            <div className="text-sm text-gray-600 mb-3">
-                              <div className="flex items-center mb-1">
-                                <span className="text-green-600 mr-2">✔️</span>
+                            <div className="text-sm text-gray-600 mb-3 space-y-1">
+                              <div className="flex items-center">
+                                <span className="text-green-600 mr-2 text-base">✔️</span>
                                 <span>Only a soft credit search</span>
                               </div>
                               <div className="flex items-center">
-                                <span className="text-green-600 mr-2">✔️</span>
+                                <span className="text-green-600 mr-2 text-base">✔️</span>
                                 <span>No impact on your credit score</span>
                               </div>
                             </div>
@@ -1261,22 +1273,34 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       {/* Pay Full Amount */}
                       <div 
                         onClick={() => setPaymentMethod('stripe')}
-                        className={`border rounded-lg p-4 cursor-pointer transition-all ${paymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                          paymentMethod === 'stripe' 
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500 ring-offset-2' 
+                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        }`}
                       >
-                         <div className="flex items-center space-x-3">
-                           <RadioGroupItem value="stripe" id="stripe" className="border-black text-black" />
-                           <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
-                                <img src={stripeLogo} alt="Stripe" className="h-4 object-contain" />
+                         <div className="flex items-start space-x-3">
+                           <div className="flex-shrink-0 mt-1">
+                             <RadioGroupItem 
+                               value="stripe" 
+                               id="stripe" 
+                               className="border-2 border-gray-400 text-blue-600 w-5 h-5"
+                             />
+                           </div>
+                           <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Label htmlFor="stripe" className="font-semibold text-gray-900 text-base cursor-pointer">
+                                  Pay Full Amount
+                                </Label>
+                                <img src={stripeLogo} alt="Stripe" className="h-3 sm:h-4 object-contain" />
                               </div>
-                              <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                              <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded whitespace-nowrap">
                                 Save 10% (£{Math.round(discountedPrice * 0.10)}) instantly
                               </div>
                             </div>
-                              <p className="text-sm text-gray-600">
-                               Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span>
+                            <p className="text-sm text-gray-600">
+                              Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span>
                               {hasValidDiscountCodes && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
@@ -1287,7 +1311,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                   </span>
                                 </div>
                               )}
-                             </p>
+                            </p>
                           </div>
                         </div>
                       </div>
