@@ -899,7 +899,6 @@ const PricingTable: React.FC<PricingTableProps> = ({
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                  <ChevronDown className="w-6 h-6 text-gray-600 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </div>
               </div>
             </CollapsibleTrigger>
