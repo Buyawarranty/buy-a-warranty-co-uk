@@ -17,6 +17,8 @@ import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType, calculateAddOnPrice } from '@/lib/addOnsUtils';
 import { EmailCapturePopup } from '@/components/EmailCapturePopup';
 import MobileNavigation from '@/components/MobileNavigation';
+import bumperLogo from '@/assets/bumper-logo.png';
+import stripeLogo from '@/assets/stripe-logo.png';
 
 export interface CustomerDetailsStepProps {
   vehicleData: {
@@ -1206,7 +1208,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <h3 className="text-lg font-semibold text-gray-900">Choose Payment Method</h3>
                     
                     <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)}>
-                      {/* Monthly Interest Free Credit */}
+                       {/* Monthly Interest Free Credit */}
                       <div 
                         onClick={() => setPaymentMethod('bumper')}
                         className={`border rounded-lg p-4 cursor-pointer transition-all ${paymentMethod === 'bumper' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
@@ -1215,7 +1217,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                            <RadioGroupItem value="bumper" id="bumper" className="border-black text-black" />
                            <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
-                              <Label htmlFor="bumper" className="font-semibold text-gray-900">Monthly Interest-Free Credit</Label>
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor="bumper" className="font-semibold text-gray-900">Monthly Interest-Free Credit</Label>
+                                <img src={bumperLogo} alt="Bumper" className="h-5 object-contain" />
+                              </div>
                               <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
                                 0% Interest
                               </div>
@@ -1262,11 +1267,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                            <RadioGroupItem value="stripe" id="stripe" className="border-black text-black" />
                            <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
-                               <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
-                                <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                                   Save 10% (£{Math.round(discountedPrice * 0.10)}) instantly
-                                 </div>
-                             </div>
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor="stripe" className="font-semibold text-gray-900">Pay Full Amount</Label>
+                                <img src={stripeLogo} alt="Stripe" className="h-4 object-contain" />
+                              </div>
+                              <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                                Save 10% (£{Math.round(discountedPrice * 0.10)}) instantly
+                              </div>
+                            </div>
                               <p className="text-sm text-gray-600">
                                Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span>
                               {hasValidDiscountCodes && (
