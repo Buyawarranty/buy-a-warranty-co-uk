@@ -882,6 +882,16 @@ const PricingTable: React.FC<PricingTableProps> = ({
 
         {/* What's Covered Section */}
         <div className="section-header rounded-lg p-8 mb-8">
+          {/* Always visible summary text */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+              <p className="text-muted-foreground font-bold">
+                Everything you need! – Your labour, electrical and mechanical parts covered in one plan
+              </p>
+            </div>
+          </div>
+          
           <Collapsible>
             <CollapsibleTrigger className="w-full">
               <div className="flex items-center justify-between mb-4 cursor-pointer group">
@@ -910,14 +920,6 @@ const PricingTable: React.FC<PricingTableProps> = ({
             </CollapsibleTrigger>
             
             <CollapsibleContent>
-              <div className="mb-6">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-black flex-shrink-0" />
-                  <p className="text-black font-medium">
-                    Everything you need – Your electrical and mechanical parts covered in one plan
-                  </p>
-                </div>
-              </div>
               
               <div className="space-y-6">
             <Collapsible>
