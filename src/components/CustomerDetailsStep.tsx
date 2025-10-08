@@ -199,6 +199,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         if (prev.some(code => code.code === savedDiscountCode)) {
           return prev;
         }
+        // Show success message
+        toast.success('✓ Your discount code has been applied for checkout!');
         return [...prev, {
           code: savedDiscountCode,
           type: 'percentage',

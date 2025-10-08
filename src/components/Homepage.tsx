@@ -531,7 +531,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
       {/* Second Warranty Discount Banner */}
       {showSecondWarrantyDiscount && (
-        <div className="bg-orange-50 border-b border-orange-200 py-3 sm:py-4">
+        <div className="bg-orange-50 border-b border-orange-200 py-3 sm:py-4 relative">
           <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center">
               <span className="text-sm sm:text-xl font-bold text-orange-800">🎉 Your 10% Discount is Ready!</span>
@@ -548,6 +548,21 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white w-auto sm:w-auto min-h-[40px]"
               >
                 Copy Code
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowSecondWarrantyDiscount(false);
+                  toast({ 
+                    title: "✓ Code Saved!", 
+                    description: "Your discount code has been applied and will be used at checkout" 
+                  });
+                }}
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 sm:top-3 sm:right-4 text-orange-800 hover:text-orange-900 hover:bg-orange-100"
+                aria-label="Close banner"
+              >
+                <X className="w-6 h-6 sm:w-7 sm:h-7" />
               </Button>
             </div>
             <div className="text-center mt-2">
