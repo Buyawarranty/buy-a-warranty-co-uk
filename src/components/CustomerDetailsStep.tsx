@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, CheckCircle, Edit, User, CreditCard, MapPin, X } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Edit, User, CreditCard, MapPin, X, ArrowUp, Check } from 'lucide-react';
 import { PostcodeAutocomplete } from '@/components/ui/uk-postcode-autocomplete';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -117,7 +117,23 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // State for managing updated pricing data when add-ons are removed
   const [updatedPricingData, setUpdatedPricingData] = useState(pricingData);
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
+  
+  // State for scroll-to-top button
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  
+  // State for field validation
+  const [validatedFields, setValidatedFields] = useState<{[key: string]: boolean}>({});
 
+  // Scroll listener for scroll-to-top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
   // Recalculate pricing when initial pricingData changes (e.g., when add-ons are selected)
   useEffect(() => {
     console.log('🔧 CustomerDetailsStep - Pricing data updated:', {
@@ -241,6 +257,29 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     if (fieldErrors[field]) {
       setFieldErrors(prev => ({ ...prev, [field]: '' }));
     }
+    
+    // Real-time field validation
+    if (typeof value === 'string' && value.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$|^(\+44\s?1\d{3}|\(?01\d{3}\)?)\s?\d{3}\s?\d{3}$|^(\+44\s?2\d{2}|\(?02\d{2}\)?)\s?\d{3}\s?\d{4}$/;
+      const postcodeRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]?\s?[0-9][A-Z]{2}$/i;
+      
+      let isValid = false;
+      
+      if (field === 'email') {
+        isValid = emailRegex.test(value);
+      } else if (field === 'phone') {
+        isValid = phoneRegex.test(value);
+      } else if (field === 'postcode') {
+        isValid = postcodeRegex.test(value);
+      } else {
+        isValid = value.trim().length > 0;
+      }
+      
+      setValidatedFields(prev => ({ ...prev, [field]: isValid }));
+    } else {
+      setValidatedFields(prev => ({ ...prev, [field]: false }));
+    }
   };
 
   const applyPromoCode = async () => {
@@ -363,8 +402,25 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     
     if (!validateForm()) {
       console.log('❌ Form validation failed');
-      toast.error('Please fill in all required fields');
+      toast.error('Please fill in all required fields', {
+        style: {
+          background: '#fee2e2',
+          color: '#991b1b',
+          border: '1px solid #fca5a5'
+        }
+      });
       trackEvent('form_validation_error', { form_name: 'customer_details' });
+      
+      // Scroll to first error field
+      const firstErrorField = Object.keys(fieldErrors)[0];
+      if (firstErrorField) {
+        const element = document.getElementById(firstErrorField);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.focus();
+        }
+      }
+      
       return;
     }
 
@@ -582,36 +638,46 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">First Name *</Label>
-                      <Input
-                        id="first_name"
-                        placeholder="Enter first name"
-                        value={customerData.first_name}
-                        onChange={(e) => handleInputChange('first_name', e.target.value)}
-                        required
-                        className={`mt-1 transition-all duration-300 ${
-                          showValidation && !customerData.first_name.trim() 
-                            ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                            : 'focus:ring-2 focus:ring-blue-200'
-                        }`}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="first_name"
+                          placeholder="Enter first name"
+                          value={customerData.first_name}
+                          onChange={(e) => handleInputChange('first_name', e.target.value)}
+                          required
+                          className={`mt-1 transition-all duration-300 ${
+                            showValidation && !customerData.first_name.trim() 
+                              ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                              : 'focus:ring-2 focus:ring-blue-200'
+                          }`}
+                        />
+                        {validatedFields.first_name && (
+                          <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-600" />
+                        )}
+                      </div>
                       {fieldErrors.first_name && (
                         <p className="text-red-500 text-sm mt-1">{fieldErrors.first_name}</p>
                       )}
                     </div>
                     <div>
                       <Label htmlFor="last_name" className="text-sm font-medium text-gray-700">Last Name *</Label>
-                      <Input
-                        id="last_name"
-                        placeholder="Enter last name"
-                        value={customerData.last_name}
-                        onChange={(e) => handleInputChange('last_name', e.target.value)}
-                        required
-                        className={`mt-1 transition-all duration-300 ${
-                          showValidation && !customerData.last_name.trim() 
-                            ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                            : 'focus:ring-2 focus:ring-blue-200'
-                        }`}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="last_name"
+                          placeholder="Enter last name"
+                          value={customerData.last_name}
+                          onChange={(e) => handleInputChange('last_name', e.target.value)}
+                          required
+                          className={`mt-1 transition-all duration-300 ${
+                            showValidation && !customerData.last_name.trim() 
+                              ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                              : 'focus:ring-2 focus:ring-blue-200'
+                          }`}
+                        />
+                        {validatedFields.last_name && (
+                          <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-600" />
+                        )}
+                      </div>
                       {fieldErrors.last_name && (
                         <p className="text-red-500 text-sm mt-1">{fieldErrors.last_name}</p>
                       )}
@@ -621,19 +687,24 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   {/* Email */}
                   <div>
                     <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="e.g., john.smith@email.com"
-                      value={customerData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      required
-                      className={`mt-1 transition-all duration-300 ${
-                        showValidation && fieldErrors.email 
-                          ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                          : 'focus:ring-2 focus:ring-blue-200'
-                      }`}
-                    />
+                    <div className="relative">
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="e.g., john.smith@email.com"
+                        value={customerData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        required
+                        className={`mt-1 transition-all duration-300 ${
+                          showValidation && fieldErrors.email 
+                            ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                            : 'focus:ring-2 focus:ring-blue-200'
+                        }`}
+                      />
+                      {validatedFields.email && (
+                        <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-600" />
+                      )}
+                    </div>
                     {fieldErrors.email && (
                       <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
                     )}
@@ -642,19 +713,24 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   {/* Phone */}
                   <div>
                     <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone Number *</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="e.g., 07123 456789 or 01234 567890"
-                      value={customerData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      required
-                      className={`mt-1 transition-all duration-300 ${
-                        showValidation && fieldErrors.phone 
-                          ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                          : 'focus:ring-2 focus:ring-blue-200'
-                      }`}
-                    />
+                    <div className="relative">
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="e.g., 07123 456789 or 01234 567890"
+                        value={customerData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        required
+                        className={`mt-1 transition-all duration-300 ${
+                          showValidation && fieldErrors.phone 
+                            ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                            : 'focus:ring-2 focus:ring-blue-200'
+                        }`}
+                      />
+                      {validatedFields.phone && (
+                        <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-600" />
+                      )}
+                    </div>
                     {fieldErrors.phone && (
                       <p className="text-red-500 text-sm mt-1">{fieldErrors.phone}</p>
                     )}
@@ -665,18 +741,23 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="address_line_1" className="text-sm font-medium text-gray-700">Address Line 1 *</Label>
-                      <Input
-                        id="address_line_1"
-                        placeholder="Enter your address"
-                        value={customerData.address_line_1}
-                        onChange={(e) => handleInputChange('address_line_1', e.target.value)}
-                        required
-                        className={`mt-1 transition-all duration-300 ${
-                          showValidation && !customerData.address_line_1.trim() 
-                            ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                            : 'focus:ring-2 focus:ring-blue-200'
-                        }`}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="address_line_1"
+                          placeholder="Enter your address"
+                          value={customerData.address_line_1}
+                          onChange={(e) => handleInputChange('address_line_1', e.target.value)}
+                          required
+                          className={`mt-1 transition-all duration-300 ${
+                            showValidation && !customerData.address_line_1.trim() 
+                              ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                              : 'focus:ring-2 focus:ring-blue-200'
+                          }`}
+                        />
+                        {validatedFields.address_line_1 && (
+                          <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-600" />
+                        )}
+                      </div>
                       {fieldErrors.address_line_1 && (
                         <p className="text-red-500 text-sm mt-1">{fieldErrors.address_line_1}</p>
                       )}
@@ -696,42 +777,52 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="postcode" className="text-sm font-medium text-gray-700">Postcode *</Label>
-                        <PostcodeAutocomplete
-                          value={customerData.postcode}
-                          onChange={(value) => handleInputChange('postcode', value)}
-                          onAddressSelect={(address) => {
-                            // Auto-populate address fields when postcode is selected
-                            if (address.town) {
-                              handleInputChange('city', address.town);
-                            }
-                            if (address.street && !customerData.address_line_1) {
-                              handleInputChange('address_line_1', address.street);
-                            }
-                          }}
-                          placeholder="e.g., SW1A 1AA"
-                          required
-                          className={`${
-                            showValidation && fieldErrors.postcode 
-                              ? 'border-red-500 focus:border-red-500' 
-                              : ''
-                          }`}
-                          error={fieldErrors.postcode}
-                        />
+                        <div className="relative">
+                          <PostcodeAutocomplete
+                            value={customerData.postcode}
+                            onChange={(value) => handleInputChange('postcode', value)}
+                            onAddressSelect={(address) => {
+                              // Auto-populate address fields when postcode is selected
+                              if (address.town) {
+                                handleInputChange('city', address.town);
+                              }
+                              if (address.street && !customerData.address_line_1) {
+                                handleInputChange('address_line_1', address.street);
+                              }
+                            }}
+                            placeholder="e.g., SW1A 1AA"
+                            required
+                            className={`${
+                              showValidation && fieldErrors.postcode 
+                                ? 'border-red-500 focus:border-red-500' 
+                                : ''
+                            }`}
+                            error={fieldErrors.postcode}
+                          />
+                          {validatedFields.postcode && (
+                            <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-600 z-10" />
+                          )}
+                        </div>
                       </div>
                       <div>
                         <Label htmlFor="city" className="text-sm font-medium text-gray-700">City/Town *</Label>
-                        <Input
-                          id="city"
-                          placeholder="Enter your city/town"
-                          value={customerData.city}
-                          onChange={(e) => handleInputChange('city', e.target.value)}
-                          required
-                          className={`mt-1 transition-all duration-300 ${
-                            showValidation && fieldErrors.city 
-                              ? 'border-red-500 focus:border-red-500 animate-pulse' 
-                              : 'focus:ring-2 focus:ring-blue-200'
-                          }`}
-                        />
+                        <div className="relative">
+                          <Input
+                            id="city"
+                            placeholder="Enter your city/town"
+                            value={customerData.city}
+                            onChange={(e) => handleInputChange('city', e.target.value)}
+                            required
+                            className={`mt-1 transition-all duration-300 ${
+                              showValidation && fieldErrors.city 
+                                ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                                : 'focus:ring-2 focus:ring-blue-200'
+                            }`}
+                          />
+                          {validatedFields.city && (
+                            <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-600" />
+                          )}
+                        </div>
                         {fieldErrors.city && (
                           <p className="text-red-500 text-sm mt-1">{fieldErrors.city}</p>
                         )}
@@ -1223,6 +1314,17 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           onClose={() => setShowEmailPopup(false)}
           onDiscountCodeGenerated={handleEmailPopupDiscountCode}
         />
+        
+        {/* Scroll to Top Button - Mobile Only */}
+        {showScrollTop && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-6 right-6 md:hidden bg-primary text-primary-foreground p-3 rounded-full shadow-lg hover:bg-primary/90 transition-all duration-300 z-50"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp className="w-6 h-6" />
+          </button>
+        )}
       </div>
     </div>
   );
