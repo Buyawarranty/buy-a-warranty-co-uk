@@ -1023,7 +1023,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   <div className="flex items-center gap-2 mb-4">
                     <ShieldCheck className="w-5 h-5 text-black flex-shrink-0" />
                     <p className="text-black font-medium">
-                      Covers all major electrical and mechanical components – just like those found in petrol and diesel vehicles, plus additional systems unique to hybrids and EVs.
+                      Electrical and mechanical parts unique to hybrid vehicles plus those above found in in petrol and diesel vehicles
                     </p>
                   </div>
                   <div className="grid md:grid-cols-2 gap-6">
