@@ -872,7 +872,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
          </div>
 
         {/* What's Covered Section */}
-        <div className="bg-white rounded-xl border border-gray-200 p-8 mb-8 shadow-lg">
+        <div className="section-header rounded-lg p-8 mb-8">
           <Collapsible>
             <CollapsibleTrigger className="w-full">
               <div className="flex items-center justify-between mb-4 cursor-pointer group">
