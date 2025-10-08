@@ -877,8 +877,8 @@ const PricingTable: React.FC<PricingTableProps> = ({
             <CollapsibleTrigger className="w-full">
               <div className="flex items-center justify-between mb-4 cursor-pointer group">
                 <div className="flex items-center gap-3">
-                  <Shield className="w-6 h-6 text-green-700" />
-                  <h2 className="text-2xl font-bold text-green-700">
+                  <Shield className="w-6 h-6" style={{ color: 'rgb(75, 128, 67)' }} />
+                  <h2 className="text-2xl font-bold" style={{ color: 'rgb(75, 128, 67)' }}>
                     What's Covered?
                   </h2>
                 </div>
