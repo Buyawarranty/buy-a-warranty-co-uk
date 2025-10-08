@@ -1541,6 +1541,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   '✅ Fault diagnostics',
                   '✅ Consequential damage cover',
                   '✅ Fast claims process',
+                  '✅ Choose your own garage',
                   '✅ 14-day money-back guarantee',
                   '✅ Optional extras available',
                   '❌ Pre-existing faults are not covered'
@@ -1563,6 +1564,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   '✅ Vehicle recovery claim-back',
                   '✅ Consequential damage cover',
                   '✅ Fast claims process',
+                  '✅ Choose your own garage',
                   '✅ 14-day money-back guarantee',
                   '✅ Optional extras available',
                   '❌ Pre-existing faults are not covered'
@@ -1586,6 +1588,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   '✅ Vehicle rental cover',
                   '✅ Consequential damage cover',
                   '✅ Fast claims process',
+                  '✅ Choose your own garage',
                   '✅ 14-day money-back guarantee',
                   '✅ Optional extras available – tailor your cover to suit your needs',
                   '❌ Pre-existing faults are not covered'
