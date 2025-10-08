@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import pandaMechanicFix from '@/assets/panda-mechanic-fix.png';
+import MileageSlider from '@/components/MileageSlider';
 
 const Claims = () => {
   const { toast } = useToast();
@@ -33,7 +34,8 @@ const Claims = () => {
     faultDescription: '',
     dateOccurred: '',
     faultDetails: '',
-    issueTiming: ''
+    issueTiming: '',
+    currentMileage: 50000
   });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -207,6 +209,7 @@ const Claims = () => {
       const claimMessage = `
 Claim Details:
 Vehicle: ${formData.vehicleReg}
+Current Mileage: ${formData.currentMileage}
 Fault Description: ${formData.faultDescription}
 Date Occurred: ${formData.dateOccurred}
 Fault Details: ${formData.faultDetails}
@@ -219,6 +222,7 @@ Issue Timing: ${formData.issueTiming}
           email: formData.email,
           phone: formData.phone,
           vehicleReg: formData.vehicleReg,
+          currentMileage: formData.currentMileage,
           faultDescription: formData.faultDescription,
           dateOccurred: formData.dateOccurred,
           faultDetails: formData.faultDetails,
@@ -246,7 +250,8 @@ Issue Timing: ${formData.issueTiming}
         faultDescription: '',
         dateOccurred: '',
         faultDetails: '',
-        issueTiming: ''
+        issueTiming: '',
+        currentMileage: 50000
       });
       setUploadedFile(null);
       setErrors({});
@@ -644,6 +649,18 @@ Issue Timing: ${formData.issueTiming}
                               className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                             />
                           </div>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="currentMileage" className="text-gray-700 font-medium text-sm mb-2 block">
+                            Current Mileage
+                          </Label>
+                          <MileageSlider
+                            value={formData.currentMileage}
+                            onChange={(value) => setFormData({ ...formData, currentMileage: value })}
+                            min={0}
+                            max={200000}
+                          />
                         </div>
 
                         <div>
