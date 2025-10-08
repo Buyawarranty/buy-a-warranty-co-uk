@@ -3,6 +3,7 @@ import { Star, Phone, Mail } from 'lucide-react';
 import companyRegistrationImage from '@/assets/company-registration.webp';
 import companyRegistrationFooter from '@/assets/company-registration-footer.png';
 import desktopAddressCopy from '@/assets/desktop-address-copy.png';
+import mobileAddressCopy from '@/assets/mobile-address-copy.png';
 
 const WebsiteFooter = () => {
   return (
@@ -113,7 +114,7 @@ const WebsiteFooter = () => {
                   className="hidden md:block max-w-[50%] h-auto mx-auto"
                 />
                 <img 
-                  src={companyRegistrationFooter} 
+                  src={mobileAddressCopy} 
                   alt="Buyawarranty.co.uk trading information and registered address" 
                   className="md:hidden max-w-[80%] h-auto mx-auto"
                 />
