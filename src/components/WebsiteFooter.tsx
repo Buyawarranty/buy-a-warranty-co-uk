@@ -2,6 +2,7 @@ import React from 'react';
 import { Star, Phone, Mail } from 'lucide-react';
 import companyRegistrationImage from '@/assets/company-registration.webp';
 import companyRegistrationFooter from '@/assets/company-registration-footer.png';
+import desktopAddressCopy from '@/assets/desktop-address-copy.png';
 
 const WebsiteFooter = () => {
   return (
@@ -107,9 +108,14 @@ const WebsiteFooter = () => {
             <div className="text-center space-y-3">
               <div className="flex justify-center">
                 <img 
+                  src={desktopAddressCopy} 
+                  alt="Buyawarranty.co.uk trading information and registered address" 
+                  className="hidden md:block max-w-[50%] h-auto mx-auto"
+                />
+                <img 
                   src={companyRegistrationFooter} 
                   alt="Buyawarranty.co.uk trading information and registered address" 
-                  className="max-w-[25%] h-auto mx-auto"
+                  className="md:hidden max-w-[80%] h-auto mx-auto"
                 />
               </div>
             </div>
