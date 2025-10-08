@@ -1315,6 +1315,14 @@ const PricingTable: React.FC<PricingTableProps> = ({
             </h2>
           </div>
           
+          {/* Guide Text */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <h3 className="text-base font-semibold text-blue-900 mb-2">How much should I choose?</h3>
+            <p className="text-sm text-blue-800">
+              Think about the last time your car needed a repair. For example, if your last repair cost £900, a £1250 claim limit would cover similar future issues.
+            </p>
+          </div>
+          
           {validationErrors.claimLimit && (
             <Alert variant="destructive" className="mb-6">
               <AlertCircle className="h-4 w-4" />
