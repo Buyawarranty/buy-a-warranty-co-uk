@@ -1266,7 +1266,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
               2
             </div>
             <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <MousePointerClick className="w-5 h-5" />
+              <MousePointerClick className="w-5 h-5 scale-x-[-1]" />
               Choose Your Excess Amount
             </h2>
           </div>
