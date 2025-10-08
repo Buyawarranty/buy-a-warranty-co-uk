@@ -8,14 +8,6 @@ import { SEOHead } from '@/components/SEOHead';
 
 const Protected = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({});
-
-  const toggleSection = (id: string) => {
-    setOpenSections(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
 
   const vehicleTypes = [
     {
@@ -149,64 +141,52 @@ const Protected = () => {
     const IconComponent = config.icon;
     
     return (
-      <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-        <button
-          onClick={() => toggleSection(vehicleType.id)}
-          className={`w-full px-6 py-4 text-left flex items-center justify-between transition-all duration-300 ${config.bgColor} ${config.bgColorHover} ${
+      <AccordionItem value={vehicleType.id} className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+        <AccordionTrigger 
+          className={`w-full px-4 sm:px-6 py-4 text-left flex items-center justify-between transition-all duration-300 hover:no-underline ${config.bgColor} ${config.bgColorHover} ${
             vehicleType.id === 'not-covered' ? 'text-red-800' : 'text-white'
           }`}
         >
           <div className="flex items-center">
-            <IconComponent className="w-6 h-6 mr-3 flex-shrink-0" />
-            <span className="font-bold text-lg">{vehicleType.title}</span>
+            <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 flex-shrink-0" />
+            <span className="font-bold text-base sm:text-lg break-words">{vehicleType.title}</span>
           </div>
-          <ChevronDown 
-            className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
-              openSections[vehicleType.id] ? 'rotate-180' : ''
-            }`}
-          />
-        </button>
+        </AccordionTrigger>
         
-        <div className={`overflow-hidden transition-all duration-200 ease-out ${
-          openSections[vehicleType.id] 
-            ? 'max-h-screen opacity-100 animate-accordion-down' 
-            : 'max-h-0 opacity-0'
-        }`}>
-          <div className="px-6 py-4 bg-white">
-            <ul className="space-y-2 transform translate-y-0">
-              {vehicleType.components.map((component, index) => {
-                if (vehicleType.id === 'not-covered') {
-                  // Handle special formatting for not-covered section
-                  if (component === '') {
-                    return <li key={index} className="h-2"></li>; // Empty space
-                  }
-                  if (component === 'We keep things straightforward and transparent.' || component === "What's Not Included:") {
-                    return (
-                      <li key={index} className="text-gray-700">
-                        <span className="text-sm leading-relaxed font-medium">{component}</span>
-                      </li>
-                    );
-                  }
-                  // Items with X
+        <AccordionContent className="px-4 sm:px-6 py-4 bg-white">
+          <ul className="space-y-2">
+            {vehicleType.components.map((component, index) => {
+              if (vehicleType.id === 'not-covered') {
+                // Handle special formatting for not-covered section
+                if (component === '') {
+                  return <li key={index} className="h-2"></li>; // Empty space
+                }
+                if (component === 'We keep things straightforward and transparent.' || component === "What's Not Included:") {
                   return (
-                    <li key={index} className="flex items-start text-gray-700">
-                      <X className="w-5 h-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm leading-relaxed">{component}</span>
+                    <li key={index} className="text-gray-700">
+                      <span className="text-sm leading-relaxed font-medium">{component}</span>
                     </li>
                   );
                 }
-                // Default formatting for covered items
+                // Items with X
                 return (
                   <li key={index} className="flex items-start text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                    <X className="w-5 h-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
                     <span className="text-sm leading-relaxed">{component}</span>
                   </li>
                 );
-              })}
-            </ul>
-          </div>
-        </div>
-      </div>
+              }
+              // Default formatting for covered items
+              return (
+                <li key={index} className="flex items-start text-gray-700">
+                  <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-sm leading-relaxed">{component}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </AccordionContent>
+      </AccordionItem>
     );
   };
 
@@ -361,11 +341,11 @@ const Protected = () => {
             </p>
           </div>
           
-          <div className="space-y-4 max-w-5xl mx-auto">
+          <Accordion type="single" collapsible className="space-y-4 max-w-5xl mx-auto">
             {vehicleTypes.map((vehicleType) => (
               <VehicleSection key={vehicleType.id} vehicleType={vehicleType} />
             ))}
-          </div>
+          </Accordion>
         </div>
       </section>
 
