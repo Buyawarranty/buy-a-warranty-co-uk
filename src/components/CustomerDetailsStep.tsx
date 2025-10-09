@@ -17,7 +17,7 @@ import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType, calculateAddOnPrice } from '@/lib/addOnsUtils';
 import { EmailCapturePopup } from '@/components/EmailCapturePopup';
 import MobileNavigation from '@/components/MobileNavigation';
-import bumperLogo from '@/assets/bumper-logo.png';
+import bumperLogo from '@/assets/bumper-logo-transparent.png';
 import stripeLogo from '@/assets/stripe-logo.png';
 
 export interface CustomerDetailsStepProps {
@@ -1234,9 +1234,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                 0% Interest
                               </div>
                             </div>
-                            <div className="flex justify-center mb-3">
-                              <img src={bumperLogo} alt="Bumper" className="h-8 sm:h-10 object-contain" />
-                            </div>
+                             <div className="flex flex-col items-center mb-3 gap-1">
+                               <span className="text-xs text-gray-500">Powered by</span>
+                               <img src={bumperLogo} alt="Bumper" className="h-8 sm:h-10 object-contain" />
+                             </div>
                             <div className="text-sm text-gray-600 mb-3 space-y-1">
                               <div className="flex items-center">
                                 <span className="text-green-600 mr-2 text-base">✔️</span>
@@ -1296,9 +1297,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                 Save 10% (£{Math.round(discountedPrice * 0.10)}) instantly
                               </div>
                             </div>
-                            <div className="flex justify-center mb-3">
-                              <img src={stripeLogo} alt="Stripe" className="h-8 sm:h-10 object-contain" />
-                            </div>
+                             <div className="flex flex-col items-center mb-3 gap-1">
+                               <span className="text-xs text-gray-500">Powered by</span>
+                               <img src={stripeLogo} alt="Stripe" className="h-8 sm:h-10 object-contain" />
+                             </div>
                             <p className="text-sm text-gray-600">
                               Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span>
                               {hasValidDiscountCodes && (
