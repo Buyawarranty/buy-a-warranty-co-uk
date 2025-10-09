@@ -422,6 +422,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     
     if (!validateForm()) {
       console.log('❌ Form validation failed');
+      
+      // Scroll to top of page immediately on first click
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
       toast.error('Please fill in all required fields', {
         style: {
           background: '#fee2e2',
@@ -430,16 +434,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
         }
       });
       trackEvent('form_validation_error', { form_name: 'customer_details' });
-      
-      // Scroll to first error field
-      const firstErrorField = Object.keys(fieldErrors)[0];
-      if (firstErrorField) {
-        const element = document.getElementById(firstErrorField);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          element.focus();
-        }
-      }
       
       return;
     }
