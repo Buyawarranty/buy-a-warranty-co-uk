@@ -21,11 +21,11 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
   };
 
   return (
-    <Card className="border border-gray-200 bg-gray-50 mb-6">
-      <CardContent className="p-4">
-        <h3 className="text-lg font-medium text-gray-900 mb-3">
+    <Card className="neutral-container shadow-lg shadow-black/15 mb-6 border-0">
+      <CardContent className="p-6">
+        <h3 className="text-lg font-medium mb-3">
           Get 10% Off a 2nd warranty today
-          <span className="block text-sm text-gray-600">(after checkout)</span>
+          <span className="block text-sm opacity-70">(after checkout)</span>
         </h3>
         
         <Button
@@ -33,7 +33,7 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
           onClick={handleClick}
           className={isSelected 
             ? "bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4" 
-            : "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4"
+            : "bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4"
           }
           disabled={isSelected}
         >
@@ -51,7 +51,7 @@ const AddAnotherWarrantyOffer: React.FC<AddAnotherWarrantyOfferProps> = ({ onAdd
         </Button>
         
         {isSelected && (
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm opacity-70 mt-2">
             ✓ You'll get 10% off your next warranty after completing this purchase
           </p>
         )}
