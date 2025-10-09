@@ -880,7 +880,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Step 2 - Choose Your Plan */}
-      <section className="py-12 md:py-20 bg-brand-gray-bg">
+      <section className="py-8 md:py-14 bg-brand-gray-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Panda with plan badges */}
@@ -941,7 +941,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </section>
 
       {/* Step 3 - Drive With Confidence */}
-      <section className="py-16 md:py-28 bg-white">
+      <section className="py-8 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}
