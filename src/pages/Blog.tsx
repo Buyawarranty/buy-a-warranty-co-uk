@@ -249,18 +249,25 @@ const Blog = () => {
                   </a>
                 </div>
 
-                <div className="flex items-center gap-6 pt-6 border-t border-gray-200">
-                  <div className="flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-primary" />
-                    <span className="text-sm font-medium text-gray-700">FCA Approved</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-green-600" />
-                    <span className="text-sm font-medium text-gray-700">5-Star Reviews</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-primary" />
-                    <span className="text-sm font-medium text-gray-700">24/7 Claims</span>
+                <div className="pt-6 border-t border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Why Choose Us</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                      <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-700">5-Star Trustpilot Reviews</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-700">Unlimited Claims</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-700">90 min claims payout</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span className="text-sm font-medium text-gray-700">UK-based claims team</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -269,7 +276,7 @@ const Blog = () => {
                 <img 
                   src={warrantyCarImage} 
                   alt="Buy a Warranty UK - Professional car warranty service" 
-                  className="w-full max-w-lg h-auto"
+                  className="w-full max-w-lg h-auto object-contain"
                 />
               </div>
             </div>
@@ -331,11 +338,11 @@ const Blog = () => {
               {featuredPost && (
                 <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-gray-200 bg-white">
                   <div className="grid lg:grid-cols-2 gap-0">
-                    <div className="relative h-80 lg:h-full overflow-hidden">
+                    <div className="relative h-80 lg:h-full overflow-hidden bg-white">
                       <img 
                         src={featuredPost.image} 
                         alt={featuredPost.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain p-4"
                       />
                       <Badge className="absolute top-4 left-4 bg-primary text-white px-4 py-2 text-sm font-semibold shadow-lg">
                         Featured
@@ -431,11 +438,11 @@ const Blog = () => {
               <div className="grid md:grid-cols-2 gap-8">
                 {recentPosts.map((post) => (
                   <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary bg-white group">
-                    <div className="relative h-64 overflow-hidden">
+                    <div className="relative h-64 overflow-hidden bg-white">
                       <img 
                         src={post.image} 
                         alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
                       />
                       <Badge className="absolute top-4 left-4 bg-primary text-white px-4 py-2 text-sm font-semibold shadow-lg">
                         {post.category}
@@ -536,15 +543,19 @@ const Blog = () => {
                       <div className="space-y-4 pt-4">
                         <div className="flex items-center gap-3">
                           <Check className="w-6 h-6" />
-                          <span className="text-lg">FCA Approved Provider</span>
+                          <span className="text-lg">5-Star Trustpilot Reviews</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <Check className="w-6 h-6" />
-                          <span className="text-lg">5-Star Trustpilot Rating</span>
+                          <span className="text-lg">Unlimited Claims</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <Check className="w-6 h-6" />
-                          <span className="text-lg">24/7 Claims Support</span>
+                          <span className="text-lg">90 min claims payout</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Check className="w-6 h-6" />
+                          <span className="text-lg">UK-based claims team</span>
                         </div>
                       </div>
                     </div>
