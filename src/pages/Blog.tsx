@@ -1,119 +1,69 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Calendar, User, Clock, ChevronRight, Menu, Phone, Shield, Check } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Calendar, User, ArrowRight, ExternalLink, Search, Shield, Clock, Award, MapPin, CheckCircle2, Phone } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import TrustpilotHeader from '@/components/TrustpilotHeader';
-import pandaHeroImage from '@/assets/panda-car-warranty-hero.png';
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  featured_image_url: string | null;
-  published_at: string;
-  read_time_minutes: number;
-  is_featured: boolean;
-  blog_authors: { name: string } | null;
-  blog_categories: { name: string } | null;
-}
+import { Card, CardContent } from '@/components/ui/card';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Badge } from '@/components/ui/badge';
+import pandaHeroImage from '@/assets/blog-hero-panda-mechanic.png';
+import warrantyCarImage from '@/assets/blog-hero-warranty-car.png';
 
 const Blog = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    loadBlogData();
-  }, [selectedCategory, searchQuery]);
-
-  const loadBlogData = async () => {
-    setLoading(true);
-    try {
-      // Load featured post
-      const { data: featuredData } = await supabase
-        .from('blog_posts')
-        .select(`
-          *,
-          blog_authors(name),
-          blog_categories(name)
-        `)
-        .eq('status', 'published')
-        .eq('is_featured', true)
-        .order('published_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (featuredData) setFeaturedPost(featuredData);
-
-      // Load other posts
-      let query = supabase
-        .from('blog_posts')
-        .select(`
-          *,
-          blog_authors(name),
-          blog_categories(name)
-        `)
-        .eq('status', 'published')
-        .order('published_at', { ascending: false })
-        .limit(10);
-
-      if (selectedCategory) {
-        query = query.eq('category_id', selectedCategory);
+  const navigateToQuoteForm = () => {
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
       }
-
-      if (searchQuery) {
-        query = query.or(`title.ilike.%${searchQuery}%,excerpt.ilike.%${searchQuery}%`);
-      }
-
-      const { data: postsData, error } = await query;
-
-      if (error) throw error;
-      if (postsData) setPosts(postsData.filter(p => !p.is_featured));
-
-      // Load categories
-      const { data: categoriesData } = await supabase
-        .from('blog_categories')
-        .select('*')
-        .eq('is_active', true);
-
-      if (categoriesData) setCategories(categoriesData);
-    } catch (error: any) {
-      toast.error('Failed to load blog posts');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    }, 100);
   };
 
-  const handleNewsletterSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newsletterEmail) return;
-
-    try {
-      const { error } = await supabase
-        .from('newsletter_signups')
-        .insert([{ email: newsletterEmail, source: 'blog' }]);
-
-      if (error) throw error;
-      toast.success('Thanks for subscribing!');
-      setNewsletterEmail('');
-    } catch (error: any) {
-      toast.error('Failed to subscribe');
+  const blogPosts = [
+    {
+      id: 1,
+      title: "Is a Car Warranty Worth It in the UK? What Drivers Need to Know",
+      excerpt: "Explore the true value of car warranties for UK drivers. Learn about common repair costs, how warranties can save you money, and whether extended coverage is right for your vehicle.",
+      author: "Sarah Johnson",
+      date: "March 18, 2024",
+      readTime: "7 min read",
+      category: "Warranty Guides",
+      image: warrantyCarImage,
+      featured: true
+    },
+    {
+      id: 2,
+      title: "Top 5 Things to Check Before Buying a Used Car Warranty",
+      excerpt: "A comprehensive checklist covering claim limits, exclusions, approved garages, and customer service. Make informed decisions and feel confident in your warranty purchase.",
+      author: "Mike Thompson",
+      date: "March 15, 2024",
+      readTime: "6 min read",
+      category: "Buying Guides",
+      image: "/lovable-uploads/car-warranty-uk-compare-quotes.png",
+      featured: false
+    },
+    {
+      id: 3,
+      title: "Van Warranty vs Car Warranty: What's the Difference and Which Do You Need?",
+      excerpt: "Essential guide for tradespeople and small business owners. Understand coverage differences, usage scenarios, and why van warranties are crucial for commercial vehicles.",
+      author: "Emma Davis",
+      date: "March 12, 2024",
+      readTime: "8 min read",
+      category: "Commercial Coverage",
+      image: pandaHeroImage,
+      featured: false
     }
-  };
+  ];
 
-  // Schema markup for SEO
+  const featuredPost = blogPosts.find(post => post.featured);
+  const recentPosts = blogPosts.filter(post => !post.featured);
+
   const schemaMarkup = {
     "@context": "https://schema.org",
     "@type": "Blog",
@@ -145,529 +95,487 @@ const Blog = () => {
         {JSON.stringify(schemaMarkup)}
       </script>
 
-      <div className="min-h-screen bg-background">
-        {/* Sticky Navigation Bar */}
-        <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              <Link to="/" className="text-lg font-bold text-primary hover:text-primary/80">
-                Buy a Warranty
-              </Link>
-              <nav className="hidden md:flex items-center gap-6 text-sm">
-                <Link to="/thewarrantyhub" className="font-semibold text-primary">Warranty Guides</Link>
-                <Link to="/faq" className="text-muted-foreground hover:text-foreground">FAQs</Link>
-                <Link to="/claims" className="text-muted-foreground hover:text-foreground">Claims</Link>
-                <Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link>
+      <div className="min-h-screen bg-white">
+        {/* Header */}
+        <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16 sm:h-20">
+              <div className="flex items-center">
+                <Link to="/" className="hover:opacity-80 transition-opacity">
+                  <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+                </Link>
+              </div>
+              
+              <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+                <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+                <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+                <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
+                <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
               </nav>
-              <Button asChild size="sm" className="bg-[#eb4b00] hover:bg-[#d43e00]">
-                <Link to="/">Get Free Quote</Link>
-              </Button>
+
+              <div className="hidden lg:flex items-center space-x-3">
+                <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
+                  >
+                    WhatsApp Us
+                  </Button>
+                </a>
+                <Button 
+                  size="sm"
+                  onClick={navigateToQuoteForm}
+                  className="bg-orange-500 text-white hover:bg-orange-600 px-3 text-sm"
+                >
+                  Get my quote
+                </Button>
+              </div>
+
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="lg:hidden p-2"
+                  >
+                    <Menu className="h-12 w-12" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <div className="flex flex-col h-full">
+                    <div className="flex items-center justify-between pb-6">
+                      <Link to="/" className="hover:opacity-80 transition-opacity">
+                        <img 
+                          src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                          alt="Buy a Warranty" 
+                          className="h-8 w-auto"
+                        />
+                      </Link>
+                    </div>
+
+                    <nav className="flex flex-col space-y-6 flex-1">
+                      <Link 
+                        to="/what-is-covered"
+                        className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        What's Covered
+                      </Link>
+                      <Link 
+                        to="/make-a-claim" 
+                        className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Make a Claim
+                      </Link>
+                      <Link 
+                        to="/faq" 
+                        className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        FAQs
+                      </Link>
+                      <Link 
+                        to="/contact-us" 
+                        className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Contact Us
+                      </Link>
+                    </nav>
+
+                    <div className="space-y-4 pt-6 mt-auto">
+                      <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                        <Button 
+                          variant="outline" 
+                          className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          WhatsApp Us
+                        </Button>
+                      </a>
+                      <Button 
+                        className="w-full bg-orange-500 text-white hover:bg-orange-600 text-lg py-3"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          navigateToQuoteForm();
+                        }}
+                      >
+                        Get my quote
+                      </Button>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
-        </div>
-
-        {/* Breadcrumbs */}
-        <div className="bg-muted/30 border-b">
-          <div className="max-w-7xl mx-auto px-4 py-3">
-            <nav className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Link to="/" className="hover:text-foreground">Home</Link>
-              <span>/</span>
-              <span className="text-foreground font-medium">The Warranty Hub</span>
-            </nav>
-          </div>
-        </div>
+        </header>
 
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-[#224380] via-[#2a5299] to-[#1a3464] text-white overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDEzNGg2djZoLTZ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-10"></div>
-          
-          <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 relative z-10">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+        <section className="relative bg-white py-16 md:py-20 border-b border-gray-200">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
               <div className="space-y-6">
-                <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                  Protect Your Vehicle with the UK's Most Trusted Warranty Provider
-                </h1>
-                <p className="text-xl md:text-2xl text-blue-100">
-                  Flexible cover for cars and vans across the UK – get peace of mind today with expert advice from The Warranty Hub
-                </p>
-                
-                {/* Trust Signals */}
-                <div className="flex flex-wrap items-center gap-6 pt-4">
-                  <div className="flex items-center gap-2">
-                    <Shield className="w-6 h-6 text-green-400" />
-                    <span className="text-sm font-medium">FCA Approved</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Award className="w-6 h-6 text-yellow-400" />
-                    <span className="text-sm font-medium">5-Star Reviews</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-6 h-6 text-blue-300" />
-                    <span className="text-sm font-medium">24/7 Claims</span>
-                  </div>
+                <div className="space-y-4">
+                  <Badge className="bg-primary text-white px-4 py-1 text-sm font-medium">
+                    The Warranty Hub
+                  </Badge>
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                    Expert Advice for UK Car Owners
+                  </h1>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    Guides, tips, and insights to help you protect your vehicle and make informed warranty decisions.
+                  </p>
                 </div>
-
+                
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Button 
-                    asChild 
                     size="lg"
-                    className="bg-[#eb4b00] hover:bg-[#d43e00] text-white text-lg px-8 py-6 shadow-lg"
+                    onClick={navigateToQuoteForm}
+                    className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg font-semibold"
                   >
-                    <Link to="/">
-                      Get Your Free Quote
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </Link>
+                    Get Your Free Quote
                   </Button>
-                  <Button 
-                    asChild 
-                    variant="outline"
-                    size="lg"
-                    className="bg-white/10 border-white/30 text-white hover:bg-white/20 text-lg px-8 py-6"
-                  >
-                    <Link to="/faq">
-                      Learn More
-                    </Link>
-                  </Button>
+                  <a href="tel:03302295040">
+                    <Button 
+                      variant="outline"
+                      size="lg"
+                      className="w-full sm:w-auto border-2 border-gray-300 text-gray-900 hover:bg-gray-50 px-8 py-6 text-lg font-semibold"
+                    >
+                      <Phone className="w-5 h-5 mr-2" />
+                      0330 229 5040
+                    </Button>
+                  </a>
                 </div>
 
-                {/* Trustpilot */}
-                <div className="pt-6">
-                  <TrustpilotHeader className="justify-start" />
+                <div className="flex items-center gap-6 pt-6 border-t border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-primary" />
+                    <span className="text-sm font-medium text-gray-700">FCA Approved</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-5 h-5 text-green-600" />
+                    <span className="text-sm font-medium text-gray-700">5-Star Reviews</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-primary" />
+                    <span className="text-sm font-medium text-gray-700">24/7 Claims</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="hidden md:block">
+              <div className="flex justify-center">
                 <img 
-                  src={pandaHeroImage}
-                  alt="UK driver protected by comprehensive car warranty coverage - affordable vehicle protection for used cars and vans across Manchester, Birmingham, London and nationwide"
-                  className="w-full h-auto rounded-lg shadow-2xl"
+                  src={warrantyCarImage} 
+                  alt="Buy a Warranty UK - Professional car warranty service" 
+                  className="w-full max-w-lg h-auto"
                 />
               </div>
             </div>
-          </div>
-
-          {/* Search Bar - Prominent Position */}
-          <div className="max-w-7xl mx-auto px-4 pb-12 relative z-10">
-            <Card className="max-w-2xl mx-auto p-6 shadow-xl">
-              <div className="flex items-center gap-3 mb-4">
-                <Search className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-semibold text-foreground">Search Our Expert Guides</h2>
-              </div>
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="e.g. 'Is a car warranty worth it in the UK?'"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-4 pr-4 h-12 text-base"
-                />
-              </div>
-            </Card>
           </div>
         </section>
 
         {/* UK Coverage Section */}
-        <section className="bg-muted/30 py-12 border-b">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-3 flex items-center justify-center gap-3">
-                <MapPin className="w-8 h-8 text-primary" />
-                UK-Wide Coverage
+        <section className="py-12 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center max-w-4xl mx-auto space-y-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+                Trusted Warranty Provider Across the UK
               </h2>
-              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                We provide car warranty and van warranty coverage across England, Scotland, Wales and Northern Ireland
+              <p className="text-gray-600 text-lg">
+                Serving customers nationwide in England, Scotland, Wales & Northern Ireland
               </p>
+              <div className="flex flex-wrap justify-center gap-4 pt-4">
+                {[
+                  'London', 'Manchester', 'Birmingham', 'Leeds', 'Glasgow', 
+                  'Liverpool', 'Newcastle', 'Sheffield', 'Bristol', 'Cardiff',
+                  'Edinburgh', 'Belfast'
+                ].map((city) => (
+                  <span key={city} className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 shadow-sm">
+                    {city}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              {['London', 'Manchester', 'Birmingham', 'Glasgow', 'Edinburgh', 'Leeds', 'Bristol', 'Liverpool'].map((city) => (
-                <div key={city} className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  <span>{city}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              ...and everywhere else across the UK
-            </p>
           </div>
         </section>
 
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          {/* Featured Article */}
-          {featuredPost && (
-            <section className="mb-16">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-bold text-foreground">Featured Article</h2>
-                <Badge variant="secondary" className="bg-[#eb4b00] text-white px-3 py-1">
-                  Editor's Pick
-                </Badge>
+        {/* Search Bar Section */}
+        <section className="py-12 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Search articles about car warranties, coverage, claims..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 pr-4 py-6 text-base border-2 border-gray-200 focus:border-primary rounded-lg"
+                />
               </div>
-              <Card className="overflow-hidden border shadow-xl hover:shadow-2xl transition-shadow">
-                <div className="md:flex">
-                  {featuredPost.featured_image_url && (
-                    <div className="md:w-1/2">
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Article Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Featured Article</h2>
+                <p className="text-gray-600 text-lg">Our most popular guide this month</p>
+              </div>
+              
+              {featuredPost && (
+                <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-gray-200 bg-white">
+                  <div className="grid lg:grid-cols-2 gap-0">
+                    <div className="relative h-80 lg:h-full overflow-hidden">
                       <img 
-                        src={featuredPost.featured_image_url}
-                        alt={`${featuredPost.title} - expert car warranty advice for UK drivers`}
-                        className="w-full h-64 md:h-full object-cover"
+                        src={featuredPost.image} 
+                        alt={featuredPost.title}
+                        className="w-full h-full object-cover"
                       />
-                    </div>
-                  )}
-                  <div className="md:w-1/2 p-8">
-                    <div className="flex items-center gap-4 mb-4">
-                      <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                        {featuredPost.blog_categories?.name}
+                      <Badge className="absolute top-4 left-4 bg-primary text-white px-4 py-2 text-sm font-semibold shadow-lg">
+                        Featured
                       </Badge>
-                      <span className="text-gray-500 text-sm">{featuredPost.read_time_minutes} min read</span>
                     </div>
                     
-                    <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">
-                      {featuredPost.title}
-                    </h3>
-                    
-                    <p className="text-gray-600 mb-6 text-lg">
-                      {featuredPost.excerpt}
-                    </p>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#224380] rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-white" />
+                    <CardContent className="p-8 lg:p-12 flex flex-col justify-center">
+                      <div className="space-y-6">
+                        <Badge variant="outline" className="border-2 border-primary text-primary font-semibold px-4 py-1">
+                          {featuredPost.category}
+                        </Badge>
+                        
+                        <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+                          {featuredPost.title}
+                        </h3>
+                        
+                        <p className="text-lg text-gray-600 leading-relaxed">
+                          {featuredPost.excerpt}
+                        </p>
+                        
+                        <div className="flex items-center gap-6 text-sm text-gray-500 pt-4 border-t border-gray-200">
+                          <div className="flex items-center gap-2">
+                            <User className="w-4 h-4" />
+                            <span className="font-medium">{featuredPost.author}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
+                            <span>{featuredPost.date}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4" />
+                            <span>{featuredPost.readTime}</span>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{featuredPost.blog_authors?.name}</p>
-                          <p className="text-sm text-gray-500">
-                            {new Date(featuredPost.published_at).toLocaleDateString('en-GB')}
-                          </p>
+                        
+                        <Button 
+                          className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg font-semibold group"
+                        >
+                          Read Full Article
+                          <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </div>
+                </Card>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Banner Before Recent Posts */}
+        <section className="py-16 bg-white border-y border-gray-200">
+          <div className="container mx-auto px-4">
+            <Card className="max-w-5xl mx-auto bg-gradient-to-r from-primary to-orange-600 border-0">
+              <CardContent className="p-8 md:p-12 text-center text-white">
+                <h3 className="text-3xl md:text-4xl font-bold mb-4">
+                  Ready to Protect Your Vehicle?
+                </h3>
+                <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                  Get a free, no-obligation quote in minutes. Trusted by thousands of UK drivers.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Button 
+                    size="lg"
+                    onClick={navigateToQuoteForm}
+                    className="bg-white text-primary hover:bg-gray-50 px-10 py-6 text-lg font-bold"
+                  >
+                    Get Quote Online
+                  </Button>
+                  <div className="flex items-center gap-3 text-white">
+                    <div className="h-px w-8 bg-white/50" />
+                    <span className="text-lg font-medium">or call</span>
+                    <div className="h-px w-8 bg-white/50" />
+                  </div>
+                  <a href="tel:03302295040" className="text-2xl font-bold hover:underline">
+                    0330 229 5040
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Recent Posts Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Recent Articles</h2>
+                <p className="text-gray-600 text-lg">Latest guides and insights for UK drivers</p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                {recentPosts.map((post) => (
+                  <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary bg-white group">
+                    <div className="relative h-64 overflow-hidden">
+                      <img 
+                        src={post.image} 
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <Badge className="absolute top-4 left-4 bg-primary text-white px-4 py-2 text-sm font-semibold shadow-lg">
+                        {post.category}
+                      </Badge>
+                    </div>
+                    
+                    <CardContent className="p-8">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors leading-tight">
+                        {post.title}
+                      </h3>
+                      
+                      <p className="text-gray-600 mb-6 text-base leading-relaxed">
+                        {post.excerpt}
+                      </p>
+                      
+                      <div className="flex items-center gap-6 text-sm text-gray-500 mb-6 pb-6 border-t border-gray-200 pt-6">
+                        <div className="flex items-center gap-2">
+                          <User className="w-4 h-4" />
+                          <span className="font-medium">{post.author}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4" />
+                          <span>{post.date}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4" />
+                          <span>{post.readTime}</span>
                         </div>
                       </div>
                       
                       <Button 
-                        asChild
-                        className="bg-[#224380] hover:bg-[#1a3464] text-white"
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-6 text-lg group/btn"
                       >
-                        <Link to={`/thewarrantyhub/${featuredPost.slug}`}>
-                          Read Full Article
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </Link>
+                        Read Full Article
+                        <ChevronRight className="ml-2 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                       </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </section>
-          )}
-
-          {/* CTA Banner */}
-          <section className="mb-12 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex-1">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Need help choosing the right warranty?
-                </h3>
-                <p className="text-gray-700">
-                  Speak to our UK warranty experts. Call now for instant advice or get your personalised quote online.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button asChild size="lg" className="bg-[#224380] hover:bg-[#1a3464]">
-                  <a href="tel:08000014990" className="flex items-center gap-2">
-                    <Phone className="w-5 h-5" />
-                    0800 001 4990
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <Link to="/">Get Quote Online</Link>
-                </Button>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Recent Posts */}
-            <div className="md:col-span-2">
-              <h2 className="text-3xl font-bold text-foreground mb-8">Latest Articles</h2>
+        {/* Popular Topics Section */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Popular Topics</h2>
+                <p className="text-gray-600 text-lg">Explore more warranty guides and advice</p>
+              </div>
               
-              {loading ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-                  Loading expert guides...
-                </div>
-              ) : posts.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <p className="text-lg mb-4">No articles found matching your search</p>
-                  <Button onClick={() => setSearchQuery('')} variant="outline">
-                    Clear Search
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-8">
-                  {posts.map((post) => (
-                    <Card key={post.id} className="overflow-hidden border shadow-md hover:shadow-xl transition-all hover:border-primary/50">
-                      <div className="md:flex">
-                        {post.featured_image_url && (
-                          <div className="md:w-1/3">
-                            <img 
-                              src={post.featured_image_url}
-                              alt={`${post.title} - UK car warranty guide`}
-                              className="w-full h-48 md:h-full object-cover"
-                            />
-                          </div>
-                        )}
-                        <div className={`${post.featured_image_url ? 'md:w-2/3' : 'w-full'} p-6`}>
-                          <div className="flex items-center gap-3 mb-3">
-                            <Badge variant="outline" className="text-xs">
-                              {post.blog_categories?.name}
-                            </Badge>
-                            <span className="text-gray-500 text-sm">{post.read_time_minutes} min read</span>
-                          </div>
-                          
-                          <Link to={`/thewarrantyhub/${post.slug}`}>
-                            <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-[#224380] cursor-pointer">
-                              {post.title}
-                            </h3>
-                          </Link>
-                          
-                          <p className="text-gray-600 mb-4">
-                            {post.excerpt}
-                          </p>
-                          
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                                <User className="w-4 h-4 text-gray-600" />
-                              </div>
-                              <div>
-                                <p className="font-medium text-sm text-gray-900">{post.blog_authors?.name}</p>
-                                <p className="text-xs text-gray-500">
-                                  {new Date(post.published_at).toLocaleDateString('en-GB')}
-                                </p>
-                              </div>
-                            </div>
-                            
-                            <Button 
-                              asChild
-                              variant="outline" 
-                              size="sm"
-                            >
-                              <Link to={`/thewarrantyhub/${post.slug}`}>
-                                Read More
-                              </Link>
-                            </Button>
-                          </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { title: 'Warranty Guides', count: '12 articles', icon: Shield },
+                  { title: 'Buying Guides', count: '8 articles', icon: Check },
+                  { title: 'Commercial Coverage', count: '6 articles', icon: Shield },
+                  { title: 'Claims Process', count: '10 articles', icon: Check }
+                ].map((topic, index) => (
+                  <Card key={index} className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-gray-200 hover:border-primary bg-white">
+                    <CardContent className="text-center space-y-4">
+                      <div className="w-16 h-16 bg-gray-100 group-hover:bg-primary/10 rounded-full flex items-center justify-center mx-auto transition-colors">
+                        <topic.icon className="w-8 h-8 text-gray-600 group-hover:text-primary transition-colors" />
+                      </div>
+                      <h3 className="font-bold text-lg text-gray-900 group-hover:text-primary transition-colors">
+                        {topic.title}
+                      </h3>
+                      <p className="text-sm text-gray-600">{topic.count}</p>
+                      <Button 
+                        variant="ghost" 
+                        className="text-primary hover:text-primary hover:bg-primary/5 font-semibold"
+                      >
+                        Browse →
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA Section */}
+        <section className="py-20 bg-gray-50 border-t border-gray-200">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              <Card className="bg-gradient-to-r from-primary to-orange-600 border-0 overflow-hidden">
+                <CardContent className="p-12 md:p-16">
+                  <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    <div className="space-y-6 text-white">
+                      <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                        Get Protected Today
+                      </h2>
+                      <p className="text-xl opacity-90 leading-relaxed">
+                        Join thousands of satisfied UK drivers who trust Buy a Warranty for comprehensive vehicle protection.
+                      </p>
+                      <div className="space-y-4 pt-4">
+                        <div className="flex items-center gap-3">
+                          <Check className="w-6 h-6" />
+                          <span className="text-lg">FCA Approved Provider</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Check className="w-6 h-6" />
+                          <span className="text-lg">5-Star Trustpilot Rating</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Check className="w-6 h-6" />
+                          <span className="text-lg">24/7 Claims Support</span>
                         </div>
                       </div>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-8">
-              {/* Quick CTA */}
-              <Card className="p-6 bg-gradient-to-br from-[#eb4b00] to-[#d43e00] text-white border-0 shadow-lg">
-                <h3 className="text-xl font-bold mb-3">Get Your Quote Now</h3>
-                <p className="text-white/90 mb-4 text-sm">
-                  Instant online quotes for car and van warranties. UK-wide coverage from just £12.99/month.
-                </p>
-                <Button asChild className="w-full bg-white text-[#eb4b00] hover:bg-gray-100">
-                  <Link to="/">Get Free Quote</Link>
-                </Button>
-              </Card>
-
-              {/* Trust Signals */}
-              <Card className="p-6">
-                <h3 className="text-xl font-bold text-foreground mb-4">Why Choose Us</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-sm">FCA Approved</p>
-                      <p className="text-xs text-muted-foreground">Fully regulated warranty provider</p>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <Card className="bg-white p-8">
+                        <CardContent className="space-y-6">
+                          <h3 className="text-2xl font-bold text-gray-900">Get Your Free Quote</h3>
+                          <Button 
+                            size="lg"
+                            onClick={navigateToQuoteForm}
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-6 text-lg font-bold"
+                          >
+                            Start Your Quote Now
+                          </Button>
+                          <div className="text-center">
+                            <p className="text-gray-600 mb-2">Or speak to our team</p>
+                            <a href="tel:03302295040" className="text-3xl font-bold text-primary hover:text-primary/90">
+                              0330 229 5040
+                            </a>
+                            <p className="text-sm text-gray-500 mt-2">Mon-Fri 9am-5pm</p>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Award className="w-5 h-5 text-yellow-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-sm">5-Star Reviews</p>
-                      <p className="text-xs text-muted-foreground">Rated excellent on Trustpilot</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Clock className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-sm">24/7 Claims Support</p>
-                      <p className="text-xs text-muted-foreground">UK-based claims team</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 pt-6 border-t">
-                  <TrustpilotHeader className="justify-center" />
-                </div>
-              </Card>
-
-              {/* Categories */}
-              <Card className="p-6">
-                <h3 className="text-xl font-bold text-foreground mb-4">Browse Topics</h3>
-                <div className="space-y-2">
-                  <Button 
-                    variant={selectedCategory === null ? "default" : "ghost"}
-                    className="w-full justify-start text-left"
-                    onClick={() => setSelectedCategory(null)}
-                  >
-                    All Posts
-                  </Button>
-                  {categories.map((category) => (
-                    <Button 
-                      key={category.id}
-                      variant={selectedCategory === category.id ? "default" : "ghost"}
-                      className="w-full justify-start text-left hover:bg-blue-50"
-                      onClick={() => setSelectedCategory(category.id)}
-                    >
-                      {category.name}
-                    </Button>
-                  ))}
-                </div>
-              </Card>
-
-              {/* Newsletter Signup */}
-              <Card className="p-6 bg-gradient-to-br from-[#224380] to-[#2a5299] text-white border-0 shadow-lg">
-                <h3 className="text-xl font-bold mb-3">📧 Join 10,000+ UK Drivers</h3>
-                <p className="text-blue-100 mb-4 text-sm">
-                  Get the latest car warranty tips, money-saving advice and exclusive offers delivered to your inbox.
-                </p>
-                <form onSubmit={handleNewsletterSignup} className="space-y-3">
-                  <Input 
-                    type="email" 
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full px-3 py-2 rounded text-gray-900 text-sm"
-                    required
-                  />
-                  <Button type="submit" className="w-full bg-white text-[#224380] hover:bg-gray-100">
-                    Subscribe
-                  </Button>
-                </form>
-              </Card>
-
-              {/* Helpful Links */}
-              <Card className="p-6">
-                <h3 className="text-xl font-bold text-foreground mb-4">Helpful Resources</h3>
-                <div className="space-y-3">
-                  <a 
-                    href="https://www.rac.co.uk/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-[#224380] hover:underline text-sm"
-                  >
-                    RAC Breakdown Services
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                  <a 
-                    href="https://www.theaa.com/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-[#224380] hover:underline text-sm"
-                  >
-                    AA Motoring Services
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                  <a 
-                    href="https://www.gov.uk/browse/driving" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-[#224380] hover:underline text-sm"
-                  >
-                    GOV.UK Driving & Transport
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                  <Link 
-                    to="/faq"
-                    className="flex items-center gap-2 text-[#224380] hover:underline text-sm"
-                  >
-                    Warranty FAQs
-                  </Link>
-                </div>
+                </CardContent>
               </Card>
             </div>
           </div>
-
-          {/* Popular Topics Section */}
-          <section className="mt-16 mb-12">
-            <h2 className="text-3xl font-bold text-center mb-8">Popular Warranty Topics</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-lg mb-2">Is a car warranty worth it in the UK?</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Discover if extended warranty cover is right for your vehicle and budget.
-                </p>
-                <Button asChild variant="link" className="p-0 h-auto">
-                  <Link to="/thewarrantyhub">Read Guide →</Link>
-                </Button>
-              </Card>
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-lg mb-2">What does a van warranty cover?</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Learn exactly what's included in van warranty protection plans.
-                </p>
-                <Button asChild variant="link" className="p-0 h-auto">
-                  <Link to="/van-warranty">Read Guide →</Link>
-                </Button>
-              </Card>
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-lg mb-2">How to claim on a used car warranty</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Step-by-step guide to making a successful warranty claim in the UK.
-                </p>
-                <Button asChild variant="link" className="p-0 h-auto">
-                  <Link to="/claims">Read Guide →</Link>
-                </Button>
-              </Card>
-            </div>
-          </section>
-
-          {/* Final CTA */}
-          <section className="mt-16 bg-gradient-to-r from-[#224380] via-[#2a5299] to-[#1a3464] rounded-2xl p-12 text-white text-center shadow-2xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE0NGg2djZoLTZ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-            
-            <div className="relative z-10">
-              <Shield className="w-16 h-16 mx-auto mb-6 text-green-400" />
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Ready to Protect Your Vehicle?
-              </h2>
-              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                Get your free, no-obligation quote in 60 seconds. Join over 50,000 UK drivers who've already protected their vehicles with our award-winning warranty cover.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Button 
-                  asChild
-                  size="lg"
-                  className="bg-[#eb4b00] hover:bg-[#d43e00] text-white px-10 py-6 text-lg shadow-xl"
-                >
-                  <Link to="/">
-                    Get Your Free Quote Now
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-                
-                <div className="flex items-center gap-2 text-blue-100">
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-sm">No payment required</span>
-                </div>
-              </div>
-
-              <div className="mt-8 pt-8 border-t border-white/20">
-                <p className="text-sm text-blue-200 mb-4">Or speak to our UK warranty experts</p>
-                <a href="tel:08000014990" className="text-2xl font-bold hover:text-blue-200 transition-colors">
-                  📞 0800 001 4990
-                </a>
-              </div>
-            </div>
-          </section>
-        </div>
+        </section>
       </div>
     </>
   );
