@@ -1227,15 +1227,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                            </div>
                            <div className="flex-1 min-w-0">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <Label htmlFor="bumper" className="font-semibold text-gray-900 text-base cursor-pointer">
-                                  Monthly Interest-Free Credit
-                                </Label>
-                                <img src={bumperLogo} alt="Bumper" className="h-4 sm:h-5 object-contain" />
-                              </div>
+                              <Label htmlFor="bumper" className="font-semibold text-gray-900 text-base cursor-pointer">
+                                Monthly Interest-Free Credit
+                              </Label>
                               <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded whitespace-nowrap">
                                 0% Interest
                               </div>
+                            </div>
+                            <div className="flex justify-center mb-3">
+                              <img src={bumperLogo} alt="Bumper" className="h-8 sm:h-10 object-contain" />
                             </div>
                             <div className="text-sm text-gray-600 mb-3 space-y-1">
                               <div className="flex items-center">
@@ -1289,15 +1289,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                            </div>
                            <div className="flex-1 min-w-0">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <Label htmlFor="stripe" className="font-semibold text-gray-900 text-base cursor-pointer">
-                                  Pay Full Amount
-                                </Label>
-                                <img src={stripeLogo} alt="Stripe" className="h-3 sm:h-4 object-contain" />
-                              </div>
+                              <Label htmlFor="stripe" className="font-semibold text-gray-900 text-base cursor-pointer">
+                                Pay Full Amount
+                              </Label>
                               <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded whitespace-nowrap">
                                 Save 10% (£{Math.round(discountedPrice * 0.10)}) instantly
                               </div>
+                            </div>
+                            <div className="flex justify-center mb-3">
+                              <img src={stripeLogo} alt="Stripe" className="h-8 sm:h-10 object-contain" />
                             </div>
                             <p className="text-sm text-gray-600">
                               Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span>
