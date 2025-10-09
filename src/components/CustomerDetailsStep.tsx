@@ -649,7 +649,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                           required
                           className={`mt-1 transition-all duration-300 ${
                             showValidation && !customerData.first_name.trim() 
-                              ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                              ? 'border-red-500 focus:border-red-500' 
                               : 'focus:ring-2 focus:ring-blue-200'
                           }`}
                         />
@@ -672,7 +672,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                           required
                           className={`mt-1 transition-all duration-300 ${
                             showValidation && !customerData.last_name.trim() 
-                              ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                              ? 'border-red-500 focus:border-red-500' 
                               : 'focus:ring-2 focus:ring-blue-200'
                           }`}
                         />
@@ -699,7 +699,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         required
                         className={`mt-1 transition-all duration-300 ${
                           showValidation && fieldErrors.email 
-                            ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                            ? 'border-red-500 focus:border-red-500' 
                             : 'focus:ring-2 focus:ring-blue-200'
                         }`}
                       />
@@ -725,7 +725,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         required
                         className={`mt-1 transition-all duration-300 ${
                           showValidation && fieldErrors.phone 
-                            ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                            ? 'border-red-500 focus:border-red-500' 
                             : 'focus:ring-2 focus:ring-blue-200'
                         }`}
                       />
@@ -752,7 +752,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                           required
                           className={`mt-1 transition-all duration-300 ${
                             showValidation && !customerData.address_line_1.trim() 
-                              ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                              ? 'border-red-500 focus:border-red-500' 
                               : 'focus:ring-2 focus:ring-blue-200'
                           }`}
                         />
@@ -817,7 +817,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             required
                             className={`mt-1 transition-all duration-300 ${
                               showValidation && fieldErrors.city 
-                                ? 'border-red-500 focus:border-red-500 animate-pulse' 
+                                ? 'border-red-500 focus:border-red-500' 
                                 : 'focus:ring-2 focus:ring-blue-200'
                             }`}
                           />
