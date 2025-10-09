@@ -13,6 +13,7 @@ import warrantyCarImage from '@/assets/blog-hero-warranty-car.png';
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const navigate = useNavigate();
 
   const navigateToQuoteForm = () => {
@@ -61,8 +62,16 @@ const Blog = () => {
     }
   ];
 
+  const categories = ['All', 'Warranty Guides', 'Buying Guides', 'Commercial Coverage', 'Claims Process', 'Vehicle Maintenance'];
+  
   const featuredPost = blogPosts.find(post => post.featured);
-  const recentPosts = blogPosts.filter(post => !post.featured);
+  
+  const filteredPosts = selectedCategory === 'All' 
+    ? blogPosts.filter(post => !post.featured)
+    : blogPosts.filter(post => !post.featured && post.category === selectedCategory);
+  
+  const recentPosts = filteredPosts.slice(0, 4);
+  const olderPosts = filteredPosts.slice(4);
 
   const schemaMarkup = {
     "@context": "https://schema.org",
@@ -308,19 +317,40 @@ const Blog = () => {
           </div>
         </section>
 
-        {/* Search Bar Section */}
-        <section className="py-12 bg-white">
+        {/* Search Bar & Category Filter Section */}
+        <section className="py-12 bg-white border-b border-gray-200">
           <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="Search articles about car warranties, coverage, claims..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 pr-4 py-6 text-base border-2 border-gray-200 focus:border-primary rounded-lg"
-                />
+            <div className="max-w-7xl mx-auto space-y-6">
+              {/* Search Bar */}
+              <div className="max-w-2xl mx-auto">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search articles about car warranties, coverage, claims..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-12 pr-4 py-6 text-base border-2 border-gray-200 focus:border-primary rounded-lg"
+                  />
+                </div>
+              </div>
+
+              {/* Category Filters */}
+              <div className="flex flex-wrap justify-center gap-3">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    className={`px-6 py-2 rounded-full transition-all ${
+                      selectedCategory === category
+                        ? 'bg-primary text-white hover:bg-primary/90'
+                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-primary hover:text-primary'
+                    }`}
+                  >
+                    {category}
+                  </Button>
+                ))}
               </div>
             </div>
           </div>
@@ -426,62 +456,204 @@ const Blog = () => {
           </div>
         </section>
 
-        {/* Recent Posts Section */}
+        {/* Main Content Grid with Sidebar */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="max-w-7xl mx-auto">
-              <div className="mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Recent Articles</h2>
-                <p className="text-gray-600 text-lg">Latest guides and insights for UK drivers</p>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-8">
-                {recentPosts.map((post) => (
-                  <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary bg-white group">
-                    <div className="relative h-64 overflow-hidden bg-white">
-                      <img 
-                        src={post.image} 
-                        alt={post.title}
-                        className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <Badge className="absolute top-4 left-4 bg-primary text-white px-4 py-2 text-sm font-semibold shadow-lg">
-                        {post.category}
-                      </Badge>
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Main Content - 2/3 width */}
+                <div className="lg:col-span-2 space-y-12">
+                  {/* Recent Posts Grid */}
+                  <div>
+                    <div className="mb-8">
+                      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Latest Articles</h2>
+                      <p className="text-gray-600 text-lg">
+                        {selectedCategory === 'All' ? 'All guides and insights' : selectedCategory}
+                      </p>
                     </div>
                     
-                    <CardContent className="p-8">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors leading-tight">
-                        {post.title}
-                      </h3>
-                      
-                      <p className="text-gray-600 mb-6 text-base leading-relaxed">
-                        {post.excerpt}
-                      </p>
-                      
-                      <div className="flex items-center gap-6 text-sm text-gray-500 mb-6 pb-6 border-t border-gray-200 pt-6">
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4" />
-                          <span className="font-medium">{post.author}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          <span>{post.date}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4" />
-                          <span>{post.readTime}</span>
-                        </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {recentPosts.map((post) => (
+                        <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary bg-white group">
+                          <div className="relative h-48 overflow-hidden bg-white">
+                            <img 
+                              src={post.image} 
+                              alt={post.title}
+                              className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+                            />
+                            <Badge className="absolute top-3 left-3 bg-primary text-white px-3 py-1 text-xs font-semibold shadow-lg">
+                              {post.category}
+                            </Badge>
+                          </div>
+                          
+                          <CardContent className="p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors leading-tight line-clamp-2">
+                              {post.title}
+                            </h3>
+                            
+                            <p className="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-3">
+                              {post.excerpt}
+                            </p>
+                            
+                            <div className="flex items-center gap-4 text-xs text-gray-500 mb-4 pb-4 border-t border-gray-200 pt-4">
+                              <div className="flex items-center gap-1">
+                                <User className="w-3 h-3" />
+                                <span className="font-medium">{post.author}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                <span>{post.readTime}</span>
+                              </div>
+                            </div>
+                            
+                            <Button 
+                              className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 text-sm group/btn"
+                            >
+                              Read Article
+                              <ChevronRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* More Articles - List View */}
+                  {olderPosts.length > 0 && (
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-6">More Articles</h3>
+                      <div className="space-y-4">
+                        {olderPosts.map((post) => (
+                          <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 hover:border-primary bg-white group">
+                            <div className="flex gap-4 p-4">
+                              <div className="relative w-32 h-32 flex-shrink-0 overflow-hidden bg-white rounded">
+                                <img 
+                                  src={post.image} 
+                                  alt={post.title}
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                              
+                              <div className="flex-1 min-w-0">
+                                <Badge className="bg-primary/10 text-primary px-2 py-1 text-xs font-semibold mb-2">
+                                  {post.category}
+                                </Badge>
+                                <h4 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors leading-tight line-clamp-2">
+                                  {post.title}
+                                </h4>
+                                <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-3">
+                                  {post.excerpt}
+                                </p>
+                                <div className="flex items-center gap-4 text-xs text-gray-500">
+                                  <span className="flex items-center gap-1">
+                                    <User className="w-3 h-3" />
+                                    {post.author}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-3 h-3" />
+                                    {post.readTime}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <div className="hidden sm:flex items-center">
+                                <Button 
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-primary hover:text-primary hover:bg-primary/5"
+                                >
+                                  <ChevronRight className="w-5 h-5" />
+                                </Button>
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
                       </div>
-                      
+                    </div>
+                  )}
+                </div>
+
+                {/* Sidebar - 1/3 width */}
+                <div className="space-y-8">
+                  {/* Quick CTA */}
+                  <Card className="bg-gradient-to-br from-primary to-orange-600 border-0 overflow-hidden sticky top-4">
+                    <CardContent className="p-6 text-white text-center">
+                      <Shield className="w-12 h-12 mx-auto mb-4" />
+                      <h3 className="text-xl font-bold mb-2">Get Protected Today</h3>
+                      <p className="text-sm opacity-90 mb-4">Free quote in 2 minutes</p>
                       <Button 
-                        className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-6 text-lg group/btn"
+                        onClick={navigateToQuoteForm}
+                        className="w-full bg-white text-primary hover:bg-gray-50 font-bold"
                       >
-                        Read Full Article
-                        <ChevronRight className="ml-2 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                        Get Free Quote
+                      </Button>
+                      <div className="mt-4 pt-4 border-t border-white/20">
+                        <a href="tel:03302295040" className="text-lg font-bold hover:underline block">
+                          0330 229 5040
+                        </a>
+                        <p className="text-xs opacity-75 mt-1">Mon-Fri 9am-5pm</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Categories */}
+                  <Card className="border-2 border-gray-200">
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-bold text-gray-900 mb-4">Browse by Category</h3>
+                      <div className="space-y-2">
+                        {categories.filter(c => c !== 'All').map((category) => (
+                          <button
+                            key={category}
+                            onClick={() => setSelectedCategory(category)}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                              selectedCategory === category
+                                ? 'bg-primary text-white'
+                                : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                            }`}
+                          >
+                            {category}
+                          </button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Popular Posts */}
+                  <Card className="border-2 border-gray-200">
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-bold text-gray-900 mb-4">Popular Articles</h3>
+                      <div className="space-y-4">
+                        {blogPosts.slice(0, 3).map((post, index) => (
+                          <div key={post.id} className="flex gap-3 group cursor-pointer">
+                            <span className="text-2xl font-bold text-gray-300 flex-shrink-0">{index + 1}</span>
+                            <div>
+                              <h4 className="text-sm font-bold text-gray-900 group-hover:text-primary transition-colors leading-tight mb-1">
+                                {post.title}
+                              </h4>
+                              <p className="text-xs text-gray-500">{post.readTime}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Newsletter */}
+                  <Card className="border-2 border-primary/20 bg-primary/5">
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">Stay Updated</h3>
+                      <p className="text-sm text-gray-600 mb-4">Get the latest warranty tips & guides</p>
+                      <Input 
+                        type="email" 
+                        placeholder="Your email address"
+                        className="mb-3"
+                      />
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-white">
+                        Subscribe
                       </Button>
                     </CardContent>
                   </Card>
-                ))}
+                </div>
               </div>
             </div>
           </div>
