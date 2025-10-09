@@ -1254,7 +1254,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             </div>
                              <div className="flex flex-col items-center mb-3 gap-1">
                                <span className="text-xs text-gray-500">Powered by</span>
-                               <img src={bumperLogo} alt="Bumper" className="h-8 sm:h-10 object-contain" />
+                               <img src={bumperLogo} alt="Bumper" className="h-5 sm:h-7 object-contain" />
                              </div>
                             <div className="text-sm text-gray-600 mb-3 space-y-1">
                               <div className="flex items-center">
@@ -1317,7 +1317,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                             </div>
                              <div className="flex flex-col items-center mb-3 gap-1">
                                <span className="text-xs text-gray-500">Powered by</span>
-                               <img src={stripeLogo} alt="Stripe" className="h-8 sm:h-10 object-contain" />
+                               <img src={stripeLogo} alt="Stripe" className="h-5 sm:h-7 object-contain" />
                              </div>
                             <p className="text-sm text-gray-600">
                               Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span>
