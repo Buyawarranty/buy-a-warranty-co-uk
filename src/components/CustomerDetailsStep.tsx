@@ -1301,14 +1301,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                              />
                            </div>
                            <div className="flex-1 min-w-0">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                              <Label htmlFor="stripe" className="font-semibold text-gray-900 text-base cursor-pointer">
-                                Pay Full Amount
-                              </Label>
-                              <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded whitespace-nowrap">
-                                Save 10% (£{Math.round(discountedPrice * 0.10)}) instantly
-                              </div>
-                            </div>
+                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                               <Label htmlFor="stripe" className="font-semibold text-gray-900 text-base cursor-pointer">
+                                 Pay Full Amount
+                               </Label>
+                               <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg shadow-green-500/30 whitespace-nowrap animate-pulse">
+                                 💰 Save 10% (£{Math.round(discountedPrice * 0.10)}) Today
+                               </div>
+                             </div>
                              <div className="flex flex-col items-center mb-3 gap-1">
                                <span className="text-xs text-gray-500">Powered by</span>
                                <img src={stripeLogo} alt="Stripe" className="h-5 sm:h-7 object-contain" />
