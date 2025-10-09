@@ -1164,9 +1164,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                  <span className="font-medium">Nothing to pay in Year 2</span>
                                </div>
                              </div>
-                             <div className="text-lg font-semibold text-gray-900">
-                               Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings}</span>
-                             </div>
+                              <div className="text-lg font-semibold text-gray-900">
+                                Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings} Today</span>
+                              </div>
                            </div>
                          );
                        } else if (months === 36) {
@@ -1186,9 +1186,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                  <span className="font-medium">Nothing to pay in Year 2 and Year 3</span>
                                </div>
                              </div>
-                             <div className="text-lg font-semibold text-gray-900">
-                               Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings}</span>
-                             </div>
+                              <div className="text-lg font-semibold text-gray-900">
+                                Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings} Today</span>
+                              </div>
                            </div>
                          );
                        }
