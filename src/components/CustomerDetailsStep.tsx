@@ -1256,16 +1256,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                <span className="text-xs text-gray-500">Powered by</span>
                                <img src={bumperLogo} alt="Bumper" className="h-5 sm:h-7 object-contain" />
                              </div>
-                            <div className="text-sm text-gray-600 mb-3 space-y-1">
-                              <div className="flex items-center">
-                                <span className="text-green-600 mr-2 text-base">✔️</span>
-                                <span>Only a soft credit search</span>
-                              </div>
-                              <div className="flex items-center">
-                                <span className="text-green-600 mr-2 text-base">✔️</span>
-                                <span>No impact on your credit score</span>
-                              </div>
-                            </div>
+                             <div className="text-sm text-gray-600 mb-3 space-y-1">
+                               <div className="flex items-center">
+                                 <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 flex-shrink-0" />
+                                 <span>Only a soft credit search</span>
+                               </div>
+                               <div className="flex items-center">
+                                 <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 flex-shrink-0" />
+                                 <span>No impact on your credit score</span>
+                               </div>
+                             </div>
                             <p className="text-sm text-gray-600">
                               Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
                               {hasSecondWarrantyDiscount && (
