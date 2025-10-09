@@ -93,6 +93,11 @@ const RecoveryFallback: React.FC<{
   }
 
   if (recoveryFailed) {
+    // Scroll to top so user can see the error message
+    useEffect(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
+    
     return (
       <div className="w-full px-4 py-8">
         <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -426,6 +431,7 @@ const Index = () => {
       localStorage.removeItem('buyawarranty_selectedPlan');
       localStorage.removeItem('buyawarranty_formData');
       localStorage.removeItem('buyawarranty_currentStep');
+      localStorage.removeItem('buyawarranty_customerData');
     }
     
     // Additional recovery for when users return from payment pages

@@ -84,20 +84,33 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     planName,
     pricingData: pricingData ? 'present' : 'missing'
   });
-  const [customerData, setCustomerData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    address_line_1: '',
-    address_line_2: '',
-    city: '',
-    postcode: '',
-    date_of_birth: '',
-    marketing_opt_in: false,
-    privacy_policy_accepted: false,
-    terms_conditions_accepted: false,
-    contact_method: 'email' as 'email' | 'phone'
+  const [customerData, setCustomerData] = useState(() => {
+    // Try to restore customer data from localStorage
+    const savedCustomerData = localStorage.getItem('buyawarranty_customerData');
+    if (savedCustomerData) {
+      try {
+        const parsed = JSON.parse(savedCustomerData);
+        console.log('✅ Restored customer data from localStorage:', parsed);
+        return parsed;
+      } catch (error) {
+        console.error('Error parsing saved customer data:', error);
+      }
+    }
+    return {
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      address_line_1: '',
+      address_line_2: '',
+      city: '',
+      postcode: '',
+      date_of_birth: '',
+      marketing_opt_in: false,
+      privacy_policy_accepted: false,
+      terms_conditions_accepted: false,
+      contact_method: 'email' as 'email' | 'phone'
+    };
   });
 
   const [paymentMethod, setPaymentMethod] = useState<'bumper' | 'stripe'>('bumper');
@@ -255,7 +268,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const hasSecondWarrantyDiscount = appliedDiscountCodes.some(code => code.code.startsWith('SECOND10-'));
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    setCustomerData(prev => ({ ...prev, [field]: value }));
+    const updatedData = { ...customerData, [field]: value };
+    setCustomerData(updatedData);
+    
+    // Save to localStorage whenever customer data changes
+    localStorage.setItem('buyawarranty_customerData', JSON.stringify(updatedData));
+    
     if (fieldErrors[field]) {
       setFieldErrors(prev => ({ ...prev, [field]: '' }));
     }
