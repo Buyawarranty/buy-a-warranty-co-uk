@@ -1229,10 +1229,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       {/* Monthly Interest Free Credit */}
                       <div 
                         onClick={() => setPaymentMethod('bumper')}
-                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                        className={`rounded-lg p-6 cursor-pointer transition-all duration-200 ${
                           paymentMethod === 'bumper' 
-                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500 ring-offset-2' 
-                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                         }`}
                       >
                          <div className="flex items-start space-x-3">
@@ -1292,10 +1292,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       {/* Pay Full Amount */}
                       <div 
                         onClick={() => setPaymentMethod('stripe')}
-                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                        className={`rounded-lg p-6 cursor-pointer transition-all duration-200 ${
                           paymentMethod === 'stripe' 
-                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500 ring-offset-2' 
-                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
+                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
                         }`}
                       >
                          <div className="flex items-start space-x-3">
