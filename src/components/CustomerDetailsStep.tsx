@@ -1128,7 +1128,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                   </div>
 
                    {/* Pricing Information */}
-                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                   <div className="bg-gray-50 border-2 border-gray-300 rounded-lg p-4 mb-6">
                      {(() => {
                         const months = getWarrantyDurationInMonths(paymentType);
                         // Always calculate monthly payment based on 12 monthly payments, regardless of warranty duration
@@ -1137,7 +1137,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                        if (months === 12) {
                          return (
                            <div className="text-center">
-                             <div className="text-2xl font-bold text-blue-800 mb-2">£{monthlyPayment}/month</div>
+                             <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
                              <div className="flex items-center justify-center text-green-600 mb-2">
                                <span className="mr-2">✓</span>
                                <span className="font-medium">Only 12 easy payments</span>
@@ -1153,7 +1153,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          const savings = 100;
                          return (
                            <div className="text-center">
-                             <div className="text-2xl font-bold text-blue-800 mb-2">£{monthlyPayment}/month</div>
+                             <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
                              <div className="space-y-1 mb-3">
                                <div className="flex items-center justify-center text-green-600">
                                  <span className="mr-2">✓</span>
@@ -1175,7 +1175,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          const savings = 200;
                          return (
                            <div className="text-center">
-                             <div className="text-2xl font-bold text-blue-800 mb-2">£{monthlyPayment}/month</div>
+                             <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
                              <div className="space-y-1 mb-3">
                                <div className="flex items-center justify-center text-green-600">
                                  <span className="mr-2">✓</span>
