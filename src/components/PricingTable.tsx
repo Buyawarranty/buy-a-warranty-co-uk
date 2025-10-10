@@ -1774,11 +1774,6 @@ const PricingTable: React.FC<PricingTableProps> = ({
                           <span className="line-through text-gray-500 ml-1">£{planAdjustedBasePrice}</span>
                         )}
                         <span className="text-orange-600 ml-1">£{discountedPrice}</span>
-                         {paymentType === option.id && protectionAddOnPrice > 0 && (
-                           <span className="text-gray-600 text-xs block mt-1">
-                             Total: £{Math.round(totalPriceWithAddOns)}
-                           </span>
-                         )}
                       </div>
                    </div>
                   
@@ -2047,20 +2042,14 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 }
               </div>
               
-              {/* Payment Terms and Total on same line for footer */}
-              <div className="flex items-center justify-center gap-2 text-sm">
-                <span className="text-gray-500">
-                  {paymentType === '12months' 
-                    ? 'Only 12 easy payments'
-                    : paymentType === '24months' 
-                      ? 'Nothing to pay in Year 2'
-                      : 'Nothing to pay in Year 2 and Year 3'
-                  }
-                </span>
-                <span className="text-gray-400">•</span>
-                <span className="font-semibold text-gray-400">
-                  Total: £{Math.round(totalPrice)}
-                </span>
+              {/* Payment Terms for footer */}
+              <div className="text-sm text-gray-500">
+                {paymentType === '12months' 
+                  ? 'Only 12 easy payments'
+                  : paymentType === '24months' 
+                    ? 'Nothing to pay in Year 2'
+                    : 'Nothing to pay in Year 2 and Year 3'
+                }
               </div>
             </div>
             
