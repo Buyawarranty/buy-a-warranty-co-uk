@@ -526,6 +526,22 @@ const PricingTable: React.FC<PricingTableProps> = ({
     return basePlanPrice + addOnPrice;
   }, [basePlanPrice, addOnPrice]);
 
+  // Memoized discounted base price for display
+  const discountedBasePlanPrice = useMemo(() => {
+    let discountedPrice = basePlanPrice;
+    if (paymentType === '24months') {
+      discountedPrice = basePlanPrice - 100; // £100 discount for 2-year plans
+    } else if (paymentType === '36months') {
+      discountedPrice = basePlanPrice - 200; // £200 discount for 3-year plans
+    }
+    return discountedPrice;
+  }, [basePlanPrice, paymentType]);
+
+  // Memoized total discounted price (with add-ons)
+  const totalDiscountedPrice = useMemo(() => {
+    return discountedBasePlanPrice + addOnPrice;
+  }, [discountedBasePlanPrice, addOnPrice]);
+
   // Memoized monthly price calculation - always divide total by 12 for monthly payments
   const monthlyPrice = useMemo(() => {
     // Always show 12 monthly payments regardless of plan duration for display
@@ -638,7 +654,16 @@ const PricingTable: React.FC<PricingTableProps> = ({
       
       // Calculate total price for selected duration with vehicle adjustments applied
       const adjustedBasePrice = applyPriceAdjustment(basePrice, vehiclePriceAdjustment);
-      const totalPrice = adjustedBasePrice + recurringAddonTotal + oneTimeAddonTotal;
+      
+      // Apply automatic discounts for multi-year plans
+      let discountedBasePrice = adjustedBasePrice;
+      if (selectedPaymentType === '24months') {
+        discountedBasePrice = adjustedBasePrice - 100; // £100 discount for 2-year plans
+      } else if (selectedPaymentType === '36months') {
+        discountedBasePrice = adjustedBasePrice - 200; // £200 discount for 3-year plans
+      }
+      
+      const totalPrice = discountedBasePrice + recurringAddonTotal + oneTimeAddonTotal;
       
       // Don't allow progression if vehicle is too old
       if (vehicleAgeError) {
@@ -653,6 +678,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
         durationMonths,
         basePrice: basePrice,
         adjustedBasePrice,
+        discountedBasePrice,
         recurringAddonTotal,
         oneTimeAddonTotal,
         totalPrice: totalPrice,
@@ -691,7 +717,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
         selectedPlan.name,
         {
           totalPrice: totalPrice, 
-          monthlyPrice: Math.round(totalPrice / durationMonths), 
+          monthlyPrice: Math.round(totalPrice / 12), 
           voluntaryExcess,
           selectedAddOns: selectedAddOns[selectedPlan.id] || {},
           protectionAddOns: selectedProtectionAddOns,
@@ -1978,9 +2004,9 @@ const PricingTable: React.FC<PricingTableProps> = ({
           <div className="flex justify-end mt-8">
             <div className="flex flex-col items-end space-y-2">
               <div className="text-right">
-                {/* Monthly Price - Main Hook - Show stable base price */}
+                {/* Monthly Price - Main Hook - Show discounted price */}
                 <div className="text-3xl font-bold text-gray-900 mb-1">
-                  £{Math.round(basePlanPrice / 12)}/month
+                  £{Math.round(discountedBasePlanPrice / 12)}/month
                 </div>
                 
                 {/* Payment Terms - Conditional Display */}
@@ -1995,7 +2021,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 
                  {/* Total Cost - Show final total only */}
                 <div className="text-sm font-semibold text-gray-400">
-                  Total: £{Math.round(totalPrice)}
+                  Total: £{Math.round(totalDiscountedPrice)}
                 </div>
               </div>
               <Button
@@ -2034,7 +2060,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
             <div className="flex flex-col flex-1 text-center">
               {/* Monthly Price - Main Hook - Show discounted price */}
               <div className="text-2xl font-bold text-gray-900 mb-1">
-                £{Math.round(totalPrice / 12)}/month - {paymentType === '12months' 
+                £{Math.round(discountedBasePlanPrice / 12)}/month - {paymentType === '12months' 
                   ? '1 Year Cover'
                   : paymentType === '24months' 
                     ? '2 Year Cover'
@@ -2054,7 +2080,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 </span>
                 <span className="text-gray-400">•</span>
                 <span className="font-semibold text-gray-900">
-                  Total: £{Math.round(totalPrice)}
+                  Total: £{Math.round(totalDiscountedPrice)}
                 </span>
               </div>
             </div>
