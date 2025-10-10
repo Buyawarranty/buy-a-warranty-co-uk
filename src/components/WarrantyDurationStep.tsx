@@ -189,7 +189,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       }
     });
     
-    return { totalPrice: discountedPrice, monthlyPrice, originalPrice: totalPrice };
+    // Return discounted price as totalPrice, no originalPrice to avoid showing fake strikethrough
+    return { totalPrice: discountedPrice, monthlyPrice };
   };
 
   // Memoize pricing calculations with stable dependencies to prevent fluctuations on re-render
