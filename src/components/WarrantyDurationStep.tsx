@@ -189,7 +189,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       }
     });
     
-    return { totalPrice: discountedPrice, monthlyPrice };
+    return { totalPrice: discountedPrice, monthlyPrice, originalPrice: totalPrice };
   };
 
   // Memoize pricing calculations with stable dependencies to prevent fluctuations on re-render
@@ -276,7 +276,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Pre-existing faults are not covered'
       ],
       ...pricingData24,
-      originalPrice: pricingData24.totalPrice + 100,
+      originalPrice: (pricingData24 as any).originalPrice,
       isPopular: true,
       isBestValue: false,
       isStarter: false,
@@ -306,7 +306,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Pre-existing faults are not covered'
       ],
       ...pricingData36,
-      originalPrice: pricingData36.totalPrice + 200,
+      originalPrice: (pricingData36 as any).originalPrice,
       isPopular: false,
       isBestValue: true,
       isStarter: false,
