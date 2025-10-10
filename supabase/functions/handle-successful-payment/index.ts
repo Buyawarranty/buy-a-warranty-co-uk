@@ -472,7 +472,99 @@ serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ 
+    // Send sales notification to sales manager
+    if (customerData2?.id && policy?.id) {
+      try {
+        logStep("Sending sales notification to sales manager");
+        
+        const Resend = (await import('npm:resend@2.0.0')).Resend;
+        const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+        
+        const paymentTypeDisplay = getPaymentTypeDisplay(paymentType);
+        const addOnsList = Object.entries(finalAddOnsForCustomer)
+          .filter(([_, value]) => value === true)
+          .map(([key, _]) => {
+            const displayNames: Record<string, string> = {
+              tyre_cover: 'Tyre Cover',
+              wear_tear: 'Wear & Tear',
+              europe_cover: 'European Cover',
+              transfer_cover: 'Transfer Cover',
+              breakdown_recovery: 'Breakdown Recovery',
+              vehicle_rental: 'Vehicle Rental',
+              mot_fee: 'MOT Test Fee',
+              mot_repair: 'MOT Repair',
+              lost_key: 'Lost Key Cover',
+              consequential: 'Consequential Loss'
+            };
+            return displayNames[key] || key;
+          })
+          .join(', ') || 'None';
+
+        const salesEmailHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">New Warranty Sale</h2>
+            
+            <h3 style="color: #333; margin-top: 20px;">Customer Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Name:</strong></td><td style="padding: 8px;">${customerName}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Email:</strong></td><td style="padding: 8px;">${userEmail}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Phone:</strong></td><td style="padding: 8px;">${customerData?.mobile || customerData?.phone || vehicleData?.phone || 'N/A'}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Address:</strong></td><td style="padding: 8px;">${customerData?.street || ''} ${customerData?.town || ''} ${customerData?.postcode || ''}</td></tr>
+            </table>
+
+            <h3 style="color: #333; margin-top: 20px;">Warranty Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Policy Number:</strong></td><td style="padding: 8px;">${warrantyReference}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Plan Type:</strong></td><td style="padding: 8px;">${planName}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Payment Type:</strong></td><td style="padding: 8px;">${paymentTypeDisplay}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Voluntary Excess:</strong></td><td style="padding: 8px;">£${customerRecord.voluntary_excess || 0}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Claim Limit:</strong></td><td style="padding: 8px;">£${customerRecord.claim_limit || 1250}</td></tr>
+            </table>
+
+            <h3 style="color: #333; margin-top: 20px;">Vehicle Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Registration:</strong></td><td style="padding: 8px;">${vehicleData?.regNumber || 'Unknown'}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Make:</strong></td><td style="padding: 8px;">${vehicleData?.make || 'Unknown'}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Model:</strong></td><td style="padding: 8px;">${vehicleData?.model || 'Unknown'}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Year:</strong></td><td style="padding: 8px;">${vehicleData?.year || 'Unknown'}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Fuel Type:</strong></td><td style="padding: 8px;">${vehicleData?.fuelType || 'Unknown'}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Mileage:</strong></td><td style="padding: 8px;">${vehicleData?.mileage || 'Unknown'}</td></tr>
+            </table>
+
+            <h3 style="color: #333; margin-top: 20px;">Add-Ons Included</h3>
+            <p style="padding: 10px; background: #f3f4f6; border-radius: 5px;">${addOnsList}</p>
+
+            ${customerData?.discount_code ? `
+            <h3 style="color: #333; margin-top: 20px;">Discount Applied</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Code:</strong></td><td style="padding: 8px;">${customerData.discount_code}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Amount:</strong></td><td style="padding: 8px;">£${customerData.discount_amount || 0}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Original:</strong></td><td style="padding: 8px;">£${customerData.original_amount || 'N/A'}</td></tr>
+              <tr><td style="padding: 8px; background: #f3f4f6;"><strong>Final:</strong></td><td style="padding: 8px;">£${customerData.final_amount || 'N/A'}</td></tr>
+            </table>
+            ` : ''}
+
+            <div style="margin-top: 30px; padding: 15px; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 5px;">
+              <p style="margin: 0; color: #166534;"><strong>✓ Status:</strong> Policy created and sent to Warranties 2000</p>
+            </div>
+          </div>
+        `;
+
+        await resend.emails.send({
+          from: 'Buy a Warranty <notifications@buyawarranty.co.uk>',
+          to: ['info@buyawarranty.co.uk'],
+          subject: `New Sale: ${planName} - ${warrantyReference}`,
+          html: salesEmailHtml
+        });
+
+        logStep("Sales notification sent successfully");
+      } catch (emailError) {
+        logStep("Warning: Failed to send sales notification", { error: emailError });
+        // Don't fail the payment process if notification fails
+      }
+    }
+
+    return new Response(JSON.stringify({
       success: true, 
       message: "Payment processed successfully",
       policyNumber: warrantyReference,
