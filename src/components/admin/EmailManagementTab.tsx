@@ -37,6 +37,13 @@ interface EmailLog {
   created_at: string;
   error_message: string | null;
   template_id: string | null;
+  open_tracked?: boolean;
+  click_tracked?: boolean;
+  conversion_tracked?: boolean;
+  tracking_id?: string;
+  utm_campaign?: string;
+  utm_source?: string;
+  utm_medium?: string;
   template: {
     name: string;
     template_type: string;
@@ -230,17 +237,19 @@ const EmailManagementTab = () => {
   };
 
   const handleEditTemplate = (template: EmailTemplate) => {
+    console.log('Opening template editor for:', template.name);
     setSelectedTemplate(template);
     setFormData({
       name: template.name,
       subject: template.subject,
       template_type: template.template_type,
       from_email: template.from_email,
-      greeting: template.content.greeting || '',
-      content: template.content.content || '',
+      greeting: template.content?.greeting || '',
+      content: template.content?.content || '',
       is_active: template.is_active
     });
-    setIsEditing(true);
+    // Use setTimeout to ensure state updates before opening dialog
+    setTimeout(() => setIsEditing(true), 0);
   };
 
   const handlePreviewTemplate = (template: EmailTemplate) => {
@@ -761,7 +770,7 @@ const EmailManagementTab = () => {
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Emails Sent</CardTitle>
@@ -774,25 +783,58 @@ const EmailManagementTab = () => {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Open Rate</CardTitle>
+                <Eye className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {emailLogs.length > 0 
-                    ? Math.round((emailLogs.filter(log => log.status === 'sent').length / emailLogs.length) * 100)
-                    : 0}%
+                  {(() => {
+                    const sent = emailLogs.filter(log => log.status === 'sent').length;
+                    const opened = emailLogs.filter(log => log.open_tracked).length;
+                    return sent > 0 ? Math.round((opened / sent) * 100) : 0;
+                  })()}%
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {emailLogs.filter(log => log.open_tracked).length} opens
+                </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Templates</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Click Rate (CTR)</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{templates.filter(t => t.is_active).length}</div>
+                <div className="text-2xl font-bold">
+                  {(() => {
+                    const sent = emailLogs.filter(log => log.status === 'sent').length;
+                    const clicked = emailLogs.filter(log => log.click_tracked).length;
+                    return sent > 0 ? Math.round((clicked / sent) * 100) : 0;
+                  })()}%
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {emailLogs.filter(log => log.click_tracked).length} clicks
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {(() => {
+                    const sent = emailLogs.filter(log => log.status === 'sent').length;
+                    const converted = emailLogs.filter(log => log.conversion_tracked).length;
+                    return sent > 0 ? Math.round((converted / sent) * 100) : 0;
+                  })()}%
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {emailLogs.filter(log => log.conversion_tracked).length} conversions
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -883,7 +925,21 @@ const EmailManagementTab = () => {
       </Tabs>
 
       {/* Template Editor Dialog */}
-      <Dialog open={isEditing} onOpenChange={setIsEditing}>
+      <Dialog open={isEditing} onOpenChange={(open) => {
+        setIsEditing(open);
+        if (!open) {
+          setSelectedTemplate(null);
+          setFormData({
+            name: '',
+            subject: '',
+            template_type: '',
+            from_email: 'info@buyawarranty.co.uk',
+            greeting: '',
+            content: '',
+            is_active: true
+          });
+        }
+      }}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
@@ -991,7 +1047,13 @@ const EmailManagementTab = () => {
 
             <div className="space-y-4">
               <h3 className="font-semibold">Live Preview</h3>
-              {renderPreview()}
+              {selectedTemplate ? renderPreview() : (
+                <div className="border rounded-lg p-6 bg-muted">
+                  <p className="text-muted-foreground text-center">
+                    Fill in the template details to see a preview
+                  </p>
+                </div>
+              )}
               
               <div className="text-sm text-muted-foreground space-y-1">
                 <p><strong>Available Variables:</strong></p>

@@ -1486,8 +1486,10 @@ export type Database = {
         Row: {
           bounced_at: string | null
           campaign_id: string | null
+          click_tracked: boolean | null
           clicked_at: string | null
           content: string | null
+          conversion_tracked: boolean | null
           created_at: string
           customer_id: string | null
           delivery_status: string | null
@@ -1495,7 +1497,9 @@ export type Database = {
           failed_reason: string | null
           id: string
           last_resent_at: string | null
+          meta_pixel_tracked: boolean | null
           metadata: Json | null
+          open_tracked: boolean | null
           opened_at: string | null
           recipient_email: string
           recipient_name: string | null
@@ -1504,12 +1508,19 @@ export type Database = {
           status: string
           subject: string
           template_id: string | null
+          tracking_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
         }
         Insert: {
           bounced_at?: string | null
           campaign_id?: string | null
+          click_tracked?: boolean | null
           clicked_at?: string | null
           content?: string | null
+          conversion_tracked?: boolean | null
           created_at?: string
           customer_id?: string | null
           delivery_status?: string | null
@@ -1517,7 +1528,9 @@ export type Database = {
           failed_reason?: string | null
           id?: string
           last_resent_at?: string | null
+          meta_pixel_tracked?: boolean | null
           metadata?: Json | null
+          open_tracked?: boolean | null
           opened_at?: string | null
           recipient_email: string
           recipient_name?: string | null
@@ -1526,12 +1539,19 @@ export type Database = {
           status?: string
           subject: string
           template_id?: string | null
+          tracking_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
         }
         Update: {
           bounced_at?: string | null
           campaign_id?: string | null
+          click_tracked?: boolean | null
           clicked_at?: string | null
           content?: string | null
+          conversion_tracked?: boolean | null
           created_at?: string
           customer_id?: string | null
           delivery_status?: string | null
@@ -1539,7 +1559,9 @@ export type Database = {
           failed_reason?: string | null
           id?: string
           last_resent_at?: string | null
+          meta_pixel_tracked?: boolean | null
           metadata?: Json | null
+          open_tracked?: boolean | null
           opened_at?: string | null
           recipient_email?: string
           recipient_name?: string | null
@@ -1548,6 +1570,11 @@ export type Database = {
           status?: string
           subject?: string
           template_id?: string | null
+          tracking_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
         }
         Relationships: [
           {
@@ -1611,6 +1638,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      email_tracking_events: {
+        Row: {
+          created_at: string | null
+          email_log_id: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email_log_id?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email_log_id?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_tracking_events_email_log_id_fkey"
+            columns: ["email_log_id"]
+            isOneToOne: false
+            referencedRelation: "email_logs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mot_history: {
         Row: {

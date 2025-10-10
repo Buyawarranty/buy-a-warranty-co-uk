@@ -44,6 +44,9 @@ const handler = async (req: Request): Promise<Response> => {
     
     const { templateId, recipientEmail, customerId, variables = {}, attachments = [] }: SendEmailRequest = requestBody;
     console.log('Parsed request:', { templateId, recipientEmail, customerId, variablesCount: Object.keys(variables).length });
+    
+    // Generate tracking ID for this email
+    const trackingId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     // Validate required fields
     if (!templateId || !recipientEmail) {
@@ -117,7 +120,39 @@ const handler = async (req: Request): Promise<Response> => {
       emailContent = `<p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">${emailContent}</p>`;
     }
 
-    // Create HTML email with brand styling
+    // Generate UTM parameters for tracking
+    const baseUrl = Deno.env.get('SUPABASE_URL') || 'https://buyawarranty.co.uk';
+    const utmParams = {
+      utm_campaign: template.template_type,
+      utm_source: 'email',
+      utm_medium: 'email',
+      utm_content: template.name.toLowerCase().replace(/\s+/g, '_'),
+    };
+    
+    // Add UTM parameters to all links in content
+    const addUTMToLink = (url: string) => {
+      if (!url.startsWith('http')) return url;
+      const urlObj = new URL(url);
+      Object.entries(utmParams).forEach(([key, value]) => {
+        urlObj.searchParams.set(key, value);
+      });
+      return urlObj.toString();
+    };
+    
+    // Wrap links with click tracking
+    emailContent = emailContent.replace(
+      /href="([^"]*)"/g,
+      (match, url) => {
+        if (url.startsWith('http') || url.startsWith('//')) {
+          const utmUrl = addUTMToLink(url);
+          const trackingUrl = `${baseUrl}/functions/v1/track-email-click?tracking_id=${trackingId}&url=${encodeURIComponent(utmUrl)}`;
+          return `href="${trackingUrl}"`;
+        }
+        return match;
+      }
+    );
+    
+    // Create HTML email with brand styling and tracking pixel
     let htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -126,6 +161,37 @@ const handler = async (req: Request): Promise<Response> => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>${emailSubject}</title>
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17325228149"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-17325228149');
+    gtag('event', 'email_open', {
+      'event_category': 'Email',
+      'event_label': '${template.template_type}',
+      'tracking_id': '${trackingId}'
+    });
+  </script>
+  
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'YOUR_PIXEL_ID');
+    fbq('trackCustom', 'EmailOpen', {
+      tracking_id: '${trackingId}',
+      template_type: '${template.template_type}'
+    });
+  </script>
   <!--[if mso]>
   <noscript>
     <xml>
@@ -286,6 +352,9 @@ const handler = async (req: Request): Promise<Response> => {
       </td>
     </tr>
   </table>
+  
+  <!-- Tracking Pixel -->
+  <img src="${baseUrl}/functions/v1/track-email-open?tracking_id=${trackingId}" width="1" height="1" alt="" style="display:none;" />
 </body>
 </html>`;
 
@@ -296,7 +365,7 @@ const handler = async (req: Request): Promise<Response> => {
       .replace(/\{\{reinstate_link\}\}/g, 'https://buyawarranty.co.uk/')
       .replace(/\{\{renewal_link\}\}/g, 'https://buyawarranty.co.uk/');
 
-    // Create email log entry
+    // Create email log entry with tracking information
     const { data: emailLog, error: logError } = await supabase
       .from('email_logs')
       .insert({
@@ -305,6 +374,11 @@ const handler = async (req: Request): Promise<Response> => {
         customer_id: customerId,
         subject: emailSubject,
         status: 'pending',
+        tracking_id: trackingId,
+        utm_campaign: utmParams.utm_campaign,
+        utm_source: utmParams.utm_source,
+        utm_medium: utmParams.utm_medium,
+        utm_content: utmParams.utm_content,
         metadata: { variables }
       })
       .select()

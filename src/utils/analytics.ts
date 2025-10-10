@@ -3,6 +3,7 @@
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
+    fbq: (...args: any[]) => void;
   }
 }
 
@@ -160,4 +161,43 @@ export const trackAddToCart = (value: number, itemName?: string) => {
     currency: 'GBP',
     items: itemName ? [{ item_name: itemName }] : []
   });
+};
+
+// Email marketing tracking
+export const trackEmailOpen = (emailId: string, campaignName: string) => {
+  trackEvent('email_open', {
+    event_category: 'Email',
+    event_label: campaignName,
+    value: emailId,
+  });
+};
+
+export const trackEmailClick = (emailId: string, campaignName: string, linkUrl: string) => {
+  trackEvent('email_click', {
+    event_category: 'Email',
+    event_label: campaignName,
+    value: linkUrl,
+    email_id: emailId,
+  });
+};
+
+export const trackEmailConversion = (emailId: string, campaignName: string, value?: number) => {
+  trackEvent('email_conversion', {
+    event_category: 'Email',
+    event_label: campaignName,
+    value: value || 0,
+    currency: 'GBP',
+    email_id: emailId,
+  });
+  
+  // Also track with Meta Pixel
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', 'Purchase', {
+      value: value || 0,
+      currency: 'GBP',
+      content_category: 'email_conversion',
+      email_id: emailId,
+      campaign_name: campaignName,
+    });
+  }
 };
