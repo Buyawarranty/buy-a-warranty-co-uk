@@ -276,11 +276,11 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Pre-existing faults are not covered'
       ],
       ...pricingData24,
-      originalPrice: (pricingData24 as any).originalPrice,
+      originalPrice: undefined, // No fake original price - matrix price is the base
       isPopular: true,
       isBestValue: false,
       isStarter: false,
-      savePercent: '10%'
+      savePercent: undefined
     },
     {
       id: '36months',
@@ -306,11 +306,11 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Pre-existing faults are not covered'
       ],
       ...pricingData36,
-      originalPrice: (pricingData36 as any).originalPrice,
+      originalPrice: undefined, // No fake original price - matrix price is the base
       isPopular: false,
       isBestValue: true,
       isStarter: false,
-      savePercent: '20%'
+      savePercent: undefined
     }
   ], [pricingData12, pricingData24, pricingData36]);
 
