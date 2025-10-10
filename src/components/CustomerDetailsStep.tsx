@@ -1220,12 +1220,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                     <h3 className="text-lg font-semibold text-gray-900">Choose Payment Method</h3>
                     
                     <RadioGroup value={paymentMethod} onValueChange={(value: 'bumper' | 'stripe') => setPaymentMethod(value)}>
-                      {/* Monthly Interest Free Credit */}
+                      {/* Pay Monthly - 0% Interest */}
                       <div 
                         onClick={() => setPaymentMethod('bumper')}
                         className={`rounded-lg p-6 cursor-pointer transition-all duration-200 ${
                           paymentMethod === 'bumper' 
-                            ? 'bg-green-500/10 border-2 border-green-500 shadow-lg shadow-green-500/30' 
+                            ? 'bg-green-100 border-2 border-green-500 shadow-lg shadow-green-500/30' 
                             : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-green-500/20'
                         }`}
                       >
@@ -1240,10 +1240,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                            <div className="flex-1 min-w-0">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                               <Label htmlFor="bumper" className="font-semibold text-gray-900 text-base cursor-pointer">
-                                Monthly Interest-Free Credit
+                                Pay Monthly - 0% Interest
                               </Label>
                               <div className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded whitespace-nowrap">
-                                0% Interest
+                                0% APR
                               </div>
                             </div>
                              <div className="flex flex-col items-center mb-3 gap-1">
@@ -1261,7 +1261,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                </div>
                              </div>
                             <p className="text-sm text-gray-600">
-                              Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total
+                              <span className="font-bold">Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total</span>
                               {hasSecondWarrantyDiscount && (
                                 <span className="text-orange-600"> (second warranty discount applied)</span>
                               )}
@@ -1283,12 +1283,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         </div>
                       </div>
 
-                      {/* Pay Full Amount */}
+                      {/* Pay in full today */}
                       <div 
                         onClick={() => setPaymentMethod('stripe')}
                         className={`rounded-lg p-6 cursor-pointer transition-all duration-200 ${
                           paymentMethod === 'stripe' 
-                            ? 'bg-blue-500/10 border-2 border-blue-500 shadow-lg shadow-blue-500/30' 
+                            ? 'bg-blue-100 border-2 border-blue-500 shadow-lg shadow-blue-500/30' 
                             : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-blue-500/20'
                         }`}
                       >
@@ -1303,9 +1303,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                            <div className="flex-1 min-w-0">
                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                                <Label htmlFor="stripe" className="font-semibold text-gray-900 text-base cursor-pointer">
-                                 Pay Full Amount
+                                 Pay in full today
                                </Label>
-                                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg shadow-green-500/30 whitespace-nowrap">
+                                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg whitespace-nowrap">
                                   💰 Save 10% (£{Math.round(discountedPrice * 0.10)}) Today
                                 </div>
                              </div>
@@ -1314,7 +1314,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                <img src={stripeLogo} alt="Stripe" className="h-5 sm:h-7 object-contain" />
                              </div>
                             <p className="text-sm text-gray-600">
-                              Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span>
+                              <span className="font-bold">Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span></span>
                               {hasValidDiscountCodes && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
