@@ -1644,14 +1644,19 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 protectionAddOnPrice = calculateAddOnPrice(selectedProtectionAddOns, option.id, durationMonths);
               }
               
-              // Plan price display: ALWAYS show stable monthly payment (base price ÷ 12, never changes with other plan selections)
-              const displayedMonthlyPrice = Math.round(planAdjustedBasePrice / 12);
+              // Apply automatic discounts for multi-year plans
+              let discountedPrice = planAdjustedBasePrice;
+              if (option.id === '24months') {
+                discountedPrice = planAdjustedBasePrice - 100; // £100 discount for 2-year plans
+              } else if (option.id === '36months') {
+                discountedPrice = planAdjustedBasePrice - 200; // £200 discount for 3-year plans
+              }
               
-              // Total cost calculation: base + add-ons (only for the selected plan)
-              const totalPriceWithAddOns = planAdjustedBasePrice + protectionAddOnPrice;
+              // Plan price display: show discounted price ÷ 12
+              const displayedMonthlyPrice = Math.round(discountedPrice / 12);
               
-              // Calculate original price for savings display - independent of selection, base price only
-              const originalPrice = option.id === '24months' ? planAdjustedBasePrice + 100 : option.id === '36months' ? planAdjustedBasePrice + 200 : planAdjustedBasePrice;
+              // Total cost calculation: discounted base + add-ons (only for the selected plan)
+              const totalPriceWithAddOns = discountedPrice + protectionAddOnPrice;
               
               return (
                 <div
@@ -1763,18 +1768,15 @@ const PricingTable: React.FC<PricingTableProps> = ({
                            </div>
                          )}
                        </div>
-                     <div className="text-sm font-semibold text-gray-900">
-                       Total cost: 
-                       {option.id !== '12months' && (
-                         <span className="line-through text-gray-500 ml-1">£{originalPrice}</span>
-                       )}
-                       <span className="text-orange-600 ml-1">£{planAdjustedBasePrice}</span>
-                        {paymentType === option.id && protectionAddOnPrice > 0 && (
-                          <span className="text-gray-600 text-xs block mt-1">
-                            Total: £{Math.round(totalPriceWithAddOns)}
-                          </span>
-                        )}
-                     </div>
+                      <div className="text-sm font-semibold text-gray-900">
+                        Total cost: 
+                        <span className="text-orange-600 ml-1">£{discountedPrice}</span>
+                         {paymentType === option.id && protectionAddOnPrice > 0 && (
+                           <span className="text-gray-600 text-xs block mt-1">
+                             Total: £{Math.round(totalPriceWithAddOns)}
+                           </span>
+                         )}
+                      </div>
                    </div>
                   
                    {/* Select Button */}
