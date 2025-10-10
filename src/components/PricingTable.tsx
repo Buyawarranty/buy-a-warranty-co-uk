@@ -2042,14 +2042,20 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 }
               </div>
               
-              {/* Payment Terms for footer */}
-              <div className="text-sm text-gray-500">
-                {paymentType === '12months' 
-                  ? 'Only 12 easy payments'
-                  : paymentType === '24months' 
-                    ? 'Nothing to pay in Year 2'
-                    : 'Nothing to pay in Year 2 and Year 3'
-                }
+              {/* Payment Terms and Total for footer */}
+              <div className="flex items-center justify-center gap-2 text-sm">
+                <span className="text-gray-500">
+                  {paymentType === '12months' 
+                    ? 'Only 12 easy payments'
+                    : paymentType === '24months' 
+                      ? 'Nothing to pay in Year 2'
+                      : 'Nothing to pay in Year 2 and Year 3'
+                  }
+                </span>
+                <span className="text-gray-400">•</span>
+                <span className="font-semibold text-gray-900">
+                  Total: £{Math.round(totalPrice)}
+                </span>
               </div>
             </div>
             
