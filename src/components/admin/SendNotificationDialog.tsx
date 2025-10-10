@@ -19,12 +19,14 @@ import { Bell } from 'lucide-react';
 interface SendNotificationDialogProps {
   customerId: string;
   customerName: string;
+  customerEmail: string;
   trigger?: React.ReactNode;
 }
 
 export const SendNotificationDialog = ({
   customerId,
   customerName,
+  customerEmail,
   trigger,
 }: SendNotificationDialogProps) => {
   const [open, setOpen] = useState(false);
@@ -58,10 +60,51 @@ export const SendNotificationDialog = ({
 
       if (error) throw error;
 
-      toast({
-        title: 'Notification sent',
-        description: `Message sent to ${customerName}`,
+      // Send email notification using direct content
+      const emailSubject = isImportant 
+        ? '🔔 Important Update from Buy A Warranty'
+        : 'Update from Buy A Warranty';
+
+      const htmlContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #1e3a8a;">Hi ${customerName},</h2>
+          <p style="color: #333; font-size: 16px;">We wanted to let you know:</p>
+          <div style="background-color: #f5f5f5; padding: 20px; border-left: 4px solid ${isImportant ? '#ef4444' : '#3b82f6'}; margin: 20px 0; border-radius: 4px;">
+            <p style="color: #333; font-size: 16px; margin: 0; white-space: pre-wrap;">${message.trim()}</p>
+          </div>
+          <p style="color: #333; font-size: 16px;">
+            You can view more details by <a href="${window.location.origin}/customer-dashboard" style="color: #3b82f6; text-decoration: none;">logging into your dashboard</a>.
+          </p>
+          <p style="color: #333; font-size: 16px;">If you have any questions, please don't hesitate to contact us.</p>
+          <p style="color: #333; font-size: 16px; margin-top: 30px;">
+            Best regards,<br>
+            <strong>Buy A Warranty Team</strong>
+          </p>
+        </div>
+      `;
+
+      const { error: emailError } = await supabase.functions.invoke('send-email', {
+        body: {
+          recipientEmail: customerEmail,
+          customerId: customerId,
+          subject: emailSubject,
+          html: htmlContent,
+        },
       });
+
+      if (emailError) {
+        console.error('Error sending email:', emailError);
+        toast({
+          title: 'Partial success',
+          description: 'Notification saved to dashboard, but email failed to send',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Update sent successfully',
+          description: `Message sent to ${customerName} via dashboard and email`,
+        });
+      }
 
       setMessage('');
       setIsImportant(false);
@@ -92,7 +135,7 @@ export const SendNotificationDialog = ({
         <DialogHeader>
           <DialogTitle>Send Update to Customer</DialogTitle>
           <DialogDescription>
-            Send a notification to {customerName}. They will see it in their dashboard.
+            Send an update to {customerName} via dashboard notification and email ({customerEmail}).
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">

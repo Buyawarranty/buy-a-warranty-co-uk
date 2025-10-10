@@ -1944,6 +1944,7 @@ export const CustomersTab = () => {
                                 <SendNotificationDialog 
                                   customerId={selectedCustomer.id}
                                   customerName={selectedCustomer.name}
+                                  customerEmail={selectedCustomer.email}
                                 />
                               )}
                             </div>

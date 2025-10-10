@@ -15,7 +15,7 @@ const corsHeaders = {
 };
 
 interface SendEmailRequest {
-  templateId: string;
+  templateId?: string;
   recipientEmail: string;
   customerId?: string;
   variables?: Record<string, any>;
@@ -24,6 +24,11 @@ interface SendEmailRequest {
     content: string;
     type: string;
   }>;
+  // Direct email content (alternative to template)
+  subject?: string;
+  html?: string;
+  text?: string;
+  from?: string;
 }
 
 const supabase = createClient(
@@ -42,20 +47,45 @@ const handler = async (req: Request): Promise<Response> => {
     const requestBody = await req.json();
     console.log('Request body received:', JSON.stringify(requestBody, null, 2));
     
-    const { templateId, recipientEmail, customerId, variables = {}, attachments = [] }: SendEmailRequest = requestBody;
-    console.log('Parsed request:', { templateId, recipientEmail, customerId, variablesCount: Object.keys(variables).length });
+    const { templateId, recipientEmail, customerId, variables = {}, attachments = [], subject: directSubject, html: directHtml, text: directText, from: directFrom }: SendEmailRequest = requestBody;
+    console.log('Parsed request:', { templateId, recipientEmail, customerId, variablesCount: Object.keys(variables).length, isDirect: !templateId });
     
     // Generate tracking ID for this email
     const trackingId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     // Validate required fields
-    if (!templateId || !recipientEmail) {
-      console.error('Missing required fields:', { templateId: !!templateId, recipientEmail: !!recipientEmail });
+    if (!recipientEmail) {
+      console.error('Missing recipient email');
       return new Response(
-        JSON.stringify({ error: 'Missing required fields: templateId and recipientEmail are required' }),
+        JSON.stringify({ error: 'Missing required field: recipientEmail is required' }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    // Check if using direct content or template
+    const useDirect = !templateId && directSubject && directHtml;
+    
+    let emailSubject = '';
+    let emailContent = '';
+    let emailGreeting = '';
+    let fromEmail = 'support@buyawarranty.co.uk';
+    let templateType = 'direct';
+
+    if (useDirect) {
+      // Use direct email content
+      console.log('Using direct email content');
+      emailSubject = directSubject!;
+      emailContent = directHtml!;
+      fromEmail = directFrom || fromEmail;
+    } else {
+      // Use template-based email
+      if (!templateId) {
+        console.error('Missing templateId for template-based email');
+        return new Response(
+          JSON.stringify({ error: 'Either templateId or (subject + html) must be provided' }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
 
     console.log('Attempting to fetch template with ID/type:', templateId);
     
@@ -90,9 +120,11 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Template found:', { templateName: template.name, templateId: template.id });
 
     // Replace variables in content
-    let emailContent = template.content.content || '';
-    let emailSubject = template.subject;
-    let emailGreeting = template.content.greeting || '';
+    emailContent = template.content.content || '';
+    emailSubject = template.subject;
+    emailGreeting = template.content.greeting || '';
+    fromEmail = template.from_email;
+    templateType = template.template_type;
 
     // Generate unsubscribe token (simple hash of email + timestamp)
     const unsubscribeToken = btoa(`${recipientEmail}:${Date.now()}`).replace(/[+/=]/g, '');
@@ -119,14 +151,15 @@ const handler = async (req: Request): Promise<Response> => {
     if (!emailContent.startsWith('<p')) {
       emailContent = `<p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">${emailContent}</p>`;
     }
+    }
 
     // Generate UTM parameters for tracking
     const baseUrl = Deno.env.get('SUPABASE_URL') || 'https://buyawarranty.co.uk';
     const utmParams = {
-      utm_campaign: template.template_type,
+      utm_campaign: templateType,
       utm_source: 'email',
       utm_medium: 'email',
-      utm_content: template.name.toLowerCase().replace(/\s+/g, '_'),
+      utm_content: templateType.toLowerCase().replace(/\s+/g, '_'),
     };
     
     // Add UTM parameters to all links in content
@@ -369,7 +402,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: emailLog, error: logError } = await supabase
       .from('email_logs')
       .insert({
-        template_id: template.id,
+        template_id: templateId || null,
         recipient_email: recipientEmail,
         customer_id: customerId,
         subject: emailSubject,
@@ -379,7 +412,7 @@ const handler = async (req: Request): Promise<Response> => {
         utm_source: utmParams.utm_source,
         utm_medium: utmParams.utm_medium,
         utm_content: utmParams.utm_content,
-        metadata: { variables }
+        metadata: { variables, isDirect: useDirect }
       })
       .select()
       .single();
@@ -390,7 +423,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Prepare email options
     const emailOptions: any = {
-      from: template.from_email,
+      from: fromEmail,
       to: [recipientEmail],
       subject: emailSubject,
       html: htmlContent,
@@ -406,7 +439,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Add BCC for Trustpilot integration if this is a feedback template
-    if (template.template_type === 'feedback' || template.template_type === 'feedback_reminder') {
+    if (templateType === 'feedback' || templateType === 'feedback_reminder') {
       emailOptions.bcc = ['buyawarranty.co.uk+8fc526946e@invite.trustpilot.com'];
     }
 
