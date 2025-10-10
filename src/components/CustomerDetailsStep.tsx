@@ -1260,8 +1260,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                  <span>No impact on your credit score</span>
                                </div>
                              </div>
-                            <p className="text-sm text-gray-600">
-                              <span className="font-bold">Pay £{Math.round(discountedBumperPrice / 12)} x 12 monthly payments = £{Math.round(discountedBumperPrice)} total</span>
+                             <p className="text-sm text-gray-600">
+                               <span className="font-bold">Pay <span className="text-base font-bold">£{Math.round(discountedBumperPrice / 12)}</span> x 12 monthly payments = <span className="text-base font-bold">£{Math.round(discountedBumperPrice)}</span> total</span>
                               {hasSecondWarrantyDiscount && (
                                 <span className="text-orange-600"> (second warranty discount applied)</span>
                               )}
@@ -1313,8 +1313,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                <span className="text-xs text-gray-500">Powered by</span>
                                <img src={stripeLogo} alt="Stripe" className="h-5 sm:h-7 object-contain" />
                              </div>
-                            <p className="text-sm text-gray-600">
-                              <span className="font-bold">Pay £{discountedStripePrice} upfront <span className="text-green-600">- get a 10% discount today</span></span>
+                             <p className="text-sm text-gray-600">
+                               <span className="font-bold">Pay <span className="text-base font-bold">£{discountedStripePrice}</span> upfront <span className="text-green-600">- get a 10% discount today</span></span>
                               {hasValidDiscountCodes && (
                                 <span className="text-gray-500 line-through ml-2">was £{Math.round(bumperTotalPrice)}</span>
                               )}
