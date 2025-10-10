@@ -2054,7 +2054,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 </span>
                 <span className="text-gray-400">•</span>
                 <span className="font-semibold text-gray-900">
-                  Total: £{Math.round(totalPrice)}
+                  Total: £{Math.round(basePlanPrice)}
                 </span>
               </div>
             </div>
