@@ -213,6 +213,14 @@ export default {
 					'50%': {
 						transform: 'translateY(-8px)'
 					}
+				},
+				'gentle-bounce': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-3px)'
+					}
 				}
 			},
 			animation: {
@@ -230,7 +238,8 @@ export default {
 				'float-slow': 'float-slow 6s ease-in-out infinite',
 				'slide': 'slide 12s ease-in-out infinite',
 				'float': 'float 2s ease-in-out infinite',
-				'bounce-slow': 'bounce-slow 3s ease-in-out infinite'
+				'bounce-slow': 'bounce-slow 3s ease-in-out infinite',
+				'gentle-bounce': 'gentle-bounce 4s ease-in-out infinite'
 			}
 		}
 	},

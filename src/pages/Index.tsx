@@ -598,7 +598,12 @@ const Index = () => {
         keywords="car warranty, vehicle warranty, UK warranty, car insurance, breakdown cover, warranty prices, vehicle protection, extended warranty"
         canonical={`${window.location.origin}/?step=${currentStep}`}
       />
-      {/* Removed CarJourneyProgress component to eliminate progress bar animation between steps */}
+      {/* Progress Bar with Moving Car - Steps 2, 3, and 4 */}
+      {currentStep >= 2 && currentStep <= 4 && (
+        <PerformanceOptimizedSuspense height="120px">
+          <CarJourneyProgress currentStep={currentStep} />
+        </PerformanceOptimizedSuspense>
+      )}
       
       {currentStep === 1 && (
         <Homepage onRegistrationSubmit={handleHomepageRegistration} />
