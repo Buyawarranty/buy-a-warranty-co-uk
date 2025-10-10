@@ -161,15 +161,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     
     const totalPrice = adjustedBasePrice + planAddOnPrice + protectionAddOnPrice;
     
-    // Apply automatic discounts for multi-year plans
-    let discountedPrice = totalPrice;
-    if (paymentPeriod === '24months') {
-      discountedPrice = totalPrice - 100; // £100 discount for 2-year plans
-    } else if (paymentPeriod === '36months') {
-      discountedPrice = totalPrice - 200; // £200 discount for 3-year plans
-    }
-    
-    const monthlyPrice = Math.round(discountedPrice / 12); // Always use 12 months for monthly calculation
+    const monthlyPrice = Math.round(totalPrice / 12); // Always use 12 months for monthly calculation
     
     console.log('WarrantyDurationStep - Calculated pricing:', {
       paymentPeriod,
@@ -179,7 +171,6 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       planAddOnPrice,
       protectionAddOnPrice,
       totalPrice,
-      discountedPrice,
       monthlyPrice,
       selectedFromMatrix: `${voluntaryExcess}_${claimLimit}`,
       durationMonths,
@@ -189,7 +180,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       }
     });
     
-    return { totalPrice: discountedPrice, monthlyPrice };
+    return { totalPrice, monthlyPrice };
   };
 
   // Memoize pricing calculations with stable dependencies to prevent fluctuations on re-render
@@ -256,7 +247,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
     },
     {
       id: '24months',
-      title: '2-Year Cover — Save £100 Today',
+      title: '2-Year Cover',
       subtitle: 'MOST POPULAR',
       description: 'Balanced Protection and Value',
       planTitle: 'Platinum Complete Plan',
@@ -276,15 +267,15 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Pre-existing faults are not covered'
       ],
       ...pricingData24,
-      originalPrice: pricingData24.totalPrice + 100,
+      originalPrice: undefined,
       isPopular: true,
       isBestValue: false,
       isStarter: false,
-      savePercent: '10%'
+      savePercent: undefined
     },
     {
       id: '36months',
-      title: '3-Year Cover — Save £200 Today',
+      title: '3-Year Cover',
       subtitle: 'BEST VALUE',
       description: 'Extended cover for longer peace of mind',
       planTitle: 'Platinum Complete Plan',
@@ -306,11 +297,11 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
         'Pre-existing faults are not covered'
       ],
       ...pricingData36,
-      originalPrice: pricingData36.totalPrice + 200,
+      originalPrice: undefined,
       isPopular: false,
       isBestValue: true,
       isStarter: false,
-      savePercent: '20%'
+      savePercent: undefined
     }
   ], [pricingData12, pricingData24, pricingData36]);
 
