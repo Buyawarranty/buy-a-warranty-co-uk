@@ -81,17 +81,21 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       // Get all possible auto-included add-ons from all plans
       const allPossibleAutoIncluded = ['breakdown', 'motFee', 'rental', 'tyre'];
       
-      // Start with current selections but reset all auto-included options
-      const updated = { ...prev };
+      // Create new state object
+      const updated: {[key: string]: boolean} = {};
       
-      // First, uncheck all previously auto-included add-ons
-      allPossibleAutoIncluded.forEach(addonKey => {
-        updated[addonKey] = false;
-      });
-      
-      // Then, check the new auto-included add-ons for the selected payment type
-      newAutoIncluded.forEach(addonKey => {
-        updated[addonKey] = true;
+      // For each add-on, determine its new state
+      Object.keys(prev).forEach(addonKey => {
+        const isAutoIncludedInNewPlan = newAutoIncluded.includes(addonKey);
+        const wasAutoIncludedPreviously = allPossibleAutoIncluded.includes(addonKey);
+        
+        if (wasAutoIncludedPreviously) {
+          // This add-on can be auto-included - set it based on new plan
+          updated[addonKey] = isAutoIncludedInNewPlan;
+        } else {
+          // This is a user-selectable add-on (not auto-included) - preserve user choice
+          updated[addonKey] = prev[addonKey];
+        }
       });
       
       console.log('WarrantyDurationStep - Updated protection add-ons:', updated);
