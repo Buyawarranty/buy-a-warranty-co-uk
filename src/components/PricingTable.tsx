@@ -1532,8 +1532,8 @@ const PricingTable: React.FC<PricingTableProps> = ({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div className="mt-3">
-                  <p className="text-sm text-green-800">
-                    Think about the last time your car needed a repair e.g if your last repair was £900, our £1200 claim limit would have covered it.
+                  <p className="text-sm text-green-800 font-bold">
+                    Think about the last time your car needed a repair e.g if your last repair was £900, our £1200+ claim limit would have covered it.
                   </p>
                 </div>
               </CollapsibleContent>
