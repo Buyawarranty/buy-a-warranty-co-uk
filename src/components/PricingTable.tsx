@@ -2032,9 +2032,9 @@ const PricingTable: React.FC<PricingTableProps> = ({
             
             {/* Price Section - Moved to center */}
             <div className="flex flex-col flex-1 text-center">
-              {/* Monthly Price - Main Hook - Show stable base price */}
+              {/* Monthly Price - Main Hook - Show discounted price */}
               <div className="text-2xl font-bold text-gray-900 mb-1">
-                £{Math.round(basePlanPrice / 12)}/month - {paymentType === '12months' 
+                £{Math.round(totalPrice / 12)}/month - {paymentType === '12months' 
                   ? '1 Year Cover'
                   : paymentType === '24months' 
                     ? '2 Year Cover'
@@ -2054,7 +2054,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 </span>
                 <span className="text-gray-400">•</span>
                 <span className="font-semibold text-gray-900">
-                  Total: £{Math.round(basePlanPrice)}
+                  Total: £{Math.round(totalPrice)}
                 </span>
               </div>
             </div>
