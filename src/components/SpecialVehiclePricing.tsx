@@ -172,7 +172,6 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     };
     
     const { dbPeriod, warrantyYears } = periodMap[paymentPeriod as keyof typeof periodMap] || { dbPeriod: '12', warrantyYears: 1 };
-    const excessKey = `${excess}_${claimLimit}`;
     
     console.log('💰 calculatePlanPrice Debug:', {
       paymentType: `${warrantyYears * 12}months`,
@@ -181,17 +180,24 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
       vehicleData,
     });
     
-    // Get base price from database
+    // Get base price from database using new 3-level nested structure
     let basePrice = 467; // fallback price
     try {
       const periodData = plan.pricing_matrix[dbPeriod];
-      if (periodData && periodData[excessKey] && periodData[excessKey].price) {
-        basePrice = periodData[excessKey].price;
-        console.log('Found price in exact table:', {
+      if (periodData && periodData[excess] && periodData[excess][claimLimit]) {
+        basePrice = periodData[excess][claimLimit].price;
+        console.log('Found price in matrix:', {
           basePrice,
           voluntaryExcess: excess,
           selectedClaimLimit: claimLimit,
           paymentType: `${warrantyYears * 12}months`
+        });
+      } else {
+        console.warn('Price not found in matrix, using fallback:', {
+          dbPeriod,
+          excess,
+          claimLimit,
+          availableExcess: periodData ? Object.keys(periodData) : 'no period data'
         });
       }
     } catch (error) {
