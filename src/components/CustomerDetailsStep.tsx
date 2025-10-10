@@ -1225,8 +1225,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         onClick={() => setPaymentMethod('bumper')}
                         className={`rounded-lg p-6 cursor-pointer transition-all duration-200 ${
                           paymentMethod === 'bumper' 
-                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                            ? 'bg-green-500/10 border-2 border-green-500 shadow-lg shadow-green-500/30' 
+                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-green-500/20'
                         }`}
                       >
                          <div className="flex items-start space-x-3">
@@ -1288,8 +1288,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         onClick={() => setPaymentMethod('stripe')}
                         className={`rounded-lg p-6 cursor-pointer transition-all duration-200 ${
                           paymentMethod === 'stripe' 
-                            ? 'bg-orange-500/10 border-2 border-orange-500 shadow-lg shadow-orange-500/30' 
-                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-orange-500/20'
+                            ? 'bg-blue-500/10 border-2 border-blue-500 shadow-lg shadow-blue-500/30' 
+                            : 'neutral-container shadow-lg shadow-black/15 hover:shadow-xl hover:shadow-blue-500/20'
                         }`}
                       >
                          <div className="flex items-start space-x-3">
@@ -1305,9 +1305,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                <Label htmlFor="stripe" className="font-semibold text-gray-900 text-base cursor-pointer">
                                  Pay Full Amount
                                </Label>
-                               <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg shadow-green-500/30 whitespace-nowrap animate-pulse">
-                                 💰 Save 10% (£{Math.round(discountedPrice * 0.10)}) Today
-                               </div>
+                                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg shadow-green-500/30 whitespace-nowrap">
+                                  💰 Save 10% (£{Math.round(discountedPrice * 0.10)}) Today
+                                </div>
                              </div>
                              <div className="flex flex-col items-center mb-3 gap-1">
                                <span className="text-xs text-gray-500">Powered by</span>
