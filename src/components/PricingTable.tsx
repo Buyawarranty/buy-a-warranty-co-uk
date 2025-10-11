@@ -2078,7 +2078,11 @@ const PricingTable: React.FC<PricingTableProps> = ({
                       : 'Nothing to pay in Year 2 and Year 3'
                   }
                 </span>
-                <span className="text-gray-400">•</span>
+                {paymentType === '12months' ? (
+                  <span className="text-gray-400">•</span>
+                ) : (
+                  <span className="text-gray-500">12 easy payments</span>
+                )}
                 <span className="font-semibold text-gray-900">
                   Total: £{Math.round(totalDiscountedPrice)}
                 </span>
