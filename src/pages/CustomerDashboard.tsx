@@ -1153,7 +1153,7 @@ const CustomerDashboard = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => window.open("/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-8.pdf", "_blank")}
+                                onClick={() => window.open("/Terms-and-Conditions-v2.3.pdf", "_blank")}
                               >
                                 <FileText className="mr-2 h-4 w-4" />
                                 View T's and C's
@@ -1161,7 +1161,7 @@ const CustomerDashboard = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => window.open("/Platinum-warranty-plan_v2.2-8.pdf", "_blank")}
+                                onClick={() => window.open("/Platinum-Warranty-Plan-v2.4.pdf", "_blank")}
                               >
                                 <FileText className="mr-2 h-4 w-4" />
                                 View your warranty plan

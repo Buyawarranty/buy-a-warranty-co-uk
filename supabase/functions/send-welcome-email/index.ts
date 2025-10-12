@@ -191,9 +191,9 @@ serve(async (req) => {
       throw new Error('RESEND_API_KEY not configured');
     }
 
-    // Use the new Premium Plan PDF for all warranty types
-    const planDocumentUrl = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf`;
-    const termsUrl = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf`;
+    // Use the new v2.3 and v2.4 PDFs for all warranty types
+    const planDocumentUrl = `https://buyawarranty.co.uk/Platinum-Warranty-Plan-v2.4.pdf`;
+    const termsUrl = `https://buyawarranty.co.uk/Terms-and-Conditions-v2.3.pdf`;
     
     logStep("Document URLs determined", { planType, planDocumentUrl, termsUrl });
 
@@ -237,9 +237,8 @@ serve(async (req) => {
     const attachments = [];
     
     try {
-      // Load Terms and Conditions PDF (updated to v2.2-7 for all warranty types)
-      const termsPath = '/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf';
-      const termsResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents${termsPath}`);
+      // Load Terms and Conditions PDF v2.3 (new version)
+      const termsResponse = await fetch(termsUrl);
       if (termsResponse.ok) {
         const termsBuffer = await termsResponse.arrayBuffer();
         const termsBytes = new Uint8Array(termsBuffer);
@@ -252,15 +251,14 @@ serve(async (req) => {
         }
         
         attachments.push({
-          filename: 'Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-7.pdf',
+          filename: 'Terms-and-Conditions-v2.3.pdf',
           content: termsBase64,
           type: 'application/pdf'
         });
       }
       
-      // Load Premium Extended Warranty Plan PDF (new standard for all warranty types)
-      const premiumPath = '/platinum/Platinum-Extended-Warranty%202.0-1754464769023.pdf';
-      const premiumResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/policy-documents${premiumPath}`);
+      // Load Platinum Warranty Plan PDF v2.4 (new version)
+      const premiumResponse = await fetch(planDocumentUrl);
       if (premiumResponse.ok) {
         const premiumBuffer = await premiumResponse.arrayBuffer();
         const premiumBytes = new Uint8Array(premiumBuffer);
@@ -273,7 +271,7 @@ serve(async (req) => {
         }
         
         attachments.push({
-          filename: 'Premium-Extended-Warranty-Plan-2.0.pdf',
+          filename: 'Platinum-Warranty-Plan-v2.4.pdf',
           content: premiumBase64,
           type: 'application/pdf'
         });
