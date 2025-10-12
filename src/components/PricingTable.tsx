@@ -1577,26 +1577,6 @@ const PricingTable: React.FC<PricingTableProps> = ({
               </Accordion>
             </div>
           </div>
-          
-          {/* Guide Text - Now below claim limit options */}
-          <Collapsible open={claimLimitGuideExpanded} onOpenChange={setClaimLimitGuideExpanded}>
-            <div className="bg-green-50 border border-green-300 rounded-lg p-4 mt-6">
-              <CollapsibleTrigger className="w-full flex items-center justify-between text-left group">
-                <div className="flex items-center gap-2">
-                  <HelpCircle className="w-5 h-5 text-green-700 flex-shrink-0" />
-                  <h3 className="text-base font-semibold text-green-900">What's the right claim limit for me?</h3>
-                </div>
-                <ChevronDown className={`w-5 h-5 text-green-700 transition-transform duration-200 ${claimLimitGuideExpanded ? 'rotate-180' : ''}`} />
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="mt-3">
-                  <p className="text-sm text-green-800 font-bold">
-                    Think about the last time your car needed a repair e.g if your last repair was £900, our £1200+ claim limit would have covered it.
-                  </p>
-                </div>
-              </CollapsibleContent>
-            </div>
-          </Collapsible>
         </div>
 
 
