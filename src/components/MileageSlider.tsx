@@ -132,8 +132,8 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
       </div>
 
       {/* Instructional Text */}
-      <div className="text-center text-sm text-muted-foreground mt-2">
-        Drag the panda or click anywhere on the slider to set your mileage
+      <div className="text-left text-sm text-muted-foreground mt-2">
+        Slide the panda or click on the slider to set mileage
       </div>
 
       {/* Validation Message */}
