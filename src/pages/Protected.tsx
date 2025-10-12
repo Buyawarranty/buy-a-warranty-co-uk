@@ -176,6 +176,15 @@ const Protected = () => {
                   </li>
                 );
               }
+              // Bold formatting for "Includes all related..." text in hybrid and EV sections
+              if (component.startsWith('Includes all related petrol/diesel engine parts and labour plus')) {
+                return (
+                  <li key={index} className="flex items-start text-gray-700">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm leading-relaxed font-bold">{component}</span>
+                  </li>
+                );
+              }
               // Default formatting for covered items
               return (
                 <li key={index} className="flex items-start text-gray-700">
