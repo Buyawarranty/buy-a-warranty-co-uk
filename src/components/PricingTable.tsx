@@ -158,6 +158,39 @@ const PricingTable: React.FC<PricingTableProps> = ({
     }
   );
   
+  // Update add-ons when payment type changes to handle auto-included add-ons
+  useEffect(() => {
+    const newAutoIncluded = getAutoIncludedAddOns(paymentType);
+    
+    console.log('PricingTable - Payment type changed:', paymentType);
+    console.log('PricingTable - New auto-included add-ons:', newAutoIncluded);
+    
+    setSelectedProtectionAddOns(prev => {
+      // All add-ons that can be auto-included in any plan
+      const allPossibleAutoIncluded = ['breakdown', 'motFee', 'rental', 'tyre'];
+      
+      // Create new state object
+      const updated: {[key: string]: boolean} = {};
+      
+      // For each add-on, determine its new state
+      Object.keys(prev).forEach(addonKey => {
+        const isAutoIncludedInNewPlan = newAutoIncluded.includes(addonKey);
+        const wasAutoIncludedPreviously = allPossibleAutoIncluded.includes(addonKey);
+        
+        if (wasAutoIncludedPreviously) {
+          // This add-on can be auto-included - set it based on new plan
+          updated[addonKey] = isAutoIncludedInNewPlan;
+        } else {
+          // This is a user-selectable add-on (not auto-included) - preserve user choice
+          updated[addonKey] = prev[addonKey];
+        }
+      });
+      
+      console.log('PricingTable - Updated protection add-ons:', updated);
+      return updated;
+    });
+  }, [paymentType]);
+  
   // Benefits expansion state
   const [expandedBenefits, setExpandedBenefits] = useState<Record<string, boolean>>({});
   
