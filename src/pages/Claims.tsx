@@ -630,8 +630,22 @@ Issue Timing: ${formData.issueTiming}
 
                           <div>
                             <Label htmlFor="currentMileage" className="text-gray-700 font-medium text-sm mb-2 block">
-                              Enter current mileage
+                              Enter current approximate mileage
                             </Label>
+                            <Input
+                              id="currentMileage"
+                              name="currentMileage"
+                              type="number"
+                              placeholder="e.g., 50000"
+                              value={formData.currentMileage}
+                              onChange={(e) => {
+                                const value = parseInt(e.target.value) || 0;
+                                setFormData({ ...formData, currentMileage: Math.min(Math.max(value, 0), 200000) });
+                              }}
+                              min={0}
+                              max={200000}
+                              className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 mb-3"
+                            />
                             <MileageSlider
                               value={formData.currentMileage}
                               onChange={(value) => setFormData({ ...formData, currentMileage: value })}
