@@ -632,7 +632,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     maxLength={8}
                   />
                 </div>
-                <p className="text-xs sm:text-sm text-black text-left mt-1">
+                <p className="text-xs sm:text-sm text-black text-left mt-0.5">
                   Protection for vehicles up to 150,000 miles and 15 years.
                 </p>
 
