@@ -4,6 +4,8 @@ import WarrantyCart from '@/components/WarrantyCart';
 import MultiWarrantyCheckout from '@/components/MultiWarrantyCheckout';
 import { useCart, CartItem } from '@/contexts/CartContext';
 import { SEOHead } from '@/components/SEOHead';
+import { BackNavigationConfirmDialog } from '@/components/BackNavigationConfirmDialog';
+import { useMobileBackNavigation } from '@/hooks/useMobileBackNavigation';
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
@@ -11,6 +13,25 @@ const Cart: React.FC = () => {
   const [showCheckout, setShowCheckout] = useState(() => {
     // Check if returning from payment - restore checkout view
     return sessionStorage.getItem('wasInCheckout') === 'true';
+  });
+  const [showBackConfirmDialog, setShowBackConfirmDialog] = useState(false);
+
+  // Determine current step based on checkout state
+  const currentStep = showCheckout ? 2 : 1;
+
+  // Enable back navigation guard for checkout flow
+  const { allowLeave, stay } = useMobileBackNavigation({
+    currentStep,
+    onStepChange: (step) => {
+      if (step === 1) {
+        setShowCheckout(false);
+        sessionStorage.removeItem('wasInCheckout');
+      }
+    },
+    totalSteps: 2,
+    journeyId: 'cart-checkout',
+    isGuarded: showCheckout, // Only guard when in checkout
+    onShowConfirmDialog: () => setShowBackConfirmDialog(true)
   });
 
   // Clear checkout flag when component unmounts
@@ -52,6 +73,18 @@ const Cart: React.FC = () => {
           onBack={handleBackToCart}
           onAddAnother={handleAddAnother}
         />
+        <BackNavigationConfirmDialog
+          open={showBackConfirmDialog}
+          onStay={() => {
+            setShowBackConfirmDialog(false);
+            stay();
+          }}
+          onLeave={() => {
+            setShowBackConfirmDialog(false);
+            allowLeave();
+          }}
+          journeyName="checkout"
+        />
       </>
     );
   }
@@ -66,6 +99,18 @@ const Cart: React.FC = () => {
       <WarrantyCart 
         onAddMore={handleAddMore}
         onProceedToCheckout={handleProceedToCheckout}
+      />
+      <BackNavigationConfirmDialog
+        open={showBackConfirmDialog}
+        onStay={() => {
+          setShowBackConfirmDialog(false);
+          stay();
+        }}
+        onLeave={() => {
+          setShowBackConfirmDialog(false);
+          allowLeave();
+        }}
+        journeyName="cart"
       />
     </>
   );

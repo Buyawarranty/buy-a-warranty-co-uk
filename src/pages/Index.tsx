@@ -10,6 +10,7 @@ import { useMobileBackNavigation } from '@/hooks/useMobileBackNavigation';
 import { useQuoteRestoration } from '@/hooks/useQuoteRestoration';
 import { batchLocalStorageWrite, safeLocalStorageRemove, parseLocalStorageJSON } from '@/utils/localStorage';
 import PerformanceOptimizedSuspense from '@/components/PerformanceOptimizedSuspense';
+import { BackNavigationConfirmDialog } from '@/components/BackNavigationConfirmDialog';
 
 // Lazy load heavy components that are not immediately visible
 const RegistrationForm = lazy(() => import('@/components/RegistrationForm'));
@@ -169,6 +170,9 @@ const Index = () => {
     vehicleType: ''
   });
   
+  // State for back navigation confirmation dialog
+  const [showBackConfirmDialog, setShowBackConfirmDialog] = useState(false);
+  
   // Get current step from URL or default to 1
   const getStepFromUrl = () => {
     const stepParam = searchParams.get('step');
@@ -263,6 +267,13 @@ const Index = () => {
   const updateStepInUrl = (step: number) => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set('step', step.toString());
+    
+    // Push state to history (not replace) so each step creates a history entry
+    // This allows proper back button navigation
+    const newUrl = `${window.location.pathname}?${newSearchParams.toString()}`;
+    window.history.pushState({ step }, '', newUrl);
+    
+    // Also update React Router's search params without adding another history entry
     setSearchParams(newSearchParams, { replace: true });
   };
   
@@ -319,11 +330,14 @@ const Index = () => {
   };
 
   // Handle mobile back button navigation to keep users on the site
-  useMobileBackNavigation({
+  const { allowLeave, stay } = useMobileBackNavigation({
     currentStep,
     onStepChange: handleStepChange,
     totalSteps: 5,
-    restoreStateFromStep
+    restoreStateFromStep,
+    journeyId: 'warranty-journey',
+    isGuarded: currentStep > 1, // Only guard if user has progressed past step 1
+    onShowConfirmDialog: () => setShowBackConfirmDialog(true)
   });
   
   // Debounced state saving to reduce localStorage writes
@@ -715,6 +729,20 @@ const Index = () => {
           setShowDiscountPopup(false);
           sessionStorage.setItem('hasSeenDiscountPopup', 'true');
         }}
+      />
+
+      {/* Back Navigation Confirmation Dialog */}
+      <BackNavigationConfirmDialog
+        open={showBackConfirmDialog}
+        onStay={() => {
+          setShowBackConfirmDialog(false);
+          stay();
+        }}
+        onLeave={() => {
+          setShowBackConfirmDialog(false);
+          allowLeave();
+        }}
+        journeyName="warranty journey"
       />
     </div>
   );

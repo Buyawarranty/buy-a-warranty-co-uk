@@ -1,24 +1,58 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { trackEvent } from '@/utils/analytics';
 
 interface UseMobileBackNavigationProps {
   currentStep: number;
   onStepChange: (step: number) => void;
   totalSteps: number;
   restoreStateFromStep?: (step: number) => void;
+  journeyId?: string;
+  isGuarded?: boolean; // Whether this journey should show confirmation dialog
+  onShowConfirmDialog?: () => void; // Callback to show confirmation dialog
 }
 
 export const useMobileBackNavigation = ({ 
   currentStep, 
   onStepChange, 
   totalSteps,
-  restoreStateFromStep
+  restoreStateFromStep,
+  journeyId = 'warranty-journey',
+  isGuarded = true,
+  onShowConfirmDialog
 }: UseMobileBackNavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [hasShownConfirmOnThisStep, setHasShownConfirmOnThisStep] = useState(false);
+  const isLeavingRef = useRef(false);
+  const lastStepRef = useRef(currentStep);
+
+  // Reset confirmation flag when step changes
+  useEffect(() => {
+    if (currentStep !== lastStepRef.current) {
+      setHasShownConfirmOnThisStep(false);
+      lastStepRef.current = currentStep;
+    }
+  }, [currentStep]);
 
   const handleBackNavigation = useCallback((event: PopStateEvent) => {
-    console.log('📱 Mobile back navigation triggered', { currentStep });
+    console.log('📱 Mobile back navigation triggered', { 
+      currentStep, 
+      isGuarded, 
+      hasShownConfirmOnThisStep,
+      isLeaving: isLeavingRef.current 
+    });
+    
+    // If we're in the process of leaving (user confirmed), allow it
+    if (isLeavingRef.current) {
+      console.log('📱 User confirmed leave, allowing navigation');
+      trackEvent('back_intercept_leave', {
+        journey_id: journeyId,
+        step: currentStep,
+        step_name: `step_${currentStep}`
+      });
+      return;
+    }
     
     // Get the step from URL to determine if we're going back or forward
     const urlParams = new URLSearchParams(window.location.search);
@@ -26,59 +60,142 @@ export const useMobileBackNavigation = ({
     
     console.log('📱 URL step:', urlStep, 'Current step:', currentStep);
     
-    // If URL step differs from current step, restore state for that step
-    if (urlStep !== currentStep && restoreStateFromStep) {
-      console.log('📱 Restoring state for step', urlStep);
-      restoreStateFromStep(urlStep);
-    }
-    
-    // Update current step to match URL
-    if (urlStep !== currentStep) {
+    // If moving between internal steps (not leaving the site)
+    if (urlStep >= 1 && urlStep <= totalSteps && urlStep !== currentStep) {
+      console.log('📱 Internal step navigation to step', urlStep);
+      
+      // Track internal step change
+      trackEvent('journey_step_changed', {
+        journey_id: journeyId,
+        from_step: currentStep,
+        to_step: urlStep,
+        direction: urlStep < currentStep ? 'back' : 'forward'
+      });
+      
+      // If URL step differs from current step, restore state for that step
+      if (restoreStateFromStep) {
+        console.log('📱 Restoring state for step', urlStep);
+        restoreStateFromStep(urlStep);
+      }
+      
+      // Update current step to match URL
       onStepChange(urlStep);
-    }
-    
-    // If we're on step 1 and trying to go back further, stay on homepage
-    if (urlStep <= 1 && currentStep <= 1) {
-      // Push the current state back to prevent leaving the site
-      window.history.pushState(null, '', window.location.href);
       return;
     }
     
-  }, [currentStep, onStepChange, restoreStateFromStep]);
+    // If trying to go before step 1 (leaving the site) and journey is guarded
+    if (urlStep < 1 && isGuarded && currentStep > 1) {
+      // Only show confirmation once per step
+      if (!hasShownConfirmOnThisStep && onShowConfirmDialog) {
+        console.log('📱 First back from guarded step, showing confirmation');
+        
+        // Prevent the navigation by pushing current state back
+        const currentUrl = window.location.pathname + window.location.search;
+        window.history.pushState({ step: currentStep }, '', currentUrl);
+        
+        // Track that we're showing the intercept
+        trackEvent('back_intercept_shown', {
+          journey_id: journeyId,
+          step: currentStep,
+          step_name: `step_${currentStep}`
+        });
+        
+        // Show the confirmation dialog
+        setHasShownConfirmOnThisStep(true);
+        onShowConfirmDialog();
+        return;
+      }
+    }
+    
+    // If we're on step 1 and trying to go back, allow it (user wants to leave)
+    if (urlStep <= 1 && currentStep <= 1) {
+      console.log('📱 On step 1, allowing natural back navigation');
+      return;
+    }
+    
+  }, [currentStep, onStepChange, restoreStateFromStep, totalSteps, isGuarded, onShowConfirmDialog, hasShownConfirmOnThisStep, journeyId]);
+
+  // Method to allow leaving (called when user confirms)
+  const allowLeave = useCallback(() => {
+    console.log('📱 Setting allow leave flag');
+    isLeavingRef.current = true;
+    setHasShownConfirmOnThisStep(false);
+    
+    // Track user decision to leave
+    trackEvent('back_intercept_leave', {
+      journey_id: journeyId,
+      step: currentStep,
+      step_name: `step_${currentStep}`
+    });
+    
+    // Perform actual back navigation
+    window.history.back();
+  }, [currentStep, journeyId]);
+
+  // Method to stay (called when user cancels)
+  const stay = useCallback(() => {
+    console.log('📱 User chose to stay');
+    isLeavingRef.current = false;
+    
+    // Track user decision to stay
+    trackEvent('back_intercept_stay', {
+      journey_id: journeyId,
+      step: currentStep,
+      step_name: `step_${currentStep}`
+    });
+    
+    // Re-push current state to ensure history is correct
+    const currentUrl = window.location.pathname + window.location.search;
+    window.history.pushState({ step: currentStep }, '', currentUrl);
+  }, [currentStep, journeyId]);
 
   useEffect(() => {
     console.log('📱 Setting up mobile navigation listeners');
     
+    // Set scroll restoration to manual for better control
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    
+    // Push initial state if not already present
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlStep = parseInt(urlParams.get('step') || '1');
+    if (!window.history.state || window.history.state.step !== urlStep) {
+      window.history.replaceState({ step: urlStep }, '', window.location.href);
+    }
+    
     // Listen for popstate events (back/forward button presses)
     window.addEventListener('popstate', handleBackNavigation);
+    
+    // iOS Safari specific: handle bfcache
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        console.log('📱 Page restored from bfcache');
+        // Reset state when page comes back from bfcache
+        isLeavingRef.current = false;
+        setHasShownConfirmOnThisStep(false);
+      }
+    };
+    
+    const handlePageHide = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        console.log('📱 Page going into bfcache');
+      }
+    };
+    
+    window.addEventListener('pageshow', handlePageShow);
+    window.addEventListener('pagehide', handlePageHide);
     
     return () => {
       console.log('📱 Cleaning up mobile navigation listeners');
       window.removeEventListener('popstate', handleBackNavigation);
+      window.removeEventListener('pageshow', handlePageShow);
+      window.removeEventListener('pagehide', handlePageHide);
     };
   }, [handleBackNavigation]);
 
-  useEffect(() => {
-    // Only prevent leaving the actual website (not internal navigation)  
-    const preventLeavingSite = (event: BeforeUnloadEvent) => {
-      // Only prevent if user has started the warranty flow and has entered data
-      // This should only trigger when actually leaving the website/tab, not during React Router navigation
-      if (currentStep > 1) {
-        // Only show warning if user is trying to leave the entire website
-        // React Router navigation won't trigger this event
-        const isLeavingWebsite = !event.target || (event.target as any).location?.origin !== window.location.origin;
-        if (isLeavingWebsite) {
-          event.preventDefault();
-          event.returnValue = '';
-        }
-      }
-    };
-
-    // Only add listener if actually needed - remove for now to fix navigation
-    // window.addEventListener('beforeunload', preventLeavingSite);
-    
-    return () => {
-      // window.removeEventListener('beforeunload', preventLeavingSite);
-    };
-  }, [currentStep]);
+  return {
+    allowLeave,
+    stay
+  };
 };
