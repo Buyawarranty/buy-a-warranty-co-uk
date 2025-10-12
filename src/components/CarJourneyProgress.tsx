@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import buyAWarrantyLogo from '/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png';
 
 interface CarJourneyProgressProps {
   currentStep: number;
@@ -18,6 +20,7 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
   currentStep, 
   onStepChange 
 }) => {
+  const navigate = useNavigate();
   const [animatedStep, setAnimatedStep] = useState(currentStep);
 
   useEffect(() => {
@@ -42,10 +45,17 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
     <div className="w-full max-w-4xl mx-auto py-6 px-4">
       {/* Brand Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold">
-          <span className="text-[#1e40af]">buya</span>
-          <span className="text-[#ea580c]">warranty</span>
-        </h1>
+        <button
+          onClick={() => navigate('/?step=1')}
+          className="inline-block transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+          aria-label="Go back to home page"
+        >
+          <img 
+            src={buyAWarrantyLogo} 
+            alt="Buy a Warranty Logo" 
+            className="h-10 sm:h-12 w-auto mx-auto"
+          />
+        </button>
       </div>
 
       {/* Progress Container */}
