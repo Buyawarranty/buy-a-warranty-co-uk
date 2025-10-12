@@ -39,7 +39,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [regNumber, setRegNumber] = useState('');
-  const [mileage, setMileage] = useState('0');
+  const [mileage, setMileage] = useState('');
   const [sliderMileage, setSliderMileage] = useState(0);
   const [showMileageField, setShowMileageField] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
