@@ -1421,7 +1421,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                         <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-medium text-foreground">If your repair costs £750 or less:</p>
-                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
+                          <p className="text-muted-foreground">We'll cover the full cost of parts and labour, within the limits of your warranty plan.</p>
                         </div>
                       </div>
                       
@@ -1485,7 +1485,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                         <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-medium text-foreground">If your repair costs £1,250 or less:</p>
-                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
+                          <p className="text-muted-foreground">We'll cover the full cost of parts and labour, within the limits of your warranty plan.</p>
                         </div>
                       </div>
                       
@@ -1546,7 +1546,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                         <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-medium text-foreground">If your repair costs £2,000 or less:</p>
-                          <p className="text-muted-foreground">You won't pay a penny – we'll cover the full cost of parts and labour, within the generous limits of your warranty plan.</p>
+                          <p className="text-muted-foreground">We'll cover the full cost of parts and labour, within the limits of your warranty plan.</p>
                         </div>
                       </div>
                       
