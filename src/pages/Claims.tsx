@@ -503,14 +503,278 @@ Issue Timing: ${formData.issueTiming}
                   <p className="text-sm text-green-600 font-medium mt-3">Monday to Friday, 9am to 5.30pm</p>
                 </a>
               </div>
-              <div className="text-center">
-                <p className="text-lg text-gray-700 mb-6 font-medium">Or simply complete the form below:</p>
-                <Button 
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-orange-500 hover:border-orange-600"
-                  onClick={() => document.getElementById('claim-form')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  Start Your Claim Now
-                </Button>
+            </div>
+
+            {/* Make A Claim Form */}
+            <div className="mb-12" id="claim-form">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                  Make A Claim
+                </h2>
+                <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                  Fill out the form below and we'll get back to you quickly
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                {/* Form Section - Takes 2 columns */}
+                <div className="lg:col-span-2">
+                  <div className="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                      {/* Contact Information - 2 Column Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="name" className="text-gray-700 font-medium text-sm">
+                            Name *
+                          </Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            type="text"
+                            placeholder="Your Name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            required
+                            className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                          />
+                          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                        </div>
+
+                        <div>
+                          <Label htmlFor="email" className="text-gray-700 font-medium text-sm">
+                            Email *
+                          </Label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="Your Email Address"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                            className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                          />
+                          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                        </div>
+
+                        <div>
+                          <Label htmlFor="phone" className="text-gray-700 font-medium text-sm">
+                            Phone Number *
+                          </Label>
+                          <Input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            placeholder="07123456789"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                          />
+                          {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
+                        </div>
+
+                        <div>
+                          <Label htmlFor="vehicleReg" className="text-gray-700 font-medium text-sm">
+                            Vehicle Reg/Make/Model
+                          </Label>
+                          <Input
+                            id="vehicleReg"
+                            name="vehicleReg"
+                            type="text"
+                            placeholder="AB12 CDE"
+                            value={formData.vehicleReg}
+                            onChange={handleInputChange}
+                            className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Tell Us What Happened Section */}
+                      <div className="border-t pt-5 mt-2">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Tell Us What Happened</h3>
+                        <p className="text-gray-600 text-sm mb-4">
+                          Share details about the issue so we can help you quickly
+                        </p>
+
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="faultDescription" className="text-gray-700 font-medium text-sm">
+                                Fault Description
+                              </Label>
+                              <Input
+                                id="faultDescription"
+                                name="faultDescription"
+                                type="text"
+                                placeholder="Brief description"
+                                value={formData.faultDescription}
+                                onChange={handleInputChange}
+                                className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor="dateOccurred" className="text-gray-700 font-medium text-sm">
+                                Date the issue occurred
+                              </Label>
+                              <Input
+                                id="dateOccurred"
+                                name="dateOccurred"
+                                type="date"
+                                value={formData.dateOccurred}
+                                onChange={handleInputChange}
+                                className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="currentMileage" className="text-gray-700 font-medium text-sm mb-2 block">
+                              Enter current mileage
+                            </Label>
+                            <MileageSlider
+                              value={formData.currentMileage}
+                              onChange={(value) => setFormData({ ...formData, currentMileage: value })}
+                              min={0}
+                              max={200000}
+                            />
+                          </div>
+
+                          <div>
+                            <Label htmlFor="faultDetails" className="text-gray-700 font-medium text-sm">
+                              Describe the fault - What's not working as expected?
+                            </Label>
+                            <Textarea
+                              id="faultDetails"
+                              name="faultDetails"
+                              placeholder="Please provide as much detail as possible about the problem..."
+                              value={formData.faultDetails}
+                              onChange={handleInputChange}
+                              className="mt-1.5 min-h-[90px] border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                            />
+                          </div>
+
+                          <div>
+                            <Label htmlFor="issueTiming" className="text-gray-700 font-medium text-sm">
+                              When was the issue noticed?
+                            </Label>
+                            <Textarea
+                              id="issueTiming"
+                              name="issueTiming"
+                              placeholder="While driving, after a service, during a routine check..."
+                              value={formData.issueTiming}
+                              onChange={handleInputChange}
+                              className="mt-1.5 min-h-[70px] border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                            />
+                          </div>
+
+                          {/* File Upload */}
+                          <div>
+                            <Label htmlFor="file-upload" className="text-gray-700 font-medium text-sm">
+                              Upload Supporting Documents (Optional)
+                            </Label>
+                            <p className="text-gray-500 text-xs mb-2">
+                              Garage reports, photos, or other documents (Max 20MB)
+                            </p>
+                            
+                            {!uploadedFile ? (
+                              <div className="mt-1.5">
+                                <label htmlFor="file-upload" className="cursor-pointer">
+                                  <div 
+                                    className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                                      isDragging 
+                                        ? 'border-orange-500 bg-orange-50' 
+                                        : 'border-gray-300 hover:border-orange-500'
+                                    }`}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={handleDrop}
+                                  >
+                                    <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                                    <p className="mt-2 text-sm text-gray-600">
+                                      Click to upload or drag and drop
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                      PDF, DOC, JPG, PNG up to 20MB
+                                    </p>
+                                  </div>
+                                </label>
+                                <input
+                                  id="file-upload"
+                                  name="file-upload"
+                                  type="file"
+                                  className="hidden"
+                                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                  onChange={handleFileUpload}
+                                />
+                              </div>
+                            ) : (
+                              <div className="mt-1.5 p-3 bg-gray-50 rounded-lg border flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                  <div className="text-orange-500">
+                                    <Upload className="h-5 w-5" />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium text-gray-900">{uploadedFile.name}</p>
+                                    <p className="text-xs text-gray-500">
+                                      {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                                    </p>
+                                  </div>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={removeFile}
+                                  className="text-gray-500 hover:text-red-500"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <Button 
+                        type="submit" 
+                        disabled={isSubmitting}
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 w-full text-base font-semibold rounded-lg disabled:opacity-50 transition-colors mt-4"
+                      >
+                        {isSubmitting ? 'Submitting...' : 'Submit Claim'}
+                      </Button>
+                    </form>
+                  </div>
+                </div>
+                
+                {/* Right Side - Illustration and Info - Takes 1 column */}
+                <div className="space-y-6">
+                  <div className="flex justify-center lg:justify-start">
+                    <img 
+                      src={pandaMechanicFix} 
+                      alt="Panda mechanic with tools fixing a car" 
+                      className="w-full max-w-48 h-auto"
+                    />
+                  </div>
+                  
+                  {/* Quick Info Cards */}
+                  <div className="space-y-3">
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-gray-900 text-sm mb-1">Fast Response</h4>
+                      <p className="text-xs text-gray-600">We typically respond within 2 hours</p>
+                    </div>
+                    
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-gray-900 text-sm mb-1">UK-Based Team</h4>
+                      <p className="text-xs text-gray-600">Our experts are here to help you</p>
+                    </div>
+                    
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-gray-900 text-sm mb-1">Simple Process</h4>
+                      <p className="text-xs text-gray-600">We keep things clear and straightforward</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -522,282 +786,6 @@ Issue Timing: ${formData.issueTiming}
                   alt="Car warranty UK petrol car claims - Volkswagen Golf GTI with buyawarranty branding showing professional UK warranty claims support" 
                   className="w-full max-w-[48px] h-auto"
                 />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Form Section */}
-        <section className="py-16 lg:py-20 px-4 bg-gradient-to-b from-gray-50 to-white" id="claim-form">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-                Make A Claim
-              </h2>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                Fill out the form below and we'll get back to you quickly
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-              {/* Form Section - Takes 2 columns */}
-              <div className="lg:col-span-2">
-                <div className="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    {/* Contact Information - 2 Column Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="name" className="text-gray-700 font-medium text-sm">
-                          Name *
-                        </Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          type="text"
-                          placeholder="Your Name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
-                        />
-                        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
-                      </div>
-
-                      <div>
-                        <Label htmlFor="email" className="text-gray-700 font-medium text-sm">
-                          Email *
-                        </Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="Your Email Address"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
-                        />
-                        {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-                      </div>
-
-                      <div>
-                        <Label htmlFor="phone" className="text-gray-700 font-medium text-sm">
-                          Phone Number *
-                        </Label>
-                        <Input
-                          id="phone"
-                          name="phone"
-                          type="tel"
-                          placeholder="07123456789"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
-                        />
-                        {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
-                      </div>
-
-                      <div>
-                        <Label htmlFor="vehicleReg" className="text-gray-700 font-medium text-sm">
-                          Vehicle Reg/Make/Model
-                        </Label>
-                        <Input
-                          id="vehicleReg"
-                          name="vehicleReg"
-                          type="text"
-                          placeholder="AB12 CDE"
-                          value={formData.vehicleReg}
-                          onChange={handleInputChange}
-                          className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Tell Us What Happened Section */}
-                    <div className="border-t pt-5 mt-2">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Tell Us What Happened</h3>
-                      <p className="text-gray-600 text-sm mb-4">
-                        Share details about the issue so we can help you quickly
-                      </p>
-
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor="faultDescription" className="text-gray-700 font-medium text-sm">
-                              Fault Description
-                            </Label>
-                            <Input
-                              id="faultDescription"
-                              name="faultDescription"
-                              type="text"
-                              placeholder="Brief description"
-                              value={formData.faultDescription}
-                              onChange={handleInputChange}
-                              className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                            />
-                          </div>
-
-                          <div>
-                            <Label htmlFor="dateOccurred" className="text-gray-700 font-medium text-sm">
-                              Date the issue occurred
-                            </Label>
-                            <Input
-                              id="dateOccurred"
-                              name="dateOccurred"
-                              type="date"
-                              value={formData.dateOccurred}
-                              onChange={handleInputChange}
-                              className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <Label htmlFor="currentMileage" className="text-gray-700 font-medium text-sm mb-2 block">
-                            Enter current mileage
-                          </Label>
-                          <MileageSlider
-                            value={formData.currentMileage}
-                            onChange={(value) => setFormData({ ...formData, currentMileage: value })}
-                            min={0}
-                            max={200000}
-                          />
-                        </div>
-
-                        <div>
-                          <Label htmlFor="faultDetails" className="text-gray-700 font-medium text-sm">
-                            Describe the fault - What's not working as expected?
-                          </Label>
-                          <Textarea
-                            id="faultDetails"
-                            name="faultDetails"
-                            placeholder="Please provide as much detail as possible about the problem..."
-                            value={formData.faultDetails}
-                            onChange={handleInputChange}
-                            className="mt-1.5 min-h-[90px] border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                          />
-                        </div>
-
-                        <div>
-                          <Label htmlFor="issueTiming" className="text-gray-700 font-medium text-sm">
-                            When was the issue noticed?
-                          </Label>
-                          <Textarea
-                            id="issueTiming"
-                            name="issueTiming"
-                            placeholder="While driving, after a service, during a routine check..."
-                            value={formData.issueTiming}
-                            onChange={handleInputChange}
-                            className="mt-1.5 min-h-[70px] border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                          />
-                        </div>
-
-                        {/* File Upload */}
-                        <div>
-                          <Label htmlFor="file-upload" className="text-gray-700 font-medium text-sm">
-                            Upload Supporting Documents (Optional)
-                          </Label>
-                          <p className="text-gray-500 text-xs mb-2">
-                            Garage reports, photos, or other documents (Max 20MB)
-                          </p>
-                          
-                          {!uploadedFile ? (
-                            <div className="mt-1.5">
-                              <label htmlFor="file-upload" className="cursor-pointer">
-                                <div 
-                                  className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                                    isDragging 
-                                      ? 'border-orange-500 bg-orange-50' 
-                                      : 'border-gray-300 hover:border-orange-500'
-                                  }`}
-                                  onDragOver={handleDragOver}
-                                  onDragLeave={handleDragLeave}
-                                  onDrop={handleDrop}
-                                >
-                                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                                  <p className="mt-2 text-sm text-gray-600">
-                                    Click to upload or drag and drop
-                                  </p>
-                                  <p className="text-xs text-gray-500">
-                                    PDF, DOC, JPG, PNG up to 20MB
-                                  </p>
-                                </div>
-                              </label>
-                              <input
-                                id="file-upload"
-                                name="file-upload"
-                                type="file"
-                                className="hidden"
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                onChange={handleFileUpload}
-                              />
-                            </div>
-                          ) : (
-                            <div className="mt-1.5 p-3 bg-gray-50 rounded-lg border flex items-center justify-between">
-                              <div className="flex items-center space-x-3">
-                                <div className="text-orange-500">
-                                  <Upload className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium text-gray-900">{uploadedFile.name}</p>
-                                  <p className="text-xs text-gray-500">
-                                    {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
-                                  </p>
-                                </div>
-                              </div>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={removeFile}
-                                className="text-gray-500 hover:text-red-500"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button 
-                      type="submit" 
-                      disabled={isSubmitting}
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 w-full text-base font-semibold rounded-lg disabled:opacity-50 transition-colors mt-4"
-                    >
-                      {isSubmitting ? 'Submitting...' : 'Submit Claim'}
-                    </Button>
-                  </form>
-                </div>
-              </div>
-              
-              {/* Right Side - Illustration and Info - Takes 1 column */}
-              <div className="space-y-6">
-                <div className="flex justify-center lg:justify-start">
-                  <img 
-                    src={pandaMechanicFix} 
-                    alt="Panda mechanic with tools fixing a car" 
-                    className="w-full max-w-48 h-auto"
-                  />
-                </div>
-                
-                {/* Quick Info Cards */}
-                <div className="space-y-3">
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 text-sm mb-1">Fast Response</h4>
-                    <p className="text-xs text-gray-600">We typically respond within 2 hours</p>
-                  </div>
-                  
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 text-sm mb-1">UK-Based Team</h4>
-                    <p className="text-xs text-gray-600">Our experts are here to help you</p>
-                  </div>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 text-sm mb-1">Call Us</h4>
-                    <p className="text-xs text-gray-600 font-medium">0330 229 5045</p>
-                    <p className="text-xs text-gray-500">Mon-Fri, 9am-5:30pm</p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
