@@ -161,7 +161,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     const plan = plans[0];
     if (!plan?.pricing_matrix) {
       console.warn('No pricing matrix found, using fallback prices');
-      return 467; // Fallback price
+      return 547; // Fallback price (1 year, £0 excess, £750 claim limit)
     }
 
     // Map payment period to database format and warranty years
@@ -181,7 +181,7 @@ const SpecialVehiclePricing: React.FC<SpecialVehiclePricingProps> = ({ vehicleDa
     });
     
     // Get base price from database using new 3-level nested structure
-    let basePrice = 467; // fallback price
+    let basePrice = 547; // fallback price (1 year, £0 excess, £750 claim limit)
     try {
       const periodData = plan.pricing_matrix[dbPeriod];
       if (periodData && periodData[excess] && periodData[excess][claimLimit]) {
