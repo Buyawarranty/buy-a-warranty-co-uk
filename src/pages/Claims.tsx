@@ -653,7 +653,7 @@ Issue Timing: ${formData.issueTiming}
 
                         <div>
                           <Label htmlFor="currentMileage" className="text-gray-700 font-medium text-sm mb-2 block">
-                            Current Mileage
+                            Enter current mileage
                           </Label>
                           <MileageSlider
                             value={formData.currentMileage}
