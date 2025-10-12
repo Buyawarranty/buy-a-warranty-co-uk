@@ -50,6 +50,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [showSecondWarrantyDiscount, setShowSecondWarrantyDiscount] = useState(false);
   const [discountCode, setDiscountCode] = useState('');
   const [showEmailPopup, setShowEmailPopup] = useState(false);
+  const [mileagePlaceholder, setMileagePlaceholder] = useState('Enter current approximate mileage');
 
   useEffect(() => {
     // Check if user is returning from a successful purchase
@@ -140,6 +141,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const handleMileageFocus = () => {
     setMileage('');
     setSliderMileage(0);
+    setMileagePlaceholder('Enter mileage (e.g. 32,000)');
+  };
+
+  const handleMileageBlur = () => {
+    if (!mileage || mileage === '0') {
+      setMileagePlaceholder('Enter current approximate mileage');
+    }
   };
 
   const handleSliderChange = (value: number) => {
@@ -632,15 +640,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 <div className="space-y-2">
                   {/* Text Input Option */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Enter current approximate mileage
-                    </label>
                     <input
                       type="text"
                       value={mileage}
                       onChange={handleMileageChange}
                       onFocus={handleMileageFocus}
-                      placeholder="Enter mileage (e.g. 32,000)"
+                      onBlur={handleMileageBlur}
+                      placeholder={mileagePlaceholder}
                       className={`w-full max-w-56 px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-sm sm:text-lg border-2 rounded-lg focus:outline-none min-w-0 ${
                         mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
                       }`}
