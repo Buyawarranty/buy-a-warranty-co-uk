@@ -338,7 +338,7 @@ serve(async (req) => {
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 6px 0; color: #5a6c7d; font-weight: 500; width: 30%;">Login URL:</td>
-                  <td style="padding: 6px 0;"><a href="https://buyawarranty.co.uk/customer-dashboard" style="color: #1a73e8; text-decoration: none;">https://buyawarranty.co.uk/customer-dashboard</a></td>
+                  <td style="padding: 6px 0;"><a href="https://buyawarranty.co.uk/auth" style="color: #1a73e8; text-decoration: none;">https://buyawarranty.co.uk/auth</a></td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #5a6c7d; font-weight: 500;">Email:</td>

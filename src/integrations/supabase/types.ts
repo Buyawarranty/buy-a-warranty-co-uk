@@ -2448,6 +2448,10 @@ export type Database = {
         Args: { payment_type: string; start_date: string }
         Returns: string
       }
+      fix_customer_role: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
       generate_policy_number: {
         Args: Record<PropertyKey, never>
         Returns: string
