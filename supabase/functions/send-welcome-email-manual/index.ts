@@ -248,7 +248,8 @@ const handler = async (req: Request): Promise<Response> => {
         attachments.push({
           filename: 'Terms-and-Conditions-v2.3.pdf',
           content: termsBase64,
-          type: 'application/pdf'
+          type: 'application/pdf',
+          disposition: 'attachment'
         });
         
         console.log(JSON.stringify({ evt: "terms.pdf.attached", rid }));
@@ -257,7 +258,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
       
       // Load Platinum Warranty Plan PDF v2.4 (new version)
-      const premiumResponse = await fetch('https://buyawarranty.co.uk/Platinum-Warranty-Plan-v2.4.pdf');
+      const premiumResponse = await fetch('https://buyawarranty.co.uk/Platinum-Warranty-Plan_v2.4.pdf');
       if (premiumResponse.ok) {
         const premiumBuffer = await premiumResponse.arrayBuffer();
         const premiumBytes = new Uint8Array(premiumBuffer);
@@ -270,9 +271,10 @@ const handler = async (req: Request): Promise<Response> => {
         }
         
         attachments.push({
-          filename: 'Platinum-Warranty-Plan-v2.4.pdf',
+          filename: 'Premium-Extended-Warranty-Plan-2.0.pdf',
           content: premiumBase64,
-          type: 'application/pdf'
+          type: 'application/pdf',
+          disposition: 'attachment'
         });
         
         console.log(JSON.stringify({ evt: "premium.pdf.attached", rid }));
@@ -500,7 +502,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Use the new v2.3 and v2.4 PDFs for all warranty types
-    const policyDocumentUrl = 'https://buyawarranty.co.uk/Platinum-Warranty-Plan-v2.4.pdf';
+    const policyDocumentUrl = 'https://buyawarranty.co.uk/Platinum-Warranty-Plan_v2.4.pdf';
     const termsUrl = 'https://buyawarranty.co.uk/Terms-and-Conditions-v2.3.pdf';
 
     // Define login URL for customer portal

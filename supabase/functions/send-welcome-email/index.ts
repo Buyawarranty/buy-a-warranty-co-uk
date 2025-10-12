@@ -192,7 +192,7 @@ serve(async (req) => {
     }
 
     // Use the new v2.3 and v2.4 PDFs for all warranty types
-    const planDocumentUrl = `https://buyawarranty.co.uk/Platinum-Warranty-Plan-v2.4.pdf`;
+    const planDocumentUrl = `https://buyawarranty.co.uk/Platinum-Warranty-Plan_v2.4.pdf`;
     const termsUrl = `https://buyawarranty.co.uk/Terms-and-Conditions-v2.3.pdf`;
     
     logStep("Document URLs determined", { planType, planDocumentUrl, termsUrl });
@@ -253,7 +253,8 @@ serve(async (req) => {
         attachments.push({
           filename: 'Terms-and-Conditions-v2.3.pdf',
           content: termsBase64,
-          type: 'application/pdf'
+          type: 'application/pdf',
+          disposition: 'attachment'
         });
       }
       
@@ -271,9 +272,10 @@ serve(async (req) => {
         }
         
         attachments.push({
-          filename: 'Platinum-Warranty-Plan-v2.4.pdf',
+          filename: 'Premium-Extended-Warranty-Plan-2.0.pdf',
           content: premiumBase64,
-          type: 'application/pdf'
+          type: 'application/pdf',
+          disposition: 'attachment'
         });
       }
     } catch (error) {
