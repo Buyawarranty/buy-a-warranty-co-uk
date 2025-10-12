@@ -811,14 +811,13 @@ const PricingTable: React.FC<PricingTableProps> = ({
       <div className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <Button 
+            <button 
               onClick={onBack}
-              variant="ghost"
-              className="text-gray-600 hover:text-gray-900"
+              className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="w-4 h-4" />
               Back
-            </Button>
+            </button>
             
             {/* Clickable Logo */}
             <div className="flex justify-center flex-1">
