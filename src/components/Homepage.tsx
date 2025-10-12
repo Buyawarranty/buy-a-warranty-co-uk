@@ -624,6 +624,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     maxLength={8}
                   />
                 </div>
+                <p className="text-xs sm:text-sm text-black text-left mt-1">
+                  Protection for vehicles up to 150,000 miles and 15 years.
+                </p>
 
                 {/* Mileage Options - Always Visible */}
                 <div className="space-y-2">
@@ -682,11 +685,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     <span className="hidden sm:inline">{isLookingUp ? 'Looking up vehicle...' : 'Get my quote'}</span>
                     <span className="sm:hidden">{isLookingUp ? 'Looking up...' : 'Get my quote'}</span>
                   </Button>
-                  {!mileageError && !vehicleAgeError && (
-                    <p className="text-xs sm:text-sm text-gray-400 text-center">
-                      Protection for vehicles up to 150,000 miles and 15 years.
-                    </p>
-                  )}
                 </div>
               </div>
             </div>
