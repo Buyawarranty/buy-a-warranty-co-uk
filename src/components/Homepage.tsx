@@ -630,7 +630,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   {/* Text Input Option */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Enter approximate mileage
+                      Enter current approximate mileage
                     </label>
                     <input
                       type="text"

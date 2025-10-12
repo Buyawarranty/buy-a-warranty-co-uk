@@ -93,8 +93,8 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
   return (
     <div className="w-full max-w-xs py-2">
       {/* Hint Text */}
-      <div className="text-center text-sm text-muted-foreground mb-2">
-        Drag the panda or click anywhere on the slider to set your mileage
+      <div className="text-center text-sm text-black font-medium mb-2">
+        Protection for vehicles up to 150,000 miles and 15 years.
       </div>
       
       {/* Slider Track */}
@@ -134,6 +134,11 @@ const MileageSlider: React.FC<MileageSliderProps> = ({
             </div>
           )}
         </div>
+      </div>
+
+      {/* Instructional Text */}
+      <div className="text-center text-sm text-muted-foreground mt-2">
+        Drag the panda or click anywhere on the slider to set your mileage
       </div>
 
       {/* Validation Message */}
