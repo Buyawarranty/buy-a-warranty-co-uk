@@ -329,6 +329,14 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Redirect to step 1 if accessing step 2+ without vehicle data
+  useEffect(() => {
+    if (currentStep >= 2 && !vehicleData) {
+      console.log('⚠️ Accessing step', currentStep, 'without vehicle data, redirecting to step 1');
+      handleStepChange(1);
+    }
+  }, [currentStep, vehicleData]);
+
   // Handle mobile back button navigation to keep users on the site
   const { allowLeave, stay } = useMobileBackNavigation({
     currentStep,
