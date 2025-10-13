@@ -87,6 +87,8 @@ const App = () => {
                 <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
                   <Routes>
                     <Route path="/" element={<Index />} />
+                    <Route path="/home" element={<Index />} />
+                    <Route path="/home/" element={<Index />} />
                     <Route path="/faq/" element={<FAQ />} />
                     <Route path="/thank-you/" element={<ThankYou />} />
                     <Route path="/payment-fallback/" element={<PaymentFallback />} />

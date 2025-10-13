@@ -6,6 +6,12 @@ const ScrollToTop = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Redirect /home to / (broken page fix)
+    if (pathname === '/home' || pathname === '/home/') {
+      navigate('/', { replace: true });
+      return;
+    }
+    
     // Redirect URLs without trailing slash to include trailing slash
     if (pathname !== '/' && !pathname.endsWith('/')) {
       navigate(pathname + '/', { replace: true });

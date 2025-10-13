@@ -4,6 +4,16 @@
       "source": "https://www.buyawarranty.co.uk/:path*",
       "destination": "https://buyawarranty.co.uk/:path*",
       "permanent": true
+    },
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home/",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "rewrites": [

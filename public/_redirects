@@ -2,6 +2,10 @@
 # Redirect www to non-www
 https://www.buyawarranty.co.uk/* https://buyawarranty.co.uk/:splat 301!
 
+# Redirect broken /home page to homepage
+/home / 301!
+/home/ / 301!
+
 # Ensure trailing slashes (fallback for any missed routes)
 /what-is-covered /what-is-covered/ 301
 /make-a-claim /make-a-claim/ 301

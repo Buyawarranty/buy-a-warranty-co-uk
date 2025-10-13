@@ -7,6 +7,9 @@
   RewriteCond %{HTTP_HOST} ^www\.buyawarranty\.co\.uk$ [NC]
   RewriteRule ^(.*)$ https://buyawarranty.co.uk/$1 [R=301,L]
   
+  # Redirect broken /home page to homepage
+  RewriteRule ^home/?$ / [R=301,L]
+  
   # Force HTTPS
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
