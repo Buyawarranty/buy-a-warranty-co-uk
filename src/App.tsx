@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { redirectWwwToNonWww } from "@/utils/wwwRedirect";
 
 // Eager load critical components
 import Index from "./pages/Index";
@@ -65,7 +66,13 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
+const App = () => {
+  // Redirect www to non-www on mount
+  useEffect(() => {
+    redirectWwwToNonWww();
+  }, []);
+
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <SubscriptionProvider>
@@ -128,6 +135,7 @@ const App = () => (
       </SubscriptionProvider>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;

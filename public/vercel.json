@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "https://www.buyawarranty.co.uk/:path*",
+      "destination": "https://buyawarranty.co.uk/:path*",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
