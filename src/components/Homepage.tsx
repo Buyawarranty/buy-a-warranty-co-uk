@@ -702,8 +702,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 alt="Extended warranty UK - Car trustworthy reviews - Panda mascot with vehicle collection" 
                 className="w-full h-auto"
               />
-              {/* Trustpilot Logo positioned to align with van */}
-              <div className="absolute top-2 left-4 z-10">
+              {/* Trustpilot Logo positioned to the right */}
+              <div className="absolute top-4 right-0 z-10">
                 <a 
                   href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
                   target="_blank" 
@@ -713,7 +713,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <img 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating" 
-                    className="h-10 sm:h-15 w-auto"
+                    className="h-11 sm:h-16 w-auto"
                   />
                 </a>
               </div>
