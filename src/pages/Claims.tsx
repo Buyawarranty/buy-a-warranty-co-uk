@@ -439,72 +439,6 @@ Issue Timing: ${formData.issueTiming}
               </div>
             </div>
 
-            {/* What You'll Need */}
-            <div className="mb-12">
-              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">What You'll Need</h2>
-              <div className="bg-white rounded-xl p-8 shadow-lg border border-orange-100">
-                <ul className="space-y-4 text-left text-gray-700">
-                  <li className="flex items-start gap-3">
-                    <span className="text-orange-500 font-bold mt-1">•</span>
-                    <span className="font-medium">Your warranty registration number</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-orange-500 font-bold mt-1">•</span>
-                    <span className="font-medium">Vehicle details including make, model and registration</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-orange-500 font-bold mt-1">•</span>
-                    <span className="font-medium">A brief description of the issue</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-orange-500 font-bold mt-1">•</span>
-                    <span className="font-medium">Any supporting documents or garage reports</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* How to Start Your Claim */}
-            <div className="mb-12">
-              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">How to Start Your Claim</h2>
-              <p className="text-lg text-gray-700 mb-8 font-medium">Choose your preferred way to contact us:</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <a 
-                  href="mailto:claims@buyawarranty.co.uk"
-                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-orange-100 hover:border-orange-300 hover:-translate-y-1"
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="flex-shrink-0 w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
-                      <Mail className="w-7 h-7 text-orange-500 group-hover:text-white transition-colors duration-300" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300">Email Us</h3>
-                      <p className="text-sm text-gray-500">Send us your claim details</p>
-                    </div>
-                  </div>
-                  <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">claims@buyawarranty.co.uk</p>
-                  <p className="text-sm text-green-600 font-medium mt-3">We typically respond within 2 hours</p>
-                </a>
-
-                <a 
-                  href="tel:03302295045"
-                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-orange-100 hover:border-orange-300 hover:-translate-y-1"
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="flex-shrink-0 w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
-                      <Phone className="w-7 h-7 text-orange-500 group-hover:text-white transition-colors duration-300" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300">Call Us</h3>
-                      <p className="text-sm text-gray-500">Speak to our claims team</p>
-                    </div>
-                  </div>
-                  <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">0330 229 5045</p>
-                  <p className="text-sm text-green-600 font-medium mt-3">Monday to Friday, 9am to 5.30pm</p>
-                </a>
-              </div>
-            </div>
-
             {/* Make A Claim Form */}
             <div className="mb-12" id="claim-form">
               <div className="text-center mb-8">
@@ -789,6 +723,72 @@ Issue Timing: ${formData.issueTiming}
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* What You'll Need */}
+            <div className="mb-12">
+              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">What You'll Need</h2>
+              <div className="bg-white rounded-xl p-8 shadow-lg border border-orange-100">
+                <ul className="space-y-4 text-left text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <span className="text-orange-500 font-bold mt-1">•</span>
+                    <span className="font-medium">Your warranty registration number</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-orange-500 font-bold mt-1">•</span>
+                    <span className="font-medium">Vehicle details including make, model and registration</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-orange-500 font-bold mt-1">•</span>
+                    <span className="font-medium">A brief description of the issue</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-orange-500 font-bold mt-1">•</span>
+                    <span className="font-medium">Any supporting documents or garage reports</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* How to Start Your Claim */}
+            <div className="mb-12">
+              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">How to Start Your Claim</h2>
+              <p className="text-lg text-gray-700 mb-8 font-medium">Choose your preferred way to contact us:</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <a 
+                  href="mailto:claims@buyawarranty.co.uk"
+                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-orange-100 hover:border-orange-300 hover:-translate-y-1"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0 w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
+                      <Mail className="w-7 h-7 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300">Email Us</h3>
+                      <p className="text-sm text-gray-500">Send us your claim details</p>
+                    </div>
+                  </div>
+                  <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">claims@buyawarranty.co.uk</p>
+                  <p className="text-sm text-green-600 font-medium mt-3">We typically respond within 2 hours</p>
+                </a>
+
+                <a 
+                  href="tel:03302295045"
+                  className="group block p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-orange-100 hover:border-orange-300 hover:-translate-y-1"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0 w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-colors duration-300">
+                      <Phone className="w-7 h-7 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-500 transition-colors duration-300">Call Us</h3>
+                      <p className="text-sm text-gray-500">Speak to our claims team</p>
+                    </div>
+                  </div>
+                  <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">0330 229 5045</p>
+                  <p className="text-sm text-green-600 font-medium mt-3">Monday to Friday, 9am to 5.30pm</p>
+                </a>
               </div>
             </div>
 
