@@ -10,6 +10,10 @@ https://www.buyawarranty.co.uk/* https://buyawarranty.co.uk/:splat 301!
 /contact /contact-us/ 301!
 /contact/ /contact-us/ 301!
 
+# Redirect broken portfolio page to homepage
+/portfolio/car-front-side / 301!
+/portfolio/car-front-side/ / 301!
+
 # Ensure trailing slashes (fallback for any missed routes)
 /what-is-covered /what-is-covered/ 301
 /make-a-claim /make-a-claim/ 301

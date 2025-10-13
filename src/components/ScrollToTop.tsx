@@ -18,6 +18,12 @@ const ScrollToTop = () => {
       return;
     }
     
+    // Redirect broken portfolio page to homepage
+    if (pathname === '/portfolio/car-front-side' || pathname === '/portfolio/car-front-side/') {
+      navigate('/', { replace: true });
+      return;
+    }
+    
     // Redirect URLs without trailing slash to include trailing slash
     if (pathname !== '/' && !pathname.endsWith('/')) {
       navigate(pathname + '/', { replace: true });

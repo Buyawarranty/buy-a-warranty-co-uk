@@ -24,6 +24,16 @@
       "source": "/contact/",
       "destination": "/contact-us/",
       "permanent": true
+    },
+    {
+      "source": "/portfolio/car-front-side",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio/car-front-side/",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "rewrites": [
