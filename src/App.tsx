@@ -80,42 +80,42 @@ const App = () => (
                 <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
                   <Routes>
                     <Route path="/" element={<Index />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/thank-you" element={<ThankYou />} />
-                    <Route path="/payment-fallback" element={<PaymentFallback />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/widget" element={<Widget />} />
+                    <Route path="/faq/" element={<FAQ />} />
+                    <Route path="/thank-you/" element={<ThankYou />} />
+                    <Route path="/payment-fallback/" element={<PaymentFallback />} />
+                    <Route path="/cart/" element={<Cart />} />
+                    <Route path="/widget/" element={<Widget />} />
                     
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                    <Route path="/admin-test" element={<AdminTest />} />
-                    <Route path="/customer-dashboard" element={<CustomerDashboard />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/reset-password" element={<PasswordReset />} />
-                    <Route path="/password-reset" element={<ResetPassword />} />
-                    <Route path="/quick-reset" element={<QuickPasswordReset />} />
-                    <Route path="/setup-admin" element={<SetupAdmin />} />
-                    <Route path="/car-journey" element={<CarJourneyDemo />} />
-                    <Route path="/car-preview" element={<CarSpinnerPreview />} />
-                    <Route path="/original-pricing" element={<OriginalPricing />} />
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="/cookies" element={<CookiePolicy />} />
-                    <Route path="/privacy" element={<PrivacyPolicy />} />
-                    <Route path="/what-is-covered" element={<Protected />} />
-                    <Route path="/claims" element={<Claims />} />
-                    <Route path="/make-a-claim" element={<Claims />} />
-                    <Route path="/contact-us" element={<ContactUs />} />
-                    <Route path="/complaints" element={<Complaints />} />
-                    <Route path="/thewarrantyhub" element={<Blog />} />
-                    <Route path="/thewarrantyhub/:slug" element={<BlogArticle />} />
-                    <Route path="/warranty-plan" element={<WarrantyPlan />} />
-                    <Route path="/buy-a-used-car-warranty-reliable-warranties" element={<BuyCarWarranty />} />
-                    <Route path="/van-warranty-companies-uk-warranties" element={<VanWarranty />} />
-                    <Route path="/best-warranty-on-ev-cars-uk-warranties" element={<EVWarranty />} />
-                    <Route path="/motorbike-repair-warranty-uk-warranties" element={<MotorbikeWarranty />} />
-                    <Route path="/business-warranties" element={<BusinessWarranties />} />
-                    <Route path="/portfolio/business-consultant" element={<BusinessWarranties />} />
+                    <Route path="/auth/" element={<Auth />} />
+                    <Route path="/admin/" element={<AdminDashboard />} />
+                    <Route path="/admin-dashboard/" element={<AdminDashboard />} />
+                    <Route path="/admin-test/" element={<AdminTest />} />
+                    <Route path="/customer-dashboard/" element={<CustomerDashboard />} />
+                    <Route path="/forgot-password/" element={<ForgotPassword />} />
+                    <Route path="/reset-password/" element={<PasswordReset />} />
+                    <Route path="/password-reset/" element={<ResetPassword />} />
+                    <Route path="/quick-reset/" element={<QuickPasswordReset />} />
+                    <Route path="/setup-admin/" element={<SetupAdmin />} />
+                    <Route path="/car-journey/" element={<CarJourneyDemo />} />
+                    <Route path="/car-preview/" element={<CarSpinnerPreview />} />
+                    <Route path="/original-pricing/" element={<OriginalPricing />} />
+                    <Route path="/terms/" element={<Terms />} />
+                    <Route path="/cookies/" element={<CookiePolicy />} />
+                    <Route path="/privacy/" element={<PrivacyPolicy />} />
+                    <Route path="/what-is-covered/" element={<Protected />} />
+                    <Route path="/claims/" element={<Claims />} />
+                    <Route path="/make-a-claim/" element={<Claims />} />
+                    <Route path="/contact-us/" element={<ContactUs />} />
+                    <Route path="/complaints/" element={<Complaints />} />
+                    <Route path="/thewarrantyhub/" element={<Blog />} />
+                    <Route path="/thewarrantyhub/:slug/" element={<BlogArticle />} />
+                    <Route path="/warranty-plan/" element={<WarrantyPlan />} />
+                    <Route path="/buy-a-used-car-warranty-reliable-warranties/" element={<BuyCarWarranty />} />
+                    <Route path="/van-warranty-companies-uk-warranties/" element={<VanWarranty />} />
+                    <Route path="/best-warranty-on-ev-cars-uk-warranties/" element={<EVWarranty />} />
+                    <Route path="/motorbike-repair-warranty-uk-warranties/" element={<MotorbikeWarranty />} />
+                    <Route path="/business-warranties/" element={<BusinessWarranties />} />
+                    <Route path="/portfolio/business-consultant/" element={<BusinessWarranties />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>

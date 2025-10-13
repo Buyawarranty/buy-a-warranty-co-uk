@@ -205,7 +205,7 @@ const BlogArticle = () => {
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Back button */}
-        <Link to="/thewarrantyhub" className="inline-flex items-center text-primary hover:text-primary/80 mb-8 transition-colors">
+        <Link to="/thewarrantyhub/" className="inline-flex items-center text-primary hover:text-primary/80 mb-8 transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to The Warranty Hub
         </Link>

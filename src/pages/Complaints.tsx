@@ -36,10 +36,10 @@ const Complaints = () => {
 
             {/* Navigation - Hidden on mobile */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-              <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
-              <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
-              <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
-              <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+              <Link to="/what-is-covered/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+              <Link to="/make-a-claim/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+              <Link to="/faq/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
+              <Link to="/contact-us/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
             </nav>
 
             {/* Desktop CTA Buttons - Show on desktop */}
@@ -69,16 +69,16 @@ const Complaints = () => {
           {isMenuOpen && (
             <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg">
               <div className="flex flex-col p-4 space-y-4">
-                <Link to="/what-is-covered" className="text-gray-700 hover:text-gray-900 font-medium py-2">
+                <Link to="/what-is-covered/" className="text-gray-700 hover:text-gray-900 font-medium py-2">
                   What's Covered
                 </Link>
-                <Link to="/make-a-claim" className="text-gray-700 hover:text-gray-900 font-medium py-2">
+                <Link to="/make-a-claim/" className="text-gray-700 hover:text-gray-900 font-medium py-2">
                   Make a Claim
                 </Link>
-                <Link to="/faq" className="text-gray-700 hover:text-gray-900 font-medium py-2">
+                <Link to="/faq/" className="text-gray-700 hover:text-gray-900 font-medium py-2">
                   FAQs
                 </Link>
-                <Link to="/contact-us" className="text-gray-700 hover:text-gray-900 font-medium py-2">
+                <Link to="/contact-us/" className="text-gray-700 hover:text-gray-900 font-medium py-2">
                   Contact Us
                 </Link>
                 <div className="flex flex-col space-y-3 pt-4 border-t border-gray-200">

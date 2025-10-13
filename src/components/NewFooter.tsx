@@ -32,7 +32,7 @@ const NewFooter = () => {
             </a>
 
             <Link 
-              to="/blog" 
+              to="/thewarrantyhub/" 
               className="flex items-center gap-2 text-white hover:text-white/80 transition-colors font-medium"
             >
               <BookOpen size={18} />

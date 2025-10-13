@@ -39,14 +39,14 @@ const WebsiteFooter = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-6">Quick Links</h3>
               <ul className="space-y-3 text-gray-600">
                 <li><a href="/" className="hover:text-[#eb4b00] transition-colors">Home</a></li>
-                <li><a href="/customer-dashboard" className="hover:text-[#eb4b00] transition-colors font-semibold">Customer Login</a></li>
-                <li><a href="/make-a-claim" className="hover:text-[#eb4b00] transition-colors">Make a Claim</a></li>
-                <li><a href="/contact-us" className="hover:text-[#eb4b00] transition-colors">Contact Us</a></li>
-                <li><a href="/buy-a-used-car-warranty-reliable-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Car</a></li>
-                <li><a href="/van-warranty-companies-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Van</a></li>
-                <li><a href="/best-warranty-on-ev-cars-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs</a></li>
-                <li><a href="/motorbike-repair-warranty-uk-warranties" className="hover:text-[#eb4b00] transition-colors">Warranty for Motorbikes</a></li>
-                <li><a href="/business-warranties" className="hover:text-[#eb4b00] transition-colors">Business Warranties</a></li>
+                <li><a href="/customer-dashboard/" className="hover:text-[#eb4b00] transition-colors font-semibold">Customer Login</a></li>
+                <li><a href="/make-a-claim/" className="hover:text-[#eb4b00] transition-colors">Make a Claim</a></li>
+                <li><a href="/contact-us/" className="hover:text-[#eb4b00] transition-colors">Contact Us</a></li>
+                <li><a href="/buy-a-used-car-warranty-reliable-warranties/" className="hover:text-[#eb4b00] transition-colors">Warranty for Car</a></li>
+                <li><a href="/van-warranty-companies-uk-warranties/" className="hover:text-[#eb4b00] transition-colors">Warranty for Van</a></li>
+                <li><a href="/best-warranty-on-ev-cars-uk-warranties/" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs</a></li>
+                <li><a href="/motorbike-repair-warranty-uk-warranties/" className="hover:text-[#eb4b00] transition-colors">Warranty for Motorbikes</a></li>
+                <li><a href="/business-warranties/" className="hover:text-[#eb4b00] transition-colors">Business Warranties</a></li>
               </ul>
             </div>
 
@@ -54,11 +54,11 @@ const WebsiteFooter = () => {
             <div>
               <h3 className="text-lg font-bold text-gray-900 mb-6">Legal</h3>
               <ul className="space-y-3 text-gray-600">
-                <li><a href="/privacy" className="hover:text-[#eb4b00] transition-colors">Privacy Policy</a></li>
-                <li><a href="/terms" className="hover:text-[#eb4b00] transition-colors">Terms & Conditions</a></li>
-                <li><a href="/cookies" className="hover:text-[#eb4b00] transition-colors">Cookie Policy</a></li>
-                <li><a href="/complaints" className="hover:text-[#eb4b00] transition-colors">Complaints Procedure</a></li>
-                <li><a href="/thewarrantyhub" className="hover:text-[#eb4b00] transition-colors">Warranty Hub</a></li>
+                <li><a href="/privacy/" className="hover:text-[#eb4b00] transition-colors">Privacy Policy</a></li>
+                <li><a href="/terms/" className="hover:text-[#eb4b00] transition-colors">Terms & Conditions</a></li>
+                <li><a href="/cookies/" className="hover:text-[#eb4b00] transition-colors">Cookie Policy</a></li>
+                <li><a href="/complaints/" className="hover:text-[#eb4b00] transition-colors">Complaints Procedure</a></li>
+                <li><a href="/thewarrantyhub/" className="hover:text-[#eb4b00] transition-colors">Warranty Hub</a></li>
                 
               </ul>
             </div>
@@ -68,7 +68,7 @@ const WebsiteFooter = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-6">Help</h3>
               <div className="space-y-3 text-gray-600">
                 <div>
-                  <a href="/faq" className="text-[#eb4b00] hover:text-[#d63f00] transition-colors font-semibold">
+                  <a href="/faq/" className="text-[#eb4b00] hover:text-[#d63f00] transition-colors font-semibold">
                     FAQ's
                   </a>
                 </div>

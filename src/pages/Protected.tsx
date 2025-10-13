@@ -222,10 +222,10 @@ const Protected = () => {
 
             <nav className="hidden md:flex space-x-8">
               
-              <Link to="/what-is-covered" className="text-primary font-medium">What's Covered</Link>
-              <Link to="/make-a-claim" className="text-gray-700 hover:text-primary transition-colors">Make a Claim</Link>
-              <Link to="/faq" className="text-gray-700 hover:text-primary transition-colors">FAQs</Link>
-              <Link to="/contact-us" className="text-gray-700 hover:text-primary transition-colors">Contact Us</Link>
+              <Link to="/what-is-covered/" className="text-primary font-medium">What's Covered</Link>
+              <Link to="/make-a-claim/" className="text-gray-700 hover:text-primary transition-colors">Make a Claim</Link>
+              <Link to="/faq/" className="text-gray-700 hover:text-primary transition-colors">FAQs</Link>
+              <Link to="/contact-us/" className="text-gray-700 hover:text-primary transition-colors">Contact Us</Link>
             </nav>
 
             <div className="hidden md:flex items-center space-x-4">

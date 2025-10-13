@@ -38,28 +38,28 @@ const MobileNavigation: React.FC = () => {
             {/* Navigation Links */}
             <nav className="flex flex-col space-y-4 flex-1 overflow-y-auto pb-4">
               <Link 
-                to="/what-is-covered" 
+                to="/what-is-covered/" 
                 className="text-lg font-medium text-gray-700 hover:text-gray-900 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 What's Covered
               </Link>
               <Link 
-                to="/make-a-claim" 
+                to="/make-a-claim/" 
                 className="text-lg font-medium text-gray-700 hover:text-gray-900 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Make a Claim
               </Link>
               <Link 
-                to="/faq" 
+                to="/faq/" 
                 className="text-lg font-medium text-gray-700 hover:text-gray-900 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 FAQs
               </Link>
               <Link 
-                to="/contact-us" 
+                to="/contact-us/" 
                 className="text-lg font-medium text-gray-700 hover:text-gray-900 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -97,7 +97,7 @@ const MobileNavigation: React.FC = () => {
               </div>
               
               <Link 
-                to="/customer-dashboard" 
+                to="/customer-dashboard/" 
                 className="text-lg font-semibold text-gray-700 hover:text-gray-900 py-2 pt-4 border-t"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
