@@ -575,7 +575,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 <Collapsible>
                   <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                     <span>Terms and conditions</span>
-                    <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+                    <ChevronDown className="w-8 h-8 text-orange-500 transition-transform duration-200" />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                     <p>Complete terms and conditions for your warranty coverage, including coverage details, claim procedures, and policy limitations.</p>
@@ -585,7 +585,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 <Collapsible>
                   <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                     <span>Fare rules</span>
-                    <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+                    <ChevronDown className="w-8 h-8 text-orange-500 transition-transform duration-200" />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                     <p>Pricing structure, payment terms, and billing information for your selected warranty plan.</p>
@@ -595,7 +595,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 <Collapsible>
                   <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                     <span>General conditions of carriage</span>
-                    <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+                    <ChevronDown className="w-8 h-8 text-orange-500 transition-transform duration-200" />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                     <p>Standard terms that apply to the provision of warranty services and customer obligations.</p>
@@ -610,7 +610,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                   <Collapsible>
                     <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                       <span>Government access to booking records</span>
-                      <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+                      <ChevronDown className="w-8 h-8 text-orange-500 transition-transform duration-200" />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                       <p>Information about how your personal data may be shared with relevant authorities as required by law.</p>
@@ -626,7 +626,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                   <Collapsible>
                     <CollapsibleTrigger className="flex items-center justify-between w-full text-left text-orange-500 hover:text-orange-600 font-medium py-3">
                       <span>Forbidden articles and substances list</span>
-                      <ChevronDown className="w-4 h-4 text-orange-500 transition-transform duration-200" />
+                      <ChevronDown className="w-8 h-8 text-orange-500 transition-transform duration-200" />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pt-2 text-gray-900 text-sm">
                       <p>List of prohibited items and substances that are not covered under the warranty policy.</p>
