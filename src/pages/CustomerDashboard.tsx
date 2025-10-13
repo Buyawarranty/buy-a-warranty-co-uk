@@ -322,7 +322,7 @@ const CustomerDashboard = () => {
     console.log("fetchPolicies: Fetching policies for user:", user.id, "email:", user.email);
     
     try {
-      // Fetch policies with joined customer data for complete information
+      // First try by user_id (most reliable after trigger update)
       let { data, error } = await supabase
         .from('customer_policies')
         .select(`
@@ -333,15 +333,15 @@ const CustomerDashboard = () => {
             building_number, building_name, flat_number
           )
         `)
-        .eq('email', user.email)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      console.log("fetchPolicies: Query by email result:", { data, error, count: data?.length });
+      console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
 
-      // If no policies found by email, try by user_id as fallback
-      if ((!data || data.length === 0)) {
-        console.log("fetchPolicies: No policies found by email, trying by user_id");
-        const userIdResult = await supabase
+      // If no policies found by user_id, try case-insensitive email match as fallback
+      if ((!data || data.length === 0) && user.email) {
+        console.log("fetchPolicies: No policies found by user_id, trying case-insensitive email match");
+        const emailResult = await supabase
           .from('customer_policies')
           .select(`
             *,
@@ -351,12 +351,12 @@ const CustomerDashboard = () => {
               building_number, building_name, flat_number
             )
           `)
-          .eq('user_id', user.id)
+          .ilike('email', user.email)
           .order('created_at', { ascending: false });
         
-        data = userIdResult.data;
-        error = userIdResult.error;
-        console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
+        data = emailResult.data;
+        error = emailResult.error;
+        console.log("fetchPolicies: Query by case-insensitive email result:", { data, error, count: data?.length });
       }
 
       if (error && error.code !== 'PGRST116') {
