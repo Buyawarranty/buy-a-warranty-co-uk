@@ -41,17 +41,11 @@ const BusinessWarranties = lazy(() => import("./pages/BusinessWarranties"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const Auth = lazy(() => import("./pages/Auth"));
 const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
-const AdminTest = lazy(() => import("./pages/AdminTest"));
 const PasswordReset = lazy(() => import("./components/PasswordReset"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const QuickPasswordReset = lazy(() => import("./pages/QuickPasswordReset"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const SetupAdmin = lazy(() => import("./pages/SetupAdmin"));
-
-// Demo components
-const CarJourneyDemo = lazy(() => import("./pages/CarJourneyDemo"));
-const CarSpinnerPreview = lazy(() => import("./components/CarSpinnerPreview"));
-const OriginalPricing = lazy(() => import("./pages/OriginalPricing"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -98,16 +92,12 @@ const App = () => {
                     <Route path="/auth/" element={<Auth />} />
                     <Route path="/admin/" element={<AdminDashboard />} />
                     <Route path="/admin-dashboard/" element={<AdminDashboard />} />
-                    <Route path="/admin-test/" element={<AdminTest />} />
                     <Route path="/customer-dashboard/" element={<CustomerDashboard />} />
                     <Route path="/forgot-password/" element={<ForgotPassword />} />
                     <Route path="/reset-password/" element={<PasswordReset />} />
                     <Route path="/password-reset/" element={<ResetPassword />} />
                     <Route path="/quick-reset/" element={<QuickPasswordReset />} />
                     <Route path="/setup-admin/" element={<SetupAdmin />} />
-                    <Route path="/car-journey/" element={<CarJourneyDemo />} />
-                    <Route path="/car-preview/" element={<CarSpinnerPreview />} />
-                    <Route path="/original-pricing/" element={<OriginalPricing />} />
                     <Route path="/terms/" element={<Terms />} />
                     <Route path="/cookies/" element={<CookiePolicy />} />
                     <Route path="/privacy/" element={<PrivacyPolicy />} />
@@ -124,7 +114,6 @@ const App = () => {
                     <Route path="/best-warranty-on-ev-cars-uk-warranties/" element={<EVWarranty />} />
                     <Route path="/motorbike-repair-warranty-uk-warranties/" element={<MotorbikeWarranty />} />
                     <Route path="/business-warranties/" element={<BusinessWarranties />} />
-                    <Route path="/portfolio/business-consultant/" element={<BusinessWarranties />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
