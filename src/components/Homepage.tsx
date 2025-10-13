@@ -703,7 +703,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 className="w-full h-auto"
               />
               {/* Trustpilot Logo positioned to the right */}
-              <div className="absolute top-4 right-0 z-10">
+              <div className="absolute top-4 right-4 z-10">
                 <a 
                   href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
                   target="_blank" 
@@ -713,7 +713,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <img 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating" 
-                    className="h-11 sm:h-16 w-auto"
+                    className="h-8 sm:h-11 w-auto"
                   />
                 </a>
               </div>
