@@ -17,7 +17,9 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  MapPin,
+  Shield
 } from 'lucide-react';
 
 interface AbandonedCart {
@@ -117,7 +119,7 @@ export const AbandonedCartsTab: React.FC = () => {
 
       if (error) throw error;
 
-      setCarts(data || []);
+      setCarts((data || []) as AbandonedCart[]);
       setNewCartsCount(0);
     } catch (error) {
       console.error('Error fetching abandoned carts:', error);
