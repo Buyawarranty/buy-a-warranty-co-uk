@@ -12,6 +12,12 @@ const ScrollToTop = () => {
       return;
     }
     
+    // Redirect /contact to /contact-us/ (broken page fix)
+    if (pathname === '/contact' || pathname === '/contact/') {
+      navigate('/contact-us/', { replace: true });
+      return;
+    }
+    
     // Redirect URLs without trailing slash to include trailing slash
     if (pathname !== '/' && !pathname.endsWith('/')) {
       navigate(pathname + '/', { replace: true });

@@ -10,6 +10,9 @@
   # Redirect broken /home page to homepage
   RewriteRule ^home/?$ / [R=301,L]
   
+  # Redirect broken /contact page to correct URL
+  RewriteRule ^contact/?$ /contact-us/ [R=301,L]
+  
   # Force HTTPS
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

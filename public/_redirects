@@ -6,6 +6,10 @@ https://www.buyawarranty.co.uk/* https://buyawarranty.co.uk/:splat 301!
 /home / 301!
 /home/ / 301!
 
+# Redirect broken /contact page to correct URL
+/contact /contact-us/ 301!
+/contact/ /contact-us/ 301!
+
 # Ensure trailing slashes (fallback for any missed routes)
 /what-is-covered /what-is-covered/ 301
 /make-a-claim /make-a-claim/ 301
