@@ -618,7 +618,7 @@ const Index = () => {
           "Complete your car warranty purchase with our secure checkout. Review your selected plan and enter your details for instant approval."
         }
         keywords="car warranty, vehicle warranty, UK warranty, car insurance, breakdown cover, warranty prices, vehicle protection, extended warranty"
-        canonical={`${window.location.origin}/?step=${currentStep}`}
+        canonical="https://buyawarranty.co.uk/"
       />
       {/* Progress Bar with Moving Car - Steps 2, 3, and 4 */}
       {currentStep >= 2 && currentStep <= 4 && (
