@@ -1001,6 +1001,7 @@ export type Database = {
           europe_cover: boolean | null
           id: string
           is_deleted: boolean | null
+          last_login: string | null
           lost_key: boolean | null
           mot_fee: boolean | null
           mot_repair: boolean | null
@@ -1048,6 +1049,7 @@ export type Database = {
           europe_cover?: boolean | null
           id?: string
           is_deleted?: boolean | null
+          last_login?: string | null
           lost_key?: boolean | null
           mot_fee?: boolean | null
           mot_repair?: boolean | null
@@ -1095,6 +1097,7 @@ export type Database = {
           europe_cover?: boolean | null
           id?: string
           is_deleted?: boolean | null
+          last_login?: string | null
           lost_key?: boolean | null
           mot_fee?: boolean | null
           mot_repair?: boolean | null
@@ -1157,6 +1160,7 @@ export type Database = {
           flat_number: string | null
           id: string
           is_deleted: boolean | null
+          last_login: string | null
           last_name: string | null
           lost_key: boolean | null
           mileage: string | null
@@ -1211,6 +1215,7 @@ export type Database = {
           flat_number?: string | null
           id?: string
           is_deleted?: boolean | null
+          last_login?: string | null
           last_name?: string | null
           lost_key?: boolean | null
           mileage?: string | null
@@ -1265,6 +1270,7 @@ export type Database = {
           flat_number?: string | null
           id?: string
           is_deleted?: boolean | null
+          last_login?: string | null
           last_name?: string | null
           lost_key?: boolean | null
           mileage?: string | null

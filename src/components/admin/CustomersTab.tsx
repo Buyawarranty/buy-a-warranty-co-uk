@@ -23,6 +23,7 @@ import { ManualOrderEntry } from './ManualOrderEntry';
 import { MOTHistorySection } from './MOTHistorySection';
 import { W2000DataPreview } from './W2000DataPreview';
 import { SendNotificationDialog } from './SendNotificationDialog';
+import { ViewAsCustomerButton } from './ViewAsCustomerButton';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 import { format } from 'date-fns';
@@ -123,6 +124,7 @@ interface Customer {
   is_deleted?: boolean;
   deleted_at?: string;
   deleted_by?: string;
+  last_login?: string;
   // Add-on coverage fields
   tyre_cover?: boolean;
   wear_tear?: boolean;
@@ -515,6 +517,7 @@ export const CustomersTab = () => {
           is_deleted: false,
           deleted_at: undefined,
           deleted_by: undefined,
+          last_login: null,
           // Add missing add-on columns
           tyre_cover: false,
           wear_tear: false,
@@ -560,7 +563,8 @@ export const CustomersTab = () => {
         // Process fallback data (without warranty expiry)
         const processedData = fallbackData?.map((customer: any) => ({
           ...customer,
-          warranty_expiry: null
+          warranty_expiry: null,
+          last_login: customer.last_login || null
         })) || [];
         
         setCustomers(processedData);
@@ -588,7 +592,8 @@ export const CustomersTab = () => {
         warranty_expiry: customer.customer_policies?.[0]?.policy_end_date || null,
         warranty_reference_number: customer.warranty_reference_number || null,
         policy_number: customer.customer_policies?.[0]?.policy_number || null,
-        policy_status: customer.customer_policies?.[0]?.status || null
+        policy_status: customer.customer_policies?.[0]?.status || null,
+        last_login: customer.last_login || null
       })) || [];
       
       setCustomers(processedData);
@@ -2047,7 +2052,26 @@ Please log in and change your password after first login.`;
                                               </>
                                             )}
                                           </Button>
+                                          
+                                          <ViewAsCustomerButton
+                                            customerId={selectedCustomer.id}
+                                            customerEmail={customerCredentials.email}
+                                            customerName={selectedCustomer.name}
+                                          />
                                         </div>
+                                        
+                                        {/* Last Login Information */}
+                                        {selectedCustomer.last_login && (
+                                          <div className="bg-blue-50 border border-blue-200 rounded p-3 mt-3">
+                                            <p className="text-xs text-blue-800 flex items-center gap-1">
+                                              <Clock className="h-3 w-3" />
+                                              Last Login: {new Date(selectedCustomer.last_login).toLocaleString('en-GB', {
+                                                dateStyle: 'medium',
+                                                timeStyle: 'short'
+                                              })}
+                                            </p>
+                                          </div>
+                                        )}
                                       </div>
                                     ) : (
                                       <div className="text-sm text-red-600">

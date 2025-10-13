@@ -19,6 +19,8 @@ import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 import { NotificationBell } from '@/components/NotificationBell';
 import { useCustomerNotifications } from '@/hooks/useCustomerNotifications';
 import { ReturnDiscountBanner } from '@/components/ReturnDiscountBanner';
+import { useImpersonation } from '@/hooks/useImpersonation';
+import { ImpersonationBanner } from '@/components/ImpersonationBanner';
 
 interface CustomerPolicy {
   id: string;
@@ -97,6 +99,7 @@ const CustomerDashboard = () => {
   const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isImpersonating, impersonatedCustomer, stopImpersonation } = useImpersonation();
   const [policies, setPolicies] = useState<CustomerPolicy[]>([]);
   const [selectedPolicy, setSelectedPolicy] = useState<CustomerPolicy | null>(null);
   const [policyLoading, setPolicyLoading] = useState(true);
@@ -145,9 +148,14 @@ const CustomerDashboard = () => {
       return;
     }
     
-    // If user is logged in, fetch their policies
-    if (user) {
+    // If user is logged in or impersonating, fetch their policies
+    if (user || isImpersonating) {
       fetchPolicies();
+      
+      // Update last login timestamp for actual user login (not for impersonation)
+      if (user && !isImpersonating) {
+        updateLastLogin();
+      }
       
       // Set up real-time updates for new warranties
       const channel = supabase
@@ -313,8 +321,30 @@ const CustomerDashboard = () => {
   };
 
 
+  const updateLastLogin = async () => {
+    if (!user?.email) return;
+    
+    try {
+      // Update last_login in customers table
+      await supabase
+        .from('customers')
+        .update({ last_login: new Date().toISOString() })
+        .eq('email', user.email);
+        
+      // Also update in customer_policies if exists
+      await supabase
+        .from('customer_policies')
+        .update({ last_login: new Date().toISOString() })
+        .eq('email', user.email);
+    } catch (error) {
+      console.error('Error updating last login:', error);
+    }
+  };
+
   const fetchPolicies = async () => {
-    if (!user) {
+    const effectiveEmail = isImpersonating ? impersonatedCustomer?.customerEmail : user?.email;
+    
+    if (!effectiveEmail) {
       console.log("fetchPolicies: No user available");
       return;
     }
@@ -338,9 +368,11 @@ const CustomerDashboard = () => {
 
       console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
 
-      // If no policies found by user_id, try case-insensitive email match as fallback
-      if ((!data || data.length === 0) && user.email) {
-        console.log("fetchPolicies: No policies found by user_id, trying case-insensitive email match");
+      // In impersonation mode, always use email. Otherwise check both user_id and email
+      if (isImpersonating || ((!data || data.length === 0) && effectiveEmail)) {
+        if (!isImpersonating) {
+          console.log("fetchPolicies: No policies found by user_id, trying case-insensitive email match");
+        }
         const emailResult = await supabase
           .from('customer_policies')
           .select(`
@@ -914,6 +946,15 @@ const CustomerDashboard = () => {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        {/* Impersonation Banner */}
+        {isImpersonating && impersonatedCustomer && (
+          <ImpersonationBanner
+            customerName={impersonatedCustomer.customerName}
+            customerEmail={impersonatedCustomer.customerEmail}
+            onExit={stopImpersonation}
+          />
+        )}
+        
         {/* Renewal Notification Banner */}
         {showRenewalBanner && selectedPolicy && (
           <Alert className="mb-6 border-orange-200 bg-orange-50">
