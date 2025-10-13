@@ -179,7 +179,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Prepare email with attachment
     const emailPayload: any = {
       from: "Claims System <noreply@buyawarranty.co.uk>",
-      to: ["claims@buyawarranty.co.uk"],
+      to: ["claims@buyawarranty.co.uk", "info@buyawarranty.co.uk"],
       subject: emailSubject,
       html: emailHtml,
     };
