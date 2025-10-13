@@ -55,6 +55,7 @@ export type Database = {
       }
       abandoned_carts: {
         Row: {
+          cart_metadata: Json | null
           contact_notes: string | null
           contact_status: string | null
           contacted_by: string | null
@@ -77,6 +78,7 @@ export type Database = {
           vehicle_year: string | null
         }
         Insert: {
+          cart_metadata?: Json | null
           contact_notes?: string | null
           contact_status?: string | null
           contacted_by?: string | null
@@ -99,6 +101,7 @@ export type Database = {
           vehicle_year?: string | null
         }
         Update: {
+          cart_metadata?: Json | null
           contact_notes?: string | null
           contact_status?: string | null
           contacted_by?: string | null

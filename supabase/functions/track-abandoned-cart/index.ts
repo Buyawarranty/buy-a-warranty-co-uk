@@ -20,6 +20,35 @@ interface AbandonedCartData {
   plan_name?: string;
   payment_type?: string;
   step_abandoned: number;
+  vehicle_type?: string;
+  // Pricing details for email
+  total_price?: number;
+  voluntary_excess?: number;
+  claim_limit?: number;
+  // Address for shipping/contact
+  address?: {
+    flat_number?: string;
+    building_name?: string;
+    building_number?: string;
+    street?: string;
+    town?: string;
+    county?: string;
+    postcode?: string;
+    country?: string;
+  };
+  // Protection add-ons
+  protection_addons?: {
+    breakdown?: boolean;
+    motFee?: boolean;
+    motRepair?: boolean;
+    wearTear?: boolean;
+    tyre?: boolean;
+    european?: boolean;
+    rental?: boolean;
+    transfer?: boolean;
+    lostKey?: boolean;
+    consequential?: boolean;
+  };
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -78,6 +107,15 @@ const handler = async (req: Request): Promise<Response> => {
           plan_id: cartData.plan_id,
           plan_name: cartData.plan_name,
           payment_type: cartData.payment_type,
+          vehicle_type: cartData.vehicle_type,
+          // Store extended data in metadata JSON
+          cart_metadata: {
+            total_price: cartData.total_price,
+            voluntary_excess: cartData.voluntary_excess,
+            claim_limit: cartData.claim_limit,
+            address: cartData.address,
+            protection_addons: cartData.protection_addons
+          },
           updated_at: new Date().toISOString()
         })
         .eq('id', existingCart[0].id);
@@ -89,10 +127,19 @@ const handler = async (req: Request): Promise<Response> => {
 
       console.log('Updated existing abandoned cart entry for:', cartData.email);
     } else {
-      // Create new abandoned cart entry
+      // Create new abandoned cart entry with extended metadata
       const { error: insertError } = await supabase
         .from('abandoned_carts')
-        .insert([cartData]);
+        .insert([{
+          ...cartData,
+          cart_metadata: {
+            total_price: cartData.total_price,
+            voluntary_excess: cartData.voluntary_excess,
+            claim_limit: cartData.claim_limit,
+            address: cartData.address,
+            protection_addons: cartData.protection_addons
+          }
+        }]);
 
       if (insertError) {
         console.error('Error inserting abandoned cart:', insertError);

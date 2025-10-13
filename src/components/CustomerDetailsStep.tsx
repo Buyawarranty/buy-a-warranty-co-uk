@@ -430,13 +430,31 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           vehicle_model: vehicleData.model || null,
           vehicle_year: vehicleData.year || null,
           mileage: vehicleData.mileage || null,
+          plan_id: planId || null,
           plan_name: planName || null,
           payment_type: paymentType || null,
           vehicle_type: vehicleData.bodyType || 'car',
-          step_abandoned: 4
+          step_abandoned: 4,
+          // Pricing details
+          total_price: pricingData.totalPrice || 0,
+          voluntary_excess: pricingData.voluntaryExcess || 0,
+          claim_limit: pricingData.claimLimit || 1250,
+          // Address for contact
+          address: {
+            flat_number: customerData.flat_number || '',
+            building_name: customerData.building_name || '',
+            building_number: customerData.building_number || '',
+            street: customerData.street || '',
+            town: customerData.town || '',
+            county: customerData.county || '',
+            postcode: customerData.postcode || '',
+            country: customerData.country || 'United Kingdom'
+          },
+          // Protection add-ons
+          protection_addons: pricingData.protectionAddOns || {}
         }
       });
-      console.log('✅ Abandoned cart tracked');
+      console.log('✅ Abandoned cart tracked with full details');
     } catch (error) {
       console.error('Failed to track abandoned cart:', error);
       // Don't block checkout if tracking fails

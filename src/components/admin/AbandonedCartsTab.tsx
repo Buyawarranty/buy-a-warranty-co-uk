@@ -40,6 +40,33 @@ interface AbandonedCart {
   updated_at: string;
   last_contacted_at: string | null;
   contacted_by: string | null;
+  cart_metadata?: {
+    total_price?: number;
+    voluntary_excess?: number;
+    claim_limit?: number;
+    address?: {
+      flat_number?: string;
+      building_name?: string;
+      building_number?: string;
+      street?: string;
+      town?: string;
+      county?: string;
+      postcode?: string;
+      country?: string;
+    };
+    protection_addons?: {
+      breakdown?: boolean;
+      motFee?: boolean;
+      motRepair?: boolean;
+      wearTear?: boolean;
+      tyre?: boolean;
+      european?: boolean;
+      rental?: boolean;
+      transfer?: boolean;
+      lostKey?: boolean;
+      consequential?: boolean;
+    };
+  };
 }
 
 export const AbandonedCartsTab: React.FC = () => {
@@ -337,17 +364,100 @@ export const AbandonedCartsTab: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Plan Info */}
+                  {/* Plan Info with Pricing */}
                   {cart.plan_name && (
-                    <div className="bg-gray-50 p-3 rounded">
+                    <div className="bg-gray-50 p-3 rounded space-y-2">
                       <p className="text-sm font-medium">Selected Plan</p>
                       <p className="text-sm text-gray-600">
                         {cart.plan_name} - {cart.payment_type} 
                         {cart.mileage && ` | ${parseInt(cart.mileage).toLocaleString()} miles`}
                       </p>
+                      {cart.cart_metadata?.total_price && (
+                        <div className="space-y-1 text-sm">
+                          <p className="font-semibold text-green-600">
+                            Total Price: £{cart.cart_metadata.total_price.toFixed(2)}
+                          </p>
+                          {cart.cart_metadata.voluntary_excess && (
+                            <p className="text-xs text-gray-600">
+                              Voluntary Excess: £{cart.cart_metadata.voluntary_excess}
+                            </p>
+                          )}
+                          {cart.cart_metadata.claim_limit && (
+                            <p className="text-xs text-gray-600">
+                              Claim Limit: £{cart.cart_metadata.claim_limit.toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                      )}
                       <p className="text-xs text-gray-500 mt-1">
                         Abandoned at step {cart.step_abandoned}
                       </p>
+                    </div>
+                  )}
+
+                  {/* Address Information */}
+                  {cart.cart_metadata?.address && (
+                    <div className="bg-blue-50 p-3 rounded">
+                      <p className="text-sm font-medium flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />
+                        Customer Address
+                      </p>
+                      <p className="text-sm text-gray-700 mt-1">
+                        {[
+                          cart.cart_metadata.address.flat_number,
+                          cart.cart_metadata.address.building_name,
+                          cart.cart_metadata.address.building_number,
+                          cart.cart_metadata.address.street,
+                          cart.cart_metadata.address.town,
+                          cart.cart_metadata.address.county,
+                          cart.cart_metadata.address.postcode,
+                        ]
+                          .filter(Boolean)
+                          .join(', ')}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Protection Add-ons */}
+                  {cart.cart_metadata?.protection_addons && 
+                   Object.values(cart.cart_metadata.protection_addons).some(v => v) && (
+                    <div className="bg-purple-50 p-3 rounded">
+                      <p className="text-sm font-medium flex items-center gap-2">
+                        <Shield className="w-4 h-4" />
+                        Selected Add-ons
+                      </p>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {cart.cart_metadata.protection_addons.breakdown && (
+                          <Badge variant="secondary" className="text-xs">Breakdown Recovery</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.motFee && (
+                          <Badge variant="secondary" className="text-xs">MOT Fee</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.motRepair && (
+                          <Badge variant="secondary" className="text-xs">MOT Repair</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.wearTear && (
+                          <Badge variant="secondary" className="text-xs">Wear & Tear</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.tyre && (
+                          <Badge variant="secondary" className="text-xs">Tyre Cover</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.european && (
+                          <Badge variant="secondary" className="text-xs">European Cover</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.rental && (
+                          <Badge variant="secondary" className="text-xs">Vehicle Rental</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.transfer && (
+                          <Badge variant="secondary" className="text-xs">Transfer Cover</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.lostKey && (
+                          <Badge variant="secondary" className="text-xs">Lost Key</Badge>
+                        )}
+                        {cart.cart_metadata.protection_addons.consequential && (
+                          <Badge variant="secondary" className="text-xs">Consequential Loss</Badge>
+                        )}
+                      </div>
                     </div>
                   )}
 

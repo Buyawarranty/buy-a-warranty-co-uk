@@ -252,14 +252,32 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             vehicle_model: item.vehicleData.model || null,
             vehicle_year: item.vehicleData.year || null,
             mileage: item.vehicleData.mileage || null,
+            plan_id: item.planId || null,
             plan_name: item.planName || null,
             payment_type: item.paymentType || null,
             vehicle_type: item.vehicleData.vehicleType || 'car',
-            step_abandoned: 4
+            step_abandoned: 4,
+            // Pricing details
+            total_price: item.pricingData.totalPrice || 0,
+            voluntary_excess: item.pricingData.voluntaryExcess || 0,
+            claim_limit: item.pricingData.claimLimit || 1250,
+            // Address for contact
+            address: {
+              flat_number: customerData.flat_number || '',
+              building_name: customerData.building_name || '',
+              building_number: customerData.building_number || '',
+              street: customerData.street || '',
+              town: customerData.town || '',
+              county: customerData.county || '',
+              postcode: customerData.postcode || '',
+              country: customerData.country || 'United Kingdom'
+            },
+            // Protection add-ons
+            protection_addons: item.pricingData.selectedAddOns || {}
           }
         });
       }
-      console.log('✅ Multi-warranty abandoned carts tracked');
+      console.log('✅ Multi-warranty abandoned carts tracked with full details');
     } catch (error) {
       console.error('Failed to track abandoned carts:', error);
       // Don't block checkout if tracking fails
