@@ -418,6 +418,30 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     console.log('Payment method:', paymentMethod);
     console.log('Form data:', { planId, vehicleData, customerData });
 
+    // Track abandoned cart BEFORE any validation or payment processing
+    try {
+      await supabase.functions.invoke('track-abandoned-cart', {
+        body: {
+          email: customerData.email || '',
+          full_name: `${customerData.first_name} ${customerData.last_name}`.trim(),
+          phone: customerData.phone || null,
+          vehicle_reg: vehicleData.regNumber || null,
+          vehicle_make: vehicleData.make || null,
+          vehicle_model: vehicleData.model || null,
+          vehicle_year: vehicleData.year || null,
+          mileage: vehicleData.mileage || null,
+          plan_name: planName || null,
+          payment_type: paymentType || null,
+          vehicle_type: vehicleData.bodyType || 'car',
+          step_abandoned: 4
+        }
+      });
+      console.log('✅ Abandoned cart tracked');
+    } catch (error) {
+      console.error('Failed to track abandoned cart:', error);
+      // Don't block checkout if tracking fails
+    }
+
     setShowValidation(true);
     
     if (!validateForm()) {

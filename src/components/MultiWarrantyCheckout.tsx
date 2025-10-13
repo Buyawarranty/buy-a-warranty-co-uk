@@ -237,6 +237,34 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('🔴 CHECKOUT BUTTON CLICKED - Payment method:', selectedPaymentMethod);
+    
+    // Track abandoned cart for multi-warranty BEFORE validation
+    try {
+      // Track each item as a separate potential abandoned cart
+      for (const item of items) {
+        await supabase.functions.invoke('track-abandoned-cart', {
+          body: {
+            email: customerData.email || '',
+            full_name: `${customerData.first_name} ${customerData.last_name}`.trim(),
+            phone: customerData.mobile || null,
+            vehicle_reg: item.vehicleData.regNumber || null,
+            vehicle_make: item.vehicleData.make || null,
+            vehicle_model: item.vehicleData.model || null,
+            vehicle_year: item.vehicleData.year || null,
+            mileage: item.vehicleData.mileage || null,
+            plan_name: item.planName || null,
+            payment_type: item.paymentType || null,
+            vehicle_type: item.vehicleData.vehicleType || 'car',
+            step_abandoned: 4
+          }
+        });
+      }
+      console.log('✅ Multi-warranty abandoned carts tracked');
+    } catch (error) {
+      console.error('Failed to track abandoned carts:', error);
+      // Don't block checkout if tracking fails
+    }
+    
     setShowValidation(true);
     
     // Track checkout attempt

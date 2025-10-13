@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent, Shield, FolderOpen, Receipt, MessageSquare, PenTool } from 'lucide-react';
+import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent, Shield, FolderOpen, Receipt, MessageSquare, PenTool, ShoppingCart } from 'lucide-react';
 
 interface AdminSidebarProps {
   activeTab: string;
@@ -52,6 +52,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
       label: 'Contact Submissions',
       icon: Mail,
       description: 'Manage customer contact form submissions'
+    },
+    {
+      id: 'abandoned-carts',
+      label: 'Abandoned Carts',
+      icon: ShoppingCart,
+      description: 'Track and follow up with incomplete purchases'
     },
     {
       id: 'emails',
