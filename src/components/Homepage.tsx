@@ -717,14 +717,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   />
                 </a>
               </div>
-              {/* Halfords Logo positioned to the right */}
-              <div className="absolute top-4 right-0 z-10">
-                <img 
-                  src="/lovable-uploads/d5f9a604-cacf-42fd-9ab5-a387dedf8a3b.png" 
-                  alt="Halfords Autocentre - Free MOT Test with Warranty plan" 
-                  className="h-11 sm:h-16 w-auto"
-                />
-              </div>
               
               {/* Vehicle Types positioned underneath the panda's feet */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 sm:translate-y-16 w-full px-4">
