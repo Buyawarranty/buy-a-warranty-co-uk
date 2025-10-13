@@ -175,13 +175,38 @@ export const ManualOrderEntry = () => {
         warranty_reference_number: warrantyReference
       };
 
-      const { data: customerData, error: customerError } = await supabase
+      // Check if customer exists by email
+      const { data: existingCustomer } = await supabase
         .from('customers')
-        .upsert(customerRecord, { onConflict: 'email' })
-        .select()
+        .select('id')
+        .eq('email', orderData.email)
         .maybeSingle();
 
-      if (customerError) throw customerError;
+      let customerData;
+      
+      if (existingCustomer) {
+        // Update existing customer
+        const { data, error: updateError } = await supabase
+          .from('customers')
+          .update(customerRecord)
+          .eq('id', existingCustomer.id)
+          .select()
+          .single();
+        
+        if (updateError) throw updateError;
+        customerData = data;
+      } else {
+        // Insert new customer
+        const { data, error: insertError } = await supabase
+          .from('customers')
+          .insert(customerRecord)
+          .select()
+          .single();
+        
+        if (insertError) throw insertError;
+        customerData = data;
+      }
+
       if (!customerData) throw new Error('Customer creation failed');
 
       // Create policy record
