@@ -523,7 +523,7 @@ Issue Timing: ${formData.issueTiming}
                   Make A Claim
                 </h2>
                 <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                  Fill out the form below and we'll get back to you quickly
+                  Fill out the form below quick, easy and hassle-free
                 </p>
               </div>
 
