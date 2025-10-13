@@ -685,46 +685,79 @@ export type Database = {
       }
       claims_submissions: {
         Row: {
+          approved_at: string | null
           assigned_to: string | null
+          claim_reason: string | null
           created_at: string
+          date_of_incident: string | null
           email: string
           file_name: string | null
           file_size: number | null
           file_url: string | null
           id: string
+          internal_notes: string | null
           message: string | null
+          mileage_at_claim: number | null
           name: string
+          paid_at: string | null
+          payment_amount: number | null
           phone: string | null
+          rejected_at: string | null
+          rejection_reason: string | null
           status: string
           updated_at: string
+          vehicle_registration: string | null
+          warranty_type: string | null
         }
         Insert: {
+          approved_at?: string | null
           assigned_to?: string | null
+          claim_reason?: string | null
           created_at?: string
+          date_of_incident?: string | null
           email: string
           file_name?: string | null
           file_size?: number | null
           file_url?: string | null
           id?: string
+          internal_notes?: string | null
           message?: string | null
+          mileage_at_claim?: number | null
           name: string
+          paid_at?: string | null
+          payment_amount?: number | null
           phone?: string | null
+          rejected_at?: string | null
+          rejection_reason?: string | null
           status?: string
           updated_at?: string
+          vehicle_registration?: string | null
+          warranty_type?: string | null
         }
         Update: {
+          approved_at?: string | null
           assigned_to?: string | null
+          claim_reason?: string | null
           created_at?: string
+          date_of_incident?: string | null
           email?: string
           file_name?: string | null
           file_size?: number | null
           file_url?: string | null
           id?: string
+          internal_notes?: string | null
           message?: string | null
+          mileage_at_claim?: number | null
           name?: string
+          paid_at?: string | null
+          payment_amount?: number | null
           phone?: string | null
+          rejected_at?: string | null
+          rejection_reason?: string | null
           status?: string
           updated_at?: string
+          vehicle_registration?: string | null
+          warranty_type?: string | null
         }
         Relationships: []
       }
@@ -2437,7 +2470,17 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      monthly_claims_stats: {
+        Row: {
+          approved_claims: number | null
+          avg_claim_value: number | null
+          month: string | null
+          rejected_claims: number | null
+          total_claims: number | null
+          total_paid: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       auto_expire_discount_codes: {
