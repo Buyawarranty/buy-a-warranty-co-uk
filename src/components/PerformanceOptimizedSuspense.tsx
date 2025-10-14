@@ -12,16 +12,10 @@ const PerformanceOptimizedSuspense: React.FC<PerformanceOptimizedSuspenseProps> 
   fallback,
   height = "40vh" 
 }) => {
+  // Lightweight fallback to reduce bundle size and improve LCP
   const defaultFallback = (
-    <div className="flex flex-col space-y-3 p-4" style={{ minHeight: height }}>
-      <Skeleton className="h-8 w-3/4" />
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-5/6" />
-      <Skeleton className="h-32 w-full" />
-      <div className="flex space-x-2">
-        <Skeleton className="h-10 w-24" />
-        <Skeleton className="h-10 w-24" />
-      </div>
+    <div className="flex items-center justify-center p-4" style={{ minHeight: height }}>
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
   );
 

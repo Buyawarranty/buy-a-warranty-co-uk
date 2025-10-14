@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { redirectWwwToNonWww } from "@/utils/wwwRedirect";
+import { preloadCriticalRoutes } from "@/utils/preloadRoutes";
 
 // Eager load critical components
 import Index from "./pages/Index";
@@ -50,20 +51,28 @@ const SetupAdmin = lazy(() => import("./pages/SetupAdmin"));
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-      retry: (failureCount, error) => {
-        if (failureCount < 2) return true;
-        return false;
-      },
+      staleTime: 10 * 60 * 1000, // 10 minutes - increased for better caching
+      gcTime: 30 * 60 * 1000, // 30 minutes - keep cached data longer
+      retry: 1, // Reduced retries for faster failure handling
+      refetchOnWindowFocus: false, // Prevent unnecessary refetches
+      refetchOnReconnect: false,
+      refetchOnMount: false,
     },
   },
 });
 
 const App = () => {
-  // Redirect www to non-www on mount
+  // Redirect www to non-www on mount and preload critical routes
   useEffect(() => {
     redirectWwwToNonWww();
+    
+    // Preload critical routes after initial load
+    if (document.readyState === 'complete') {
+      preloadCriticalRoutes();
+    } else {
+      window.addEventListener('load', preloadCriticalRoutes);
+      return () => window.removeEventListener('load', preloadCriticalRoutes);
+    }
   }, []);
 
   return (
@@ -78,7 +87,7 @@ const App = () => {
             <CookieBanner />
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
               <main className="flex-1 pb-16 w-full">
-                <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+                <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/home" element={<Index />} />

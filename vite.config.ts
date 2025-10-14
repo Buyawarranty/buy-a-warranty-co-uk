@@ -33,11 +33,27 @@ export default defineConfig(({ mode }) => ({
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
           supabase: ['@supabase/supabase-js'],
-          query: ['@tanstack/react-query']
+          query: ['@tanstack/react-query'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-tabs'],
+          forms: ['react-hook-form', '@hookform/resolvers', 'zod']
         }
       }
     },
-    chunkSizeWarningLimit: 1600
+    chunkSizeWarningLimit: 1600,
+    target: 'esnext',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info'],
+        passes: 2
+      },
+      mangle: {
+        safari10: true
+      }
+    },
+    cssMinify: true
   },
   esbuild: {
     drop: mode === 'production' ? ['console', 'debugger'] : [],

@@ -1,6 +1,5 @@
 
-/* Import Helvetica Neue font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap');
+/* Font is loaded via index.html with optimized loading strategy */
 
 @tailwind base;
 @tailwind components;
