@@ -1,508 +1,237 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "https://esm.sh/resend@2.0.0";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.2';
+import { Resend } from "npm:resend@2.0.0";
 
-const resendApiKey = Deno.env.get("RESEND_API_KEY");
-if (!resendApiKey) {
-  console.error("RESEND_API_KEY not found in environment variables");
-}
-console.log("Resend API key available:", !!resendApiKey);
-const resend = new Resend(resendApiKey);
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface SendEmailRequest {
-  templateId?: string;
-  recipientEmail: string;
-  customerId?: string;
-  variables?: Record<string, any>;
-  attachments?: Array<{
-    filename: string;
-    content: string;
-    type: string;
-  }>;
-  // Direct email content (alternative to template)
-  subject?: string;
-  html?: string;
-  text?: string;
-  from?: string;
-}
+const logStep = (step: string, details?: any) => {
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[SEND-EMAIL] ${step}${detailsStr}`);
+};
 
-const supabase = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-);
-
-const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
+serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('=== Send Email Function Started ===');
-    const requestBody = await req.json();
-    console.log('Request body received:', JSON.stringify(requestBody, null, 2));
+    logStep("Function started");
     
-    const { templateId, recipientEmail, customerId, variables = {}, attachments = [], subject: directSubject, html: directHtml, text: directText, from: directFrom }: SendEmailRequest = requestBody;
-    console.log('Parsed request:', { templateId, recipientEmail, customerId, variablesCount: Object.keys(variables).length, isDirect: !templateId });
+    const { templateId, recipientEmail, variables, attachments } = await req.json();
     
-    // Generate tracking ID for this email
-    const trackingId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    logStep("Request received", { 
+      templateId, 
+      recipientEmail, 
+      hasVariables: !!variables,
+      attachmentsCount: attachments?.length || 0
+    });
 
-    // Validate required fields
     if (!recipientEmail) {
-      console.error('Missing recipient email');
-      return new Response(
-        JSON.stringify({ error: 'Missing required field: recipientEmail is required' }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+      throw new Error("Recipient email is required");
     }
 
-    // Check if using direct content or template
-    const useDirect = !templateId && directSubject && directHtml;
+    // Build email subject based on template
+    let subject = "Buy A Warranty - Policy Documents";
+    let htmlContent = "";
     
-    let emailSubject = '';
-    let emailContent = '';
-    let emailGreeting = '';
-    let fromEmail = 'support@buyawarranty.co.uk';
-    let templateType = 'direct';
-
-    if (useDirect) {
-      // Use direct email content
-      console.log('Using direct email content');
-      emailSubject = directSubject!;
-      emailContent = directHtml!;
-      fromEmail = directFrom || fromEmail;
-    } else {
-      // Use template-based email
-      if (!templateId) {
-        console.error('Missing templateId for template-based email');
-        return new Response(
-          JSON.stringify({ error: 'Either templateId or (subject + html) must be provided' }),
-          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-        );
-      }
-
-    console.log('Attempting to fetch template with ID/type:', templateId);
-    
-    // Get email template by ID or template_type
-    // If templateId looks like a UUID, search by id, otherwise search by template_type
-    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(templateId);
-    
-    const { data: template, error: templateError } = await supabase
-      .from('email_templates')
-      .select('*')
-      .eq(isUUID ? 'id' : 'template_type', templateId)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    console.log('Template query result:', { 
-      found: !!template, 
-      error: templateError ? JSON.stringify(templateError) : null,
-      templateName: template?.name,
-      searchType: isUUID ? 'id' : 'template_type'
-    });
-
-    if (templateError || !template) {
-      console.error('Template not found:', { templateError, templateId, foundTemplate: !!template, searchType: isUUID ? 'id' : 'template_type' });
-      return new Response(
-        JSON.stringify({ error: 'Template not found', templateId, details: templateError, searchType: isUUID ? 'id' : 'template_type' }),
-        { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
-    console.log('Template found:', { templateName: template.name, templateId: template.id });
-
-    // Replace variables in content
-    emailContent = template.content.content || '';
-    emailSubject = template.subject;
-    emailGreeting = template.content.greeting || '';
-    fromEmail = template.from_email;
-    templateType = template.template_type;
-
-    // Generate unsubscribe token (simple hash of email + timestamp)
-    const unsubscribeToken = btoa(`${recipientEmail}:${Date.now()}`).replace(/[+/=]/g, '');
-    
-    // Replace variables in all text fields
-    for (const [key, value] of Object.entries(variables)) {
-      const placeholder = `{{${key}}}`;
-      emailContent = emailContent.replace(new RegExp(placeholder, 'g'), String(value));
-      emailSubject = emailSubject.replace(new RegExp(placeholder, 'g'), String(value));
-      emailGreeting = emailGreeting.replace(new RegExp(placeholder, 'g'), String(value));
-    }
-
-    // Convert markdown-style formatting to HTML
-    emailContent = emailContent
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #f97316; text-decoration: none; font-weight: 600;">$1</a>')
-      .replace(/\\n\\n/g, '</p><p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">')
-      .replace(/\\n/g, '<br>')
-      .replace(/\n\n/g, '</p><p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">')
-      .replace(/\n/g, '<br>');
-
-    // Wrap content in paragraph tags if not already wrapped
-    if (!emailContent.startsWith('<p')) {
-      emailContent = `<p style="margin: 16px 0; color: #1a1a1a; font-size: 16px; line-height: 1.6;">${emailContent}</p>`;
-    }
-    }
-
-    // Generate UTM parameters for tracking
-    const baseUrl = Deno.env.get('SUPABASE_URL') || 'https://buyawarranty.co.uk';
-    const utmParams = {
-      utm_campaign: templateType,
-      utm_source: 'email',
-      utm_medium: 'email',
-      utm_content: templateType.toLowerCase().replace(/\s+/g, '_'),
-    };
-    
-    // Add UTM parameters to all links in content
-    const addUTMToLink = (url: string) => {
-      if (!url.startsWith('http')) return url;
-      const urlObj = new URL(url);
-      Object.entries(utmParams).forEach(([key, value]) => {
-        urlObj.searchParams.set(key, value);
-      });
-      return urlObj.toString();
-    };
-    
-    // Wrap links with click tracking
-    emailContent = emailContent.replace(
-      /href="([^"]*)"/g,
-      (match, url) => {
-        if (url.startsWith('http') || url.startsWith('//')) {
-          const utmUrl = addUTMToLink(url);
-          const trackingUrl = `${baseUrl}/functions/v1/track-email-click?tracking_id=${trackingId}&url=${encodeURIComponent(utmUrl)}`;
-          return `href="${trackingUrl}"`;
-        }
-        return match;
-      }
-    );
-    
-    // Create HTML email with brand styling and tracking pixel
-    let htmlContent = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>${emailSubject}</title>
-  
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17325228149"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-17325228149');
-    gtag('event', 'email_open', {
-      'event_category': 'Email',
-      'event_label': '${templateType}',
-      'tracking_id': '${trackingId}'
-    });
-  </script>
-  
-  <!-- Meta Pixel -->
-  <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', 'YOUR_PIXEL_ID');
-    fbq('trackCustom', 'EmailOpen', {
-      tracking_id: '${trackingId}',
-      template_type: '${templateType}'
-    });
-  </script>
-  <!--[if mso]>
-  <noscript>
-    <xml>
-      <o:OfficeDocumentSettings>
-        <o:PixelsPerInch>96</o:PixelsPerInch>
-      </o:OfficeDocumentSettings>
-    </xml>
-  </noscript>
-  <![endif]-->
-  <style>
-    /* Reset styles */
-    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-    img { -ms-interpolation-mode: bicubic; }
-    
-    /* Remove default spacing */
-    body { margin: 0 !important; padding: 0 !important; }
-    
-    /* Base styles */
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-      background-color: #f8f9fa !important;
-      color: #1a1a1a;
-      line-height: 1.6;
-    }
-    
-    .email-container { 
-      max-width: 600px !important; 
-      margin: 0 auto !important; 
-      background-color: #ffffff !important;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .email-header {
-      background-color: #f1f5f9 !important;
-      padding: 30px 40px !important;
-      text-align: center !important;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    
-    .email-logo img {
-      height: 40px !important;
-      width: auto !important;
-      display: block !important;
-      margin: 0 auto !important;
-    }
-    
-    .email-logo {
-      color: #1a1a1a !important;
-      font-size: 24px !important;
-      font-weight: bold !important;
-      text-decoration: none !important;
-      display: inline-block;
-    }
-    
-    .email-content { 
-      padding: 40px !important;
-    }
-    
-    .email-greeting {
-      font-size: 18px !important;
-      font-weight: 600 !important;
-      color: #1a1a1a !important;
-      margin-bottom: 20px !important;
-      margin-top: 0 !important;
-    }
-    
-    .email-text {
-      color: #1a1a1a !important;
-      font-size: 16px !important;
-      line-height: 1.6 !important;
-      margin: 16px 0 !important;
-    }
-    
-    .email-button {
-      display: inline-block !important;
-      padding: 12px 24px !important;
-      background: linear-gradient(135deg, #f97316, #ea580c) !important;
-      color: #ffffff !important;
-      text-decoration: none !important;
-      border-radius: 6px !important;
-      font-weight: 600 !important;
-      margin: 20px 0 !important;
-    }
-    
-    .email-footer {
-      background-color: #f1f5f9 !important;
-      padding: 30px 40px !important;
-      text-align: center !important;
-      color: #64748b !important;
-      font-size: 14px !important;
-    }
-    
-    .email-footer a {
-      color: #f97316 !important;
-      text-decoration: none !important;
-    }
-    
-    .email-footer-text {
-      margin: 0 0 10px 0 !important;
-      color: #64748b !important;
-    }
-    
-    .email-unsubscribe {
-      margin-top: 20px !important; 
-      font-size: 12px !important; 
-      color: #94a3b8 !important;
-    }
-    
-    .email-unsubscribe a {
-      color: #94a3b8 !important;
-    }
-    
-    /* Mobile responsive */
-    @media only screen and (max-width: 600px) {
-      .email-container {
-        width: 100% !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-      }
-      .email-header, .email-content, .email-footer {
-        padding: 20px !important;
-      }
-    }
-  </style>
-</head>
-<body>
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f8f9fa;">
-    <tr>
-      <td style="padding: 20px 0;">
-        <div class="email-container">
-          <div class="email-header">
-            <a href="https://buyawarranty.co.uk" class="email-logo">
-              <span style="color: #1e3a8a; font-weight: bold;">buya</span><span style="color: #f97316; font-weight: bold;">warranty</span>
-            </a>
+    if (templateId === 'policy_documents' || templateId === 'welcome_email') {
+      subject = `Your ${variables?.planType || 'Warranty'} Policy Documents - ${variables?.policyNumber || ''}`;
+      
+      // Build HTML email content
+      htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #1a365d; color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+            .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
+            .info-box { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #1a365d; }
+            .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+            .info-label { font-weight: bold; color: #1a365d; }
+            .info-value { color: #333; }
+            .login-box { background: #e8f4f8; padding: 20px; margin: 20px 0; border-radius: 8px; border: 2px solid #1a365d; }
+            .button { display: inline-block; padding: 12px 30px; background: #1a365d; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Welcome to Buy A Warranty</h1>
+              <p>Your comprehensive vehicle protection</p>
+            </div>
+            
+            <div class="content">
+              <h2>Dear ${variables?.customerName || 'Valued Customer'},</h2>
+              
+              <p>Thank you for choosing Buy A Warranty for your vehicle protection needs. We're pleased to confirm that your warranty is now active.</p>
+              
+              <div class="info-box">
+                <h3 style="margin-top: 0; color: #1a365d;">Policy Details</h3>
+                <div class="info-row">
+                  <span class="info-label">Policy Number:</span>
+                  <span class="info-value">${variables?.policyNumber || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Plan Type:</span>
+                  <span class="info-value">${variables?.planType || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Registration Plate:</span>
+                  <span class="info-value">${variables?.registrationPlate || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Coverage Period:</span>
+                  <span class="info-value">${variables?.coveragePeriod || variables?.periodInMonths + ' months' || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Start Date:</span>
+                  <span class="info-value">${variables?.policyStartDate || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">End Date:</span>
+                  <span class="info-value">${variables?.policyEndDate || variables?.policyExpiryDate || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Payment Method:</span>
+                  <span class="info-value">${variables?.paymentMethod || variables?.paymentType || 'N/A'}</span>
+                </div>
+              </div>
+              
+              ${variables?.temporaryPassword && !variables?.isExistingCustomer ? `
+              <div class="login-box">
+                <h3 style="margin-top: 0; color: #1a365d;">🔐 Your Customer Portal Access</h3>
+                <p><strong>Welcome! We've created your customer account.</strong></p>
+                <p>Access your policy documents, manage your warranty, and submit claims through our customer portal:</p>
+                <div class="info-row">
+                  <span class="info-label">Login URL:</span>
+                  <span class="info-value">${variables?.loginUrl || 'https://buyawarranty.co.uk/customer-dashboard'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Email:</span>
+                  <span class="info-value">${variables?.loginEmail || recipientEmail}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Temporary Password:</span>
+                  <span class="info-value"><strong>${variables?.temporaryPassword}</strong></span>
+                </div>
+                <p style="color: #d97706; font-weight: bold;">⚠️ Please change your password after your first login for security.</p>
+                <a href="${variables?.loginUrl || 'https://buyawarranty.co.uk/customer-dashboard'}" class="button">Access Customer Portal</a>
+              </div>
+              ` : variables?.isExistingCustomer ? `
+              <div class="login-box">
+                <h3 style="margin-top: 0; color: #1a365d;">🔐 Welcome Back!</h3>
+                <p><strong>You can access your updated policy through your existing customer portal account.</strong></p>
+                <div class="info-row">
+                  <span class="info-label">Login URL:</span>
+                  <span class="info-value">${variables?.loginUrl || 'https://buyawarranty.co.uk/customer-dashboard'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Email:</span>
+                  <span class="info-value">${variables?.loginEmail || recipientEmail}</span>
+                </div>
+                <p><em>${variables?.temporaryPassword || 'Use your existing password'}</em></p>
+                <a href="${variables?.loginUrl || 'https://buyawarranty.co.uk/customer-dashboard'}" class="button">Access Customer Portal</a>
+              </div>
+              ` : ''}
+              
+              <div class="info-box">
+                <h3 style="margin-top: 0; color: #1a365d;">📎 Attached Documents</h3>
+                <p>Please find your warranty policy documents attached to this email:</p>
+                <ul>
+                  <li>Warranty Policy Certificate</li>
+                  <li>Terms & Conditions</li>
+                </ul>
+                <p><strong>Important:</strong> Please keep these documents safe. You'll need them when making a claim.</p>
+              </div>
+              
+              <div class="info-box">
+                <h3 style="margin-top: 0; color: #1a365d;">📞 Need Help?</h3>
+                <p>If you have any questions or need assistance, our customer support team is here to help:</p>
+                <p>
+                  <strong>Email:</strong> support@buyawarranty.co.uk<br>
+                  <strong>Phone:</strong> 0300 303 2044<br>
+                  <strong>Hours:</strong> Monday - Friday, 9am - 5pm
+                </p>
+              </div>
+              
+              <p>Thank you for choosing Buy A Warranty. We look forward to providing you with peace of mind on the road.</p>
+              
+              <p>Best regards,<br>
+              <strong>The Buy A Warranty Team</strong></p>
+            </div>
+            
+            <div class="footer">
+              <p>Buy A Warranty Ltd | Protecting Your Journey</p>
+              <p>This email was sent to ${recipientEmail}</p>
+              <p>&copy; ${new Date().getFullYear()} Buy A Warranty. All rights reserved.</p>
+            </div>
           </div>
-          
-          <div class="email-content">
-            ${emailGreeting ? `<div class="email-greeting">${emailGreeting}</div>` : ''}
-            <div class="email-text">${emailContent}</div>
-          </div>
-          
-          <div class="email-footer">
-            <p class="email-footer-text">
-              <strong>buyawarranty.co.uk</strong><br>
-              Your trusted warranty partner<br>
-              <a href="tel:0330229504">0330 229 5040</a> | 
-              <a href="mailto:info@buyawarranty.co.uk">info@buyawarranty.co.uk</a>
-            </p>
-            <p class="email-unsubscribe">
-              If you no longer wish to receive these emails, you can 
-              <a href="https://buyawarranty.co.uk/unsubscribe?email={{recipientEmail}}&token={{unsubscribeToken}}">unsubscribe here</a>.
-            </p>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </table>
-  
-  <!-- Tracking Pixel -->
-  <img src="${baseUrl}/functions/v1/track-email-open?tracking_id=${trackingId}" width="1" height="1" alt="" style="display:none;" />
-</body>
-</html>`;
-
-    // Replace footer placeholders
-    htmlContent = htmlContent
-      .replace(/\{\{recipientEmail\}\}/g, encodeURIComponent(recipientEmail))
-      .replace(/\{\{unsubscribeToken\}\}/g, unsubscribeToken)
-      .replace(/\{\{reinstate_link\}\}/g, 'https://buyawarranty.co.uk/')
-      .replace(/\{\{renewal_link\}\}/g, 'https://buyawarranty.co.uk/');
-
-    // Create email log entry with tracking information
-    const { data: emailLog, error: logError } = await supabase
-      .from('email_logs')
-      .insert({
-        template_id: templateId || null,
-        recipient_email: recipientEmail,
-        customer_id: customerId,
-        subject: emailSubject,
-        status: 'pending',
-        tracking_id: trackingId,
-        utm_campaign: utmParams.utm_campaign,
-        utm_source: utmParams.utm_source,
-        utm_medium: utmParams.utm_medium,
-        utm_content: utmParams.utm_content,
-        metadata: { variables, isDirect: useDirect }
-      })
-      .select()
-      .single();
-
-    if (logError) {
-      console.error('Error creating email log:', logError);
+        </body>
+        </html>
+      `;
     }
 
-    // Prepare email options
-    const emailOptions: any = {
-      from: fromEmail,
+    // Prepare email payload
+    const emailPayload: any = {
+      from: "Buy A Warranty <support@buyawarranty.co.uk>",
       to: [recipientEmail],
-      subject: emailSubject,
+      subject: subject,
       html: htmlContent,
     };
 
     // Add attachments if provided
     if (attachments && attachments.length > 0) {
-      emailOptions.attachments = attachments.map(attachment => ({
+      emailPayload.attachments = attachments.map((attachment: any) => ({
         filename: attachment.filename,
         content: attachment.content,
-        type: attachment.type
       }));
+      logStep("Added attachments to email", { count: attachments.length });
     }
 
-    // Add BCC for Trustpilot integration if this is a feedback template
-    if (templateType === 'feedback' || templateType === 'feedback_reminder') {
-      emailOptions.bcc = ['buyawarranty.co.uk+8fc526946e@invite.trustpilot.com'];
+    logStep("Sending email via Resend", { to: recipientEmail, subject });
+
+    const { data, error } = await resend.emails.send(emailPayload);
+
+    if (error) {
+      logStep("Resend API error", error);
+      throw new Error(`Resend API error: ${error.message || JSON.stringify(error)}`);
     }
 
-    console.log('Attempting to send email with Resend...', { 
-      from: emailOptions.from, 
-      to: emailOptions.to[0],
-      subject: emailOptions.subject.substring(0, 50) + '...',
-      hasResendKey: !!resendApiKey
-    });
-    
-    // Send email with Resend
-    const emailResponse = await resend.emails.send(emailOptions);
-    
-    console.log('Resend response received:', { 
-      hasData: !!emailResponse.data, 
-      hasError: !!emailResponse.error,
-      errorMessage: emailResponse.error?.message 
-    });
+    logStep("Email sent successfully", { messageId: data?.id });
 
-    // Update email log with result
-    if (emailLog) {
-      const updateData = emailResponse.data ? {
-        status: 'sent',
-        sent_at: new Date().toISOString(),
-        metadata: { ...emailLog.metadata, resend_id: emailResponse.data.id }
-      } : {
-        status: 'failed',
-        error_message: emailResponse.error?.message || 'Unknown error',
-        metadata: { ...emailLog.metadata, error: emailResponse.error }
-      };
-
-      await supabase
-        .from('email_logs')
-        .update(updateData)
-        .eq('id', emailLog.id);
-    }
-
-    if (emailResponse.error) {
-      console.error('Error sending email:', emailResponse.error);
-      return new Response(
-        JSON.stringify({ error: 'Failed to send email', details: emailResponse.error }),
-        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
-    console.log('Email sent successfully:', emailResponse.data);
-
-    return new Response(JSON.stringify({ 
-      success: true, 
-      emailId: emailResponse.data?.id,
-      logId: emailLog?.id 
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
-    });
-
-  } catch (error: any) {
-    console.error("Error in send-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      JSON.stringify({ 
+        success: true, 
+        messageId: data?.id,
+        message: "Email sent successfully" 
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logStep("ERROR", { message: errorMessage });
+    
+    return new Response(
+      JSON.stringify({ 
+        error: errorMessage,
+        success: false
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      }
     );
   }
-};
-
-serve(handler);
+});
