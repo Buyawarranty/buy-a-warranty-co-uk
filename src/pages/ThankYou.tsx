@@ -84,33 +84,28 @@ const ThankYou = () => {
         return;
       }
       
-      // For Stripe payments, validate plan and payment type
-      if (!plan || !paymentType) {
-        console.error('Missing payment information', { plan, paymentType, source });
-        toast.error('Missing payment information');
+      // For Stripe payments, we need the session ID
+      if (!sessionId) {
+        console.error('Missing Stripe session ID', { sessionId, source });
+        toast.error('Missing payment session information');
         setIsProcessing(false);
         return;
       }
 
       try {
-        let data, error;
+        // Process Stripe payment - the edge function will get plan/payment type from session metadata
+        console.log('Processing Stripe payment...', { sessionId });
         
-        // Process Stripe payment
-        if (sessionId) {
-          console.log('Processing Stripe payment...', { sessionId, plan, paymentType });
-          
-          const result = await supabase.functions.invoke('process-stripe-success', {
-            body: {
-              sessionId,
-              planId: plan,
-              paymentType
-            }
-          });
-          data = result.data;
-          error = result.error;
-        } else {
-          throw new Error('Missing payment session information');
-        }
+        const result = await supabase.functions.invoke('process-stripe-success', {
+          body: {
+            sessionId,
+            planId: plan || 'from-session', // Fallback, will be read from session metadata
+            paymentType: paymentType || 'from-session' // Fallback, will be read from session metadata
+          }
+        });
+        
+        const data = result.data;
+        const error = result.error;
 
         if (error) {
           console.error('Payment processing error:', error);
