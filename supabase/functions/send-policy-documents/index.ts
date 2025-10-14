@@ -39,7 +39,7 @@ serve(async (req) => {
 
   try {
     logStep("Function started");
-
+    
     const { recipientEmail, variables, forceResend } = await req.json();
     const { 
       planType, 
