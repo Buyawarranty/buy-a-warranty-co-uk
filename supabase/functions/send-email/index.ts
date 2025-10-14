@@ -21,7 +21,10 @@ serve(async (req) => {
   try {
     logStep("Function started");
     
-    const { templateId, recipientEmail, variables, attachments } = await req.json();
+    const requestBody = await req.json();
+    logStep("Request body received", requestBody);
+    
+    const { templateId, recipientEmail, variables, attachments } = requestBody;
     
     logStep("Request received", { 
       templateId, 
@@ -31,8 +34,17 @@ serve(async (req) => {
     });
 
     if (!recipientEmail) {
+      logStep("ERROR: Missing recipient email");
       throw new Error("Recipient email is required");
     }
+
+    // Verify Resend API key is set
+    const resendKey = Deno.env.get("RESEND_API_KEY");
+    if (!resendKey) {
+      logStep("ERROR: RESEND_API_KEY not found");
+      throw new Error("RESEND_API_KEY environment variable is not set");
+    }
+    logStep("Resend API key found");
 
     // Build email subject based on template
     let subject = "Buy A Warranty - Policy Documents";
@@ -199,7 +211,15 @@ serve(async (req) => {
 
     logStep("Sending email via Resend", { to: recipientEmail, subject });
 
-    const { data, error } = await resend.emails.send(emailPayload);
+    let data, error;
+    try {
+      const result = await resend.emails.send(emailPayload);
+      data = result.data;
+      error = result.error;
+    } catch (resendError) {
+      logStep("Resend API exception", { error: resendError });
+      throw new Error(`Resend API exception: ${resendError.message || String(resendError)}`);
+    }
 
     if (error) {
       logStep("Resend API error", error);
