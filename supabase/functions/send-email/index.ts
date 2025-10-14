@@ -204,7 +204,7 @@ const handler = async (req: Request): Promise<Response> => {
     gtag('config', 'AW-17325228149');
     gtag('event', 'email_open', {
       'event_category': 'Email',
-      'event_label': '${template.template_type}',
+      'event_label': '${templateType}',
       'tracking_id': '${trackingId}'
     });
   </script>
@@ -222,7 +222,7 @@ const handler = async (req: Request): Promise<Response> => {
     fbq('init', 'YOUR_PIXEL_ID');
     fbq('trackCustom', 'EmailOpen', {
       tracking_id: '${trackingId}',
-      template_type: '${template.template_type}'
+      template_type: '${templateType}'
     });
   </script>
   <!--[if mso]>
