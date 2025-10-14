@@ -27,6 +27,7 @@ import { DocumentMappingTab } from '@/components/admin/DocumentMappingTab';
 import { BulkPricingTab } from '@/components/admin/BulkPricingTab';
 import { BlogWritingTab } from '@/components/admin/BlogWritingTab';
 import OrderReconciliation from '@/components/admin/OrderReconciliation';
+import { ManualPaymentProcessor } from '@/components/admin/ManualPaymentProcessor';
 import { ResendWelcomeEmail } from '@/components/admin/ResendWelcomeEmail';
 import { TestAutomatedEmail } from '@/components/admin/TestAutomatedEmail';
 import { SimpleEmailTest } from '@/components/admin/SimpleEmailTest';
@@ -149,6 +150,8 @@ const AdminDashboard = () => {
             </div>
             
             <div className="grid grid-cols-1 gap-6">
+              <ManualPaymentProcessor />
+              
               <OrderReconciliation />
               
               <ApiConnectivityTest />
