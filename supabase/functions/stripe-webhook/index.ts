@@ -40,7 +40,7 @@ serve(async (req) => {
     // Verify the webhook signature (you'll need to set STRIPE_WEBHOOK_SECRET)
     let event;
     try {
-      event = stripe.webhooks.constructEvent(
+      event = await stripe.webhooks.constructEventAsync(
         body,
         signature,
         Deno.env.get("STRIPE_WEBHOOK_SECRET") || ""
