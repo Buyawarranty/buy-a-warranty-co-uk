@@ -7,9 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, User, Car, CreditCard, FileText, MapPin } from 'lucide-react';
+import { Plus, User, Car, CreditCard, FileText, MapPin, Search } from 'lucide-react';
 
 interface ManualOrderData {
   // Customer details
@@ -82,9 +83,51 @@ export const ManualOrderEntry = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [orderData, setOrderData] = useState<ManualOrderData>(initialOrderData);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLookingUp, setIsLookingUp] = useState(false);
 
   const updateOrderData = (field: keyof ManualOrderData, value: string | boolean) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleVehicleLookup = async () => {
+    if (!orderData.registrationPlate.trim()) {
+      toast.error('Please enter a registration plate');
+      return;
+    }
+
+    if (!orderData.mileage.trim()) {
+      toast.error('Please select mileage');
+      return;
+    }
+
+    setIsLookingUp(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
+        body: { registrationNumber: orderData.registrationPlate }
+      });
+
+      if (error) throw error;
+
+      if (data?.found) {
+        // Auto-populate vehicle fields
+        setOrderData(prev => ({
+          ...prev,
+          vehicleMake: data.make || '',
+          vehicleModel: data.model || '',
+          vehicleYear: data.yearOfManufacture || '',
+          vehicleFuelType: data.fuelType || '',
+          vehicleTransmission: data.transmission || ''
+        }));
+        toast.success('Vehicle details found and populated!');
+      } else {
+        toast.error('Vehicle not found. Please enter details manually.');
+      }
+    } catch (error) {
+      console.error('Vehicle lookup error:', error);
+      toast.error('Failed to lookup vehicle. Please enter details manually.');
+    } finally {
+      setIsLookingUp(false);
+    }
   };
 
   const generateWarrantyReference = (): string => {
@@ -443,6 +486,13 @@ export const ManualOrderEntry = () => {
               <Car className="h-5 w-5" />
               <h3 className="text-lg font-semibold">Vehicle Details</h3>
             </div>
+            
+            <Alert>
+              <AlertDescription>
+                Enter registration and mileage, then click lookup to auto-populate vehicle details.
+              </AlertDescription>
+            </Alert>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="registrationPlate">Registration Plate</Label>
@@ -453,6 +503,45 @@ export const ManualOrderEntry = () => {
                   placeholder="AB12 CDE"
                 />
               </div>
+              <div>
+                <Label htmlFor="mileage">Mileage</Label>
+                <Select 
+                  value={orderData.mileage} 
+                  onValueChange={(value) => updateOrderData('mileage', value)}
+                >
+                  <SelectTrigger id="mileage">
+                    <SelectValue placeholder="Select mileage" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0-10000">0 - 10,000 miles</SelectItem>
+                    <SelectItem value="10001-20000">10,001 - 20,000 miles</SelectItem>
+                    <SelectItem value="20001-30000">20,001 - 30,000 miles</SelectItem>
+                    <SelectItem value="30001-40000">30,001 - 40,000 miles</SelectItem>
+                    <SelectItem value="40001-50000">40,001 - 50,000 miles</SelectItem>
+                    <SelectItem value="50001-60000">50,001 - 60,000 miles</SelectItem>
+                    <SelectItem value="60001-70000">60,001 - 70,000 miles</SelectItem>
+                    <SelectItem value="70001-80000">70,001 - 80,000 miles</SelectItem>
+                    <SelectItem value="80001-90000">80,001 - 90,000 miles</SelectItem>
+                    <SelectItem value="90001-100000">90,001 - 100,000 miles</SelectItem>
+                    <SelectItem value="100001+">100,001+ miles</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="col-span-2">
+                <Button 
+                  type="button"
+                  onClick={handleVehicleLookup}
+                  disabled={isLookingUp || !orderData.registrationPlate || !orderData.mileage}
+                  className="w-full"
+                  variant="outline"
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  {isLookingUp ? 'Looking up...' : 'Lookup Vehicle Details'}
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t">
               <div>
                 <Label htmlFor="vehicleMake">Make</Label>
                 <Input
@@ -480,13 +569,22 @@ export const ManualOrderEntry = () => {
                   placeholder="2020"
                 />
               </div>
-              <div className="col-span-2">
-                <Label htmlFor="mileage">Mileage</Label>
+              <div>
+                <Label htmlFor="vehicleFuelType">Fuel Type</Label>
                 <Input
-                  id="mileage"
-                  value={orderData.mileage}
-                  onChange={(e) => updateOrderData('mileage', e.target.value)}
-                  placeholder="50000"
+                  id="vehicleFuelType"
+                  value={orderData.vehicleFuelType}
+                  onChange={(e) => updateOrderData('vehicleFuelType', e.target.value)}
+                  placeholder="Petrol"
+                />
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="vehicleTransmission">Transmission</Label>
+                <Input
+                  id="vehicleTransmission"
+                  value={orderData.vehicleTransmission}
+                  onChange={(e) => updateOrderData('vehicleTransmission', e.target.value)}
+                  placeholder="Manual"
                 />
               </div>
             </div>
@@ -508,12 +606,12 @@ export const ManualOrderEntry = () => {
                   onValueChange={(value) => value && updateOrderData('planType', value)}
                   className="justify-start flex-wrap gap-2"
                 >
-                  <ToggleGroupItem value="basic" className="px-4">Basic</ToggleGroupItem>
-                  <ToggleGroupItem value="gold" className="px-4">Gold</ToggleGroupItem>
-                  <ToggleGroupItem value="platinum" className="px-4">Platinum</ToggleGroupItem>
-                  <ToggleGroupItem value="electric" className="px-4">Electric</ToggleGroupItem>
-                  <ToggleGroupItem value="phev" className="px-4">PHEV</ToggleGroupItem>
-                  <ToggleGroupItem value="motorbike" className="px-4">Motorbike</ToggleGroupItem>
+                  <ToggleGroupItem value="basic" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Basic</ToggleGroupItem>
+                  <ToggleGroupItem value="gold" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Gold</ToggleGroupItem>
+                  <ToggleGroupItem value="platinum" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Platinum</ToggleGroupItem>
+                  <ToggleGroupItem value="electric" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Electric</ToggleGroupItem>
+                  <ToggleGroupItem value="phev" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">PHEV</ToggleGroupItem>
+                  <ToggleGroupItem value="motorbike" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Motorbike</ToggleGroupItem>
                 </ToggleGroup>
               </div>
 
@@ -525,10 +623,10 @@ export const ManualOrderEntry = () => {
                   onValueChange={(value) => value && updateOrderData('paymentType', value)}
                   className="justify-start flex-wrap gap-2"
                 >
-                  <ToggleGroupItem value="stripe" className="px-4">Stripe</ToggleGroupItem>
-                  <ToggleGroupItem value="bumper" className="px-4">Bumper</ToggleGroupItem>
-                  <ToggleGroupItem value="debit_card" className="px-4">Debit Card</ToggleGroupItem>
-                  <ToggleGroupItem value="credit_card" className="px-4">Credit Card</ToggleGroupItem>
+                  <ToggleGroupItem value="stripe" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Stripe</ToggleGroupItem>
+                  <ToggleGroupItem value="bumper" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Bumper</ToggleGroupItem>
+                  <ToggleGroupItem value="debit_card" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Debit Card</ToggleGroupItem>
+                  <ToggleGroupItem value="credit_card" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Credit Card</ToggleGroupItem>
                 </ToggleGroup>
               </div>
 
@@ -540,13 +638,13 @@ export const ManualOrderEntry = () => {
                   onValueChange={(value) => value && updateOrderData('duration', value)}
                   className="justify-start flex-wrap gap-2"
                 >
-                  <ToggleGroupItem value="3months" className="px-4">3 Months</ToggleGroupItem>
-                  <ToggleGroupItem value="6months" className="px-4">6 Months</ToggleGroupItem>
-                  <ToggleGroupItem value="12months" className="px-4">1 Year</ToggleGroupItem>
-                  <ToggleGroupItem value="24months" className="px-4">2 Years</ToggleGroupItem>
-                  <ToggleGroupItem value="36months" className="px-4">3 Years</ToggleGroupItem>
-                  <ToggleGroupItem value="48months" className="px-4">4 Years</ToggleGroupItem>
-                  <ToggleGroupItem value="60months" className="px-4">5 Years</ToggleGroupItem>
+                  <ToggleGroupItem value="3months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">3 Months</ToggleGroupItem>
+                  <ToggleGroupItem value="6months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">6 Months</ToggleGroupItem>
+                  <ToggleGroupItem value="12months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">1 Year</ToggleGroupItem>
+                  <ToggleGroupItem value="24months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">2 Years</ToggleGroupItem>
+                  <ToggleGroupItem value="36months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">3 Years</ToggleGroupItem>
+                  <ToggleGroupItem value="48months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">4 Years</ToggleGroupItem>
+                  <ToggleGroupItem value="60months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">5 Years</ToggleGroupItem>
                 </ToggleGroup>
               </div>
             </div>
