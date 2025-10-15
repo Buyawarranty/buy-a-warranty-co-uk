@@ -43,6 +43,10 @@ interface ManualOrderData {
   // Additional details
   notes: string;
   sendToWarranties2000: boolean;
+  
+  // Customer dashboard credentials
+  dashboardEmail: string;
+  dashboardPassword: string;
 }
 
 const initialOrderData: ManualOrderData = {
@@ -69,7 +73,9 @@ const initialOrderData: ManualOrderData = {
   paymentType: 'bumper',
   duration: '12months',
   notes: '',
-  sendToWarranties2000: false
+  sendToWarranties2000: false,
+  dashboardEmail: '',
+  dashboardPassword: ''
 };
 
 export const ManualOrderEntry = () => {
@@ -218,6 +224,38 @@ export const ManualOrderEntry = () => {
             note: `Manual order entry: ${orderData.notes}`,
             created_by: (await supabase.auth.getUser()).data.user?.id
           });
+      }
+
+      // Create customer dashboard account if credentials provided
+      if (orderData.dashboardEmail && orderData.dashboardPassword) {
+        try {
+          const { data: authResult, error: authError } = await supabase.functions.invoke(
+            'create-customer-account',
+            {
+              body: {
+                email: orderData.dashboardEmail,
+                password: orderData.dashboardPassword,
+                firstName: orderData.firstName,
+                lastName: orderData.lastName,
+                customerId: customerData.id
+              }
+            }
+          );
+
+          if (authError) throw authError;
+
+          if (authResult?.error) {
+            throw new Error(authResult.error);
+          }
+
+          toast.success(
+            `Dashboard account created!\nEmail: ${orderData.dashboardEmail}\nPassword: ${orderData.dashboardPassword}`,
+            { duration: 10000 }
+          );
+        } catch (authError) {
+          console.error('Failed to create dashboard account:', authError);
+          toast.error('Order created but failed to create dashboard account');
+        }
       }
 
       // Only send to Warranties 2000 if checkbox is checked
@@ -538,6 +576,41 @@ export const ManualOrderEntry = () => {
               >
                 Send to Warranties 2000 API
               </Label>
+            </div>
+          </div>
+
+          {/* Customer Dashboard Credentials Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <User className="h-5 w-5" />
+              <h3 className="text-lg font-semibold">Customer Dashboard Access</h3>
+            </div>
+            <Alert>
+              <AlertDescription>
+                Set up dashboard credentials to test customer login before they receive their welcome email.
+              </AlertDescription>
+            </Alert>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="dashboardEmail">Dashboard Email</Label>
+                <Input
+                  id="dashboardEmail"
+                  type="email"
+                  value={orderData.dashboardEmail}
+                  onChange={(e) => updateOrderData('dashboardEmail', e.target.value)}
+                  placeholder="customer@example.com"
+                />
+              </div>
+              <div>
+                <Label htmlFor="dashboardPassword">Temporary Password</Label>
+                <Input
+                  id="dashboardPassword"
+                  type="text"
+                  value={orderData.dashboardPassword}
+                  onChange={(e) => updateOrderData('dashboardPassword', e.target.value)}
+                  placeholder="temp-password-123"
+                />
+              </div>
             </div>
           </div>
 
