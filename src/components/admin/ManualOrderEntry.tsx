@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, User, Car, CreditCard, FileText } from 'lucide-react';
+import { Plus, User, Car, CreditCard, FileText, MapPin } from 'lucide-react';
 
 interface ManualOrderData {
   // Customer details
@@ -38,6 +37,7 @@ interface ManualOrderData {
   // Plan details
   planType: string;
   paymentType: string;
+  duration: string;
   
   // Additional details
   notes: string;
@@ -63,8 +63,9 @@ const initialOrderData: ManualOrderData = {
   vehicleFuelType: '',
   vehicleTransmission: '',
   mileage: '',
-  planType: '',
-  paymentType: '',
+  planType: 'platinum',
+  paymentType: 'bumper',
+  duration: '12months',
   notes: ''
 };
 
@@ -72,37 +73,9 @@ export const ManualOrderEntry = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [orderData, setOrderData] = useState<ManualOrderData>(initialOrderData);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
 
   const updateOrderData = (field: keyof ManualOrderData, value: string) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const validateStep = (step: number): boolean => {
-    switch (step) {
-      case 1: // Customer details
-        return !!(orderData.firstName && orderData.lastName && orderData.email && orderData.phone);
-      case 2: // Address details
-        return !!(orderData.street && orderData.town && orderData.postcode);
-      case 3: // Vehicle details
-        return !!(orderData.registrationPlate && orderData.vehicleMake && orderData.vehicleModel);
-      case 4: // Plan details
-        return !!(orderData.planType && orderData.paymentType);
-      default:
-        return true;
-    }
-  };
-
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(prev => Math.min(prev + 1, 4));
-    } else {
-      toast.error('Please fill in all required fields for this step');
-    }
-  };
-
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
   const generateWarrantyReference = (): string => {
@@ -114,33 +87,37 @@ export const ManualOrderEntry = () => {
     return `MAN-${dateCode}-${randomSerial}`;
   };
 
-  const calculatePolicyEndDate = (paymentType: string): string => {
+  const calculatePolicyEndDate = (duration: string): string => {
     const now = new Date();
-    switch (paymentType) {
-      case 'monthly':
-        now.setMonth(now.getMonth() + 1);
+    switch (duration) {
+      case '3months':
+        now.setMonth(now.getMonth() + 3);
         break;
-      case 'yearly':
+      case '6months':
+        now.setMonth(now.getMonth() + 6);
+        break;
+      case '12months':
         now.setFullYear(now.getFullYear() + 1);
         break;
-      case 'two_yearly':
+      case '24months':
         now.setFullYear(now.getFullYear() + 2);
         break;
-      case 'three_yearly':
+      case '36months':
         now.setFullYear(now.getFullYear() + 3);
         break;
+      case '48months':
+        now.setFullYear(now.getFullYear() + 4);
+        break;
+      case '60months':
+        now.setFullYear(now.getFullYear() + 5);
+        break;
       default:
-        now.setMonth(now.getMonth() + 1);
+        now.setFullYear(now.getFullYear() + 1);
     }
     return now.toISOString();
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(4)) {
-      toast.error('Please complete all required fields');
-      return;
-    }
-
     setIsLoading(true);
     try {
       const warrantyReference = generateWarrantyReference();
@@ -217,7 +194,7 @@ export const ManualOrderEntry = () => {
         payment_type: orderData.paymentType,
         policy_number: warrantyReference,
         policy_start_date: new Date().toISOString(),
-        policy_end_date: calculatePolicyEndDate(orderData.paymentType),
+        policy_end_date: calculatePolicyEndDate(orderData.duration),
         status: 'active',
         email_sent_status: 'pending',
         customer_full_name: customerName
@@ -243,7 +220,6 @@ export const ManualOrderEntry = () => {
       toast.success(`Manual warranty order created successfully! Reference: ${warrantyReference}`);
       setIsOpen(false);
       setOrderData(initialOrderData);
-      setCurrentStep(1);
       
       // Trigger a refresh of the customers list
       window.location.reload();
@@ -256,18 +232,32 @@ export const ManualOrderEntry = () => {
     }
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Add Manual Order
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Plus className="h-5 w-5" />
+            Manual Warranty Order Entry
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6">
+          {/* Customer Details Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 border-b pb-2">
               <User className="h-5 w-5" />
               <h3 className="text-lg font-semibold">Customer Details</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="firstName">First Name *</Label>
+                <Label htmlFor="firstName">First Name</Label>
                 <Input
                   id="firstName"
                   value={orderData.firstName}
@@ -276,7 +266,7 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="lastName">Last Name *</Label>
+                <Label htmlFor="lastName">Last Name</Label>
                 <Input
                   id="lastName"
                   value={orderData.lastName}
@@ -285,7 +275,7 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -295,7 +285,7 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="phone">Phone *</Label>
+                <Label htmlFor="phone">Phone</Label>
                 <Input
                   id="phone"
                   value={orderData.phone}
@@ -305,13 +295,11 @@ export const ManualOrderEntry = () => {
               </div>
             </div>
           </div>
-        );
 
-      case 2:
-        return (
+          {/* Address Details Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <FileText className="h-5 w-5" />
+            <div className="flex items-center gap-2 border-b pb-2">
+              <MapPin className="h-5 w-5" />
               <h3 className="text-lg font-semibold">Address Details</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -343,7 +331,7 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="street">Street *</Label>
+                <Label htmlFor="street">Street</Label>
                 <Input
                   id="street"
                   value={orderData.street}
@@ -352,7 +340,7 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="town">Town *</Label>
+                <Label htmlFor="town">Town</Label>
                 <Input
                   id="town"
                   value={orderData.town}
@@ -370,7 +358,7 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="postcode">Postcode *</Label>
+                <Label htmlFor="postcode">Postcode</Label>
                 <Input
                   id="postcode"
                   value={orderData.postcode}
@@ -389,18 +377,16 @@ export const ManualOrderEntry = () => {
               </div>
             </div>
           </div>
-        );
 
-      case 3:
-        return (
+          {/* Vehicle Details Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 border-b pb-2">
               <Car className="h-5 w-5" />
               <h3 className="text-lg font-semibold">Vehicle Details</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="registrationPlate">Registration Plate *</Label>
+                <Label htmlFor="registrationPlate">Registration Plate</Label>
                 <Input
                   id="registrationPlate"
                   value={orderData.registrationPlate}
@@ -409,7 +395,7 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="vehicleMake">Make *</Label>
+                <Label htmlFor="vehicleMake">Make</Label>
                 <Input
                   id="vehicleMake"
                   value={orderData.vehicleMake}
@@ -418,7 +404,7 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="vehicleModel">Model *</Label>
+                <Label htmlFor="vehicleModel">Model</Label>
                 <Input
                   id="vehicleModel"
                   value={orderData.vehicleModel}
@@ -435,34 +421,6 @@ export const ManualOrderEntry = () => {
                   placeholder="2020"
                 />
               </div>
-              <div>
-                <Label htmlFor="vehicleFuelType">Fuel Type</Label>
-                <Select value={orderData.vehicleFuelType} onValueChange={(value) => updateOrderData('vehicleFuelType', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select fuel type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="petrol">Petrol</SelectItem>
-                    <SelectItem value="diesel">Diesel</SelectItem>
-                    <SelectItem value="hybrid">Hybrid</SelectItem>
-                    <SelectItem value="electric">Electric</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="vehicleTransmission">Transmission</Label>
-                <Select value={orderData.vehicleTransmission} onValueChange={(value) => updateOrderData('vehicleTransmission', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select transmission" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="manual">Manual</SelectItem>
-                    <SelectItem value="automatic">Automatic</SelectItem>
-                    <SelectItem value="cvt">CVT</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
               <div className="col-span-2">
                 <Label htmlFor="mileage">Mileage</Label>
                 <Input
@@ -474,47 +432,66 @@ export const ManualOrderEntry = () => {
               </div>
             </div>
           </div>
-        );
 
-      case 4:
-        return (
+          {/* Plan & Payment Details Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 border-b pb-2">
               <CreditCard className="h-5 w-5" />
               <h3 className="text-lg font-semibold">Plan & Payment Details</h3>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            
+            <div className="space-y-4">
               <div>
-                <Label htmlFor="planType">Plan Type *</Label>
-                <Select value={orderData.planType} onValueChange={(value) => updateOrderData('planType', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select plan type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="basic">Basic</SelectItem>
-                    <SelectItem value="gold">Gold</SelectItem>
-                    <SelectItem value="platinum">Platinum</SelectItem>
-                    <SelectItem value="electric">Electric Vehicle</SelectItem>
-                    <SelectItem value="phev">PHEV Hybrid</SelectItem>
-                    <SelectItem value="motorbike">Motorbike</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="mb-2 block">Plan Type</Label>
+                <ToggleGroup 
+                  type="single" 
+                  value={orderData.planType} 
+                  onValueChange={(value) => value && updateOrderData('planType', value)}
+                  className="justify-start flex-wrap gap-2"
+                >
+                  <ToggleGroupItem value="basic" className="px-4">Basic</ToggleGroupItem>
+                  <ToggleGroupItem value="gold" className="px-4">Gold</ToggleGroupItem>
+                  <ToggleGroupItem value="platinum" className="px-4">Platinum</ToggleGroupItem>
+                  <ToggleGroupItem value="electric" className="px-4">Electric</ToggleGroupItem>
+                  <ToggleGroupItem value="phev" className="px-4">PHEV</ToggleGroupItem>
+                  <ToggleGroupItem value="motorbike" className="px-4">Motorbike</ToggleGroupItem>
+                </ToggleGroup>
               </div>
+
               <div>
-                <Label htmlFor="paymentType">Payment Type *</Label>
-                <Select value={orderData.paymentType} onValueChange={(value) => updateOrderData('paymentType', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select payment type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="yearly">Yearly</SelectItem>
-                    <SelectItem value="two_yearly">Two Year</SelectItem>
-                    <SelectItem value="three_yearly">Three Year</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="mb-2 block">Payment Type</Label>
+                <ToggleGroup 
+                  type="single" 
+                  value={orderData.paymentType} 
+                  onValueChange={(value) => value && updateOrderData('paymentType', value)}
+                  className="justify-start flex-wrap gap-2"
+                >
+                  <ToggleGroupItem value="stripe" className="px-4">Stripe</ToggleGroupItem>
+                  <ToggleGroupItem value="bumper" className="px-4">Bumper</ToggleGroupItem>
+                  <ToggleGroupItem value="debit_card" className="px-4">Debit Card</ToggleGroupItem>
+                  <ToggleGroupItem value="credit_card" className="px-4">Credit Card</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+
+              <div>
+                <Label className="mb-2 block">Duration</Label>
+                <ToggleGroup 
+                  type="single" 
+                  value={orderData.duration} 
+                  onValueChange={(value) => value && updateOrderData('duration', value)}
+                  className="justify-start flex-wrap gap-2"
+                >
+                  <ToggleGroupItem value="3months" className="px-4">3 Months</ToggleGroupItem>
+                  <ToggleGroupItem value="6months" className="px-4">6 Months</ToggleGroupItem>
+                  <ToggleGroupItem value="12months" className="px-4">1 Year</ToggleGroupItem>
+                  <ToggleGroupItem value="24months" className="px-4">2 Years</ToggleGroupItem>
+                  <ToggleGroupItem value="36months" className="px-4">3 Years</ToggleGroupItem>
+                  <ToggleGroupItem value="48months" className="px-4">4 Years</ToggleGroupItem>
+                  <ToggleGroupItem value="60months" className="px-4">5 Years</ToggleGroupItem>
+                </ToggleGroup>
               </div>
             </div>
+
             <div>
               <Label htmlFor="notes">Additional Notes</Label>
               <Textarea
@@ -526,73 +503,12 @@ export const ManualOrderEntry = () => {
               />
             </div>
           </div>
-        );
 
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Add Manual Order
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Manual Warranty Order Entry
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-6">
-          {/* Progress indicator */}
-          <div className="flex items-center justify-between">
-            {[1, 2, 3, 4].map((step) => (
-              <div
-                key={step}
-                className={`flex items-center justify-center w-8 h-8 rounded-full border-2 text-sm font-medium ${
-                  step === currentStep
-                    ? 'border-blue-500 bg-blue-500 text-white'
-                    : step < currentStep
-                    ? 'border-green-500 bg-green-500 text-white'
-                    : 'border-gray-300 text-gray-500'
-                }`}
-              >
-                {step}
-              </div>
-            ))}
-          </div>
-
-          <div className="min-h-[400px]">
-            {renderStep()}
-          </div>
-
-          {/* Navigation buttons */}
-          <div className="flex justify-between">
-            <Button
-              variant="outline"
-              onClick={prevStep}
-              disabled={currentStep === 1}
-            >
-              Previous
+          {/* Action Button */}
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button onClick={handleSubmit} disabled={isLoading} size="lg">
+              {isLoading ? 'Creating Order...' : 'Create Order'}
             </Button>
-            
-            <div className="flex gap-2">
-              {currentStep < 4 ? (
-                <Button onClick={nextStep}>
-                  Next
-                </Button>
-              ) : (
-                <Button onClick={handleSubmit} disabled={isLoading}>
-                  {isLoading ? 'Creating Order...' : 'Create Order'}
-                </Button>
-              )}
-            </div>
           </div>
 
           <Alert>
@@ -604,4 +520,5 @@ export const ManualOrderEntry = () => {
       </DialogContent>
     </Dialog>
   );
+
 };
