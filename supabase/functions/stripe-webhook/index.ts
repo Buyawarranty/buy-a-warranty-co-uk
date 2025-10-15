@@ -88,7 +88,7 @@ serve(async (req) => {
         } else {
           logStep("Processing single warranty purchase", { sessionId: session.id });
           // Extract metadata to determine the plan and payment type
-          const planId = session.metadata?.plan_id;
+          const planId = session.metadata?.plan_id || session.metadata?.plan_type;
           const paymentType = session.metadata?.payment_type;
           
           if (planId && paymentType) {
