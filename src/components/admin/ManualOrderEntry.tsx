@@ -42,6 +42,16 @@ interface ManualOrderData {
   duration: string;
   voluntaryExcess: number;
   claimLimit: number;
+  totalAmount: string;
+  
+  // Add-on packages
+  wearTearCover: boolean;
+  vehicleRecovery: boolean;
+  tyreCover: boolean;
+  europeCover: boolean;
+  vehicleRental: boolean;
+  motFeeCover: boolean;
+  transferCover: boolean;
   
   // Additional details
   notes: string;
@@ -77,6 +87,14 @@ const initialOrderData: ManualOrderData = {
   duration: '12months',
   voluntaryExcess: 0,
   claimLimit: 1250,
+  totalAmount: '',
+  wearTearCover: false,
+  vehicleRecovery: true,
+  tyreCover: false,
+  europeCover: false,
+  vehicleRental: false,
+  motFeeCover: true,
+  transferCover: false,
   notes: '',
   sendToWarranties2000: false,
   dashboardEmail: '',
@@ -257,7 +275,15 @@ export const ManualOrderEntry = () => {
         email_sent_status: 'pending',
         customer_full_name: customerName,
         voluntary_excess: orderData.voluntaryExcess,
-        claim_limit: orderData.claimLimit
+        claim_limit: orderData.claimLimit,
+        payment_amount: orderData.totalAmount ? parseFloat(orderData.totalAmount) : null,
+        wear_tear: orderData.wearTearCover,
+        breakdown_recovery: orderData.vehicleRecovery,
+        tyre_cover: orderData.tyreCover,
+        europe_cover: orderData.europeCover,
+        vehicle_rental: orderData.vehicleRental,
+        mot_fee: orderData.motFeeCover,
+        transfer_cover: orderData.transferCover
       };
 
       const { error: policyError } = await supabase
@@ -688,6 +714,145 @@ export const ManualOrderEntry = () => {
                   <ToggleGroupItem value="4000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£4,000</ToggleGroupItem>
                   <ToggleGroupItem value="5000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£5,000</ToggleGroupItem>
                 </ToggleGroup>
+              </div>
+
+              <div>
+                <Label htmlFor="totalAmount">Total Amount Paid (£)</Label>
+                <Input
+                  id="totalAmount"
+                  type="number"
+                  step="0.01"
+                  value={orderData.totalAmount}
+                  onChange={(e) => updateOrderData('totalAmount', e.target.value)}
+                  placeholder="827.00"
+                />
+              </div>
+            </div>
+
+            {/* Add-On Protection Packages Section */}
+            <div className="space-y-4 border-t pt-4">
+              <h4 className="font-semibold text-base">Add-On Protection Packages</h4>
+              <p className="text-sm text-gray-600">Select additional coverage options for this warranty</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50">
+                  <Checkbox
+                    id="wearTear"
+                    checked={orderData.wearTearCover}
+                    onCheckedChange={(checked) => updateOrderData('wearTearCover', !!checked)}
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="wearTear" className="font-medium cursor-pointer">
+                      🔧 Wear & Tear Cover
+                    </Label>
+                    <p className="text-xs text-gray-600 mt-0.5">
+                      Protects against premature failure of components
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 p-3 border rounded-lg bg-blue-50 border-blue-200">
+                  <Checkbox
+                    id="vehicleRecovery"
+                    checked={orderData.vehicleRecovery}
+                    onCheckedChange={(checked) => updateOrderData('vehicleRecovery', !!checked)}
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="vehicleRecovery" className="font-medium cursor-pointer">
+                      🚗 24/7 Vehicle Recovery
+                    </Label>
+                    <p className="text-xs text-blue-800 mt-0.5 font-medium">
+                      Included
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50">
+                  <Checkbox
+                    id="tyreCover"
+                    checked={orderData.tyreCover}
+                    onCheckedChange={(checked) => updateOrderData('tyreCover', !!checked)}
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="tyreCover" className="font-medium cursor-pointer">
+                      🛞 Tyre Cover
+                    </Label>
+                    <p className="text-xs text-gray-600 mt-0.5">
+                      Protection for accidental and puncture damage
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50">
+                  <Checkbox
+                    id="europeCover"
+                    checked={orderData.europeCover}
+                    onCheckedChange={(checked) => updateOrderData('europeCover', !!checked)}
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="europeCover" className="font-medium cursor-pointer">
+                      🌍 Europe Cover
+                    </Label>
+                    <p className="text-xs text-gray-600 mt-0.5">
+                      Full protection while driving across Europe
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50">
+                  <Checkbox
+                    id="vehicleRental"
+                    checked={orderData.vehicleRental}
+                    onCheckedChange={(checked) => updateOrderData('vehicleRental', !!checked)}
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="vehicleRental" className="font-medium cursor-pointer">
+                      🚘 Vehicle Rental
+                    </Label>
+                    <p className="text-xs text-gray-600 mt-0.5">
+                      Replacement vehicle during repairs
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 p-3 border rounded-lg bg-blue-50 border-blue-200">
+                  <Checkbox
+                    id="motFeeCover"
+                    checked={orderData.motFeeCover}
+                    onCheckedChange={(checked) => updateOrderData('motFeeCover', !!checked)}
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="motFeeCover" className="font-medium cursor-pointer">
+                      🛠️ MOT Test Fee Cover
+                    </Label>
+                    <p className="text-xs text-blue-800 mt-0.5 font-medium">
+                      Included
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50">
+                  <Checkbox
+                    id="transferCover"
+                    checked={orderData.transferCover}
+                    onCheckedChange={(checked) => updateOrderData('transferCover', !!checked)}
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="transferCover" className="font-medium cursor-pointer">
+                      🔁 Transfer Cover
+                    </Label>
+                    <p className="text-xs text-gray-600 mt-0.5">
+                      Transfer warranty to new owner (£19.99 one-time)
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
