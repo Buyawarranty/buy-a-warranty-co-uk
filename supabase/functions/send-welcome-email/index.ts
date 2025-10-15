@@ -265,13 +265,13 @@ serve(async (req) => {
         if (termsResponse.ok) {
           const termsBuffer = await termsResponse.arrayBuffer();
           const termsBytes = new Uint8Array(termsBuffer);
-          let termsBase64 = '';
-          const chunkSize = 8192;
           
-          for (let i = 0; i < termsBytes.length; i += chunkSize) {
-            const chunk = termsBytes.slice(i, i + chunkSize);
-            termsBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+          // Convert to base64 properly using a binary string approach
+          let binary = '';
+          for (let i = 0; i < termsBytes.length; i++) {
+            binary += String.fromCharCode(termsBytes[i]);
           }
+          const termsBase64 = btoa(binary);
           
           attachments.push({
             filename: termsDoc.document_name || 'Terms-and-Conditions.pdf',
@@ -289,13 +289,13 @@ serve(async (req) => {
         if (planResponse.ok) {
           const planBuffer = await planResponse.arrayBuffer();
           const planBytes = new Uint8Array(planBuffer);
-          let planBase64 = '';
-          const chunkSize = 8192;
           
-          for (let i = 0; i < planBytes.length; i += chunkSize) {
-            const chunk = planBytes.slice(i, i + chunkSize);
-            planBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+          // Convert to base64 properly using a binary string approach
+          let binary = '';
+          for (let i = 0; i < planBytes.length; i++) {
+            binary += String.fromCharCode(planBytes[i]);
           }
+          const planBase64 = btoa(binary);
           
           attachments.push({
             filename: planDoc.document_name || `${planType}-Warranty-Plan.pdf`,
