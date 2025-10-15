@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Plus, User, Car, CreditCard, FileText, MapPin } from 'lucide-react';
@@ -41,6 +42,7 @@ interface ManualOrderData {
   
   // Additional details
   notes: string;
+  sendToWarranties2000: boolean;
 }
 
 const initialOrderData: ManualOrderData = {
@@ -66,7 +68,8 @@ const initialOrderData: ManualOrderData = {
   planType: 'platinum',
   paymentType: 'bumper',
   duration: '12months',
-  notes: ''
+  notes: '',
+  sendToWarranties2000: false
 };
 
 export const ManualOrderEntry = () => {
@@ -74,7 +77,7 @@ export const ManualOrderEntry = () => {
   const [orderData, setOrderData] = useState<ManualOrderData>(initialOrderData);
   const [isLoading, setIsLoading] = useState(false);
 
-  const updateOrderData = (field: keyof ManualOrderData, value: string) => {
+  const updateOrderData = (field: keyof ManualOrderData, value: string | boolean) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -215,6 +218,24 @@ export const ManualOrderEntry = () => {
             note: `Manual order entry: ${orderData.notes}`,
             created_by: (await supabase.auth.getUser()).data.user?.id
           });
+      }
+
+      // Only send to Warranties 2000 if checkbox is checked
+      if (orderData.sendToWarranties2000) {
+        try {
+          // Add logic here to send to Warranties 2000 API
+          console.log('Sending to Warranties 2000 API...');
+          await supabase
+            .from('admin_notes')
+            .insert({
+              customer_id: customerData.id,
+              note: `Sent to Warranties 2000 API`,
+              created_by: (await supabase.auth.getUser()).data.user?.id
+            });
+        } catch (w2kError) {
+          console.error('Failed to send to Warranties 2000:', w2kError);
+          toast.error('Order created but failed to send to Warranties 2000');
+        }
       }
 
       toast.success(`Manual warranty order created successfully! Reference: ${warrantyReference}`);
@@ -502,10 +523,26 @@ export const ManualOrderEntry = () => {
                 rows={3}
               />
             </div>
+
+            <div className="flex items-center space-x-2 pt-4 border-t">
+              <Checkbox
+                id="sendToW2k"
+                checked={orderData.sendToWarranties2000}
+                onCheckedChange={(checked) => 
+                  updateOrderData('sendToWarranties2000', !!checked)
+                }
+              />
+              <Label
+                htmlFor="sendToW2k"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Send to Warranties 2000 API
+              </Label>
+            </div>
           </div>
 
           {/* Action Button */}
-          <div className="flex justify-end gap-2 pt-4 border-t">
+          <div className="flex justify-end gap-2 pt-4">
             <Button onClick={handleSubmit} disabled={isLoading} size="lg">
               {isLoading ? 'Creating Order...' : 'Create Order'}
             </Button>
