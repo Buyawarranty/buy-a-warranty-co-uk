@@ -110,8 +110,10 @@ const ThankYou = () => {
           toast.error('Error processing payment');
         } else {
           console.log('Payment processed successfully:', data);
-          if (data?.policyNumber) {
-            setPolicyNumber(data.policyNumber);
+          // Check both top-level policyNumber and nested data.policyNumber
+          const warrantyNumber = data?.policyNumber || data?.data?.policyNumber;
+          if (warrantyNumber) {
+            setPolicyNumber(warrantyNumber);
           }
           toast.success('Your warranty policy has been created successfully!');
           
