@@ -40,6 +40,8 @@ interface ManualOrderData {
   planType: string;
   paymentType: string;
   duration: string;
+  voluntaryExcess: number;
+  claimLimit: number;
   
   // Additional details
   notes: string;
@@ -73,6 +75,8 @@ const initialOrderData: ManualOrderData = {
   planType: 'platinum',
   paymentType: 'bumper',
   duration: '12months',
+  voluntaryExcess: 0,
+  claimLimit: 1250,
   notes: '',
   sendToWarranties2000: false,
   dashboardEmail: '',
@@ -85,7 +89,7 @@ export const ManualOrderEntry = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
 
-  const updateOrderData = (field: keyof ManualOrderData, value: string | boolean) => {
+  const updateOrderData = (field: keyof ManualOrderData, value: string | boolean | number) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -201,7 +205,9 @@ export const ManualOrderEntry = () => {
         vehicle_transmission: orderData.vehicleTransmission,
         mileage: orderData.mileage,
         status: 'Active',
-        warranty_reference_number: warrantyReference
+        warranty_reference_number: warrantyReference,
+        voluntary_excess: orderData.voluntaryExcess,
+        claim_limit: orderData.claimLimit
       };
 
       // Check if customer exists by email
@@ -249,7 +255,9 @@ export const ManualOrderEntry = () => {
         policy_end_date: calculatePolicyEndDate(orderData.duration),
         status: 'active',
         email_sent_status: 'pending',
-        customer_full_name: customerName
+        customer_full_name: customerName,
+        voluntary_excess: orderData.voluntaryExcess,
+        claim_limit: orderData.claimLimit
       };
 
       const { error: policyError } = await supabase
@@ -645,6 +653,40 @@ export const ManualOrderEntry = () => {
                   <ToggleGroupItem value="36months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">3 Years</ToggleGroupItem>
                   <ToggleGroupItem value="48months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">4 Years</ToggleGroupItem>
                   <ToggleGroupItem value="60months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">5 Years</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+
+              <div>
+                <Label className="mb-2 block">Voluntary Excess</Label>
+                <ToggleGroup 
+                  type="single" 
+                  value={orderData.voluntaryExcess.toString()} 
+                  onValueChange={(value) => value && updateOrderData('voluntaryExcess', parseInt(value))}
+                  className="justify-start flex-wrap gap-2"
+                >
+                  <ToggleGroupItem value="0" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£0</ToggleGroupItem>
+                  <ToggleGroupItem value="50" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£50</ToggleGroupItem>
+                  <ToggleGroupItem value="100" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£100</ToggleGroupItem>
+                  <ToggleGroupItem value="150" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£150</ToggleGroupItem>
+                  <ToggleGroupItem value="200" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£200</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+
+              <div>
+                <Label className="mb-2 block">Claim Limit</Label>
+                <ToggleGroup 
+                  type="single" 
+                  value={orderData.claimLimit.toString()} 
+                  onValueChange={(value) => value && updateOrderData('claimLimit', parseInt(value))}
+                  className="justify-start flex-wrap gap-2"
+                >
+                  <ToggleGroupItem value="750" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£750</ToggleGroupItem>
+                  <ToggleGroupItem value="1250" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£1,250</ToggleGroupItem>
+                  <ToggleGroupItem value="2000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£2,000</ToggleGroupItem>
+                  <ToggleGroupItem value="2500" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£2,500</ToggleGroupItem>
+                  <ToggleGroupItem value="3000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£3,000</ToggleGroupItem>
+                  <ToggleGroupItem value="4000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£4,000</ToggleGroupItem>
+                  <ToggleGroupItem value="5000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£5,000</ToggleGroupItem>
                 </ToggleGroup>
               </div>
             </div>
