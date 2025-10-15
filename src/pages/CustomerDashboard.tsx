@@ -139,6 +139,33 @@ const CustomerDashboard = () => {
     markAllAsRead 
   } = useCustomerNotifications(user?.email);
 
+  // Check if logged-in user is an admin
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingAdminStatus, setCheckingAdminStatus] = useState(true);
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user && !isImpersonating) {
+        try {
+          const { data } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
+          if (data && ['admin', 'member', 'viewer', 'guest'].includes(data.role)) {
+            setIsAdmin(true);
+          }
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+        }
+      }
+      setCheckingAdminStatus(false);
+    };
+
+    checkAdminStatus();
+  }, [user, isImpersonating]);
+
   useEffect(() => {
     console.log("CustomerDashboard: useEffect triggered");
     console.log("CustomerDashboard: user", user, "loading", loading);
@@ -946,6 +973,34 @@ const CustomerDashboard = () => {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        {/* Admin Warning Banner */}
+        {!checkingAdminStatus && isAdmin && !isImpersonating && (
+          <Alert className="mb-6 border-red-300 bg-red-50">
+            <AlertCircle className="h-5 w-5 text-red-600" />
+            <AlertDescription className="text-red-900">
+              <div className="space-y-2">
+                <div className="font-semibold text-lg">⚠️ Admin Account Detected</div>
+                <p className="text-sm">
+                  You're logged in with an admin account. Logging into the customer dashboard in this tab will 
+                  <strong> log you out of the admin dashboard in other tabs</strong>.
+                </p>
+                <p className="text-sm font-medium">
+                  Instead, use the <span className="font-bold text-primary">"View as Customer"</span> button in the admin dashboard 
+                  to safely view customer accounts without losing your admin session.
+                </p>
+                <Button 
+                  size="sm" 
+                  variant="default"
+                  onClick={() => navigate('/admin-dashboard')}
+                  className="mt-2 bg-primary hover:bg-primary/90"
+                >
+                  Go to Admin Dashboard
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Impersonation Banner */}
         {isImpersonating && impersonatedCustomer && (
           <ImpersonationBanner

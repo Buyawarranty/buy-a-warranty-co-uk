@@ -13,7 +13,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive, ChevronDown, ChevronUp } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive, ChevronDown, ChevronUp, Eye } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
@@ -2052,6 +2052,19 @@ Please log in and change your password after first login.`;
                                               </>
                                             )}
                                           </Button>
+                                          
+                                          {/* View as Customer Info Box */}
+                                          <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 mt-4">
+                                            <div className="flex items-start gap-3">
+                                              <Eye className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                                              <div className="flex-1 space-y-2">
+                                                <h4 className="font-semibold text-blue-900">Safe Customer View</h4>
+                                                <p className="text-sm text-blue-800">
+                                                  Use the button below to view this customer's dashboard safely. Your admin session will remain active in other tabs - no need to log out!
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </div>
                                           
                                           <ViewAsCustomerButton
                                             customerId={selectedCustomer.id}
