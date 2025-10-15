@@ -202,11 +202,23 @@ serve(async (req) => {
 
     // Add attachments if provided
     if (attachments && attachments.length > 0) {
-      emailPayload.attachments = attachments.map((attachment: any) => ({
-        filename: attachment.filename,
-        content: attachment.content,
-      }));
-      logStep("Added attachments to email", { count: attachments.length });
+      emailPayload.attachments = attachments.map((attachment: any) => {
+        const attachmentData: any = {
+          filename: attachment.filename,
+          content: attachment.content,
+        };
+        
+        // Add content type if provided
+        if (attachment.type) {
+          attachmentData.contentType = attachment.type;
+        }
+        
+        return attachmentData;
+      });
+      logStep("Added attachments to email", { 
+        count: attachments.length,
+        filenames: attachments.map((a: any) => a.filename)
+      });
     }
 
     logStep("Sending email via Resend", { to: recipientEmail, subject });
