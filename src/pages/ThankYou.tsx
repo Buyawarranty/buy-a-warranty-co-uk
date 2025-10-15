@@ -98,9 +98,7 @@ const ThankYou = () => {
         
         const result = await supabase.functions.invoke('process-stripe-success', {
           body: {
-            sessionId,
-            planId: plan || 'from-session', // Fallback, will be read from session metadata
-            paymentType: paymentType || 'from-session' // Fallback, will be read from session metadata
+            sessionId
           }
         });
         

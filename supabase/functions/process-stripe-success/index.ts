@@ -38,11 +38,11 @@ serve(async (req) => {
       throw new Error(`Invalid JSON in request body: ${errorMessage}`);
     }
 
-    const { sessionId, planId, paymentType } = requestBody;
-    logStep("Extracted parameters", { sessionId, planId, paymentType });
+    const { sessionId } = requestBody;
+    logStep("Extracted parameters", { sessionId });
 
-    if (!sessionId || !planId || !paymentType) {
-      throw new Error("Missing required parameters");
+    if (!sessionId) {
+      throw new Error("Missing sessionId parameter");
     }
 
     // Initialize Stripe
@@ -63,6 +63,16 @@ serve(async (req) => {
 
     if (!session || session.payment_status !== 'paid') {
       throw new Error("Payment not completed or session not found");
+    }
+
+    // Get plan and payment type from session metadata
+    const planId = session.metadata?.plan_type || session.metadata?.plan_id || '';
+    const paymentType = session.metadata?.payment_type || '';
+    
+    logStep("Extracted from session metadata", { planId, paymentType });
+    
+    if (!planId || !paymentType) {
+      throw new Error("Missing plan or payment type in session metadata");
     }
 
     // Extract customer and vehicle data from session metadata
