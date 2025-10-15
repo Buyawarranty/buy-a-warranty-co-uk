@@ -191,11 +191,33 @@ serve(async (req) => {
       throw new Error('RESEND_API_KEY not configured');
     }
 
-    // Use the new v2.3 and v2.4 PDFs for all warranty types
-    const planDocumentUrl = `https://buyawarranty.co.uk/Platinum-Warranty-Plan_v2.4.pdf`;
-    const termsUrl = `https://buyawarranty.co.uk/Terms-and-Conditions-v2.3.pdf`;
+    // Fetch documents from Supabase Storage
+    logStep("Fetching documents from database");
     
-    logStep("Document URLs determined", { planType, planDocumentUrl, termsUrl });
+    // Fetch Terms and Conditions
+    const { data: termsDoc } = await supabaseClient
+      .from('customer_documents')
+      .select('file_url, document_name')
+      .eq('plan_type', 'terms-and-conditions')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+    
+    // Fetch plan-specific document based on vehicle_type (standard or special)
+    const vehicleType = 'standard'; // Default to standard for now
+    const { data: planDoc } = await supabaseClient
+      .from('customer_documents')
+      .select('file_url, document_name')
+      .eq('plan_type', planType.toLowerCase())
+      .eq('vehicle_type', vehicleType)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+    
+    logStep("Document URLs fetched", { 
+      termsUrl: termsDoc?.file_url, 
+      planUrl: planDoc?.file_url 
+    });
 
     // Registration plate styling - optimized for both light and dark modes
     const regPlate = registrationPlate || 'N/A';
@@ -233,53 +255,59 @@ serve(async (req) => {
       });
     };
 
-    // Load the required PDF attachments
+    // Load the required PDF attachments from Supabase Storage
     const attachments = [];
     
     try {
-      // Load Terms and Conditions PDF v2.3 (new version)
-      const termsResponse = await fetch(termsUrl);
-      if (termsResponse.ok) {
-        const termsBuffer = await termsResponse.arrayBuffer();
-        const termsBytes = new Uint8Array(termsBuffer);
-        let termsBase64 = '';
-        const chunkSize = 8192;
-        
-        for (let i = 0; i < termsBytes.length; i += chunkSize) {
-          const chunk = termsBytes.slice(i, i + chunkSize);
-          termsBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+      // Load Terms and Conditions PDF from Storage
+      if (termsDoc?.file_url) {
+        const termsResponse = await fetch(termsDoc.file_url);
+        if (termsResponse.ok) {
+          const termsBuffer = await termsResponse.arrayBuffer();
+          const termsBytes = new Uint8Array(termsBuffer);
+          let termsBase64 = '';
+          const chunkSize = 8192;
+          
+          for (let i = 0; i < termsBytes.length; i += chunkSize) {
+            const chunk = termsBytes.slice(i, i + chunkSize);
+            termsBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+          }
+          
+          attachments.push({
+            filename: termsDoc.document_name || 'Terms-and-Conditions.pdf',
+            content: termsBase64,
+            type: 'application/pdf',
+            disposition: 'attachment'
+          });
+          logStep("Terms PDF attached", { filename: termsDoc.document_name });
         }
-        
-        attachments.push({
-          filename: 'Terms-and-Conditions-v2.3.pdf',
-          content: termsBase64,
-          type: 'application/pdf',
-          disposition: 'attachment'
-        });
       }
       
-      // Load Platinum Warranty Plan PDF v2.4 (new version)
-      const premiumResponse = await fetch(planDocumentUrl);
-      if (premiumResponse.ok) {
-        const premiumBuffer = await premiumResponse.arrayBuffer();
-        const premiumBytes = new Uint8Array(premiumBuffer);
-        let premiumBase64 = '';
-        const chunkSize = 8192;
-        
-        for (let i = 0; i < premiumBytes.length; i += chunkSize) {
-          const chunk = premiumBytes.slice(i, i + chunkSize);
-          premiumBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+      // Load Plan Document PDF from Storage
+      if (planDoc?.file_url) {
+        const planResponse = await fetch(planDoc.file_url);
+        if (planResponse.ok) {
+          const planBuffer = await planResponse.arrayBuffer();
+          const planBytes = new Uint8Array(planBuffer);
+          let planBase64 = '';
+          const chunkSize = 8192;
+          
+          for (let i = 0; i < planBytes.length; i += chunkSize) {
+            const chunk = planBytes.slice(i, i + chunkSize);
+            planBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+          }
+          
+          attachments.push({
+            filename: planDoc.document_name || `${planType}-Warranty-Plan.pdf`,
+            content: planBase64,
+            type: 'application/pdf',
+            disposition: 'attachment'
+          });
+          logStep("Plan PDF attached", { filename: planDoc.document_name });
         }
-        
-        attachments.push({
-          filename: 'Premium-Extended-Warranty-Plan-2.0.pdf',
-          content: premiumBase64,
-          type: 'application/pdf',
-          disposition: 'attachment'
-        });
       }
     } catch (error) {
-      logStep("Warning: Could not load PDF attachments", error);
+      logStep("Warning: Could not load PDF attachments from Storage", error);
     }
 
     // Send welcome email directly using Resend
@@ -370,15 +398,8 @@ serve(async (req) => {
            <!-- Warranty Documents -->
           <div style="margin: 15px 0;">
             <h3 style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">Your Premium Warranty Documents</h3>
-            <p style="color: #5a6c7d; line-height: 1.6; margin-bottom: 10px;">Your premium warranty documents are attached to this email and also available for download:</p>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-              <li style="margin-bottom: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
-                📄 <a href="${planDocumentUrl}" style="color: #1a73e8; text-decoration: none; font-weight: 500;">Your Premium Extended Warranty Policy</a>
-              </li>
-              <li style="margin-bottom: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
-                📋 <a href="${termsUrl}" style="color: #1a73e8; text-decoration: none; font-weight: 500;">Terms and Conditions</a>
-              </li>
-            </ul>
+            <p style="color: #5a6c7d; line-height: 1.6; margin-bottom: 10px;">Your premium warranty documents are attached to this email for your records.</p>
+            <p style="color: #5a6c7d; font-size: 14px; margin: 0;"><strong>Note:</strong> Please check your email attachments to download the PDFs.</p>
           </div>
 
           <!-- Support Information -->
