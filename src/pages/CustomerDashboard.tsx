@@ -1249,7 +1249,26 @@ const CustomerDashboard = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => window.open("/Terms-and-Conditions-v2.3.pdf", "_blank")}
+                                onClick={async () => {
+                                  // Fetch terms and conditions document
+                                  const { data } = await supabase
+                                    .from('customer_documents')
+                                    .select('file_url')
+                                    .eq('plan_type', 'terms-and-conditions')
+                                    .order('created_at', { ascending: false })
+                                    .limit(1)
+                                    .single();
+                                  
+                                  if (data?.file_url) {
+                                    window.open(data.file_url, '_blank');
+                                  } else {
+                                    toast({
+                                      title: "Error",
+                                      description: "Terms and Conditions document not available",
+                                      variant: "destructive",
+                                    });
+                                  }
+                                }}
                               >
                                 <FileText className="mr-2 h-4 w-4" />
                                 View T's and C's
@@ -1257,7 +1276,19 @@ const CustomerDashboard = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => window.open("/Platinum-Warranty-Plan_v2.4.pdf", "_blank")}
+                                onClick={() => {
+                                  const pdfUrl = getPolicyPdf(selectedPolicy!);
+                                  if (pdfUrl) {
+                                    window.open(pdfUrl, '_blank');
+                                  } else {
+                                    toast({
+                                      title: "Error",
+                                      description: "Policy document not available",
+                                      variant: "destructive",
+                                    });
+                                  }
+                                }}
+                                disabled={!selectedPolicy}
                               >
                                 <FileText className="mr-2 h-4 w-4" />
                                 View your warranty plan
