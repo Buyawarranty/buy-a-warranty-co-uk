@@ -454,10 +454,11 @@ export const CustomersTab = () => {
             email
           )
         `)
-        .not('email', 'ilike', '%test%')
-        .not('email', 'ilike', '%guest%')
-        .not('name', 'ilike', '%test customer%')
-        .not('name', 'ilike', '%guest customer%')
+        .not('email', 'ilike', '%@test.com%')
+        .not('email', 'ilike', '%testuser%')
+        .not('email', 'ilike', '%guest@%')
+        .not('name', 'eq', 'Test Customer')
+        .not('name', 'eq', 'Guest Customer')
         .eq('is_deleted', false)
         .order('updated_at', { ascending: false });
 
