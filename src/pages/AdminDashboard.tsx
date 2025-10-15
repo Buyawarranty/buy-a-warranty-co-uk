@@ -35,6 +35,7 @@ import { TestEmailFunctionDirect } from '@/components/admin/TestEmailFunctionDir
 import { EmailFunctionDiagnostics } from '@/components/admin/EmailFunctionDiagnostics';
 import { TestPolicyDocumentsEmail } from '@/components/admin/TestPolicyDocumentsEmail';
 import { ClickFraudTab } from '@/components/admin/ClickFraudTab';
+import { ResetCustomerPassword } from '@/components/admin/ResetCustomerPassword';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -173,6 +174,8 @@ const AdminDashboard = () => {
               <CreateTestAdmin />
               
               <ResetAdminPassword />
+              
+              <ResetCustomerPassword />
               
               <SetAdminPassword />
               
