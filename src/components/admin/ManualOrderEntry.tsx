@@ -238,10 +238,13 @@ export const ManualOrderEntry = () => {
       let customerData;
       
       if (existingCustomer) {
-        // Update existing customer
+        // Update existing customer - explicitly set updated_at to refresh timestamp
         const { data, error: updateError } = await supabase
           .from('customers')
-          .update(customerRecord)
+          .update({
+            ...customerRecord,
+            updated_at: new Date().toISOString()
+          })
           .eq('id', existingCustomer.id)
           .select()
           .single();
