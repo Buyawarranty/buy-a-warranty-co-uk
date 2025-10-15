@@ -232,18 +232,25 @@ const handler = async (req: Request): Promise<Response> => {
     let attachments = [];
     
     try {
+      // Helper function to properly encode binary data to base64
+      const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        const chunkSize = 0x8000; // 32KB chunks to avoid call stack size issues
+        
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
+          binary += String.fromCharCode(...chunk);
+        }
+        
+        return btoa(binary);
+      };
+
       // Load Terms and Conditions PDF v2.3 (new version)
       const termsResponse = await fetch('https://buyawarranty.co.uk/Terms-and-Conditions-v2.3.pdf');
       if (termsResponse.ok) {
         const termsBuffer = await termsResponse.arrayBuffer();
-        const termsBytes = new Uint8Array(termsBuffer);
-        let termsBase64 = '';
-        const chunkSize = 8192;
-        
-        for (let i = 0; i < termsBytes.length; i += chunkSize) {
-          const chunk = termsBytes.slice(i, i + chunkSize);
-          termsBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
-        }
+        const termsBase64 = arrayBufferToBase64(termsBuffer);
         
         attachments.push({
           filename: 'Terms-and-Conditions-v2.3.pdf',
@@ -252,7 +259,7 @@ const handler = async (req: Request): Promise<Response> => {
           disposition: 'attachment'
         });
         
-        console.log(JSON.stringify({ evt: "terms.pdf.attached", rid }));
+        console.log(JSON.stringify({ evt: "terms.pdf.attached", rid, size: termsBuffer.byteLength }));
       } else {
         console.log(JSON.stringify({ evt: "terms.pdf.failed", rid, status: termsResponse.status }));
       }
@@ -261,14 +268,7 @@ const handler = async (req: Request): Promise<Response> => {
       const premiumResponse = await fetch('https://buyawarranty.co.uk/Platinum-Warranty-Plan_v2.4.pdf');
       if (premiumResponse.ok) {
         const premiumBuffer = await premiumResponse.arrayBuffer();
-        const premiumBytes = new Uint8Array(premiumBuffer);
-        let premiumBase64 = '';
-        const chunkSize = 8192;
-        
-        for (let i = 0; i < premiumBytes.length; i += chunkSize) {
-          const chunk = premiumBytes.slice(i, i + chunkSize);
-          premiumBase64 += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
-        }
+        const premiumBase64 = arrayBufferToBase64(premiumBuffer);
         
         attachments.push({
           filename: 'Premium-Extended-Warranty-Plan-2.0.pdf',
@@ -277,7 +277,7 @@ const handler = async (req: Request): Promise<Response> => {
           disposition: 'attachment'
         });
         
-        console.log(JSON.stringify({ evt: "premium.pdf.attached", rid }));
+        console.log(JSON.stringify({ evt: "premium.pdf.attached", rid, size: premiumBuffer.byteLength }));
       } else {
         console.log(JSON.stringify({ evt: "premium.pdf.failed", rid, status: premiumResponse.status }));
       }
