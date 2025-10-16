@@ -191,32 +191,28 @@ serve(async (req) => {
       throw new Error('RESEND_API_KEY not configured');
     }
 
-    // Fetch documents from Supabase Storage
-    logStep("Fetching documents from database");
+    // Fetch documents directly from Supabase Storage
+    logStep("Fetching documents from Supabase Storage");
     
-    // Fetch Terms and Conditions
-    const { data: termsDoc } = await supabaseClient
-      .from('customer_documents')
-      .select('file_url, document_name')
-      .eq('plan_type', 'terms-and-conditions')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || 'https://mzlpuxzwyrcyrgrongeb.supabase.co';
     
-    // Fetch plan-specific document based on vehicle_type (standard or special)
-    const vehicleType = 'standard'; // Default to standard for now
-    const { data: planDoc } = await supabaseClient
-      .from('customer_documents')
-      .select('file_url, document_name')
-      .eq('plan_type', planType.toLowerCase())
-      .eq('vehicle_type', vehicleType)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
+    // Construct direct public URLs for documents in Storage
+    const termsStoragePath = 'terms/Terms-and-Conditions-v2.3.pdf';
+    const planStoragePath = `${planType.toLowerCase()}/Platinum-Warranty-Plan-v2.3.pdf`;
     
-    logStep("Document URLs fetched", { 
-      termsUrl: termsDoc?.file_url, 
-      planUrl: planDoc?.file_url 
+    const termsDoc = {
+      file_url: `${supabaseUrl}/storage/v1/object/public/policy-documents/${termsStoragePath}`,
+      document_name: 'Terms-and-Conditions-v2.3.pdf'
+    };
+    
+    const planDoc = {
+      file_url: `${supabaseUrl}/storage/v1/object/public/policy-documents/${planStoragePath}`,
+      document_name: `${planType}-Warranty-Plan-v2.3.pdf`
+    };
+    
+    logStep("Document URLs constructed", { 
+      termsUrl: termsDoc.file_url, 
+      planUrl: planDoc.file_url 
     });
 
     // Registration plate styling - optimized for both light and dark modes
@@ -260,54 +256,56 @@ serve(async (req) => {
     
     try {
       // Load Terms and Conditions PDF from Storage
-      if (termsDoc?.file_url) {
-        const termsResponse = await fetch(termsDoc.file_url);
-        if (termsResponse.ok) {
-          const termsBuffer = await termsResponse.arrayBuffer();
-          const termsBytes = new Uint8Array(termsBuffer);
-          
-          // Convert to base64 properly using a binary string approach
-          let binary = '';
-          for (let i = 0; i < termsBytes.length; i++) {
-            binary += String.fromCharCode(termsBytes[i]);
-          }
-          const termsBase64 = btoa(binary);
-          
-          attachments.push({
-            filename: termsDoc.document_name || 'Terms-and-Conditions.pdf',
-            content: termsBase64,
-            type: 'application/pdf',
-            disposition: 'attachment'
-          });
-          logStep("Terms PDF attached", { filename: termsDoc.document_name });
+      logStep("Fetching Terms PDF", { url: termsDoc.file_url });
+      const termsResponse = await fetch(termsDoc.file_url);
+      if (termsResponse.ok) {
+        const termsBuffer = await termsResponse.arrayBuffer();
+        const termsBytes = new Uint8Array(termsBuffer);
+        
+        // Convert to base64 properly using a binary string approach
+        let binary = '';
+        for (let i = 0; i < termsBytes.length; i++) {
+          binary += String.fromCharCode(termsBytes[i]);
         }
+        const termsBase64 = btoa(binary);
+        
+        attachments.push({
+          filename: termsDoc.document_name,
+          content: termsBase64,
+          type: 'application/pdf',
+          disposition: 'attachment'
+        });
+        logStep("Terms PDF attached successfully", { size: termsBytes.length });
+      } else {
+        logStep("Terms PDF fetch failed", { status: termsResponse.status });
       }
       
       // Load Plan Document PDF from Storage
-      if (planDoc?.file_url) {
-        const planResponse = await fetch(planDoc.file_url);
-        if (planResponse.ok) {
-          const planBuffer = await planResponse.arrayBuffer();
-          const planBytes = new Uint8Array(planBuffer);
-          
-          // Convert to base64 properly using a binary string approach
-          let binary = '';
-          for (let i = 0; i < planBytes.length; i++) {
-            binary += String.fromCharCode(planBytes[i]);
-          }
-          const planBase64 = btoa(binary);
-          
-          attachments.push({
-            filename: planDoc.document_name || `${planType}-Warranty-Plan.pdf`,
-            content: planBase64,
-            type: 'application/pdf',
-            disposition: 'attachment'
-          });
-          logStep("Plan PDF attached", { filename: planDoc.document_name });
+      logStep("Fetching Plan PDF", { url: planDoc.file_url });
+      const planResponse = await fetch(planDoc.file_url);
+      if (planResponse.ok) {
+        const planBuffer = await planResponse.arrayBuffer();
+        const planBytes = new Uint8Array(planBuffer);
+        
+        // Convert to base64 properly using a binary string approach
+        let binary = '';
+        for (let i = 0; i < planBytes.length; i++) {
+          binary += String.fromCharCode(planBytes[i]);
         }
+        const planBase64 = btoa(binary);
+        
+        attachments.push({
+          filename: planDoc.document_name,
+          content: planBase64,
+          type: 'application/pdf',
+          disposition: 'attachment'
+        });
+        logStep("Plan PDF attached successfully", { size: planBytes.length });
+      } else {
+        logStep("Plan PDF fetch failed", { status: planResponse.status });
       }
     } catch (error) {
-      logStep("Warning: Could not load PDF attachments from Storage", error);
+      logStep("ERROR: Could not load PDF attachments from Storage", error);
     }
 
     // Send welcome email directly using Resend
