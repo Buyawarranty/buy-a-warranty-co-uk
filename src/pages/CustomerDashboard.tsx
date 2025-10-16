@@ -313,12 +313,13 @@ const CustomerDashboard = () => {
       const planTypes = [...new Set(policies.map(p => mapPlanTypeToDocumentType(p.plan_type)))];
       console.log("Plan types to fetch documents for:", planTypes);
       
-      // Fetch documents for these plan types
+      // Fetch documents for these plan types - get the most recent ones
       const { data: documents, error } = await supabase
         .from('customer_documents')
         .select('*')
         .in('plan_type', planTypes)
-        .eq('vehicle_type', 'standard');
+        .eq('vehicle_type', 'standard')
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching documents:', error);
