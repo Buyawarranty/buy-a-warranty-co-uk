@@ -351,25 +351,20 @@ serve(async (req) => {
             planId
           });
 
-          // Send policy documents email using send-policy-documents function
+          // Send welcome email with documents using optimized function
           const paymentTypeDisplay = getPaymentTypeDisplay(paymentType);
           
           const emailPayload = {
-            recipientEmail: userEmail,
-            variables: {
-              customerName: customerName,
-              planType: planName, // Use actual plan name instead of UUID
-              policyNumber: warrantyReference,
-              registrationPlate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
-              paymentType: paymentTypeDisplay,
-              vehicleType: vehicleData?.vehicleType || 'standard',
-              stripeSessionId: stripeSessionId,
-              paymentSource: 'stripe' // This function handles Stripe payments
-            }
+            email: userEmail,
+            customerName: customerName,
+            planType: planName, // Use actual plan name instead of UUID
+            policyNumber: warrantyReference,
+            registrationPlate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
+            paymentType: paymentTypeDisplay
           };
 
-          // Use Supabase client to invoke the policy documents function
-          const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-policy-documents', {
+          // Use send-welcome-email which is optimized for handling attachments
+          const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email', {
             body: emailPayload
           });
           
