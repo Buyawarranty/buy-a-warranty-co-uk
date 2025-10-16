@@ -198,7 +198,7 @@ serve(async (req) => {
     
     // Construct direct public URLs for documents in Storage
     const termsStoragePath = 'terms/Terms-and-Conditions-v2.3.pdf';
-    const planStoragePath = `${planType.toLowerCase()}/Platinum-Warranty-Plan-v2.3.pdf`;
+    const planStoragePath = `${planType.toLowerCase()}/${planType}-Warranty-Plan-v2.3.pdf`;
     
     const termsDoc = {
       file_url: `${supabaseUrl}/storage/v1/object/public/policy-documents/${termsStoragePath}`,
@@ -369,7 +369,8 @@ serve(async (req) => {
             <p style="color: #333333; font-size: 15px; line-height: 1.6; margin: 0 0 15px 0;">You can view your updated policy anytime via your customer portal:</p>
             <p style="margin: 8px 0; color: #333333; font-size: 15px;"><strong>Login:</strong> <a href="https://buyawarranty.co.uk/auth" style="color: #1a73e8; text-decoration: none;">Customer Dashboard</a></p>
             <p style="margin: 8px 0; color: #333333; font-size: 15px;"><strong>Email:</strong> ${email}</p>
-            <p style="margin: 8px 0; color: #333333; font-size: 15px;"><strong>Password:</strong> <code style="background-color: #ffffff; padding: 4px 8px; border-radius: 4px; font-family: 'Courier New', monospace; color: #333333; border: 1px solid #dee2e6;">${tempPassword}</code></p>
+            <p style="margin: 8px 0; color: #333333; font-size: 15px;"><strong>Temporary Password:</strong> <code style="background-color: #ffffff; padding: 4px 8px; border-radius: 4px; font-family: 'Courier New', monospace; color: #333333; border: 1px solid #dee2e6;">${tempPassword}</code></p>
+            <p style="margin: 8px 0; color: #555555; font-size: 13px; font-style: italic;">Use your previous password if you have one or you may reset it.</p>
           </div>
 
           <!-- Documents -->
