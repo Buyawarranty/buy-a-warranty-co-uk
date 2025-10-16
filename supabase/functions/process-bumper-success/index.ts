@@ -304,6 +304,7 @@ serve(async (req) => {
       protectionAddOns: addOnFields, // Use processed add-ons with auto-inclusions
       claimLimit: claimLimit, // Pass as direct parameter
       voluntaryExcess: voluntaryExcess, // Pass as direct parameter - user's actual selection
+      skipEmail: false, // CRITICAL: Ensure welcome emails are sent for Bumper purchases
       metadata: {
         source: 'bumper',
         transaction_id: transactionId,
