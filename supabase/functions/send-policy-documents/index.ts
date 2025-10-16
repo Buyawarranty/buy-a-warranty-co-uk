@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { encode as base64Encode } from "https://deno.land/std@0.190.0/encoding/base64.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -144,16 +145,8 @@ serve(async (req) => {
 
         if (!downloadError && fileData) {
           const fileBuffer = await fileData.arrayBuffer();
-          
-          // Use Uint8Array.from() to avoid potential stack overflow issues
           const bytes = new Uint8Array(fileBuffer);
-          let base64Content = '';
-          const chunkSize = 8192;
-          
-          for (let i = 0; i < bytes.length; i += chunkSize) {
-            const chunk = bytes.slice(i, i + chunkSize);
-            base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
-          }
+          const base64Content = base64Encode(bytes);
           
           attachments.push({
             filename: `${planType}-Warranty-Policy.pdf`,
@@ -220,16 +213,8 @@ serve(async (req) => {
           
           if (response.ok) {
             const fileBuffer = await response.arrayBuffer();
-            
-            // Use Uint8Array.from() to avoid potential stack overflow issues
             const bytes = new Uint8Array(fileBuffer);
-            let base64Content = '';
-            const chunkSize = 8192;
-            
-            for (let i = 0; i < bytes.length; i += chunkSize) {
-              const chunk = bytes.slice(i, i + chunkSize);
-              base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
-            }
+            const base64Content = base64Encode(bytes);
             
             attachments.push({
               filename: planDoc.document_name.endsWith('.pdf') ? planDoc.document_name : `${planDoc.document_name}.pdf`,
@@ -266,16 +251,8 @@ serve(async (req) => {
         
         if (response.ok) {
           const fileBuffer = await response.arrayBuffer();
-          
-          // Use Uint8Array.from() to avoid potential stack overflow issues
           const bytes = new Uint8Array(fileBuffer);
-          let base64Content = '';
-          const chunkSize = 8192;
-          
-          for (let i = 0; i < bytes.length; i += chunkSize) {
-            const chunk = bytes.slice(i, i + chunkSize);
-            base64Content += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
-          }
+          const base64Content = base64Encode(bytes);
           
           attachments.push({
             filename: termsDoc.document_name.endsWith('.pdf') ? termsDoc.document_name : `${termsDoc.document_name}.pdf`,
