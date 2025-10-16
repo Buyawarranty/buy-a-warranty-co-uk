@@ -241,6 +241,7 @@ serve(async (req) => {
         const attachmentData: any = {
           filename: attachment.filename,
           content: attachment.content,
+          encoding: 'base64', // CRITICAL: Tell Resend this is base64 encoded
         };
         
         // Add content type if provided
