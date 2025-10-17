@@ -95,6 +95,7 @@ interface Customer {
   address?: string;
   plan_type: string;
   signup_date: string;
+  created_at?: string;
   voluntary_excess: number;
   status: string;
   registration_plate: string;
@@ -152,6 +153,7 @@ interface Customer {
     warranty_number?: string;
     email_sent_status?: string;
     warranties_2000_status?: string;
+    created_at?: string;
   }>;
 }
 
@@ -2276,6 +2278,28 @@ Please log in and change your password after first login.`;
                                           />
                                         </PopoverContent>
                                       </Popover>
+                                    </div>
+                                    <div>
+                                      <Label>Purchase Date</Label>
+                                      <div className="w-full px-3 py-2 text-sm border rounded-md bg-gray-50">
+                                        {editingCustomer.customer_policies?.[0]?.created_at ? (
+                                          <>
+                                            {format(new Date(editingCustomer.customer_policies[0].created_at), 'dd/MM/yyyy')}
+                                            <span className="text-gray-500 ml-2">
+                                              {format(new Date(editingCustomer.customer_policies[0].created_at), 'HH:mm:ss')}
+                                            </span>
+                                          </>
+                                        ) : editingCustomer.created_at ? (
+                                          <>
+                                            {format(new Date(editingCustomer.created_at), 'dd/MM/yyyy')}
+                                            <span className="text-gray-500 ml-2">
+                                              {format(new Date(editingCustomer.created_at), 'HH:mm:ss')}
+                                            </span>
+                                          </>
+                                        ) : (
+                                          <span className="text-gray-400">N/A</span>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                   
