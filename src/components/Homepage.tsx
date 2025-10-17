@@ -874,9 +874,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <OptimizedImage 
                 src="/extended-warranty-uk-car-reliable.png" 
                 alt="Extended warranty UK - Car reliable - Panda mascot with Monthly, Yearly, 1,2,3 Years options" 
-                className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
+                className="w-full h-auto max-w-sm md:max-w-lg mx-auto object-contain"
                 priority={false}
-                width={800}
+                width={600}
                 height={600}
               />
             </div>
