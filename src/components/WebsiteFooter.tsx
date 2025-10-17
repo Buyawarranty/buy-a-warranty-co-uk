@@ -110,25 +110,10 @@ const WebsiteFooter = () => {
 
           {/* Legal Footer */}
           <div className="border-t border-gray-200 pt-6">
-            <div className="text-center space-y-3">
-              <div className="flex justify-center">
-                <OptimizedImage 
-                  src={desktopAddressCopy} 
-                  alt="Buyawarranty.co.uk trading information and registered address" 
-                  className="hidden md:block max-w-[50%] h-auto mx-auto"
-                  priority={false}
-                  width={800}
-                  height={200}
-                />
-                <OptimizedImage 
-                  src={mobileAddressCopy} 
-                  alt="Buyawarranty.co.uk trading information and registered address" 
-                  className="md:hidden max-w-[80%] h-auto mx-auto"
-                  priority={false}
-                  width={400}
-                  height={300}
-                />
-              </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600 max-w-4xl mx-auto px-4">
+                Buyawarranty.co.uk is a trading name of Buy A Warranty Limited. Established 2016. Registered in the United Kingdom under Company number: 10314863 Registered address: Warranty House, 62 Berkhamsted Ave, Wembley, HA9 6DT, England
+              </p>
             </div>
           </div>
         </div>
