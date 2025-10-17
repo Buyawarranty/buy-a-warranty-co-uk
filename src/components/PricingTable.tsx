@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
+import BackgroundRemovalProcessor from '@/components/BackgroundRemovalProcessor';
 import MobileNavigation from '@/components/MobileNavigation';
 
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
