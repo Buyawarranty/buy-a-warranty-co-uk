@@ -34,7 +34,7 @@ const MobileNavigation: React.FC = () => {
                   className="h-8 w-auto"
                   priority={false}
                   width={200}
-                  height={80}
+                  height={40}
                 />
               </Link>
             </div>

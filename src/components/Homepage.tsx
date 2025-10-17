@@ -353,7 +353,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   className="h-6 sm:h-8 w-auto"
                   priority={true}
                   width={200}
-                  height={80}
+                  height={40}
                 />
               </Link>
             </div>
