@@ -29,78 +29,39 @@
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://buyawarranty.co.uk/favicon.png" />
 
-    <!-- Inline critical font subset for instant text render -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <!-- Optimized font loading with display=swap for faster render -->
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet"></noscript>
     
-    <!-- Google Tag Manager - Deferred -->
-    <script>
-      (function() {
-        window.dataLayer = window.dataLayer || [];
-        var gtmLoaded = false;
-        function loadGTM() {
-          if (gtmLoaded) return;
-          gtmLoaded = true;
-          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-PJNTC6DX');
-        }
-        
-        // Load on interaction or after delay
-        ['mousedown','keydown','touchstart','scroll'].forEach(function(e) {
-          window.addEventListener(e, loadGTM, {passive: true, once: true});
-        });
-        setTimeout(loadGTM, 3000);
-      })();
-    </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PJNTC6DX');</script>
     <!-- End Google Tag Manager -->
     
-    <!-- Google Analytics - Deferred -->
+    <!-- Google tag (gtag.js) - Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T5P06P67GM"></script>
+    <!-- Google tag (gtag.js) - Ads -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17325228149"></script>
     <script>
-      (function() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        
-        var gaLoaded = false;
-        function loadGA() {
-          if (gaLoaded) return;
-          gaLoaded = true;
-          var script1 = document.createElement('script');
-          script1.async = true;
-          script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-T5P06P67GM';
-          document.head.appendChild(script1);
-          
-          var script2 = document.createElement('script');
-          script2.async = true;
-          script2.src = 'https://www.googletagmanager.com/gtag/js?id=AW-17325228149';
-          document.head.appendChild(script2);
-          
-          script1.onload = function() {
-            gtag('config', 'G-T5P06P67GM');
-            gtag('config', 'AW-17325228149');
-          };
-        }
-        
-        // Load on interaction or after delay
-        ['mousedown','keydown','touchstart','scroll'].forEach(function(e) {
-          window.addEventListener(e, loadGA, {passive: true, once: true});
-        });
-        setTimeout(loadGA, 3000);
-      })();
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-T5P06P67GM');
+      gtag('config', 'AW-17325228149');
     </script>
     
     <!-- Facebook & TikTok Pixels loaded via thirdPartyScripts.ts -->
   </head>
 
   <body>
-    <!-- Noscript fallbacks -->
-    <noscript>
-      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJNTC6DX" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-      <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=4105451209698810&ev=PageView&noscript=1" />
-    </noscript>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJNTC6DX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
