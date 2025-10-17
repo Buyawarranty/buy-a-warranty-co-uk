@@ -494,6 +494,28 @@ const Index = () => {
       }
     }
     
+    // Enhanced back navigation handling from payment pages
+    const handlePaymentPageReturn = () => {
+      // Detect if user is returning from an external page (Stripe/Bumper)
+      const referrer = document.referrer;
+      const isReturningFromPayment = referrer && (
+        referrer.includes('stripe.com') || 
+        referrer.includes('checkout.stripe.com') ||
+        referrer.includes('bumper.com') ||
+        referrer.includes('bumper')
+      );
+      
+      if (isReturningFromPayment) {
+        console.log('🔙 User returned from payment page via back button');
+        // Ensure we're on step 4 with proper data
+        if (stepFromUrl === 4) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    };
+    
+    handlePaymentPageReturn();
+    
     // Cleanup handled by useMobileBackNavigation hook
   }, [searchParams, quoteParam, emailParam, restoreQuoteData, currentStep, vehicleData, selectedPlan, loadStateFromLocalStorage, setSearchParams]);
   
