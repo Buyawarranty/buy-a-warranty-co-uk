@@ -11,6 +11,7 @@ import { EmailCapturePopup } from './EmailCapturePopup';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import LazySection from './homepage/LazySection';
+import buyawarrantyLogo from '@/assets/buyawarranty-logo.webp';
 
 // Lazy load heavy components to reduce initial bundle size
 const HomepageFAQ = lazy(() => import('./HomepageFAQ'));
@@ -348,11 +349,11 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             <div className="flex items-center">
               <Link to="/" className="hover:opacity-80 transition-opacity">
                 <OptimizedImage 
-                  src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                  alt="Buy a Warranty" 
+                  src={buyawarrantyLogo} 
+                  alt="Buy a Warranty Logo - Affordable Car Warranty UK" 
                   className="h-6 sm:h-8 w-auto"
                   priority={true}
-                  width={200}
+                  width={240}
                   height={40}
                 />
               </Link>
@@ -434,12 +435,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <div className="flex items-center justify-between pb-4 flex-shrink-0">
                     <Link to="/" className="hover:opacity-80 transition-opacity">
                       <OptimizedImage 
-                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                        alt="Buy a Warranty"
+                        src={buyawarrantyLogo} 
+                        alt="Buy a Warranty Logo"
                         className="h-8 w-auto"
                         priority={false}
-                        width={200}
-                        height={80}
+                        width={240}
+                        height={40}
                       />
                     </Link>
                   </div>

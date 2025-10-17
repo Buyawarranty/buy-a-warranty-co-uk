@@ -1,10 +1,7 @@
 import React from 'react';
 import { Star, Phone, Mail } from 'lucide-react';
 import { OptimizedImage } from '@/components/OptimizedImage';
-import companyRegistrationImage from '@/assets/company-registration.webp';
-import companyRegistrationFooter from '@/assets/company-registration-footer.png';
-import desktopAddressCopy from '@/assets/desktop-address-copy.png';
-import mobileAddressCopy from '@/assets/mobile-address-copy.png';
+import buyawarrantyLogo from '@/assets/buyawarranty-logo.webp';
 
 const WebsiteFooter = () => {
   return (
@@ -96,12 +93,12 @@ const WebsiteFooter = () => {
               <div className="flex items-center">
                 <a href="/" className="hover:opacity-80 transition-opacity">
                   <OptimizedImage 
-                    src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                    alt="Buy a Warranty Logo" 
+                    src={buyawarrantyLogo} 
+                    alt="Buy a Warranty Logo - Comprehensive Vehicle Warranties" 
                     className="h-8 w-auto"
                     priority={false}
-                    width={200}
-                    height={80}
+                    width={240}
+                    height={40}
                   />
                 </a>
               </div>
