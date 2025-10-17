@@ -1,16 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe, ArrowRightLeft, MessageCircle } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, MessageCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Link } from 'react-router-dom';
-import HomepageFAQ from './HomepageFAQ';
 import WebsiteFooter from './WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { VoucherBanner } from './VoucherBanner';
 import { EmailCapturePopup } from './EmailCapturePopup';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { OptimizedImage } from '@/components/OptimizedImage';
+import LazySection from './homepage/LazySection';
+
+// Lazy load heavy components to reduce initial bundle size
+const HomepageFAQ = lazy(() => import('./HomepageFAQ'));
+const VideoSection = lazy(() => import('./homepage/VideoSection'));
+const AdditionalCoverSection = lazy(() => import('./homepage/AdditionalCoverSection'));
 
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -52,8 +57,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [discountCode, setDiscountCode] = useState('');
   const [showEmailPopup, setShowEmailPopup] = useState(false);
   const [mileagePlaceholder, setMileagePlaceholder] = useState('Enter current approximate mileage');
-  const [isVideoInView, setIsVideoInView] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     // Check if user is returning from a successful purchase
@@ -105,31 +108,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
     return () => {
       clearTimeout(timer);
       window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  // Video lazy loading with Intersection Observer
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVideoInView(true);
-            observer.disconnect();
-          }
-        });
-      },
-      {
-        rootMargin: '50px',
-      }
-    );
-
-    if (videoRef.current) {
-      observer.observe(videoRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
     };
   }, []);
 
@@ -805,48 +783,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </section>
 
-      {/* Extended Warranty Video Section */}
-      <section className="py-12 md:py-20 bg-brand-gray-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
-            {/* Left - Video */}
-            <div className="relative aspect-video">
-              <video 
-                ref={videoRef}
-                src={isVideoInView ? "/warranty-explainer-new.mp4" : undefined}
-                poster="/warranty-explainer-thumbnail-new.jpg"
-                title="Extended warranty explainer video"
-                className="w-full h-full rounded-md shadow-lg"
-                controls
-                preload="none"
-              >
-                Your browser does not support the video tag.
-              </video>
-            </div>
-
-            {/* Right - Content */}
-            <div className="space-y-6 md:space-y-8">
-              <div>
-                <h2 className="text-2xl md:text-4xl font-bold text-brand-dark-text leading-tight mb-4 md:mb-6">
-                  Reliable extended warranty
-                  <br />
-                  <span className="text-brand-orange">If it breaks, we{"'"}ll fix it 🔧</span>
-                </h2>
-                <p className="text-base md:text-lg text-brand-dark-text leading-relaxed">
-                  Enjoy complete peace of mind with our comprehensive cover. From vital mechanical components to essential electrical parts, we{"'"}ve got it all covered.
-                </p>
-              </div>
-
-              <button 
-                onClick={scrollToQuoteForm}
-                className="bg-brand-deep-blue hover:bg-blue-800 text-white font-bold px-6 md:px-10 py-3 md:py-4 text-lg md:text-xl rounded shadow-lg transition-colors w-full sm:w-auto"
-              >
-                Start Cover
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Extended Warranty Video Section - Lazy Loaded */}
+      <LazySection>
+        <Suspense fallback={<div className="py-12 md:py-20 bg-brand-gray-bg min-h-[400px]" />}>
+          <VideoSection scrollToQuoteForm={scrollToQuoteForm} />
+        </Suspense>
+      </LazySection>
 
       {/* Step 1 - Enter Your Reg Plate */}
       <section className="py-12 md:py-20 bg-white">
@@ -1107,93 +1049,19 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
         </div>
       </section>
 
-      {/* Additional Cover Options Section */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="space-y-6 md:space-y-8">
-            <h2 className="text-3xl md:text-5xl font-bold text-brand-deep-blue">
-              Additional Cover <span className="text-brand-orange">Options</span>
-            </h2>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12 max-w-6xl mx-auto">
-              <div className="space-y-4 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">24/7 Vehicle Recovery</h3>
-                    <p className="text-brand-dark-text">Help whenever you need it.</p>
-                  </div>
-                </div>
-              </div>
+      {/* Additional Cover Options Section - Lazy Loaded */}
+      <LazySection>
+        <Suspense fallback={<div className="py-12 md:py-20 bg-white min-h-[400px]" />}>
+          <AdditionalCoverSection />
+        </Suspense>
+      </LazySection>
 
-              <div className="space-y-4 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <Car className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">Tyre Cover</h3>
-                    <p className="text-brand-dark-text">Protection against unexpected punctures.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <Globe className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">Europe Cover</h3>
-                    <p className="text-brand-dark-text">Drive with confidence across Europe.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <Key className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">Vehicle Rental</h3>
-                    <p className="text-brand-dark-text">Replacement vehicle when yours is off the road.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <ArrowRightLeft className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">Transfer Cover</h3>
-                    <p className="text-brand-dark-text">Coverage continues when you change ownership.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-brand-orange rounded-full flex items-center justify-center flex-shrink-0">
-                    <Settings className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-brand-dark-text">Wear and Tear</h3>
-                    <p className="text-brand-dark-text">Extra peace of mind for ageing parts.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <HomepageFAQ />
+      {/* FAQ Section - Lazy Loaded */}
+      <LazySection>
+        <Suspense fallback={<div className="py-12 md:py-20 min-h-[400px]" />}>
+          <HomepageFAQ />
+        </Suspense>
+      </LazySection>
 
       {/* Mobile Floating Action Buttons */}
       {isMobile && (
