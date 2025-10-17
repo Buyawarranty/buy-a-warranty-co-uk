@@ -29,31 +29,64 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          supabase: ['@supabase/supabase-js'],
-          query: ['@tanstack/react-query'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-tabs'],
-          forms: ['react-hook-form', '@hookform/resolvers', 'zod']
-        }
+        manualChunks: (id) => {
+          // Aggressive code splitting for better caching and smaller initial bundles
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@radix-ui')) {
+              return 'radix-ui';
+            }
+            if (id.includes('lucide-react')) {
+              return 'icons';
+            }
+            if (id.includes('@supabase')) {
+              return 'supabase';
+            }
+            if (id.includes('@tanstack')) {
+              return 'query';
+            }
+            if (id.includes('react-router')) {
+              return 'router';
+            }
+            if (id.includes('react-hook-form') || id.includes('zod')) {
+              return 'forms';
+            }
+            // Other node_modules into vendor
+            return 'vendor';
+          }
+        },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]'
       }
     },
-    chunkSizeWarningLimit: 1600,
-    target: 'esnext',
+    chunkSizeWarningLimit: 1000,
+    target: 'es2020',
     minify: 'terser',
     terserOptions: {
       compress: {
         drop_console: true,
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info'],
-        passes: 2
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+        passes: 3,
+        unsafe: true,
+        unsafe_arrows: true,
+        unsafe_methods: true,
+        unsafe_proto: true
       },
       mangle: {
         safari10: true
+      },
+      format: {
+        comments: false
       }
     },
-    cssMinify: true
+    cssMinify: 'lightningcss',
+    cssCodeSplit: true,
+    sourcemap: false,
+    reportCompressedSize: false
   },
   esbuild: {
     drop: mode === 'production' ? ['console', 'debugger'] : [],

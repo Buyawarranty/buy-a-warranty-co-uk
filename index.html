@@ -8,13 +8,19 @@
     <meta name="description" content="Compare our car warranty prices and choose the perfect plan for your vehicle. Flexible, affordable UK coverage with no hidden fees. Instant online quotes available." />
     <meta name="author" content="Lovable" />
     
-    <!-- Preconnect to external domains for faster loading -->
+    <!-- Critical Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    
+    <!-- Preload LCP image for faster render -->
+    <link rel="preload" as="image" href="/extended_warranty_uk-car-trustworthy-reviews.png" fetchpriority="high">
+    
+    <!-- DNS prefetch for third-party domains (non-critical) -->
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
     <link rel="dns-prefetch" href="https://connect.facebook.net">
     <link rel="dns-prefetch" href="https://analytics.tiktok.com">
+    <link rel="dns-prefetch" href="https://uk.trustpilot.com">
     
     <link rel="icon" href="/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="/favicon.png">
@@ -33,67 +39,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet"></noscript>
     
+    <!-- Critical Analytics Only - GTM & Google Ads loaded immediately for conversion tracking -->
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.defer=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PJNTC6DX');</script>
-    <!-- End Google Tag Manager -->
+    })(window,document,'script','dataLayer','GTM-PJNTC6DX');
+    </script>
     
-    <!-- Google tag (gtag.js) - Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T5P06P67GM"></script>
-    <!-- Google tag (gtag.js) - Ads -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17325228149"></script>
+    <!-- Google Analytics & Ads (deferred for performance) -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
-      gtag('config', 'G-T5P06P67GM');
-      gtag('config', 'AW-17325228149');
+      gtag('config', 'G-T5P06P67GM', { 'send_page_view': false });
+      gtag('config', 'AW-17325228149', { 'send_page_view': false });
     </script>
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-T5P06P67GM"></script>
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=AW-17325228149"></script>
     
-    <!-- Meta Pixel Code -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '4105451209698810');
-    fbq('track', 'PageView');
-    </script>
-    <!-- End Meta Pixel Code -->
-    
-    <!-- TikTok Pixel Code Start -->
-    <script>
-    !function (w, d, t) {
-      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
-    var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
-    ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-
-      ttq.load('D38LC5JC77UB9GL651GG');
-      ttq.page({}, { test_event_code: 'TEST33403' });
-    }(window, document, 'ttq');
-    </script>
-    <!-- TikTok Pixel Code End -->
+    <!-- Non-critical analytics (Facebook, TikTok) loaded lazily via JS after user interaction -->
   </head>
 
   <body>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJNTC6DX"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    
-    <!-- Meta Pixel (noscript) -->
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=4105451209698810&ev=PageView&noscript=1"
-    /></noscript>
-    <!-- End Meta Pixel (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
