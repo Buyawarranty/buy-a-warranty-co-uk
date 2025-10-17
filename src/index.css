@@ -18,7 +18,27 @@
   }
 }
 
-/* Critical animations only - removed unused drive/loading animations */
+/* Panda loading animations */
+@keyframes drive {
+  0% { 
+    transform: translateX(0px) scale(1); 
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); 
+  }
+  50% { 
+    transform: translateX(150px) scale(1.05); 
+    filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.2)); 
+  }
+  100% { 
+    transform: translateX(300px) scale(1); 
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); 
+  }
+}
+
+@keyframes loading {
+  0% { width: 0%; }
+  50% { width: 70%; }
+  100% { width: 100%; }
+}
 
 /* Font smoothing for premium feel */
 html {

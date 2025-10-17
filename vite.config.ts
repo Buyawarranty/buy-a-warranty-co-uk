@@ -31,53 +31,55 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // Core React bundle
-            if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler')) {
-              return 'react-core';
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor';
             }
-            // Router - separate for route-based code splitting
             if (id.includes('react-router-dom')) {
               return 'router';
             }
-            // Supabase - only loaded when needed
             if (id.includes('@supabase')) {
               return 'supabase';
             }
-            // TanStack Query - defer until data fetching needed
             if (id.includes('@tanstack/react-query')) {
               return 'query';
             }
-            // UI components - group all Radix UI together
             if (id.includes('@radix-ui')) {
-              return 'radix-ui';
+              return 'ui';
             }
-            // Forms - only load when form pages accessed
             if (id.includes('react-hook-form') || id.includes('zod') || id.includes('@hookform')) {
               return 'forms';
             }
-            // Icons - defer lucide-react
             if (id.includes('lucide-react')) {
               return 'icons';
             }
-            // Charts - only load on pages with charts
             if (id.includes('recharts')) {
               return 'charts';
             }
-            // Other vendor code
-            return 'vendor-libs';
+            return 'vendor-misc';
           }
-        },
-        // Optimize chunk loading
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
+        }
       }
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 1600,
     target: 'esnext',
-    minify: 'esbuild', // Faster than terser
-    cssMinify: 'esbuild',
-    reportCompressedSize: false, // Faster builds
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info'],
+        passes: 3,
+        unsafe_arrows: true
+      },
+      mangle: {
+        safari10: true
+      },
+      format: {
+        comments: false
+      }
+    },
+    cssMinify: 'lightningcss',
+    reportCompressedSize: false,
     sourcemap: false
   },
   esbuild: {
