@@ -61,7 +61,11 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       height={height}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
-      className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+      className={`${className} ${
+        priority 
+          ? '' 
+          : `${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`
+      }`}
       onLoad={() => setIsLoaded(true)}
       {...props}
     />
