@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import BackgroundRemovalProcessor from '@/components/BackgroundRemovalProcessor';
 import MobileNavigation from '@/components/MobileNavigation';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 import AddOnProtectionPackages from '@/components/AddOnProtectionPackages';
 import { validateVehicleEligibility, calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';

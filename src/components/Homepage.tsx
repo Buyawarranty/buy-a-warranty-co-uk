@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowRight, Star, Shield, Clock, Zap, Car, Truck, Battery, Bike, Menu, X, Phone, FileCheck, Settings, Key, Globe, ArrowRightLeft, MessageCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -10,6 +10,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { VoucherBanner } from './VoucherBanner';
 import { EmailCapturePopup } from './EmailCapturePopup';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -51,6 +52,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [discountCode, setDiscountCode] = useState('');
   const [showEmailPopup, setShowEmailPopup] = useState(false);
   const [mileagePlaceholder, setMileagePlaceholder] = useState('Enter current approximate mileage');
+  const [isVideoInView, setIsVideoInView] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     // Check if user is returning from a successful purchase
@@ -102,6 +105,31 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
     return () => {
       clearTimeout(timer);
       window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Video lazy loading with Intersection Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVideoInView(true);
+            observer.disconnect();
+          }
+        });
+      },
+      {
+        rootMargin: '50px',
+      }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
     };
   }, []);
 
@@ -341,10 +369,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Logo */}
             <div className="flex items-center">
               <Link to="/" className="hover:opacity-80 transition-opacity">
-                <img 
+                <OptimizedImage 
                   src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
                   alt="Buy a Warranty" 
                   className="h-6 sm:h-8 w-auto"
+                  priority={true}
+                  width={200}
+                  height={80}
                 />
               </Link>
             </div>
@@ -424,10 +455,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   {/* Header with logo */}
                   <div className="flex items-center justify-between pb-4 flex-shrink-0">
                     <Link to="/" className="hover:opacity-80 transition-opacity">
-                      <img 
+                      <OptimizedImage 
                         src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                        alt="Buy a Warranty" 
+                        alt="Buy a Warranty"
                         className="h-8 w-auto"
+                        priority={false}
+                        width={200}
+                        height={80}
                       />
                     </Link>
                   </div>
@@ -697,10 +731,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
  {/* Right Content - Hero Image */}
             <div className="relative">
-              <img 
+              <OptimizedImage 
                 src="/extended_warranty_uk-car-trustworthy-reviews.png" 
                 alt="Extended warranty UK - Car trustworthy reviews - Panda mascot with vehicle collection" 
                 className="w-full h-auto"
+                priority={true}
+                width={1200}
+                height={800}
               />
               {/* Trustpilot Logo positioned to the right */}
               <div className="absolute top-4 right-4 z-10">
@@ -710,10 +747,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   rel="noopener noreferrer"
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img 
+                  <OptimizedImage 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating" 
                     className="h-8 sm:h-11 w-auto"
+                    priority={false}
+                    width={200}
+                    height={44}
                   />
                 </a>
               </div>
@@ -772,12 +812,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             {/* Left - Video */}
             <div className="relative aspect-video">
               <video 
-                src="/warranty-explainer-new.mp4" 
+                ref={videoRef}
+                src={isVideoInView ? "/warranty-explainer-new.mp4" : undefined}
                 poster="/warranty-explainer-thumbnail-new.jpg"
                 title="Extended warranty explainer video"
                 className="w-full h-full rounded-md shadow-lg"
                 controls
-                preload="metadata"
+                preload="none"
               >
                 Your browser does not support the video tag.
               </video>
@@ -849,10 +890,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
             {/* Right - Panda with vehicles */}
             <div className="relative text-center order-1 lg:order-2">
-              <img 
+              <OptimizedImage 
                 src="/car-warranty-uk-compare-quotes.png" 
                 alt="Car warranty UK - Compare quotes - Panda mascot celebrating with orange car" 
                 className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
+                priority={false}
+                width={800}
+                height={600}
               />
               
               {/* Trustpilot Logo */}
@@ -863,10 +907,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   rel="noopener noreferrer"
                   className="inline-block hover:opacity-80 transition-opacity"
                 >
-                  <img 
+                  <OptimizedImage 
                     src="/lovable-uploads/trustpilot-logo-correct.png" 
                     alt="Trustpilot 5 Star Rating"
                     className="h-8 w-auto"
+                    priority={false}
+                    width={200}
+                    height={32}
                   />
                 </a>
               </div>
@@ -881,10 +928,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Panda with plan badges */}
             <div className="relative text-center">
-              <img 
+              <OptimizedImage 
                 src="/extended-warranty-uk-car-reliable.png" 
                 alt="Extended warranty UK - Car reliable - Panda mascot with Monthly, Yearly, 1,2,3 Years options" 
                 className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
+                priority={false}
+                width={800}
+                height={600}
               />
             </div>
 
@@ -986,10 +1036,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
 
             {/* Right - Panda with warranty active */}
             <div className="relative text-center order-1 lg:order-2">
-              <img 
+              <OptimizedImage 
                 src="/car-warranty-uk-trusted-provider.png" 
                 alt="Car warranty UK - Trusted provider - Panda with EV charging station" 
                 className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
+                priority={false}
+                width={800}
+                height={600}
               />
             </div>
           </div>

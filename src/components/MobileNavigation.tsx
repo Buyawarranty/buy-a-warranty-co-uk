@@ -4,6 +4,7 @@ import { Menu, Phone, Clock } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Link } from 'react-router-dom';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 const MobileNavigation: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -27,10 +28,13 @@ const MobileNavigation: React.FC = () => {
             {/* Header with logo */}
             <div className="flex items-center justify-between pb-4 flex-shrink-0">
               <Link to="/" className="hover:opacity-80 transition-opacity">
-                <img 
+                <OptimizedImage 
                   src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
                   alt="Buy a Warranty" 
                   className="h-8 w-auto"
+                  priority={false}
+                  width={200}
+                  height={80}
                 />
               </Link>
             </div>

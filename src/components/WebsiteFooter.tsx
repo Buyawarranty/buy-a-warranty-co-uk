@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, Phone, Mail } from 'lucide-react';
+import { OptimizedImage } from '@/components/OptimizedImage';
 import companyRegistrationImage from '@/assets/company-registration.webp';
 import companyRegistrationFooter from '@/assets/company-registration-footer.png';
 import desktopAddressCopy from '@/assets/desktop-address-copy.png';
@@ -94,10 +95,13 @@ const WebsiteFooter = () => {
               </p>
               <div className="flex items-center">
                 <a href="/" className="hover:opacity-80 transition-opacity">
-                  <img 
+                  <OptimizedImage 
                     src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
                     alt="Buy a Warranty Logo" 
                     className="h-8 w-auto"
+                    priority={false}
+                    width={200}
+                    height={80}
                   />
                 </a>
               </div>
@@ -108,15 +112,21 @@ const WebsiteFooter = () => {
           <div className="border-t border-gray-200 pt-6">
             <div className="text-center space-y-3">
               <div className="flex justify-center">
-                <img 
+                <OptimizedImage 
                   src={desktopAddressCopy} 
                   alt="Buyawarranty.co.uk trading information and registered address" 
                   className="hidden md:block max-w-[50%] h-auto mx-auto"
+                  priority={false}
+                  width={800}
+                  height={200}
                 />
-                <img 
+                <OptimizedImage 
                   src={mobileAddressCopy} 
                   alt="Buyawarranty.co.uk trading information and registered address" 
                   className="md:hidden max-w-[80%] h-auto mx-auto"
+                  priority={false}
+                  width={400}
+                  height={300}
                 />
               </div>
             </div>

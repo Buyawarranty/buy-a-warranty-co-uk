@@ -1,4 +1,5 @@
 import React from 'react';
+import { OptimizedImage } from '@/components/OptimizedImage';
 import trustpilotLogo from '/lovable-uploads/4e4faf8a-b202-4101-a858-9c58ad0a28c5.png';
 import buyAWarrantyLogo from '/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png';
 
@@ -15,10 +16,13 @@ const TrustpilotHeader: React.FC<TrustpilotHeaderProps> = ({ className = "" }) =
         rel="noopener noreferrer"
         className="transition-opacity hover:opacity-80"
       >
-        <img 
+        <OptimizedImage 
           src={trustpilotLogo} 
           alt="Trustpilot 5 stars" 
           className="h-8 sm:h-10 w-auto"
+          priority={false}
+          width={200}
+          height={40}
         />
       </a>
     </div>
