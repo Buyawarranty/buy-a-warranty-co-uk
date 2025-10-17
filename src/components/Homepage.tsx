@@ -964,10 +964,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <OptimizedImage 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating - 5 Stars"
-                    className="h-12 w-auto"
+                    className="h-auto w-40 object-contain"
                     priority={false}
-                    width={160}
-                    height={50}
+                    width={320}
+                    height={100}
                   />
                 </a>
               </div>
@@ -985,9 +985,9 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <OptimizedImage 
                 src="/car-warranty-uk-trusted-provider.png" 
                 alt="Car warranty UK - Trusted provider - Panda with EV charging station" 
-                className="w-full h-auto max-w-sm md:max-w-lg mx-auto"
+                className="w-full h-auto max-w-sm md:max-w-lg mx-auto object-contain"
                 priority={false}
-                width={800}
+                width={600}
                 height={600}
               />
             </div>
