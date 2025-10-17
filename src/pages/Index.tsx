@@ -517,7 +517,7 @@ const Index = () => {
     handlePaymentPageReturn();
     
     // Cleanup handled by useMobileBackNavigation hook
-  }, [searchParams, currentStep, loadStateFromLocalStorage, setSearchParams]);
+  }, [searchParams, currentStep, vehicleData, selectedPlan, loadStateFromLocalStorage, setSearchParams]);
   
   const steps = ['Your Reg Plate', 'Receive Quote', 'Choose Your Plan', 'Review & Confirm'];
 
