@@ -12,6 +12,7 @@ import { EmailCapturePopup } from './EmailCapturePopup';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useToast } from '@/hooks/use-toast';
+import { OptimizedImage } from '@/components/OptimizedImage';
 import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
@@ -695,11 +696,14 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               </div>
             </div>
 
- {/* Right Content - Hero Image */}
+ {/* Right Content - Hero Image - Optimized for LCP */}
             <div className="relative">
-              <img 
+              <OptimizedImage 
                 src="/extended_warranty_uk-car-trustworthy-reviews.png" 
                 alt="Extended warranty UK - Car trustworthy reviews - Panda mascot with vehicle collection" 
+                width={800}
+                height={600}
+                priority={true}
                 className="w-full h-auto"
               />
               {/* Trustpilot Logo positioned to the right */}
@@ -710,9 +714,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   rel="noopener noreferrer"
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img 
+                  <OptimizedImage 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating" 
+                    width={120}
+                    height={44}
+                    priority={true}
                     className="h-8 sm:h-11 w-auto"
                   />
                 </a>
