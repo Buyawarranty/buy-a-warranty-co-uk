@@ -5,6 +5,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
+import { OptimizedImage } from '@/components/OptimizedImage';
+import trustpilotLogo from '@/assets/trustpilot-logo.webp';
 
 const Protected = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -328,10 +330,13 @@ const Protected = () => {
               rel="noopener noreferrer"
               className="inline-block hover:opacity-80 transition-opacity"
             >
-              <img 
-                src="/lovable-uploads/trustpilot-logo-correct.png" 
-                alt="Trustpilot 5 Star Rating"
-                className="h-10 w-auto"
+              <OptimizedImage 
+                src={trustpilotLogo} 
+                alt="Trustpilot Excellent Rating - 5 Stars"
+                className="h-12 w-auto"
+                priority={false}
+                width={160}
+                height={50}
               />
             </a>
           </div>

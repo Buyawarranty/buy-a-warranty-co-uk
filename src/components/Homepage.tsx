@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { OptimizedImage } from '@/components/OptimizedImage';
 import LazySection from './homepage/LazySection';
 import buyawarrantyLogo from '@/assets/buyawarranty-logo.webp';
+import trustpilotLogo from '@/assets/trustpilot-logo.webp';
 
 // Lazy load heavy components to reduce initial bundle size
 const HomepageFAQ = lazy(() => import('./HomepageFAQ'));
@@ -21,7 +22,6 @@ const AdditionalCoverSection = lazy(() => import('./homepage/AdditionalCoverSect
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import MileageSlider from './MileageSlider';
-import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIconNew from '@/assets/whatsapp-icon-new.png';
 import { trackButtonClick, trackEvent, trackQuoteRequest } from '@/utils/analytics';
 
@@ -851,12 +851,12 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   className="inline-block hover:opacity-80 transition-opacity"
                 >
                   <OptimizedImage 
-                    src="/lovable-uploads/trustpilot-logo-correct.png" 
-                    alt="Trustpilot 5 Star Rating"
-                    className="h-8 w-auto"
+                    src={trustpilotLogo} 
+                    alt="Trustpilot Excellent Rating - 5 Stars"
+                    className="h-12 w-auto"
                     priority={false}
-                    width={200}
-                    height={32}
+                    width={160}
+                    height={50}
                   />
                 </a>
               </div>
@@ -961,10 +961,13 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   rel="noopener noreferrer"
                   className="inline-block hover:opacity-80 transition-opacity"
                 >
-                  <img 
-                    src="/lovable-uploads/trustpilot-logo-correct.png" 
-                    alt="Trustpilot 5 Star Rating"
-                    className="h-10 w-auto"
+                  <OptimizedImage 
+                    src={trustpilotLogo} 
+                    alt="Trustpilot Excellent Rating - 5 Stars"
+                    className="h-12 w-auto"
+                    priority={false}
+                    width={160}
+                    height={50}
                   />
                 </a>
               </div>

@@ -7,6 +7,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import pandaSavingsFaq from '@/assets/panda-savings-faq.png';
+import { OptimizedImage } from '@/components/OptimizedImage';
+import trustpilotLogo from '@/assets/trustpilot-logo.webp';
 
 const FAQ = () => {
   const navigate = useNavigate();
@@ -996,10 +998,13 @@ const FAQ = () => {
                         rel="noopener noreferrer"
                         className="inline-block hover:opacity-80 transition-opacity"
                       >
-                        <img 
-                          src="/lovable-uploads/trustpilot-logo-correct.png" 
-                          alt="Trustpilot 5 Star Rating"
+                        <OptimizedImage 
+                          src={trustpilotLogo} 
+                          alt="Trustpilot Excellent Rating - 5 Stars"
                           className="h-12 w-auto"
+                          priority={false}
+                          width={160}
+                          height={50}
                         />
                       </a>
                     )}
