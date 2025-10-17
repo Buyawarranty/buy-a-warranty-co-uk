@@ -729,10 +729,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <OptimizedImage 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating" 
-                    className="h-8 sm:h-11 w-auto"
+                    className="h-auto w-32 sm:w-40 object-contain"
                     priority={false}
-                    width={200}
-                    height={44}
+                    width={320}
+                    height={100}
                   />
                 </a>
               </div>
