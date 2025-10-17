@@ -139,24 +139,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // State for field validation
   const [validatedFields, setValidatedFields] = useState<{[key: string]: boolean}>({});
 
-  // Reset loading state when component mounts (user returned from payment page)
-  useEffect(() => {
-    // Clear loading state when user returns from external payment
-    const handlePageShow = (event: any) => {
-      if (event.persisted) {
-        // Page was restored from bfcache
-        console.log('🔄 User returned from payment page, resetting loading state');
-        setIsLoadingPayment(false);
-      }
-    };
-
-    // Reset loading state on mount (covers most back navigation cases)
-    setIsLoadingPayment(false);
-    
-    window.addEventListener('pageshow', handlePageShow);
-    return () => window.removeEventListener('pageshow', handlePageShow);
-  }, []);
-
   // Scroll listener for scroll-to-top button
   useEffect(() => {
     const handleScroll = () => {

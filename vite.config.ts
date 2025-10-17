@@ -69,7 +69,12 @@ export default defineConfig(({ mode }) => ({
       compress: {
         drop_console: true,
         drop_debugger: true,
-        passes: 2
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+        passes: 3,
+        unsafe: true,
+        unsafe_arrows: true,
+        unsafe_methods: true,
+        unsafe_proto: true
       },
       mangle: {
         safari10: true
@@ -78,7 +83,7 @@ export default defineConfig(({ mode }) => ({
         comments: false
       }
     },
-    cssMinify: true,
+    cssMinify: 'lightningcss',
     cssCodeSplit: true,
     sourcemap: false,
     reportCompressedSize: false
