@@ -88,11 +88,11 @@ const addOnPackages = [
     key: 'motFee',
     icon: '🛠️',
     title: 'MOT Test Fee Cover',
-    shortDescription: 'Coverage for MOT test fees when your vehicle fails its test.',
+    shortDescription: 'Reimbursement of the MOT test fee up to £75',
     price: 1.99,
     priceType: 'monthly',
     bulletPoints: [
-      'Covers MOT test fees on failure',
+      'Reimbursement of the MOT test fee up to £75',
       'Reduces unexpected costs',
       'Peace of mind for annual testing',
       'Quick and easy claims process'
