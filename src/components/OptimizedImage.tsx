@@ -12,6 +12,7 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
 /**
  * Optimized image component with lazy loading and intersection observer
  * Improves Core Web Vitals by deferring off-screen images
+ * Automatically adds proper dimensions to prevent CLS
  */
 export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   src,
@@ -20,6 +21,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   height,
   priority = false,
   className = '',
+  style,
   ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -39,7 +41,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         });
       },
       {
-        rootMargin: '50px', // Start loading slightly before image enters viewport
+        rootMargin: '100px', // Start loading before image enters viewport
       }
     );
 
@@ -52,6 +54,12 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     };
   }, [priority]);
 
+  // Prevent layout shift by providing explicit dimensions
+  const imageStyle: React.CSSProperties = {
+    ...style,
+    ...(width && height && { aspectRatio: `${width}/${height}` }),
+  };
+
   return (
     <img
       ref={imgRef}
@@ -61,11 +69,13 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       height={height}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
+      fetchPriority={priority ? 'high' : 'auto'}
       className={`${className} ${
         priority 
           ? '' 
-          : `${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`
+          : `${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`
       }`}
+      style={imageStyle}
       onLoad={() => setIsLoaded(true)}
       {...props}
     />

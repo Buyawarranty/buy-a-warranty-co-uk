@@ -4,6 +4,9 @@ declare global {
   interface Window {
     gtag: (...args: any[]) => void;
     fbq: (...args: any[]) => void;
+    ttq?: any;
+    TiktokAnalyticsObject?: string;
+    _fbq?: any;
   }
 }
 
