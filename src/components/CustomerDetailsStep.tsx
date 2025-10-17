@@ -142,9 +142,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // Reset loading state when component mounts (user returned from payment page)
   useEffect(() => {
     // Clear loading state when user returns from external payment
-    const handlePageShow = (event: PageTransitionEvent) => {
-      if (event.persisted || performance.navigation.type === 2) {
-        // Page was restored from bfcache or user navigated back
+    const handlePageShow = (event: any) => {
+      if (event.persisted) {
+        // Page was restored from bfcache
         console.log('🔄 User returned from payment page, resetting loading state');
         setIsLoadingPayment(false);
       }
