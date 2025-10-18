@@ -351,20 +351,15 @@ serve(async (req) => {
             planId
           });
 
-          // Send welcome email with documents using optimized function
-          const paymentTypeDisplay = getPaymentTypeDisplay(paymentType);
-          
+          // Send welcome email with documents using send-welcome-email-manual which handles PDF attachments
           const emailPayload = {
-            email: userEmail,
-            customerName: customerName,
-            planType: planName, // Use actual plan name instead of UUID
-            policyNumber: warrantyReference,
-            registrationPlate: vehicleData?.regNumber || customerData?.vehicle_reg || 'Unknown',
-            paymentType: paymentTypeDisplay
+            policyId: policy.id,
+            customerId: customerData2.id,
+            forceResend: false
           };
 
-          // Use send-welcome-email which is optimized for handling attachments
-          const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email', {
+          // Use send-welcome-email-manual which properly handles PDF attachments
+          const { data: emailResult, error: emailError } = await supabaseClient.functions.invoke('send-welcome-email-manual', {
             body: emailPayload
           });
           
