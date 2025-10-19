@@ -9,6 +9,8 @@ import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
 import { FAQSchema, defaultWarrantyFAQs } from '@/components/schema/FAQSchema';
 import { ProductSchema } from '@/components/schema/ProductSchema';
 import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
+import { ReviewSchema } from '@/components/schema/ReviewSchema';
+import { WebPageSchema } from '@/components/schema/WebPageSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { useMobileBackNavigation } from '@/hooks/useMobileBackNavigation';
 import { useQuoteRestoration } from '@/hooks/useQuoteRestoration';
@@ -627,6 +629,12 @@ const Index = () => {
       
       {/* Schema.org Structured Data for AI Search & SEO */}
       <OrganizationSchema type="LocalBusiness" />
+      <ReviewSchema />
+      <WebPageSchema 
+        name="Car Warranty UK | Instant Quotes"
+        description="Leading UK car warranty provider since 2016 with 4.7-star Trustpilot rating. Get instant quotes for comprehensive vehicle protection."
+        url="https://buyawarranty.co.uk/"
+      />
       <FAQSchema faqs={defaultWarrantyFAQs} />
       <ProductSchema 
         name="Car Warranty UK"

@@ -75,18 +75,76 @@ All schema components are in `src/components/schema/`
 
 **Data included:**
 - ✅ Business name: "Buy A Warranty"
+- ✅ Legal name: "BUY A WARRANTY LIMITED"
 - ✅ Type: LocalBusiness / InsuranceAgency
 - ✅ Description & slogan
-- ✅ Contact info (phone, email)
+- ✅ Contact info (phone: 0330 229 5040, email: support@buyawarranty.co.uk)
 - ✅ UK address & area served
 - ✅ Logo & images
-- ✅ Trustpilot rating (5 stars, 100+ reviews)
+- ✅ Trustpilot rating (4.7 stars, 30 verified reviews)
 - ✅ Price range (££)
+- ✅ Opening hours (Mo-Fr 09:00-17:30)
 - ✅ Services offered
 - ✅ Knowledge areas (Car Warranty, Van Warranty, EV, etc.)
-- ✅ Founding date
+- ✅ Founding date: 2016
+- ✅ Business status: Active and trading
+- ✅ Payment methods accepted
+- ✅ Currency: GBP
 
 **AI Search Benefit:** When someone asks "Who is Buy A Warranty?" or "Best car warranty company UK", AI engines can pull this structured info.
+
+---
+
+#### **ReviewSchema** (`ReviewSchema.tsx`)
+**What it does:** Provides verified customer review data directly to AI engines
+
+**Data included:**
+- ✅ Individual customer reviews from Trustpilot
+- ✅ 5-star ratings with review bodies
+- ✅ Aggregate rating (4.7 stars, 30 reviews)
+- ✅ Publisher: Trustpilot
+- ✅ Verified customer testimonials
+
+**AI Search Benefit:** When AI engines look for customer sentiment and business reputation, they can cite specific verified reviews.
+
+**Usage:**
+```tsx
+import { ReviewSchema } from '@/components/schema/ReviewSchema';
+
+// Uses default Trustpilot reviews
+<ReviewSchema />
+
+// Or provide custom reviews
+<ReviewSchema reviews={[
+  { author: "Customer Name", rating: 5, reviewBody: "...", datePublished: "2024-01-15" }
+]} />
+```
+
+---
+
+#### **WebPageSchema** (`WebPageSchema.tsx`)
+**What it does:** Signals to AI that the business is active, when last reviewed, and provides entity relationships
+
+**Data included:**
+- ✅ Page name and description
+- ✅ Last reviewed date (auto-updates to current date)
+- ✅ Link to Trustpilot reviews
+- ✅ MainEntity: LocalBusiness with founding date 2016
+- ✅ Speakable content markers for voice search
+- ✅ Publisher: BUY A WARRANTY LIMITED (legal name)
+
+**AI Search Benefit:** Explicitly tells AI engines the business is "Active UK car warranty provider since 2016" - directly countering any misinformation about closure.
+
+**Usage:**
+```tsx
+import { WebPageSchema } from '@/components/schema/WebPageSchema';
+
+<WebPageSchema 
+  name="Car Warranty UK"
+  description="Leading UK provider since 2016"
+  url="https://buyawarranty.co.uk/"
+/>
+```
 
 ---
 
@@ -184,6 +242,50 @@ Home > The Warranty Hub > [Blog Article Title]
 
 ---
 
+## 🎯 Addressing AI Search Engine Inaccuracies
+
+### Issue 1: Mixed Reviews Display
+**Problem:** Google AI Mode shows mixed reviews despite 100% positive Trustpilot rating
+
+**Solution Implemented:**
+1. ✅ Added accurate aggregate rating data (4.7 stars, 30 reviews) to OrganizationSchema
+2. ✅ Created ReviewSchema component with individual verified customer testimonials
+3. ✅ Linked directly to Trustpilot profile: https://www.trustpilot.com/review/buyawarranty.co.uk
+4. ✅ Added review publisher metadata (Trustpilot as source)
+5. ✅ Included reviewExplanation: "Based on verified Trustpilot reviews"
+
+**Why this helps:** AI engines now have structured, machine-readable review data directly from your site that matches Trustpilot, making it easier for them to cite accurate information.
+
+### Issue 2: "Business Closed" Misinformation
+**Problem:** Google AI Mode incorrectly shows "BUY A WARRANTY LIMITED is closed down"
+
+**Solution Implemented:**
+1. ✅ Added legal business name: "BUY A WARRANTY LIMITED" to OrganizationSchema
+2. ✅ Updated founding date from 2020 to **2016** (shows longevity)
+3. ✅ Added opening hours: "Mo-Fr 09:00-17:30" (signals active business)
+4. ✅ Created WebPageSchema with explicit statement: "Active UK car warranty provider since 2016"
+5. ✅ Added business operational data: payment methods, currencies, employee count
+6. ✅ Fixed contact details consistency (phone: 0330 229 5040, email: support@buyawarranty.co.uk)
+7. ✅ Added lastReviewed date (auto-updates to current date) in WebPageSchema
+8. ✅ Included ownership info: "Privately owned and operated UK company"
+
+**Why this helps:** Multiple structured data signals explicitly state the business is active, trading, and accepting payments. The founding date of 2016 (not 2020) demonstrates 8+ years of operation.
+
+### Timeline for AI Search Updates
+- **Immediate:** New structured data visible to AI crawlers today
+- **1-2 weeks:** Google reindexes site with updated information
+- **2-4 weeks:** AI training datasets begin incorporating new data
+- **1-3 months:** Full propagation across AI search engines (ChatGPT, Perplexity, Gemini)
+
+### Monitoring AI Citations
+Track how AI engines reference your business:
+1. **ChatGPT Search:** Try "Buy A Warranty UK reviews" or "is Buy A Warranty still trading"
+2. **Perplexity:** Search "buyawarranty.co.uk status" or "best car warranty UK"
+3. **Google Gemini:** Ask "Buy A Warranty company information"
+4. Set up Google Alerts for "Buy A Warranty" + "closed" to catch misinformation
+
+---
+
 ## 📊 How to Verify Implementation
 
 ### 1. **Test Structured Data**
@@ -230,6 +332,8 @@ import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
 import { FAQSchema, defaultWarrantyFAQs } from '@/components/schema/FAQSchema';
 import { ProductSchema } from '@/components/schema/ProductSchema';
 import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
+import { ReviewSchema } from '@/components/schema/ReviewSchema';
+import { WebPageSchema } from '@/components/schema/WebPageSchema';
 
 function Index() {
   return (
@@ -243,6 +347,12 @@ function Index() {
       
       {/* Structured Data */}
       <OrganizationSchema type="LocalBusiness" />
+      <ReviewSchema />
+      <WebPageSchema 
+        name="Car Warranty UK | Instant Quotes"
+        description="Leading UK car warranty provider since 2016 with 4.7-star Trustpilot rating"
+        url="https://buyawarranty.co.uk/"
+      />
       <FAQSchema faqs={defaultWarrantyFAQs} />
       <ProductSchema 
         name="Car Warranty UK"
@@ -355,7 +465,12 @@ Already implemented with:
 
 - [x] robots.txt allows all AI crawlers
 - [x] sitemap.xml exists and is referenced
-- [x] OrganizationSchema on all pages
+- [x] OrganizationSchema with accurate Trustpilot data (4.7 stars, 30 reviews)
+- [x] OrganizationSchema includes legal name "BUY A WARRANTY LIMITED"
+- [x] OrganizationSchema shows founding date 2016
+- [x] OrganizationSchema includes opening hours and payment methods
+- [x] ReviewSchema with verified customer testimonials
+- [x] WebPageSchema explicitly stating business is active since 2016
 - [x] FAQSchema with 8+ common questions
 - [x] ProductSchema with pricing
 - [x] BreadcrumbSchema for navigation
@@ -366,6 +481,7 @@ Already implemented with:
 - [x] Canonical URLs set on all pages
 - [x] Mobile-responsive (viewport meta tag)
 - [x] Fast loading (affects AI crawl budget)
+- [x] Contact details consistent across all components
 
 ---
 
@@ -386,11 +502,15 @@ Most car warranty companies in the UK have:
 - ✅ Machine-readable business info
 - ✅ Rich snippet eligibility
 
-**Result:** When potential customers ask AI "best car warranty UK", you have a competitive edge with:
-1. Higher chance of being cited
-2. More detailed information shown
-3. Trust signals (Trustpilot, phone, UK-based)
-4. Direct pricing info (£20/month starting)
+**Result:** When potential customers ask AI "best car warranty UK" or "is Buy A Warranty closed", you have a competitive edge with:
+1. Accurate 4.7-star Trustpilot rating (30 verified reviews)
+2. Legal business name "BUY A WARRANTY LIMITED" clearly stated
+3. Founding date 2016 (not 2020) - showing longevity
+4. Explicit "Active UK car warranty provider since 2016" statement
+5. Opening hours and payment information
+6. Individual customer reviews with testimonials
+7. Direct Trustpilot link for verification
+8. Consistent contact details across all pages
 
 ---
 

@@ -16,19 +16,19 @@ const NewFooter = () => {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
             <a 
-              href="tel:08000014990" 
+              href="tel:03302295040" 
               className="flex items-center gap-2 text-white hover:text-white/80 transition-colors font-medium"
             >
               <Phone size={18} />
-              Call us: 0800 001 4990
+              Call us: 0330 229 5040
             </a>
             
             <a 
-              href="mailto:info@warrantywise.co.uk" 
+              href="mailto:support@buyawarranty.co.uk" 
               className="flex items-center gap-2 text-white hover:text-white/80 transition-colors font-medium"
             >
               <Mail size={18} />
-              Email us: info@warrantywise.co.uk
+              Email us: support@buyawarranty.co.uk
             </a>
 
             <Link 
