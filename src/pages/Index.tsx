@@ -5,6 +5,10 @@ import { Button } from '@/components/ui/button';
 import Homepage from '@/components/Homepage';
 import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
+import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
+import { FAQSchema, defaultWarrantyFAQs } from '@/components/schema/FAQSchema';
+import { ProductSchema } from '@/components/schema/ProductSchema';
+import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { useMobileBackNavigation } from '@/hooks/useMobileBackNavigation';
 import { useQuoteRestoration } from '@/hooks/useQuoteRestoration';
@@ -620,6 +624,25 @@ const Index = () => {
         keywords="car warranty, vehicle warranty, UK warranty, car insurance, breakdown cover, warranty prices, vehicle protection, extended warranty"
         canonical="https://buyawarranty.co.uk/"
       />
+      
+      {/* Schema.org Structured Data for AI Search & SEO */}
+      <OrganizationSchema type="LocalBusiness" />
+      <FAQSchema faqs={defaultWarrantyFAQs} />
+      <ProductSchema 
+        name="Car Warranty UK"
+        description="Comprehensive car warranty protection for UK vehicles. Flexible plans from £20/month with instant online quotes and 14-day money-back guarantee."
+        price="20"
+        priceCurrency="GBP"
+      />
+      <BreadcrumbSchema 
+        items={[
+          { name: 'Home', url: 'https://buyawarranty.co.uk/' },
+          ...(currentStep === 2 ? [{ name: 'Get Quote', url: 'https://buyawarranty.co.uk/' }] : []),
+          ...(currentStep === 3 ? [{ name: 'Choose Plan', url: 'https://buyawarranty.co.uk/' }] : []),
+          ...(currentStep === 4 ? [{ name: 'Checkout', url: 'https://buyawarranty.co.uk/' }] : [])
+        ]}
+      />
+      
       {/* Progress Bar with Moving Car - Steps 2, 3, and 4 */}
       {currentStep >= 2 && currentStep <= 4 && (
         <PerformanceOptimizedSuspense height="120px">

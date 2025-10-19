@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
+import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
+import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -188,6 +190,16 @@ const BlogArticle = () => {
         keywords={(post.seo_keywords || []).join(', ')}
         canonical={post.canonical_url || `https://buyawarranty.co.uk/thewarrantyhub/${post.slug}`}
         ogImage={post.featured_image_url || undefined}
+      />
+      
+      {/* Schema.org Structured Data */}
+      <OrganizationSchema type="Organization" />
+      <BreadcrumbSchema 
+        items={[
+          { name: 'Home', url: 'https://buyawarranty.co.uk/' },
+          { name: 'The Warranty Hub', url: 'https://buyawarranty.co.uk/thewarrantyhub/' },
+          { name: post.title, url: `https://buyawarranty.co.uk/thewarrantyhub/${post.slug}/` }
+        ]}
       />
       
       {/* JSON-LD Structured Data */}

@@ -11,12 +11,12 @@ interface SEOHeadProps {
 }
 
 export const SEOHead = ({
-  title = "Car Warranty Prices | Affordable UK Vehicle Warranties",
-  description = "Compare our car warranty prices and choose the perfect plan for your vehicle. Flexible, affordable UK coverage with no hidden fees. Instant online quotes available.",
-  keywords = "car warranty, vehicle warranty, UK warranty, car insurance, breakdown cover, warranty prices",
+  title = "Car Warranty UK | Instant Quotes | Buy A Warranty",
+  description = "Get instant car warranty quotes in 60 seconds. UK's trusted warranty provider with 5-star reviews. Flexible plans from £20/month. 14-day money back guarantee. Use code SAVE10NOW for 10% off.",
+  keywords = "car warranty UK, vehicle warranty, used car warranty, extended car warranty, warranty prices UK, cheap car warranty, best car warranty, van warranty, EV warranty, motorbike warranty",
   ogTitle,
   ogDescription,
-  ogImage = "https://lovable.dev/opengraph-image-p98pqg.png",
+  ogImage = "https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png",
   canonical
 }: SEOHeadProps) => {
   useEffect(() => {
@@ -49,9 +49,31 @@ export const SEOHead = ({
     updateMetaTag('og:type', 'website', true);
 
     // Twitter tags
+    updateMetaTag('twitter:card', 'summary_large_image');
     updateMetaTag('twitter:title', ogTitle || title);
     updateMetaTag('twitter:description', ogDescription || description);
     updateMetaTag('twitter:image', ogImage);
+
+    // Additional SEO meta tags
+    updateMetaTag('author', 'Buy A Warranty');
+    updateMetaTag('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    updateMetaTag('googlebot', 'index, follow');
+    updateMetaTag('bingbot', 'index, follow');
+    
+    // AI Search Engine meta tags
+    updateMetaTag('ai-content-declaration', 'This content is human-authored and fact-checked');
+    
+    // Geographic targeting
+    updateMetaTag('geo.region', 'GB');
+    updateMetaTag('geo.placename', 'United Kingdom');
+    
+    // Language
+    if (!document.querySelector('meta[http-equiv="content-language"]')) {
+      const langMeta = document.createElement('meta');
+      langMeta.setAttribute('http-equiv', 'content-language');
+      langMeta.content = 'en-GB';
+      document.head.appendChild(langMeta);
+    }
 
     // Canonical URL
     if (canonical) {

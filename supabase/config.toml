@@ -1,8 +1,10 @@
-
 project_id = "mzlpuxzwyrcyrgrongeb"
 
 [functions.create-billing-portal]
 verify_jwt = true
+
+[functions.generate-sitemap]
+verify_jwt = false
 
 [functions.customer-login]
 verify_jwt = false
