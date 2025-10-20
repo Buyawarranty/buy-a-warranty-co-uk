@@ -192,7 +192,7 @@ const Terms = () => {
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="mb-8 text-center">
           <a 
-            href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.3_n-2.pdf" 
+            href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-2.pdf" 
             target="_blank" 
             rel="noopener noreferrer"
             className="inline-flex items-center bg-brand-orange text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-600 transition-colors"

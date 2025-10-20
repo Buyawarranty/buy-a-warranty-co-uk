@@ -1967,7 +1967,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                     Clear, straightforward terms designed to protect you and give you peace of mind.
                   </p>
                   <a 
-                    href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.3_n-2.pdf" 
+                    href="https://buyawarranty.co.uk/terms" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 font-medium text-base underline"
@@ -1996,7 +1996,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                     <li>• 14-day money-back guarantee</li>
                   </ul>
                   <a 
-                    href="/Platinum-Warranty-Plan_v2.3_n-2.pdf" 
+                    href="https://buyawarranty.co.uk/warranty-plan" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 font-medium text-base underline"

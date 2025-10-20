@@ -228,7 +228,7 @@ const WarrantyPlan = () => {
                     asChild
                   >
                     <a 
-                      href="/Platinum-Warranty-Plan_v2.3_n-2.pdf" 
+                      href="/Platinum-warranty-plan_v2.2-2.pdf" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-white hover:text-primary"
