@@ -538,7 +538,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <a 
-                  href="/Platinum-warranty-plan_v2.2-5.pdf" 
+                  href="/Platinum-Warranty-Plan_v2.3_n-2.pdf" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"

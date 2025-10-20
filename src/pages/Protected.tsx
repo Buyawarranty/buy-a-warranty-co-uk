@@ -396,7 +396,7 @@ const Protected = () => {
               the extensive protection we provide for your vehicle.
             </p>
             <a 
-              href="/Platinum-warranty-plan_v2.2-6.pdf" 
+              href="/Platinum-Warranty-Plan_v2.3_n-2.pdf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
@@ -430,7 +430,7 @@ const Protected = () => {
               claims process, and our commitment to you.
             </p>
             <a 
-              href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-6.pdf" 
+              href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.3_n-2.pdf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
