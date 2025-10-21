@@ -4,6 +4,12 @@ import { Check, ArrowRight, Star, Shield, Phone, Menu, Award, MessageCircle } fr
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
+import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
+import { ReviewSchema } from '@/components/schema/ReviewSchema';
+import { WebPageSchema } from '@/components/schema/WebPageSchema';
+import { FAQSchema } from '@/components/schema/FAQSchema';
+import { ProductSchema } from '@/components/schema/ProductSchema';
+import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import WebsiteFooter from '@/components/WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -82,19 +88,46 @@ const CarExtendedWarranty: React.FC = () => {
         description="Protect your used or new car from costly repairs with affordable extended warranty cover in the UK. Instant quotes online. Prices start from just £19/month."
         keywords="car extended warranty UK, extended car warranty, used car warranty, car warranty cover, vehicle warranty UK, warranty protection"
         canonical="https://buyawarranty.co.uk/car-extended-warranty/"
+        ogTitle="Car Extended Warranty UK | Used Car Cover from £19/mo"
+        ogDescription="Protect your used or new car from costly repairs with affordable extended warranty cover in the UK. Instant quotes online. Prices start from just £19/month."
+      />
+      
+      <OrganizationSchema type="InsuranceAgency" />
+      <ReviewSchema />
+      <WebPageSchema
+        name="Car Extended Warranty UK - Buy A Warranty"
+        description="Comprehensive extended car warranty coverage for used and new vehicles in the UK. Protect your car from unexpected repair costs with flexible plans starting from £19/month."
+        url="https://buyawarranty.co.uk/car-extended-warranty/"
+        specialty="Car Extended Warranty, Used Car Warranty, Vehicle Warranty Protection"
+      />
+      <FAQSchema faqs={customFAQs} />
+      <ProductSchema
+        name="Car Extended Warranty Plans"
+        description="Comprehensive car warranty coverage protecting your vehicle from unexpected mechanical and electrical failures. Choose from multiple coverage levels to suit your needs."
+        price="19.00"
+        priceCurrency="GBP"
+        brand="Buy A Warranty"
+        category="Extended Warranty"
+        image="https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png"
+      />
+      <BreadcrumbSchema 
+        items={[
+          { name: "Home", url: "https://buyawarranty.co.uk/" },
+          { name: "Car Extended Warranty", url: "https://buyawarranty.co.uk/car-extended-warranty/" }
+        ]} 
       />
 
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="bg-white shadow-sm sticky top-0 z-50" role="banner">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center">
-              <Link to="/">
-                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+              <Link to="/" aria-label="Buy a Warranty Homepage">
+                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty - UK's trusted car warranty provider since 2016" className="h-6 sm:h-8 w-auto" />
               </Link>
             </div>
             
-            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6" aria-label="Main navigation">
               <Link to="/what-is-covered/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
               <Link to="/make-a-claim/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
               <Link to="/faq/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
@@ -138,7 +171,7 @@ const CarExtendedWarranty: React.FC = () => {
                     </Link>
                   </div>
 
-                  <nav className="flex flex-col space-y-6 flex-1">
+                  <nav className="flex flex-col space-y-6 flex-1" aria-label="Mobile navigation">
                     <Link to="/what-is-covered/" className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
                       What's Covered
                     </Link>
@@ -180,8 +213,10 @@ const CarExtendedWarranty: React.FC = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-white to-orange-50 py-12 md:py-20">
+      {/* Main content */}
+      <main role="main">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-blue-50 via-white to-orange-50 py-12 md:py-20" aria-label="Extended warranty introduction">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <div className="inline-block">
@@ -223,19 +258,22 @@ const CarExtendedWarranty: React.FC = () => {
             </div>
 
             {/* Hero Image */}
-            <div className="relative text-center mt-12">
+            <figure className="relative text-center mt-12">
               <img 
                 src={pandaVehiclesImg} 
-                alt="Buy a Warranty mascot with various vehicles" 
+                alt="Buy a Warranty panda mascot alongside various vehicles including cars, vans, and motorcycles covered under UK extended warranty plans" 
                 className="w-full h-auto max-w-2xl mx-auto object-contain"
+                loading="eager"
+                width="800"
+                height="400"
               />
-            </div>
+            </figure>
           </div>
         </div>
       </section>
 
       {/* What Is an Extended Car Warranty Section */}
-      <section className="py-16 bg-white">
+      <article className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">What Is an Extended Car Warranty?</h2>
@@ -251,13 +289,13 @@ const CarExtendedWarranty: React.FC = () => {
             {/* Comparison Table */}
             <div className="bg-gray-50 rounded-lg p-6 mb-8">
               <h3 className="text-2xl font-bold mb-6 text-center">Manufacturer Warranty vs. Extended Warranty</h3>
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto" role="table" aria-label="Comparison between manufacturer and extended warranty">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-primary text-white">
-                      <th className="p-3 text-left">Feature</th>
-                      <th className="p-3 text-left">Manufacturer Warranty</th>
-                      <th className="p-3 text-left">Buy A Warranty (Extended)</th>
+                      <th scope="col" className="p-3 text-left">Feature</th>
+                      <th scope="col" className="p-3 text-left">Manufacturer Warranty</th>
+                      <th scope="col" className="p-3 text-left">Buy A Warranty (Extended)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -295,13 +333,13 @@ const CarExtendedWarranty: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+      </article>
 
       {/* Why It's a Smart Financial Move */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+      <article className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="financial-benefits">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <h2 id="financial-benefits" className="text-3xl md:text-4xl font-bold text-center mb-12">
               Why a Car Extended Warranty is a Smart Financial Move
             </h2>
 
@@ -399,13 +437,13 @@ const CarExtendedWarranty: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+      </article>
 
       {/* Coverage Types */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" aria-labelledby="coverage-types">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+            <h2 id="coverage-types" className="text-3xl md:text-4xl font-bold text-center mb-8">
               Types of Car Extended Warranty Cover
             </h2>
             <p className="text-center text-lg text-gray-700 mb-12">
@@ -458,10 +496,10 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Eligibility Section */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="eligibility">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+            <h2 id="eligibility" className="text-3xl md:text-4xl font-bold text-center mb-8">
               Eligibility – Is Your Car Covered?
             </h2>
             
@@ -494,13 +532,13 @@ const CarExtendedWarranty: React.FC = () => {
             </div>
 
             {/* Eligibility Table */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" role="table" aria-label="Vehicle eligibility criteria table">
               <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-md">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="p-4 text-left font-bold">Vehicle Type</th>
-                    <th className="p-4 text-left font-bold">Eligibility Status</th>
-                    <th className="p-4 text-left font-bold">Details</th>
+                    <th scope="col" className="p-4 text-left font-bold">Vehicle Type</th>
+                    <th scope="col" className="p-4 text-left font-bold">Eligibility Status</th>
+                    <th scope="col" className="p-4 text-left font-bold">Details</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -567,10 +605,10 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Manufacturers Covered */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" aria-labelledby="manufacturers-covered">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <h2 id="manufacturers-covered" className="text-3xl md:text-4xl font-bold text-center mb-12">
               Manufacturers Covered Under Our Warranty Plans
             </h2>
             
@@ -617,17 +655,20 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
                 { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
               ].map((brand) => (
-                <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
-                  <img 
-                    src={brand.logo} 
-                    alt={`${brand.name} logo`} 
-                    className="h-10 w-auto object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                  <p className="font-semibold text-gray-800">{brand.name}</p>
-                </div>
+                 <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
+                   <img 
+                     src={brand.logo} 
+                     alt={`${brand.name} car warranty coverage - UK extended warranty available`} 
+                     className="h-10 w-auto object-contain"
+                     loading="lazy"
+                     width="80"
+                     height="40"
+                     onError={(e) => {
+                       e.currentTarget.style.display = 'none';
+                     }}
+                   />
+                   <p className="font-semibold text-gray-800">{brand.name}</p>
+                 </div>
               ))}
             </div>
           </div>
@@ -635,10 +676,10 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="how-it-works">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <h2 id="how-it-works" className="text-3xl md:text-4xl font-bold text-center mb-12">
               How It Works: Simple, Fast, and Transparent
             </h2>
             <p className="text-center text-lg text-gray-700 mb-12">
@@ -671,13 +712,16 @@ const CarExtendedWarranty: React.FC = () => {
               </div>
 
               {/* Right - Image */}
-              <div className="relative text-center order-1 lg:order-2">
+              <figure className="relative text-center order-1 lg:order-2">
                 <img 
                   src={phoneCarImg} 
-                  alt="Buy a Warranty mobile app with car" 
+                  alt="Buy a Warranty mobile app showing instant car warranty quote with vehicle in background - get covered in 60 seconds" 
                   className="w-full h-auto max-w-sm md:max-w-lg mx-auto object-contain"
+                  loading="lazy"
+                  width="600"
+                  height="400"
                 />
-              </div>
+              </figure>
             </div>
 
             {/* Making a Claim */}
@@ -717,10 +761,10 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Why Choose Buy A Warranty */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" aria-labelledby="why-choose-us">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <h2 id="why-choose-us" className="text-3xl md:text-4xl font-bold text-center mb-12">
               Why Choose Buy A Warranty?
             </h2>
 
@@ -759,23 +803,26 @@ const CarExtendedWarranty: React.FC = () => {
               </div>
 
               {/* Right - Image */}
-              <div className="relative text-center order-1 lg:order-2">
+              <figure className="relative text-center order-1 lg:order-2">
                 <img 
                   src={pandaEvImg} 
-                  alt="Buy a Warranty mascot with electric vehicle" 
+                  alt="Buy a Warranty panda mascot with electric vehicle representing EV and hybrid car warranty coverage in the UK" 
                   className="w-full h-auto max-w-sm md:max-w-lg mx-auto object-contain"
+                  loading="lazy"
+                  width="600"
+                  height="400"
                 />
-              </div>
+              </figure>
             </div>
           </div>
         </div>
       </section>
 
       {/* Customer Testimonials */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="customer-testimonials">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <h2 id="customer-testimonials" className="text-3xl md:text-4xl font-bold text-center mb-12">
               What Our Customers Say
             </h2>
 
@@ -840,10 +887,10 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Transparent Terms */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" aria-labelledby="transparent-terms">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 id="transparent-terms" className="text-3xl md:text-4xl font-bold mb-6">
               Transparent Terms. No Hidden Surprises.
             </h2>
             <p className="text-lg text-gray-700 mb-4">
@@ -860,21 +907,21 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* FAQs */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="faqs" itemScope itemType="https://schema.org/FAQPage">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <h2 id="faqs" className="text-3xl md:text-4xl font-bold text-center mb-12 faq-question">
               FAQs: Extended Car Warranty UK
             </h2>
             
             <div className="space-y-4">
               {customFAQs.map((faq, index) => (
-                <details key={index} className="bg-white rounded-lg shadow-md">
-                  <summary className="px-6 py-4 cursor-pointer font-semibold text-lg hover:bg-gray-50 transition-colors">
+                <details key={index} className="bg-white rounded-lg shadow-md" itemScope itemProp="mainEntity" itemType="https://schema.org/Question">
+                  <summary className="px-6 py-4 cursor-pointer font-semibold text-lg hover:bg-gray-50 transition-colors faq-question" itemProp="name">
                     {faq.question}
                   </summary>
-                  <div className="px-6 pb-4 text-gray-700 leading-relaxed">
-                    {faq.answer}
+                  <div className="px-6 pb-4 text-gray-700 leading-relaxed" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                    <span itemProp="text">{faq.answer}</span>
                   </div>
                 </details>
               ))}
@@ -884,7 +931,7 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 bg-primary text-white">
+      <section className="py-16 bg-primary text-white" aria-label="Get your free quote">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h2 className="text-3xl md:text-4xl font-bold">
@@ -939,6 +986,7 @@ const CarExtendedWarranty: React.FC = () => {
           </div>
         </div>
       </section>
+      </main>
 
       <WebsiteFooter />
 
