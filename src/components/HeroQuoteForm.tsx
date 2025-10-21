@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, Car, Truck, Battery, Bike } from 'lucide-react';
+import { Check, Car, Truck, Battery, Bike, ArrowRight } from 'lucide-react';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import trustpilotLogo from '@/assets/trustpilot-logo.webp';
 import { useToast } from '@/hooks/use-toast';
@@ -199,11 +199,11 @@ export const HeroQuoteForm: React.FC<HeroQuoteFormProps> = ({ onRegistrationSubm
             <div className="mb-6 text-gray-700 text-sm md:text-base space-y-2">
               <div className="flex items-center">
                 <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                <span className="font-medium">From just 80p a day • Unlimited claims • Fast payouts</span>
+                <span className="font-medium">From just 80p a day • Easy claims • Fast payouts</span>
               </div>
               <div className="flex items-center">
                 <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                <span className="font-medium">Reliable cover you can trust • Save £££ on repairs</span>
+                <span className="font-medium">Unlimited claims • Repairs and Labour Cover •0% APR</span>
               </div>
             </div>
 
@@ -281,7 +281,12 @@ export const HeroQuoteForm: React.FC<HeroQuoteFormProps> = ({ onRegistrationSubm
                   }`}
                   disabled={isLookingUp}
                 >
-                  {isLookingUp ? 'Looking up vehicle...' : 'Get my quote'}
+                  {isLookingUp ? 'Looking up vehicle...' : (
+                    <>
+                      Get my instant quote
+                      <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
