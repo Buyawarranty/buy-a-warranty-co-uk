@@ -260,8 +260,8 @@ const CarExtendedWarranty: React.FC = () => {
 
             {/* Hero Quote Form */}
             <HeroQuoteForm onRegistrationSubmit={(vehicleData) => {
-              // Navigate to homepage with the vehicle data
-              navigate('/', { state: { vehicleData } });
+              // Navigate to homepage step 2 with the vehicle data
+              navigate('/?step=2', { state: { vehicleData } });
             }} />
           </div>
         </div>
