@@ -2017,9 +2017,9 @@ const PricingTable: React.FC<PricingTableProps> = ({
           <div className="flex justify-end mt-8">
             <div className="flex flex-col items-end space-y-2">
               <div className="text-right">
-                {/* Monthly Price - Main Hook - Show discounted price */}
+                {/* Monthly Price - Main Hook - Show discounted price with add-ons */}
                 <div className="text-3xl font-bold text-gray-900 mb-1">
-                  £{Math.round(discountedBasePlanPrice / 12)}/month
+                  £{Math.round(totalDiscountedPrice / 12)}/month
                 </div>
                 
                 {/* Payment Terms - Conditional Display */}
@@ -2071,9 +2071,9 @@ const PricingTable: React.FC<PricingTableProps> = ({
             
             {/* Price Section - Moved to center */}
             <div className="flex flex-col flex-1 text-center">
-              {/* Monthly Price - Main Hook - Show discounted price */}
+              {/* Monthly Price - Main Hook - Show discounted price with add-ons */}
               <div className="text-2xl font-bold text-gray-900 mb-1">
-                £{Math.round(discountedBasePlanPrice / 12)}/month - {paymentType === '12months' 
+                £{Math.round(totalDiscountedPrice / 12)}/month - {paymentType === '12months' 
                   ? '1 Year Cover'
                   : paymentType === '24months' 
                     ? '2 Year Cover'
