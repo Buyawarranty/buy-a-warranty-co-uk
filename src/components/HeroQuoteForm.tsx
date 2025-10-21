@@ -203,7 +203,7 @@ export const HeroQuoteForm: React.FC<HeroQuoteFormProps> = ({ onRegistrationSubm
               </div>
               <div className="flex items-center">
                 <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                <span className="font-medium">Unlimited claims • Repairs and Labour Cover •0% APR</span>
+                <span className="font-medium">Unlimited claims • Complete Cover •0% APR</span>
               </div>
             </div>
 
