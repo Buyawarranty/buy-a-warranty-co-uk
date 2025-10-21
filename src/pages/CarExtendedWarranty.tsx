@@ -8,6 +8,9 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 import WebsiteFooter from '@/components/WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { trackButtonClick } from '@/utils/analytics';
+import phoneCarImg from '@/assets/car-warranty-phone-car.png';
+import pandaVehiclesImg from '@/assets/car-warranty-panda-vehicles.png';
+import pandaEvImg from '@/assets/car-warranty-panda-ev.png';
 
 const CarExtendedWarranty: React.FC = () => {
   const isMobile = useIsMobile();
@@ -178,7 +181,7 @@ const CarExtendedWarranty: React.FC = () => {
             </div>
             
             <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-              Car Extended Warranty UK – <span className="text-[#1e40af]">Drive With Confidence, Not Worry</span>
+              Car Extended Warranty UK – <span className="text-primary">Drive With Confidence, Not Worry</span>
             </h1>
             
             <p className="text-xl text-gray-700">
@@ -197,7 +200,7 @@ const CarExtendedWarranty: React.FC = () => {
               <Button 
                 size="lg"
                 onClick={navigateToQuoteForm}
-                className="bg-primary text-white hover:bg-primary/90"
+                className="bg-[#1e40af] text-white hover:bg-[#1e40af]/90"
               >
                 Get Your Free Quote <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -205,6 +208,7 @@ const CarExtendedWarranty: React.FC = () => {
                 size="lg"
                 variant="outline"
                 onClick={() => window.location.href = 'tel:03302295040'}
+                className="border-[#1e40af] text-[#1e40af] hover:bg-[#1e40af] hover:text-white"
               >
                 <Phone className="mr-2 h-5 w-5" /> Call 0330 229 5040
               </Button>
@@ -233,7 +237,7 @@ const CarExtendedWarranty: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="bg-[#1e40af] text-white">
+                    <tr className="bg-primary text-white">
                       <th className="p-3 text-left">Feature</th>
                       <th className="p-3 text-left">Manufacturer Warranty</th>
                       <th className="p-3 text-left">Buy A Warranty (Extended)</th>
@@ -268,7 +272,7 @@ const CarExtendedWarranty: React.FC = () => {
                   </tbody>
                 </table>
               </div>
-              <p className="text-center text-lg font-semibold text-[#1e40af] mt-6 italic">
+              <p className="text-center text-lg font-semibold text-primary mt-6 italic">
                 "When your manufacturer's warranty ends, our protection begins."
               </p>
             </div>
@@ -288,7 +292,7 @@ const CarExtendedWarranty: React.FC = () => {
               {/* Benefit 1 */}
               <div className="bg-white rounded-lg p-8 shadow-md">
                 <div className="flex items-start gap-4">
-                  <div className="bg-[#1e40af] text-white rounded-full p-3 flex-shrink-0">
+                  <div className="bg-primary text-white rounded-full p-3 flex-shrink-0">
                     <Shield className="h-6 w-6" />
                   </div>
                   <div>
@@ -311,7 +315,7 @@ const CarExtendedWarranty: React.FC = () => {
                     <p className="text-gray-700 mb-4">
                       With Buy A Warranty, those costs can be covered, saving you from financial strain. We pay garages directly, so you're never left out of pocket waiting for reimbursement. You can also choose a repairer of your choice and claimback expenses once the garage has been verified.
                     </p>
-                    <p className="text-lg font-semibold text-[#1e40af] italic">
+                    <p className="text-lg font-semibold text-primary italic">
                       Expect performance, not problems. Our warranty keeps you covered, so you can enjoy the ride.
                     </p>
                   </div>
@@ -321,7 +325,7 @@ const CarExtendedWarranty: React.FC = () => {
               {/* Benefit 2 */}
               <div className="bg-white rounded-lg p-8 shadow-md">
                 <div className="flex items-start gap-4">
-                  <div className="bg-[#1e40af] text-white rounded-full p-3 flex-shrink-0">
+                  <div className="bg-primary text-white rounded-full p-3 flex-shrink-0">
                     <Award className="h-6 w-6" />
                   </div>
                   <div>
@@ -332,7 +336,7 @@ const CarExtendedWarranty: React.FC = () => {
                     <p className="text-gray-700 mb-4">
                       That means no shock repair invoices, no last-minute scrambles for cash, just financial stability and worry-free driving.
                     </p>
-                    <p className="text-lg font-semibold text-[#1e40af] italic">
+                    <p className="text-lg font-semibold text-primary italic">
                       Protect your car. Protect your wallet. It's that simple.
                     </p>
                   </div>
@@ -342,7 +346,7 @@ const CarExtendedWarranty: React.FC = () => {
               {/* Benefit 3 */}
               <div className="bg-white rounded-lg p-8 shadow-md">
                 <div className="flex items-start gap-4">
-                  <div className="bg-[#1e40af] text-white rounded-full p-3 flex-shrink-0">
+                  <div className="bg-primary text-white rounded-full p-3 flex-shrink-0">
                     <Check className="h-6 w-6" />
                   </div>
                   <div>
@@ -394,7 +398,7 @@ const CarExtendedWarranty: React.FC = () => {
             <div className="overflow-x-auto mb-8">
               <table className="w-full border-collapse bg-gray-50 rounded-lg overflow-hidden">
                 <thead>
-                  <tr className="bg-[#1e40af] text-white">
+                  <tr className="bg-primary text-white">
                     <th className="p-4 text-left">Coverage Level</th>
                     <th className="p-4 text-left">Duration</th>
                     <th className="p-4 text-left">Ideal For</th>
@@ -427,7 +431,7 @@ const CarExtendedWarranty: React.FC = () => {
 
             <p className="text-center text-gray-700">
               <strong>Tip:</strong> You can explore the exact covered parts on our{' '}
-              <Link to="/what-is-covered/" className="text-[#1e40af] underline hover:text-[#1e40af]/80">
+              <Link to="/what-is-covered/" className="text-primary underline hover:text-primary/80">
                 What's Covered page
               </Link>
               .
@@ -467,7 +471,7 @@ const CarExtendedWarranty: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-[#1e40af] text-white p-6 rounded-lg text-center mb-12">
+            <div className="bg-primary text-white p-6 rounded-lg text-center mb-12">
               <p className="text-lg font-semibold mb-2">Check instantly:</p>
               <p>Enter your registration on our quote form - you'll know your eligibility in seconds.</p>
             </div>
@@ -499,6 +503,16 @@ const CarExtendedWarranty: React.FC = () => {
                     <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
                   </tr>
                   <tr className="border-b bg-gray-50">
+                    <td className="p-4">Commercial vehicles under 3.5 tonnes</td>
+                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
+                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Motorcycles</td>
+                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
+                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  </tr>
+                  <tr className="border-b bg-gray-50">
                     <td className="p-4">High-performance vehicles (e.g. BMW M, Audi RS, Mercedes-AMG)</td>
                     <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
                     <td className="p-4">Excluded due to specialist components and high repair costs</td>
@@ -523,20 +537,10 @@ const CarExtendedWarranty: React.FC = () => {
                     <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
                     <td className="p-4">Not eligible unless explicitly approved</td>
                   </tr>
-                  <tr className="border-b">
+                  <tr>
                     <td className="p-4">Vehicles over 150,000 miles</td>
                     <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
                     <td className="p-4">Not eligible unless explicitly approved</td>
-                  </tr>
-                  <tr className="border-b bg-gray-50">
-                    <td className="p-4">Commercial vehicles under 3.5 tonnes</td>
-                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
-                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4">Motorcycles</td>
-                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
-                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
                   </tr>
                 </tbody>
               </table>
@@ -555,18 +559,68 @@ const CarExtendedWarranty: React.FC = () => {
             
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center">
               {[
-                'Jaguar', 'Land Rover', 'MG', 'Mini', 'Alfa Romeo', 'Audi',
-                'BMW', 'Chevrolet', 'Chrysler', 'Citroën', 'Dacia', 'Daewoo',
-                'Daihatsu', 'Fiat', 'Ford', 'Honda', 'Hyundai', 'Infiniti',
-                'Isuzu', 'Iveco', 'Jeep', 'Kia', 'Lexus', 'Mazda',
-                'Mercedes-Benz', 'Mitsubishi', 'Nissan', 'Peugeot', 'Renault', 'SEAT',
-                'Škoda', 'Smart', 'SsangYong', 'Subaru', 'Suzuki', 'Tesla',
-                'Toyota', 'Volkswagen', 'Volvo', 'Yamaha'
+                { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
+                { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
+                { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
+                { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
+                { name: 'Alfa Romeo', logo: 'https://logo.clearbit.com/alfaromeo.com' },
+                { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com' },
+                { name: 'BMW', logo: 'https://logo.clearbit.com/bmw.com' },
+                { name: 'Chevrolet', logo: 'https://logo.clearbit.com/chevrolet.com' },
+                { name: 'Chrysler', logo: 'https://logo.clearbit.com/chrysler.com' },
+                { name: 'Citroën', logo: 'https://logo.clearbit.com/citroen.com' },
+                { name: 'Dacia', logo: 'https://logo.clearbit.com/dacia.com' },
+                { name: 'Daewoo', logo: 'https://logo.clearbit.com/daewoo.com' },
+                { name: 'Daihatsu', logo: 'https://logo.clearbit.com/daihatsu.com' },
+                { name: 'Fiat', logo: 'https://logo.clearbit.com/fiat.com' },
+                { name: 'Ford', logo: 'https://logo.clearbit.com/ford.com' },
+                { name: 'Honda', logo: 'https://logo.clearbit.com/honda.com' },
+                { name: 'Hyundai', logo: 'https://logo.clearbit.com/hyundai.com' },
+                { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
+                { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
+                { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
+                { name: 'Jeep', logo: 'https://logo.clearbit.com/jeep.com' },
+                { name: 'Kia', logo: 'https://logo.clearbit.com/kia.com' },
+                { name: 'Lexus', logo: 'https://logo.clearbit.com/lexus.com' },
+                { name: 'Mazda', logo: 'https://logo.clearbit.com/mazda.com' },
+                { name: 'Mercedes-Benz', logo: 'https://logo.clearbit.com/mercedes-benz.com' },
+                { name: 'Mitsubishi', logo: 'https://logo.clearbit.com/mitsubishi-motors.com' },
+                { name: 'Nissan', logo: 'https://logo.clearbit.com/nissan.com' },
+                { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
+                { name: 'Renault', logo: 'https://logo.clearbit.com/renault.com' },
+                { name: 'SEAT', logo: 'https://logo.clearbit.com/seat.com' },
+                { name: 'Škoda', logo: 'https://logo.clearbit.com/skoda.com' },
+                { name: 'Smart', logo: 'https://logo.clearbit.com/smart.com' },
+                { name: 'SsangYong', logo: 'https://logo.clearbit.com/ssangyong.com' },
+                { name: 'Subaru', logo: 'https://logo.clearbit.com/subaru.com' },
+                { name: 'Suzuki', logo: 'https://logo.clearbit.com/suzuki.com' },
+                { name: 'Tesla', logo: 'https://logo.clearbit.com/tesla.com' },
+                { name: 'Toyota', logo: 'https://logo.clearbit.com/toyota.com' },
+                { name: 'Volkswagen', logo: 'https://logo.clearbit.com/volkswagen.com' },
+                { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
+                { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
               ].map((brand) => (
-                <div key={brand} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <p className="font-semibold text-gray-800">{brand}</p>
+                <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
+                  <img 
+                    src={brand.logo} 
+                    alt={`${brand.name} logo`} 
+                    className="h-10 w-auto object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <p className="font-semibold text-gray-800">{brand.name}</p>
                 </div>
               ))}
+            </div>
+
+            {/* Image */}
+            <div className="flex justify-center mt-12">
+              <img 
+                src={pandaVehiclesImg} 
+                alt="Buy a Warranty mascot with various vehicles" 
+                className="max-w-[25%] h-auto object-contain"
+              />
             </div>
           </div>
         </div>
@@ -585,25 +639,34 @@ const CarExtendedWarranty: React.FC = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="bg-[#1e40af] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
+                <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
                 <h3 className="font-bold text-lg mb-2">Get a Quote</h3>
                 <p className="text-gray-600">Enter your car registration to get an instant quote.</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="bg-[#1e40af] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
+                <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
                 <h3 className="font-bold text-lg mb-2">Choose Cover</h3>
                 <p className="text-gray-600">Choose your level of cover and payment plan.</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="bg-[#1e40af] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
+                <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
                 <h3 className="font-bold text-lg mb-2">Activate Policy</h3>
                 <p className="text-gray-600">Review and activate your policy instantly.</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="bg-[#1e40af] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">4</div>
+                <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">4</div>
                 <h3 className="font-bold text-lg mb-2">Drive Confident</h3>
                 <p className="text-gray-600">Enjoy complete peace of mind knowing you're covered.</p>
               </div>
+            </div>
+
+            {/* Image */}
+            <div className="flex justify-center mb-12">
+              <img 
+                src={phoneCarImg} 
+                alt="Buy a Warranty mobile app with car" 
+                className="max-w-[25%] h-auto object-contain"
+              />
             </div>
 
             {/* Making a Claim */}
@@ -629,7 +692,7 @@ const CarExtendedWarranty: React.FC = () => {
               </div>
               <div className="text-center">
                 <Link to="/make-a-claim/">
-                  <Button className="bg-primary text-white hover:bg-primary/90">
+                  <Button className="bg-[#1e40af] text-white hover:bg-[#1e40af]/90">
                     Make a Claim
                   </Button>
                 </Link>
@@ -672,7 +735,7 @@ const CarExtendedWarranty: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
-                <Shield className="h-6 w-6 text-[#1e40af] flex-shrink-0 mt-1" />
+                <Shield className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-xl font-bold mb-2">Real Stories, Real Savings</h3>
                   <p className="text-gray-700">
@@ -680,6 +743,15 @@ const CarExtendedWarranty: React.FC = () => {
                   </p>
                 </div>
               </div>
+            </div>
+
+            {/* Image */}
+            <div className="flex justify-center mt-8">
+              <img 
+                src={pandaEvImg} 
+                alt="Buy a Warranty mascot with electric vehicle" 
+                className="max-w-[25%] h-auto object-contain"
+              />
             </div>
           </div>
         </div>
@@ -766,7 +838,7 @@ const CarExtendedWarranty: React.FC = () => {
             <p className="text-lg text-gray-700 mb-6">
               You can even download a sample policy document before you buy.
             </p>
-            <p className="text-xl font-semibold text-[#1e40af] italic">
+            <p className="text-xl font-semibold text-primary italic">
               Honesty isn't optional - it's our policy.
             </p>
           </div>
@@ -798,7 +870,7 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 bg-[#1e40af] text-white">
+      <section className="py-16 bg-primary text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h2 className="text-3xl md:text-4xl font-bold">
@@ -827,7 +899,7 @@ const CarExtendedWarranty: React.FC = () => {
               <Button 
                 size="lg"
                 onClick={navigateToQuoteForm}
-                className="bg-white text-[#1e40af] hover:bg-gray-100"
+                className="bg-white text-primary hover:bg-gray-100"
               >
                 Get Your Free Quote Now <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
