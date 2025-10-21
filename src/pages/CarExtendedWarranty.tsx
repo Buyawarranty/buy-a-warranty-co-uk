@@ -560,75 +560,78 @@ const CarExtendedWarranty: React.FC = () => {
       {/* Manufacturers Covered */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
               Manufacturers Covered Under Our Warranty Plans
             </h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center">
-              {[
-                { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
-                { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
-                { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
-                { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
-                { name: 'Alfa Romeo', logo: alfaRomeoLogo },
-                { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com' },
-                { name: 'BMW', logo: bmwLogo },
-                { name: 'Chevrolet', logo: 'https://logo.clearbit.com/chevrolet.com' },
-                { name: 'Chrysler', logo: 'https://logo.clearbit.com/chrysler.com' },
-                { name: 'Citroën', logo: 'https://logo.clearbit.com/citroen.com' },
-                { name: 'Dacia', logo: daciaLogo },
-                { name: 'Daewoo', logo: 'https://logo.clearbit.com/daewoo.com' },
-                { name: 'Daihatsu', logo: 'https://logo.clearbit.com/daihatsu.com' },
-                { name: 'Fiat', logo: 'https://logo.clearbit.com/fiat.com' },
-                { name: 'Ford', logo: 'https://logo.clearbit.com/ford.com' },
-                { name: 'Honda', logo: 'https://logo.clearbit.com/honda.com' },
-                { name: 'Hyundai', logo: 'https://logo.clearbit.com/hyundai.com' },
-                { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
-                { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
-                { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
-                { name: 'Jeep', logo: 'https://logo.clearbit.com/jeep.com' },
-                { name: 'Kia', logo: 'https://logo.clearbit.com/kia.com' },
-                { name: 'Lexus', logo: 'https://logo.clearbit.com/lexus.com' },
-                { name: 'Mazda', logo: 'https://logo.clearbit.com/mazda.com' },
-                { name: 'Mercedes-Benz', logo: 'https://logo.clearbit.com/mercedes-benz.com' },
-                { name: 'Mitsubishi', logo: 'https://logo.clearbit.com/mitsubishi-motors.com' },
-                { name: 'Nissan', logo: nissanLogo },
-                { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
-                { name: 'Renault', logo: renaultLogo },
-                { name: 'SEAT', logo: seatLogo },
-                { name: 'Škoda', logo: skodaLogo },
-                { name: 'Smart', logo: 'https://logo.clearbit.com/smart.com' },
-                { name: 'SsangYong', logo: ssangyongLogo },
-                { name: 'Subaru', logo: 'https://logo.clearbit.com/subaru.com' },
-                { name: 'Suzuki', logo: 'https://logo.clearbit.com/suzuki.com' },
-                { name: 'Tesla', logo: 'https://logo.clearbit.com/tesla.com' },
-                { name: 'Toyota', logo: 'https://logo.clearbit.com/toyota.com' },
-                { name: 'Volkswagen', logo: 'https://logo.clearbit.com/volkswagen.com' },
-                { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
-                { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
-              ].map((brand) => (
-                <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
-                  <img 
-                    src={brand.logo} 
-                    alt={`${brand.name} logo`} 
-                    className="h-10 w-auto object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                  <p className="font-semibold text-gray-800">{brand.name}</p>
-                </div>
-              ))}
-            </div>
+            <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
+              {/* Left - Manufacturer logos grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
+                {[
+                  { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
+                  { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
+                  { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
+                  { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
+                  { name: 'Alfa Romeo', logo: alfaRomeoLogo },
+                  { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com' },
+                  { name: 'BMW', logo: bmwLogo },
+                  { name: 'Chevrolet', logo: 'https://logo.clearbit.com/chevrolet.com' },
+                  { name: 'Chrysler', logo: 'https://logo.clearbit.com/chrysler.com' },
+                  { name: 'Citroën', logo: 'https://logo.clearbit.com/citroen.com' },
+                  { name: 'Dacia', logo: daciaLogo },
+                  { name: 'Daewoo', logo: 'https://logo.clearbit.com/daewoo.com' },
+                  { name: 'Daihatsu', logo: 'https://logo.clearbit.com/daihatsu.com' },
+                  { name: 'Fiat', logo: 'https://logo.clearbit.com/fiat.com' },
+                  { name: 'Ford', logo: 'https://logo.clearbit.com/ford.com' },
+                  { name: 'Honda', logo: 'https://logo.clearbit.com/honda.com' },
+                  { name: 'Hyundai', logo: 'https://logo.clearbit.com/hyundai.com' },
+                  { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
+                  { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
+                  { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
+                  { name: 'Jeep', logo: 'https://logo.clearbit.com/jeep.com' },
+                  { name: 'Kia', logo: 'https://logo.clearbit.com/kia.com' },
+                  { name: 'Lexus', logo: 'https://logo.clearbit.com/lexus.com' },
+                  { name: 'Mazda', logo: 'https://logo.clearbit.com/mazda.com' },
+                  { name: 'Mercedes-Benz', logo: 'https://logo.clearbit.com/mercedes-benz.com' },
+                  { name: 'Mitsubishi', logo: 'https://logo.clearbit.com/mitsubishi-motors.com' },
+                  { name: 'Nissan', logo: nissanLogo },
+                  { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
+                  { name: 'Renault', logo: renaultLogo },
+                  { name: 'SEAT', logo: seatLogo },
+                  { name: 'Škoda', logo: skodaLogo },
+                  { name: 'Smart', logo: 'https://logo.clearbit.com/smart.com' },
+                  { name: 'SsangYong', logo: ssangyongLogo },
+                  { name: 'Subaru', logo: 'https://logo.clearbit.com/subaru.com' },
+                  { name: 'Suzuki', logo: 'https://logo.clearbit.com/suzuki.com' },
+                  { name: 'Tesla', logo: 'https://logo.clearbit.com/tesla.com' },
+                  { name: 'Toyota', logo: 'https://logo.clearbit.com/toyota.com' },
+                  { name: 'Volkswagen', logo: 'https://logo.clearbit.com/volkswagen.com' },
+                  { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
+                  { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
+                ].map((brand) => (
+                  <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
+                    <img 
+                      src={brand.logo} 
+                      alt={`${brand.name} logo`} 
+                      className="h-10 w-auto object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                    <p className="font-semibold text-gray-800">{brand.name}</p>
+                  </div>
+                ))}
+              </div>
 
-            {/* Image */}
-            <div className="flex justify-center mt-12">
-              <img 
-                src={pandaVehiclesImg} 
-                alt="Buy a Warranty mascot with various vehicles" 
-                className="max-w-[25%] h-auto object-contain"
-              />
+              {/* Right - Image */}
+              <div className="relative text-center">
+                <img 
+                  src={pandaVehiclesImg} 
+                  alt="Buy a Warranty mascot with various vehicles" 
+                  className="w-full h-auto max-w-sm md:max-w-lg mx-auto object-contain"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -637,7 +640,7 @@ const CarExtendedWarranty: React.FC = () => {
       {/* How It Works */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
               How It Works: Simple, Fast, and Transparent
             </h2>
@@ -645,36 +648,39 @@ const CarExtendedWarranty: React.FC = () => {
               We've simplified the process - from quote to claim.
             </p>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
-                <h3 className="font-bold text-lg mb-2">Get a Quote</h3>
-                <p className="text-gray-600">Enter your car registration to get an instant quote.</p>
+            <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center mb-12">
+              {/* Left - Steps */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                  <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
+                  <h3 className="font-bold text-lg mb-2">Get a Quote</h3>
+                  <p className="text-gray-600">Enter your car registration to get an instant quote.</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                  <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
+                  <h3 className="font-bold text-lg mb-2">Choose Cover</h3>
+                  <p className="text-gray-600">Choose your level of cover and payment plan.</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                  <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
+                  <h3 className="font-bold text-lg mb-2">Activate Policy</h3>
+                  <p className="text-gray-600">Review and activate your policy instantly.</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                  <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">4</div>
+                  <h3 className="font-bold text-lg mb-2">Drive Confident</h3>
+                  <p className="text-gray-600">Enjoy complete peace of mind knowing you're covered.</p>
+                </div>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
-                <h3 className="font-bold text-lg mb-2">Choose Cover</h3>
-                <p className="text-gray-600">Choose your level of cover and payment plan.</p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
-                <h3 className="font-bold text-lg mb-2">Activate Policy</h3>
-                <p className="text-gray-600">Review and activate your policy instantly.</p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">4</div>
-                <h3 className="font-bold text-lg mb-2">Drive Confident</h3>
-                <p className="text-gray-600">Enjoy complete peace of mind knowing you're covered.</p>
-              </div>
-            </div>
 
-            {/* Image */}
-            <div className="flex justify-center mb-12">
-              <img 
-                src={phoneCarImg} 
-                alt="Buy a Warranty mobile app with car" 
-                className="max-w-[25%] h-auto object-contain"
-              />
+              {/* Right - Image */}
+              <div className="relative text-center order-1 lg:order-2">
+                <img 
+                  src={phoneCarImg} 
+                  alt="Buy a Warranty mobile app with car" 
+                  className="w-full h-auto max-w-sm md:max-w-lg mx-auto object-contain"
+                />
+              </div>
             </div>
 
             {/* Making a Claim */}
@@ -716,50 +722,53 @@ const CarExtendedWarranty: React.FC = () => {
       {/* Why Choose Buy A Warranty */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
               Why Choose Buy A Warranty?
             </h2>
 
-            <div className="space-y-6">
-              <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
-                <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Reliable & trustworthy</h3>
-                  <p className="text-gray-700">
-                    We're fully compliant with UK financial laws and transparent practices. You're protected under the Consumer Rights Act 2015 and covered by fair, clear terms.
-                  </p>
+            <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
+              {/* Left - Content */}
+              <div className="space-y-6">
+                <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
+                  <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Reliable & trustworthy</h3>
+                    <p className="text-gray-700">
+                      We're fully compliant with UK financial laws and transparent practices. You're protected under the Consumer Rights Act 2015 and covered by fair, clear terms.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
+                  <Star className="h-6 w-6 text-yellow-500 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Trusted by UK Drivers</h3>
+                    <p className="text-gray-700">
+                      We're proud of our customer-first approach and transparent pricing. See what UK drivers say on Trustpilot - thousands of real reviews and success stories.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
+                  <Shield className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Real Stories, Real Savings</h3>
+                    <p className="text-gray-700">
+                      Our customers have saved thousands on unexpected repairs. Read their stories below.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
-                <Star className="h-6 w-6 text-yellow-500 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Trusted by UK Drivers</h3>
-                  <p className="text-gray-700">
-                    We're proud of our customer-first approach and transparent pricing. See what UK drivers say on Trustpilot - thousands of real reviews and success stories.
-                  </p>
-                </div>
+              {/* Right - Image */}
+              <div className="relative text-center order-1 lg:order-2">
+                <img 
+                  src={pandaEvImg} 
+                  alt="Buy a Warranty mascot with electric vehicle" 
+                  className="w-full h-auto max-w-sm md:max-w-lg mx-auto object-contain"
+                />
               </div>
-
-              <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
-                <Shield className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Real Stories, Real Savings</h3>
-                  <p className="text-gray-700">
-                    Our customers have saved thousands on unexpected repairs. Read their stories below.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Image */}
-            <div className="flex justify-center mt-8">
-              <img 
-                src={pandaEvImg} 
-                alt="Buy a Warranty mascot with electric vehicle" 
-                className="max-w-[25%] h-auto object-contain"
-              />
             </div>
           </div>
         </div>
