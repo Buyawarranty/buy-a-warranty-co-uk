@@ -14,6 +14,7 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 import WebsiteFooter from '@/components/WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { trackButtonClick } from '@/utils/analytics';
+import { HeroQuoteForm } from '@/components/HeroQuoteForm';
 import phoneCarImg from '@/assets/car-warranty-phone-car.png';
 import pandaVehiclesImg from '@/assets/car-warranty-panda-vehicles.png';
 import pandaEvImg from '@/assets/car-warranty-panda-ev.png';
@@ -257,17 +258,11 @@ const CarExtendedWarranty: React.FC = () => {
               </Button>
             </div>
 
-            {/* Hero Image */}
-            <figure className="relative text-center mt-12">
-              <img 
-                src={pandaVehiclesImg} 
-                alt="Buy a Warranty panda mascot alongside various vehicles including cars, vans, and motorcycles covered under UK extended warranty plans" 
-                className="w-full h-auto max-w-2xl mx-auto object-contain"
-                loading="eager"
-                width="800"
-                height="400"
-              />
-            </figure>
+            {/* Hero Quote Form */}
+            <HeroQuoteForm onRegistrationSubmit={(vehicleData) => {
+              // Navigate to homepage with the vehicle data
+              navigate('/', { state: { vehicleData } });
+            }} />
           </div>
         </div>
       </section>
