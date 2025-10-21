@@ -6,11 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Eye, Download, Calendar, User, Mail, Phone, Paperclip, FileDown, FileSpreadsheet, Search, Filter } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Eye, Download, Calendar, User, Mail, Phone, Paperclip, FileDown, FileSpreadsheet, Search, Filter, Trash2, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ClaimsSummaryCards } from './claims/ClaimsSummaryCards';
 import { ClaimsChart } from './claims/ClaimsChart';
 import { ClaimDetailDialog } from './claims/ClaimDetailDialog';
+import { ClaimAmountEditDialog } from './claims/ClaimAmountEditDialog';
 import { exportToCSV, exportToPDF, formatClaimForExport } from './claims/exportUtils';
 
 interface ClaimSubmission {
@@ -44,6 +46,8 @@ export const ClaimsTab = () => {
   const [claims, setClaims] = useState<ClaimSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedClaim, setSelectedClaim] = useState<ClaimSubmission | null>(null);
+  const [editingClaim, setEditingClaim] = useState<ClaimSubmission | null>(null);
+  const [selectedClaimIds, setSelectedClaimIds] = useState<Set<string>>(new Set());
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [warrantyFilter, setWarrantyFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -236,6 +240,66 @@ export const ClaimsTab = () => {
 
   const uniqueWarrantyTypes = Array.from(new Set(claims.map(c => c.warranty_type).filter(Boolean)));
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedClaimIds(new Set(filteredClaims.map(c => c.id)));
+    } else {
+      setSelectedClaimIds(new Set());
+    }
+  };
+
+  const handleSelectClaim = (claimId: string, checked: boolean) => {
+    const newSelected = new Set(selectedClaimIds);
+    if (checked) {
+      newSelected.add(claimId);
+    } else {
+      newSelected.delete(claimId);
+    }
+    setSelectedClaimIds(newSelected);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedClaimIds.size === 0) {
+      toast({
+        title: "No Selection",
+        description: "Please select claims to delete",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete ${selectedClaimIds.size} claim(s)? This action cannot be undone.`)) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('claims_submissions')
+        .delete()
+        .in('id', Array.from(selectedClaimIds));
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Deleted ${selectedClaimIds.size} claim(s) successfully`,
+      });
+      
+      setSelectedClaimIds(new Set());
+      await fetchClaims();
+    } catch (error) {
+      console.error('Error deleting claims:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete claims",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6">
@@ -383,10 +447,24 @@ export const ClaimsTab = () => {
       {/* Claims Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Claims Submissions ({filteredClaims.length})</CardTitle>
-          <CardDescription>
-            All claim submissions including website forms and emails to claims@buyawarranty.co.uk
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Claims Submissions ({filteredClaims.length})</CardTitle>
+              <CardDescription>
+                All claim submissions including website forms and emails to claims@buyawarranty.co.uk
+              </CardDescription>
+            </div>
+            {selectedClaimIds.size > 0 && (
+              <Button 
+                variant="destructive" 
+                onClick={handleBulkDelete}
+                disabled={loading}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete ({selectedClaimIds.size})
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {filteredClaims.length === 0 ? (
@@ -405,6 +483,13 @@ export const ClaimsTab = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={filteredClaims.length > 0 && selectedClaimIds.size === filteredClaims.length}
+                        onCheckedChange={handleSelectAll}
+                        aria-label="Select all claims"
+                      />
+                    </TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Customer</TableHead>
                     <TableHead>Vehicle Reg</TableHead>
@@ -419,6 +504,13 @@ export const ClaimsTab = () => {
                 <TableBody>
                   {filteredClaims.map((claim) => (
                     <TableRow key={claim.id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedClaimIds.has(claim.id)}
+                          onCheckedChange={(checked) => handleSelectClaim(claim.id, checked as boolean)}
+                          aria-label={`Select claim ${claim.id}`}
+                        />
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4 text-gray-400" />
@@ -437,6 +529,15 @@ export const ClaimsTab = () => {
                           <div className="flex items-center gap-2">
                             <User className="h-4 w-4 text-gray-400" />
                             <span className="font-medium text-sm">{claim.name}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setEditingClaim(claim)}
+                              className="h-6 w-6 p-0"
+                              title="Edit claim amount"
+                            >
+                              <Edit className="h-3 w-3 text-blue-600" />
+                            </Button>
                           </div>
                           <div className="flex items-center gap-2 text-xs">
                             <Mail className="h-3 w-3 text-gray-400" />
@@ -528,6 +629,16 @@ export const ClaimsTab = () => {
           claim={selectedClaim}
           open={!!selectedClaim}
           onOpenChange={(open) => !open && setSelectedClaim(null)}
+          onUpdate={fetchClaims}
+        />
+      )}
+
+      {/* Claim Amount Edit Dialog */}
+      {editingClaim && (
+        <ClaimAmountEditDialog
+          claim={editingClaim}
+          open={!!editingClaim}
+          onOpenChange={(open) => !open && setEditingClaim(null)}
           onUpdate={fetchClaims}
         />
       )}
