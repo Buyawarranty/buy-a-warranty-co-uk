@@ -11,6 +11,14 @@ import { trackButtonClick } from '@/utils/analytics';
 import phoneCarImg from '@/assets/car-warranty-phone-car.png';
 import pandaVehiclesImg from '@/assets/car-warranty-panda-vehicles.png';
 import pandaEvImg from '@/assets/car-warranty-panda-ev.png';
+import alfaRomeoLogo from '@/assets/logos/alfa-romeo.webp';
+import bmwLogo from '@/assets/logos/bmw.webp';
+import daciaLogo from '@/assets/logos/dacia.png';
+import nissanLogo from '@/assets/logos/nissan.png';
+import renaultLogo from '@/assets/logos/renault.png';
+import seatLogo from '@/assets/logos/seat.webp';
+import skodaLogo from '@/assets/logos/skoda.webp';
+import ssangyongLogo from '@/assets/logos/ssangyong.png';
 
 const CarExtendedWarranty: React.FC = () => {
   const isMobile = useIsMobile();
@@ -563,13 +571,13 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
                 { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
                 { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
-                { name: 'Alfa Romeo', logo: 'https://logo.clearbit.com/alfaromeo.com' },
+                { name: 'Alfa Romeo', logo: alfaRomeoLogo },
                 { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com' },
-                { name: 'BMW', logo: 'https://logo.clearbit.com/bmw.com' },
+                { name: 'BMW', logo: bmwLogo },
                 { name: 'Chevrolet', logo: 'https://logo.clearbit.com/chevrolet.com' },
                 { name: 'Chrysler', logo: 'https://logo.clearbit.com/chrysler.com' },
                 { name: 'Citroën', logo: 'https://logo.clearbit.com/citroen.com' },
-                { name: 'Dacia', logo: 'https://logo.clearbit.com/dacia.com' },
+                { name: 'Dacia', logo: daciaLogo },
                 { name: 'Daewoo', logo: 'https://logo.clearbit.com/daewoo.com' },
                 { name: 'Daihatsu', logo: 'https://logo.clearbit.com/daihatsu.com' },
                 { name: 'Fiat', logo: 'https://logo.clearbit.com/fiat.com' },
@@ -585,13 +593,13 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Mazda', logo: 'https://logo.clearbit.com/mazda.com' },
                 { name: 'Mercedes-Benz', logo: 'https://logo.clearbit.com/mercedes-benz.com' },
                 { name: 'Mitsubishi', logo: 'https://logo.clearbit.com/mitsubishi-motors.com' },
-                { name: 'Nissan', logo: 'https://logo.clearbit.com/nissan.com' },
+                { name: 'Nissan', logo: nissanLogo },
                 { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
-                { name: 'Renault', logo: 'https://logo.clearbit.com/renault.com' },
-                { name: 'SEAT', logo: 'https://logo.clearbit.com/seat.com' },
-                { name: 'Škoda', logo: 'https://logo.clearbit.com/skoda.com' },
+                { name: 'Renault', logo: renaultLogo },
+                { name: 'SEAT', logo: seatLogo },
+                { name: 'Škoda', logo: skodaLogo },
                 { name: 'Smart', logo: 'https://logo.clearbit.com/smart.com' },
-                { name: 'SsangYong', logo: 'https://logo.clearbit.com/ssangyong.com' },
+                { name: 'SsangYong', logo: ssangyongLogo },
                 { name: 'Subaru', logo: 'https://logo.clearbit.com/subaru.com' },
                 { name: 'Suzuki', logo: 'https://logo.clearbit.com/suzuki.com' },
                 { name: 'Tesla', logo: 'https://logo.clearbit.com/tesla.com' },
