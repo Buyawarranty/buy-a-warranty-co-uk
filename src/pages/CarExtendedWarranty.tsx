@@ -208,7 +208,7 @@ const CarExtendedWarranty: React.FC = () => {
               <Button 
                 size="lg"
                 onClick={navigateToQuoteForm}
-                className="bg-[#1e40af] text-white hover:bg-[#1e40af]/90"
+                className="bg-primary text-white hover:bg-primary/90"
               >
                 Get Your Free Quote <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -216,7 +216,7 @@ const CarExtendedWarranty: React.FC = () => {
                 size="lg"
                 variant="outline"
                 onClick={() => window.location.href = 'tel:03302295040'}
-                className="border-[#1e40af] text-[#1e40af] hover:bg-[#1e40af] hover:text-white"
+                className="border-primary text-primary hover:bg-primary hover:text-white"
               >
                 <Phone className="mr-2 h-5 w-5" /> Call 0330 229 5040
               </Button>
