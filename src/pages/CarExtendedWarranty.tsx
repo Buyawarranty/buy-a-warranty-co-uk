@@ -960,7 +960,7 @@ const CarExtendedWarranty: React.FC = () => {
               <Button 
                 size="lg"
                 onClick={navigateToQuoteForm}
-                className="bg-white text-primary hover:bg-gray-100"
+                className="bg-white text-gray-900 hover:bg-gray-100"
               >
                 Get Your Free Quote Now <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
