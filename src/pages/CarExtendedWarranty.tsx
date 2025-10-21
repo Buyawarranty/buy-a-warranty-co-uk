@@ -221,6 +221,15 @@ const CarExtendedWarranty: React.FC = () => {
                 <Phone className="mr-2 h-5 w-5" /> Call 0330 229 5040
               </Button>
             </div>
+
+            {/* Hero Image */}
+            <div className="relative text-center mt-12">
+              <img 
+                src={pandaVehiclesImg} 
+                alt="Buy a Warranty mascot with various vehicles" 
+                className="w-full h-auto max-w-2xl mx-auto object-contain"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -560,78 +569,66 @@ const CarExtendedWarranty: React.FC = () => {
       {/* Manufacturers Covered */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
               Manufacturers Covered Under Our Warranty Plans
             </h2>
             
-            <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
-              {/* Left - Manufacturer logos grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
-                {[
-                  { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
-                  { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
-                  { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
-                  { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
-                  { name: 'Alfa Romeo', logo: alfaRomeoLogo },
-                  { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com' },
-                  { name: 'BMW', logo: bmwLogo },
-                  { name: 'Chevrolet', logo: 'https://logo.clearbit.com/chevrolet.com' },
-                  { name: 'Chrysler', logo: 'https://logo.clearbit.com/chrysler.com' },
-                  { name: 'Citroën', logo: 'https://logo.clearbit.com/citroen.com' },
-                  { name: 'Dacia', logo: daciaLogo },
-                  { name: 'Daewoo', logo: 'https://logo.clearbit.com/daewoo.com' },
-                  { name: 'Daihatsu', logo: 'https://logo.clearbit.com/daihatsu.com' },
-                  { name: 'Fiat', logo: 'https://logo.clearbit.com/fiat.com' },
-                  { name: 'Ford', logo: 'https://logo.clearbit.com/ford.com' },
-                  { name: 'Honda', logo: 'https://logo.clearbit.com/honda.com' },
-                  { name: 'Hyundai', logo: 'https://logo.clearbit.com/hyundai.com' },
-                  { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
-                  { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
-                  { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
-                  { name: 'Jeep', logo: 'https://logo.clearbit.com/jeep.com' },
-                  { name: 'Kia', logo: 'https://logo.clearbit.com/kia.com' },
-                  { name: 'Lexus', logo: 'https://logo.clearbit.com/lexus.com' },
-                  { name: 'Mazda', logo: 'https://logo.clearbit.com/mazda.com' },
-                  { name: 'Mercedes-Benz', logo: 'https://logo.clearbit.com/mercedes-benz.com' },
-                  { name: 'Mitsubishi', logo: 'https://logo.clearbit.com/mitsubishi-motors.com' },
-                  { name: 'Nissan', logo: nissanLogo },
-                  { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
-                  { name: 'Renault', logo: renaultLogo },
-                  { name: 'SEAT', logo: seatLogo },
-                  { name: 'Škoda', logo: skodaLogo },
-                  { name: 'Smart', logo: 'https://logo.clearbit.com/smart.com' },
-                  { name: 'SsangYong', logo: ssangyongLogo },
-                  { name: 'Subaru', logo: 'https://logo.clearbit.com/subaru.com' },
-                  { name: 'Suzuki', logo: 'https://logo.clearbit.com/suzuki.com' },
-                  { name: 'Tesla', logo: 'https://logo.clearbit.com/tesla.com' },
-                  { name: 'Toyota', logo: 'https://logo.clearbit.com/toyota.com' },
-                  { name: 'Volkswagen', logo: 'https://logo.clearbit.com/volkswagen.com' },
-                  { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
-                  { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
-                ].map((brand) => (
-                  <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
-                    <img 
-                      src={brand.logo} 
-                      alt={`${brand.name} logo`} 
-                      className="h-10 w-auto object-contain"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                    <p className="font-semibold text-gray-800">{brand.name}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Right - Image */}
-              <div className="relative text-center">
-                <img 
-                  src={pandaVehiclesImg} 
-                  alt="Buy a Warranty mascot with various vehicles" 
-                  className="w-full h-auto max-w-sm md:max-w-lg mx-auto object-contain"
-                />
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center">
+              {[
+                { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
+                { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
+                { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
+                { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
+                { name: 'Alfa Romeo', logo: alfaRomeoLogo },
+                { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com' },
+                { name: 'BMW', logo: bmwLogo },
+                { name: 'Chevrolet', logo: 'https://logo.clearbit.com/chevrolet.com' },
+                { name: 'Chrysler', logo: 'https://logo.clearbit.com/chrysler.com' },
+                { name: 'Citroën', logo: 'https://logo.clearbit.com/citroen.com' },
+                { name: 'Dacia', logo: daciaLogo },
+                { name: 'Daewoo', logo: 'https://logo.clearbit.com/daewoo.com' },
+                { name: 'Daihatsu', logo: 'https://logo.clearbit.com/daihatsu.com' },
+                { name: 'Fiat', logo: 'https://logo.clearbit.com/fiat.com' },
+                { name: 'Ford', logo: 'https://logo.clearbit.com/ford.com' },
+                { name: 'Honda', logo: 'https://logo.clearbit.com/honda.com' },
+                { name: 'Hyundai', logo: 'https://logo.clearbit.com/hyundai.com' },
+                { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
+                { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
+                { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
+                { name: 'Jeep', logo: 'https://logo.clearbit.com/jeep.com' },
+                { name: 'Kia', logo: 'https://logo.clearbit.com/kia.com' },
+                { name: 'Lexus', logo: 'https://logo.clearbit.com/lexus.com' },
+                { name: 'Mazda', logo: 'https://logo.clearbit.com/mazda.com' },
+                { name: 'Mercedes-Benz', logo: 'https://logo.clearbit.com/mercedes-benz.com' },
+                { name: 'Mitsubishi', logo: 'https://logo.clearbit.com/mitsubishi-motors.com' },
+                { name: 'Nissan', logo: nissanLogo },
+                { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
+                { name: 'Renault', logo: renaultLogo },
+                { name: 'SEAT', logo: seatLogo },
+                { name: 'Škoda', logo: skodaLogo },
+                { name: 'Smart', logo: 'https://logo.clearbit.com/smart.com' },
+                { name: 'SsangYong', logo: ssangyongLogo },
+                { name: 'Subaru', logo: 'https://logo.clearbit.com/subaru.com' },
+                { name: 'Suzuki', logo: 'https://logo.clearbit.com/suzuki.com' },
+                { name: 'Tesla', logo: 'https://logo.clearbit.com/tesla.com' },
+                { name: 'Toyota', logo: 'https://logo.clearbit.com/toyota.com' },
+                { name: 'Volkswagen', logo: 'https://logo.clearbit.com/volkswagen.com' },
+                { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
+                { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
+              ].map((brand) => (
+                <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
+                  <img 
+                    src={brand.logo} 
+                    alt={`${brand.name} logo`} 
+                    className="h-10 w-auto object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <p className="font-semibold text-gray-800">{brand.name}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
