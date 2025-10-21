@@ -701,8 +701,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                     }`}
                     disabled={isLookingUp}
                   >
-                    <span className="hidden sm:inline">{isLookingUp ? 'Looking up vehicle...' : 'Get my quote'}</span>
-                    <span className="sm:hidden">{isLookingUp ? 'Looking up...' : 'Get my quote'}</span>
+                    <span className="hidden sm:inline">{isLookingUp ? 'Looking up vehicle...' : 'Get my instant quote'}</span>
+                    <span className="sm:hidden">{isLookingUp ? 'Looking up...' : 'Get my instant quote'}</span>
                   </Button>
                 </div>
               </div>
