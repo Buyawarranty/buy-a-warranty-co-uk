@@ -966,9 +966,8 @@ const CarExtendedWarranty: React.FC = () => {
               </Button>
               <Button 
                 size="lg"
-                variant="outline"
                 onClick={() => window.location.href = 'tel:03302295040'}
-                className="border-white text-white hover:bg-white/10"
+                className="bg-black text-white hover:bg-black/90"
               >
                 <Phone className="mr-2 h-5 w-5" /> Call 0330 229 5040
               </Button>
