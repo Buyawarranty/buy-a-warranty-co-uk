@@ -290,39 +290,39 @@ const CarExtendedWarranty: React.FC = () => {
             <div className="bg-gray-50 rounded-lg p-6 mb-8">
               <h3 className="text-2xl font-bold mb-6 text-center">Manufacturer Warranty vs. Extended Warranty</h3>
               <div className="overflow-x-auto" role="table" aria-label="Comparison between manufacturer and extended warranty">
-                <table className="w-full border-collapse">
+                <table className="w-full border-collapse border-2 border-gray-300">
                   <thead>
                     <tr className="bg-primary text-white">
-                      <th scope="col" className="p-3 text-left">Feature</th>
-                      <th scope="col" className="p-3 text-left">Manufacturer Warranty</th>
-                      <th scope="col" className="p-3 text-left">Buy A Warranty (Extended)</th>
+                      <th scope="col" className="p-3 text-left border-2 border-gray-400">Feature</th>
+                      <th scope="col" className="p-3 text-left border-2 border-gray-400">Manufacturer Warranty</th>
+                      <th scope="col" className="p-3 text-left border-2 border-gray-400">Buy A Warranty (Extended)</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b">
-                      <td className="p-3 font-medium">Duration</td>
-                      <td className="p-3">Typically 3 years / 60,000 miles</td>
-                      <td className="p-3">Flexible – choose your term up to 150,000 miles</td>
+                    <tr className="border-b-2 border-gray-300">
+                      <td className="p-3 font-medium border-2 border-gray-300">Duration</td>
+                      <td className="p-3 border-2 border-gray-300">Typically 3 years / 60,000 miles</td>
+                      <td className="p-3 border-2 border-gray-300">Flexible – choose your term up to 150,000 miles</td>
                     </tr>
-                    <tr className="border-b bg-white">
-                      <td className="p-3 font-medium">Coverage</td>
-                      <td className="p-3">New cars only</td>
-                      <td className="p-3">Used cars up to 15 years old & nearly-new cars</td>
+                    <tr className="border-b-2 border-gray-300 bg-white">
+                      <td className="p-3 font-medium border-2 border-gray-300">Coverage</td>
+                      <td className="p-3 border-2 border-gray-300">New cars only</td>
+                      <td className="p-3 border-2 border-gray-300">Used cars up to 15 years old & nearly-new cars</td>
                     </tr>
-                    <tr className="border-b">
-                      <td className="p-3 font-medium">Provider</td>
-                      <td className="p-3">Manufacturer</td>
-                      <td className="p-3">Independent UK provider</td>
+                    <tr className="border-b-2 border-gray-300">
+                      <td className="p-3 font-medium border-2 border-gray-300">Provider</td>
+                      <td className="p-3 border-2 border-gray-300">Manufacturer</td>
+                      <td className="p-3 border-2 border-gray-300">Independent UK provider</td>
                     </tr>
-                    <tr className="border-b bg-white">
-                      <td className="p-3 font-medium">Garage Choice</td>
-                      <td className="p-3">Manufacturer network only</td>
-                      <td className="p-3">Wide network + your own choice of trusted garage</td>
+                    <tr className="border-b-2 border-gray-300 bg-white">
+                      <td className="p-3 font-medium border-2 border-gray-300">Garage Choice</td>
+                      <td className="p-3 border-2 border-gray-300">Manufacturer network only</td>
+                      <td className="p-3 border-2 border-gray-300">Wide network + your own choice of trusted garage</td>
                     </tr>
                     <tr>
-                      <td className="p-3 font-medium">Claim Process</td>
-                      <td className="p-3">Standard</td>
-                      <td className="p-3">Fast, online & handled directly</td>
+                      <td className="p-3 font-medium border-2 border-gray-300">Claim Process</td>
+                      <td className="p-3 border-2 border-gray-300">Standard</td>
+                      <td className="p-3 border-2 border-gray-300">Fast, online & handled directly</td>
                     </tr>
                   </tbody>
                 </table>
@@ -451,17 +451,17 @@ const CarExtendedWarranty: React.FC = () => {
             </p>
 
             <div className="overflow-x-auto mb-8">
-              <table className="w-full border-collapse bg-gray-50 rounded-lg overflow-hidden">
+              <table className="w-full border-collapse bg-gray-50 rounded-lg overflow-hidden border-2 border-gray-300">
                 <thead>
                   <tr className="bg-primary text-white">
-                    <th className="p-4 text-left">Coverage Level</th>
-                    <th className="p-4 text-left">Duration</th>
-                    <th className="p-4 text-left">Ideal For</th>
+                    <th className="p-4 text-left border-2 border-gray-400">Coverage Level</th>
+                    <th className="p-4 text-left border-2 border-gray-400">Duration</th>
+                    <th className="p-4 text-left border-2 border-gray-400">Ideal For</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b">
-                    <td className="p-4 font-semibold">Platinum</td>
+                  <tr className="border-b-2 border-gray-300">
+                    <td className="p-4 font-semibold border-2 border-gray-300">Platinum</td>
                     <td className="p-4">3 months & 6 months</td>
                     <td className="p-4">Short-term vehicle ownership, selling a car soon, or trying out or bought a new vehicle</td>
                   </tr>
@@ -543,59 +543,59 @@ const CarExtendedWarranty: React.FC = () => {
                 </thead>
                 <tbody>
                   <tr className="border-b">
-                    <td className="p-4">Standard petrol/diesel car</td>
-                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
-                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                    <td className="p-4 border-2 border-gray-300">Standard petrol/diesel car</td>
+                    <td className="p-4 text-green-600 font-semibold border-2 border-gray-300">✓ Eligible</td>
+                    <td className="p-4 border-2 border-gray-300">Must be under 15 years old and less than 150,000 miles</td>
                   </tr>
-                  <tr className="border-b bg-gray-50">
-                    <td className="p-4">Electric vehicle (EV)</td>
-                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
-                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  <tr className="border-b-2 border-gray-300 bg-gray-50">
+                    <td className="p-4 border-2 border-gray-300">Electric vehicle (EV)</td>
+                    <td className="p-4 text-green-600 font-semibold border-2 border-gray-300">✓ Eligible</td>
+                    <td className="p-4 border-2 border-gray-300">Must be under 15 years old and less than 150,000 miles</td>
                   </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Hybrid or Plug-in Hybrid (PHEV)</td>
-                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
-                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  <tr className="border-b-2 border-gray-300">
+                    <td className="p-4 border-2 border-gray-300">Hybrid or Plug-in Hybrid (PHEV)</td>
+                    <td className="p-4 text-green-600 font-semibold border-2 border-gray-300">✓ Eligible</td>
+                    <td className="p-4 border-2 border-gray-300">Must be under 15 years old and less than 150,000 miles</td>
                   </tr>
-                  <tr className="border-b bg-gray-50">
-                    <td className="p-4">Commercial vehicles under 3.5 tonnes</td>
-                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
-                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  <tr className="border-b-2 border-gray-300 bg-gray-50">
+                    <td className="p-4 border-2 border-gray-300">Commercial vehicles under 3.5 tonnes</td>
+                    <td className="p-4 text-green-600 font-semibold border-2 border-gray-300">✓ Eligible</td>
+                    <td className="p-4 border-2 border-gray-300">Must be under 15 years old and less than 150,000 miles</td>
                   </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Motorcycles</td>
-                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
-                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  <tr className="border-b-2 border-gray-300">
+                    <td className="p-4 border-2 border-gray-300">Motorcycles</td>
+                    <td className="p-4 text-green-600 font-semibold border-2 border-gray-300">✓ Eligible</td>
+                    <td className="p-4 border-2 border-gray-300">Must be under 15 years old and less than 150,000 miles</td>
                   </tr>
-                  <tr className="border-b bg-gray-50">
-                    <td className="p-4">High-performance vehicles (e.g. BMW M, Audi RS, Mercedes-AMG)</td>
-                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
-                    <td className="p-4">Excluded due to specialist components and high repair costs</td>
+                  <tr className="border-b-2 border-gray-300 bg-gray-50">
+                    <td className="p-4 border-2 border-gray-300">High-performance vehicles (e.g. BMW M, Audi RS, Mercedes-AMG)</td>
+                    <td className="p-4 text-red-600 font-semibold border-2 border-gray-300">✗ Ineligible</td>
+                    <td className="p-4 border-2 border-gray-300">Excluded due to specialist components and high repair costs</td>
                   </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Certain luxury vehicle models (e.g. Porsche, Maserati, Jaguar)</td>
-                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
-                    <td className="p-4">Excluded under standard plans; may be eligible for custom plans</td>
+                  <tr className="border-b-2 border-gray-300">
+                    <td className="p-4 border-2 border-gray-300">Certain luxury vehicle models (e.g. Porsche, Maserati, Jaguar)</td>
+                    <td className="p-4 text-red-600 font-semibold border-2 border-gray-300">✗ Ineligible</td>
+                    <td className="p-4 border-2 border-gray-300">Excluded under standard plans; may be eligible for custom plans</td>
                   </tr>
-                  <tr className="border-b bg-gray-50">
-                    <td className="p-4">Commercial vehicles over 3.5 tonnes</td>
-                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
-                    <td className="p-4">Not covered under standard warranty plans</td>
+                  <tr className="border-b-2 border-gray-300 bg-gray-50">
+                    <td className="p-4 border-2 border-gray-300">Commercial vehicles over 3.5 tonnes</td>
+                    <td className="p-4 text-red-600 font-semibold border-2 border-gray-300">✗ Ineligible</td>
+                    <td className="p-4 border-2 border-gray-300">Not covered under standard warranty plans</td>
                   </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Modified vehicles</td>
-                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
-                    <td className="p-4">Excluded if modified from manufacturer specifications</td>
+                  <tr className="border-b-2 border-gray-300">
+                    <td className="p-4 border-2 border-gray-300">Modified vehicles</td>
+                    <td className="p-4 text-red-600 font-semibold border-2 border-gray-300">✗ Ineligible</td>
+                    <td className="p-4 border-2 border-gray-300">Excluded if modified from manufacturer specifications</td>
                   </tr>
-                  <tr className="border-b bg-gray-50">
-                    <td className="p-4">Vehicles over 15 years old</td>
-                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
-                    <td className="p-4">Not eligible unless explicitly approved</td>
+                  <tr className="border-b-2 border-gray-300 bg-gray-50">
+                    <td className="p-4 border-2 border-gray-300">Vehicles over 15 years old</td>
+                    <td className="p-4 text-red-600 font-semibold border-2 border-gray-300">✗ Ineligible</td>
+                    <td className="p-4 border-2 border-gray-300">Not eligible unless explicitly approved</td>
                   </tr>
                   <tr>
-                    <td className="p-4">Vehicles over 150,000 miles</td>
-                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
-                    <td className="p-4">Not eligible unless explicitly approved</td>
+                    <td className="p-4 border-2 border-gray-300">Vehicles over 150,000 miles</td>
+                    <td className="p-4 text-red-600 font-semibold border-2 border-gray-300">✗ Ineligible</td>
+                    <td className="p-4 border-2 border-gray-300">Not eligible unless explicitly approved</td>
                   </tr>
                 </tbody>
               </table>
