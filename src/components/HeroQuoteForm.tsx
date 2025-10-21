@@ -102,8 +102,8 @@ export const HeroQuoteForm: React.FC<HeroQuoteFormProps> = ({ onRegistrationSubm
 
     if (!mileage.trim()) {
       toast({
-        title: "Mileage Required",
-        description: "Please enter your vehicle's current mileage",
+        title: "Mileage required",
+        description: "Please enter or slide to select your vehicle's mileage.",
         variant: "destructive",
       });
       return;
