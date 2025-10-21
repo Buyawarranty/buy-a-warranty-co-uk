@@ -44,6 +44,7 @@ const WebsiteFooter = () => {
                 <li><a href="/van-warranty-companies-uk-warranties/" className="hover:text-[#eb4b00] transition-colors">Warranty for Van</a></li>
                 <li><a href="/best-warranty-on-ev-cars-uk-warranties/" className="hover:text-[#eb4b00] transition-colors">Warranty for EVs</a></li>
                 <li><a href="/motorbike-repair-warranty-uk-warranties/" className="hover:text-[#eb4b00] transition-colors">Warranty for Motorbikes</a></li>
+                <li><a href="/car-extended-warranty/" className="hover:text-[#eb4b00] transition-colors">Car Extended Warranty UK</a></li>
               </ul>
             </div>
 

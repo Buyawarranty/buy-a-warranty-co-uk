@@ -1,0 +1,903 @@
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Check, ArrowRight, Star, Shield, Phone, Menu, Award, MessageCircle } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Link, useNavigate } from 'react-router-dom';
+import { SEOHead } from '@/components/SEOHead';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
+import WebsiteFooter from '@/components/WebsiteFooter';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { trackButtonClick } from '@/utils/analytics';
+
+const CarExtendedWarranty: React.FC = () => {
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navigateToQuoteForm = () => {
+    trackButtonClick('car_extended_warranty_get_quote');
+    navigate('/');
+    setTimeout(() => {
+      const element = document.getElementById('quote-form');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
+  const customFAQs = [
+    {
+      question: "What exactly is covered by our platinum major mechanical and electrical plan?",
+      answer: "It includes critical, major and minor components such as the engine, gearbox, differential, electricals and fuel system - parts most likely to cause high repair bills. See full details at https://buyawarranty.co.uk/what-is-covered/"
+    },
+    {
+      question: "Can I use my preferred garage for repairs?",
+      answer: "You can use your own garage, including main dealers or local independents, as long as they're VAT registered. If the repair cost goes over your claim limit, you may need to pay the difference (top up the extra amount)."
+    },
+    {
+      question: "How do I make a claim?",
+      answer: "Arrange for your vehicle to be inspected by a local independent repair garage to diagnose any issues. Once diagnosed, before any repairs are conducted, the repairer must directly contact our Claims Team at 0330 229 5045. It's important to note that failure to do so will not allow us to process your claim."
+    },
+    {
+      question: "Are electric or hybrid vehicles covered?",
+      answer: "Yes, our plans include coverage for EVs and hybrids, including electric drive components and battery management systems."
+    },
+    {
+      question: "Is wear and tear included?",
+      answer: "General wear and tear (like tyres or brake pads) isn't covered, but sudden mechanical or electrical failures are."
+    },
+    {
+      question: "How fast are claims approved?",
+      answer: "Most claims are authorised within hours, and we pay garages directly once the repair is complete."
+    },
+    {
+      question: "Can I transfer my warranty if I sell my car?",
+      answer: "Absolutely. You can transfer your policy to the new owner for a small fee - adding resale value to your vehicle."
+    },
+    {
+      question: "What are my rights under UK law?",
+      answer: "All our customers are protected under UK consumer legislation and oversight for a fair, transparent service."
+    },
+    {
+      question: "Can I cancel my warranty?",
+      answer: "You have 14 days to cancel your warranty for a full refund (if no repairs have been made). After this period, our standard cancellation policy applies. Contact us at support@buyawarranty.co.uk or call 0330 229 5040."
+    }
+  ];
+
+  return (
+    <>
+      <SEOHead
+        title="Car Extended Warranty UK | Used Car Cover from £19/mo"
+        description="Protect your used or new car from costly repairs with affordable extended warranty cover in the UK. Instant quotes online. Prices start from just £19/month."
+        keywords="car extended warranty UK, extended car warranty, used car warranty, car warranty cover, vehicle warranty UK, warranty protection"
+        canonical="https://buyawarranty.co.uk/car-extended-warranty/"
+      />
+
+      {/* Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            <div className="flex items-center">
+              <Link to="/">
+                <img src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" alt="Buy a Warranty" className="h-6 sm:h-8 w-auto" />
+              </Link>
+            </div>
+            
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+              <Link to="/what-is-covered/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
+              <Link to="/make-a-claim/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
+              <Link to="/faq/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
+              <Link to="/contact-us/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+            </nav>
+
+            <div className="hidden lg:flex items-center space-x-3">
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 px-3 text-sm"
+                >
+                  WhatsApp Us
+                </Button>
+              </a>
+              <Button 
+                size="sm"
+                onClick={navigateToQuoteForm}
+                className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
+              >
+                Get my quote
+              </Button>
+            </div>
+
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="lg:hidden p-2">
+                  <Menu className="h-8 w-8" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center justify-between pb-6">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
+                      <img 
+                        src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
+                        alt="Buy a Warranty" 
+                        className="h-8 w-auto"
+                      />
+                    </Link>
+                  </div>
+
+                  <nav className="flex flex-col space-y-6 flex-1">
+                    <Link to="/what-is-covered/" className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
+                      What's Covered
+                    </Link>
+                    <Link to="/make-a-claim/" className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
+                      Make a Claim
+                    </Link>
+                    <Link to="/faq/" className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
+                      FAQs
+                    </Link>
+                    <Link to="/contact-us/" className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200" onClick={() => setIsMobileMenuOpen(false)}>
+                      Contact Us
+                    </Link>
+                  </nav>
+
+                  <div className="space-y-4 pt-6 mt-auto">
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-green-500 text-white border-green-500 hover:bg-green-600 hover:border-green-600 text-lg py-3"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                    </a>
+                    <Button 
+                      className="w-full bg-primary text-white hover:bg-primary/90 text-lg py-3"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        navigateToQuoteForm();
+                      }}
+                    >
+                      Get my quote
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-blue-50 via-white to-orange-50 py-12 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <div className="inline-block">
+              <TrustpilotHeader />
+            </div>
+            
+            <h1 className="text-3xl md:text-5xl font-bold leading-tight">
+              Car Extended Warranty UK – <span className="text-[#1e40af]">Drive With Confidence, Not Worry</span>
+            </h1>
+            
+            <p className="text-xl text-gray-700">
+              The Smart Way to Protect Your Car & Your Wallet
+            </p>
+
+            <p className="text-lg text-gray-600 leading-relaxed">
+              Every driver knows that moment - the dashboard light flickers on, the car makes an unusual sound, and your heart sinks. Repair bills in the UK are rising fast, with even small faults now costing hundreds of pounds. When the manufacturer's warranty expires, the financial risk shifts to you - and that's where a Car Extended Warranty from Buy A Warranty steps in.
+            </p>
+
+            <p className="text-lg text-gray-600 leading-relaxed">
+              We're here to keep you protected from unexpected repair costs, inflated garage fees, and the stress of uncertainty. Our plans are simple, transparent, and built to give you peace of mind every mile.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Button 
+                size="lg"
+                onClick={navigateToQuoteForm}
+                className="bg-primary text-white hover:bg-primary/90"
+              >
+                Get Your Free Quote <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                onClick={() => window.location.href = 'tel:03302295040'}
+              >
+                <Phone className="mr-2 h-5 w-5" /> Call 0330 229 5040
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What Is an Extended Car Warranty Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">What Is an Extended Car Warranty?</h2>
+            
+            <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              An extended car warranty is your safety net once your manufacturer's warranty ends. It's a service contract that covers the cost of repairing or replacing specific mechanical and electrical components that fail unexpectedly.
+            </p>
+
+            <p className="text-lg text-gray-700 leading-relaxed mb-8">
+              Think of it as a continuation of protection - only this time, you're in control. Whether you drive a used car or a vehicle that's just out of its factory cover, an extended warranty ensures you're not left footing expensive repair bills on your own.
+            </p>
+
+            {/* Comparison Table */}
+            <div className="bg-gray-50 rounded-lg p-6 mb-8">
+              <h3 className="text-2xl font-bold mb-6 text-center">Manufacturer Warranty vs. Extended Warranty</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-[#1e40af] text-white">
+                      <th className="p-3 text-left">Feature</th>
+                      <th className="p-3 text-left">Manufacturer Warranty</th>
+                      <th className="p-3 text-left">Buy A Warranty (Extended)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b">
+                      <td className="p-3 font-medium">Duration</td>
+                      <td className="p-3">Typically 3 years / 60,000 miles</td>
+                      <td className="p-3">Flexible – choose your term up to 150,000 miles</td>
+                    </tr>
+                    <tr className="border-b bg-white">
+                      <td className="p-3 font-medium">Coverage</td>
+                      <td className="p-3">New cars only</td>
+                      <td className="p-3">Used cars up to 15 years old & nearly-new cars</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="p-3 font-medium">Provider</td>
+                      <td className="p-3">Manufacturer</td>
+                      <td className="p-3">Independent UK provider</td>
+                    </tr>
+                    <tr className="border-b bg-white">
+                      <td className="p-3 font-medium">Garage Choice</td>
+                      <td className="p-3">Manufacturer network only</td>
+                      <td className="p-3">Wide network + your own choice of trusted garage</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-medium">Claim Process</td>
+                      <td className="p-3">Standard</td>
+                      <td className="p-3">Fast, online & handled directly</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-center text-lg font-semibold text-[#1e40af] mt-6 italic">
+                "When your manufacturer's warranty ends, our protection begins."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why It's a Smart Financial Move */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              Why a Car Extended Warranty is a Smart Financial Move
+            </h2>
+
+            <div className="space-y-10">
+              {/* Benefit 1 */}
+              <div className="bg-white rounded-lg p-8 shadow-md">
+                <div className="flex items-start gap-4">
+                  <div className="bg-[#1e40af] text-white rounded-full p-3 flex-shrink-0">
+                    <Shield className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4">1. Protection From Unexpected Repair Bills</h3>
+                    <p className="text-gray-700 mb-4">When major components fail, the costs can be shocking:</p>
+                    <ul className="space-y-2 mb-4">
+                      <li className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-1" />
+                        <span>Gearbox repair: from £1,200+</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-1" />
+                        <span>Alternator replacement: around £600</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-1" />
+                        <span>Timing belt failure: £800–£1,000</span>
+                      </li>
+                    </ul>
+                    <p className="text-gray-700 mb-4">
+                      With Buy A Warranty, those costs can be covered, saving you from financial strain. We pay garages directly, so you're never left out of pocket waiting for reimbursement. You can also choose a repairer of your choice and claimback expenses once the garage has been verified.
+                    </p>
+                    <p className="text-lg font-semibold text-[#1e40af] italic">
+                      Expect performance, not problems. Our warranty keeps you covered, so you can enjoy the ride.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Benefit 2 */}
+              <div className="bg-white rounded-lg p-8 shadow-md">
+                <div className="flex items-start gap-4">
+                  <div className="bg-[#1e40af] text-white rounded-full p-3 flex-shrink-0">
+                    <Award className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4">2. Predictable Costs & Peace of Mind</h3>
+                    <p className="text-gray-700 mb-4">
+                      Our fixed monthly or annual premiums make it easy to plan your motoring budget. You'll know exactly what you're paying - and exactly what's covered with plans which include 0% APR.
+                    </p>
+                    <p className="text-gray-700 mb-4">
+                      That means no shock repair invoices, no last-minute scrambles for cash, just financial stability and worry-free driving.
+                    </p>
+                    <p className="text-lg font-semibold text-[#1e40af] italic">
+                      Protect your car. Protect your wallet. It's that simple.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Benefit 3 */}
+              <div className="bg-white rounded-lg p-8 shadow-md">
+                <div className="flex items-start gap-4">
+                  <div className="bg-[#1e40af] text-white rounded-full p-3 flex-shrink-0">
+                    <Check className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4">3. Access to Quality Garages Nationwide</h3>
+                    <p className="text-gray-700 mb-4">
+                      We partner with approved UK garages and professional repair centres to ensure your car is handled by qualified experts using genuine or approved parts.
+                    </p>
+                    <p className="text-gray-700 mb-4">
+                      Prefer your local garage? No problem. You can choose your own repairer, and we'll handle authorisation and payment directly.
+                    </p>
+                    <p className="text-gray-700 font-semibold mb-2">Benefits include:</p>
+                    <ul className="space-y-2">
+                      <li className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-1" />
+                        <span>Quick claim approval</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-1" />
+                        <span>Nationwide garage network</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-1" />
+                        <span>Genuine or OE approved parts (Original Equipment approved parts)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-1" />
+                        <span>No hidden costs</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coverage Types */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+              Types of Car Extended Warranty Cover
+            </h2>
+            <p className="text-center text-lg text-gray-700 mb-12">
+              We offer flexible levels of protection - because every driver and every car is different.
+            </p>
+
+            <div className="overflow-x-auto mb-8">
+              <table className="w-full border-collapse bg-gray-50 rounded-lg overflow-hidden">
+                <thead>
+                  <tr className="bg-[#1e40af] text-white">
+                    <th className="p-4 text-left">Coverage Level</th>
+                    <th className="p-4 text-left">Duration</th>
+                    <th className="p-4 text-left">Ideal For</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="p-4 font-semibold">Platinum</td>
+                    <td className="p-4">3 months & 6 months</td>
+                    <td className="p-4">Short-term vehicle ownership, selling a car soon, or trying out or bought a new vehicle</td>
+                  </tr>
+                  <tr className="border-b bg-white">
+                    <td className="p-4 font-semibold">Platinum</td>
+                    <td className="p-4">1 year</td>
+                    <td className="p-4">Everyday drivers seeking peace of mind for a full year</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4 font-semibold">Platinum</td>
+                    <td className="p-4">2 year</td>
+                    <td className="p-4">Long-term owners looking to save on repairs and benefit from a £100 discount and additional free add-ons</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 font-semibold">Platinum</td>
+                    <td className="p-4">3 year</td>
+                    <td className="p-4">Car owners planning to keep their vehicle long-term, with £200 savings and additional free add-ons</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p className="text-center text-gray-700">
+              <strong>Tip:</strong> You can explore the exact covered parts on our{' '}
+              <Link to="/what-is-covered/" className="text-[#1e40af] underline hover:text-[#1e40af]/80">
+                What's Covered page
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Eligibility Section */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+              Eligibility – Is Your Car Covered?
+            </h2>
+            
+            <p className="text-lg text-gray-700 mb-6">
+              Most UK cars qualify for our extended warranty. You'll typically be eligible if your vehicle:
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-4 mb-8">
+              <div className="flex items-start gap-3">
+                <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                <span className="text-gray-700">Is under 15 years old</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                <span className="text-gray-700">Has done less than 150,000 miles</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                <span className="text-gray-700">Has a valid full or part service history (preferably manufacturer or VAT-registered garage)</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                <span className="text-gray-700">Is roadworthy and not used for hire, racing, or commercial haulage</span>
+              </div>
+            </div>
+
+            <div className="bg-[#1e40af] text-white p-6 rounded-lg text-center mb-12">
+              <p className="text-lg font-semibold mb-2">Check instantly:</p>
+              <p>Enter your registration on our quote form - you'll know your eligibility in seconds.</p>
+            </div>
+
+            {/* Eligibility Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-md">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="p-4 text-left font-bold">Vehicle Type</th>
+                    <th className="p-4 text-left font-bold">Eligibility Status</th>
+                    <th className="p-4 text-left font-bold">Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="p-4">Standard petrol/diesel car</td>
+                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
+                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  </tr>
+                  <tr className="border-b bg-gray-50">
+                    <td className="p-4">Electric vehicle (EV)</td>
+                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
+                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Hybrid or Plug-in Hybrid (PHEV)</td>
+                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
+                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  </tr>
+                  <tr className="border-b bg-gray-50">
+                    <td className="p-4">High-performance vehicles (e.g. BMW M, Audi RS, Mercedes-AMG)</td>
+                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
+                    <td className="p-4">Excluded due to specialist components and high repair costs</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Certain luxury vehicle models (e.g. Porsche, Maserati, Jaguar)</td>
+                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
+                    <td className="p-4">Excluded under standard plans; may be eligible for custom plans</td>
+                  </tr>
+                  <tr className="border-b bg-gray-50">
+                    <td className="p-4">Commercial vehicles over 3.5 tonnes</td>
+                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
+                    <td className="p-4">Not covered under standard warranty plans</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Modified vehicles</td>
+                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
+                    <td className="p-4">Excluded if modified from manufacturer specifications</td>
+                  </tr>
+                  <tr className="border-b bg-gray-50">
+                    <td className="p-4">Vehicles over 15 years old</td>
+                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
+                    <td className="p-4">Not eligible unless explicitly approved</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Vehicles over 150,000 miles</td>
+                    <td className="p-4 text-red-600 font-semibold">✗ Ineligible</td>
+                    <td className="p-4">Not eligible unless explicitly approved</td>
+                  </tr>
+                  <tr className="border-b bg-gray-50">
+                    <td className="p-4">Commercial vehicles under 3.5 tonnes</td>
+                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
+                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">Motorcycles</td>
+                    <td className="p-4 text-green-600 font-semibold">✓ Eligible</td>
+                    <td className="p-4">Must be under 15 years old and less than 150,000 miles</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Manufacturers Covered */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              Manufacturers Covered Under Our Warranty Plans
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center">
+              {[
+                'Jaguar', 'Land Rover', 'MG', 'Mini', 'Alfa Romeo', 'Audi',
+                'BMW', 'Chevrolet', 'Chrysler', 'Citroën', 'Dacia', 'Daewoo',
+                'Daihatsu', 'Fiat', 'Ford', 'Honda', 'Hyundai', 'Infiniti',
+                'Isuzu', 'Iveco', 'Jeep', 'Kia', 'Lexus', 'Mazda',
+                'Mercedes-Benz', 'Mitsubishi', 'Nissan', 'Peugeot', 'Renault', 'SEAT',
+                'Škoda', 'Smart', 'SsangYong', 'Subaru', 'Suzuki', 'Tesla',
+                'Toyota', 'Volkswagen', 'Volvo', 'Yamaha'
+              ].map((brand) => (
+                <div key={brand} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <p className="font-semibold text-gray-800">{brand}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              How It Works: Simple, Fast, and Transparent
+            </h2>
+            <p className="text-center text-lg text-gray-700 mb-12">
+              We've simplified the process - from quote to claim.
+            </p>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                <div className="bg-[#1e40af] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
+                <h3 className="font-bold text-lg mb-2">Get a Quote</h3>
+                <p className="text-gray-600">Enter your car registration to get an instant quote.</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                <div className="bg-[#1e40af] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
+                <h3 className="font-bold text-lg mb-2">Choose Cover</h3>
+                <p className="text-gray-600">Choose your level of cover and payment plan.</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                <div className="bg-[#1e40af] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
+                <h3 className="font-bold text-lg mb-2">Activate Policy</h3>
+                <p className="text-gray-600">Review and activate your policy instantly.</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                <div className="bg-[#1e40af] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">4</div>
+                <h3 className="font-bold text-lg mb-2">Drive Confident</h3>
+                <p className="text-gray-600">Enjoy complete peace of mind knowing you're covered.</p>
+              </div>
+            </div>
+
+            {/* Making a Claim */}
+            <div className="bg-white p-8 rounded-lg shadow-md">
+              <h3 className="text-2xl font-bold mb-6 text-center">Making a Claim Is Easy</h3>
+              <div className="space-y-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                  <p className="text-gray-700">Call us on <strong>0330 229 5045</strong> or complete the simple online claim form</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                  <p className="text-gray-700">We'll authorise the repair with your chosen garage.</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                  <p className="text-gray-700">The garage completes the work.</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                  <p className="text-gray-700">We pay them directly.</p>
+                </div>
+              </div>
+              <div className="text-center">
+                <Link to="/make-a-claim/">
+                  <Button className="bg-primary text-white hover:bg-primary/90">
+                    Make a Claim
+                  </Button>
+                </Link>
+              </div>
+              <p className="text-center text-gray-600 mt-6 italic">
+                No stress, no paperwork, no unexpected costs - just a smooth process from start to finish.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Buy A Warranty */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              Why Choose Buy A Warranty?
+            </h2>
+
+            <div className="space-y-6">
+              <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
+                <Check className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Reliable & trustworthy</h3>
+                  <p className="text-gray-700">
+                    We're fully compliant with UK financial laws and transparent practices. You're protected under the Consumer Rights Act 2015 and covered by fair, clear terms.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
+                <Star className="h-6 w-6 text-yellow-500 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Trusted by UK Drivers</h3>
+                  <p className="text-gray-700">
+                    We're proud of our customer-first approach and transparent pricing. See what UK drivers say on Trustpilot - thousands of real reviews and success stories.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
+                <Shield className="h-6 w-6 text-[#1e40af] flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Real Stories, Real Savings</h3>
+                  <p className="text-gray-700">
+                    Our customers have saved thousands on unexpected repairs. Read their stories below.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Customer Testimonials */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              What Our Customers Say
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-white p-8 rounded-lg shadow-md">
+                <div className="flex mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <h3 className="font-bold text-lg mb-2">I was honestly nervous about taking out a car warranty</h3>
+                <p className="text-gray-700 mb-4">
+                  I was honestly nervous about taking out a car warranty – I thought it would be full of hidden costs and fine print. But Buy a Warranty has been a complete game changer. My car needed a repair that would have cost me over £1,200, and they covered the whole thing, parts, labour, even breakdown recovery.
+                </p>
+                <p className="text-gray-700 mb-4">
+                  The sign-up process took less than a minute on my phone, and I love that the plans are flexible! Definitely recommend!
+                </p>
+                <p className="font-semibold text-gray-800">Corey, Liverpool</p>
+              </div>
+
+              <div className="bg-white p-8 rounded-lg shadow-md">
+                <div className="flex mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <h3 className="font-bold text-lg mb-2">"Didn't expect it to be this easy"</h3>
+                <p className="text-gray-700 mb-4">
+                  "I've always been sceptical about car warranties, but Buy a Warranty proved me wrong. When my alternator failed, I was dreading the cost - turns out it would've been over £600. But they sorted it all, no fuss. The claim was approved in under two hours and the garage was paid directly. I didn't pay a penny. Brilliant service!"
+                </p>
+                <p className="font-semibold text-gray-800">Aisha, Birmingham</p>
+              </div>
+
+              <div className="bg-white p-8 rounded-lg shadow-md">
+                <div className="flex mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <h3 className="font-bold text-lg mb-2">"Saved me just in time"</h3>
+                <p className="text-gray-700 mb-4">
+                  "My timing belt snapped out of nowhere, and I thought I'd be out of pocket by at least £1800. Thankfully, I had a Buy a Warranty plan. They covered the repair, and even helped me find a local garage. I genuinely didn't expect it to be this smooth."
+                </p>
+                <p className="font-semibold text-gray-800">Mark, Bristol</p>
+              </div>
+
+              <div className="bg-white p-8 rounded-lg shadow-md">
+                <div className="flex mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <h3 className="font-bold text-lg mb-2">"Peace of mind for my daily commute"</h3>
+                <p className="text-gray-700 mb-4">
+                  "I drive 60 miles a day for work, so I needed proper cover. I took out a 3-year plan and saved £200. When my car broke down on the motorway, they paid for my recovery and paid for the repairs. I was back on the road the next day. Couldn't ask for more."
+                </p>
+                <p className="font-semibold text-gray-800">James, Reading</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Transparent Terms */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Transparent Terms. No Hidden Surprises.
+            </h2>
+            <p className="text-lg text-gray-700 mb-4">
+              You'll never find vague wording or confusing exclusions in our plans. Everything is written in plain English, with clear definitions for what's included and what's not.
+            </p>
+            <p className="text-lg text-gray-700 mb-6">
+              You can even download a sample policy document before you buy.
+            </p>
+            <p className="text-xl font-semibold text-[#1e40af] italic">
+              Honesty isn't optional - it's our policy.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQs */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              FAQs: Extended Car Warranty UK
+            </h2>
+            
+            <div className="space-y-4">
+              {customFAQs.map((faq, index) => (
+                <details key={index} className="bg-white rounded-lg shadow-md">
+                  <summary className="px-6 py-4 cursor-pointer font-semibold text-lg hover:bg-gray-50 transition-colors">
+                    {faq.question}
+                  </summary>
+                  <div className="px-6 pb-4 text-gray-700 leading-relaxed">
+                    {faq.answer}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16 bg-[#1e40af] text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Ready to Protect Your Car? Get a Free Instant Quote
+            </h2>
+            <p className="text-xl">
+              Don't wait until something goes wrong - secure your protection today.
+            </p>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-center gap-2">
+                <Check className="h-6 w-6" />
+                <span className="text-lg">Instant online quote – no personal details required</span>
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <Check className="h-6 w-6" />
+                <span className="text-lg">Transparent pricing – no hidden extras</span>
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <Check className="h-6 w-6" />
+                <span className="text-lg">UK-based support team ready to help</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
+              <Button 
+                size="lg"
+                onClick={navigateToQuoteForm}
+                className="bg-white text-[#1e40af] hover:bg-gray-100"
+              >
+                Get Your Free Quote Now <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                onClick={() => window.location.href = 'tel:03302295040'}
+                className="border-white text-white hover:bg-white/10"
+              >
+                <Phone className="mr-2 h-5 w-5" /> Call 0330 229 5040
+              </Button>
+            </div>
+
+            <div className="pt-8">
+              <h3 className="text-2xl font-bold mb-4">Need Help Deciding?</h3>
+              <p className="text-lg">
+                Call our friendly UK-based support team or start a live chat to get personalised guidance.
+              </p>
+              <p className="text-lg">
+                We'll help you choose the right plan for your car, your budget, and your peace of mind.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <WebsiteFooter />
+
+      {/* Floating Contact Buttons */}
+      {!isMobile && (
+        <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
+          <a 
+            href="https://wa.me/message/SPQPJ6O3UBF5B1" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-all hover:scale-110"
+          >
+            <MessageCircle className="h-6 w-6" />
+          </a>
+          <a 
+            href="tel:03302295040"
+            className="bg-[#1e40af] text-white p-4 rounded-full shadow-lg hover:bg-[#1e40af]/90 transition-all hover:scale-110"
+          >
+            <Phone className="h-6 w-6" />
+          </a>
+        </div>
+      )}
+
+      {/* Mobile Floating Buttons */}
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-50 flex gap-3">
+          <a 
+            href="https://wa.me/message/SPQPJ6O3UBF5B1" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex-1"
+          >
+            <Button className="w-full bg-green-500 text-white hover:bg-green-600">
+              <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
+            </Button>
+          </a>
+          <a href="tel:03302295040" className="flex-1">
+            <Button className="w-full bg-[#1e40af] text-white hover:bg-[#1e40af]/90">
+              <Phone className="mr-2 h-5 w-5" /> Call Us
+            </Button>
+          </a>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default CarExtendedWarranty;
