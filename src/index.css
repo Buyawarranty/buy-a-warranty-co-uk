@@ -270,7 +270,7 @@ body {
 }
 
 .btn-slow-pulsate {
-  animation: slow-pulsate 4s ease-in-out infinite;
+  animation: slow-pulsate 3.2s ease-in-out infinite;
 }
 
 .btn-breathing:hover, .btn-slow-pulsate:hover {
