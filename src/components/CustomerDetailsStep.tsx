@@ -148,6 +148,33 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Reset loading state when user returns from payment page via back button
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      // If page is loaded from cache (back button), reset loading state
+      if (event.persisted) {
+        console.log('🔄 User returned via back button - resetting payment state');
+        setIsLoadingPayment(false);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      // Reset loading state when page becomes visible again
+      if (document.visibilityState === 'visible' && isLoadingPayment) {
+        console.log('👁️ Page visible again - resetting payment state');
+        setIsLoadingPayment(false);
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isLoadingPayment]);
   
   // Recalculate pricing when initial pricingData changes (e.g., when add-ons are selected)
   useEffect(() => {
