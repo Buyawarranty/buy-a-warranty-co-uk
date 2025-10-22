@@ -47,13 +47,10 @@ const CarExtendedWarranty: React.FC = () => {
 
   const navigateToQuoteForm = () => {
     trackButtonClick('car_extended_warranty_get_quote');
-    navigate('/');
-    setTimeout(() => {
-      const element = document.getElementById('quote-form');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    const element = document.getElementById('quote-form');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
 
   const formatRegNumber = (value: string) => {
@@ -448,7 +445,7 @@ const CarExtendedWarranty: React.FC = () => {
             </div>
 
             {/* Hero Quote Form - Matching Homepage Design */}
-            <div className="bg-white py-8 lg:py-12 mt-8">
+            <div id="quote-form" className="bg-white py-8 lg:py-12 mt-8">
               <div className="max-w-5xl mx-auto px-4">
                 <div className="grid lg:grid-cols-2 gap-8 items-center">
                   {/* Left Content */}
