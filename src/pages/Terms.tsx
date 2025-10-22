@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, Phone, Mail, Shield, FileText, Clock, Users, Menu } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { supabase } from '@/integrations/supabase/client';
 
 const Terms = () => {
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [termsDocUrl, setTermsDocUrl] = useState<string>('');
+
+  useEffect(() => {
+    const fetchTermsDoc = async () => {
+      const { data, error } = await supabase
+        .from('customer_documents')
+        .select('file_url')
+        .eq('plan_type', 'terms-and-conditions')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (data && !error) {
+        setTermsDocUrl(data.file_url);
+      }
+    };
+    
+    fetchTermsDoc();
+  }, []);
 
   const toggleItem = (id: string) => {
     setOpenItems(prev => ({
@@ -191,18 +211,27 @@ const Terms = () => {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="mb-8 text-center">
-          <a 
-            href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-2.pdf" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center bg-brand-orange text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-600 transition-colors"
-          >
-            <FileText className="w-5 h-5 mr-2" />
-            <div className="text-center">
-              <div>Your Extended Warranty Guide</div>
-              <div className="text-sm opacity-90">See full terms and conditions (PDF)</div>
+          {termsDocUrl ? (
+            <a 
+              href={termsDocUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center bg-brand-orange text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-600 transition-colors"
+            >
+              <FileText className="w-5 h-5 mr-2" />
+              <div className="text-center">
+                <div>Your Extended Warranty Guide</div>
+                <div className="text-sm opacity-90">See full terms and conditions (PDF)</div>
+              </div>
+            </a>
+          ) : (
+            <div className="inline-flex items-center bg-gray-400 text-white px-6 py-3 rounded-full font-semibold cursor-not-allowed">
+              <FileText className="w-5 h-5 mr-2" />
+              <div className="text-center">
+                <div>Loading document...</div>
+              </div>
             </div>
-          </a>
+          )}
         </div>
 
         {/* Terms Accordions */}

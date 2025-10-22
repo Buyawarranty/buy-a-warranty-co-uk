@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, Download, ExternalLink, Check, Menu, Shield, Car, Zap, Wrench, Crown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent } from '@/components/ui/card';
+import { supabase } from '@/integrations/supabase/client';
 
 // Import panda images
 import pandaEvWarranty from '@/assets/panda-ev-warranty-hero.png';
@@ -16,7 +17,26 @@ import pandaCelebrating from '@/assets/panda-celebrating.png';
 
 const WarrantyPlan = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [platinumDocUrl, setPlatinumDocUrl] = useState<string>('');
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    const fetchPlatinumDoc = async () => {
+      const { data, error } = await supabase
+        .from('customer_documents')
+        .select('file_url')
+        .eq('plan_type', 'platinum')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (data && !error) {
+        setPlatinumDocUrl(data.file_url);
+      }
+    };
+    
+    fetchPlatinumDoc();
+  }, []);
   
   const navigateToQuoteForm = () => {
     navigate('/');
@@ -221,23 +241,35 @@ const WarrantyPlan = () => {
                   >
                     View Coverage Details
                   </Button>
-                  <Button 
-                    variant="outline"
-                    size="lg"
-                    className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold bg-transparent"
-                    asChild
-                  >
-                    <a 
-                      href="/Platinum-warranty-plan_v2.2-2.pdf" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-white hover:text-primary"
+                  {platinumDocUrl ? (
+                    <Button 
+                      variant="outline"
+                      size="lg"
+                      className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold bg-transparent"
+                      asChild
+                    >
+                      <a 
+                        href={platinumDocUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-white hover:text-primary"
+                      >
+                        <Download className="w-5 h-5" />
+                        Download PDF
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button 
+                      variant="outline"
+                      size="lg"
+                      className="border-white text-white px-8 py-4 text-lg font-semibold bg-transparent cursor-not-allowed opacity-50"
+                      disabled
                     >
                       <Download className="w-5 h-5" />
-                      Download PDF
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                  </Button>
+                      Loading PDF...
+                    </Button>
+                  )}
                 </div>
               </div>
 
