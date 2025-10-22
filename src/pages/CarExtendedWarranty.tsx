@@ -1332,8 +1332,6 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
       </main>
 
-      <WebsiteFooter />
-
       {/* Floating Contact Buttons */}
       {!isMobile && (
         <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
