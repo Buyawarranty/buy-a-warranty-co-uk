@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, ChevronDown, CheckCircle, Phone, Mail, Shield, Clock, Users, Wrench, FileText, Star, X, Fuel, Battery, Zap, Bike, Crown } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -6,10 +6,45 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { OptimizedImage } from '@/components/OptimizedImage';
+import { supabase } from '@/integrations/supabase/client';
 import trustpilotLogo from '@/assets/trustpilot-logo.webp';
 
 const Protected = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [platinumDocUrl, setPlatinumDocUrl] = useState<string>('');
+  const [termsDocUrl, setTermsDocUrl] = useState<string>('');
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      // Fetch Platinum document
+      const { data: platinumData } = await supabase
+        .from('customer_documents')
+        .select('file_url')
+        .eq('plan_type', 'platinum')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (platinumData) {
+        setPlatinumDocUrl(platinumData.file_url);
+      }
+
+      // Fetch Terms document
+      const { data: termsData } = await supabase
+        .from('customer_documents')
+        .select('file_url')
+        .eq('plan_type', 'terms-and-conditions')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (termsData) {
+        setTermsDocUrl(termsData.file_url);
+      }
+    };
+    
+    fetchDocuments();
+  }, []);
 
   const vehicleTypes = [
     {
@@ -395,15 +430,22 @@ const Protected = () => {
               including all mechanical and electrical components, claim procedures, and 
               the extensive protection we provide for your vehicle.
             </p>
-            <a 
-              href="/Platinum-warranty-plan_v2.2-6.pdf" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
-            >
-              <Crown className="w-5 h-5" />
-              <span>View Platinum Plan Details (PDF)</span>
-            </a>
+            {platinumDocUrl ? (
+              <a 
+                href={platinumDocUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-2 bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+              >
+                <Crown className="w-5 h-5" />
+                <span>View Platinum Plan Details (PDF)</span>
+              </a>
+            ) : (
+              <div className="inline-flex items-center space-x-2 bg-gray-400 text-white px-8 py-3 rounded-lg font-semibold cursor-not-allowed">
+                <Crown className="w-5 h-5" />
+                <span>Loading PDF...</span>
+              </div>
+            )}
             <p className="text-sm text-gray-400 mt-4">
               Opens in a new tab
             </p>
@@ -429,15 +471,22 @@ const Protected = () => {
               plain English and contains all the important details about your warranty coverage, 
               claims process, and our commitment to you.
             </p>
-            <a 
-              href="/Terms-and-Conditions-Your-Extended-Warranty-Guide-v2.2-6.pdf" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
-            >
-              <FileText className="w-5 h-5" />
-              <span>View Terms & Conditions (PDF)</span>
-            </a>
+            {termsDocUrl ? (
+              <a 
+                href={termsDocUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-2 bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+              >
+                <FileText className="w-5 h-5" />
+                <span>View Terms & Conditions (PDF)</span>
+              </a>
+            ) : (
+              <div className="inline-flex items-center space-x-2 bg-gray-400 text-white px-8 py-3 rounded-lg font-semibold cursor-not-allowed">
+                <FileText className="w-5 h-5" />
+                <span>Loading PDF...</span>
+              </div>
+            )}
             <p className="text-sm text-gray-400 mt-4">
               Opens in a new tab
             </p>
