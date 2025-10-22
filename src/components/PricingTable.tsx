@@ -139,12 +139,47 @@ const PricingTable: React.FC<PricingTableProps> = ({
   }, [vehicleData, paymentType]);
 
   const [pdfUrls, setPdfUrls] = useState<{[planName: string]: string}>({});
+  const [termsDocUrl, setTermsDocUrl] = useState<string>('');
+  const [platinumDocUrl, setPlatinumDocUrl] = useState<string>('');
   const [showAddOnInfo, setShowAddOnInfo] = useState<{[planId: string]: boolean}>({});
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isFloatingBarVisible, setIsFloatingBarVisible] = useState(false);
   const [selectedClaimLimit, setSelectedClaimLimit] = useState<number | null>(previousClaimLimit ?? 1250);
   const [summaryDismissed, setSummaryDismissed] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  
+  // Fetch PDF documents from Supabase
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      // Fetch Terms document
+      const { data: termsData } = await supabase
+        .from('customer_documents')
+        .select('file_url')
+        .eq('plan_type', 'terms-and-conditions')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (termsData) {
+        setTermsDocUrl(termsData.file_url);
+      }
+
+      // Fetch Platinum document
+      const { data: platinumData } = await supabase
+        .from('customer_documents')
+        .select('file_url')
+        .eq('plan_type', 'platinum')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (platinumData) {
+        setPlatinumDocUrl(platinumData.file_url);
+      }
+    };
+    
+    fetchDocuments();
+  }, []);
   
   // Add-ons state - restore from previous selections if available
   const [selectedProtectionAddOns, setSelectedProtectionAddOns] = useState<{[key: string]: boolean}>(
@@ -1966,14 +2001,18 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   <p className="text-gray-700 text-base leading-relaxed mb-4">
                     Clear, straightforward terms designed to protect you and give you peace of mind.
                   </p>
-                  <a 
-                    href="https://buyawarranty.co.uk/terms" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 font-medium text-base underline"
-                  >
-                    View Full Terms and Conditions
-                  </a>
+                  {termsDocUrl ? (
+                    <a 
+                      href={termsDocUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 font-medium text-base underline"
+                    >
+                      View Full Terms and Conditions
+                    </a>
+                  ) : (
+                    <span className="text-gray-400 font-medium text-base">Loading PDF...</span>
+                  )}
                 </div>
               </CollapsibleContent>
             </Collapsible>
@@ -1995,14 +2034,18 @@ const PricingTable: React.FC<PricingTableProps> = ({
                     <li>• Consequential damage protection</li>
                     <li>• 14-day money-back guarantee</li>
                   </ul>
-                  <a 
-                    href="https://buyawarranty.co.uk/warranty-plan" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 font-medium text-base underline"
-                  >
-                    View Full Platinum Plan Details
-                  </a>
+                  {platinumDocUrl ? (
+                    <a 
+                      href={platinumDocUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 font-medium text-base underline"
+                    >
+                      View Full Platinum Plan Details
+                    </a>
+                  ) : (
+                    <span className="text-gray-400 font-medium text-base">Loading PDF...</span>
+                  )}
                 </div>
               </CollapsibleContent>
             </Collapsible>
