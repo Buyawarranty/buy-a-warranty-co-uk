@@ -1175,7 +1175,7 @@ const CarExtendedWarranty: React.FC = () => {
                     <Star key={star} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <h3 className="font-bold text-lg mb-2">I was honestly nervous about taking out a car warranty</h3>
+                <p className="font-bold mb-2">I was honestly nervous about taking out a car warranty</p>
                 <p className="text-gray-700 mb-4">
                   I was honestly nervous about taking out a car warranty – I thought it would be full of hidden costs and fine print. But Buy a Warranty has been a complete game changer. My car needed a repair that would have cost me over £1,200, and they covered the whole thing, parts, labour, even breakdown recovery.
                 </p>
@@ -1191,7 +1191,7 @@ const CarExtendedWarranty: React.FC = () => {
                     <Star key={star} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <h3 className="font-bold text-lg mb-2">"Didn't expect it to be this easy"</h3>
+                <p className="font-bold mb-2">"Didn't expect it to be this easy"</p>
                 <p className="text-gray-700 mb-4">
                   "I've always been sceptical about car warranties, but Buy a Warranty proved me wrong. When my alternator failed, I was dreading the cost - turns out it would've been over £600. But they sorted it all, no fuss. The claim was approved in under two hours and the garage was paid directly. I didn't pay a penny. Brilliant service!"
                 </p>
@@ -1204,7 +1204,7 @@ const CarExtendedWarranty: React.FC = () => {
                     <Star key={star} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <h3 className="font-bold text-lg mb-2">"Saved me just in time"</h3>
+                <p className="font-bold mb-2">"Saved me just in time"</p>
                 <p className="text-gray-700 mb-4">
                   "My timing belt snapped out of nowhere, and I thought I'd be out of pocket by at least £1800. Thankfully, I had a Buy a Warranty plan. They covered the repair, and even helped me find a local garage. I genuinely didn't expect it to be this smooth."
                 </p>
@@ -1217,7 +1217,7 @@ const CarExtendedWarranty: React.FC = () => {
                     <Star key={star} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <h3 className="font-bold text-lg mb-2">"Peace of mind for my daily commute"</h3>
+                <p className="font-bold mb-2">"Peace of mind for my daily commute"</p>
                 <p className="text-gray-700 mb-4">
                   "I drive 60 miles a day for work, so I needed proper cover. I took out a 3-year plan and saved £200. When my car broke down on the motorway, they paid for my recovery and paid for the repairs. I was back on the road the next day. Couldn't ask for more."
                 </p>
