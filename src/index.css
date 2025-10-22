@@ -116,7 +116,7 @@ body {
     --success-foreground: 0 0% 100%;
 
     /* Keep destructive for errors */
-    --destructive: 0 84% 60%;
+    --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 13% 91%;
