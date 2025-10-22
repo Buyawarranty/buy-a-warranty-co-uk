@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { calculateAddOnPrice, getAutoIncludedAddOns } from '@/lib/addOnsUtils';
 import { calculateVehiclePriceAdjustment, applyPriceAdjustment } from '@/lib/vehicleValidation';
+import { supabase } from '@/integrations/supabase/client';
 
 interface WarrantyDurationStepProps {
   vehicleData: any;
@@ -44,7 +45,27 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
   });
   
   const [selectedPaymentType, setSelectedPaymentType] = useState<string | null>(null);
+  const [platinumDocUrl, setPlatinumDocUrl] = useState<string>('');
   const navigate = useNavigate();
+
+  // Fetch Platinum warranty plan PDF from Supabase
+  useEffect(() => {
+    const fetchPlatinumDoc = async () => {
+      const { data } = await supabase
+        .from('customer_documents')
+        .select('file_url')
+        .eq('plan_type', 'platinum')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (data) {
+        setPlatinumDocUrl(data.file_url);
+      }
+    };
+    
+    fetchPlatinumDoc();
+  }, []);
 
   // State to manage protection add-ons with auto-inclusion logic
   const [currentProtectionAddOns, setCurrentProtectionAddOns] = useState<{[key: string]: boolean}>(() => {
@@ -537,15 +558,22 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a 
-                  href="/Platinum-warranty-plan_v2.2-5.pdf" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
-                >
-                  <FileText className="w-4 h-4" />
-                  View Full Platinum Plan Details
-                </a>
+                {platinumDocUrl ? (
+                  <a 
+                    href={platinumDocUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    <FileText className="w-4 h-4" />
+                    View Full Platinum Plan Details
+                  </a>
+                ) : (
+                  <div className="inline-flex items-center gap-2 bg-gray-400 text-white font-medium px-6 py-3 rounded-lg cursor-not-allowed">
+                    <FileText className="w-4 h-4" />
+                    Loading PDF...
+                  </div>
+                )}
                 
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <span className="text-green-500 font-bold">✓</span>
