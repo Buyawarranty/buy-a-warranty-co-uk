@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Phone, Menu, Award, MessageCircle } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Phone, Menu, Award, MessageCircle, Car, Truck, Battery, Bike } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
@@ -13,8 +13,7 @@ import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import WebsiteFooter from '@/components/WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { trackButtonClick } from '@/utils/analytics';
-import { HeroQuoteForm } from '@/components/HeroQuoteForm';
+import { trackButtonClick, trackQuoteRequest } from '@/utils/analytics';
 import phoneCarImg from '@/assets/car-warranty-phone-car.png';
 import pandaVehiclesImg from '@/assets/car-warranty-panda-vehicles.png';
 import pandaEvImg from '@/assets/car-warranty-panda-ev.png';
@@ -26,11 +25,25 @@ import renaultLogo from '@/assets/logos/renault.png';
 import seatLogo from '@/assets/logos/seat.webp';
 import skodaLogo from '@/assets/logos/skoda.webp';
 import ssangyongLogo from '@/assets/logos/ssangyong.png';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import MileageSlider from '@/components/MileageSlider';
+import { OptimizedImage } from '@/components/OptimizedImage';
+import trustpilotLogo from '@/assets/trustpilot-logo.webp';
 
 const CarExtendedWarranty: React.FC = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Quote form state
+  const [regNumber, setRegNumber] = useState('');
+  const [mileage, setMileage] = useState('');
+  const [sliderMileage, setSliderMileage] = useState(0);
+  const [isLookingUp, setIsLookingUp] = useState(false);
+  const [mileageError, setMileageError] = useState('');
+  const [vehicleAgeError, setVehicleAgeError] = useState('');
+  const [mileagePlaceholder, setMileagePlaceholder] = useState('Enter current approximate mileage');
 
   const navigateToQuoteForm = () => {
     trackButtonClick('car_extended_warranty_get_quote');
@@ -41,6 +54,182 @@ const CarExtendedWarranty: React.FC = () => {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     }, 100);
+  };
+
+  const formatRegNumber = (value: string) => {
+    const formatted = value.replace(/\s/g, '').toUpperCase();
+    if (formatted.length > 3) {
+      return formatted.slice(0, -3) + ' ' + formatted.slice(-3);
+    }
+    return formatted;
+  };
+
+  const handleRegChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatRegNumber(e.target.value);
+    if (formatted.length <= 8) {
+      setRegNumber(formatted);
+    }
+  };
+
+  const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d,]/g, '');
+    setMileage(value);
+    
+    const numericValue = parseInt(value.replace(/,/g, ''));
+    if (!isNaN(numericValue)) {
+      setSliderMileage(numericValue);
+    }
+    
+    if (value && numericValue > 150000) {
+      setMileageError('We can only cover vehicles up to 150,000 miles');
+    } else {
+      setMileageError('');
+    }
+  };
+
+  const handleMileageFocus = () => {
+    setMileage('');
+    setSliderMileage(0);
+    setMileagePlaceholder('Enter mileage (e.g. 32,000)');
+  };
+
+  const handleMileageBlur = () => {
+    if (!mileage || mileage === '0') {
+      setMileagePlaceholder('Enter current approximate mileage');
+    }
+  };
+
+  const handleSliderChange = (value: number) => {
+    setSliderMileage(value);
+    setMileage(value.toLocaleString());
+    
+    if (value > 150000) {
+      setMileageError('We can only cover vehicles up to 150,000 miles');
+    } else {
+      setMileageError('');
+    }
+  };
+
+  const handleGetQuote = async () => {
+    trackButtonClick('get_quote_car_extended');
+    
+    if (!regNumber.trim()) {
+      toast.error('Registration Required', {
+        description: 'Please enter your vehicle registration number.',
+      });
+      return;
+    }
+    
+    if (!mileage.trim()) {
+      toast.error('Mileage Required', {
+        description: "Please enter your vehicle's mileage to continue.",
+      });
+      return;
+    }
+    
+    const numericMileage = parseInt(mileage.replace(/,/g, ''));
+    if (numericMileage === 0) {
+      toast.error('Mileage Required', {
+        description: 'Please select a mileage greater than 0 to get your quote.',
+      });
+      return;
+    }
+    
+    if (numericMileage > 150000) {
+      setMileageError('We can only cover vehicles up to 150,000 miles');
+      return;
+    }
+    
+    setIsLookingUp(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
+        body: { registrationNumber: regNumber }
+      });
+
+      if (error) {
+        console.error('DVSA lookup error:', error);
+        throw error;
+      }
+      
+      if (!data?.found && data?.error && data.error.includes('15 years')) {
+        toast.error('Vehicle Not Eligible', {
+          description: 'We cannot offer warranties for vehicles over 15 years of age.',
+        });
+        setVehicleAgeError('We cannot offer warranties for vehicles over 15 years old');
+        setIsLookingUp(false);
+        return;
+      }
+      
+      if (data?.found && !data.yearOfManufacture) {
+        toast.error('Vehicle Not Eligible', {
+          description: 'We cannot verify the age of this vehicle. Please contact support for assistance.',
+        });
+        setVehicleAgeError('Cannot verify vehicle age');
+        setIsLookingUp(false);
+        return;
+      }
+      
+      if (data?.found && data.yearOfManufacture) {
+        const currentYear = new Date().getFullYear();
+        const vehicleYear = parseInt(data.yearOfManufacture);
+        const vehicleAge = currentYear - vehicleYear;
+        
+        if (vehicleAge > 15) {
+          setVehicleAgeError('We cannot offer warranties for vehicles over 15 years old');
+          toast.error('Vehicle Not Eligible', {
+            description: 'We cannot offer warranties for vehicles over 15 years of age.',
+          });
+          setIsLookingUp(false);
+          return;
+        } else {
+          setVehicleAgeError('');
+        }
+      }
+      
+      const vehicleData = {
+        regNumber: regNumber,
+        mileage: mileage.replace(/,/g, ''),
+        make: data?.found ? data.make : undefined,
+        model: data?.found ? data.model : undefined,
+        fuelType: data?.found ? data.fuelType : undefined,
+        transmission: data?.found ? data.transmission : undefined,
+        year: data?.found ? data.yearOfManufacture : undefined,
+        vehicleType: data?.found ? (data.vehicleType || 'car') : undefined,
+        blocked: data?.blocked || false,
+        blockReason: data?.blockReason || '',
+      };
+      
+      trackQuoteRequest();
+      
+      // Store in localStorage for the homepage to pick up
+      localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(vehicleData));
+      localStorage.setItem('buyawarranty_formData', JSON.stringify(vehicleData));
+      localStorage.setItem('buyawarranty_currentStep', '2');
+      
+      // Navigate to homepage step 2
+      navigate('/?step=2');
+      
+    } catch (error: any) {
+      console.error('Error looking up vehicle:', error);
+      
+      toast.error('Lookup Failed', {
+        description: 'Unable to find vehicle details, but you can still continue to get your quote.',
+      });
+      
+      const vehicleData = {
+        regNumber: regNumber,
+        mileage: mileage.replace(/,/g, ''),
+      };
+      
+      localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(vehicleData));
+      localStorage.setItem('buyawarranty_formData', JSON.stringify(vehicleData));
+      localStorage.setItem('buyawarranty_currentStep', '2');
+      
+      navigate('/?step=2');
+    } finally {
+      setIsLookingUp(false);
+    }
   };
 
   const customFAQs = [
@@ -258,11 +447,172 @@ const CarExtendedWarranty: React.FC = () => {
               </Button>
             </div>
 
-            {/* Hero Quote Form */}
-            <HeroQuoteForm onRegistrationSubmit={(vehicleData) => {
-              // Navigate to homepage step 2 with the vehicle data
-              navigate('/?step=2', { state: { vehicleData } });
-            }} />
+            {/* Hero Quote Form - Matching Homepage Design */}
+            <div className="bg-white py-8 lg:py-12 mt-8">
+              <div className="max-w-5xl mx-auto px-4">
+                <div className="grid lg:grid-cols-2 gap-8 items-center">
+                  {/* Left Content */}
+                  <div className="space-y-4 flex flex-col justify-center">
+                    {/* Main Headline */}
+                    <div className="space-y-2 mb-4">
+                      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
+                        We{"'"}ve got you covered <span className="text-brand-orange">in 60 seconds!</span>
+                      </h2>
+                    </div>
+
+                    {/* Benefits */}
+                    <div className="mb-6 text-gray-700 text-sm md:text-base space-y-2">
+                      <div className="flex items-center">
+                        <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                        <span className="font-medium">From just 80p a day • Easy claims • Fast payouts</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                        <span className="font-medium">Unlimited claims • Complete Cover • No excess</span>
+                      </div>
+                    </div>
+
+                    {/* Registration Input */}
+                    <div className="space-y-3 w-full max-w-md">
+                      <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full">
+                        {/* UK Section with flag */}
+                        <div className="bg-blue-600 text-white font-bold px-4 py-4 flex items-center justify-center min-w-[80px] h-[66px]">
+                          <div className="flex flex-col items-center">
+                            <div className="text-lg leading-tight mb-1">🇬🇧</div>
+                            <div className="text-base font-bold leading-none">UK</div>
+                          </div>
+                        </div>
+                        {/* Registration Input */}
+                        <input
+                          type="text"
+                          value={regNumber}
+                          onChange={handleRegChange}
+                          placeholder="Enter reg"
+                          className="bg-yellow-400 border-none outline-none text-3xl text-black flex-1 font-black placeholder:text-black/70 px-4 py-4 uppercase tracking-wider h-[66px] min-w-0"
+                          maxLength={8}
+                        />
+                      </div>
+                      <p className="text-sm text-black text-left mt-0.5">
+                        Protection for vehicles up to 150,000 miles and 15 years.
+                      </p>
+
+                      {/* Mileage Options */}
+                      <div className="space-y-2">
+                        <div>
+                          <input
+                            type="text"
+                            value={mileage}
+                            onChange={handleMileageChange}
+                            onFocus={handleMileageFocus}
+                            onBlur={handleMileageBlur}
+                            placeholder={mileagePlaceholder}
+                            className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
+                              mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
+                            }`}
+                          />
+                        </div>
+
+                        {/* Slider Option */}
+                        <div>
+                          <MileageSlider
+                            value={sliderMileage}
+                            onChange={handleSliderChange}
+                            min={0}
+                            max={150000}
+                          />
+                        </div>
+
+                        {/* Error Messages */}
+                        {mileageError && (
+                          <p className="text-sm text-blue-600 font-medium">
+                            {mileageError}
+                          </p>
+                        )}
+                        {vehicleAgeError && (
+                          <p className="text-sm text-blue-600 font-medium">
+                            {vehicleAgeError}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Get Quote Button */}
+                      <div className="space-y-2 mt-2">
+                        <Button 
+                          onClick={handleGetQuote}
+                          className={`w-full px-12 h-[66px] text-xl font-bold rounded-lg transition-all ${
+                            isLookingUp
+                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                              : 'bg-brand-orange hover:bg-brand-orange/90 text-white btn-slow-pulsate'
+                          }`}
+                          disabled={isLookingUp}
+                        >
+                          {isLookingUp ? 'Looking up vehicle...' : (
+                            <>
+                              Get my instant quote
+                              <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Content - Hero Image */}
+                  <div className="relative">
+                    <OptimizedImage 
+                      src="/extended_warranty_uk-car-trustworthy-reviews.png" 
+                      alt="Extended warranty UK - Car trustworthy reviews - Panda mascot with vehicle collection" 
+                      className="w-full h-auto"
+                      priority={true}
+                      width={1200}
+                      height={800}
+                    />
+                    {/* Trustpilot Logo positioned to the right */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <a 
+                        href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="hover:opacity-80 transition-opacity"
+                      >
+                        <OptimizedImage 
+                          src={trustpilotLogo} 
+                          alt="Trustpilot Excellent Rating" 
+                          className="h-auto w-40 object-contain"
+                          priority={false}
+                          width={320}
+                          height={100}
+                        />
+                      </a>
+                    </div>
+                    
+                    {/* Vehicle Types positioned underneath */}
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-16 w-full px-4">
+                      <div className="flex flex-col items-center gap-6">
+                        <div className="flex items-center justify-center gap-6 flex-wrap max-w-full">
+                          <div className="flex items-center space-x-1.5">
+                            <Car className="w-5 h-5 text-green-500 flex-shrink-0" />
+                            <span className="font-medium text-gray-700 text-base">Cars</span>
+                          </div>
+                          <div className="flex items-center space-x-1.5">
+                            <Truck className="w-5 h-5 text-green-500 flex-shrink-0" />
+                            <span className="font-medium text-gray-700 text-base">Vans</span>
+                          </div>
+                          <div className="flex items-center space-x-1.5">
+                            <Battery className="w-5 h-5 text-green-500 flex-shrink-0" />
+                            <span className="font-medium text-gray-700 text-base">EVs</span>
+                          </div>
+                          <div className="flex items-center space-x-1.5">
+                            <Bike className="w-5 h-5 text-green-500 flex-shrink-0" />
+                            <span className="font-medium text-gray-700 text-base">Motorcycles</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
