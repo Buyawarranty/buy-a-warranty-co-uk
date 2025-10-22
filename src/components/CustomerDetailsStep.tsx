@@ -151,30 +151,40 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   // Reset loading state when user returns from payment page via back button
   useEffect(() => {
+    // Always reset loading state on mount (when returning to step 4)
+    console.log('🔄 Component mounted - ensuring payment button is enabled');
+    setIsLoadingPayment(false);
+
     const handlePageShow = (event: PageTransitionEvent) => {
       // If page is loaded from cache (back button), reset loading state
-      if (event.persisted) {
-        console.log('🔄 User returned via back button - resetting payment state');
-        setIsLoadingPayment(false);
-      }
+      console.log('🔄 Pageshow event - resetting payment state', { persisted: event.persisted });
+      setIsLoadingPayment(false);
     };
 
     const handleVisibilityChange = () => {
       // Reset loading state when page becomes visible again
-      if (document.visibilityState === 'visible' && isLoadingPayment) {
+      if (document.visibilityState === 'visible') {
         console.log('👁️ Page visible again - resetting payment state');
         setIsLoadingPayment(false);
       }
     };
 
+    const handleFocus = () => {
+      // Reset loading state when window regains focus
+      console.log('🎯 Window focused - resetting payment state');
+      setIsLoadingPayment(false);
+    };
+
     window.addEventListener('pageshow', handlePageShow);
+    window.addEventListener('focus', handleFocus);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('pageshow', handlePageShow);
+      window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [isLoadingPayment]);
+  }, []); // Run only on mount
   
   // Recalculate pricing when initial pricingData changes (e.g., when add-ons are selected)
   useEffect(() => {
