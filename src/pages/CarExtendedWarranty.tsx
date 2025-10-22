@@ -837,6 +837,11 @@ const CarExtendedWarranty: React.FC = () => {
         </div>
       </section>
 
+      {/* Trustpilot Badge */}
+      <div className="py-8 flex justify-end container mx-auto px-4">
+        <TrustpilotHeader />
+      </div>
+
       {/* Eligibility Section */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="eligibility">
         <div className="container mx-auto px-4">
@@ -1017,6 +1022,11 @@ const CarExtendedWarranty: React.FC = () => {
         </div>
       </section>
 
+      {/* Trustpilot Badge */}
+      <div className="py-8 flex justify-end container mx-auto px-4">
+        <TrustpilotHeader />
+      </div>
+
       {/* How It Works */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="how-it-works">
         <div className="container mx-auto px-4">
@@ -1160,6 +1170,11 @@ const CarExtendedWarranty: React.FC = () => {
         </div>
       </section>
 
+      {/* Trustpilot Badge */}
+      <div className="py-8 flex justify-end container mx-auto px-4">
+        <TrustpilotHeader />
+      </div>
+
       {/* Customer Testimonials */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="customer-testimonials">
         <div className="container mx-auto px-4">
@@ -1247,6 +1262,11 @@ const CarExtendedWarranty: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Trustpilot Badge */}
+      <div className="py-8 flex justify-end container mx-auto px-4">
+        <TrustpilotHeader />
+      </div>
 
       {/* FAQs */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="faqs" itemScope itemType="https://schema.org/FAQPage">
