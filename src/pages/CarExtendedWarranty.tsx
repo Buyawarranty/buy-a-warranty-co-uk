@@ -406,13 +406,16 @@ const CarExtendedWarranty: React.FC = () => {
         <section className="bg-gradient-to-br from-blue-50 via-white to-orange-50 py-12 md:py-20" aria-label="Extended warranty introduction">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-block">
+            <div className="flex justify-end mb-4">
               <TrustpilotHeader />
             </div>
             
             <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-              Car Extended Warranty UK – <span className="text-primary">Drive With Confidence, Not Worry</span>
+              Extended Car Warranty UK
             </h1>
+            <p className="text-2xl md:text-3xl font-semibold text-primary">
+              Warranty that works when your car doesn't!
+            </p>
             
             <p className="text-xl text-gray-700">
               The Smart Way to Protect Your Car & Your Wallet
