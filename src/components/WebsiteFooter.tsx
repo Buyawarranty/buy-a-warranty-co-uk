@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, Phone, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import buyawarrantyLogo from '@/assets/buyawarranty-logo.webp';
 
@@ -92,7 +93,7 @@ const WebsiteFooter = () => {
                 Buyawarranty.co.uk - Get fast, affordable cover tailored to your car, van, SUV or motorbike. 'Buy-a-warranty' vehicle warranty plans are designed to suit your driving needs - with simple online quotes, flexible options, and reliable protection. If your vehicle is under 15 years old and has fewer than 150,000 miles, you're eligible for comprehensive warranty cover with Buyawarranty today.
               </p>
               <div className="flex items-center">
-                <a href="/" className="hover:opacity-80 transition-opacity">
+                <Link to="/" className="hover:opacity-80 transition-opacity">
                   <OptimizedImage 
                     src={buyawarrantyLogo} 
                     alt="Buy a Warranty Logo - Comprehensive Vehicle Warranties" 
@@ -101,7 +102,7 @@ const WebsiteFooter = () => {
                     width={240}
                     height={40}
                   />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
