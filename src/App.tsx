@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { redirectWwwToNonWww } from "@/utils/wwwRedirect";
@@ -15,6 +15,7 @@ import WebsiteFooter from "@/components/WebsiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
 import NotFound from "./pages/NotFound";
 import { CookieBanner } from "@/components/CookieBanner";
+import { PageViewTracker } from "@/components/PageViewTracker";
 
 // Lazy load pages
 const FAQ = lazy(() => import("./pages/FAQ"));
@@ -86,6 +87,7 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
+            <PageViewTracker />
             <CookieBanner />
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
               <main className="flex-1 pb-16 w-full">
