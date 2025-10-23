@@ -146,14 +146,17 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       }
     };
 
-    const handlePopState = () => {
-      // User clicked back button - restore data
+    const handlePopState = (event: PopStateEvent) => {
+      // User clicked back button - restore data and prevent navigation away from checkout
       console.log('Back button detected - restoring checkout data');
       const savedData = localStorage.getItem('multiWarrantyCheckoutData');
       if (savedData) {
         const parsed = JSON.parse(savedData);
         setCustomerData(parsed);
         console.log('Restored customer data from back navigation:', parsed);
+        
+        // Keep user on checkout page by pushing state back
+        window.history.pushState(null, '', window.location.href);
       }
       // Reset loading state to allow resubmission
       setLoading(false);
