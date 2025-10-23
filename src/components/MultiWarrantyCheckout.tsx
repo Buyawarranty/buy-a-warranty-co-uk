@@ -130,7 +130,6 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         // User returned to the page - restore data from localStorage
         console.log('✅ User returned to checkout page (visibility) - restoring data & clearing loading');
         const savedData = localStorage.getItem('multiWarrantyCheckoutData');
-        const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod');
         const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
         
         if (savedData) {
@@ -138,10 +137,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
           setCustomerData(parsed);
           console.log('Restored customer data:', parsed);
         }
-        if (savedPaymentMethod) {
-          setSelectedPaymentMethod(savedPaymentMethod as 'stripe' | 'bumper');
-          console.log('Restored payment method:', savedPaymentMethod);
-        }
+        // DON'T restore payment method here - user may have changed it
         if (savedDiscount) {
           setDiscountValidation(JSON.parse(savedDiscount));
           console.log('Restored discount validation');
@@ -155,7 +151,6 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       // Handles back button navigation from payment gateway (persisted page from bfcache)
       console.log('✅ Page shown (pageshow event) - user likely returned from payment gateway');
       const savedData = localStorage.getItem('multiWarrantyCheckoutData');
-      const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod');
       const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
       
       if (savedData) {
@@ -163,10 +158,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         setCustomerData(parsed);
         console.log('Restored customer data from pageshow:', parsed);
       }
-      if (savedPaymentMethod) {
-        setSelectedPaymentMethod(savedPaymentMethod as 'stripe' | 'bumper');
-        console.log('Restored payment method from pageshow:', savedPaymentMethod);
-      }
+      // DON'T restore payment method here - user may have changed it
       if (savedDiscount) {
         setDiscountValidation(JSON.parse(savedDiscount));
       }
@@ -179,7 +171,6 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       // User clicked back button - restore data
       console.log('✅ Back button detected (popstate) - restoring checkout data & clearing loading');
       const savedData = localStorage.getItem('multiWarrantyCheckoutData');
-      const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod');
       const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
       
       if (savedData) {
@@ -187,10 +178,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         setCustomerData(parsed);
         console.log('Restored customer data from back navigation:', parsed);
       }
-      if (savedPaymentMethod) {
-        setSelectedPaymentMethod(savedPaymentMethod as 'stripe' | 'bumper');
-        console.log('Restored payment method from back navigation:', savedPaymentMethod);
-      }
+      // DON'T restore payment method here - user may have changed it
       if (savedDiscount) {
         setDiscountValidation(JSON.parse(savedDiscount));
       }
