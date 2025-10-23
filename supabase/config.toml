@@ -138,3 +138,6 @@ verify_jwt = false
 
 [functions.create-customer-account]
 verify_jwt = true
+
+[functions.update-admin-credentials]
+verify_jwt = false

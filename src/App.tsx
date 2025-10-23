@@ -48,6 +48,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const QuickPasswordReset = lazy(() => import("./pages/QuickPasswordReset"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const SetupAdmin = lazy(() => import("./pages/SetupAdmin"));
+const UpdateAdminCredentials = lazy(() => import("./pages/UpdateAdminCredentials"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -108,6 +109,7 @@ const App = () => {
                     <Route path="/password-reset/" element={<ResetPassword />} />
                     <Route path="/quick-reset/" element={<QuickPasswordReset />} />
                     <Route path="/setup-admin/" element={<SetupAdmin />} />
+                    <Route path="/update-admin/" element={<UpdateAdminCredentials />} />
                     <Route path="/terms/" element={<Terms />} />
                     <Route path="/cookies/" element={<CookiePolicy />} />
                     <Route path="/privacy/" element={<PrivacyPolicy />} />
