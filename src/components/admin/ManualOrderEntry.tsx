@@ -8,9 +8,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, User, Car, CreditCard, FileText, MapPin, Search } from 'lucide-react';
+import { Plus, User, Car, CreditCard, FileText, MapPin, Search, Sparkles } from 'lucide-react';
 
 interface ManualOrderData {
   // Customer details
@@ -106,9 +107,108 @@ export const ManualOrderEntry = () => {
   const [orderData, setOrderData] = useState<ManualOrderData>(initialOrderData);
   const [isLoading, setIsLoading] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
+  const [quickEntryText, setQuickEntryText] = useState('');
 
   const updateOrderData = (field: keyof ManualOrderData, value: string | boolean | number) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const parseQuickEntry = () => {
+    const lines = quickEntryText.split('\n');
+    const data: Partial<ManualOrderData> = { ...initialOrderData };
+    
+    lines.forEach(line => {
+      const [key, ...valueParts] = line.split(':');
+      const value = valueParts.join(':').trim();
+      
+      if (!key || !value) return;
+      
+      const lowerKey = key.toLowerCase().trim();
+      
+      // Parse name
+      if (lowerKey.includes('name') && !lowerKey.includes('building')) {
+        const nameParts = value.split(' ');
+        data.firstName = nameParts[0] || '';
+        data.lastName = nameParts.slice(1).join(' ') || '';
+      }
+      
+      // Parse address
+      else if (lowerKey.includes('address') || lowerKey.includes('street')) {
+        data.street = value;
+      }
+      
+      // Parse postcode
+      else if (lowerKey.includes('postcode') || lowerKey.includes('post code')) {
+        data.postcode = value.replace(/\s+/g, '').toUpperCase();
+      }
+      
+      // Parse phone
+      else if (lowerKey.includes('phone') || lowerKey.includes('mobile') || lowerKey.includes('tel')) {
+        data.phone = value.replace(/\s+/g, '');
+      }
+      
+      // Parse email
+      else if (lowerKey.includes('email')) {
+        data.email = value.toLowerCase();
+        data.dashboardEmail = value.toLowerCase();
+      }
+      
+      // Parse vehicle registration
+      else if (lowerKey.includes('reg') || lowerKey.includes('registration') || lowerKey.includes('plate')) {
+        data.registrationPlate = value.replace(/\s+/g, '').toUpperCase();
+      }
+      
+      // Parse claim limit
+      else if (lowerKey.includes('claim') && lowerKey.includes('limit')) {
+        const amount = parseInt(value.replace(/[£,\s]/g, ''));
+        if (!isNaN(amount)) data.claimLimit = amount;
+      }
+      
+      // Parse warranty duration
+      else if (lowerKey.includes('duration') || (lowerKey.includes('warranty') && (value.includes('year') || value.includes('month')))) {
+        if (value.includes('1') && value.includes('year')) {
+          data.duration = '12months';
+          data.paymentType = 'yearly';
+        } else if (value.includes('2') && value.includes('year')) {
+          data.duration = '24months';
+          data.paymentType = 'twoYear';
+        } else if (value.includes('3') && value.includes('year')) {
+          data.duration = '36months';
+          data.paymentType = 'threeYear';
+        } else if (value.includes('month')) {
+          const months = parseInt(value);
+          if (months === 12) {
+            data.duration = '12months';
+            data.paymentType = 'yearly';
+          } else if (months === 24) {
+            data.duration = '24months';
+            data.paymentType = 'twoYear';
+          } else if (months === 36) {
+            data.duration = '36months';
+            data.paymentType = 'threeYear';
+          }
+        }
+      }
+      
+      // Parse excess
+      else if (lowerKey.includes('excess')) {
+        const amount = parseInt(value.replace(/[£,\s]/g, ''));
+        if (!isNaN(amount)) data.voluntaryExcess = amount;
+      }
+      
+      // Parse town/city
+      else if (lowerKey.includes('town') || lowerKey.includes('city')) {
+        data.town = value;
+      }
+      
+      // Parse county
+      else if (lowerKey.includes('county')) {
+        data.county = value;
+      }
+    });
+    
+    setOrderData(prev => ({ ...prev, ...data } as ManualOrderData));
+    toast.success('Information parsed successfully! Review the form and submit.');
   };
 
   const handleVehicleLookup = async () => {
@@ -387,7 +487,67 @@ export const ManualOrderEntry = () => {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <Tabs defaultValue="quick" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="quick" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              Quick Entry
+            </TabsTrigger>
+            <TabsTrigger value="manual">Manual Entry</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="quick" className="space-y-4">
+            <Alert>
+              <AlertDescription>
+                Paste your customer information below. Each line should follow the format "Label: Value". The system will automatically parse and fill the form.
+                <div className="mt-2 text-xs space-y-1">
+                  <div>Example format:</div>
+                  <div className="font-mono bg-muted p-2 rounded">
+                    Name: John Smith<br/>
+                    Address: 123 Main Street<br/>
+                    Postcode: SW1A 1AA<br/>
+                    Phone: 07123456789<br/>
+                    Email: john@example.com<br/>
+                    Vehicle Reg plate: AB12 CDE<br/>
+                    Claim limit: 2000<br/>
+                    Warranty duration: 1 year<br/>
+                    Excess amount: £100
+                  </div>
+                </div>
+              </AlertDescription>
+            </Alert>
+
+            <div className="space-y-2">
+              <Label htmlFor="quickEntry">Paste Customer Information</Label>
+              <Textarea
+                id="quickEntry"
+                value={quickEntryText}
+                onChange={(e) => setQuickEntryText(e.target.value)}
+                placeholder="Name: John Smith&#10;Address: 123 Main Street&#10;Postcode: SW1A 1AA&#10;..."
+                rows={12}
+                className="font-mono text-sm"
+              />
+            </div>
+
+            <Button
+              onClick={parseQuickEntry}
+              disabled={!quickEntryText.trim()}
+              className="w-full"
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              Parse Information
+            </Button>
+
+            {(orderData.email || orderData.firstName) && (
+              <Alert className="bg-green-50 border-green-200">
+                <AlertDescription>
+                  ✓ Information parsed! Switch to "Manual Entry" tab to review and complete the form.
+                </AlertDescription>
+              </Alert>
+            )}
+          </TabsContent>
+
+          <TabsContent value="manual" className="space-y-6">
           {/* Customer Details Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 border-b pb-2">
@@ -934,7 +1094,8 @@ export const ManualOrderEntry = () => {
               This will create a manual warranty order entry. A warranty reference number starting with "MAN-" will be generated automatically.
             </AlertDescription>
           </Alert>
-        </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
