@@ -171,43 +171,17 @@ export const trackPurchaseComplete = (
     address?: string;
   }
 ) => {
-  // Set enhanced conversion user data in gtag config first
-  if (typeof window !== 'undefined' && window.gtag && enhancedData) {
-    const userData: any = {};
-    
-    if (enhancedData.email) {
-      userData.email = enhancedData.email;
-    }
-    if (enhancedData.phone) {
-      userData.phone_number = enhancedData.phone;
-    }
-    if (enhancedData.firstName) {
-      userData.address = userData.address || {};
-      userData.address.first_name = enhancedData.firstName;
-    }
-    if (enhancedData.lastName) {
-      userData.address = userData.address || {};
-      userData.address.last_name = enhancedData.lastName;
-    }
-    if (enhancedData.address) {
-      userData.address = userData.address || {};
-      userData.address.street = enhancedData.address;
-    }
-
-    // Configure gtag with user data for enhanced conversions
-    window.gtag('set', 'user_data', userData);
-    console.log('✅ Enhanced conversion user_data set globally:', userData);
-  }
+  // NOTE: Enhanced conversion user_data should be set on the page BEFORE calling this
+  // using gtag('set', 'user_data', {...}) - see ThankYou.tsx for implementation
   
   // Main purchase conversion with specific Google Ads conversion label
   trackGoogleAdsConversion('U-BnCJKD2KUbEPWAqMVA', value, transactionId, enhancedData);
   
-  // Track as GA4 purchase event with user data
+  // Track as GA4 purchase event
   trackEvent('purchase', {
     transaction_id: transactionId,
     value: value,
-    currency: 'GBP',
-    user_data: enhancedData
+    currency: 'GBP'
   });
 };
 

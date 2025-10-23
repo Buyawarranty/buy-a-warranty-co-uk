@@ -64,8 +64,46 @@ const ThankYou = () => {
           toast.success('Your warranty policy has been created successfully!');
         }
         
-        // Track purchase
+        // Set enhanced conversion data FIRST (before conversion event)
         const email = searchParams.get('email');
+        const mobile = searchParams.get('mobile');
+        const firstName = searchParams.get('first_name');
+        const lastName = searchParams.get('last_name');
+        const street = searchParams.get('street');
+        const postcode = searchParams.get('postcode');
+        
+        if (typeof window !== 'undefined' && window.gtag && (email || (firstName && lastName))) {
+          const userData: any = {};
+          
+          if (email) {
+            userData.email = email;
+          }
+          
+          // Format phone to E.164 if available
+          if (mobile) {
+            let formattedPhone = mobile.replace(/\s+/g, '').replace(/^0/, '+44');
+            if (!formattedPhone.startsWith('+')) {
+              formattedPhone = '+44' + formattedPhone;
+            }
+            userData.phone_number = formattedPhone;
+          }
+          
+          // Add address data if we have name
+          if (firstName || lastName || street || postcode) {
+            userData.address = {};
+            if (firstName) userData.address.first_name = firstName;
+            if (lastName) userData.address.last_name = lastName;
+            if (street) userData.address.street = street;
+            if (postcode) userData.address.postal_code = postcode;
+            userData.address.country = 'GB';
+          }
+          
+          // Set user_data globally for enhanced conversions
+          window.gtag('set', 'user_data', userData);
+          console.log('✅ Enhanced conversion user_data set:', userData);
+        }
+        
+        // Track purchase
         const finalAmountStr = searchParams.get('final_amount');
         if (finalAmountStr && sessionId) {
           trackPurchaseComplete(
@@ -73,10 +111,10 @@ const ThankYou = () => {
             sessionId,
             {
               email: email || undefined,
-              phone: searchParams.get('mobile') || undefined,
-              firstName: searchParams.get('first_name') || undefined,
-              lastName: searchParams.get('last_name') || undefined,
-              address: searchParams.get('street') || undefined
+              phone: mobile || undefined,
+              firstName: firstName || undefined,
+              lastName: lastName || undefined,
+              address: street || undefined
             }
           );
         }
@@ -117,7 +155,46 @@ const ThankYou = () => {
           }
           toast.success('Your warranty policy has been created successfully!');
           
-          // Track Google Ads purchase conversion with enhanced data
+          // Set enhanced conversion data FIRST (before conversion event)
+          const email = searchParams.get('email') || data?.customerEmail;
+          const mobile = searchParams.get('mobile') || data?.customerPhone;
+          const firstName = searchParams.get('first_name') || data?.firstName;
+          const lastName = searchParams.get('last_name') || data?.lastName;
+          const street = searchParams.get('street') || data?.address;
+          const postcode = searchParams.get('postcode');
+          
+          if (typeof window !== 'undefined' && window.gtag && (email || (firstName && lastName))) {
+            const userData: any = {};
+            
+            if (email) {
+              userData.email = email;
+            }
+            
+            // Format phone to E.164 if available
+            if (mobile) {
+              let formattedPhone = mobile.replace(/\s+/g, '').replace(/^0/, '+44');
+              if (!formattedPhone.startsWith('+')) {
+                formattedPhone = '+44' + formattedPhone;
+              }
+              userData.phone_number = formattedPhone;
+            }
+            
+            // Add address data if we have name
+            if (firstName || lastName || street || postcode) {
+              userData.address = {};
+              if (firstName) userData.address.first_name = firstName;
+              if (lastName) userData.address.last_name = lastName;
+              if (street) userData.address.street = street;
+              if (postcode) userData.address.postal_code = postcode;
+              userData.address.country = 'GB';
+            }
+            
+            // Set user_data globally for enhanced conversions
+            window.gtag('set', 'user_data', userData);
+            console.log('✅ Enhanced conversion user_data set:', userData);
+          }
+          
+          // Track Google Ads purchase conversion
           const transactionId = data?.policyNumber || sessionId || `ORDER_${Date.now()}`;
           const finalAmount = searchParams.get('final_amount') 
             ? parseFloat(searchParams.get('final_amount')!) 
@@ -127,11 +204,11 @@ const ThankYou = () => {
             finalAmount,
             transactionId,
             {
-              email: searchParams.get('email') || data?.customerEmail,
-              phone: searchParams.get('mobile') || data?.customerPhone,
-              firstName: searchParams.get('first_name') || data?.firstName,
-              lastName: searchParams.get('last_name') || data?.lastName,
-              address: searchParams.get('street') || data?.address
+              email: email,
+              phone: mobile,
+              firstName: firstName,
+              lastName: lastName,
+              address: street
             }
           );
           
