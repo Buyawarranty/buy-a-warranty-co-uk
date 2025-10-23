@@ -144,8 +144,8 @@ export const trackPurchaseComplete = (
     address?: string;
   }
 ) => {
-  // Main purchase conversion
-  trackGoogleAdsConversion('purchase', value, transactionId, enhancedData);
+  // Main purchase conversion with specific Google Ads conversion label
+  trackGoogleAdsConversion('U-BnCJKD2KUbEPWAqMVA', value, transactionId, enhancedData);
   
   // Track as GA4 purchase event
   trackEvent('purchase', {
