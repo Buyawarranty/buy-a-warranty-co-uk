@@ -17,7 +17,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
         {/* Centered Logo - 25% smaller */}
         <div className="flex justify-center mb-2 sm:mb-4">
           <Link 
-            to="/"
+            to="/?step=1"
             className="cursor-pointer"
           >
             <img 
