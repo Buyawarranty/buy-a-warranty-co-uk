@@ -45,7 +45,7 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
       {/* Brand Header */}
       <div className="text-center mb-8">
         <Link
-          to="/"
+          to="/?step=1"
           className="inline-block transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
           aria-label="Go back to home page"
         >
