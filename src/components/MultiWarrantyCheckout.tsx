@@ -357,13 +357,23 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       
       if (selectedPaymentMethod === 'bumper') {
         console.log('🚀 Starting Bumper checkout process');
-        console.log('Items to process:', items.map(item => ({
+        console.log('📋 Items to process:', items.map(item => ({
           planName: item.planName,
           regNumber: item.vehicleData.regNumber,
-          totalPrice: item.pricingData.totalPrice
+          totalPrice: item.pricingData.totalPrice,
+          hasProtectionAddOns: !!item.pricingData.selectedAddOns
         })));
-        console.log('Customer data:', customerData);
-        console.log('Final price:', finalPrice);
+        console.log('👤 Customer data:', {
+          name: `${customerData.first_name} ${customerData.last_name}`,
+          email: customerData.email,
+          phone: customerData.mobile,
+          hasAddress: !!(customerData.street && customerData.postcode)
+        });
+        console.log('💰 Pricing:', {
+          totalPrice,
+          finalPrice,
+          discount: discountValidation?.discountAmount || 0
+        });
         
         // Try Bumper first for multi-warranty checkout
         const { data, error } = await supabase.functions.invoke('create-multi-warranty-bumper-checkout', {
@@ -399,8 +409,13 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         console.log('🔍 Bumper API Response:', { data, error });
 
         if (error) {
-          console.error('❌ Bumper function error:', error);
-          toast.error('Payment processing failed. Please try again.');
+          console.error('❌ Bumper function error details:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
+          toast.error(`Payment processing failed: ${error.message || 'Please try again'}`);
           setLoading(false);
           return;
         }
