@@ -234,6 +234,7 @@ export const CustomersTab = () => {
   const [filteredDeletedCustomers, setFilteredDeletedCustomers] = useState<Customer[]>([]);
   const [incompleteCustomers, setIncompleteCustomers] = useState<IncompleteCustomer[]>([]);
   const [filteredIncompleteCustomers, setFilteredIncompleteCustomers] = useState<IncompleteCustomer[]>([]);
+  const [selectedIncompleteCustomers, setSelectedIncompleteCustomers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletedLoading, setDeletedLoading] = useState(true);
   const [incompleteLoading, setIncompleteLoading] = useState(true);
@@ -762,6 +763,78 @@ export const CustomersTab = () => {
       console.error('Error updating contact status:', error);
       toast.error('Failed to update contact status');
     }
+  };
+
+  const sendBulkReminderEmails = async () => {
+    if (selectedIncompleteCustomers.length === 0) {
+      toast.error('Please select at least one customer');
+      return;
+    }
+
+    try {
+      const selectedCustomerData = filteredIncompleteCustomers.filter(c => 
+        selectedIncompleteCustomers.includes(c.id)
+      );
+
+      toast.info(`Sending reminder emails to ${selectedCustomerData.length} customers...`);
+
+      const { data, error } = await supabase.functions.invoke('send-bulk-reminder-emails', {
+        body: { customers: selectedCustomerData }
+      });
+
+      if (error) throw error;
+
+      toast.success(`Successfully sent ${selectedCustomerData.length} reminder emails`);
+      
+      // Update contact status for all selected customers
+      await Promise.all(
+        selectedIncompleteCustomers.map(id => 
+          updateContactStatus(id, 'contacted', 'Bulk reminder email sent')
+        )
+      );
+
+      setSelectedIncompleteCustomers([]);
+    } catch (error) {
+      console.error('Error sending bulk emails:', error);
+      toast.error('Failed to send bulk emails');
+    }
+  };
+
+  const updateBulkContactStatus = async (status: string) => {
+    if (selectedIncompleteCustomers.length === 0) {
+      toast.error('Please select at least one customer');
+      return;
+    }
+
+    try {
+      await Promise.all(
+        selectedIncompleteCustomers.map(id => 
+          updateContactStatus(id, status)
+        )
+      );
+
+      toast.success(`Updated ${selectedIncompleteCustomers.length} customer statuses`);
+      setSelectedIncompleteCustomers([]);
+    } catch (error) {
+      console.error('Error updating bulk status:', error);
+      toast.error('Failed to update statuses');
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIncompleteCustomers.length === filteredIncompleteCustomers.length) {
+      setSelectedIncompleteCustomers([]);
+    } else {
+      setSelectedIncompleteCustomers(filteredIncompleteCustomers.map(c => c.id));
+    }
+  };
+
+  const toggleSelectCustomer = (customerId: string) => {
+    setSelectedIncompleteCustomers(prev => 
+      prev.includes(customerId)
+        ? prev.filter(id => id !== customerId)
+        : [...prev, customerId]
+    );
   };
 
   const fetchNotes = async (customerId: string) => {
@@ -2838,42 +2911,78 @@ Please log in and change your password after first login.`;
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search incomplete customers..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  if (e.target.value) {
-                    const filtered = incompleteCustomers.filter(customer =>
-                      customer.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
-                      customer.full_name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-                      customer.vehicle_reg?.toLowerCase().includes(e.target.value.toLowerCase())
-                    );
-                    setFilteredIncompleteCustomers(filtered);
-                  } else {
-                    setFilteredIncompleteCustomers(incompleteCustomers);
-                  }
-                }}
-                className="pl-10"
-              />
+          <div className="flex items-center justify-between space-x-4">
+            <div className="flex items-center space-x-4 flex-1">
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search incomplete customers..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    if (e.target.value) {
+                      const filtered = incompleteCustomers.filter(customer =>
+                        customer.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                        customer.full_name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                        customer.vehicle_reg?.toLowerCase().includes(e.target.value.toLowerCase())
+                      );
+                      setFilteredIncompleteCustomers(filtered);
+                    } else {
+                      setFilteredIncompleteCustomers(incompleteCustomers);
+                    }
+                  }}
+                  className="pl-10"
+                />
+              </div>
+              <Button 
+                onClick={fetchIncompleteCustomers} 
+                variant="outline"
+                className="flex items-center space-x-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                <span>Refresh</span>
+              </Button>
             </div>
-            <Button 
-              onClick={fetchIncompleteCustomers} 
-              variant="outline"
-              className="flex items-center space-x-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              <span>Refresh</span>
-            </Button>
+            
+            {selectedIncompleteCustomers.length > 0 && (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm font-medium text-gray-700">
+                  {selectedIncompleteCustomers.length} selected
+                </span>
+                <Button
+                  onClick={sendBulkReminderEmails}
+                  variant="default"
+                  size="sm"
+                  className="flex items-center space-x-2"
+                >
+                  <Mail className="h-4 w-4" />
+                  <span>Send Reminder Emails</span>
+                </Button>
+                <Select onValueChange={updateBulkContactStatus}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Update Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="contacted">Mark as Contacted</SelectItem>
+                    <SelectItem value="follow_up">Mark as Follow-up Done</SelectItem>
+                    <SelectItem value="not_contacted">Mark as Not Contacted</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[50px]">
+                    <Checkbox
+                      checked={selectedIncompleteCustomers.length === filteredIncompleteCustomers.length && filteredIncompleteCustomers.length > 0}
+                      onCheckedChange={toggleSelectAll}
+                      aria-label="Select all customers"
+                    />
+                  </TableHead>
                   <TableHead>Contact Status</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Email</TableHead>
@@ -2889,7 +2998,7 @@ Please log in and change your password after first login.`;
               <TableBody>
                 {incompleteLoading ? (
                   <TableRow>
-                    <TableCell colSpan={10} className="text-center py-8">
+                    <TableCell colSpan={11} className="text-center py-8">
                       <div className="flex justify-center items-center">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600"></div>
                         <span className="ml-2">Loading incomplete customers...</span>
@@ -2898,7 +3007,7 @@ Please log in and change your password after first login.`;
                   </TableRow>
                 ) : filteredIncompleteCustomers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={10} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={11} className="text-center py-8 text-gray-500">
                       No incomplete customers found
                     </TableCell>
                   </TableRow>
@@ -2909,6 +3018,13 @@ Please log in and change your password after first login.`;
                     
                     return (
                     <TableRow key={customer.id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedIncompleteCustomers.includes(customer.id)}
+                          onCheckedChange={() => toggleSelectCustomer(customer.id)}
+                          aria-label={`Select ${customer.full_name || customer.email}`}
+                        />
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
                           <div 

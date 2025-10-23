@@ -141,3 +141,6 @@ verify_jwt = true
 
 [functions.update-admin-credentials]
 verify_jwt = false
+
+[functions.send-bulk-reminder-emails]
+verify_jwt = true
