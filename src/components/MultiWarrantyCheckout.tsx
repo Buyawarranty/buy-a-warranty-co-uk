@@ -412,7 +412,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
         if (error) {
           console.error('❌ Bumper function error:', error);
-          toast.error('Failed to process Bumper checkout: ' + error.message);
+          toast.error('Payment processing failed. Please try again.');
+          setLoading(false);
           return;
         }
 
@@ -445,6 +446,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
             }
           });
           
+          setLoading(false);
           return; // Don't automatically process - let user choose
         } else if (data.url) {
           console.log('✅ Bumper checkout URL received:', data.url);
