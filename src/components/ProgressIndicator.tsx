@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 interface ProgressIndicatorProps {
   currentStep: number;
@@ -16,8 +15,8 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
       <div className="max-w-4xl mx-auto px-4 py-2 sm:py-4">
         {/* Centered Logo - 25% smaller */}
         <div className="flex justify-center mb-2 sm:mb-4">
-          <Link 
-            to="/?step=1"
+          <a 
+            href="http://buyawarranty.co.uk/"
             className="cursor-pointer"
           >
             <img 
@@ -25,7 +24,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
               alt="Buy a Warranty" 
               className="h-9 sm:h-12 w-auto hover:opacity-80 transition-opacity duration-200"
             />
-          </Link>
+          </a>
         </div>
 
         {/* Progress Bar */}

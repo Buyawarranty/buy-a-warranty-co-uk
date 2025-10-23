@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 import buyAWarrantyLogo from '/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png';
 
 interface CarJourneyProgressProps {
@@ -44,8 +43,8 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
     <div className="w-full max-w-4xl mx-auto py-6 px-4">
       {/* Brand Header */}
       <div className="text-center mb-8">
-        <Link
-          to="/?step=1"
+        <a
+          href="http://buyawarranty.co.uk/"
           className="inline-block transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
           aria-label="Go back to home page"
         >
@@ -54,7 +53,7 @@ const CarJourneyProgress: React.FC<CarJourneyProgressProps> = ({
             alt="Buy a Warranty Logo" 
             className="h-10 sm:h-12 w-auto mx-auto"
           />
-        </Link>
+        </a>
       </div>
 
       {/* Progress Container */}
