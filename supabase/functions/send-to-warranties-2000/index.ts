@@ -462,7 +462,12 @@ serve(async (req) => {
       Make: customer.vehicle_make && customer.vehicle_make.trim() ? customer.vehicle_make.trim() : "UNKNOWN",
       Model: customer.vehicle_model && customer.vehicle_model.trim() ? customer.vehicle_model.trim() : "UNKNOWN",
       RegNum: customer.registration_plate || "UNKNOWN",
-      Mileage: customer.mileage || "50000",
+      Mileage: (() => {
+        // Strip non-numeric characters from mileage (e.g., "100001+" -> "100001")
+        const rawMileage = customer.mileage || "50000";
+        const numericMileage = String(rawMileage).replace(/[^\d]/g, '');
+        return numericMileage || "50000";
+      })(),
       EngSize: "1968", // Default engine size
       PurPrc: "1", // Default purchase price - actual price kept private on admin dashboard
       RegDate: customer.vehicle_year ? `${customer.vehicle_year}-01-01` : "2020-01-01",
