@@ -102,113 +102,216 @@ const initialOrderData: ManualOrderData = {
   dashboardPassword: ''
 };
 
+const defaultTemplate = `First Name
+[Enter first name]
+Last Name
+[Enter last name]
+Email
+[Enter email]
+Phone
+[Enter phone]
+Flat Number
+[Optional]
+Building Name
+[Optional]
+Building Number
+[Optional]
+Street
+[Enter street address]
+Town
+[Enter town]
+County
+[Enter county]
+Postcode
+[Enter postcode]
+Country
+United Kingdom
+Registration Plate
+[Enter registration]
+Mileage
+[Enter mileage]
+Make
+[Auto-filled after lookup]
+Model
+[Auto-filled after lookup]
+Year
+[Auto-filled after lookup]
+Fuel Type
+[Auto-filled after lookup]
+Transmission
+[Auto-filled after lookup]
+Plan Type
+Platinum
+Payment Type
+Bumper
+Duration
+1 Year
+Voluntary Excess
+£100
+Claim Limit
+£1,250
+Total Amount
+[Enter amount]
+Wear & Tear Cover
+No
+Vehicle Recovery
+Yes
+Tyre Cover
+No
+Europe Cover
+No
+Vehicle Rental
+No
+MOT Test Fee Cover
+Yes
+Transfer Cover
+No
+Additional Notes
+[Any additional notes]`;
+
 export const ManualOrderEntry = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [orderData, setOrderData] = useState<ManualOrderData>(initialOrderData);
   const [isLoading, setIsLoading] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
-  const [quickEntryText, setQuickEntryText] = useState('');
+  const [templateText, setTemplateText] = useState(defaultTemplate);
 
   const updateOrderData = (field: keyof ManualOrderData, value: string | boolean | number) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
   };
 
-  const parseQuickEntry = () => {
-    const lines = quickEntryText.split('\n');
+  const parseTemplate = () => {
+    const lines = templateText.split('\n').map(l => l.trim()).filter(l => l);
     const data: Partial<ManualOrderData> = { ...initialOrderData };
     
-    lines.forEach(line => {
-      const [key, ...valueParts] = line.split(':');
-      const value = valueParts.join(':').trim();
+    // Parse line by line - label followed by value
+    for (let i = 0; i < lines.length - 1; i++) {
+      const label = lines[i].toLowerCase();
+      const value = lines[i + 1];
       
-      if (!key || !value) return;
-      
-      const lowerKey = key.toLowerCase().trim();
-      
-      // Parse name
-      if (lowerKey.includes('name') && !lowerKey.includes('building')) {
-        const nameParts = value.split(' ');
-        data.firstName = nameParts[0] || '';
-        data.lastName = nameParts.slice(1).join(' ') || '';
+      // Skip if value is a label itself or placeholder
+      if (value.startsWith('[') || value.toLowerCase().includes('enter') && value.includes(']')) {
+        continue;
       }
       
-      // Parse address
-      else if (lowerKey.includes('address') || lowerKey.includes('street')) {
-        data.street = value;
-      }
-      
-      // Parse postcode
-      else if (lowerKey.includes('postcode') || lowerKey.includes('post code')) {
-        data.postcode = value.replace(/\s+/g, '').toUpperCase();
-      }
-      
-      // Parse phone
-      else if (lowerKey.includes('phone') || lowerKey.includes('mobile') || lowerKey.includes('tel')) {
+      // Customer details
+      if (label === 'first name') {
+        data.firstName = value;
+      } else if (label === 'last name') {
+        data.lastName = value;
+      } else if (label === 'email') {
+        data.email = value.toLowerCase();
+        data.dashboardEmail = value.toLowerCase();
+      } else if (label === 'phone') {
         data.phone = value.replace(/\s+/g, '');
       }
       
-      // Parse email
-      else if (lowerKey.includes('email')) {
-        data.email = value.toLowerCase();
-        data.dashboardEmail = value.toLowerCase();
+      // Address details
+      else if (label === 'flat number') {
+        data.flatNumber = value;
+      } else if (label === 'building name') {
+        data.buildingName = value;
+      } else if (label === 'building number') {
+        data.buildingNumber = value;
+      } else if (label === 'street') {
+        data.street = value;
+      } else if (label === 'town') {
+        data.town = value;
+      } else if (label === 'county') {
+        data.county = value;
+      } else if (label === 'postcode') {
+        data.postcode = value.replace(/\s+/g, '').toUpperCase();
+      } else if (label === 'country') {
+        data.country = value;
       }
       
-      // Parse vehicle registration
-      else if (lowerKey.includes('reg') || lowerKey.includes('registration') || lowerKey.includes('plate')) {
+      // Vehicle details
+      else if (label === 'registration plate') {
         data.registrationPlate = value.replace(/\s+/g, '').toUpperCase();
+      } else if (label === 'mileage') {
+        data.mileage = value.replace(/[^\d]/g, '');
+      } else if (label === 'make') {
+        data.vehicleMake = value;
+      } else if (label === 'model') {
+        data.vehicleModel = value;
+      } else if (label === 'year') {
+        data.vehicleYear = value;
+      } else if (label === 'fuel type') {
+        data.vehicleFuelType = value;
+      } else if (label === 'transmission') {
+        data.vehicleTransmission = value;
       }
       
-      // Parse claim limit
-      else if (lowerKey.includes('claim') && lowerKey.includes('limit')) {
-        const amount = parseInt(value.replace(/[£,\s]/g, ''));
-        if (!isNaN(amount)) data.claimLimit = amount;
-      }
-      
-      // Parse warranty duration
-      else if (lowerKey.includes('duration') || (lowerKey.includes('warranty') && (value.includes('year') || value.includes('month')))) {
-        if (value.includes('1') && value.includes('year')) {
+      // Plan details
+      else if (label === 'plan type') {
+        const planMap: Record<string, string> = {
+          'basic': 'basic',
+          'gold': 'gold',
+          'platinum': 'platinum',
+          'electric': 'electric',
+          'phev': 'phev',
+          'motorbike': 'motorbike'
+        };
+        data.planType = planMap[value.toLowerCase()] || 'platinum';
+      } else if (label === 'payment type') {
+        const paymentMap: Record<string, string> = {
+          'stripe': 'stripe',
+          'bumper': 'bumper',
+          'debit card': 'debitCard',
+          'credit card': 'creditCard'
+        };
+        data.paymentType = paymentMap[value.toLowerCase()] || 'bumper';
+      } else if (label === 'duration') {
+        if (value.includes('3') && value.toLowerCase().includes('month')) {
+          data.duration = '3months';
+        } else if (value.includes('6') && value.toLowerCase().includes('month')) {
+          data.duration = '6months';
+        } else if (value.includes('1') && value.toLowerCase().includes('year')) {
           data.duration = '12months';
-          data.paymentType = 'yearly';
-        } else if (value.includes('2') && value.includes('year')) {
+        } else if (value.includes('2') && value.toLowerCase().includes('year')) {
           data.duration = '24months';
-          data.paymentType = 'twoYear';
-        } else if (value.includes('3') && value.includes('year')) {
+        } else if (value.includes('3') && value.toLowerCase().includes('year')) {
           data.duration = '36months';
-          data.paymentType = 'threeYear';
-        } else if (value.includes('month')) {
-          const months = parseInt(value);
-          if (months === 12) {
-            data.duration = '12months';
-            data.paymentType = 'yearly';
-          } else if (months === 24) {
-            data.duration = '24months';
-            data.paymentType = 'twoYear';
-          } else if (months === 36) {
-            data.duration = '36months';
-            data.paymentType = 'threeYear';
-          }
+        } else if (value.includes('4') && value.toLowerCase().includes('year')) {
+          data.duration = '48months';
+        } else if (value.includes('5') && value.toLowerCase().includes('year')) {
+          data.duration = '60months';
         }
-      }
-      
-      // Parse excess
-      else if (lowerKey.includes('excess')) {
+      } else if (label === 'voluntary excess') {
         const amount = parseInt(value.replace(/[£,\s]/g, ''));
         if (!isNaN(amount)) data.voluntaryExcess = amount;
+      } else if (label === 'claim limit') {
+        const amount = parseInt(value.replace(/[£,\s]/g, ''));
+        if (!isNaN(amount)) data.claimLimit = amount;
+      } else if (label === 'total amount') {
+        data.totalAmount = value.replace(/[£,\s]/g, '');
       }
       
-      // Parse town/city
-      else if (lowerKey.includes('town') || lowerKey.includes('city')) {
-        data.town = value;
+      // Add-ons (parse Yes/No)
+      else if (label === 'wear & tear cover' || label === 'wear and tear cover') {
+        data.wearTearCover = value.toLowerCase() === 'yes';
+      } else if (label === 'vehicle recovery' || label === '24/7 vehicle recovery') {
+        data.vehicleRecovery = value.toLowerCase() === 'yes';
+      } else if (label === 'tyre cover') {
+        data.tyreCover = value.toLowerCase() === 'yes';
+      } else if (label === 'europe cover') {
+        data.europeCover = value.toLowerCase() === 'yes';
+      } else if (label === 'vehicle rental') {
+        data.vehicleRental = value.toLowerCase() === 'yes';
+      } else if (label === 'mot test fee cover' || label === 'mot fee cover') {
+        data.motFeeCover = value.toLowerCase() === 'yes';
+      } else if (label === 'transfer cover') {
+        data.transferCover = value.toLowerCase() === 'yes';
       }
       
-      // Parse county
-      else if (lowerKey.includes('county')) {
-        data.county = value;
+      // Additional notes
+      else if (label === 'additional notes') {
+        data.notes = value;
       }
-    });
+    }
     
     setOrderData(prev => ({ ...prev, ...data } as ManualOrderData));
-    toast.success('Information parsed successfully! Review the form and submit.');
+    toast.success('Template parsed successfully! Review and submit the order.');
   };
 
   const handleVehicleLookup = async () => {
@@ -499,49 +602,46 @@ export const ManualOrderEntry = () => {
           <TabsContent value="quick" className="space-y-4">
             <Alert>
               <AlertDescription>
-                Paste your customer information below. Each line should follow the format "Label: Value". The system will automatically parse and fill the form.
+                Fill in the template below with customer information. Each field label is followed by a line for the value. Simply replace the placeholder text with actual values.
                 <div className="mt-2 text-xs space-y-1">
-                  <div>Example format:</div>
-                  <div className="font-mono bg-muted p-2 rounded">
-                    Name: John Smith<br/>
-                    Address: 123 Main Street<br/>
-                    Postcode: SW1A 1AA<br/>
-                    Phone: 07123456789<br/>
-                    Email: john@example.com<br/>
-                    Vehicle Reg plate: AB12 CDE<br/>
-                    Claim limit: 2000<br/>
-                    Warranty duration: 1 year<br/>
-                    Excess amount: £100
+                  <div className="font-semibold">Template format (label on one line, value on next):</div>
+                  <div className="font-mono bg-muted p-2 rounded text-xs">
+                    First Name<br/>
+                    John<br/>
+                    Last Name<br/>
+                    Smith<br/>
+                    Email<br/>
+                    john@example.com<br/>
+                    ...
                   </div>
                 </div>
               </AlertDescription>
             </Alert>
 
             <div className="space-y-2">
-              <Label htmlFor="quickEntry">Paste Customer Information</Label>
+              <Label htmlFor="templateEntry">Edit Template with Customer Information</Label>
               <Textarea
-                id="quickEntry"
-                value={quickEntryText}
-                onChange={(e) => setQuickEntryText(e.target.value)}
-                placeholder="Name: John Smith&#10;Address: 123 Main Street&#10;Postcode: SW1A 1AA&#10;..."
-                rows={12}
-                className="font-mono text-sm"
+                id="templateEntry"
+                value={templateText}
+                onChange={(e) => setTemplateText(e.target.value)}
+                rows={20}
+                className="font-mono text-xs"
               />
             </div>
 
             <Button
-              onClick={parseQuickEntry}
-              disabled={!quickEntryText.trim()}
+              onClick={parseTemplate}
+              disabled={!templateText.trim()}
               className="w-full"
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              Parse Information
+              Parse Template & Create Order
             </Button>
 
             {(orderData.email || orderData.firstName) && (
               <Alert className="bg-green-50 border-green-200">
                 <AlertDescription>
-                  ✓ Information parsed! Switch to "Manual Entry" tab to review and complete the form.
+                  ✓ Template parsed! The order will be created with the parsed information.
                 </AlertDescription>
               </Alert>
             )}
