@@ -120,12 +120,15 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     }
   }, [discountValidation]);
 
-  // Handle page visibility and popstate to detect when user returns from payment
+  // Handle page visibility, popstate, and pageshow to detect when user returns from payment gateway
   useEffect(() => {
+    // Reset loading state on mount (in case user returned via back button)
+    setLoading(false);
+    
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         // User returned to the page - restore data from localStorage
-        console.log('User returned to checkout page - restoring data');
+        console.log('✅ User returned to checkout page (visibility) - restoring data & clearing loading');
         const savedData = localStorage.getItem('multiWarrantyCheckoutData');
         const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod');
         const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
@@ -137,36 +140,71 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         }
         if (savedPaymentMethod) {
           setSelectedPaymentMethod(savedPaymentMethod as 'stripe' | 'bumper');
+          console.log('Restored payment method:', savedPaymentMethod);
         }
         if (savedDiscount) {
           setDiscountValidation(JSON.parse(savedDiscount));
+          console.log('Restored discount validation');
         }
         // Reset loading state to allow resubmission
         setLoading(false);
       }
     };
 
-    const handlePopState = (event: PopStateEvent) => {
-      // User clicked back button - restore data and prevent navigation away from checkout
-      console.log('Back button detected - restoring checkout data');
+    const handlePageShow = (event: PageTransitionEvent) => {
+      // Handles back button navigation from payment gateway (persisted page from bfcache)
+      console.log('✅ Page shown (pageshow event) - user likely returned from payment gateway');
       const savedData = localStorage.getItem('multiWarrantyCheckoutData');
+      const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod');
+      const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+      
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        setCustomerData(parsed);
+        console.log('Restored customer data from pageshow:', parsed);
+      }
+      if (savedPaymentMethod) {
+        setSelectedPaymentMethod(savedPaymentMethod as 'stripe' | 'bumper');
+        console.log('Restored payment method from pageshow:', savedPaymentMethod);
+      }
+      if (savedDiscount) {
+        setDiscountValidation(JSON.parse(savedDiscount));
+      }
+      // Always reset loading state when page is shown
+      setLoading(false);
+      console.log('✅ Loading state cleared - user can proceed with payment again');
+    };
+
+    const handlePopState = (event: PopStateEvent) => {
+      // User clicked back button - restore data
+      console.log('✅ Back button detected (popstate) - restoring checkout data & clearing loading');
+      const savedData = localStorage.getItem('multiWarrantyCheckoutData');
+      const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod');
+      const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+      
       if (savedData) {
         const parsed = JSON.parse(savedData);
         setCustomerData(parsed);
         console.log('Restored customer data from back navigation:', parsed);
-        
-        // Keep user on checkout page by pushing state back
-        window.history.pushState(null, '', window.location.href);
+      }
+      if (savedPaymentMethod) {
+        setSelectedPaymentMethod(savedPaymentMethod as 'stripe' | 'bumper');
+        console.log('Restored payment method from back navigation:', savedPaymentMethod);
+      }
+      if (savedDiscount) {
+        setDiscountValidation(JSON.parse(savedDiscount));
       }
       // Reset loading state to allow resubmission
       setLoading(false);
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pageshow', handlePageShow);
     window.addEventListener('popstate', handlePopState);
     
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('pageshow', handlePageShow);
       window.removeEventListener('popstate', handlePopState);
     };
   }, []);

@@ -12,7 +12,18 @@ const Cart: React.FC = () => {
   const { items } = useCart();
   const [showCheckout, setShowCheckout] = useState(() => {
     // Check if returning from payment - restore checkout view
-    return sessionStorage.getItem('wasInCheckout') === 'true';
+    const wasInCheckout = sessionStorage.getItem('wasInCheckout') === 'true';
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnFromPayment = urlParams.get('returnFromPayment') === 'true';
+    
+    // If user is returning from payment gateway or was in checkout, show checkout view
+    if (returnFromPayment && !wasInCheckout) {
+      sessionStorage.setItem('wasInCheckout', 'true');
+      console.log('✅ Detected return from payment gateway - showing checkout');
+      return true;
+    }
+    
+    return wasInCheckout;
   });
   const [showBackConfirmDialog, setShowBackConfirmDialog] = useState(false);
 
@@ -52,6 +63,12 @@ const Cart: React.FC = () => {
 
   const handleBackToCart = () => {
     sessionStorage.removeItem('wasInCheckout');
+    // Clear return from payment URL param if present
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('returnFromPayment')) {
+      urlParams.delete('returnFromPayment');
+      window.history.replaceState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
+    }
     setShowCheckout(false);
   };
 
