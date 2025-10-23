@@ -1099,6 +1099,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                       onChange={(e) => {
                         console.log('🔄 Payment method changed to Bumper');
                         setSelectedPaymentMethod('bumper');
+                        localStorage.setItem('multiWarrantyPaymentMethod', 'bumper');
                         setLoading(false);
                       }}
                       className="w-4 h-4 text-blue-600"
@@ -1122,6 +1123,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                       onChange={(e) => {
                         console.log('🔄 Payment method changed to Stripe');
                         setSelectedPaymentMethod('stripe');
+                        localStorage.setItem('multiWarrantyPaymentMethod', 'stripe');
                         setLoading(false);
                       }}
                       className="w-4 h-4 text-blue-600"
