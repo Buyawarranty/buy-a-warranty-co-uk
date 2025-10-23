@@ -94,8 +94,35 @@ export const trackGoogleAdsConversion = (
       }
     }
 
+    // ✅ VALIDATION: Check if we have required data for Enhanced Conversions
+    const hasEmail = enhancedData?.email;
+    const hasPhone = enhancedData?.phone;
+    
+    if (!hasEmail && !hasPhone) {
+      console.warn('⚠️ Google Ads Enhanced Conversion: Missing required data! Need at least email OR phone number.');
+      console.warn('Current data:', { enhancedData });
+    } else {
+      console.log('✅ Google Ads Enhanced Conversion data is valid:', {
+        hasEmail,
+        hasPhone,
+        hasName: !!(enhancedData?.firstName && enhancedData?.lastName),
+        hasAddress: !!enhancedData?.address
+      });
+    }
+
+    // 📊 DETAILED LOGGING for debugging
+    console.log('🎯 Google Ads Conversion Event:', {
+      label: conversionLabel,
+      value: value,
+      currency: 'GBP',
+      transactionId: transactionId,
+      userData: conversionData.user_data || 'No user data',
+      fullPayload: conversionData
+    });
+
     window.gtag('event', 'conversion', conversionData);
-    console.log('Google Ads Conversion tracked:', conversionLabel, conversionData);
+  } else {
+    console.error('❌ Google Ads tracking failed: gtag not available');
   }
 };
 
