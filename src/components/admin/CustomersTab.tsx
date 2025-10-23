@@ -13,7 +13,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive, ChevronDown, ChevronUp, Eye } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive, ChevronDown, ChevronUp, Eye, Copy, FileText } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
@@ -177,6 +177,7 @@ interface IncompleteCustomer {
   contact_notes?: string;
   last_contacted_at?: string;
   contacted_by?: string;
+  cart_metadata?: any;
 }
 
 interface EmailStatus {
@@ -1741,7 +1742,9 @@ export const CustomersTab = () => {
             <Archive className="h-4 w-4 mr-2" />
             Order Archive
           </TabsTrigger>
-          <TabsTrigger value="incomplete">Incomplete Customers</TabsTrigger>
+          <TabsTrigger value="incomplete" className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700">
+            Incomplete Customers
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="complete" className="space-y-4">
@@ -2823,6 +2826,18 @@ Please log in and change your password after first login.`;
         </TabsContent>
 
         <TabsContent value="incomplete" className="space-y-4">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+            <div className="flex items-start space-x-3">
+              <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-red-900 mb-1">Incomplete Customers</h3>
+                <p className="text-sm text-red-700">
+                  These customers started but didn't complete their purchase. Follow up to help them finish their order.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="flex items-center space-x-4">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -2864,6 +2879,7 @@ Please log in and change your password after first login.`;
                   <TableHead>Email</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Vehicle</TableHead>
+                  <TableHead>Mileage</TableHead>
                   <TableHead>Plan</TableHead>
                   <TableHead>Step Abandoned</TableHead>
                   <TableHead>Date</TableHead>
@@ -2873,7 +2889,7 @@ Please log in and change your password after first login.`;
               <TableBody>
                 {incompleteLoading ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8">
+                    <TableCell colSpan={10} className="text-center py-8">
                       <div className="flex justify-center items-center">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600"></div>
                         <span className="ml-2">Loading incomplete customers...</span>
@@ -2882,12 +2898,16 @@ Please log in and change your password after first login.`;
                   </TableRow>
                 ) : filteredIncompleteCustomers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={10} className="text-center py-8 text-gray-500">
                       No incomplete customers found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredIncompleteCustomers.map((customer) => (
+                  filteredIncompleteCustomers.map((customer) => {
+                    const metadata = customer.cart_metadata || {};
+                    const showDetails = customer.step_abandoned >= 3;
+                    
+                    return (
                     <TableRow key={customer.id}>
                       <TableCell>
                         <div className="flex items-center space-x-2">
@@ -2903,9 +2923,32 @@ Please log in and change your password after first login.`;
                       <TableCell>
                         <div>
                           <div className="font-medium">{customer.full_name || 'Unknown'}</div>
+                          {showDetails && metadata.selectedAddons && (
+                            <div className="mt-1 text-xs text-gray-600">
+                              {metadata.selectedAddons.length > 0 ? (
+                                <div>Add-ons: {metadata.selectedAddons.join(', ')}</div>
+                              ) : null}
+                            </div>
+                          )}
                         </div>
                       </TableCell>
-                      <TableCell>{customer.email}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <span>{customer.email}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0"
+                            onClick={() => {
+                              navigator.clipboard.writeText(customer.email);
+                              toast.success('Email copied to clipboard');
+                            }}
+                            title="Copy email"
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </TableCell>
                       <TableCell>{customer.phone || 'N/A'}</TableCell>
                       <TableCell>
                         <div>
@@ -2916,9 +2959,24 @@ Please log in and change your password after first login.`;
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          {customer.plan_name || 'N/A'}
-                        </Badge>
+                        <span className="text-sm">{customer.mileage || 'N/A'}</span>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <Badge variant="outline">
+                            {customer.plan_name || 'N/A'}
+                          </Badge>
+                          {showDetails && customer.payment_type && (
+                            <div className="text-xs text-gray-600 mt-1">
+                              {customer.payment_type}
+                            </div>
+                          )}
+                          {showDetails && metadata.finalPrice && (
+                            <div className="text-xs font-semibold text-green-600 mt-1">
+                              £{metadata.finalPrice}
+                            </div>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge variant={customer.step_abandoned === 1 ? 'destructive' : 'secondary'}>
@@ -2935,6 +2993,82 @@ Please log in and change your password after first login.`;
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="ghost" size="sm" title="Generate Follow-up Email">
+                                <FileText className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl">
+                              <DialogHeader>
+                                <DialogTitle>Follow-up Email Template</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <Label>Subject Line</Label>
+                                  <Input 
+                                    value="Your car's warranty is almost ready – just one more step!"
+                                    readOnly
+                                    className="bg-gray-50"
+                                  />
+                                </div>
+                                <div>
+                                  <Label>Email Body</Label>
+                                  <Textarea
+                                    value={`Hi ${customer.full_name?.split(' ')[0] || 'there'},
+
+Just a quick reminder — you were moments away from securing your car warranty with Buy A Warranty, but it looks like the checkout wasn't completed.
+
+We've saved your quote so you don't have to start over. It only takes a minute to finish, and your car will be covered in no time.
+
+👉 https://buyawarranty.co.uk/
+
+Need help or have a quick question? Just reply to this email or call us on 0330 229 5040 - we're here to help.
+Don't wait too long — protect your car today and avoid unexpected repair bills.
+
+
+Cheers,
+
+The Buy A Warranty Team
+📞 0330 229 5040
+📧 info@buyawarranty.co.uk
+🌐 www.buyawarranty.co.uk`}
+                                    rows={15}
+                                    className="font-mono text-sm"
+                                  />
+                                </div>
+                                <Button
+                                  onClick={() => {
+                                    const emailText = `Hi ${customer.full_name?.split(' ')[0] || 'there'},
+
+Just a quick reminder — you were moments away from securing your car warranty with Buy A Warranty, but it looks like the checkout wasn't completed.
+
+We've saved your quote so you don't have to start over. It only takes a minute to finish, and your car will be covered in no time.
+
+👉 https://buyawarranty.co.uk/
+
+Need help or have a quick question? Just reply to this email or call us on 0330 229 5040 - we're here to help.
+Don't wait too long — protect your car today and avoid unexpected repair bills.
+
+
+Cheers,
+
+The Buy A Warranty Team
+📞 0330 229 5040
+📧 info@buyawarranty.co.uk
+🌐 www.buyawarranty.co.uk`;
+                                    navigator.clipboard.writeText(emailText);
+                                    toast.success('Email template copied to clipboard');
+                                  }}
+                                  className="w-full"
+                                >
+                                  <Copy className="h-4 w-4 mr-2" />
+                                  Copy Email Template
+                                </Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+
                           <Dialog>
                             <DialogTrigger asChild>
                               <Button variant="ghost" size="sm" title="Contact Customer">
@@ -2990,7 +3124,8 @@ Please log in and change your password after first login.`;
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))
+                    );
+                  })
                 )}
               </TableBody>
             </Table>
