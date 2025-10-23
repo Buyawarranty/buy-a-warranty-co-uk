@@ -141,6 +141,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         if (savedDiscount) {
           setDiscountValidation(JSON.parse(savedDiscount));
         }
+        // Reset loading state to allow resubmission
+        setLoading(false);
       }
     };
 
@@ -153,6 +155,8 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         setCustomerData(parsed);
         console.log('Restored customer data from back navigation:', parsed);
       }
+      // Reset loading state to allow resubmission
+      setLoading(false);
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
