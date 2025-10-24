@@ -120,11 +120,31 @@ serve(async (req) => {
     );
     
     logStep("Fetching plan data", { planId });
-    const { data: planData, error: planError } = await supabaseService
-      .from('special_vehicle_plans')
-      .select('*')
-      .eq('id', planId)
-      .maybeSingle();
+    
+    // Check if planId is a UUID or a plan name
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(planId);
+    
+    let planData;
+    let planError;
+    
+    if (isUUID) {
+      const result = await supabaseService
+        .from('special_vehicle_plans')
+        .select('*')
+        .eq('id', planId)
+        .maybeSingle();
+      planData = result.data;
+      planError = result.error;
+    } else {
+      // If not UUID, treat as plan name (case insensitive)
+      const result = await supabaseService
+        .from('special_vehicle_plans')
+        .select('*')
+        .ilike('name', planId)
+        .maybeSingle();
+      planData = result.data;
+      planError = result.error;
+    }
     
     if (planError) {
       logStep("Plan fetch error", { planId, error: planError });
