@@ -94,18 +94,27 @@ serve(async (req) => {
     // Check if planId is a UUID or a plan name
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(planId);
     
-    let planQuery = supabase
-      .from('special_vehicle_plans')
-      .select('*');
+    let planData;
+    let planError;
     
     if (isUUID) {
-      planQuery = planQuery.eq('id', planId);
+      const result = await supabase
+        .from('special_vehicle_plans')
+        .select('*')
+        .eq('id', planId)
+        .single();
+      planData = result.data;
+      planError = result.error;
     } else {
       // If not UUID, treat as plan name (case insensitive)
-      planQuery = planQuery.ilike('name', planId);
+      const result = await supabase
+        .from('special_vehicle_plans')
+        .select('*')
+        .ilike('name', planId)
+        .single();
+      planData = result.data;
+      planError = result.error;
     }
-    
-    const { data: planData, error: planError } = await planQuery.single();
 
     if (planError || !planData) {
       throw new Error(`Failed to fetch plan: ${planError?.message}`);
@@ -166,7 +175,7 @@ serve(async (req) => {
     
     const transactionInsertData = {
       transaction_id: transactionId,
-      plan_id: planId,
+      plan_id: planData.id, // Use the actual UUID from the fetched plan data
       payment_type: originalPaymentType, // Store original warranty duration, not Bumper payment frequency
       customer_data: {
         ...customerData,
