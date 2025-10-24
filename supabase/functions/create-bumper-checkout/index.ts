@@ -88,12 +88,24 @@ serve(async (req) => {
     });
 
     // Fetch plan data to get plan type
+    // Handle both UUID and plan name (for backward compatibility)
     logStep("Fetching plan data", { planId });
-    const { data: planData, error: planError } = await supabase
+    
+    // Check if planId is a UUID or a plan name
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(planId);
+    
+    let planQuery = supabase
       .from('special_vehicle_plans')
-      .select('*')
-      .eq('id', planId)
-      .single();
+      .select('*');
+    
+    if (isUUID) {
+      planQuery = planQuery.eq('id', planId);
+    } else {
+      // If not UUID, treat as plan name (case insensitive)
+      planQuery = planQuery.ilike('name', planId);
+    }
+    
+    const { data: planData, error: planError } = await planQuery.single();
 
     if (planError || !planData) {
       throw new Error(`Failed to fetch plan: ${planError?.message}`);
