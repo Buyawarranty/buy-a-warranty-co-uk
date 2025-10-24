@@ -131,13 +131,18 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         console.log('✅ User returned to checkout page (visibility) - restoring data & clearing loading');
         const savedData = localStorage.getItem('multiWarrantyCheckoutData');
         const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+        const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod') as 'stripe' | 'bumper' | null;
         
         if (savedData) {
           const parsed = JSON.parse(savedData);
           setCustomerData(parsed);
           console.log('Restored customer data:', parsed);
         }
-        // DON'T restore payment method here - user may have changed it
+        // Restore payment method to sync with localStorage
+        if (savedPaymentMethod) {
+          console.log('Restored payment method:', savedPaymentMethod);
+          setSelectedPaymentMethod(savedPaymentMethod);
+        }
         if (savedDiscount) {
           setDiscountValidation(JSON.parse(savedDiscount));
           console.log('Restored discount validation');
@@ -152,13 +157,18 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       console.log('✅ Page shown (pageshow event) - user likely returned from payment gateway');
       const savedData = localStorage.getItem('multiWarrantyCheckoutData');
       const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+      const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod') as 'stripe' | 'bumper' | null;
       
       if (savedData) {
         const parsed = JSON.parse(savedData);
         setCustomerData(parsed);
         console.log('Restored customer data from pageshow:', parsed);
       }
-      // DON'T restore payment method here - user may have changed it
+      // Restore payment method to sync with localStorage
+      if (savedPaymentMethod) {
+        console.log('Restored payment method from pageshow:', savedPaymentMethod);
+        setSelectedPaymentMethod(savedPaymentMethod);
+      }
       if (savedDiscount) {
         setDiscountValidation(JSON.parse(savedDiscount));
       }
@@ -172,13 +182,18 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       console.log('✅ Back button detected (popstate) - restoring checkout data & clearing loading');
       const savedData = localStorage.getItem('multiWarrantyCheckoutData');
       const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+      const savedPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod') as 'stripe' | 'bumper' | null;
       
       if (savedData) {
         const parsed = JSON.parse(savedData);
         setCustomerData(parsed);
         console.log('Restored customer data from back navigation:', parsed);
       }
-      // DON'T restore payment method here - user may have changed it
+      // Restore payment method to sync with localStorage
+      if (savedPaymentMethod) {
+        console.log('Restored payment method from popstate:', savedPaymentMethod);
+        setSelectedPaymentMethod(savedPaymentMethod);
+      }
       if (savedDiscount) {
         setDiscountValidation(JSON.parse(savedDiscount));
       }
@@ -355,7 +370,17 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
         discountAmount: discountValidation?.discountAmount
       });
       
-      if (selectedPaymentMethod === 'bumper') {
+      // Double-check payment method from localStorage to ensure sync
+      const currentPaymentMethod = localStorage.getItem('multiWarrantyPaymentMethod') as 'stripe' | 'bumper' | null;
+      const activePaymentMethod = currentPaymentMethod || selectedPaymentMethod;
+      
+      console.log('💳 Payment method check:', {
+        stateValue: selectedPaymentMethod,
+        localStorageValue: currentPaymentMethod,
+        activeMethod: activePaymentMethod
+      });
+      
+      if (activePaymentMethod === 'bumper') {
         console.log('🚀 Starting Bumper checkout process');
         console.log('📋 Items to process:', items.map(item => ({
           planName: item.planName,
