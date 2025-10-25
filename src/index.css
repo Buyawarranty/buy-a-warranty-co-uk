@@ -115,6 +115,11 @@ body {
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
+    /* Pricing-specific colors */
+    --pricing-price: 210 11% 15%;
+    --pricing-benefit: 134 61% 41%;
+    --pricing-discount: 211 100% 50%;
+
     /* Keep destructive for errors */
     --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;

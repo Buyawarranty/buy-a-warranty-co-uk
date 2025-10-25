@@ -1807,36 +1807,36 @@ const PricingTable: React.FC<PricingTableProps> = ({
                    
                       {/* Pricing */}
                      <div className="mb-4 text-center mt-auto">
-                        <div className="text-3xl font-bold text-black mb-1">
+                        <div className="text-3xl font-bold text-pricing-price mb-1">
                           £{displayedMonthlyPrice}/month
                         </div>
                        <div className="text-sm text-gray-600 mb-2">
                          {option.id === '12months' && (
-                           <div className="flex items-center justify-center gap-1 font-bold">
-                             <span className="text-green-500">✓</span>
+                           <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
+                             <span>✓</span>
                              Only 12 easy payments
                            </div>
                          )}
                          {option.id === '24months' && (
                            <div className="space-y-1">
-                             <div className="flex items-center justify-center gap-1 font-bold">
-                               <span className="text-green-500">✓</span>
+                             <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
+                               <span>✓</span>
                                Only 12 easy payments
                              </div>
-                             <div className="flex items-center justify-center gap-1 font-bold text-red-600">
-                               <span className="text-green-500">✓</span>
+                             <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
+                               <span>✓</span>
                                Nothing to pay in Year 2
                              </div>
                            </div>
                          )}
                          {option.id === '36months' && (
                            <div className="space-y-1">
-                             <div className="flex items-center justify-center gap-1 font-bold">
-                               <span className="text-green-500">✓</span>
+                             <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
+                               <span>✓</span>
                                Only 12 easy payments
                              </div>
-                             <div className="flex items-center justify-center gap-1 font-bold text-red-600">
-                               <span className="text-green-500">✓</span>
+                             <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
+                               <span>✓</span>
                                Nothing to pay in Year 2 and Year 3
                              </div>
                            </div>
@@ -1847,7 +1847,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                         {option.id !== '12months' && (
                           <span className="line-through text-gray-500 ml-1">£{planAdjustedBasePrice}</span>
                         )}
-                        <span className="text-orange-600 ml-1">£{discountedPrice}</span>
+                        <span className="text-pricing-discount ml-1">£{discountedPrice}</span>
                       </div>
                    </div>
                   

@@ -45,6 +45,11 @@ export default {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))'
 				},
+				pricing: {
+					price: 'hsl(var(--pricing-price))',
+					benefit: 'hsl(var(--pricing-benefit))',
+					discount: 'hsl(var(--pricing-discount))'
+				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
