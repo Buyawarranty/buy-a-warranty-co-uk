@@ -172,18 +172,18 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
         
         // Calculate price display - always show monthly cost spread over 12 payments
         let priceDisplay;
+        let showSpreadText = false;
         
-        if (isIncluded) {
-          priceDisplay = 'Included';
-        } else if (addon.priceType === 'monthly') {
+        if (addon.priceType === 'monthly') {
           // For 2-year and 3-year plans, show the cost spread over 12 monthly payments
           const totalCost = addon.price * months;
           const monthlyPayment = totalCost / 12; // Always spread over 12 payments
           priceDisplay = addon.price > 0 
             ? `Only £${monthlyPayment.toFixed(2)} per month`
             : 'Included';
+          showSpreadText = addon.price > 0;
         } else {
-          priceDisplay = `Just £${addon.price} one-time fee`;
+          priceDisplay = isIncluded ? 'Included' : `Just £${addon.price} one-time fee`;
         }
               
               return (
@@ -204,14 +204,14 @@ const AddOnProtectionPackages: React.FC<AddOnProtectionPackagesProps> = ({
                       <div className="flex-1">
                         <h4 className="font-semibold text-base text-foreground mb-1">{addon.title}</h4>
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{addon.shortDescription}</p>
-                        <div className={`text-base font-bold ${isIncluded ? 'text-green-600' : 'text-black'}`}>
-                          {priceDisplay}
-                           {addon.priceType === 'monthly' && addon.price > 0 && !isIncluded && (
-                             <div className="text-sm font-normal text-muted-foreground">
-                               Spread over 12 interest-free payments for full {paymentType === '12months' ? '1 year' : paymentType === '24months' ? '2 year' : '3 year'} coverage.
-                             </div>
-                           )}
-                        </div>
+                         <div className={`text-base font-bold ${isIncluded ? 'text-green-600' : 'text-black'}`}>
+                           {priceDisplay}
+                            {showSpreadText && (
+                              <div className="text-sm font-normal text-muted-foreground">
+                                Spread over 12 interest-free payments for full {paymentType === '12months' ? '1 year' : paymentType === '24months' ? '2 year' : '3 year'} coverage.
+                              </div>
+                            )}
+                         </div>
                       </div>
                     </div>
                     <Checkbox 
