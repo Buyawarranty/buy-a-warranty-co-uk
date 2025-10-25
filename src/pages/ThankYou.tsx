@@ -14,6 +14,14 @@ import { ArrowRight, Check, Shield, Star, Users, Clock } from 'lucide-react';
 import pandaCelebratingOrangeCar from '@/assets/panda-celebrating-orange-car.png';
 import { trackPurchaseComplete, trackButtonClick } from '@/utils/analytics';
 
+// Extend Window interface for gtag
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
+
 const ThankYou = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -24,6 +32,50 @@ const ThankYou = () => {
   const [isProcessing, setIsProcessing] = useState(true);
   const [policyNumber, setPolicyNumber] = useState<string>('');
   const [timeRemaining, setTimeRemaining] = useState<string>('');
+
+  // Load Google Ads gtag script on page load
+  useEffect(() => {
+    // Check if script already exists
+    if (document.querySelector('script[src*="googletagmanager.com/gtag"]')) {
+      console.log('✅ Google Ads gtag script already loaded');
+      return;
+    }
+
+    // Load gtag.js script
+    const script = document.createElement('script');
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-17325228149';
+    script.async = true;
+    
+    script.onload = () => {
+      console.log('✅ Google Ads gtag script loaded on ThankYou page');
+      
+      // Initialize dataLayer and gtag
+      window.dataLayer = window.dataLayer || [];
+      function gtag(...args: any[]) {
+        window.dataLayer.push(args);
+      }
+      window.gtag = gtag as any;
+      
+      gtag('js', new Date());
+      gtag('config', 'AW-17325228149');
+      
+      console.log('✅ Google Ads tracking initialized on ThankYou page');
+    };
+    
+    script.onerror = () => {
+      console.error('❌ Failed to load Google Ads gtag script');
+    };
+    
+    document.head.appendChild(script);
+    
+    return () => {
+      // Cleanup if needed
+      const existingScript = document.querySelector('script[src*="googletagmanager.com/gtag"]');
+      if (existingScript && existingScript === script) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
 
   // Calculate 24-hour expiry time
   useEffect(() => {
