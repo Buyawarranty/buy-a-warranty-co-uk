@@ -70,7 +70,7 @@ const AddOnProtectionDisplay: React.FC<AddOnProtectionDisplayProps> = ({
       label: 'MOT Test Fee Cover', 
       value: mot_fee, 
       icon: '🔧', 
-      description: 'Reimbursement of the MOT test fee up to £75'
+      description: 'Reimbursement of the MOT test fee'
     },
     { 
       key: 'tyre_cover', 
