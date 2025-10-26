@@ -310,7 +310,7 @@ const CarExtendedWarranty: React.FC = () => {
 
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50" role="banner">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center">
               <Link to="/" aria-label="Buy a Warranty Homepage">
@@ -408,8 +408,8 @@ const CarExtendedWarranty: React.FC = () => {
       <main role="main" className="pb-20 sm:pb-0 overflow-x-hidden">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-blue-50 via-white to-orange-50 py-8 sm:py-12 md:py-20" aria-label="Extended warranty introduction">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center space-y-4 sm:space-y-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
             <div className="flex justify-end mb-3 sm:mb-4">
               <TrustpilotHeader />
             </div>
@@ -453,7 +453,7 @@ const CarExtendedWarranty: React.FC = () => {
 
             {/* Hero Quote Form - Matching Homepage Design */}
             <div id="quote-form" className="bg-white py-6 sm:py-8 lg:py-12 mt-6 sm:mt-8">
-              <div className="w-full mx-auto px-4 sm:px-6 max-w-3xl">
+              <div className="w-full mx-auto px-4 sm:px-6 max-w-7xl">
                 <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-center">
                   {/* Left Content */}
                   <div className="space-y-3 sm:space-y-4 flex flex-col justify-center w-full">
@@ -646,8 +646,8 @@ const CarExtendedWarranty: React.FC = () => {
 
       {/* What Is an Extended Car Warranty Section */}
       <article className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">What Is an Extended Car Warranty?</h2>
             
             <p className="text-lg text-gray-700 leading-relaxed mb-6">
@@ -709,8 +709,8 @@ const CarExtendedWarranty: React.FC = () => {
 
       {/* Why It's a Smart Financial Move */}
       <article className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="financial-benefits">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
             <h2 id="financial-benefits" className="text-3xl md:text-4xl font-bold text-center mb-12">
               Why a Car Extended Warranty is a Smart Financial Move
             </h2>
@@ -813,8 +813,8 @@ const CarExtendedWarranty: React.FC = () => {
 
       {/* Coverage Types */}
       <section className="py-16 bg-white" aria-labelledby="coverage-types">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
             <h2 id="coverage-types" className="text-3xl md:text-4xl font-bold text-center mb-8">
               Types of Car Extended Warranty Cover
             </h2>
@@ -868,14 +868,14 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Trustpilot Badge */}
-      <div className="py-8 flex justify-end max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-8 flex justify-end max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TrustpilotHeader />
       </div>
 
       {/* Eligibility Section */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="eligibility">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
             <h2 id="eligibility" className="text-3xl md:text-4xl font-bold text-center mb-8">
               Eligibility – Is Your Car Covered?
             </h2>
@@ -983,8 +983,8 @@ const CarExtendedWarranty: React.FC = () => {
 
       {/* Manufacturers Covered */}
       <section className="py-16 bg-white" aria-labelledby="manufacturers-covered">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
             <h2 id="manufacturers-covered" className="text-3xl md:text-4xl font-bold text-center mb-12">
               Manufacturers Covered Under Our Warranty Plans
             </h2>
@@ -1053,14 +1053,14 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Trustpilot Badge */}
-      <div className="py-8 flex justify-end max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-8 flex justify-end max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TrustpilotHeader />
       </div>
 
       {/* How It Works */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="how-it-works">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
             <h2 id="how-it-works" className="text-3xl md:text-4xl font-bold text-center mb-12">
               How It Works: Simple, Fast, and Transparent
             </h2>
@@ -1144,8 +1144,8 @@ const CarExtendedWarranty: React.FC = () => {
 
       {/* Why Choose Buy A Warranty */}
       <section className="py-16 bg-white" aria-labelledby="why-choose-us">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
             <h2 id="why-choose-us" className="text-3xl md:text-4xl font-bold text-center mb-12">
               Why Choose Buy A Warranty?
             </h2>
@@ -1201,14 +1201,14 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Trustpilot Badge */}
-      <div className="py-8 flex justify-end max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-8 flex justify-end max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TrustpilotHeader />
       </div>
 
       {/* Customer Testimonials */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="customer-testimonials">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
             <h2 id="customer-testimonials" className="text-3xl md:text-4xl font-bold text-center mb-12">
               What Our Customers Say
             </h2>
@@ -1275,7 +1275,7 @@ const CarExtendedWarranty: React.FC = () => {
 
       {/* Transparent Terms */}
       <section className="py-16 bg-white" aria-labelledby="transparent-terms">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h2 id="transparent-terms" className="text-3xl md:text-4xl font-bold mb-6">
               Transparent Terms. No Hidden Surprises.
@@ -1294,13 +1294,13 @@ const CarExtendedWarranty: React.FC = () => {
       </section>
 
       {/* Trustpilot Badge */}
-      <div className="py-8 flex justify-end max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-8 flex justify-end max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TrustpilotHeader />
       </div>
 
       {/* FAQs */}
       <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50" aria-labelledby="faqs" itemScope itemType="https://schema.org/FAQPage">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <h2 id="faqs" className="text-3xl md:text-4xl font-bold text-center mb-12 faq-question">
               FAQs: Extended Car Warranty UK
@@ -1324,7 +1324,7 @@ const CarExtendedWarranty: React.FC = () => {
 
       {/* Final CTA */}
       <section className="py-16 bg-primary text-white" aria-label="Get your free quote">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h2 className="text-3xl md:text-4xl font-bold">
               Ready to Protect Your Car? Get a Free Instant Quote
