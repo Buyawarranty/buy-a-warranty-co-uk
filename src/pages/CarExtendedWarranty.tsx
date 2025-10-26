@@ -407,83 +407,83 @@ const CarExtendedWarranty: React.FC = () => {
       {/* Main content */}
       <main role="main">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-50 via-white to-orange-50 py-12 md:py-20" aria-label="Extended warranty introduction">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="flex justify-end mb-4">
+        <section className="bg-gradient-to-br from-blue-50 via-white to-orange-50 py-8 sm:py-12 md:py-20" aria-label="Extended warranty introduction">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
+            <div className="flex justify-end mb-3 sm:mb-4">
               <TrustpilotHeader />
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight px-2">
               Extended Car Warranty UK
             </h1>
-            <p className="text-2xl md:text-3xl font-semibold text-primary">
+            <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-primary px-2">
               Warranty that works when your car doesn't!
             </p>
             
-            <p className="text-xl text-gray-700">
+            <p className="text-lg sm:text-xl text-gray-700 px-2">
               The Smart Way to Protect Your Car & Your Wallet
             </p>
 
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-600 leading-relaxed px-2">
               Every driver knows that moment - the dashboard light flickers on, the car makes an unusual sound, and your heart sinks. Repair bills in the UK are rising fast, with even small faults now costing hundreds of pounds. When the manufacturer's warranty expires, the financial risk shifts to you - and that's where a Car Extended Warranty from Buy A Warranty steps in.
             </p>
 
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-600 leading-relaxed px-2">
               We're here to keep you protected from unexpected repair costs, inflated garage fees, and the stress of uncertainty. Our plans are simple, transparent, and built to give you peace of mind every mile.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-3 sm:pt-4 px-2">
               <Button 
                 size="lg"
                 onClick={navigateToQuoteForm}
-                className="bg-primary text-white hover:bg-primary/90"
+                className="bg-primary text-white hover:bg-primary/90 text-base sm:text-lg w-full sm:w-auto"
               >
-                Get Your Free Quote <ArrowRight className="ml-2 h-5 w-5" />
+                Get Your Free Quote <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
               <Button 
                 size="lg"
                 variant="outline"
                 onClick={() => window.location.href = 'tel:03302295040'}
-                className="border-primary text-primary hover:bg-primary hover:text-white"
+                className="border-primary text-primary hover:bg-primary hover:text-white text-base sm:text-lg w-full sm:w-auto"
               >
-                <Phone className="mr-2 h-5 w-5" /> Call 0330 229 5040
+                <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Call 0330 229 5040
               </Button>
             </div>
 
             {/* Hero Quote Form - Matching Homepage Design */}
-            <div id="quote-form" className="bg-white py-8 lg:py-12 mt-8">
-              <div className="max-w-5xl mx-auto px-4">
-                <div className="grid lg:grid-cols-2 gap-8 items-center">
+            <div id="quote-form" className="bg-white py-6 sm:py-8 lg:py-12 mt-6 sm:mt-8">
+              <div className="max-w-5xl mx-auto px-3 sm:px-4">
+                <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-center">
                   {/* Left Content */}
-                  <div className="space-y-4 flex flex-col justify-center">
+                  <div className="space-y-3 sm:space-y-4 flex flex-col justify-center">
                     {/* Main Headline */}
-                    <div className="space-y-2 mb-4">
-                      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
+                    <div className="space-y-2 mb-3 sm:mb-4">
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
                         We{"'"}ve got you covered <span className="text-brand-orange">in 60 seconds!</span>
                       </h2>
                     </div>
 
                     {/* Benefits */}
-                    <div className="mb-6 text-gray-700 text-sm md:text-base space-y-2">
+                    <div className="mb-4 sm:mb-6 text-gray-700 text-xs sm:text-sm md:text-base space-y-2">
                       <div className="flex items-center">
-                        <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0" />
                         <span className="font-medium">From just 80p a day • Easy claims • Fast payouts</span>
                       </div>
                       <div className="flex items-center">
-                        <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0" />
                         <span className="font-medium">Unlimited claims • Complete Cover • No excess</span>
                       </div>
                     </div>
 
                     {/* Registration Input Form */}
-                    <form onSubmit={handleGetQuote} className="space-y-3 w-full max-w-md">
+                    <form onSubmit={handleGetQuote} className="space-y-3 w-full">
                       <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full">
                         {/* UK Section with flag */}
-                        <div className="bg-blue-600 text-white font-bold px-4 py-4 flex items-center justify-center min-w-[80px] h-[66px]">
+                        <div className="bg-blue-600 text-white font-bold px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-center min-w-[60px] sm:min-w-[80px] h-[54px] sm:h-[66px]">
                           <div className="flex flex-col items-center">
-                            <div className="text-lg leading-tight mb-1">🇬🇧</div>
-                            <div className="text-base font-bold leading-none">UK</div>
+                            <div className="text-base sm:text-lg leading-tight mb-0.5 sm:mb-1">🇬🇧</div>
+                            <div className="text-xs sm:text-base font-bold leading-none">UK</div>
                           </div>
                         </div>
                         {/* Registration Input */}
@@ -492,11 +492,11 @@ const CarExtendedWarranty: React.FC = () => {
                           value={regNumber}
                           onChange={handleRegChange}
                           placeholder="Enter reg"
-                          className="bg-yellow-400 border-none outline-none text-3xl text-black flex-1 font-black placeholder:text-black/70 px-4 py-4 uppercase tracking-wider h-[66px] min-w-0"
+                          className="bg-yellow-400 border-none outline-none text-xl sm:text-2xl md:text-3xl text-black flex-1 font-black placeholder:text-black/70 px-2 sm:px-4 py-3 sm:py-4 uppercase tracking-wider h-[54px] sm:h-[66px] min-w-0"
                           maxLength={8}
                         />
                       </div>
-                      <p className="text-sm text-black text-left mt-0.5">
+                      <p className="text-xs sm:text-sm text-black text-left mt-0.5">
                         Protection for vehicles up to 150,000 miles and 15 years.
                       </p>
 
@@ -510,14 +510,14 @@ const CarExtendedWarranty: React.FC = () => {
                             onFocus={handleMileageFocus}
                             onBlur={handleMileageBlur}
                             placeholder={mileagePlaceholder}
-                            className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none ${
+                            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-base sm:text-lg border-2 rounded-lg focus:outline-none ${
                               mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
                             }`}
                           />
                         </div>
 
                         {/* Slider Option */}
-                        <div>
+                        <div className="px-1">
                           <MileageSlider
                             value={sliderMileage}
                             onChange={handleSliderChange}
@@ -528,12 +528,12 @@ const CarExtendedWarranty: React.FC = () => {
 
                         {/* Error Messages */}
                         {mileageError && (
-                          <p className="text-sm text-blue-600 font-medium">
+                          <p className="text-xs sm:text-sm text-blue-600 font-medium">
                             {mileageError}
                           </p>
                         )}
                         {vehicleAgeError && (
-                          <p className="text-sm text-blue-600 font-medium">
+                          <p className="text-xs sm:text-sm text-blue-600 font-medium">
                             {vehicleAgeError}
                           </p>
                         )}
@@ -543,7 +543,7 @@ const CarExtendedWarranty: React.FC = () => {
                       <div className="space-y-2 mt-2">
                         <Button 
                           type="submit"
-                          className={`w-full px-12 h-[66px] text-xl font-bold rounded-lg transition-all ${
+                          className={`w-full px-6 sm:px-12 h-[54px] sm:h-[66px] text-lg sm:text-xl font-bold rounded-lg transition-all ${
                             isLookingUp
                               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                               : 'bg-brand-orange hover:bg-brand-orange/90 text-white btn-slow-pulsate'
@@ -552,8 +552,9 @@ const CarExtendedWarranty: React.FC = () => {
                         >
                           {isLookingUp ? 'Looking up vehicle...' : (
                             <>
-                              Get my instant quote
-                              <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
+                              <span className="hidden sm:inline">Get my instant quote</span>
+                              <span className="sm:hidden">Get quote</span>
+                              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" strokeWidth={2.5} />
                             </>
                           )}
                         </Button>
@@ -562,7 +563,7 @@ const CarExtendedWarranty: React.FC = () => {
                   </div>
 
                   {/* Right Content - Hero Image */}
-                  <div className="relative">
+                  <div className="relative hidden lg:block">
                     <OptimizedImage 
                       src="/extended_warranty_uk-car-trustworthy-reviews.png" 
                       alt="Extended warranty UK - Car trustworthy reviews - Panda mascot with vehicle collection" 
@@ -611,6 +612,28 @@ const CarExtendedWarranty: React.FC = () => {
                             <span className="font-medium text-gray-700 text-base">Motorcycles</span>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mobile Vehicle Types - Show below form on mobile */}
+                  <div className="lg:hidden">
+                    <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap">
+                      <div className="flex items-center space-x-1">
+                        <Car className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        <span className="font-medium text-gray-700 text-sm">Cars</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Truck className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        <span className="font-medium text-gray-700 text-sm">Vans</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Battery className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        <span className="font-medium text-gray-700 text-sm">EVs</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Bike className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        <span className="font-medium text-gray-700 text-sm">Motorcycles</span>
                       </div>
                     </div>
                   </div>
