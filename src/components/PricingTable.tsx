@@ -1842,13 +1842,15 @@ const PricingTable: React.FC<PricingTableProps> = ({
                             </div>
                           )}
                         </div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        Total cost: 
-                        {option.id !== '12months' && (
-                          <span className="line-through text-red-600 ml-1">£{planAdjustedBasePrice}</span>
-                        )}
-                        <span className="text-pricing-discount ml-1">£{discountedPrice}</span>
-                      </div>
+                       <div className="text-center">
+                         <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
+                         <div className="flex items-center justify-center gap-2">
+                           {option.id !== '12months' && (
+                             <span className="line-through text-red-600 text-2xl font-bold">£{planAdjustedBasePrice}</span>
+                           )}
+                           <span className="text-blue-600 text-2xl font-bold">£{discountedPrice}</span>
+                         </div>
+                       </div>
                    </div>
                   
                    {/* Select Button */}

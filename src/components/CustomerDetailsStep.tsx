@@ -1233,9 +1233,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                 <span className="mr-2 text-green-600">✓</span>
                                 <span className="font-medium text-foreground">Only 12 easy payments</span>
                               </div>
-                             <div className="text-lg font-semibold text-gray-900">
-                               Total cost: £{discountedBumperPrice}
-                             </div>
+                              <div className="text-center">
+                                <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
+                                <div className="text-2xl font-bold text-blue-600">£{discountedBumperPrice}</div>
+                              </div>
                            </div>
                          );
                        } else if (months === 24) {
@@ -1255,9 +1256,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                   <span className="font-medium text-foreground">Nothing to pay in Year 2</span>
                                 </div>
                               </div>
-                              <div className="text-lg font-semibold text-gray-900">
-                                Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings} Today</span>
-                              </div>
+                               <div className="text-center">
+                                 <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
+                                 <div className="flex items-center justify-center gap-2">
+                                   <span className="line-through text-red-600 text-2xl font-bold">£{originalPrice}</span>
+                                   <span className="text-blue-600 text-2xl font-bold">£{discountedBumperPrice}</span>
+                                 </div>
+                               </div>
                            </div>
                          );
                        } else if (months === 36) {
@@ -1277,9 +1282,13 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                   <span className="font-medium text-foreground">Nothing to pay in Year 2 and Year 3</span>
                                 </div>
                               </div>
-                              <div className="text-lg font-semibold text-gray-900">
-                                Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings} Today</span>
-                              </div>
+                               <div className="text-center">
+                                 <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
+                                 <div className="flex items-center justify-center gap-2">
+                                   <span className="line-through text-red-600 text-2xl font-bold">£{originalPrice}</span>
+                                   <span className="text-blue-600 text-2xl font-bold">£{discountedBumperPrice}</span>
+                                 </div>
+                               </div>
                            </div>
                          );
                        }
