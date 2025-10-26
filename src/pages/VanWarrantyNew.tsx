@@ -191,19 +191,6 @@ const VanWarrantyNew = () => {
                 <p className="text-muted-foreground">Trusted repair network across the country</p>
               </div>
             </div>
-
-            <div className="flex justify-center">
-              <img
-                {...getResponsiveImageProps({
-                  src: vanFast,
-                  alt: "Fast van warranty claims processing with expert support",
-                  width: 400,
-                  height: 400,
-                  loading: 'lazy'
-                })}
-                className="w-64 h-auto drop-shadow-xl"
-              />
-            </div>
           </div>
         </section>
 
@@ -450,19 +437,35 @@ const VanWarrantyNew = () => {
 
         {/* Flexible Terms */}
         <section className="py-16 bg-background">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-              Flexible Terms and Affordable Cover
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
-              Every van is different, which is why our warranty plans are designed around your needs. Choose short-term or multi-year protection, add optional upgrades, and pay the way that suits you best.
-            </p>
-            <p className="text-xl font-semibold text-foreground mb-8">
-              We are the only UK warranty provider offering cover for vans up to 150,000 miles at the start of the policy.
-            </p>
-            <p className="text-lg text-muted-foreground">
-              That means even high-mileage vans can stay protected with the same confidence, reliability, and level of service.
-            </p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                  Flexible Terms and Affordable Cover
+                </h2>
+                <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                  Every van is different, which is why our warranty plans are designed around your needs. Choose short-term or multi-year protection, add optional upgrades, and pay the way that suits you best.
+                </p>
+                <p className="text-xl font-semibold text-foreground mb-6">
+                  We are the only UK warranty provider offering cover for vans up to 150,000 miles at the start of the policy.
+                </p>
+                <p className="text-lg text-muted-foreground">
+                  That means even high-mileage vans can stay protected with the same confidence, reliability, and level of service.
+                </p>
+              </div>
+              <div className="flex justify-center lg:justify-end">
+                <img
+                  {...getResponsiveImageProps({
+                    src: vanFast,
+                    alt: "Fast van warranty claims processing with expert support",
+                    width: 500,
+                    height: 500,
+                    loading: 'lazy'
+                  })}
+                  className="w-full max-w-md h-auto"
+                />
+              </div>
+            </div>
           </div>
         </section>
 
