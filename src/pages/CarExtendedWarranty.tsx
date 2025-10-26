@@ -43,7 +43,7 @@ const CarExtendedWarranty: React.FC = () => {
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [mileageError, setMileageError] = useState('');
   const [vehicleAgeError, setVehicleAgeError] = useState('');
-  const [mileagePlaceholder, setMileagePlaceholder] = useState('Enter current approximate mileage');
+  const [mileagePlaceholder, setMileagePlaceholder] = useState(isMobile ? 'Enter mileage' : 'Enter current approximate mileage');
 
   const navigateToQuoteForm = () => {
     trackButtonClick('car_extended_warranty_get_quote');
@@ -87,12 +87,12 @@ const CarExtendedWarranty: React.FC = () => {
   const handleMileageFocus = () => {
     setMileage('');
     setSliderMileage(0);
-    setMileagePlaceholder('Enter mileage (e.g. 32,000)');
+    setMileagePlaceholder(isMobile ? 'e.g. 32,000' : 'Enter mileage (e.g. 32,000)');
   };
 
   const handleMileageBlur = () => {
     if (!mileage || mileage === '0') {
-      setMileagePlaceholder('Enter current approximate mileage');
+      setMileagePlaceholder(isMobile ? 'Enter mileage' : 'Enter current approximate mileage');
     }
   };
 
@@ -273,7 +273,7 @@ const CarExtendedWarranty: React.FC = () => {
   ];
 
   return (
-    <>
+    <div className="min-h-screen overflow-x-hidden">
       <SEOHead
         title="Car Extended Warranty UK | Used Car Cover from £19/mo"
         description="Protect your used or new car from costly repairs with affordable extended warranty cover in the UK. Instant quotes online. Prices start from just £19/month."
@@ -405,7 +405,7 @@ const CarExtendedWarranty: React.FC = () => {
       </header>
 
       {/* Main content */}
-      <main role="main">
+      <main role="main" className="pb-20 sm:pb-0 overflow-x-hidden">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-blue-50 via-white to-orange-50 py-8 sm:py-12 md:py-20" aria-label="Extended warranty introduction">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
@@ -1419,7 +1419,7 @@ const CarExtendedWarranty: React.FC = () => {
           </a>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
