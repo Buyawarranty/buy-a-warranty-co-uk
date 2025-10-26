@@ -35,6 +35,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const WarrantyPlan = lazy(() => import("./pages/WarrantyPlan"));
 const BuyCarWarranty = lazy(() => import("./pages/BuyCarWarranty"));
 const VanWarranty = lazy(() => import("./pages/VanWarranty"));
+const VanWarrantyNew = lazy(() => import("./pages/VanWarrantyNew"));
 const EVWarranty = lazy(() => import("./pages/EVWarranty"));
 const MotorbikeWarranty = lazy(() => import("./pages/MotorbikeWarranty"));
 const CarExtendedWarranty = lazy(() => import("./pages/CarExtendedWarranty"));
@@ -125,6 +126,7 @@ const App = () => {
                     <Route path="/warranty-plan/" element={<WarrantyPlan />} />
                     <Route path="/buy-a-used-car-warranty-reliable-warranties/" element={<BuyCarWarranty />} />
                     <Route path="/van-warranty-companies-uk-warranties/" element={<VanWarranty />} />
+                    <Route path="/van-warranty/" element={<VanWarrantyNew />} />
                     <Route path="/best-warranty-on-ev-cars-uk-warranties/" element={<EVWarranty />} />
                     <Route path="/motorbike-repair-warranty-uk-warranties/" element={<MotorbikeWarranty />} />
                     <Route path="/car-extended-warranty/" element={<CarExtendedWarranty />} />
