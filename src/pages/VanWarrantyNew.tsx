@@ -7,6 +7,7 @@ import { WebPageSchema } from '@/components/schema/WebPageSchema';
 import { FAQSchema } from '@/components/schema/FAQSchema';
 import { ProductSchema } from '@/components/schema/ProductSchema';
 import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
+import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { getResponsiveImageProps } from '@/utils/imageOptimizer';
 import vanHero from '@/assets/van-warranty-hero.png';
 import vanFast from '@/assets/van-warranty-fast.png';
@@ -194,6 +195,11 @@ const VanWarrantyNew = () => {
           </div>
         </section>
 
+        {/* Trustpilot Badge */}
+        <div className="py-8 flex justify-end container mx-auto px-4">
+          <TrustpilotHeader />
+        </div>
+
         {/* Coverage Section */}
         <section className="py-16 bg-card">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -360,6 +366,11 @@ const VanWarrantyNew = () => {
           </div>
         </section>
 
+        {/* Trustpilot Badge */}
+        <div className="py-8 flex justify-end container mx-auto px-4">
+          <TrustpilotHeader />
+        </div>
+
         {/* Used Van Warranty */}
         <section className="py-16 bg-background">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -434,6 +445,11 @@ const VanWarrantyNew = () => {
             </p>
           </div>
         </section>
+
+        {/* Trustpilot Badge */}
+        <div className="py-8 flex justify-end container mx-auto px-4">
+          <TrustpilotHeader />
+        </div>
 
         {/* Flexible Terms */}
         <section className="py-16 bg-background">
