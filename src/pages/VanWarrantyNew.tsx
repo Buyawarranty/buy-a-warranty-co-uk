@@ -333,7 +333,7 @@ const VanWarrantyNew = () => {
                 <h3 className="text-2xl font-bold text-foreground mb-3">12-Month Plan</h3>
                 <p className="text-lg text-muted-foreground mb-6">1 Year Van Warranty</p>
                 <p className="text-muted-foreground mb-6">Ideal for short-term protection or if you plan to upgrade soon.</p>
-                <Button onClick={scrollToQuote} className="w-full">Get 12-Month Quote</Button>
+                <Button onClick={scrollToQuote} className="w-full">Get 1 Year Cover</Button>
               </div>
 
               <div className="bg-primary/5 p-8 rounded-lg border-2 border-primary relative">
@@ -343,14 +343,14 @@ const VanWarrantyNew = () => {
                 <h3 className="text-2xl font-bold text-foreground mb-3">24-Month Plan</h3>
                 <p className="text-lg text-muted-foreground mb-6">2 Year Van Warranty</p>
                 <p className="text-muted-foreground mb-6">Our most popular choice - two years of cover and excellent value.</p>
-                <Button onClick={scrollToQuote} className="w-full">Get 24-Month Quote</Button>
+                <Button onClick={scrollToQuote} className="w-full">Get 2 Year Cover</Button>
               </div>
 
               <div className="bg-background p-8 rounded-lg border-2 border-border hover:border-primary transition-colors">
                 <h3 className="text-2xl font-bold text-foreground mb-3">36-Month Plan</h3>
                 <p className="text-lg text-muted-foreground mb-6">3 Year Van Warranty</p>
                 <p className="text-muted-foreground mb-6">Maximum protection for total peace of mind. Perfect for business owners and fleet users.</p>
-                <Button onClick={scrollToQuote} className="w-full">Get 36-Month Quote</Button>
+                <Button onClick={scrollToQuote} className="w-full">Get 3 Year Cover</Button>
               </div>
             </div>
 
