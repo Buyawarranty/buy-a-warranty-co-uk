@@ -1811,37 +1811,37 @@ const PricingTable: React.FC<PricingTableProps> = ({
                           £{displayedMonthlyPrice}/month
                         </div>
                        <div className="text-sm text-gray-600 mb-2">
-                         {option.id === '12months' && (
-                           <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
-                             <span>✓</span>
-                             Only 12 easy payments
-                           </div>
-                         )}
-                         {option.id === '24months' && (
-                           <div className="space-y-1">
-                             <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
-                               <span>✓</span>
-                               Only 12 easy payments
-                             </div>
-                             <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
-                               <span>✓</span>
-                               Nothing to pay in Year 2
-                             </div>
-                           </div>
-                         )}
-                         {option.id === '36months' && (
-                           <div className="space-y-1">
-                             <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
-                               <span>✓</span>
-                               Only 12 easy payments
-                             </div>
-                             <div className="flex items-center justify-center gap-1 font-bold text-pricing-benefit">
-                               <span>✓</span>
-                               Nothing to pay in Year 2 and Year 3
-                             </div>
-                           </div>
-                         )}
-                       </div>
+                          {option.id === '12months' && (
+                            <div className="flex items-center justify-center gap-1 font-bold">
+                              <span className="text-pricing-benefit">✓</span>
+                              <span className="text-foreground">Only 12 easy payments</span>
+                            </div>
+                          )}
+                          {option.id === '24months' && (
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-center gap-1 font-bold">
+                                <span className="text-pricing-benefit">✓</span>
+                                <span className="text-foreground">Only 12 easy payments</span>
+                              </div>
+                              <div className="flex items-center justify-center gap-1 font-bold">
+                                <span className="text-pricing-benefit">✓</span>
+                                <span className="text-foreground">Nothing to pay in Year 2</span>
+                              </div>
+                            </div>
+                          )}
+                          {option.id === '36months' && (
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-center gap-1 font-bold">
+                                <span className="text-pricing-benefit">✓</span>
+                                <span className="text-foreground">Only 12 easy payments</span>
+                              </div>
+                              <div className="flex items-center justify-center gap-1 font-bold">
+                                <span className="text-pricing-benefit">✓</span>
+                                <span className="text-foreground">Nothing to pay in Year 2 and Year 3</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       <div className="text-sm font-semibold text-gray-900">
                         Total cost: 
                         {option.id !== '12months' && (

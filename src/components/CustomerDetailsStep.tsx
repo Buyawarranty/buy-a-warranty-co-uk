@@ -1229,10 +1229,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          return (
                            <div className="text-center">
                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
-                             <div className="flex items-center justify-center text-green-600 mb-2">
-                               <span className="mr-2">✓</span>
-                               <span className="font-medium">Only 12 easy payments</span>
-                             </div>
+                              <div className="flex items-center justify-center mb-2">
+                                <span className="mr-2 text-green-600">✓</span>
+                                <span className="font-medium text-foreground">Only 12 easy payments</span>
+                              </div>
                              <div className="text-lg font-semibold text-gray-900">
                                Total cost: £{discountedBumperPrice}
                              </div>
@@ -1245,16 +1245,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          return (
                            <div className="text-center">
                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
-                             <div className="space-y-1 mb-3">
-                               <div className="flex items-center justify-center text-green-600">
-                                 <span className="mr-2">✓</span>
-                                 <span className="font-medium">Only 12 easy payments</span>
-                               </div>
-                               <div className="flex items-center justify-center text-green-600">
-                                 <span className="mr-2">✓</span>
-                                 <span className="font-medium">Nothing to pay in Year 2</span>
-                               </div>
-                             </div>
+                              <div className="space-y-1 mb-3">
+                                <div className="flex items-center justify-center">
+                                  <span className="mr-2 text-green-600">✓</span>
+                                  <span className="font-medium text-foreground">Only 12 easy payments</span>
+                                </div>
+                                <div className="flex items-center justify-center">
+                                  <span className="mr-2 text-green-600">✓</span>
+                                  <span className="font-medium text-foreground">Nothing to pay in Year 2</span>
+                                </div>
+                              </div>
                               <div className="text-lg font-semibold text-gray-900">
                                 Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings} Today</span>
                               </div>
@@ -1267,16 +1267,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          return (
                            <div className="text-center">
                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
-                             <div className="space-y-1 mb-3">
-                               <div className="flex items-center justify-center text-green-600">
-                                 <span className="mr-2">✓</span>
-                                 <span className="font-medium">Only 12 easy payments</span>
-                               </div>
-                               <div className="flex items-center justify-center text-green-600">
-                                 <span className="mr-2">✓</span>
-                                 <span className="font-medium">Nothing to pay in Year 2 and Year 3</span>
-                               </div>
-                             </div>
+                              <div className="space-y-1 mb-3">
+                                <div className="flex items-center justify-center">
+                                  <span className="mr-2 text-green-600">✓</span>
+                                  <span className="font-medium text-foreground">Only 12 easy payments</span>
+                                </div>
+                                <div className="flex items-center justify-center">
+                                  <span className="mr-2 text-green-600">✓</span>
+                                  <span className="font-medium text-foreground">Nothing to pay in Year 2 and Year 3</span>
+                                </div>
+                              </div>
                               <div className="text-lg font-semibold text-gray-900">
                                 Total cost: <span className="line-through text-gray-500">£{originalPrice}</span> £{discountedBumperPrice} <span className="text-green-600">Save £{savings} Today</span>
                               </div>
