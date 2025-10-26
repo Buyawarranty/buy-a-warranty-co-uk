@@ -6,6 +6,10 @@ https://www.buyawarranty.co.uk/* https://buyawarranty.co.uk/:splat 301!
 /home / 301!
 /home/ / 301!
 
+# Redirect old EV warranty URL to new URL
+/best-warranty-on-ev-cars-uk-warranties /ev-warranty/ 301!
+/best-warranty-on-ev-cars-uk-warranties/ /ev-warranty/ 301!
+
 # Redirect broken /contact page to correct URL
 /contact /contact-us/ 301!
 /contact/ /contact-us/ 301!

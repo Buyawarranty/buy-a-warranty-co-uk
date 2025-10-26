@@ -128,6 +128,7 @@ const App = () => {
                     <Route path="/van-warranty-companies-uk-warranties/" element={<VanWarranty />} />
                     <Route path="/van-warranty/" element={<VanWarrantyNew />} />
                     <Route path="/best-warranty-on-ev-cars-uk-warranties/" element={<EVWarranty />} />
+                    <Route path="/ev-warranty/" element={<EVWarranty />} />
                     <Route path="/motorbike-repair-warranty-uk-warranties/" element={<MotorbikeWarranty />} />
                     <Route path="/car-extended-warranty/" element={<CarExtendedWarranty />} />
                     <Route path="/used-car-warranty-uk/" element={<UsedCarWarrantyUK />} />
