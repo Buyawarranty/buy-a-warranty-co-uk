@@ -145,8 +145,15 @@ const Index = () => {
   console.log('Immediate quote check:', { quoteParam, emailParam });
   console.log('All URL params:', Object.fromEntries(searchParams.entries()));
   
-  // Initialize state variables first
-  const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
+  // Initialize state variables first - check localStorage immediately for vehicleData
+  const [vehicleData, setVehicleData] = useState<VehicleData | null>(() => {
+    try {
+      const saved = localStorage.getItem('buyawarranty_vehicleData');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [selectedPlan, setSelectedPlan] = useState<{
     id: string, 
     paymentType: string, 
