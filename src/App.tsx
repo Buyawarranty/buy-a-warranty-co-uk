@@ -39,7 +39,6 @@ const EVWarranty = lazy(() => import("./pages/EVWarranty"));
 const MotorbikeWarranty = lazy(() => import("./pages/MotorbikeWarranty"));
 const CarExtendedWarranty = lazy(() => import("./pages/CarExtendedWarranty"));
 const UsedCarWarrantyUK = lazy(() => import("./pages/UsedCarWarrantyUK"));
-const CarExtendedWarrantySurvey = lazy(() => import("./pages/CarExtendedWarrantySurvey"));
 
 // Admin and auth pages
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -128,7 +127,7 @@ const App = () => {
                     <Route path="/van-warranty-companies-uk-warranties/" element={<VanWarranty />} />
                     <Route path="/best-warranty-on-ev-cars-uk-warranties/" element={<EVWarranty />} />
                     <Route path="/motorbike-repair-warranty-uk-warranties/" element={<MotorbikeWarranty />} />
-                    <Route path="/car-extended-warranty/" element={<CarExtendedWarrantySurvey />} />
+                    <Route path="/car-extended-warranty/" element={<CarExtendedWarranty />} />
                     <Route path="/used-car-warranty-uk/" element={<UsedCarWarrantyUK />} />
                     
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
