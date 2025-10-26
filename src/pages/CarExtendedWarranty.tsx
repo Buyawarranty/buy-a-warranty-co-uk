@@ -107,7 +107,11 @@ const CarExtendedWarranty: React.FC = () => {
     }
   };
 
-  const handleGetQuote = async () => {
+  const handleGetQuote = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    
     trackButtonClick('get_quote_car_extended');
     
     if (!regNumber.trim()) {
@@ -472,8 +476,8 @@ const CarExtendedWarranty: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Registration Input */}
-                    <div className="space-y-3 w-full max-w-md">
+                    {/* Registration Input Form */}
+                    <form onSubmit={handleGetQuote} className="space-y-3 w-full max-w-md">
                       <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full">
                         {/* UK Section with flag */}
                         <div className="bg-blue-600 text-white font-bold px-4 py-4 flex items-center justify-center min-w-[80px] h-[66px]">
@@ -538,7 +542,7 @@ const CarExtendedWarranty: React.FC = () => {
                       {/* Get Quote Button */}
                       <div className="space-y-2 mt-2">
                         <Button 
-                          onClick={handleGetQuote}
+                          type="submit"
                           className={`w-full px-12 h-[66px] text-xl font-bold rounded-lg transition-all ${
                             isLookingUp
                               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -554,7 +558,7 @@ const CarExtendedWarranty: React.FC = () => {
                           )}
                         </Button>
                       </div>
-                    </div>
+                    </form>
                   </div>
 
                   {/* Right Content - Hero Image */}
