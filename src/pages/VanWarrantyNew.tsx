@@ -477,9 +477,9 @@ const VanWarrantyNew = () => {
             </h2>
             <div className="space-y-6">
               {vanWarrantyFAQs.map((faq, index) => (
-                <div key={index} className="bg-background p-6 rounded-lg border border-border">
-                  <h3 className="text-lg font-semibold text-foreground mb-3">{faq.question}</h3>
-                  <p className="text-muted-foreground">{faq.answer}</p>
+                <div key={index} className="bg-primary p-6 rounded-lg shadow-sm">
+                  <h3 className="text-lg font-semibold text-primary-foreground mb-3">{faq.question}</h3>
+                  <p className="text-primary-foreground/90">{faq.answer}</p>
                 </div>
               ))}
             </div>
