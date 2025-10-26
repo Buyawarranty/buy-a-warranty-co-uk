@@ -217,27 +217,27 @@ const VanWarrantyNew = () => {
                   <h3 className="text-xl font-semibold text-foreground mb-4">Key components typically covered:</h3>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">Engine, gearbox, and clutch</span>
+                    <span className="text-foreground">Engine, gearbox, and clutch</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">Steering, suspension, and braking systems</span>
+                    <span className="text-foreground">Steering, suspension, and braking systems</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">Cooling and air conditioning</span>
+                    <span className="text-foreground">Cooling and air conditioning</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">Electrical and electronic components</span>
+                    <span className="text-foreground">Electrical and electronic components</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">Fuel and ignition systems</span>
+                    <span className="text-foreground">Fuel and ignition systems</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">Transmission, differential, and drive shafts</span>
+                    <span className="text-foreground">Transmission, differential, and drive shafts</span>
                   </div>
                 </div>
 
@@ -245,15 +245,15 @@ const VanWarrantyNew = () => {
                   <h3 className="text-xl font-semibold text-foreground mb-4">Additional benefits:</h3>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">24/7 breakdown recovery reclaim (optional add-on)</span>
+                    <span className="text-foreground">24/7 breakdown recovery reclaim (optional add-on)</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">Fast claims authorisation usually 90 minutes after approval</span>
+                    <span className="text-foreground">Fast claims authorisation usually 90 minutes after approval</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                    <span className="text-muted-foreground">Direct payments to approved garages</span>
+                    <span className="text-foreground">Direct payments to approved garages</span>
                   </div>
                 </div>
               </div>
@@ -384,19 +384,19 @@ const VanWarrantyNew = () => {
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                <span className="text-muted-foreground">Available for privately bought or dealer-purchased vans</span>
+                <span className="text-foreground">Available for privately bought or dealer-purchased vans</span>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                <span className="text-muted-foreground">Suitable for older and high-mileage vehicles</span>
+                <span className="text-foreground">Suitable for older and high-mileage vehicles</span>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                <span className="text-muted-foreground">Extend or renew cover anytime</span>
+                <span className="text-foreground">Extend or renew cover anytime</span>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="h-6 w-6 text-pricing-benefit flex-shrink-0 mt-1" />
-                <span className="text-muted-foreground">Transferable policies that add resale value</span>
+                <span className="text-foreground">Transferable policies that add resale value</span>
               </div>
             </div>
           </div>
