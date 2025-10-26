@@ -267,16 +267,21 @@ const EVWarranty = () => {
                 />
               </div>
             </div>
-            <div className="relative">
+            <div className="relative flex justify-center">
               <OptimizedImage 
                 src={evHeroImage} 
                 alt="Electric Vehicle Warranty UK - EV and Hybrid Protection"
-                className="w-full h-auto"
+                className="w-1/2 h-auto"
                 priority
               />
             </div>
           </div>
         </section>
+
+        {/* Trustpilot Badge */}
+        <div className="py-8 flex justify-end container mx-auto px-4">
+          <TrustpilotHeader />
+        </div>
 
         {/* Specialist Protection Section */}
         <section className="bg-muted/30 py-16">
@@ -305,6 +310,11 @@ const EVWarranty = () => {
             </div>
           </div>
         </section>
+
+        {/* Trustpilot Badge */}
+        <div className="py-8 flex justify-end container mx-auto px-4">
+          <TrustpilotHeader />
+        </div>
 
         {/* Why Choose Us Section */}
         <section className="container mx-auto px-4 py-16">
@@ -387,16 +397,21 @@ const EVWarranty = () => {
                   Get Your Quote Now
                 </Button>
               </div>
-              <div>
+              <div className="flex justify-center">
                 <OptimizedImage 
                   src={evActiveImage} 
                   alt="EV Warranty Active - Electric Vehicle Coverage"
-                  className="w-full h-auto"
+                  className="w-[70%] h-auto"
                 />
               </div>
             </div>
           </div>
         </section>
+
+        {/* Trustpilot Badge */}
+        <div className="py-8 flex justify-end container mx-auto px-4">
+          <TrustpilotHeader />
+        </div>
 
         {/* Why Worth It Section */}
         <section className="container mx-auto px-4 py-16">
@@ -607,9 +622,9 @@ const EVWarranty = () => {
                   a: "Yes, you can extend coverage once your manufacturer warranty expires. Our plans act as post-manufacturer protection, covering all major systems and giving you continued peace of mind beyond the initial dealer cover."
                 }
               ].map((faq, index) => (
-                <div key={index} className="bg-card p-6 rounded-lg border">
-                  <h3 className="text-xl font-semibold mb-3">{faq.q}</h3>
-                  <p className="text-muted-foreground">{faq.a}</p>
+                <div key={index} className="bg-primary p-6 rounded-lg shadow-sm">
+                  <h3 className="text-xl font-semibold text-primary-foreground mb-3">{faq.q}</h3>
+                  <p className="text-primary-foreground/90">{faq.a}</p>
                 </div>
               ))}
             </div>
