@@ -241,6 +241,33 @@ const VanWarrantyNew = () => {
           </div>
         </section>
 
+        {/* Get Your Van Quote Section */}
+        <section className="py-16 bg-background">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Get Your Instant Van Warranty Quote
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                From just 80p a day • Easy claims • Fast payouts<br />
+                Unlimited claims • Complete Cover • No excess
+              </p>
+            </div>
+            
+            <div className="bg-card rounded-lg shadow-lg p-6 md:p-8 border border-border">
+              <VehicleDetailsStep 
+                onNext={handleVehicleNext}
+              />
+            </div>
+            
+            <div className="mt-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                Protection for vehicles up to 150,000 miles and 15 years.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Why Choose Us */}
         <section className="py-16 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
