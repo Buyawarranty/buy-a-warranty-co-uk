@@ -11,7 +11,7 @@ import { trackButtonClick } from '@/utils/analytics';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
 import VehicleDetailsStep from '@/components/VehicleDetailsStep';
-import evHeroImage from '@/assets/ev-warranty-hero.png';
+import evHeroImage from '@/assets/ev-hero-car.png';
 import evActiveImage from '@/assets/ev-warranty-active.png';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIconNew from '@/assets/whatsapp-icon-new.png';
