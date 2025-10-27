@@ -42,7 +42,29 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   });
   const [sendingEmail, setSendingEmail] = useState(false);
 
-  const handleSkipClick = () => {
+  const handleSkipClick = async () => {
+    // Track abandoned cart with whatever data we have
+    try {
+      const trackingEmail = email.trim() || vehicleData?.make || 'no-email-provided';
+      if (email.trim()) {
+        await supabase.functions.invoke('track-abandoned-cart', {
+          body: {
+            full_name: `${firstName} ${lastName}`.trim() || email.trim(),
+            email: email.trim(),
+            phone: phone || '',
+            vehicle_reg: vehicleData?.regNumber,
+            vehicle_make: vehicleData?.make,
+            vehicle_model: vehicleData?.model,
+            vehicle_year: vehicleData?.year,
+            mileage: vehicleData?.mileage,
+            step_abandoned: 2
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error tracking abandoned cart on skip:', error);
+    }
+    
     // Trigger confetti
     confetti({
       particleCount: 100,

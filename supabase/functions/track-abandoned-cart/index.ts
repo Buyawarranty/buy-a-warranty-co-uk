@@ -67,16 +67,19 @@ const handler = async (req: Request): Promise<Response> => {
 
     const cartData: AbandonedCartData = await req.json();
 
-    // Only track if we have at least an email
-    if (!cartData.email) {
+    // Track if we have at least an email or vehicle registration
+    // For abandoned cart tracking, we accept any identifier including vehicle reg
+    if (!cartData.email || cartData.email.trim() === '') {
       return new Response(
-        JSON.stringify({ error: "Email is required for abandoned cart tracking" }),
+        JSON.stringify({ error: "Email or identifier is required for abandoned cart tracking" }),
         {
           status: 400,
           headers: { "Content-Type": "application/json", ...corsHeaders },
         }
       );
     }
+
+    console.log(`📊 Tracking abandoned cart for: ${cartData.email} at step ${cartData.step_abandoned}`);
 
     // Check if we already have a recent abandoned cart entry for this email and step
     const { data: existingCart, error: checkError } = await supabase

@@ -316,6 +316,37 @@ const PricingTable: React.FC<PricingTableProps> = ({
     }
   }, [plans, selectedPlan]);
 
+  // Track abandoned cart when user reaches pricing page (Step 3)
+  useEffect(() => {
+    const trackPricingPageView = async () => {
+      try {
+        const trackingEmail = vehicleData?.email || vehicleData?.regNumber || 'no-identifier';
+        
+        await supabase.functions.invoke('track-abandoned-cart', {
+          body: {
+            full_name: vehicleData?.firstName && vehicleData?.lastName 
+              ? `${vehicleData.firstName} ${vehicleData.lastName}` 
+              : (vehicleData?.email || ''),
+            email: trackingEmail,
+            phone: vehicleData?.phone || '',
+            vehicle_reg: vehicleData?.regNumber,
+            vehicle_make: vehicleData?.make,
+            vehicle_model: vehicleData?.model,
+            vehicle_year: vehicleData?.year,
+            vehicle_type: vehicleData?.vehicleType,
+            mileage: vehicleData?.mileage,
+            step_abandoned: 3
+          }
+        });
+        console.log('✅ Tracked abandoned cart at Step 3 (Pricing Page) for:', trackingEmail);
+      } catch (error) {
+        console.error('Error tracking abandoned cart on pricing page:', error);
+      }
+    };
+    
+    trackPricingPageView();
+  }, []); // Only run once when component mounts
+
   // Fetch reliability score when component loads
   useEffect(() => {
     if (vehicleData?.regNumber && vt === 'car') {
