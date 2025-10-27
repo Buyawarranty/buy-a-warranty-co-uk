@@ -9,16 +9,21 @@ const corsHeaders = {
 };
 
 interface EmailRequest {
-  to: string;
+  cartId?: string;
+  email: string;
+  firstName: string;
+  planName: string;
+  paymentType: string;
+  totalPrice: number;
+  vehicleReg?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
   subject: string;
   content: string;
-  customerName?: string;
-  vehicleDetails?: {
-    reg?: string;
-    make?: string;
-    model?: string;
-    year?: string;
-  };
+  discountCode?: string;
+  emailSequence: number;
+  triggerType: string;
+  cartData?: any;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -28,17 +33,31 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { to, subject, content, customerName, vehicleDetails }: EmailRequest = await req.json();
+    const emailData: EmailRequest = await req.json();
+    const { email, firstName, planName, paymentType, totalPrice, subject, content, cartData } = emailData;
 
-    console.log("Sending abandoned cart/quote email to:", to);
+    console.log("Sending abandoned cart email to:", email);
+
+    // Generate cart restoration link with encoded data
+    const cartRestoreData = cartData ? btoa(JSON.stringify(cartData)) : '';
+    const discountParam = emailData.discountCode ? `&discount=${emailData.discountCode}` : '';
+    const restoreLink = `https://buyawarranty.co.uk/cart?restore=${cartRestoreData}&returnFromAbandoned=true${discountParam}`;
+
+    // Replace placeholders in content
+    let processedContent = content
+      .replace(/{firstName}/g, firstName)
+      .replace(/{planName}/g, planName)
+      .replace(/{paymentType}/g, paymentType)
+      .replace(/{totalPrice}/g, totalPrice.toFixed(2));
 
     // Convert plain text content to HTML with proper formatting
-    const htmlContent = content
+    const htmlContent = processedContent
       .split('\n')
       .map(line => {
         // Handle headings
         if (line.includes("What's Covered?") || 
             line.includes("Why Choose Buyawarranty?") || 
+            line.includes("Why choose buyawarranty.co.uk") ||
             line.includes("Your Quote:")) {
           return `<h2 style="color: #1a1a1a; font-size: 20px; font-weight: bold; margin: 24px 0 12px 0;">${line}</h2>`;
         }
@@ -46,12 +65,11 @@ const handler = async (req: Request): Promise<Response> => {
         if (line.trim().startsWith('✓') || line.trim().startsWith('•')) {
           return `<p style="margin: 6px 0; padding-left: 20px;">${line}</p>`;
         }
-        // Handle links
-        if (line.includes('https://buyawarranty.co.uk')) {
-          return `<p style="margin: 12px 0;"><a href="https://buyawarranty.co.uk" style="color: #eb4b00; text-decoration: none; font-weight: bold;">Click here to get protected →</a></p>`;
-        }
-        if (line.includes('https://api.whatsapp.com')) {
-          return `<p style="margin: 12px 0;"><a href="${line.trim()}" style="color: #25D366; text-decoration: none; font-weight: bold;">Contact us on WhatsApp →</a></p>`;
+        // Replace [Return to Your Cart] with actual link
+        if (line.includes('[Return to Your Cart]')) {
+          return `<div style="margin: 24px 0; text-align: center;">
+            <a href="${restoreLink}" style="display: inline-block; background-color: #eb4b00; color: white; padding: 14px 32px; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 16px;">Return to Your Cart</a>
+          </div>`;
         }
         // Handle empty lines
         if (line.trim() === '') {
@@ -94,7 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailResponse = await resend.emails.send({
       from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
-      to: [to],
+      to: [email],
       subject: subject,
       html: finalHtml,
     });
