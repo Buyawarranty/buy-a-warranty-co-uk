@@ -26,6 +26,7 @@ import { SendNotificationDialog } from './SendNotificationDialog';
 import { ViewAsCustomerButton } from './ViewAsCustomerButton';
 import { CustomerTagsManager } from './CustomerTagsManager';
 import { CustomerTagsDisplay } from './CustomerTagsDisplay';
+import { BulkEmailDialog } from './BulkEmailDialog';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 import { format } from 'date-fns';
@@ -1989,21 +1990,29 @@ export const CustomersTab = () => {
                 )}
               </div>
               <div className="flex items-center gap-2">
-                {selectedCustomers.size > 0 && isAdmin() && (
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={bulkDeleteCustomers}
-                    disabled={bulkDeleteLoading}
-                    className="text-xs"
-                  >
-                    {bulkDeleteLoading ? (
-                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
-                    ) : (
-                      <Trash2 className="h-3 w-3 mr-1" />
+                {selectedCustomers.size > 0 && (
+                  <>
+                    <BulkEmailDialog 
+                      selectedCustomerIds={Array.from(selectedCustomers)}
+                      onComplete={() => setSelectedCustomers(new Set())}
+                    />
+                    {isAdmin() && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={bulkDeleteCustomers}
+                        disabled={bulkDeleteLoading}
+                        className="text-xs"
+                      >
+                        {bulkDeleteLoading ? (
+                          <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                        ) : (
+                          <Trash2 className="h-3 w-3 mr-1" />
+                        )}
+                        Delete Selected ({selectedCustomers.size})
+                      </Button>
                     )}
-                    Delete Selected ({selectedCustomers.size})
-                  </Button>
+                  </>
                 )}
                 <Button
                   variant="ghost"
