@@ -72,12 +72,13 @@ export function DiscountCodesTab() {
   const [filterSource, setFilterSource] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'created_at' | 'valid_to' | 'used_count' | 'code'>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [validityPeriod, setValidityPeriod] = useState<'6months' | '1month' | 'custom'>('6months');
   const [formData, setFormData] = useState<DiscountCodeFormData>({
     code: '',
     type: 'percentage',
     value: 0,
     valid_from: new Date().toISOString().split('T')[0],
-    valid_to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    valid_to: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 6 months default
     usage_limit: 1,
     campaign_source: 'GENERAL',
     active: true,
@@ -295,12 +296,13 @@ export function DiscountCodesTab() {
   };
 
   const resetForm = () => {
+    setValidityPeriod('6months');
     setFormData({
       code: '',
       type: 'percentage',
       value: 0,
       valid_from: new Date().toISOString().split('T')[0],
-      valid_to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      valid_to: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 6 months default
       usage_limit: 1,
       campaign_source: 'GENERAL',
       active: true,
@@ -333,10 +335,51 @@ export function DiscountCodesTab() {
   };
 
   const generateStructuredCode = (source: string, value: number) => {
-    const date = new Date();
-    const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-    const year = date.getFullYear().toString().slice(-2);
-    return `${source}${value}${month}${year}`;
+    // Generate a random 4-character alphanumeric code
+    const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `${source}${value}${randomCode}`;
+  };
+
+  const handleValidityPeriodChange = (period: '6months' | '1month' | 'custom') => {
+    setValidityPeriod(period);
+    
+    if (period !== 'custom') {
+      const validFromDate = new Date(formData.valid_from);
+      let validToDate = new Date(validFromDate);
+      
+      if (period === '6months') {
+        validToDate.setMonth(validToDate.getMonth() + 6);
+      } else if (period === '1month') {
+        validToDate.setMonth(validToDate.getMonth() + 1);
+      }
+      
+      setFormData({
+        ...formData,
+        valid_to: validToDate.toISOString().split('T')[0]
+      });
+    }
+  };
+
+  const handleValidFromChange = (dateString: string) => {
+    setFormData({ ...formData, valid_from: dateString });
+    
+    // Auto-update valid_to if not custom
+    if (validityPeriod !== 'custom') {
+      const validFromDate = new Date(dateString);
+      let validToDate = new Date(validFromDate);
+      
+      if (validityPeriod === '6months') {
+        validToDate.setMonth(validToDate.getMonth() + 6);
+      } else if (validityPeriod === '1month') {
+        validToDate.setMonth(validToDate.getMonth() + 1);
+      }
+      
+      setFormData({
+        ...formData,
+        valid_from: dateString,
+        valid_to: validToDate.toISOString().split('T')[0]
+      });
+    }
   };
 
   const handleCampaignSourceChange = (source: string) => {
@@ -665,32 +708,54 @@ export function DiscountCodesTab() {
                     </Button>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Format: {formData.campaign_source}{formData.value}{new Date().toLocaleString('default', { month: 'short' }).toUpperCase()}{new Date().getFullYear().toString().slice(-2)}
+                    Format: {formData.campaign_source}{formData.value}[Random Code]
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="valid_from">Valid From</Label>
                     <Input
                       id="valid_from"
                       type="date"
                       value={formData.valid_from}
-                      onChange={(e) => setFormData({ ...formData, valid_from: e.target.value })}
+                      onChange={(e) => handleValidFromChange(e.target.value)}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="valid_to">Valid To</Label>
-                    <Input
-                      id="valid_to"
-                      type="date"
-                      value={formData.valid_to}
-                      onChange={(e) => setFormData({ ...formData, valid_to: e.target.value })}
-                      required
-                    />
+                    <Label>Validity Period</Label>
+                    <Select value={validityPeriod} onValueChange={(value: '6months' | '1month' | 'custom') => handleValidityPeriodChange(value)}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border shadow-lg z-50">
+                        <SelectItem value="6months">6 Months (Default)</SelectItem>
+                        <SelectItem value="1month">1 Month</SelectItem>
+                        <SelectItem value="custom">Custom End Date</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
+
+                  {validityPeriod === 'custom' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="valid_to">Valid To</Label>
+                      <Input
+                        id="valid_to"
+                        type="date"
+                        value={formData.valid_to}
+                        onChange={(e) => setFormData({ ...formData, valid_to: e.target.value })}
+                        required
+                      />
+                    </div>
+                  )}
+
+                  {validityPeriod !== 'custom' && (
+                    <div className="text-sm text-muted-foreground">
+                      Valid until: {new Date(formData.valid_to).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
