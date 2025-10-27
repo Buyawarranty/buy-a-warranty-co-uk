@@ -188,7 +188,7 @@ const VanWarrantyNew = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-                  Protect Your Van with Expert Extended Warranty Plans
+                  Protect Your Van with Trusted Extended Warranty Plans
                 </h1>
                 <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                   Keep your van on the road with affordable extended warranty cover. Instant quotes, no hidden fees, and UK-wide protection for peace of mind.
