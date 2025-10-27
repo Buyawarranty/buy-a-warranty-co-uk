@@ -8,6 +8,10 @@ interface SEOHeadProps {
   ogDescription?: string;
   ogImage?: string;
   canonical?: string;
+  geoRegion?: string;
+  geoPlacename?: string;
+  geoPosition?: string;
+  ICBM?: string;
 }
 
 export const SEOHead = ({
@@ -17,7 +21,11 @@ export const SEOHead = ({
   ogTitle,
   ogDescription,
   ogImage = "https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png",
-  canonical
+  canonical,
+  geoRegion = 'GB',
+  geoPlacename = 'United Kingdom',
+  geoPosition,
+  ICBM
 }: SEOHeadProps) => {
   useEffect(() => {
     // Update document title
@@ -64,8 +72,14 @@ export const SEOHead = ({
     updateMetaTag('ai-content-declaration', 'This content is human-authored and fact-checked');
     
     // Geographic targeting
-    updateMetaTag('geo.region', 'GB');
-    updateMetaTag('geo.placename', 'United Kingdom');
+    updateMetaTag('geo.region', geoRegion);
+    updateMetaTag('geo.placename', geoPlacename);
+    if (geoPosition) {
+      updateMetaTag('geo.position', geoPosition);
+    }
+    if (ICBM) {
+      updateMetaTag('ICBM', ICBM);
+    }
     
     // Language
     if (!document.querySelector('meta[http-equiv="content-language"]')) {
@@ -95,7 +109,7 @@ export const SEOHead = ({
       viewport.content = 'width=device-width, initial-scale=1.0';
       document.head.appendChild(viewport);
     }
-  }, [title, description, keywords, ogTitle, ogDescription, ogImage, canonical]);
+  }, [title, description, keywords, ogTitle, ogDescription, ogImage, canonical, geoRegion, geoPlacename, geoPosition, ICBM]);
 
   return null;
 };

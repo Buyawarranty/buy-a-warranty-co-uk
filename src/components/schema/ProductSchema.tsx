@@ -8,6 +8,8 @@ interface ProductSchemaProps {
   brand?: string;
   category?: string;
   image?: string;
+  availability?: string;
+  areaServed?: string;
 }
 
 export const ProductSchema = ({
@@ -17,7 +19,9 @@ export const ProductSchema = ({
   priceCurrency = 'GBP',
   brand = 'Buy A Warranty',
   category = 'Vehicle Warranty',
-  image = 'https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png'
+  image = 'https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png',
+  availability = 'InStock',
+  areaServed = 'GB'
 }: ProductSchemaProps) => {
   useEffect(() => {
     const schema = {
@@ -31,12 +35,18 @@ export const ProductSchema = ({
       },
       "image": image,
       "category": category,
+      ...(areaServed && {
+        "areaServed": {
+          "@type": "Country",
+          "name": areaServed === 'GB' ? 'United Kingdom' : areaServed
+        }
+      }),
       ...(price && {
         "offers": {
           "@type": "Offer",
           "price": price,
           "priceCurrency": priceCurrency,
-          "availability": "https://schema.org/InStock",
+          "availability": availability === 'InStock' ? "https://schema.org/InStock" : `https://schema.org/${availability}`,
           "url": "https://buyawarranty.co.uk",
           "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
           "seller": {
@@ -73,7 +83,7 @@ export const ProductSchema = ({
         existingScript.remove();
       }
     };
-  }, [name, description, price, priceCurrency, brand, category, image]);
+  }, [name, description, price, priceCurrency, brand, category, image, availability, areaServed]);
 
   return null;
 };

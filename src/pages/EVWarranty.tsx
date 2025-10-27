@@ -145,10 +145,17 @@ const EVWarranty = () => {
   return (
     <>
       <SEOHead
-        title="EV Extended Warranty | Affordable Cover for Used Electric Cars"
-        description="Protect your electric or hybrid car from costly repairs with affordable EV extended warranty plans. Get instant quotes online and start your cover today."
-        keywords="EV warranty, electric car warranty, hybrid warranty, PHEV warranty, electric vehicle extended warranty, used EV warranty, EV battery warranty, affordable EV cover"
+        title="EV Extended Warranty UK | Electric & Hybrid Car Cover | Buy A Warranty"
+        description="Protect your electric or hybrid car from costly repairs with affordable UK EV extended warranty plans. Cover for battery systems, motors & electronics. Get instant quotes online."
+        keywords="EV warranty UK, electric car warranty, hybrid warranty UK, PHEV warranty, electric vehicle extended warranty, used EV warranty, EV battery warranty, affordable EV cover, electric car insurance UK"
         canonical="https://buyawarranty.co.uk/ev-warranty/"
+        ogTitle="EV Extended Warranty UK | Electric & Hybrid Car Cover"
+        ogDescription="Protect your electric or hybrid car from costly repairs with affordable UK EV extended warranty plans. Cover for battery systems, motors & electronics."
+        ogImage="https://buyawarranty.co.uk/ev-warranty-og.jpg"
+        geoRegion="GB"
+        geoPlacename="United Kingdom"
+        geoPosition="54.5;-4.5"
+        ICBM="54.5, -4.5"
       />
 
       <BreadcrumbSchema 

@@ -73,30 +73,36 @@ const VanWarrantyNew = () => {
   return (
     <>
       <SEOHead
-        title="Van Extended Warranty | Used Van Cover up to 150,000 Miles"
-        description="Get a trusted extended warranty for vans up to 150,000 miles. Protect new or used vans from costly repairs with flexible, affordable UK warranty plans."
-        keywords="van warranty, van extended warranty, used van warranty, commercial van warranty, high mileage van warranty, van breakdown cover, UK van warranty"
+        title="Van Extended Warranty UK | Used & New Van Cover up to 150,000 Miles | Buy A Warranty"
+        description="Get a trusted UK extended warranty for vans up to 150,000 miles. Protect new or used commercial vans from costly repairs with flexible, affordable warranty plans. Instant quotes available online."
+        keywords="van warranty UK, van extended warranty, used van warranty, commercial van warranty, high mileage van warranty, van breakdown cover, UK van warranty, new van warranty, van warranty companies"
         canonical="https://buyawarranty.co.uk/van-warranty/"
-        ogTitle="Van Extended Warranty | Used Van Cover up to 150,000 Miles"
-        ogDescription="Get a trusted extended warranty for vans up to 150,000 miles. Protect new or used vans from costly repairs with flexible, affordable UK warranty plans."
+        ogTitle="Van Extended Warranty UK | Used & New Van Cover up to 150,000 Miles"
+        ogDescription="Get a trusted UK extended warranty for vans up to 150,000 miles. Protect new or used commercial vans from costly repairs with flexible, affordable warranty plans."
         ogImage="https://buyawarranty.co.uk/van-warranty-og.jpg"
+        geoRegion="GB"
+        geoPlacename="United Kingdom"
+        geoPosition="54.5;-4.5"
+        ICBM="54.5, -4.5"
       />
       <OrganizationSchema />
       <WebPageSchema
-        name="Van Extended Warranty"
-        description="Get a trusted extended warranty for vans up to 150,000 miles. Protect new or used vans from costly repairs with flexible, affordable UK warranty plans."
+        name="Van Extended Warranty UK | Trusted Van Cover"
+        description="Get a trusted extended warranty for vans up to 150,000 miles. Protect new or used commercial vans from costly repairs with flexible, affordable UK warranty plans. Instant quotes available."
         url="https://buyawarranty.co.uk/van-warranty/"
-        specialty="Van Warranty"
+        specialty="Van Warranty & Commercial Vehicle Protection"
       />
       <FAQSchema faqs={vanWarrantyFAQs} />
       <ProductSchema
-        name="Van Extended Warranty"
-        description="Comprehensive extended warranty for vans up to 150,000 miles"
+        name="Van Extended Warranty UK"
+        description="Comprehensive extended warranty for new and used vans up to 150,000 miles. Covers mechanical and electrical breakdowns with flexible UK-wide protection."
         price="69"
         priceCurrency="GBP"
         brand="Buy A Warranty"
-        category="Van Warranty"
+        category="Van Warranty & Commercial Vehicle Insurance"
         image="https://buyawarranty.co.uk/van-warranty-product.jpg"
+        availability="InStock"
+        areaServed="GB"
       />
       <BreadcrumbSchema items={breadcrumbItems} />
 
