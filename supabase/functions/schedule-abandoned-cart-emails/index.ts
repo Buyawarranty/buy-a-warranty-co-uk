@@ -75,6 +75,30 @@ const handler = async (req: Request): Promise<Response> => {
           continue;
         }
 
+        // Check if customer has completed a purchase (has an active policy)
+        const { data: existingPolicy, error: policyCheckError } = await supabase
+          .from('customer_policies')
+          .select('id, policy_number, created_at')
+          .eq('email', cart.email)
+          .in('status', ['active', 'Active'])
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (existingPolicy && existingPolicy.length > 0) {
+          console.log(`Skipping abandoned cart for ${cart.email} - Customer has completed purchase (Policy: ${existingPolicy[0].policy_number})`);
+          
+          // Optionally update the abandoned cart status to mark it as converted
+          await supabase
+            .from('abandoned_carts')
+            .update({ 
+              contact_status: 'converted',
+              contact_notes: `Customer completed purchase - Policy ${existingPolicy[0].policy_number}`
+            })
+            .eq('id', cart.id);
+          
+          continue;
+        }
+
         const triggerType = 'checkout_abandoned';
         const cartTime = new Date(cart.created_at).getTime();
         const timeSinceAbandoned = Date.now() - cartTime;
