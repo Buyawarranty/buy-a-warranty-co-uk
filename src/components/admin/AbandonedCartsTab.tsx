@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { 
   ShoppingCart, 
@@ -19,7 +22,8 @@ import {
   Clock,
   AlertCircle,
   MapPin,
-  Shield
+  Shield,
+  Trash2
 } from 'lucide-react';
 
 interface AbandonedCart {
@@ -79,6 +83,13 @@ export const AbandonedCartsTab: React.FC = () => {
   const [contactNotes, setContactNotes] = useState('');
   const [savingNotes, setSavingNotes] = useState(false);
   const [newCartsCount, setNewCartsCount] = useState(0);
+  const [selectedCartIds, setSelectedCartIds] = useState<Set<string>>(new Set());
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [emailTemplate, setEmailTemplate] = useState<'abandoned' | 'quote'>('abandoned');
+  const [emailContent, setEmailContent] = useState('');
+  const [emailSubject, setEmailSubject] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [cartForEmail, setCartForEmail] = useState<AbandonedCart | null>(null);
 
   useEffect(() => {
     fetchAbandonedCarts();
@@ -173,6 +184,184 @@ export const AbandonedCartsTab: React.FC = () => {
       toast.error('Failed to save notes');
     } finally {
       setSavingNotes(false);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedCartIds.size === filteredCarts.length) {
+      setSelectedCartIds(new Set());
+    } else {
+      setSelectedCartIds(new Set(filteredCarts.map(cart => cart.id)));
+    }
+  };
+
+  const toggleSelectCart = (cartId: string) => {
+    const newSelected = new Set(selectedCartIds);
+    if (newSelected.has(cartId)) {
+      newSelected.delete(cartId);
+    } else {
+      newSelected.add(cartId);
+    }
+    setSelectedCartIds(newSelected);
+  };
+
+  const deleteSelectedCarts = async () => {
+    if (selectedCartIds.size === 0) return;
+    
+    if (!confirm(`Are you sure you want to delete ${selectedCartIds.size} cart(s)?`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('abandoned_carts')
+        .delete()
+        .in('id', Array.from(selectedCartIds));
+
+      if (error) throw error;
+
+      toast.success(`${selectedCartIds.size} cart(s) deleted successfully`);
+      setSelectedCartIds(new Set());
+      fetchAbandonedCarts();
+    } catch (error) {
+      console.error('Error deleting carts:', error);
+      toast.error('Failed to delete carts');
+    }
+  };
+
+  const openEmailDialog = (cart: AbandonedCart, template: 'abandoned' | 'quote') => {
+    setCartForEmail(cart);
+    setEmailTemplate(template);
+    
+    if (template === 'abandoned') {
+      setEmailSubject(`Don't miss out on your warranty protection - ${cart.vehicle_make} ${cart.vehicle_model}`);
+      setEmailContent(`Hi ${cart.full_name || 'there'},
+
+We noticed you started getting a quote for your ${cart.vehicle_make} ${cart.vehicle_model} (${cart.vehicle_reg}) but didn't complete your purchase.
+
+We're here to help! Our warranty plans offer comprehensive protection for your vehicle, giving you peace of mind on the road.
+
+${cart.cart_metadata?.total_price ? `Your selected plan: ${cart.plan_name} - £${cart.cart_metadata.total_price.toFixed(2)}` : ''}
+
+Complete your purchase now and get protected in just 60 seconds:
+https://buyawarranty.co.uk/
+
+Have questions? Reply to this email or call us at 0330 229 5040.
+
+Best regards,
+The Buyawarranty Team
+
+Customer Service & Sales: 0330 229 5040
+Claimsline: 0330 229 5045
+www.buyawarranty.co.uk
+info@buyawarranty.co.uk`);
+    } else {
+      setEmailSubject(`Your Quote for ${cart.vehicle_reg} – Full Warranty Cover`);
+      setEmailContent(`Hi ${cart.full_name || 'there'},
+
+It was a pleasure speaking with you earlier.
+
+Here's your personalised quote for your ${cart.vehicle_make} ${cart.vehicle_model} (${cart.vehicle_year}) – registration ${cart.vehicle_reg}${cart.mileage ? `, with ${parseInt(cart.mileage).toLocaleString()} miles on the clock` : ''}.
+
+What's Covered?
+Your vehicle is protected across all major systems, including:
+• Engine & Internal Components
+• Gearbox / Transmission Systems
+• Drivetrain & Clutch Assemblies
+• Turbocharger & Supercharger Units
+• Fuel Delivery Systems
+• Cooling & Heating Systems
+• Exhaust & Emissions Systems
+• Braking Systems
+• Suspension & Steering Systems
+• Air Conditioning & Climate Control
+• Electrical & Charging Systems
+• ECUs & Sensors
+• Lighting & Ignition Systems
+• Multimedia & Infotainment
+• Driver Assistance Systems
+• Safety Systems
+
+${cart.vehicle_type === 'ev' || cart.vehicle_type === 'phev' ? `Plus, full EV-specific cover including:
+• EV Drive Motors & Gearbox
+• High-Voltage Battery & Charging Ports
+• Power Control Units & Inverters
+• Regenerative Braking Systems
+• Thermal Management & DC-DC Converters
+• EV Control Electronics & High-Voltage Cables
+` : ''}
+
+Why Choose Buyawarranty?
+✓ Trusted UK warranty provider
+✓ Easy claims
+✓ Fast payouts
+✓ No hidden fees
+✓ All parts & labour covered
+✓ 0% APR available
+
+Your Quote:
+${cart.cart_metadata?.total_price ? `£${cart.cart_metadata.total_price.toFixed(2)}` : 'Contact us for pricing'}
+${cart.payment_type || ''}
+${cart.cart_metadata?.voluntary_excess ? `\nExcess: £${cart.cart_metadata.voluntary_excess}` : ''}
+${cart.cart_metadata?.claim_limit ? `\nClaim Limit: £${cart.cart_metadata.claim_limit.toLocaleString()}` : ''}
+
+Tap here to get protected in 60 seconds:
+https://buyawarranty.co.uk/
+
+If you have any questions, feel free to call me directly on 0330 229 5040.
+
+Kind regards,
+The Buyawarranty Team
+
+Customer Service & Sales: 0330 229 5040
+Claimsline: 0330 229 5045
+www.buyawarranty.co.uk
+info@buyawarranty.co.uk`);
+    }
+    
+    setEmailDialogOpen(true);
+  };
+
+  const sendEmail = async () => {
+    if (!cartForEmail || !emailContent || !emailSubject) return;
+
+    setSendingEmail(true);
+    try {
+      const { error } = await supabase.functions.invoke('send-abandoned-cart-email', {
+        body: {
+          to: cartForEmail.email,
+          subject: emailSubject,
+          content: emailContent,
+          customerName: cartForEmail.full_name,
+          vehicleDetails: {
+            reg: cartForEmail.vehicle_reg,
+            make: cartForEmail.vehicle_make,
+            model: cartForEmail.vehicle_model,
+            year: cartForEmail.vehicle_year
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Email sent successfully!');
+      setEmailDialogOpen(false);
+      
+      // Update last contacted
+      await supabase
+        .from('abandoned_carts')
+        .update({ 
+          contact_status: 'contacted',
+          last_contacted_at: new Date().toISOString()
+        })
+        .eq('id', cartForEmail.id);
+      
+      fetchAbandonedCarts();
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast.error('Failed to send email');
+    } finally {
+      setSendingEmail(false);
     }
   };
 
@@ -302,7 +491,7 @@ export const AbandonedCartsTab: React.FC = () => {
         </Card>
       </div>
 
-      {/* Search */}
+      {/* Search and Bulk Actions */}
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -313,6 +502,26 @@ export const AbandonedCartsTab: React.FC = () => {
             className="pl-10"
           />
         </div>
+        {filteredCarts.length > 0 && (
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={toggleSelectAll} 
+              variant="outline"
+            >
+              {selectedCartIds.size === filteredCarts.length ? 'Deselect All' : 'Select All'}
+            </Button>
+            {selectedCartIds.size > 0 && (
+              <Button 
+                onClick={deleteSelectedCarts} 
+                variant="destructive"
+                className="flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete ({selectedCartIds.size})
+              </Button>
+            )}
+          </div>
+        )}
         <Button onClick={fetchAbandonedCarts} variant="outline">
           Refresh
         </Button>
@@ -323,7 +532,15 @@ export const AbandonedCartsTab: React.FC = () => {
         {filteredCarts.map((cart) => (
           <Card key={cart.id} className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
-              <div className="flex items-start justify-between">
+              <div className="flex items-start gap-4">
+                {/* Selection Checkbox */}
+                <div className="flex items-start pt-1">
+                  <Checkbox
+                    checked={selectedCartIds.has(cart.id)}
+                    onCheckedChange={() => toggleSelectCart(cart.id)}
+                  />
+                </div>
+
                 <div className="flex-1 space-y-3">
                   {/* Customer Info */}
                   <div className="flex items-center gap-2">
@@ -481,7 +698,7 @@ export const AbandonedCartsTab: React.FC = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-col gap-2 ml-4">
+                <div className="flex flex-col gap-2">
                   <Button
                     size="sm"
                     variant="outline"
@@ -492,6 +709,24 @@ export const AbandonedCartsTab: React.FC = () => {
                   >
                     <MessageSquare className="w-4 h-4 mr-2" />
                     Add Note
+                  </Button>
+                  
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openEmailDialog(cart, 'abandoned')}
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Send Follow-up
+                  </Button>
+                  
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openEmailDialog(cart, 'quote')}
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Send Quote
                   </Button>
                   
                   {cart.contact_status === 'not_contacted' && (
@@ -582,6 +817,67 @@ export const AbandonedCartsTab: React.FC = () => {
           </Card>
         </div>
       )}
+
+      {/* Email Dialog */}
+      <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Send Email</DialogTitle>
+            <DialogDescription>
+              {cartForEmail && `Sending to: ${cartForEmail.full_name || cartForEmail.email}`}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Template</label>
+              <Select value={emailTemplate} onValueChange={(value: 'abandoned' | 'quote') => {
+                setEmailTemplate(value);
+                if (cartForEmail) {
+                  openEmailDialog(cartForEmail, value);
+                }
+              }}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="abandoned">Abandoned Cart Follow-up</SelectItem>
+                  <SelectItem value="quote">Your Quote</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Subject</label>
+              <Input
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="Email subject..."
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Message</label>
+              <Textarea
+                value={emailContent}
+                onChange={(e) => setEmailContent(e.target.value)}
+                placeholder="Email content..."
+                rows={20}
+                className="font-mono text-sm"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEmailDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={sendEmail} disabled={sendingEmail}>
+              {sendingEmail ? 'Sending...' : 'Send Email'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
