@@ -180,7 +180,16 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-12 relative">
         {/* Header with Clickable Logo and Mobile Menu */}
         <div className="flex justify-between items-center mb-6">
-          <div className="flex-1"></div>
+          <div className="flex-1">
+            <button 
+              type="button" 
+              onClick={onBack}
+              className="flex items-center gap-2 text-base font-medium py-2 px-4 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </button>
+          </div>
           <a href="/" className="hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
@@ -346,18 +355,6 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
                   Unsubscribe at any time
                 </p>
               </div>
-            </div>
-
-            {/* Back button moved to bottom */}
-            <div className="max-w-4xl mx-auto mt-6">
-              <button 
-                type="button" 
-                onClick={onBack}
-                className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back
-              </button>
             </div>
 
           </>
