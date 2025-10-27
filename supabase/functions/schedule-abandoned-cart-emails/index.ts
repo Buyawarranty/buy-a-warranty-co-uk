@@ -22,22 +22,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Processing abandoned cart emails...');
 
-    // List of email patterns to exclude from abandoned cart emails (test/internal accounts)
-    const excludedEmailPatterns = [
-      'buyawarranty.co.uk',
-      'prajwalchauhan',
-      '1fairdeal',
-      'test@',
-      'demo@',
-      'admin@'
-    ];
-
-    // Get abandoned carts from step 4 (checkout) from the last 5 days
+    // Get abandoned carts that need emails sent
     const { data: abandonedCarts, error: cartsError } = await supabase
       .from('abandoned_carts')
       .select('*')
-      .eq('step_abandoned', 4) // Only process step 4 (checkout) carts
-      .gte('created_at', new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()) // Last 5 days
+      .gte('created_at', new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()) // Last 2 hours
       .order('created_at', { ascending: false });
 
     if (cartsError) {
@@ -64,147 +53,83 @@ const handler = async (req: Request): Promise<Response> => {
     // Process each abandoned cart
     for (const cart of abandonedCarts) {
       try {
-        // Skip test/internal email addresses
-        const cartEmail = cart.email?.toLowerCase() || '';
-        const isTestEmail = excludedEmailPatterns.some(pattern => 
-          cartEmail.includes(pattern.toLowerCase())
-        );
-        
-        if (isTestEmail) {
-          console.log(`Skipping test/internal email: ${cart.email}`);
-          continue;
+        // Determine trigger type based on step
+        let triggerType: 'pricing_page_view' | 'plan_selected';
+        if (cart.step_abandoned === 3) {
+          triggerType = 'pricing_page_view';
+        } else if (cart.step_abandoned === 4) {
+          triggerType = 'plan_selected';
+        } else {
+          continue; // Skip if not a step we want to send emails for
         }
 
-        // Check if customer has completed a purchase (has an active policy)
-        const { data: existingPolicy, error: policyCheckError } = await supabase
-          .from('customer_policies')
-          .select('id, policy_number, created_at')
-          .eq('email', cart.email)
-          .in('status', ['active', 'Active'])
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        if (existingPolicy && existingPolicy.length > 0) {
-          console.log(`Skipping abandoned cart for ${cart.email} - Customer has completed purchase (Policy: ${existingPolicy[0].policy_number})`);
-          
-          // Optionally update the abandoned cart status to mark it as converted
-          await supabase
-            .from('abandoned_carts')
-            .update({ 
-              contact_status: 'converted',
-              contact_notes: `Customer completed purchase - Policy ${existingPolicy[0].policy_number}`
-            })
-            .eq('id', cart.id);
-          
-          continue;
-        }
-
-        const triggerType = 'checkout_abandoned';
-        const cartTime = new Date(cart.created_at).getTime();
-        const timeSinceAbandoned = Date.now() - cartTime;
-
-        // Get all email templates for this trigger type
-        const { data: templates, error: templateError } = await supabase
+        // Get the template to check delay time
+        const { data: template, error: templateError } = await supabase
           .from('abandoned_cart_email_templates')
-          .select('*')
+          .select('send_delay_minutes')
           .eq('trigger_type', triggerType)
           .eq('is_active', true)
-          .order('email_sequence', { ascending: true });
+          .single();
 
-        if (templateError || !templates || templates.length === 0) {
-          console.log(`No templates found for trigger type: ${triggerType}`);
+        if (templateError || !template) {
+          console.log(`No template found for trigger type: ${triggerType}`);
           continue;
         }
 
-        // Check each email sequence
-        for (const template of templates) {
-          const delayMs = template.send_delay_minutes * 60 * 1000;
-          const shouldSendAt = cartTime + delayMs;
+        // Check if enough time has passed since cart was abandoned
+        const cartTime = new Date(cart.created_at).getTime();
+        const delayMs = template.send_delay_minutes * 60 * 1000;
+        const shouldSendAt = cartTime + delayMs;
+        
+        if (Date.now() < shouldSendAt) {
+          console.log(`Not yet time to send email for cart ${cart.id}`);
+          continue;
+        }
 
-          // Check if it's time to send this email
-          if (Date.now() < shouldSendAt) {
-            continue;
-          }
+        // Check if we already sent this type of email to this person recently
+        const { data: recentEmails, error: checkError } = await supabase
+          .from('triggered_emails_log')
+          .select('*')
+          .eq('email', cart.email)
+          .eq('trigger_type', triggerType)
+          .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
+          .limit(1);
 
-          // Check if we already sent this specific email sequence
-          const { data: sentEmails, error: checkError } = await supabase
-            .from('triggered_emails_log')
-            .select('*')
-            .eq('abandoned_cart_id', cart.id)
-            .eq('trigger_type', triggerType)
-            .eq('email_sequence', template.email_sequence)
-            .limit(1);
+        if (checkError) {
+          console.error('Error checking recent emails:', checkError);
+          continue;
+        }
 
-          if (checkError) {
-            console.error('Error checking sent emails:', checkError);
-            continue;
-          }
+        if (recentEmails && recentEmails.length > 0) {
+          console.log(`Already sent ${triggerType} email to ${cart.email} recently`);
+          continue;
+        }
 
-          if (sentEmails && sentEmails.length > 0) {
-            console.log(`Email sequence ${template.email_sequence} already sent for cart ${cart.id}`);
-            continue;
-          }
+        // Send the email
+        const emailPayload = {
+          email: cart.email,
+          firstName: cart.full_name?.split(' ')[0] || 'there',
+          vehicleReg: cart.vehicle_reg,
+          vehicleMake: cart.vehicle_make,
+          vehicleModel: cart.vehicle_model,
+          vehicleType: cart.vehicle_type, // Include vehicle type for special vehicles
+          triggerType,
+          planName: cart.plan_name,
+          paymentType: cart.payment_type
+        };
 
-          // Send the email
-          const emailPayload = {
-            cartId: cart.id,
-            email: cart.email,
-            firstName: cart.full_name?.split(' ')[0] || 'there',
-            planName: cart.plan_name || 'Warranty Plan',
-            paymentType: cart.payment_type || 'monthly',
-            totalPrice: cart.total_price || 0,
-            vehicleReg: cart.vehicle_reg,
-            vehicleMake: cart.vehicle_make,
-            vehicleModel: cart.vehicle_model,
-            subject: template.subject,
-            content: template.content,
-            discountCode: template.discount_code,
-            emailSequence: template.email_sequence,
-            triggerType: triggerType,
-            // Include all cart data for restoration
-            cartData: {
-              vehicle_reg: cart.vehicle_reg,
-              vehicle_make: cart.vehicle_make,
-              vehicle_model: cart.vehicle_model,
-              vehicle_year: cart.vehicle_year,
-              mileage: cart.mileage,
-              plan_id: cart.plan_id,
-              plan_name: cart.plan_name,
-              payment_type: cart.payment_type,
-              total_price: cart.total_price,
-              voluntary_excess: cart.voluntary_excess,
-              claim_limit: cart.claim_limit,
-              address: cart.address,
-              protection_addons: cart.protection_addons,
-              full_name: cart.full_name,
-              phone: cart.phone,
-              email: cart.email
-            }
-          };
+        console.log('Sending abandoned cart email for:', emailPayload);
 
-          console.log(`Sending email sequence ${template.email_sequence} for cart:`, cart.id);
+        const emailResponse = await supabase.functions.invoke('send-abandoned-cart-email', {
+          body: emailPayload
+        });
 
-          const emailResponse = await supabase.functions.invoke('send-abandoned-cart-email', {
-            body: emailPayload
-          });
-
-          if (emailResponse.error) {
-            console.error('Error sending email:', emailResponse.error);
-            errorsCount++;
-          } else {
-            // Log that we sent this email
-            await supabase
-              .from('triggered_emails_log')
-              .insert({
-                email: cart.email,
-                trigger_type: triggerType,
-                email_sequence: template.email_sequence,
-                abandoned_cart_id: cart.id
-              });
-            
-            console.log(`Email sequence ${template.email_sequence} sent successfully for cart:`, cart.id);
-            emailsSent++;
-          }
+        if (emailResponse.error) {
+          console.error('Error sending email:', emailResponse.error);
+          errorsCount++;
+        } else {
+          console.log('Email sent successfully for cart:', cart.id);
+          emailsSent++;
         }
 
       } catch (error) {
