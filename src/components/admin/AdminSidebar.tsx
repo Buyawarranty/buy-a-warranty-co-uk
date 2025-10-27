@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent, Shield, FolderOpen, Receipt, MessageSquare, PenTool, ShoppingCart } from 'lucide-react';
+import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent, Shield, FolderOpen, Receipt, MessageSquare, PenTool, ShoppingCart, Calculator } from 'lucide-react';
 
 interface AdminSidebarProps {
   activeTab: string;
@@ -11,6 +11,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
   const [isOpen, setIsOpen] = useState(false);
 
   const tabs = [
+    {
+      id: 'get-quote',
+      label: 'Get Quote',
+      icon: Calculator,
+      description: 'Generate and send quotes to customers'
+    },
     {
       id: 'customers',
       label: 'Customers',

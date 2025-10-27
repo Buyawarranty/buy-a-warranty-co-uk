@@ -1,6 +1,7 @@
 import { ClaimsTab } from '@/components/admin/ClaimsTab';
 import ContactSubmissionsTab from '@/components/admin/ContactSubmissionsTab';
 import { AbandonedCartsTab } from '@/components/admin/AbandonedCartsTab';
+import { GetQuoteTab } from '@/components/admin/GetQuoteTab';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -142,6 +143,8 @@ const AdminDashboard = () => {
         return <DocumentMappingTab />;
       case 'blog-writing':
         return <BlogWritingTab />;
+      case 'get-quote':
+        return <GetQuoteTab />;
       case 'testing':
         return (
           <div className="max-w-4xl mx-auto">
