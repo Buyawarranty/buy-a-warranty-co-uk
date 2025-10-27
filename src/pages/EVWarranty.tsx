@@ -10,6 +10,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { trackButtonClick } from '@/utils/analytics';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
+import VehicleDetailsStep from '@/components/VehicleDetailsStep';
 import evHeroImage from '@/assets/ev-warranty-hero.png';
 import evActiveImage from '@/assets/ev-warranty-active.png';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
@@ -27,6 +28,11 @@ const EVWarranty = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const handleVehicleNext = (data: any) => {
+    // Navigate to step 2 with vehicle data
+    navigate(`/?step=2&reg=${encodeURIComponent(data.regNumber)}&mileage=${encodeURIComponent(data.mileage)}`);
+  };
 
   useEffect(() => {
     // Add Organization + Product Schema
@@ -366,6 +372,33 @@ const EVWarranty = () => {
               <h3 className="text-xl font-semibold">4. Trusted by UK Drivers</h3>
               <p className="text-muted-foreground">
                 Thousands of UK motorists rely on us for transparent service, quick claims, and real support when it matters most.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Get Your EV Quote Section */}
+        <section className="py-16 bg-background">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Get Your Instant EV Warranty Quote
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                From just 80p a day • Easy claims • Fast payouts<br />
+                Unlimited claims • Complete Cover • No excess
+              </p>
+            </div>
+            
+            <div className="bg-card rounded-lg shadow-lg p-6 md:p-8 border border-border">
+              <VehicleDetailsStep 
+                onNext={handleVehicleNext}
+              />
+            </div>
+            
+            <div className="mt-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                Protection for vehicles up to 150,000 miles and 15 years.
               </p>
             </div>
           </div>
