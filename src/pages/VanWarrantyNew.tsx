@@ -267,7 +267,7 @@ const VanWarrantyNew = () => {
                     height: 500,
                     loading: 'lazy'
                   })}
-                  className="w-full max-w-md h-auto drop-shadow-2xl"
+                  className="w-full max-w-md h-auto drop-shadow-2xl object-contain"
                 />
               </div>
             </div>
@@ -478,7 +478,7 @@ const VanWarrantyNew = () => {
                     height: 500,
                     loading: 'lazy'
                   })}
-                  className="w-full max-w-md h-auto"
+                  className="w-full max-w-xs h-auto"
                 />
               </div>
             </div>
