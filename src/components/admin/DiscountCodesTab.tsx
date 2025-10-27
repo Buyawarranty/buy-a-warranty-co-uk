@@ -146,10 +146,9 @@ export function DiscountCodesTab() {
       // Generate structured naming convention if not custom
       let finalCode = formData.code;
       if (!finalCode) {
-        const date = new Date();
-        const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-        const year = date.getFullYear().toString().slice(-2);
-        finalCode = `${formData.campaign_source}${formData.value}${month}${year}`;
+        // Generate a random 4-character alphanumeric code
+        const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+        finalCode = `${formData.campaign_source}${formData.value}${randomCode}`;
       }
 
       // Convert date strings to ISO timestamps
