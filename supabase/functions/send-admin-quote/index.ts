@@ -23,6 +23,8 @@ interface QuoteEmailRequest {
     plan: string;
     paymentType: string;
     price: number;
+    excessAmount: string;
+    claimLimit: string;
   };
 }
 

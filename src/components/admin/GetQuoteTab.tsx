@@ -43,6 +43,8 @@ export const GetQuoteTab = () => {
   const [selectedPlan, setSelectedPlan] = useState('');
   const [paymentType, setPaymentType] = useState('monthly');
   const [finalPrice, setFinalPrice] = useState(0);
+  const [excessAmount, setExcessAmount] = useState('100');
+  const [claimLimit, setClaimLimit] = useState('3000');
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [emailContent, setEmailContent] = useState('');
   const [emailSubject, setEmailSubject] = useState('');
@@ -244,6 +246,8 @@ Your Quote:
 £${finalPrice}/month for ${paymentLabels[paymentType as keyof typeof paymentLabels]}
 Just ${months} easy payments
 Total: £${totalCost}
+Excess: £${excessAmount}
+Claim Limit: £${parseInt(claimLimit).toLocaleString()}
 
 If you have any questions, feel free to call me directly on 0330 229 5040.
 
@@ -276,7 +280,9 @@ info@buyawarranty.co.uk`;
           quoteDetails: {
             plan: selectedPlan,
             paymentType,
-            price: finalPrice
+            price: finalPrice,
+            excessAmount,
+            claimLimit
           }
         }
       });
@@ -297,6 +303,8 @@ info@buyawarranty.co.uk`;
       setCustomerName('');
       setSelectedPlan('');
       setFinalPrice(0);
+      setExcessAmount('100');
+      setClaimLimit('3000');
     } catch (error) {
       console.error('Error sending email:', error);
       toast({
@@ -447,6 +455,27 @@ info@buyawarranty.co.uk`;
               </RadioGroup>
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Excess Amount (£)</Label>
+                <Input
+                  type="number"
+                  value={excessAmount}
+                  onChange={(e) => setExcessAmount(e.target.value)}
+                  placeholder="100"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Claim Limit (£)</Label>
+                <Input
+                  type="number"
+                  value={claimLimit}
+                  onChange={(e) => setClaimLimit(e.target.value)}
+                  placeholder="3000"
+                />
+              </div>
+            </div>
+
             <div className="flex gap-3">
               <Button 
                 variant="outline"
@@ -486,6 +515,8 @@ info@buyawarranty.co.uk`;
                 <p><strong>Plan:</strong> {selectedPlan}</p>
                 <p><strong>Payment:</strong> {paymentType}</p>
                 <p><strong>Price:</strong> £{finalPrice}/month</p>
+                <p><strong>Excess:</strong> £{excessAmount}</p>
+                <p><strong>Claim Limit:</strong> £{parseInt(claimLimit).toLocaleString()}</p>
               </div>
             </div>
 
