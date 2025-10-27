@@ -147,9 +147,15 @@ export function DiscountCodesTab() {
       // Generate structured naming convention if not custom
       let finalCode = formData.code;
       if (!finalCode) {
-        // Generate a random 4-character alphanumeric code
-        const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-        finalCode = `${formData.campaign_source}${formData.value}${randomCode}`;
+        // Fun engaging words for discount codes
+        const funWords = [
+          'GOLDEN', 'UNLOCK', 'TRUSTED', 'NOW', 'GO', 'SAVE',
+          'MAGIC', 'PRIME', 'VIP', 'EPIC', 'SUPER', 'MEGA',
+          'FLASH', 'BOOST', 'POWER', 'ELITE', 'PREMIUM', 'HERO',
+          'STAR', 'BRIGHT', 'SHINE', 'SPARK', 'GLOW', 'BLAZE'
+        ];
+        const randomWord = funWords[Math.floor(Math.random() * funWords.length)];
+        finalCode = `${formData.campaign_source}${formData.value}${randomWord}`;
       }
 
       // Convert date strings to ISO timestamps
@@ -335,9 +341,15 @@ export function DiscountCodesTab() {
   };
 
   const generateStructuredCode = (source: string, value: number) => {
-    // Generate a random 4-character alphanumeric code
-    const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-    return `${source}${value}${randomCode}`;
+    // Fun engaging words for discount codes
+    const funWords = [
+      'GOLDEN', 'UNLOCK', 'TRUSTED', 'NOW', 'GO', 'SAVE',
+      'MAGIC', 'PRIME', 'VIP', 'EPIC', 'SUPER', 'MEGA',
+      'FLASH', 'BOOST', 'POWER', 'ELITE', 'PREMIUM', 'HERO',
+      'STAR', 'BRIGHT', 'SHINE', 'SPARK', 'GLOW', 'BLAZE'
+    ];
+    const randomWord = funWords[Math.floor(Math.random() * funWords.length)];
+    return `${source}${value}${randomWord}`;
   };
 
   const handleValidityPeriodChange = (period: '6months' | '1month' | 'custom') => {
