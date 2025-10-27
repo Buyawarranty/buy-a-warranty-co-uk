@@ -9,6 +9,14 @@ import vanHeroImage from "@/assets/van-warranty-uk-vehicle-protection.png";
 import vanQuotesImage from "@/assets/van-warranty-uk-quotes.png";
 import vanTrustedImage from "@/assets/van-warranty-uk-trusted-cover.png";
 import whatsappIcon from "@/assets/whatsapp-icon.webp";
+import alfaRomeoLogo from '@/assets/logos/alfa-romeo.webp';
+import bmwLogo from '@/assets/logos/bmw.webp';
+import daciaLogo from '@/assets/logos/dacia.png';
+import nissanLogo from '@/assets/logos/nissan.png';
+import renaultLogo from '@/assets/logos/renault.png';
+import seatLogo from '@/assets/logos/seat.webp';
+import skodaLogo from '@/assets/logos/skoda.webp';
+import ssangyongLogo from '@/assets/logos/ssangyong.png';
 
 const VanWarranty = () => {
   const navigate = useNavigate();
@@ -484,6 +492,77 @@ const VanWarranty = () => {
             <p className="text-base text-muted-foreground">
               Need to extend expired van warranty? We can help with vehicle warranty after expiry – just get in touch.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Manufacturers Covered */}
+      <section className="py-16 bg-white" aria-labelledby="manufacturers-covered">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <h2 id="manufacturers-covered" className="text-3xl md:text-4xl font-bold text-center mb-12">
+              Manufacturers Covered Under Our Warranty Plans
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center">
+              {[
+                { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
+                { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
+                { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
+                { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
+                { name: 'Alfa Romeo', logo: alfaRomeoLogo },
+                { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com' },
+                { name: 'BMW', logo: bmwLogo },
+                { name: 'Chevrolet', logo: 'https://logo.clearbit.com/chevrolet.com' },
+                { name: 'Chrysler', logo: 'https://logo.clearbit.com/chrysler.com' },
+                { name: 'Citroën', logo: 'https://logo.clearbit.com/citroen.com' },
+                { name: 'Dacia', logo: daciaLogo },
+                { name: 'Daewoo', logo: 'https://logo.clearbit.com/daewoo.com' },
+                { name: 'Daihatsu', logo: 'https://logo.clearbit.com/daihatsu.com' },
+                { name: 'Fiat', logo: 'https://logo.clearbit.com/fiat.com' },
+                { name: 'Ford', logo: 'https://logo.clearbit.com/ford.com' },
+                { name: 'Honda', logo: 'https://logo.clearbit.com/honda.com' },
+                { name: 'Hyundai', logo: 'https://logo.clearbit.com/hyundai.com' },
+                { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
+                { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
+                { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
+                { name: 'Jeep', logo: 'https://logo.clearbit.com/jeep.com' },
+                { name: 'Kia', logo: 'https://logo.clearbit.com/kia.com' },
+                { name: 'Lexus', logo: 'https://logo.clearbit.com/lexus.com' },
+                { name: 'Mazda', logo: 'https://logo.clearbit.com/mazda.com' },
+                { name: 'Mercedes-Benz', logo: 'https://logo.clearbit.com/mercedes-benz.com' },
+                { name: 'Mitsubishi', logo: 'https://logo.clearbit.com/mitsubishi-motors.com' },
+                { name: 'Nissan', logo: nissanLogo },
+                { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
+                { name: 'Renault', logo: renaultLogo },
+                { name: 'SEAT', logo: seatLogo },
+                { name: 'Škoda', logo: skodaLogo },
+                { name: 'Smart', logo: 'https://logo.clearbit.com/smart.com' },
+                { name: 'SsangYong', logo: ssangyongLogo },
+                { name: 'Subaru', logo: 'https://logo.clearbit.com/subaru.com' },
+                { name: 'Suzuki', logo: 'https://logo.clearbit.com/suzuki.com' },
+                { name: 'Tesla', logo: 'https://logo.clearbit.com/tesla.com' },
+                { name: 'Toyota', logo: 'https://logo.clearbit.com/toyota.com' },
+                { name: 'Volkswagen', logo: 'https://logo.clearbit.com/volkswagen.com' },
+                { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
+                { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
+              ].map((brand) => (
+                 <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
+                   <img 
+                     src={brand.logo} 
+                     alt={`${brand.name} van warranty coverage - UK extended warranty available`} 
+                     className="h-10 w-auto object-contain"
+                     loading="lazy"
+                     width="80"
+                     height="40"
+                     onError={(e) => {
+                       e.currentTarget.style.display = 'none';
+                     }}
+                   />
+                   <p className="font-semibold text-gray-800">{brand.name}</p>
+                 </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
