@@ -18,9 +18,9 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { customerIds, templateId } = await req.json();
+    const { customerIds, templateId, customSubject, customContent } = await req.json();
 
-    console.log('Bulk email request:', { customerIds: customerIds?.length, templateId });
+    console.log('Bulk email request:', { customerIds: customerIds?.length, templateId, hasCustomContent: !!customContent });
 
     if (!customerIds || !Array.isArray(customerIds) || customerIds.length === 0) {
       throw new Error('Customer IDs are required');
@@ -30,15 +30,36 @@ serve(async (req) => {
       throw new Error('Template ID is required');
     }
 
-    // Get template
-    const { data: template, error: templateError } = await supabase
-      .from('email_templates')
-      .select('*')
-      .eq('id', templateId)
-      .single();
+    // Use custom content if provided, otherwise fetch template
+    let emailSubject = customSubject;
+    let emailContent = customContent;
+    let fromEmail = 'support@buyawarranty.co.uk';
 
-    if (templateError || !template) {
-      throw new Error('Template not found');
+    if (!emailSubject || !emailContent) {
+      // Get template
+      const { data: template, error: templateError } = await supabase
+        .from('email_templates')
+        .select('*')
+        .eq('id', templateId)
+        .single();
+
+      if (templateError || !template) {
+        throw new Error('Template not found');
+      }
+
+      emailSubject = emailSubject || template.subject;
+      fromEmail = template.from_email || fromEmail;
+      
+      // Extract content from JSONB if not provided
+      if (!emailContent) {
+        if (template.content?.blocks) {
+          emailContent = template.content.blocks
+            .map((block: any) => block.data?.text || '')
+            .join('\n\n');
+        } else if (template.content?.html) {
+          emailContent = template.content.html;
+        }
+      }
     }
 
     // Get customers
@@ -62,18 +83,16 @@ serve(async (req) => {
     // Send emails
     for (const customer of customers) {
       try {
-        // Replace template variables
-        let emailContent = template.content.html || '';
-        let emailSubject = template.subject;
-        
-        emailContent = emailContent.replace(/\{name\}/g, customer.name || 'Customer');
-        emailSubject = emailSubject.replace(/\{name\}/g, customer.name || 'Customer');
+        // Replace template variables with customer data
+        const customerName = customer.name || 'Customer';
+        const personalizedSubject = emailSubject.replace(/\{name\}/g, customerName);
+        const personalizedContent = emailContent.replace(/\{name\}/g, customerName);
 
         const emailResponse = await resend.emails.send({
-          from: template.from_email,
+          from: fromEmail,
           to: [customer.email],
-          subject: emailSubject,
-          html: emailContent,
+          subject: personalizedSubject,
+          html: personalizedContent.replace(/\n/g, '<br>'), // Convert line breaks to HTML
         });
 
         console.log(`Email sent to ${customer.email}:`, emailResponse);
@@ -81,7 +100,7 @@ serve(async (req) => {
         // Log email
         await supabase.from('email_logs').insert({
           recipient_email: customer.email,
-          subject: emailSubject,
+          subject: personalizedSubject,
           template_id: templateId,
           delivery_status: 'sent',
           metadata: { resend_id: emailResponse.id }
@@ -99,7 +118,7 @@ serve(async (req) => {
         // Log failure
         await supabase.from('email_logs').insert({
           recipient_email: customer.email,
-          subject: template.subject,
+          subject: emailSubject,
           template_id: templateId,
           delivery_status: 'failed',
           error_message: error.message
