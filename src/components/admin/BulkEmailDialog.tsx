@@ -25,6 +25,7 @@ export const BulkEmailDialog: React.FC<BulkEmailDialogProps> = ({
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [emailSubject, setEmailSubject] = useState('');
   const [emailContent, setEmailContent] = useState('');
+  const [customEmails, setCustomEmails] = useState('');
   const [sending, setSending] = useState(false);
   const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit');
 
@@ -93,7 +94,8 @@ export const BulkEmailDialog: React.FC<BulkEmailDialogProps> = ({
           customerIds: selectedCustomerIds,
           templateId: selectedTemplateId,
           customSubject: emailSubject,
-          customContent: emailContent
+          customContent: emailContent,
+          customEmails: customEmails.trim() ? customEmails.split(',').map(e => e.trim()).filter(e => e) : []
         }
       });
 
@@ -108,6 +110,7 @@ export const BulkEmailDialog: React.FC<BulkEmailDialogProps> = ({
       setSelectedTemplateId('');
       setEmailSubject('');
       setEmailContent('');
+      setCustomEmails('');
       onComplete?.();
     } catch (error: any) {
       console.error('Bulk email error:', error);
@@ -130,6 +133,7 @@ export const BulkEmailDialog: React.FC<BulkEmailDialogProps> = ({
           <DialogTitle>Send Bulk Email</DialogTitle>
           <DialogDescription>
             Sending to {selectedCustomerIds.length} selected customer(s)
+            {customEmails.trim() && ` + ${customEmails.split(',').filter(e => e.trim()).length} custom email(s)`}
           </DialogDescription>
         </DialogHeader>
         
@@ -148,6 +152,20 @@ export const BulkEmailDialog: React.FC<BulkEmailDialogProps> = ({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Additional Email Addresses (Optional)</Label>
+            <Textarea
+              value={customEmails}
+              onChange={(e) => setCustomEmails(e.target.value)}
+              placeholder="email1@example.com, email2@example.com"
+              rows={2}
+              className="font-mono text-sm"
+            />
+            <p className="text-xs text-muted-foreground">
+              Enter additional email addresses separated by commas
+            </p>
           </div>
 
           {selectedTemplateId && (

@@ -18,9 +18,9 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { customerIds, templateId, customSubject, customContent } = await req.json();
+    const { customerIds, templateId, customSubject, customContent, customEmails } = await req.json();
 
-    console.log('Bulk email request:', { customerIds: customerIds?.length, templateId, hasCustomContent: !!customContent });
+    console.log('Bulk email request:', { customerIds: customerIds?.length, templateId, hasCustomContent: !!customContent, customEmails: customEmails?.length });
 
     if (!customerIds || !Array.isArray(customerIds) || customerIds.length === 0) {
       throw new Error('Customer IDs are required');
@@ -74,6 +74,12 @@ serve(async (req) => {
 
     console.log(`Sending to ${customers.length} customers`);
 
+    // Prepare list of all recipients (customers + custom emails)
+    const allRecipients = [
+      ...customers.map(c => ({ email: c.email, name: c.name || 'Customer', isCustomer: true, customerId: c.id })),
+      ...(customEmails || []).map((email: string) => ({ email, name: 'Recipient', isCustomer: false }))
+    ];
+
     const results = {
       success: 0,
       failed: 0,
@@ -81,48 +87,52 @@ serve(async (req) => {
     };
 
     // Send emails
-    for (const customer of customers) {
+    for (const recipient of allRecipients) {
       try {
-        // Replace template variables with customer data
-        const customerName = customer.name || 'Customer';
-        const personalizedSubject = emailSubject.replace(/\{name\}/g, customerName);
-        const personalizedContent = emailContent.replace(/\{name\}/g, customerName);
+        // Replace template variables with recipient data
+        const recipientName = recipient.name || 'Recipient';
+        const personalizedSubject = emailSubject.replace(/\{name\}/g, recipientName);
+        const personalizedContent = emailContent.replace(/\{name\}/g, recipientName);
 
         const emailResponse = await resend.emails.send({
           from: fromEmail,
-          to: [customer.email],
+          to: [recipient.email],
           subject: personalizedSubject,
           html: personalizedContent.replace(/\n/g, '<br>'), // Convert line breaks to HTML
         });
 
-        console.log(`Email sent to ${customer.email}:`, emailResponse);
+        console.log(`Email sent to ${recipient.email}:`, emailResponse);
 
-        // Log email
-        await supabase.from('email_logs').insert({
-          recipient_email: customer.email,
-          subject: personalizedSubject,
-          template_id: templateId,
-          delivery_status: 'sent',
-          metadata: { resend_id: emailResponse.id }
-        });
+        // Log email (only if it's a customer)
+        if (recipient.isCustomer) {
+          await supabase.from('email_logs').insert({
+            recipient_email: recipient.email,
+            subject: personalizedSubject,
+            template_id: templateId,
+            delivery_status: 'sent',
+            metadata: { resend_id: emailResponse.id }
+          });
+        }
 
         results.success++;
       } catch (error: any) {
-        console.error(`Failed to send to ${customer.email}:`, error);
+        console.error(`Failed to send to ${recipient.email}:`, error);
         results.failed++;
         results.errors.push({
-          email: customer.email,
+          email: recipient.email,
           error: error.message
         });
 
-        // Log failure
-        await supabase.from('email_logs').insert({
-          recipient_email: customer.email,
-          subject: emailSubject,
-          template_id: templateId,
-          delivery_status: 'failed',
-          error_message: error.message
-        });
+        // Log failure (only if it's a customer)
+        if (recipient.isCustomer) {
+          await supabase.from('email_logs').insert({
+            recipient_email: recipient.email,
+            subject: emailSubject,
+            template_id: templateId,
+            delivery_status: 'failed',
+            error_message: error.message
+          });
+        }
       }
     }
 
