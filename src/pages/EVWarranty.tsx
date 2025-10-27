@@ -6,7 +6,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import NewFooter from '@/components/NewFooter';
-import WebsiteFooter from '@/components/WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { trackButtonClick } from '@/utils/analytics';
 import { OptimizedImage } from '@/components/OptimizedImage';
@@ -15,7 +14,6 @@ import evHeroImage from '@/assets/ev-warranty-hero.png';
 import evActiveImage from '@/assets/ev-warranty-active.png';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIconNew from '@/assets/whatsapp-icon-new.png';
-import companyRegistration from '@/assets/company-registration-footer.png';
 
 const EVWarranty = () => {
   const navigate = useNavigate();
@@ -236,8 +234,10 @@ const EVWarranty = () => {
             <div className="space-y-6 text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                 Electric, Hybrid and PHEV Vehicle Extended Warranty
-                <span className="block text-primary mt-2">Protect Your Electric Vehicle with Specialist UK Cover</span>
               </h1>
+              <p className="text-2xl md:text-3xl font-bold text-primary">
+                Protect Your Electric Vehicle with Specialist UK Cover
+              </p>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
                 Buy A Warranty provides comprehensive electric and hybrid car warranty cover for UK drivers. Protect your EV or hybrid from costly repairs to batteries, motors, and drivetrains with flexible, affordable plans.
               </p>
@@ -664,8 +664,6 @@ const EVWarranty = () => {
         <NewFooter />
       </main>
 
-      <WebsiteFooter />
-
       {/* Floating Contact Buttons */}
       {!isMobile && (
         <div className="fixed right-6 bottom-6 z-40 flex flex-col gap-3">
@@ -697,17 +695,6 @@ const EVWarranty = () => {
           </svg>
         </button>
       )}
-
-      {/* Company Registration */}
-      <div className="bg-muted/30 py-4">
-        <div className="container mx-auto px-4 flex justify-center">
-          <OptimizedImage 
-            src={companyRegistration} 
-            alt="Company Registration" 
-            className="h-8 md:h-10 w-auto"
-          />
-        </div>
-      </div>
     </>
   );
 };
