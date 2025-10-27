@@ -292,7 +292,7 @@ const EVWarranty = () => {
               <OptimizedImage 
                 src={evHeroImage} 
                 alt="Electric Vehicle Warranty UK - EV and Hybrid Protection"
-                className="w-1/2 h-auto"
+                className="w-2/3 h-auto"
                 priority
               />
             </div>

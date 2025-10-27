@@ -228,7 +228,7 @@ const VanWarrantyNew = () => {
                     loading: 'eager',
                     priority: true
                   })}
-                  className="w-full h-auto drop-shadow-2xl"
+                  className="w-3/5 h-auto drop-shadow-2xl mx-auto"
                 />
               </div>
             </div>
