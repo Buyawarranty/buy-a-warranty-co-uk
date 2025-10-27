@@ -22,6 +22,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Processing abandoned cart emails...');
 
+    // List of email patterns to exclude from abandoned cart emails (test/internal accounts)
+    const excludedEmailPatterns = [
+      'buyawarranty.co.uk',
+      'prajwalchauhan',
+      '1fairdeal',
+      'test@',
+      'demo@',
+      'admin@'
+    ];
+
     // Get abandoned carts from step 4 (checkout) from the last 5 days
     const { data: abandonedCarts, error: cartsError } = await supabase
       .from('abandoned_carts')
@@ -54,6 +64,17 @@ const handler = async (req: Request): Promise<Response> => {
     // Process each abandoned cart
     for (const cart of abandonedCarts) {
       try {
+        // Skip test/internal email addresses
+        const cartEmail = cart.email?.toLowerCase() || '';
+        const isTestEmail = excludedEmailPatterns.some(pattern => 
+          cartEmail.includes(pattern.toLowerCase())
+        );
+        
+        if (isTestEmail) {
+          console.log(`Skipping test/internal email: ${cart.email}`);
+          continue;
+        }
+
         const triggerType = 'checkout_abandoned';
         const cartTime = new Date(cart.created_at).getTime();
         const timeSinceAbandoned = Date.now() - cartTime;
