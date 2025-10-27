@@ -26,6 +26,7 @@ import { SendNotificationDialog } from './SendNotificationDialog';
 import { ViewAsCustomerButton } from './ViewAsCustomerButton';
 import { CustomerTagsManager } from './CustomerTagsManager';
 import { CustomerTagsDisplay } from './CustomerTagsDisplay';
+import { InlineCustomerTags } from './InlineCustomerTags';
 import { BulkEmailDialog } from './BulkEmailDialog';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
@@ -2623,7 +2624,13 @@ Please log in and change your password after first login.`;
                           )}
                         </DialogContent>
                       </Dialog>
-                      <span>{customer.name}</span>
+                      <div className="flex flex-col gap-1">
+                        <span>{customer.name}</span>
+                        <InlineCustomerTags 
+                          customerId={customer.id} 
+                          onTagsUpdate={fetchCustomers}
+                        />
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>{customer.email}</TableCell>
