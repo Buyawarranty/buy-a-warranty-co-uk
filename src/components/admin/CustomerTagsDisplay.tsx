@@ -63,15 +63,19 @@ export const CustomerTagsDisplay: React.FC<CustomerTagsDisplayProps> = ({
         return (
           <Badge
             key={index}
-            style={{ backgroundColor: tag.color }}
-            className="text-white text-xs"
+            style={{ 
+              backgroundColor: tag.color,
+              color: '#ffffff',
+              borderColor: tag.color 
+            }}
+            className="text-xs font-medium shadow-sm"
           >
             {tag.name}
           </Badge>
         );
       })}
       {remainingCount > 0 && (
-        <Badge variant="outline" className="text-xs">
+        <Badge variant="outline" className="text-xs bg-muted">
           +{remainingCount}
         </Badge>
       )}

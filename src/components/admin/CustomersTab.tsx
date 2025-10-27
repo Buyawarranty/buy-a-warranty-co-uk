@@ -1938,7 +1938,19 @@ export const CustomersTab = () => {
                 <Label htmlFor="tagFilter" className="text-sm font-medium">Filter by Tag</Label>
                 <Select value={filterByTag} onValueChange={setFilterByTag}>
                   <SelectTrigger>
-                    <SelectValue placeholder="All Tags" />
+                    <SelectValue>
+                      {filterByTag === 'all' ? (
+                        'All Tags'
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full flex-shrink-0" 
+                            style={{ backgroundColor: availableTags.find(t => t.id === filterByTag)?.color }}
+                          />
+                          <span>{availableTags.find(t => t.id === filterByTag)?.name || 'Select Tag'}</span>
+                        </div>
+                      )}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Tags</SelectItem>
