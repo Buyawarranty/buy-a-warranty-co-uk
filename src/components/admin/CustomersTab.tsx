@@ -24,6 +24,8 @@ import { MOTHistorySection } from './MOTHistorySection';
 import { W2000DataPreview } from './W2000DataPreview';
 import { SendNotificationDialog } from './SendNotificationDialog';
 import { ViewAsCustomerButton } from './ViewAsCustomerButton';
+import { CustomerTagsManager } from './CustomerTagsManager';
+import { CustomerTagsDisplay } from './CustomerTagsDisplay';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 import { format } from 'date-fns';
@@ -243,6 +245,8 @@ export const CustomersTab = () => {
   const [sortBy, setSortBy] = useState('newest'); // Default to newest first
   const [filterByPlan, setFilterByPlan] = useState('all');
   const [filterByStatus, setFilterByStatus] = useState('all');
+  const [filterByTag, setFilterByTag] = useState('all');
+  const [availableTags, setAvailableTags] = useState<any[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState<AdminNote[]>([]);
@@ -275,29 +279,45 @@ export const CustomersTab = () => {
     fetchEmailStatuses();
     fetchAdminUsers();
     getCurrentUser();
+    fetchAvailableTags();
   }, []);
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [searchTerm, customers, sortBy, filterByPlan, filterByStatus]);
+  }, [searchTerm, customers, sortBy, filterByPlan, filterByStatus, filterByTag]);
 
-  const applyFiltersAndSort = () => {
+  const fetchAvailableTags = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('customer_tags')
+        .select('*')
+        .order('category', { ascending: true })
+        .order('name', { ascending: true });
+
+      if (error) throw error;
+      setAvailableTags(data || []);
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+    }
+  };
+
+  const applyFiltersAndSort = async () => {
     let filtered = [...customers];
 
-      // Apply search filter
-      if (searchTerm) {
-        filtered = filtered.filter(customer =>
-          customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          customer.registration_plate?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          customer.warranty_reference_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          // Also search in policy numbers from related policies
-          customer.customer_policies?.some(policy => 
-            policy.policy_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            policy.warranty_number?.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        );
-      }
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(customer =>
+        customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.registration_plate?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.warranty_reference_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        // Also search in policy numbers from related policies
+        customer.customer_policies?.some(policy => 
+          policy.policy_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          policy.warranty_number?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
 
     // Apply plan filter
     if (filterByPlan !== 'all') {
@@ -311,6 +331,23 @@ export const CustomersTab = () => {
       filtered = filtered.filter(customer =>
         customer.status?.toLowerCase() === filterByStatus.toLowerCase()
       );
+    }
+
+    // Apply tag filter
+    if (filterByTag !== 'all') {
+      try {
+        const { data: taggedCustomers, error } = await supabase
+          .from('customer_tag_assignments')
+          .select('customer_id')
+          .eq('tag_id', filterByTag);
+
+        if (!error && taggedCustomers) {
+          const taggedCustomerIds = new Set(taggedCustomers.map(t => t.customer_id));
+          filtered = filtered.filter(customer => taggedCustomerIds.has(customer.id));
+        }
+      } catch (error) {
+        console.error('Error filtering by tag:', error);
+      }
     }
 
     // Apply sorting
@@ -1893,6 +1930,48 @@ export const CustomersTab = () => {
               </div>
             </div>
 
+            {/* Second row for tag filter */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Filter by Tag */}
+              <div className="space-y-1">
+                <Label htmlFor="tagFilter" className="text-sm font-medium">Filter by Tag</Label>
+                <Select value={filterByTag} onValueChange={setFilterByTag}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Tags" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Tags</SelectItem>
+                    {Object.entries(
+                      availableTags.reduce((acc: any, tag) => {
+                        if (!acc[tag.category]) {
+                          acc[tag.category] = [];
+                        }
+                        acc[tag.category].push(tag);
+                        return acc;
+                      }, {})
+                    ).map(([category, tags]: [string, any]) => (
+                      <React.Fragment key={category}>
+                        <SelectItem value={`category-${category}`} disabled className="font-semibold text-xs uppercase text-muted-foreground">
+                          {category}
+                        </SelectItem>
+                        {tags.map((tag: any) => (
+                          <SelectItem key={tag.id} value={tag.id} className="pl-6">
+                            <div className="flex items-center gap-2">
+                              <div 
+                                className="w-3 h-3 rounded-full flex-shrink-0" 
+                                style={{ backgroundColor: tag.color }}
+                              />
+                              <span>{tag.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             {/* Results Summary and Bulk Actions */}
             <div className="flex items-center justify-between text-sm text-gray-600 pt-2 border-t">
               <div className="flex items-center gap-4">
@@ -1901,6 +1980,7 @@ export const CustomersTab = () => {
                   {searchTerm && ` for "${searchTerm}"`}
                   {filterByPlan !== 'all' && ` • ${filterByPlan} plan`}
                   {filterByStatus !== 'all' && ` • ${filterByStatus} status`}
+                  {filterByTag !== 'all' && ` • filtered by tag`}
                 </span>
                 {selectedCustomers.size > 0 && (
                   <Badge variant="secondary" className="bg-blue-50 text-blue-700">
@@ -1933,6 +2013,7 @@ export const CustomersTab = () => {
                     setSortBy('newest');
                     setFilterByPlan('all');
                     setFilterByStatus('all');
+                    setFilterByTag('all');
                     setSelectedCustomers(new Set());
                   }}
                   className="text-xs"
@@ -1969,6 +2050,7 @@ export const CustomersTab = () => {
               <TableHead>Payment Method</TableHead>
               <TableHead>Vol. Excess</TableHead>
               <TableHead>Claim Limit</TableHead>
+              <TableHead>Tags</TableHead>
               <TableHead>Ref</TableHead>
               <TableHead>Email Status</TableHead>
               <TableHead>Warranties2000</TableHead>
@@ -2175,9 +2257,10 @@ Please log in and change your password after first login.`;
                               </Collapsible>
 
                               <Tabs defaultValue="details" className="w-full">
-                                <TabsList className="grid w-full grid-cols-6">
+                                <TabsList className="grid w-full grid-cols-7">
                                   <TabsTrigger value="details">Customer Details</TabsTrigger>
                                   <TabsTrigger value="warranty">Warranty Details</TabsTrigger>
+                                  <TabsTrigger value="tags">Tags</TabsTrigger>
                                   <TabsTrigger value="notes">Notes</TabsTrigger>
                                   <TabsTrigger value="actions">Warranty Actions</TabsTrigger>
                                   <TabsTrigger value="mot">MOT History</TabsTrigger>
@@ -2461,6 +2544,23 @@ Please log in and change your password after first login.`;
                                   )}
                                 </TabsContent>
 
+                                <TabsContent value="tags">
+                                  {selectedCustomer && (
+                                    <div className="space-y-4">
+                                      <div>
+                                        <h3 className="text-lg font-semibold mb-2">Customer Tags</h3>
+                                        <p className="text-sm text-muted-foreground mb-4">
+                                          Manage tags to organize and track customer status, payment info, and follow-ups.
+                                        </p>
+                                        <CustomerTagsManager 
+                                          customerId={selectedCustomer.id}
+                                          onTagsUpdate={fetchCustomers}
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
+                                </TabsContent>
+
                                 <TabsContent value="notes">
                                   {selectedCustomer && (
                                     <CustomerNotesSection customerId={selectedCustomer.id} />
@@ -2589,12 +2689,15 @@ Please log in and change your password after first login.`;
                           £{customer.voluntary_excess || 0}
                         </Badge>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="bg-green-50 text-green-700">
-                          £{(customer.customer_policies?.[0] as any)?.claim_limit || customer.claim_limit || 1250}
-                        </Badge>
-                      </TableCell>
-                   <TableCell className="font-mono text-sm">
+                       <TableCell>
+                         <Badge variant="outline" className="bg-green-50 text-green-700">
+                           £{(customer.customer_policies?.[0] as any)?.claim_limit || customer.claim_limit || 1250}
+                         </Badge>
+                       </TableCell>
+                       <TableCell>
+                         <CustomerTagsDisplay customerId={customer.id} maxVisible={2} />
+                       </TableCell>
+                    <TableCell className="font-mono text-sm">
                     {customer.warranty_reference_number || customer.warranty_number ? (
                       <div className="bg-green-50 px-2 py-1 rounded border">
                         {customer.warranty_reference_number || customer.warranty_number}

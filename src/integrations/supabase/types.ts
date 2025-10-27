@@ -1137,6 +1137,72 @@ export type Database = {
           },
         ]
       }
+      customer_tag_assignments: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          customer_id: string
+          id: string
+          tag_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          customer_id: string
+          id?: string
+          tag_id: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          customer_id?: string
+          id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_tag_assignments_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_tag_assignments_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "customer_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_tags: {
+        Row: {
+          category: string
+          color: string
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          color?: string
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          color?: string
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           assigned_to: string | null
@@ -2492,26 +2558,14 @@ export type Database = {
       }
     }
     Functions: {
-      auto_expire_discount_codes: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      auto_expire_discount_codes: { Args: never; Returns: number }
       calculate_policy_end_date: {
         Args: { payment_type: string; start_date: string }
         Returns: string
       }
-      fix_customer_role: {
-        Args: { p_user_id: string }
-        Returns: undefined
-      }
-      generate_policy_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_random_password: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      fix_customer_role: { Args: { p_user_id: string }; Returns: undefined }
+      generate_policy_number: { Args: never; Returns: string }
+      generate_random_password: { Args: never; Returns: string }
       generate_warranty_audit_checksum: {
         Args: {
           customer_email: string
@@ -2522,26 +2576,14 @@ export type Database = {
         }
         Returns: string
       }
-      generate_warranty_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_next_warranty_serial: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      generate_warranty_number: { Args: never; Returns: string }
+      get_next_warranty_serial: { Args: never; Returns: number }
       has_admin_permission: {
         Args: { permission_key: string; user_id: string }
         Returns: boolean
       }
-      is_admin: {
-        Args: { _user_id: string }
-        Returns: boolean
-      }
-      is_ip_blocked: {
-        Args: { check_ip: unknown }
-        Returns: boolean
-      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_ip_blocked: { Args: { check_ip: unknown }; Returns: boolean }
       log_click_activity: {
         Args: {
           p_action_type: string
@@ -2562,14 +2604,8 @@ export type Database = {
         }
         Returns: string
       }
-      make_user_admin: {
-        Args: { user_email: string }
-        Returns: undefined
-      }
-      restore_customer: {
-        Args: { customer_uuid: string }
-        Returns: undefined
-      }
+      make_user_admin: { Args: { user_email: string }; Returns: undefined }
+      restore_customer: { Args: { customer_uuid: string }; Returns: undefined }
       soft_delete_customer: {
         Args: { admin_uuid: string; customer_uuid: string }
         Returns: undefined
@@ -2578,10 +2614,7 @@ export type Database = {
         Args: { p_campaign_id: string }
         Returns: undefined
       }
-      verify_warranty_selection: {
-        Args: { audit_id: string }
-        Returns: Json
-      }
+      verify_warranty_selection: { Args: { audit_id: string }; Returns: Json }
     }
     Enums: {
       user_role: "admin" | "customer" | "member" | "viewer" | "guest"
