@@ -28,6 +28,7 @@ import { CustomerTagsManager } from './CustomerTagsManager';
 import { CustomerTagsDisplay } from './CustomerTagsDisplay';
 import { InlineCustomerTags } from './InlineCustomerTags';
 import { BulkEmailDialog } from './BulkEmailDialog';
+import { BulkTagDialog } from './BulkTagDialog';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 import { format } from 'date-fns';
@@ -2007,6 +2008,13 @@ export const CustomersTab = () => {
               <div className="flex items-center gap-2">
                 {selectedCustomers.size > 0 && (
                   <>
+                    <BulkTagDialog 
+                      selectedCustomerIds={Array.from(selectedCustomers)}
+                      onComplete={() => {
+                        setSelectedCustomers(new Set());
+                        fetchCustomers();
+                      }}
+                    />
                     <BulkEmailDialog 
                       selectedCustomerIds={Array.from(selectedCustomers)}
                       onComplete={() => setSelectedCustomers(new Set())}
