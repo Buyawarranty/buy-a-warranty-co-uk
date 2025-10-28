@@ -567,6 +567,42 @@ export type Database = {
         }
         Relationships: []
       }
+      brevo_sync_log: {
+        Row: {
+          brevo_contact_id: string | null
+          created_at: string
+          customer_email: string
+          error_message: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          sync_status: string | null
+          updated_at: string
+        }
+        Insert: {
+          brevo_contact_id?: string | null
+          created_at?: string
+          customer_email: string
+          error_message?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          sync_status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          brevo_contact_id?: string | null
+          created_at?: string
+          customer_email?: string
+          error_message?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          sync_status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bumper_transactions: {
         Row: {
           add_another_warranty: boolean | null
@@ -1207,6 +1243,7 @@ export type Database = {
         Row: {
           assigned_to: string | null
           breakdown_recovery: boolean | null
+          brevo_contact_id: string | null
           building_name: string | null
           building_number: string | null
           bumper_order_id: string | null
@@ -1239,6 +1276,7 @@ export type Database = {
           plan_type: string
           postcode: string | null
           registration_plate: string | null
+          review_email_sent_at: string | null
           signup_date: string
           status: string
           street: string | null
@@ -1262,6 +1300,7 @@ export type Database = {
         Insert: {
           assigned_to?: string | null
           breakdown_recovery?: boolean | null
+          brevo_contact_id?: string | null
           building_name?: string | null
           building_number?: string | null
           bumper_order_id?: string | null
@@ -1294,6 +1333,7 @@ export type Database = {
           plan_type: string
           postcode?: string | null
           registration_plate?: string | null
+          review_email_sent_at?: string | null
           signup_date?: string
           status?: string
           street?: string | null
@@ -1317,6 +1357,7 @@ export type Database = {
         Update: {
           assigned_to?: string | null
           breakdown_recovery?: boolean | null
+          brevo_contact_id?: string | null
           building_name?: string | null
           building_number?: string | null
           bumper_order_id?: string | null
@@ -1349,6 +1390,7 @@ export type Database = {
           plan_type?: string
           postcode?: string | null
           registration_plate?: string | null
+          review_email_sent_at?: string | null
           signup_date?: string
           status?: string
           street?: string | null

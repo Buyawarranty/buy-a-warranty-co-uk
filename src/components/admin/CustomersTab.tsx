@@ -573,7 +573,9 @@ export const CustomersTab = () => {
           mot_repair: false,
           lost_key: false,
           consequential: false,
-          claim_limit: policy.claim_limit || 1250
+          claim_limit: policy.claim_limit || 1250,
+          brevo_contact_id: null,
+          review_email_sent_at: null
         }));
         
         directData = [...directData, ...orphanedAsCustomers];

@@ -80,6 +80,9 @@ verify_jwt = false
 [functions.track-abandoned-cart]
 verify_jwt = false
 
+[functions.sync-to-brevo]
+verify_jwt = false
+
 [functions.test-api-connectivity]
 verify_jwt = false
 
