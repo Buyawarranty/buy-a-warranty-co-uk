@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { SEOHead } from '@/components/SEOHead';
+import pandaImage from '@/assets/404-panda.png';
 
 const NotFound = () => {
   const location = useLocation();
@@ -31,10 +32,15 @@ const NotFound = () => {
       <div className="flex-1 flex items-center justify-center py-20 px-4">
         <div className="text-center max-w-2xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-7xl font-bold text-primary mb-4">404</h1>
-            <h2 className="text-3xl font-semibold text-foreground mb-4">Page Not Found</h2>
+            <img 
+              src={pandaImage} 
+              alt="Friendly panda mechanic" 
+              className="w-32 h-32 mx-auto mb-6 object-contain"
+            />
+            <h1 className="text-5xl font-bold text-foreground mb-2">Oops!</h1>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">This page has gone walkabout.</h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Oops! The page you're looking for doesn't exist. It may have been moved or deleted.
+              Let's head back and try again.
             </p>
           </div>
           
