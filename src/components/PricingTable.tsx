@@ -1693,7 +1693,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   '✅ Unlimited claims',
                   '✅ Labour costs included',
                   '✅ Fault diagnostics',
-                  '✅ Reimbursement of the MOT test fee up to £75',
+                  '✅ Reimbursement of the MOT test fee',
                   '✅ Vehicle recovery claim-back',
                   '✅ Consequential damage cover',
                   '✅ Fast claims process',
@@ -1716,7 +1716,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   '✅ Labour costs included',
                   '✅ Fault diagnostics',
                   '✅ Vehicle recovery claim-back',
-                  '✅ Reimbursement of the MOT test fee up to £75',
+                  '✅ Reimbursement of the MOT test fee',
                   '✅ Europe repair cover',
                   '✅ Vehicle rental cover',
                   '✅ Consequential damage cover',
@@ -1825,14 +1825,22 @@ const PricingTable: React.FC<PricingTableProps> = ({
                    <div className="mb-6 flex-grow">
                      <h6 className="font-semibold text-gray-900 mb-3">What's included:</h6>
                      <div className="space-y-1">
-                       {option.features.map((feature, index) => (
-                         <div key={index} className="flex items-start text-sm">
-                           <span className="mr-2 flex-shrink-0">{feature.startsWith('✅') ? '✅' : '❌'}</span>
-                            <span className={feature.startsWith('✅') ? 'text-gray-700' : 'text-black'}>
-                              {feature.replace(/^[✅❌]\s*/, '')}
-                            </span>
-                         </div>
-                       ))}
+                       {option.features.map((feature, index) => {
+                         const isCheck = feature.startsWith('✅');
+                         const text = feature.replace(/^[✅❌]\s*/, '');
+                         return (
+                           <div key={index} className="flex items-start text-sm">
+                             {isCheck ? (
+                               <Check className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                             ) : (
+                               <X className="w-4 h-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                             )}
+                             <span className={isCheck ? 'text-gray-700' : 'text-black'}>
+                               {text}
+                             </span>
+                           </div>
+                         );
+                       })}
                      </div>
                    </div>
                    
