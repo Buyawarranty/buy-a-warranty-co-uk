@@ -2526,6 +2526,12 @@ Please log in and change your password after first login.`;
                                                 {policy.payment_status}
                                               </Badge>
                                             </div>
+                                            <div>
+                                              <Label className="text-sm font-medium text-gray-500">Policy Status</Label>
+                                              <Badge variant={policy.status === 'active' ? 'default' : policy.status === 'cancelled' ? 'destructive' : 'secondary'}>
+                                                {policy.status || 'active'}
+                                              </Badge>
+                                            </div>
                                             <div className="col-span-2">
                                               <Label className="text-sm font-medium text-gray-500 mb-2 block">Coverage Details</Label>
                                               <CoverageDetailsDisplay 
@@ -2556,6 +2562,69 @@ Please log in and change your password after first login.`;
                                                 consequential={policy.consequential}
                                                 payment_type={editingCustomer.payment_type || 'monthly'}
                                               />
+                                            </div>
+                                            <div className="col-span-2 pt-4 border-t">
+                                              <div className="flex items-center justify-between">
+                                                <div>
+                                                  <Label className="text-sm font-medium text-gray-700">Warranty Management</Label>
+                                                  <p className="text-xs text-gray-500 mt-1">
+                                                    {policy.status === 'cancelled' 
+                                                      ? 'This warranty has been cancelled and is inactive'
+                                                      : 'Cancel this warranty if it needs to be voided or deactivated'}
+                                                  </p>
+                                                </div>
+                                                {policy.status !== 'cancelled' ? (
+                                                  <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    onClick={async () => {
+                                                      if (!confirm('Are you sure you want to cancel this warranty? This action will mark it as inactive for the customer.')) return;
+                                                      
+                                                      try {
+                                                        const { error } = await supabase
+                                                          .from('customer_policies')
+                                                          .update({ status: 'cancelled' })
+                                                          .eq('id', policy.id);
+
+                                                        if (error) throw error;
+
+                                                        toast.success('Warranty cancelled successfully');
+                                                        fetchCustomers(); // Refresh data
+                                                      } catch (error) {
+                                                        console.error('Error cancelling warranty:', error);
+                                                        toast.error('Failed to cancel warranty');
+                                                      }
+                                                    }}
+                                                  >
+                                                    Cancel Warranty
+                                                  </Button>
+                                                ) : (
+                                                  <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={async () => {
+                                                      if (!confirm('Are you sure you want to reactivate this warranty?')) return;
+                                                      
+                                                      try {
+                                                        const { error } = await supabase
+                                                          .from('customer_policies')
+                                                          .update({ status: 'active' })
+                                                          .eq('id', policy.id);
+
+                                                        if (error) throw error;
+
+                                                        toast.success('Warranty reactivated successfully');
+                                                        fetchCustomers(); // Refresh data
+                                                      } catch (error) {
+                                                        console.error('Error reactivating warranty:', error);
+                                                        toast.error('Failed to reactivate warranty');
+                                                      }
+                                                    }}
+                                                  >
+                                                    Reactivate Warranty
+                                                  </Button>
+                                                )}
+                                              </div>
                                             </div>
                                           </div>
                                         </Card>
