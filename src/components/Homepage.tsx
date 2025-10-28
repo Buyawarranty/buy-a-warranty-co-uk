@@ -792,7 +792,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       </LazySection>
 
       {/* Step 1 - Enter Your Reg Plate */}
-      <section className="py-12 md:py-20 bg-white">
+      <section className="pt-6 md:pt-10 pb-12 md:pb-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             {/* Left - Content */}

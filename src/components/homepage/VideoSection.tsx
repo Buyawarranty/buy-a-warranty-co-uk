@@ -28,7 +28,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({ scrollToQuoteForm }) => {
   }, []);
 
   return (
-    <section className="py-12 md:py-20 bg-brand-gray-bg">
+    <section className="pt-12 md:pt-20 pb-6 md:pb-10 bg-brand-gray-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
           <div className="relative aspect-video">
