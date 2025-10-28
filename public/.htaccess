@@ -19,6 +19,9 @@
   # Redirect old van warranty URL to new URL
   RewriteRule ^van-warranty-companies-uk-warranties/?$ /van-warranty/ [R=301,L]
   
+  # Redirect car-extended-warranty to main car warranty page
+  RewriteRule ^car-extended-warranty/?$ /buy-a-used-car-warranty-reliable-warranties/ [R=301,L]
+  
   # Force HTTPS
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

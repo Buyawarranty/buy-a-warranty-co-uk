@@ -44,6 +44,16 @@
       "source": "/van-warranty-companies-uk-warranties/",
       "destination": "/van-warranty/",
       "permanent": true
+    },
+    {
+      "source": "/car-extended-warranty",
+      "destination": "/buy-a-used-car-warranty-reliable-warranties/",
+      "permanent": true
+    },
+    {
+      "source": "/car-extended-warranty/",
+      "destination": "/buy-a-used-car-warranty-reliable-warranties/",
+      "permanent": true
     }
   ],
   "rewrites": [
