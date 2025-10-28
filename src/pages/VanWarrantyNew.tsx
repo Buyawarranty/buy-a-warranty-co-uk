@@ -73,12 +73,12 @@ const VanWarrantyNew = () => {
   return (
     <>
       <SEOHead
-        title="Van Extended Warranty UK | Used & New Van Cover up to 150,000 Miles | Buy A Warranty"
-        description="Get a trusted UK extended warranty for vans up to 150,000 miles. Protect new or used commercial vans from costly repairs with flexible, affordable warranty plans. Instant quotes available online."
+        title="Van Extended Warranty | Used Van Cover up to 150,000 Miles"
+        description="Get a trusted extended warranty for vans up to 150,000 miles. Protect new or used vans from costly repairs with flexible, affordable UK warranty plans."
         keywords="van warranty UK, van extended warranty, used van warranty, commercial van warranty, high mileage van warranty, van breakdown cover, UK van warranty, new van warranty, van warranty companies"
         canonical="https://buyawarranty.co.uk/van-warranty/"
-        ogTitle="Van Extended Warranty UK | Used & New Van Cover up to 150,000 Miles"
-        ogDescription="Get a trusted UK extended warranty for vans up to 150,000 miles. Protect new or used commercial vans from costly repairs with flexible, affordable warranty plans."
+        ogTitle="Van Extended Warranty | Used Van Cover up to 150,000 Miles"
+        ogDescription="Get a trusted extended warranty for vans up to 150,000 miles. Protect new or used vans from costly repairs with flexible, affordable UK warranty plans."
         ogImage="https://buyawarranty.co.uk/van-warranty-og.jpg"
         geoRegion="GB"
         geoPlacename="United Kingdom"
