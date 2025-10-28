@@ -133,6 +133,13 @@ export const CustomerTagsManager: React.FC<CustomerTagsManagerProps> = ({ custom
     return acc;
   }, {} as Record<string, CustomerTag[]>);
 
+  // Sort categories to ensure "Sales Funnel" appears first
+  const sortedCategories = Object.entries(groupedTags).sort(([categoryA], [categoryB]) => {
+    if (categoryA === 'Sales Funnel') return -1;
+    if (categoryB === 'Sales Funnel') return 1;
+    return categoryA.localeCompare(categoryB);
+  });
+
   const assignedTagIds = assignedTags.map(a => a.tag_id);
 
   return (
@@ -175,7 +182,7 @@ export const CustomerTagsManager: React.FC<CustomerTagsManagerProps> = ({ custom
               <CommandInput placeholder="Search tags..." />
               <CommandList>
                 <CommandEmpty>No tags found.</CommandEmpty>
-                {Object.entries(groupedTags).map(([category, tags]) => (
+                {sortedCategories.map(([category, tags]) => (
                   <CommandGroup key={category} heading={category}>
                     {tags.map((tag) => {
                       const isAssigned = assignedTagIds.includes(tag.id);
