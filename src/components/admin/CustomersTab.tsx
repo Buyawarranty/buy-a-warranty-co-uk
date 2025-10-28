@@ -2695,8 +2695,8 @@ Please log in and change your password after first login.`;
                           )}
                         </DialogContent>
                       </Dialog>
-                      <div className="flex flex-col gap-1">
-                        <span>{customer.name}</span>
+                      <div className="flex items-center justify-between gap-2 w-full">
+                        <span className="font-medium">{customer.name}</span>
                         <InlineCustomerTags 
                           customerId={customer.id} 
                           onTagsUpdate={fetchCustomers}
