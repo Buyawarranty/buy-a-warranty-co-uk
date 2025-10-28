@@ -157,11 +157,18 @@ export const useMobileBackNavigation = ({
       window.history.scrollRestoration = 'manual';
     }
     
-    // Push initial state if not already present
+    // Push initial state if not already present - use pushState to preserve previous page history
     const urlParams = new URLSearchParams(window.location.search);
     const urlStep = parseInt(urlParams.get('step') || '1');
+    
+    // If there's no history state yet, or it doesn't match the current URL step,
+    // we need to establish a proper history entry for this step
     if (!window.history.state || window.history.state.step !== urlStep) {
-      window.history.replaceState({ step: urlStep }, '', window.location.href);
+      // Use pushState (not replaceState) to create a new history entry
+      // This ensures the previous page (like Google search) remains in history
+      // and users can navigate back through steps without leaving the site
+      window.history.pushState({ step: urlStep }, '', window.location.href);
+      console.log('📱 Pushed initial history state for step', urlStep);
     }
     
     // Listen for popstate events (back/forward button presses)

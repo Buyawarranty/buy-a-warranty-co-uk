@@ -128,6 +128,12 @@ Similar implementation for the cart and checkout flow, with `isGuarded` set to `
 
 ## Browser Compatibility
 
+### History Management
+- Uses `pushState` (not `replaceState`) on initial load to preserve external referrer (e.g., Google search)
+- Each step navigation creates a new history entry via `pushState`
+- This ensures users can navigate back through all steps (4→3→2→1) before leaving the site
+- External page (e.g., Google) remains accessible after navigating through all internal steps
+
 ### iOS Safari
 - Uses `pageshow` and `pagehide` events to handle bfcache
 - Resets state when page restored from cache
