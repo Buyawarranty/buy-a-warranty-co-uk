@@ -23,41 +23,60 @@ const loadFacebookPixel = () => {
 const loadTikTokPixel = () => {
   if (window.ttq) return;
   
-  window.TiktokAnalyticsObject = 'ttq';
-  const ttq = window.ttq = window.ttq || [];
-  ttq.methods = ["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];
-  ttq.setAndDefer = function(t: any, e: string) {
-    t[e] = function() {
-      t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+  try {
+    window.TiktokAnalyticsObject = 'ttq';
+    const ttq = window.ttq = window.ttq || [];
+    ttq.methods = ["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];
+    ttq.setAndDefer = function(t: any, e: string) {
+      t[e] = function() {
+        t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+      };
     };
-  };
-  
-  for (let i = 0; i < ttq.methods.length; i++) {
-    ttq.setAndDefer(ttq, ttq.methods[i]);
-  }
-  
-  const script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.async = true;
-  script.src = 'https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D38LC5JC77UB9GL651GG&lib=ttq';
-  
-  script.onload = () => {
-    try {
-      if (window.ttq && typeof window.ttq.load === 'function') {
-        window.ttq.load('D38LC5JC77UB9GL651GG');
-        window.ttq.page({}, { test_event_code: 'TEST33403' });
-      }
-    } catch (error) {
-      console.error('TikTok Pixel initialization failed:', error);
+    
+    for (let i = 0; i < ttq.methods.length; i++) {
+      ttq.setAndDefer(ttq, ttq.methods[i]);
     }
-  };
-  
-  script.onerror = () => {
-    console.error('Failed to load TikTok Pixel script');
-  };
-  
-  const firstScript = document.getElementsByTagName('script')[0];
-  firstScript.parentNode?.insertBefore(script, firstScript);
+    
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = 'https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D38LC5JC77UB9GL651GG&lib=ttq';
+    
+    // Wait for script to fully load and initialize
+    script.onload = () => {
+      // Poll for ttq.load to be available (max 5 seconds)
+      let attempts = 0;
+      const maxAttempts = 50;
+      
+      const initializeTikTok = () => {
+        if (window.ttq && typeof window.ttq.load === 'function') {
+          try {
+            window.ttq.load('D38LC5JC77UB9GL651GG');
+            window.ttq.page({}, { test_event_code: 'TEST33403' });
+            console.info('TikTok Pixel initialized successfully');
+          } catch (error) {
+            console.error('TikTok Pixel initialization failed:', error);
+          }
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(initializeTikTok, 100);
+        } else {
+          console.warn('TikTok Pixel load function not available after timeout');
+        }
+      };
+      
+      initializeTikTok();
+    };
+    
+    script.onerror = () => {
+      console.error('Failed to load TikTok Pixel script');
+    };
+    
+    const firstScript = document.getElementsByTagName('script')[0];
+    firstScript.parentNode?.insertBefore(script, firstScript);
+  } catch (error) {
+    console.error('Error loading TikTok Pixel:', error);
+  }
 };
 
 export const loadThirdPartyScripts = () => {
