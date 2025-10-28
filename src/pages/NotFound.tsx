@@ -66,7 +66,7 @@ const NotFound = () => {
                 Used Car Warranty
               </a>
               <span className="text-muted-foreground">•</span>
-              <a href="/van-warranty-companies-uk-warranties/" className="text-primary hover:underline">
+              <a href="/van-warranty/" className="text-primary hover:underline">
                 Van Warranty
               </a>
               <span className="text-muted-foreground">•</span>

@@ -34,6 +34,16 @@
       "source": "/portfolio/car-front-side/",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/van-warranty-companies-uk-warranties",
+      "destination": "/van-warranty/",
+      "permanent": true
+    },
+    {
+      "source": "/van-warranty-companies-uk-warranties/",
+      "destination": "/van-warranty/",
+      "permanent": true
     }
   ],
   "rewrites": [

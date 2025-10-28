@@ -16,6 +16,9 @@
   # Redirect broken portfolio page to homepage
   RewriteRule ^portfolio/car-front-side/?$ / [R=301,L]
   
+  # Redirect old van warranty URL to new URL
+  RewriteRule ^van-warranty-companies-uk-warranties/?$ /van-warranty/ [R=301,L]
+  
   # Force HTTPS
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
