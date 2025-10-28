@@ -42,10 +42,18 @@ const loadTikTokPixel = () => {
   script.src = 'https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D38LC5JC77UB9GL651GG&lib=ttq';
   
   script.onload = () => {
-    if (window.ttq) {
-      window.ttq.load('D38LC5JC77UB9GL651GG');
-      window.ttq.page({}, { test_event_code: 'TEST33403' });
+    try {
+      if (window.ttq && typeof window.ttq.load === 'function') {
+        window.ttq.load('D38LC5JC77UB9GL651GG');
+        window.ttq.page({}, { test_event_code: 'TEST33403' });
+      }
+    } catch (error) {
+      console.error('TikTok Pixel initialization failed:', error);
     }
+  };
+  
+  script.onerror = () => {
+    console.error('Failed to load TikTok Pixel script');
   };
   
   const firstScript = document.getElementsByTagName('script')[0];
