@@ -75,6 +75,59 @@ serve(async (req) => {
       throw new Error("Missing required parameters");
     }
 
+    // CRITICAL: Check for duplicate payment to prevent double-charging and duplicate records
+    // Check if this exact payment has already been processed
+    const paymentIdentifier = metadata?.bumper_order_id || stripeSessionId;
+    
+    if (paymentIdentifier) {
+      logStep("Checking for duplicate payment", { paymentIdentifier, type: metadata?.bumper_order_id ? 'bumper' : 'stripe' });
+      
+      // Check if customer already exists with this payment identifier
+      const duplicateCheck = metadata?.bumper_order_id 
+        ? { bumper_order_id: metadata.bumper_order_id }
+        : { stripe_session_id: stripeSessionId };
+      
+      const { data: existingCustomer, error: checkError } = await supabaseClient
+        .from('customers')
+        .select('id, email, warranty_number, created_at')
+        .match(duplicateCheck)
+        .maybeSingle();
+      
+      if (existingCustomer) {
+        logStep("DUPLICATE DETECTED: Payment already processed", {
+          existingCustomerId: existingCustomer.id,
+          existingEmail: existingCustomer.email,
+          warrantyNumber: existingCustomer.warranty_number,
+          originalProcessedAt: existingCustomer.created_at,
+          attemptedDuplicateFrom: metadata?.source || 'unknown'
+        });
+        
+        // Get the policy data for this customer
+        const { data: existingPolicy } = await supabaseClient
+          .from('customer_policies')
+          .select('id, warranty_number')
+          .eq('customer_id', existingCustomer.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        // Return existing data instead of creating duplicates
+        return new Response(JSON.stringify({
+          success: true,
+          message: "Payment already processed - duplicate prevented",
+          customerId: existingCustomer.id,
+          policyNumber: existingPolicy?.warranty_number || existingCustomer.warranty_number,
+          policyId: existingPolicy?.id,
+          isDuplicate: true
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
+      
+      logStep("No duplicate found, proceeding with payment processing");
+    }
+
     // Validate vehicle age (must be 15 years or newer)
     const vehicleYear = vehicleData?.year || metadata?.vehicle_year;
     if (vehicleYear) {
