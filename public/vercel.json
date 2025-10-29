@@ -36,6 +36,16 @@
       "permanent": true
     },
     {
+      "source": "/best-warranty-on-ev-cars-uk-warranties",
+      "destination": "/ev-warranty/",
+      "permanent": true
+    },
+    {
+      "source": "/best-warranty-on-ev-cars-uk-warranties/",
+      "destination": "/ev-warranty/",
+      "permanent": true
+    },
+    {
       "source": "/van-warranty-companies-uk-warranties",
       "destination": "/van-warranty/",
       "permanent": true

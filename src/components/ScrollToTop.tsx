@@ -24,6 +24,12 @@ const ScrollToTop = () => {
       return;
     }
     
+    // Redirect old EV warranty URL to new URL
+    if (pathname === '/best-warranty-on-ev-cars-uk-warranties' || pathname === '/best-warranty-on-ev-cars-uk-warranties/') {
+      navigate('/ev-warranty/', { replace: true });
+      return;
+    }
+    
     // Redirect URLs without trailing slash to include trailing slash
     if (pathname !== '/' && !pathname.endsWith('/')) {
       navigate(pathname + '/', { replace: true });
