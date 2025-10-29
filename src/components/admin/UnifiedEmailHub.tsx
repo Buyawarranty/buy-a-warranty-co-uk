@@ -86,9 +86,21 @@ const UnifiedEmailHub = () => {
   // UI states
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [isResending, setIsResending] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  // Form state for template editing
+  const [formData, setFormData] = useState({
+    name: '',
+    subject: '',
+    template_type: '',
+    from_email: 'info@buyawarranty.co.uk',
+    greeting: '',
+    content: '',
+    is_active: true
+  });
 
   useEffect(() => {
     loadAllData();
@@ -197,6 +209,69 @@ const UnifiedEmailHub = () => {
     
     if (!error && data) {
       setSegments(data);
+    }
+  };
+
+  const handleEditTemplate = (template: EmailTemplate) => {
+    console.log('Opening template editor for:', template.name);
+    setSelectedTemplate(template);
+    setFormData({
+      name: template.name,
+      subject: template.subject,
+      template_type: template.template_type,
+      from_email: template.from_email,
+      greeting: template.content?.greeting || '',
+      content: template.content?.content || '',
+      is_active: template.is_active
+    });
+    setTimeout(() => setIsEditing(true), 0);
+  };
+
+  const handlePreviewTemplate = (template: EmailTemplate) => {
+    setSelectedTemplate(template);
+    setPreviewOpen(true);
+  };
+
+  const handleSaveTemplate = async () => {
+    setLoading(true);
+    try {
+      const templateData = {
+        name: formData.name,
+        subject: formData.subject,
+        template_type: formData.template_type,
+        from_email: formData.from_email,
+        content: {
+          greeting: formData.greeting,
+          content: formData.content
+        },
+        is_active: formData.is_active
+      };
+
+      if (selectedTemplate) {
+        const { error } = await supabase
+          .from('email_templates')
+          .update(templateData)
+          .eq('id', selectedTemplate.id);
+
+        if (error) throw error;
+        toast.success('Email template updated successfully');
+      } else {
+        const { error } = await supabase
+          .from('email_templates')
+          .insert(templateData);
+
+        if (error) throw error;
+        toast.success('Email template created successfully');
+      }
+
+      setIsEditing(false);
+      setSelectedTemplate(null);
+      loadTemplates();
+    } catch (error) {
+      console.error('Error saving template:', error);
+      toast.error('Failed to save email template');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -517,15 +592,33 @@ const UnifiedEmailHub = () => {
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">{template.subject}</p>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="flex-1">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => handleEditTemplate(template)}
+                >
                   <Edit className="w-3 h-3 mr-1" />
                   Edit
                 </Button>
-                <Button variant="outline" size="sm" className="flex-1">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => handlePreviewTemplate(template)}
+                >
                   <Eye className="w-3 h-3 mr-1" />
                   Preview
                 </Button>
-                <Button variant="outline" size="sm" className="flex-1">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => {
+                    const newTemplate = { ...template, id: crypto.randomUUID(), name: `${template.name} (Copy)` };
+                    handleEditTemplate(newTemplate as EmailTemplate);
+                  }}
+                >
                   <Copy className="w-3 h-3 mr-1" />
                   Duplicate
                 </Button>
@@ -910,6 +1003,123 @@ const UnifiedEmailHub = () => {
 
   return (
     <div className="space-y-6">
+      {/* Edit Template Dialog */}
+      <Dialog open={isEditing} onOpenChange={setIsEditing}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedTemplate ? 'Edit Email Template' : 'Create New Email Template'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="name">Template Name</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g., Welcome Email"
+                />
+              </div>
+              <div>
+                <Label htmlFor="template_type">Template Type</Label>
+                <Select
+                  value={formData.template_type}
+                  onValueChange={(value) => setFormData({ ...formData, template_type: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="welcome">Welcome</SelectItem>
+                    <SelectItem value="notification">Notification</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="transactional">Transactional</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="subject">Email Subject</Label>
+              <Input
+                id="subject"
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                placeholder="Email subject line"
+              />
+            </div>
+            <div>
+              <Label htmlFor="from_email">From Email</Label>
+              <Input
+                id="from_email"
+                type="email"
+                value={formData.from_email}
+                onChange={(e) => setFormData({ ...formData, from_email: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="greeting">Greeting</Label>
+              <Input
+                id="greeting"
+                value={formData.greeting}
+                onChange={(e) => setFormData({ ...formData, greeting: e.target.value })}
+                placeholder="e.g., Hello {{customerFirstName}},"
+              />
+            </div>
+            <div>
+              <Label htmlFor="content">Email Content</Label>
+              <Textarea
+                id="content"
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="Email body content..."
+                rows={10}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                id="is_active"
+                checked={formData.is_active}
+                onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
+              />
+              <Label htmlFor="is_active">Active Template</Label>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsEditing(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveTemplate} disabled={loading}>
+                {loading ? 'Saving...' : 'Save Template'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview Template Dialog */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Email Preview: {selectedTemplate?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="border-b pb-4">
+              <p className="text-sm text-muted-foreground">Subject:</p>
+              <p className="font-medium">{selectedTemplate?.subject}</p>
+            </div>
+            <div className="border-b pb-4">
+              <p className="text-sm text-muted-foreground">From:</p>
+              <p className="font-medium">{selectedTemplate?.from_email}</p>
+            </div>
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <p className="mb-4">{selectedTemplate?.content?.greeting}</p>
+              <div className="whitespace-pre-wrap">{selectedTemplate?.content?.content}</div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Navigation Bar */}
       <div className="bg-white border rounded-lg p-2">
         <div className="flex gap-2 overflow-x-auto">
