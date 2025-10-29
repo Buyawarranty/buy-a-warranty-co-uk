@@ -114,85 +114,123 @@ serve(async (req) => {
 
     logStep("Extracted vehicle and customer data", { vehicleData, customerData });
 
-    // Call handle-successful-payment with the extracted data (WITH email sending)
-    const { data: paymentData, error: paymentError } = await supabaseClient.functions.invoke('handle-successful-payment', {
-      body: {
-        planId: session.metadata?.plan_id || planId,
-        paymentType: session.metadata?.payment_type || paymentType,
-        userEmail: vehicleData.email,
-        userId: session.metadata?.user_id || null,
-        stripeSessionId: sessionId,
-        vehicleData: vehicleData,
-        customerData: customerData,
-        claimLimit: parseInt(session.metadata?.claim_limit || '1250'),
-        voluntaryExcess: parseInt(session.metadata?.voluntary_excess || '0'),
-        metadata: session.metadata || {}
-        // Removed skipEmail: true to allow emails to be sent
-      }
-    });
+    // CRITICAL: DO NOT create warranty here - the webhook already handled it!
+    // Just retrieve the existing warranty that was created by the Stripe webhook
+    logStep("Looking up existing warranty created by webhook");
+    
+    // Query for existing customer and policy using the Stripe session ID
+    const { data: existingCustomer, error: customerError } = await supabaseClient
+      .from('customers')
+      .select(`
+        id,
+        email,
+        warranty_number,
+        customer_policies (
+          id,
+          warranty_number,
+          policy_start_date,
+          policy_end_date
+        )
+      `)
+      .eq('stripe_session_id', sessionId)
+      .maybeSingle();
 
-    if (paymentError) {
-      logStep("Error processing payment", paymentError);
-      throw new Error(`Payment processing failed: ${paymentError.message}`);
+    if (customerError) {
+      logStep("Error querying existing customer", customerError);
+      // Don't throw - webhook might still be processing
     }
 
-    logStep("Payment processed successfully", paymentData);
+    let paymentData: any = {
+      message: 'Payment verified successfully',
+      customerEmail: vehicleData.email
+    };
 
-    // Email is already handled by handle-successful-payment function
-    logStep("Email already sent via handle-successful-payment", { 
-      customerId: paymentData?.customerId, 
-      policyId: paymentData?.policyId
-    });
-
-    // Sync to Brevo for review invitation automation
-    try {
-      logStep("Syncing to Brevo for review invitation");
+    if (existingCustomer && existingCustomer.customer_policies && existingCustomer.customer_policies.length > 0) {
+      // Warranty was already created by webhook
+      const policy = existingCustomer.customer_policies[0];
+      paymentData = {
+        ...paymentData,
+        policyNumber: policy.warranty_number || existingCustomer.warranty_number,
+        customerId: existingCustomer.id,
+        policyId: policy.id,
+        policyStartDate: policy.policy_start_date,
+        policyEndDate: policy.policy_end_date,
+        source: 'webhook_already_processed'
+      };
       
-      const { error: brevoError } = await supabaseClient.functions.invoke('sync-to-brevo', {
-        body: {
-          email: vehicleData.email,
-          event_type: 'order_completed',
-          contact_data: {
-            firstName: customerData.first_name,
-            lastName: customerData.last_name,
-            phone: customerData.mobile,
-            vehicleReg: vehicleData.regNumber,
-            vehicleMake: vehicleData.make,
-            vehicleModel: vehicleData.model,
-            planName: planId,
-            paymentType: paymentType,
-            policyNumber: paymentData?.policyNumber,
-            orderValue: customerData.final_amount,
-          },
-          event_data: {
-            policy_number: paymentData?.policyNumber,
-            plan_name: planId,
-            payment_type: paymentType,
-            order_value: customerData.final_amount,
-            order_date: new Date().toISOString(),
-            vehicle_reg: vehicleData.regNumber,
-            vehicle_make: vehicleData.make,
-            vehicle_model: vehicleData.model,
-            review_link: 'https://www.trustpilot.com/evaluate/buyawarranty.co.uk',
-            customer_name: vehicleData.fullName,
+      logStep("Found existing warranty from webhook", { 
+        policyNumber: paymentData.policyNumber,
+        customerId: existingCustomer.id 
+      });
+    } else {
+      // Webhook might still be processing - that's okay
+      logStep("Warranty not found yet - webhook may still be processing", {
+        sessionId,
+        customerEmail: vehicleData.email
+      });
+      
+      paymentData = {
+        ...paymentData,
+        message: 'Payment verified - warranty will be created shortly by webhook',
+        source: 'webhook_pending'
+      };
+    }
+
+    // Sync to Brevo for review invitation automation (only if warranty was found)
+    if (paymentData?.policyNumber) {
+      try {
+        logStep("Syncing to Brevo for review invitation");
+        
+        const { error: brevoError } = await supabaseClient.functions.invoke('sync-to-brevo', {
+          body: {
+            email: vehicleData.email,
+            event_type: 'order_completed',
+            contact_data: {
+              firstName: customerData.first_name,
+              lastName: customerData.last_name,
+              phone: customerData.mobile,
+              vehicleReg: vehicleData.regNumber,
+              vehicleMake: vehicleData.make,
+              vehicleModel: vehicleData.model,
+              planName: planId,
+              paymentType: paymentType,
+              policyNumber: paymentData.policyNumber,
+              orderValue: customerData.final_amount,
+            },
+            event_data: {
+              policy_number: paymentData.policyNumber,
+              plan_name: planId,
+              payment_type: paymentType,
+              order_value: customerData.final_amount,
+              order_date: new Date().toISOString(),
+              vehicle_reg: vehicleData.regNumber,
+              vehicle_make: vehicleData.make,
+              vehicle_model: vehicleData.model,
+              review_link: 'https://www.trustpilot.com/evaluate/buyawarranty.co.uk',
+              customer_name: vehicleData.fullName,
+            }
+          }
+        });
+
+        if (brevoError) {
+          logStep("Brevo sync error (non-critical)", brevoError);
+        } else {
+          logStep("Brevo sync completed successfully");
+          
+          // Update customer record with review email timestamp only if we have the customer ID
+          if (existingCustomer?.id) {
+            await supabaseClient
+              .from('customers')
+              .update({ review_email_sent_at: new Date().toISOString() })
+              .eq('id', existingCustomer.id);
           }
         }
-      });
-
-      if (brevoError) {
-        logStep("Brevo sync error (non-critical)", brevoError);
-      } else {
-        logStep("Brevo sync completed successfully");
-        
-        // Update customer record with review email timestamp
-        await supabaseClient
-          .from('customers')
-          .update({ review_email_sent_at: new Date().toISOString() })
-          .eq('email', vehicleData.email);
+      } catch (brevoError) {
+        // Don't fail the whole request if Brevo sync fails
+        logStep("Brevo sync exception (non-critical)", brevoError);
       }
-    } catch (brevoError) {
-      // Don't fail the whole request if Brevo sync fails
-      logStep("Brevo sync exception (non-critical)", brevoError);
+    } else {
+      logStep("Skipping Brevo sync - warranty not yet created by webhook");
     }
 
     return new Response(JSON.stringify({ 
