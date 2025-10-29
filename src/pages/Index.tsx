@@ -470,6 +470,13 @@ const Index = () => {
     }
     
     // Additional recovery for when users return from payment pages
+    // CRITICAL: Check if user returned from payment gateway via browser back button
+    const returnedFromPayment = localStorage.getItem('buyawarranty_returnedFromPayment') === 'true';
+    if (returnedFromPayment) {
+      console.log('🔙 User returned from payment gateway - restoring step 4');
+      localStorage.removeItem('buyawarranty_returnedFromPayment'); // Clear flag
+    }
+    
     if (stepFromUrl === 4 && (!vehicleData || !selectedPlan)) {
       console.log('Step 4 detected without required data, attempting recovery from localStorage');
       

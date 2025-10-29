@@ -601,6 +601,28 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           return; // Don't automatically process Stripe - let user decide
         } else if (checkoutData?.url) {
           console.log('🌐 Redirecting to Bumper checkout:', checkoutData.url);
+          
+          // CRITICAL: Save step 4 state to localStorage BEFORE redirecting to Bumper
+          // This ensures browser back button returns to step 4 with saved data
+          const currentState = {
+            step: 4,
+            vehicleData,
+            selectedPlan: { id: planId, paymentType, name: planName, pricingData: updatedPricingData },
+            formData: customerData,
+            timestamp: Date.now()
+          };
+          
+          localStorage.setItem('warrantyJourneyState', JSON.stringify(currentState));
+          localStorage.setItem('buyawarranty_currentStep', '4');
+          localStorage.setItem('buyawarranty_customerData', JSON.stringify(customerData));
+          localStorage.setItem('buyawarranty_returnedFromPayment', 'true');
+          
+          console.log('✅ Saved step 4 state before Bumper redirect');
+          
+          // Add step 4 to browser history so back button returns here
+          const step4Url = `${window.location.origin}/?step=4`;
+          window.history.pushState({ step: 4 }, '', step4Url);
+          
           // Redirect to Bumper checkout
           window.location.href = checkoutData.url;
         } else {
@@ -669,6 +691,28 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
     if (checkoutData?.url) {
       console.log('🌐 Redirecting to Stripe checkout:', checkoutData.url);
+      
+      // CRITICAL: Save step 4 state to localStorage BEFORE redirecting to Stripe
+      // This ensures browser back button returns to step 4 with saved data
+      const currentState = {
+        step: 4,
+        vehicleData,
+        selectedPlan: { id: planId, paymentType, name: planName, pricingData: updatedPricingData },
+        formData: customerData,
+        timestamp: Date.now()
+      };
+      
+      localStorage.setItem('warrantyJourneyState', JSON.stringify(currentState));
+      localStorage.setItem('buyawarranty_currentStep', '4');
+      localStorage.setItem('buyawarranty_customerData', JSON.stringify(customerData));
+      localStorage.setItem('buyawarranty_returnedFromPayment', 'true');
+      
+      console.log('✅ Saved step 4 state before Stripe redirect');
+      
+      // Add step 4 to browser history so back button returns here
+      const step4Url = `${window.location.origin}/?step=4`;
+      window.history.pushState({ step: 4 }, '', step4Url);
+      
       // Redirect to Stripe checkout
       window.location.href = checkoutData.url;
     } else {
