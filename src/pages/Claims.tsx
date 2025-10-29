@@ -505,17 +505,6 @@ Issue Timing: ${formData.issueTiming}
               </div>
             </div>
 
-            {/* SEO-Friendly Image */}
-            <div className="mt-16">
-              <div className="flex justify-center">
-                <img 
-                  src="/car-warranty-uk-claims-petrol-car.png" 
-                  alt="Car warranty UK petrol car claims - Volkswagen Golf GTI with buyawarranty branding showing professional UK warranty claims support" 
-                  className="w-full max-w-xs h-auto"
-                />
-              </div>
-            </div>
-
             {/* Make A Claim Form */}
             <div className="mb-12 mt-16" id="claim-form">
               <div className="text-center mb-8">
