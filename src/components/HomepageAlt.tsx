@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, Phone, Mail, Shield, Award, Clock, Wrench, BadgeCheck, Car } from 'lucide-react';
+import { Check, Phone, Mail, Shield, Award, Clock, Wrench, BadgeCheck, Car, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
@@ -239,7 +239,12 @@ const HomepageAlt: React.FC<HomepageAltProps> = ({ onRegistrationSubmit }) => {
                   disabled={isLoading}
                   className="w-full h-14 text-lg bg-[#eb4b00] hover:bg-[#d63f00] text-white"
                 >
-                  {isLoading ? 'Loading...' : 'Get My Instant Quote'}
+                  {isLoading ? 'Loading...' : (
+                    <>
+                      Get My Instant Quote
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </>
+                  )}
                 </Button>
 
                 <p className="text-xs text-center text-gray-500">
