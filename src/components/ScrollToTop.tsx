@@ -30,6 +30,12 @@ const ScrollToTop = () => {
       return;
     }
     
+    // Redirect old van warranty URL to EV warranty page
+    if (pathname === '/van-warranty-companies-uk-warranties' || pathname === '/van-warranty-companies-uk-warranties/') {
+      navigate('/ev-warranty/', { replace: true });
+      return;
+    }
+    
     // Redirect URLs without trailing slash to include trailing slash
     if (pathname !== '/' && !pathname.endsWith('/')) {
       navigate(pathname + '/', { replace: true });

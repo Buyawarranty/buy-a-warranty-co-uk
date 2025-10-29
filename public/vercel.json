@@ -47,12 +47,12 @@
     },
     {
       "source": "/van-warranty-companies-uk-warranties",
-      "destination": "/van-warranty/",
+      "destination": "/ev-warranty/",
       "permanent": true
     },
     {
       "source": "/van-warranty-companies-uk-warranties/",
-      "destination": "/van-warranty/",
+      "destination": "/ev-warranty/",
       "permanent": true
     }
   ],
