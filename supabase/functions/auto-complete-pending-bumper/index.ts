@@ -26,6 +26,25 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    // CRITICAL: DO NOT auto-complete pending transactions!
+    // Only Bumper's success callback should create warranties after payment is confirmed.
+    // Auto-completing pending transactions creates warranties for unpaid orders.
+    // 
+    // This function is now disabled to prevent premature warranty creation.
+    // If needed in future, it should verify payment with Bumper API before completing.
+    
+    logStep("Auto-complete function is DISABLED - pending transactions will NOT be auto-completed");
+    
+    return new Response(JSON.stringify({
+      success: true,
+      message: "Auto-complete is disabled - only confirmed payments create warranties",
+      processed: 0
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
+    
+    // OLD CODE (DISABLED):
     // Find pending transactions older than 5 minutes
     // This gives Bumper enough time to call the webhook normally
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
