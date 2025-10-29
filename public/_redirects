@@ -18,9 +18,9 @@ https://www.buyawarranty.co.uk/* https://buyawarranty.co.uk/:splat 301!
 /portfolio/car-front-side / 301!
 /portfolio/car-front-side/ / 301!
 
-# Redirect old van warranty URL to EV warranty page
-/van-warranty-companies-uk-warranties /ev-warranty/ 301!
-/van-warranty-companies-uk-warranties/ /ev-warranty/ 301!
+# Redirect old van warranty URL to van warranty page
+/van-warranty-companies-uk-warranties /van-warranty/ 301!
+/van-warranty-companies-uk-warranties/ /van-warranty/ 301!
 
 # Ensure trailing slashes (fallback for any missed routes)
 /what-is-covered /what-is-covered/ 301
