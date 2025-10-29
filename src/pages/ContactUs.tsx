@@ -462,7 +462,7 @@ const ContactUs = () => {
                   <img 
                     src="/car-warranty-uk-petrol-car-warranty.png" 
                     alt="Car warranty UK petrol car warranty - Volkswagen Golf GTI with buyawarranty branding showing professional coverage" 
-                    className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
+                    className="w-full max-w-[160px] sm:max-w-[192px] lg:max-w-[224px] h-auto"
                   />
                 </div>
               </div>

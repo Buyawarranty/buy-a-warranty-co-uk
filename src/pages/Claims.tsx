@@ -511,7 +511,7 @@ Issue Timing: ${formData.issueTiming}
                 <img 
                   src="/car-warranty-uk-claims-petrol-car.png" 
                   alt="Car warranty UK petrol car claims - Volkswagen Golf GTI with buyawarranty branding showing professional UK warranty claims support" 
-                  className="w-full max-w-[12px] h-auto"
+                  className="w-full max-w-xs h-auto"
                 />
               </div>
             </div>
@@ -778,7 +778,7 @@ Issue Timing: ${formData.issueTiming}
                     <img 
                       src={pandaMechanicFix} 
                       alt="Panda mechanic with tools fixing a car" 
-                      className="w-full max-w-24 h-auto"
+                      className="w-full max-w-48 h-auto"
                     />
                   </div>
                   
