@@ -78,7 +78,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Generate URLs based on vehicle registration and type
-    const baseUrl = 'https://mzlpuxzwyrcyrgrongeb.supabase.co'; // Your project URL
+    const baseUrl = 'https://buyawarranty.co.uk';
     const encodedReg = encodeURIComponent(emailRequest.vehicleReg || '');
     
     let continueUrl = `${baseUrl}`;
