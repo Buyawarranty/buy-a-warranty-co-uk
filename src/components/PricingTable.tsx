@@ -319,15 +319,19 @@ const PricingTable: React.FC<PricingTableProps> = ({
   // Track abandoned cart when user reaches pricing page (Step 3)
   useEffect(() => {
     const trackPricingPageView = async () => {
+      // Only track if we have a real email address
+      if (!vehicleData?.email || !vehicleData.email.includes('@')) {
+        console.log('⏭️ Skipping abandoned cart tracking - no valid email yet');
+        return;
+      }
+      
       try {
-        const trackingEmail = vehicleData?.email || vehicleData?.regNumber || 'no-identifier';
-        
         await supabase.functions.invoke('track-abandoned-cart', {
           body: {
             full_name: vehicleData?.firstName && vehicleData?.lastName 
               ? `${vehicleData.firstName} ${vehicleData.lastName}` 
-              : (vehicleData?.email || ''),
-            email: trackingEmail,
+              : vehicleData.email,
+            email: vehicleData.email,
             phone: vehicleData?.phone || '',
             vehicle_reg: vehicleData?.regNumber,
             vehicle_make: vehicleData?.make,
@@ -338,7 +342,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
             step_abandoned: 3
           }
         });
-        console.log('✅ Tracked abandoned cart at Step 3 (Pricing Page) for:', trackingEmail);
+        console.log('✅ Tracked abandoned cart at Step 3 (Pricing Page) for:', vehicleData.email);
       } catch (error) {
         console.error('Error tracking abandoned cart on pricing page:', error);
       }
