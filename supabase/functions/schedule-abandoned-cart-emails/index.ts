@@ -53,6 +53,12 @@ const handler = async (req: Request): Promise<Response> => {
     // Process each abandoned cart
     for (const cart of abandonedCarts) {
       try {
+        // Skip if email is not valid (might be a vehicle reg used as identifier)
+        if (!cart.email || !cart.email.includes('@')) {
+          console.log(`Skipping cart ${cart.id} - invalid email format:`, cart.email);
+          continue;
+        }
+        
         // Determine trigger type based on step
         let triggerType: 'pricing_page_view' | 'plan_selected';
         if (cart.step_abandoned === 3) {

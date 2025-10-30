@@ -598,17 +598,23 @@ const Index = () => {
 
   // Memoized abandoned cart tracking to avoid unnecessary calls
   const trackAbandonedCart = useCallback(async (data: VehicleData, step: number, planName?: string, paymentType?: string) => {
-    // Only track if we have a real email address
-    if (!data.email || !data.email.includes('@')) {
-      console.log('⏭️ Skipping abandoned cart tracking - no valid email yet');
+    // Track if we have either an email OR a vehicle registration
+    const hasValidEmail = data.email && data.email.includes('@');
+    const hasVehicleReg = data.regNumber && data.regNumber.trim() !== '';
+    
+    if (!hasValidEmail && !hasVehicleReg) {
+      console.log('⏭️ Skipping abandoned cart tracking - no email or vehicle reg');
       return;
     }
     
     try {
+      // Use email if valid, otherwise use vehicle reg as identifier
+      const identifier = hasValidEmail ? data.email : data.regNumber;
+      
       await supabase.functions.invoke('track-abandoned-cart', {
         body: {
-          full_name: data.firstName && data.lastName ? `${data.firstName} ${data.lastName}` : data.email,
-          email: data.email,
+          full_name: data.firstName && data.lastName ? `${data.firstName} ${data.lastName}` : (hasValidEmail ? data.email : ''),
+          email: identifier, // This will be used as the unique identifier
           phone: data.phone || '',
           vehicle_reg: data.regNumber,
           vehicle_make: data.make,
@@ -621,7 +627,7 @@ const Index = () => {
           step_abandoned: step
         }
       });
-      console.log(`✅ Tracked abandoned cart at step ${step} for:`, data.email);
+      console.log(`✅ Tracked abandoned cart at step ${step} for:`, identifier);
     } catch (error) {
       console.error('Error tracking abandoned cart:', error);
     }
