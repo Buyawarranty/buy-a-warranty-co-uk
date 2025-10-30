@@ -149,73 +149,94 @@ const AdminDashboard = () => {
         return <GetQuoteTab />;
       case 'testing':
         console.log('Rendering Testing Tab');
-        return (
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">Testing Tools</h1>
-              <p className="text-gray-600 mt-2">Tools for testing and development</p>
+        try {
+          return (
+            <div className="max-w-4xl mx-auto">
+              <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-900">Testing Tools</h1>
+                <p className="text-gray-600 mt-2">Tools for testing and development</p>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-6">
+                <ManualPaymentProcessor />
+                
+                <OrderReconciliation />
+                
+                <ApiConnectivityTest />
+                
+                <EmailFunctionDiagnostics />
+                
+                <TestPolicyDocumentsEmail />
+                
+                <TestAbandonedCartEmail />
+                
+                <TestTrustpilotEmail />
+                
+                <SimpleEmailTest />
+                
+                <TestEmailFunctionDirect />
+                
+                <TestAutomatedEmail />
+                
+                <ResendWelcomeEmail />
+                
+                <CreateTestCustomer />
+                
+                <CreateTestAdmin />
+                
+                <ResetAdminPassword />
+                
+                <ResetCustomerPassword />
+                
+                <SetAdminPassword />
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Test Credentials</CardTitle>
+                    <CardDescription>
+                      Use these credentials to test the customer login
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="font-medium">Email:</span> test@customer.com
+                      </div>
+                      <div>
+                        <span className="font-medium">Password:</span> password123
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <TestWarranties2000 />
+                
+                <TestWarranties2000AddOns />
+                
+                <TestBumper />
+              </div>
             </div>
-            
-            <div className="grid grid-cols-1 gap-6">
-              <ManualPaymentProcessor />
-              
-              <OrderReconciliation />
-              
-              <ApiConnectivityTest />
-              
-              <EmailFunctionDiagnostics />
-              
-              <TestPolicyDocumentsEmail />
-              
-              <TestAbandonedCartEmail />
-              
-              <TestTrustpilotEmail />
-              
-              <SimpleEmailTest />
-              
-              <TestEmailFunctionDirect />
-              
-              <TestAutomatedEmail />
-              
-              <ResendWelcomeEmail />
-              
-              <CreateTestCustomer />
-              
-              <CreateTestAdmin />
-              
-              <ResetAdminPassword />
-              
-              <ResetCustomerPassword />
-              
-              <SetAdminPassword />
-              
+          );
+        } catch (error) {
+          console.error('Error rendering testing tab:', error);
+          return (
+            <div className="max-w-4xl mx-auto p-8">
               <Card>
                 <CardHeader>
-                  <CardTitle>Test Credentials</CardTitle>
-                  <CardDescription>
-                    Use these credentials to test the customer login
-                  </CardDescription>
+                  <CardTitle className="text-red-600">Error Loading Testing Tab</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    <div>
-                      <span className="font-medium">Email:</span> test@customer.com
-                    </div>
-                    <div>
-                      <span className="font-medium">Password:</span> password123
-                    </div>
-                  </div>
+                  <p className="text-gray-600">
+                    There was an error loading the testing tools. Check the console for details.
+                  </p>
+                  <pre className="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto">
+                    {error instanceof Error ? error.message : 'Unknown error'}
+                  </pre>
                 </CardContent>
               </Card>
-              
-              <TestWarranties2000 />
-              
-              <TestWarranties2000AddOns />
-              
-              <TestBumper />
             </div>
-          </div>
-        );
+          );
+        }
       case 'account':
         return <AccountSettings />;
       default:
