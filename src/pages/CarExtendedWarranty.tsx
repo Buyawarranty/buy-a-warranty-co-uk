@@ -1032,20 +1032,41 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
                 { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
               ].map((brand) => (
-                 <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
-                   <img 
-                     src={brand.logo} 
-                     alt={`${brand.name} car warranty coverage - UK extended warranty available`} 
-                     className="h-10 w-auto object-contain"
-                     loading="lazy"
-                     width="80"
-                     height="40"
-                     onError={(e) => {
-                       e.currentTarget.style.display = 'none';
-                     }}
-                   />
-                   <p className="font-semibold text-gray-800">{brand.name}</p>
-                 </div>
+                brand.name === 'Hyundai' ? (
+                  <Link 
+                    key={brand.name}
+                    to="/car-extended-warranty/hyundai/" 
+                    className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3 cursor-pointer"
+                  >
+                    <img 
+                      src={brand.logo} 
+                      alt={`${brand.name} car warranty coverage - UK extended warranty available`} 
+                      className="h-10 w-auto object-contain"
+                      loading="lazy"
+                      width="80"
+                      height="40"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                    <p className="font-semibold text-gray-800">{brand.name}</p>
+                  </Link>
+                ) : (
+                  <div key={brand.name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3">
+                    <img 
+                      src={brand.logo} 
+                      alt={`${brand.name} car warranty coverage - UK extended warranty available`} 
+                      className="h-10 w-auto object-contain"
+                      loading="lazy"
+                      width="80"
+                      height="40"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                    <p className="font-semibold text-gray-800">{brand.name}</p>
+                  </div>
+                )
               ))}
             </div>
           </div>
