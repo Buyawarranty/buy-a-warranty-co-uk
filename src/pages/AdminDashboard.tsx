@@ -148,6 +148,7 @@ const AdminDashboard = () => {
       case 'get-quote':
         return <GetQuoteTab />;
       case 'testing':
+        console.log('Rendering Testing Tab');
         return (
           <div className="max-w-4xl mx-auto">
             <div className="mb-8">
