@@ -176,64 +176,7 @@ serve(async (req) => {
       };
     }
 
-    // Sync to Brevo for review invitation automation (only if warranty was found)
-    if (paymentData?.policyNumber) {
-      try {
-        logStep("Syncing to Brevo for review invitation");
-        
-        const { error: brevoError } = await supabaseClient.functions.invoke('sync-to-brevo', {
-          body: {
-            email: vehicleData.email,
-            event_type: 'order_completed',
-            contact_data: {
-              firstName: customerData.first_name,
-              lastName: customerData.last_name,
-              phone: customerData.mobile,
-              vehicleReg: vehicleData.regNumber,
-              vehicleMake: vehicleData.make,
-              vehicleModel: vehicleData.model,
-              planName: planId,
-              paymentType: paymentType,
-              policyNumber: paymentData.policyNumber,
-              orderValue: customerData.final_amount,
-            },
-            event_data: {
-              policy_number: paymentData.policyNumber,
-              plan_name: planId,
-              payment_type: paymentType,
-              order_value: customerData.final_amount,
-              order_date: new Date().toISOString(),
-              vehicle_reg: vehicleData.regNumber,
-              vehicle_make: vehicleData.make,
-              vehicle_model: vehicleData.model,
-              review_link: 'https://www.trustpilot.com/evaluate/buyawarranty.co.uk',
-              customer_name: vehicleData.fullName,
-            }
-          }
-        });
-
-        if (brevoError) {
-          logStep("Brevo sync error (non-critical)", brevoError);
-        } else {
-          logStep("Brevo sync completed successfully");
-          
-          // Update customer record with review email timestamp only if we have the customer ID
-          if (existingCustomer?.id) {
-            await supabaseClient
-              .from('customers')
-              .update({ review_email_sent_at: new Date().toISOString() })
-              .eq('id', existingCustomer.id);
-          }
-        }
-      } catch (brevoError) {
-        // Don't fail the whole request if Brevo sync fails
-        logStep("Brevo sync exception (non-critical)", brevoError);
-      }
-    } else {
-      logStep("Skipping Brevo sync - warranty not yet created by webhook");
-    }
-
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       success: true, 
       message: "Payment processed and warranty registered successfully",
       policyNumber: paymentData?.policyNumber,

@@ -152,50 +152,6 @@ const handler = async (req: Request): Promise<Response> => {
       console.log('Created new abandoned cart entry for:', cartData.email);
     }
 
-    // Sync to Brevo for abandoned cart email automation
-    try {
-      console.log('🔄 Syncing abandoned cart to Brevo...');
-      
-      const { error: brevoError } = await supabase.functions.invoke('sync-to-brevo', {
-        body: {
-          email: cartData.email,
-          event_type: 'cart_updated',
-          contact_data: {
-            firstName: cartData.full_name?.split(' ')[0],
-            lastName: cartData.full_name?.split(' ').slice(1).join(' '),
-            phone: cartData.phone,
-            vehicleReg: cartData.vehicle_reg,
-            vehicleMake: cartData.vehicle_make,
-            vehicleModel: cartData.vehicle_model,
-            planName: cartData.plan_name,
-            paymentType: cartData.payment_type,
-          },
-          event_data: {
-            vehicle_reg: cartData.vehicle_reg,
-            vehicle_make: cartData.vehicle_make,
-            vehicle_model: cartData.vehicle_model,
-            vehicle_year: cartData.vehicle_year,
-            plan_name: cartData.plan_name,
-            payment_type: cartData.payment_type,
-            step_abandoned: cartData.step_abandoned,
-            mileage: cartData.mileage,
-            cart_url: `https://buyawarranty.co.uk/car-extended-warranty?restore=${encodeURIComponent(cartData.email)}`,
-            total_price: cartData.total_price,
-            voluntary_excess: cartData.voluntary_excess,
-          }
-        }
-      });
-
-      if (brevoError) {
-        console.error('⚠️ Brevo sync error (non-critical):', brevoError);
-      } else {
-        console.log('✅ Brevo sync completed');
-      }
-    } catch (brevoError) {
-      // Don't fail the whole request if Brevo sync fails
-      console.error('⚠️ Brevo sync exception (non-critical):', brevoError);
-    }
-
     return new Response(
       JSON.stringify({ success: true, message: "Abandoned cart tracked successfully" }),
       {
