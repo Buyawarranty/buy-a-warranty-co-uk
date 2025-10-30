@@ -4,6 +4,11 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, Shield, Clock, Phone, Menu, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
+import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
+import { WebPageSchema } from '@/components/schema/WebPageSchema';
+import { ProductSchema } from '@/components/schema/ProductSchema';
+import { FAQSchema } from '@/components/schema/FAQSchema';
+import { BreadcrumbSchema } from '@/components/schema/BreadcrumbSchema';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import NewFooter from '@/components/NewFooter';
 import WebsiteFooter from '@/components/WebsiteFooter';
@@ -45,6 +50,29 @@ const MotorcycleWarranty = () => {
     }, 100);
   };
 
+  const motorcycleFAQs = [
+    {
+      question: "Are extended warranties on motorcycles worth it?",
+      answer: "Yes. Modern bikes have complex electrical systems, ECUs and fuel injection that can fail without warning. A single repair can cost £800 to £1,800. An extended motorcycle warranty protects you from major bills and gives cost certainty, especially for used or high-mileage bikes."
+    },
+    {
+      question: "What is the best extended warranty for a motorcycle?",
+      answer: "The best motorcycle warranty includes mechanical and electrical cover, labour costs, diagnostic fees, and access to any VAT-registered garage. Plans that pay the garage directly (so you are not out of pocket) and offer flexible monthly payments provide the highest value."
+    },
+    {
+      question: "How much does a motorcycle extended warranty cost?",
+      answer: "Prices vary based on bike age, mileage and cover level. On average in the UK, extended motorcycle warranty plans start from £20 to £45 per month, or £250 to £450 per year, depending on your bike and selected claim limit."
+    },
+    {
+      question: "Should I get a warranty on a used motorcycle?",
+      answer: "Yes. Used motorcycles are more likely to require repairs such as clutch failures, alternator issues, starter motor faults, or ECU problems. A used motorcycle warranty prevents surprise bills and protects your budget."
+    },
+    {
+      question: "What motorcycle has the least problems?",
+      answer: "Honda, Yamaha and Suzuki typically have the best reliability records in the UK. European brands like Ducati and Aprilia are more performance-driven but may have higher repair costs."
+    }
+  ];
+
   return (
     <>
       <SEOHead
@@ -52,6 +80,38 @@ const MotorcycleWarranty = () => {
         description="Cover repair costs on used or older motorcycles with our extended warranty. Full protection, flexible plans and instant online quotes. Keep your bike on the road."
         keywords="motorcycle extended warranty, motorcycle warranty UK, motorbike warranty, used motorcycle warranty, motorcycle repair cover, bike warranty, motorcycle protection plan"
         canonical="https://buyawarranty.co.uk/motorcycle-warranty/"
+      />
+      
+      {/* Schema.org Structured Data for GEO/AI Search Optimization */}
+      <OrganizationSchema type="InsuranceAgency" />
+      
+      <WebPageSchema
+        name="Motorcycle Extended Warranty - Buy A Warranty"
+        description="Comprehensive extended warranty coverage for motorcycles in the UK. Protect your bike from expensive mechanical and electrical failures with flexible plans starting from £20/month."
+        url="https://buyawarranty.co.uk/motorcycle-warranty/"
+        lastReviewed={new Date().toISOString()}
+        significantLink="https://buyawarranty.co.uk/"
+        specialty="Motorcycle Extended Warranties"
+      />
+      
+      <ProductSchema
+        name="Motorcycle Extended Warranty"
+        description="Comprehensive extended warranty coverage for motorcycles including engine, gearbox, electrical systems, ECU, fuel injection, braking, suspension and more. Available for used bikes up to 150,000 miles."
+        price="20.00"
+        brand="Buy A Warranty"
+        category="Motorcycle Insurance & Warranty"
+        image="https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png"
+        availability="https://schema.org/InStock"
+        areaServed="United Kingdom"
+      />
+      
+      <FAQSchema faqs={motorcycleFAQs} />
+      
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://buyawarranty.co.uk/" },
+          { name: "Motorcycle Warranty", url: "https://buyawarranty.co.uk/motorcycle-warranty/" }
+        ]}
       />
 
       {/* Header */}
