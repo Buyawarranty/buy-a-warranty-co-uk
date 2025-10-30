@@ -1,8 +1,52 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.2';
-import { Resend } from "https://esm.sh/resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+// Utility functions for retrying fetch requests
+const timedFetch = (url: string, options: RequestInit, timeout = 30000): Promise<Response> => {
+  return Promise.race([
+    fetch(url, options),
+    new Promise<Response>((_, reject) =>
+      setTimeout(() => reject(new Error('Request timeout')), timeout)
+    ),
+  ]);
+};
+
+const retryFetch = async (
+  url: string,
+  options: RequestInit,
+  maxRetries = 3
+): Promise<Response> => {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await timedFetch(url, options);
+      
+      // Don't retry on client errors (4xx), only server errors (5xx) and timeouts
+      if (response.status >= 200 && response.status < 500) {
+        return response;
+      }
+
+      lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
+      
+      if (attempt < maxRetries - 1) {
+        const backoffTime = Math.pow(2, attempt) * 1000;
+        console.log(`Attempt ${attempt + 1} failed, retrying in ${backoffTime}ms...`);
+        await new Promise(resolve => setTimeout(resolve, backoffTime));
+      }
+    } catch (error) {
+      lastError = error as Error;
+      
+      if (attempt < maxRetries - 1) {
+        const backoffTime = Math.pow(2, attempt) * 1000;
+        console.log(`Attempt ${attempt + 1} failed with error: ${error}, retrying in ${backoffTime}ms...`);
+        await new Promise(resolve => setTimeout(resolve, backoffTime));
+      }
+    }
+  }
+
+  throw lastError || new Error('Max retries exceeded');
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -125,8 +169,13 @@ const handler = async (req: Request): Promise<Response> => {
       subject = subject.replace(new RegExp(placeholder, 'g'), value);
     });
 
-    // Send email using Resend with improved deliverability
-    const emailResponse = await resend.emails.send({
+    // Send email using Resend with retry logic
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    if (!resendApiKey) {
+      throw new Error("RESEND_API_KEY is not set");
+    }
+
+    const emailPayload = {
       from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
       reply_to: "info@buyawarranty.co.uk",
       to: [emailRequest.email],
@@ -142,9 +191,29 @@ const handler = async (req: Request): Promise<Response> => {
         { name: 'type', value: 'abandoned-cart' },
         { name: 'vehicle-reg', value: (emailRequest.vehicleReg || 'unknown').replace(/\s+/g, '-') }
       ]
-    });
+    };
 
-    console.log("Email sent successfully:", emailResponse);
+    console.log("Sending email via Resend with retry logic...");
+    
+    const emailResponse = await retryFetch(
+      "https://api.resend.com/emails",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify(emailPayload),
+      }
+    );
+
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      throw new Error(`Resend API error: ${emailResponse.status} - ${errorText}`);
+    }
+
+    const emailResult = await emailResponse.json();
+    console.log("Email sent successfully:", emailResult);
 
     // Log the sent email
     const { error: logError } = await supabase
@@ -164,7 +233,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(JSON.stringify({
       success: true,
       message: "Abandoned cart email sent successfully",
-      emailId: emailResponse.data?.id
+      emailId: emailResult.id
     }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
