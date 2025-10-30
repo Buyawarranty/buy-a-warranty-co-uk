@@ -13,6 +13,7 @@ import { SEOHead } from '@/components/SEOHead';
 import { ArrowRight, Check, Shield, Star, Users, Clock } from 'lucide-react';
 import pandaCelebratingOrangeCar from '@/assets/panda-celebrating-orange-car.png';
 import { trackPurchaseComplete, trackButtonClick } from '@/utils/analytics';
+import { sendTrustpilotInvitation } from '@/utils/trustpilotInvite';
 
 // Extend Window interface for gtag
 declare global {
@@ -171,6 +172,18 @@ const ThankYou = () => {
           );
         }
         
+        // Send Trustpilot review invitation
+        if (email && (firstName || lastName) && policyNum) {
+          const fullName = `${firstName || ''} ${lastName || ''}`.trim() || 'Customer';
+          sendTrustpilotInvitation({
+            recipientEmail: email,
+            recipientName: fullName,
+            referenceId: policyNum,
+            orderDate: new Date().toISOString(),
+            productName: `${plan} Warranty - ${paymentType}`,
+          });
+        }
+        
         return;
       }
       
@@ -263,6 +276,18 @@ const ThankYou = () => {
               address: street
             }
           );
+          
+          // Send Trustpilot review invitation
+          if (email && (firstName || lastName) && transactionId) {
+            const fullName = `${firstName || ''} ${lastName || ''}`.trim() || 'Customer';
+            sendTrustpilotInvitation({
+              recipientEmail: email,
+              recipientName: fullName,
+              referenceId: transactionId,
+              orderDate: new Date().toISOString(),
+              productName: `${plan} Warranty - ${paymentType}`,
+            });
+          }
           
           // Check if user enabled "Add Another Warranty" during checkout
           const addAnotherWarranty = searchParams.get('addAnotherWarranty');
