@@ -37,6 +37,8 @@ import { EmailFunctionDiagnostics } from '@/components/admin/EmailFunctionDiagno
 import { TestPolicyDocumentsEmail } from '@/components/admin/TestPolicyDocumentsEmail';
 import { ClickFraudTab } from '@/components/admin/ClickFraudTab';
 import { ResetCustomerPassword } from '@/components/admin/ResetCustomerPassword';
+import { TestTrustpilotEmail } from '@/components/admin/TestTrustpilotEmail';
+import { TestAbandonedCartEmail } from '@/components/admin/TestAbandonedCartEmail';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -163,6 +165,10 @@ const AdminDashboard = () => {
               <EmailFunctionDiagnostics />
               
               <TestPolicyDocumentsEmail />
+              
+              <TestAbandonedCartEmail />
+              
+              <TestTrustpilotEmail />
               
               <SimpleEmailTest />
               
