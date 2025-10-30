@@ -47,6 +47,7 @@ const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
 const PasswordReset = lazy(() => import("./components/PasswordReset"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const QuickPasswordReset = lazy(() => import("./pages/QuickPasswordReset"));
+const QuickResetTest = lazy(() => import("./pages/QuickResetTest"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const SetupAdmin = lazy(() => import("./pages/SetupAdmin"));
 const UpdateAdminCredentials = lazy(() => import("./pages/UpdateAdminCredentials"));
@@ -109,7 +110,7 @@ const App = () => {
                     <Route path="/forgot-password/" element={<ForgotPassword />} />
                     <Route path="/reset-password/" element={<PasswordReset />} />
                     <Route path="/password-reset/" element={<ResetPassword />} />
-                    <Route path="/quick-reset/" element={<QuickPasswordReset />} />
+                    <Route path="/quick-reset/" element={<QuickResetTest />} />
                     <Route path="/setup-admin/" element={<SetupAdmin />} />
                     <Route path="/update-admin/" element={<UpdateAdminCredentials />} />
                     <Route path="/terms/" element={<Terms />} />
