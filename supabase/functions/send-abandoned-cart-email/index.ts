@@ -154,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
       tags: [
         { name: 'category', value: 'transactional' },
         { name: 'type', value: 'abandoned-cart' },
-        { name: 'vehicle-reg', value: emailRequest.vehicleReg || 'unknown' }
+        { name: 'vehicle-reg', value: (emailRequest.vehicleReg || 'unknown').replace(/\s+/g, '-') }
       ]
     });
 
