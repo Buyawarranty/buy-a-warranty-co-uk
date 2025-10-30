@@ -84,40 +84,70 @@ export const GetQuoteTab = () => {
         body: { registration: regNumber }
       });
 
-      if (error || !data) {
+      if (error) {
+        console.error('DVLA lookup error:', error);
+        // Allow progression even if lookup fails
         setVehicleData({
           regNumber: regNumber.toUpperCase(),
           mileage: mileage,
         });
-      } else {
-        const currentYear = new Date().getFullYear();
-        const vehicleYear = parseInt(data.yearOfManufacture || data.year || '0', 10);
-        const vehicleAge = currentYear - vehicleYear;
-
-        if (vehicleAge > 15) {
-          toast({
-            title: "Vehicle Too Old",
-            description: `This vehicle is ${vehicleAge} years old. We only cover vehicles up to 15 years old.`,
-            variant: "destructive",
-          });
-          setIsLookingUp(false);
-          return;
-        }
-
-        setVehicleData({
-          regNumber: regNumber.toUpperCase(),
-          mileage: mileage,
-          make: data.make,
-          model: data.model,
-          fuelType: data.fuelType,
-          transmission: data.transmission,
-          year: data.yearOfManufacture || data.year,
-          vehicleType: data.vehicleType,
-        });
+        setStep(2);
+        setIsLookingUp(false);
+        return;
       }
+
+      // Check if the API returned an error message
+      if (data?.error) {
+        toast({
+          title: "Vehicle Lookup Issue",
+          description: data.error || "We couldn't find your vehicle details. You can still continue.",
+        });
+        setVehicleData({
+          regNumber: regNumber.toUpperCase(),
+          mileage: mileage,
+        });
+        setStep(2);
+        setIsLookingUp(false);
+        return;
+      }
+
+      // Only validate age if we have valid year data
+      if (data.yearOfManufacture || data.year) {
+        const currentYear = new Date().getFullYear();
+        const vehicleYear = parseInt(data.yearOfManufacture || data.year, 10);
+        
+        // Only validate if we got a valid year (not 0 or NaN)
+        if (!isNaN(vehicleYear) && vehicleYear > 0) {
+          const vehicleAge = currentYear - vehicleYear;
+
+          if (vehicleAge > 15) {
+            toast({
+              title: "Vehicle Too Old",
+              description: `This vehicle is ${vehicleAge} years old. We only cover vehicles up to 15 years old.`,
+              variant: "destructive",
+            });
+            setIsLookingUp(false);
+            return;
+          }
+        }
+      }
+
+      // Set vehicle data with whatever we got from the lookup
+      setVehicleData({
+        regNumber: regNumber.toUpperCase(),
+        mileage: mileage,
+        make: data.make || '',
+        model: data.model || '',
+        fuelType: data.fuelType || '',
+        transmission: data.transmission || '',
+        year: data.yearOfManufacture || data.year || '',
+        vehicleType: data.vehicleType || '',
+      });
+      
       setStep(2);
     } catch (error) {
       console.error('Error looking up vehicle:', error);
+      // Allow progression even on error
       setVehicleData({
         regNumber: regNumber.toUpperCase(),
         mileage: mileage,
