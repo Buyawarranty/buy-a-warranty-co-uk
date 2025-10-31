@@ -5,20 +5,47 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Copy, Check } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const ResetCustomerPassword = () => {
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
   const generateRandomPassword = () => {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
     let password = '';
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     setNewPassword(password);
+    toast({
+      title: "Password Generated",
+      description: "Review and test the password before resetting",
+    });
+  };
+
+  const copyToClipboard = async () => {
+    if (!newPassword) return;
+    
+    try {
+      await navigator.clipboard.writeText(newPassword);
+      setCopied(true);
+      toast({
+        title: "Copied!",
+        description: "Password copied to clipboard",
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Please copy manually",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleResetPassword = async () => {
@@ -64,13 +91,14 @@ export const ResetCustomerPassword = () => {
 
       toast({
         title: "Password Reset Successful",
-        description: `Password has been reset for ${email}. New password: ${newPassword}`,
+        description: `Password has been reset for ${email}`,
         duration: 10000
       });
 
       // Clear form
       setEmail('');
       setNewPassword('');
+      setCopied(false);
     } catch (error: any) {
       console.error('Error resetting password:', error);
       toast({
@@ -149,7 +177,7 @@ export const ResetCustomerPassword = () => {
               type="text"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Enter new password"
+              placeholder="Enter or generate a password"
             />
             <Button 
               type="button" 
@@ -160,6 +188,36 @@ export const ResetCustomerPassword = () => {
             </Button>
           </div>
         </div>
+
+        {newPassword && (
+          <Alert className="bg-muted">
+            <AlertDescription className="space-y-3">
+              <div>
+                <p className="text-sm font-medium mb-2">Generated Password (Test Before Resetting):</p>
+                <div className="flex items-center gap-2 p-3 bg-background rounded-md border">
+                  <code className="flex-1 text-lg font-mono font-semibold">
+                    {newPassword}
+                  </code>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={copyToClipboard}
+                    className="shrink-0"
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                💡 Copy this password and test it manually before clicking "Reset Password"
+              </p>
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="flex flex-col gap-2">
           <Button 
@@ -178,12 +236,13 @@ export const ResetCustomerPassword = () => {
           </Button>
         </div>
 
-        <div className="text-sm text-muted-foreground">
-          <p><strong>Note:</strong></p>
+        <div className="text-sm text-muted-foreground border-t pt-4">
+          <p className="font-semibold mb-2">How to use:</p>
           <ul className="list-disc list-inside space-y-1">
-            <li>"Reset Password" will set a new password</li>
-            <li>"Resend Existing Credentials" will email the current password from the database</li>
-            <li>After resetting, copy the new password and send it to the customer separately</li>
+            <li>Generate or enter a password and copy it</li>
+            <li>Test the password by logging in manually first</li>
+            <li>Once confirmed working, click "Reset Password" to apply</li>
+            <li>"Resend Existing Credentials" emails the current stored password</li>
           </ul>
         </div>
       </CardContent>
