@@ -224,7 +224,7 @@ const MotorcycleWarranty = () => {
               </div>
             </div>
             <div className="relative flex justify-center">
-              <img src={motorcycleHero} alt="Motorcycle Extended Warranty UK - Protect Your Bike" className="w-3/4 h-auto" />
+              <img src={motorcycleHero} alt="Motorcycle Extended Warranty UK - Protect Your Bike" className="w-full h-auto" />
             </div>
           </div>
         </section>
