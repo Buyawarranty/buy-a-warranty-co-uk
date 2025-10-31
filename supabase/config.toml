@@ -147,3 +147,6 @@ verify_jwt = false
 
 [functions.send-bulk-reminder-emails]
 verify_jwt = true
+
+[functions.send-trustpilot-review-emails]
+verify_jwt = false

@@ -2389,6 +2389,58 @@ export type Database = {
           },
         ]
       }
+      trustpilot_review_emails: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          email: string
+          email_log_id: string | null
+          id: string
+          policy_id: string
+          sent_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          email: string
+          email_log_id?: string | null
+          id?: string
+          policy_id: string
+          sent_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          email?: string
+          email_log_id?: string | null
+          id?: string
+          policy_id?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trustpilot_review_emails_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trustpilot_review_emails_email_log_id_fkey"
+            columns: ["email_log_id"]
+            isOneToOne: false
+            referencedRelation: "email_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trustpilot_review_emails_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "customer_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
