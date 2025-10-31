@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Shield, Clock, Phone, Menu, X } from 'lucide-react';
+import { CheckCircle2, Shield, Clock, Phone, Menu, X, Mail, ChevronDown } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
 import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
@@ -402,14 +402,25 @@ const MotorcycleWarranty = () => {
             <p className="text-lg text-muted-foreground text-center mb-12">
               We provide extended warranty cover for new, nearly new and used motorcycles from leading UK-market brands. If your bike is road legal and registered in the UK, we can protect it.
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {[
-                "Honda", "Yamaha", "Suzuki", "BMW Motorrad",
-                "Kawasaki", "Triumph (UK brand)", "Royal Enfield", "Harley-Davidson",
-                "KTM", "Ducati", "Aprilia", "Moto Guzzi"
+                { name: "Honda", color: "text-red-600" },
+                { name: "Yamaha", color: "text-blue-600" },
+                { name: "Suzuki", color: "text-blue-700" },
+                { name: "BMW Motorrad", color: "text-blue-500" },
+                { name: "Kawasaki", color: "text-green-600" },
+                { name: "Triumph", color: "text-gray-900" },
+                { name: "Royal Enfield", color: "text-amber-700" },
+                { name: "Harley-Davidson", color: "text-orange-600" },
+                { name: "KTM", color: "text-orange-500" },
+                { name: "Ducati", color: "text-red-600" },
+                { name: "Aprilia", color: "text-red-700" },
+                { name: "Moto Guzzi", color: "text-red-800" }
               ].map((brand, index) => (
-                <div key={index} className="bg-card p-4 rounded-lg border text-center font-semibold">
-                  {brand}
+                <div key={index} className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-primary transition-colors shadow-sm hover:shadow-md flex items-center justify-center">
+                  <span className={`text-2xl font-bold ${brand.color}`}>
+                    {brand.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -490,36 +501,70 @@ const MotorcycleWarranty = () => {
         <section className="bg-card py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">FAQs</h2>
-              <div className="space-y-8">
-                {[
-                  {
-                    q: "Are extended warranties on motorcycles worth it?",
-                    a: "Yes. Modern bikes have complex electrical systems, ECUs and fuel injection that can fail without warning. A single repair can cost £800 to £1,800. An extended motorcycle warranty protects you from major bills and gives cost certainty, especially for used or high-mileage bikes."
-                  },
-                  {
-                    q: "What is the best extended warranty for a motorcycle?",
-                    a: "The best motorcycle warranty includes mechanical and electrical cover, labour costs, diagnostic fees, and access to any VAT-registered garage. Plans that pay the garage directly (so you are not out of pocket) and offer flexible monthly payments provide the highest value."
-                  },
-                  {
-                    q: "How much does a motorcycle extended warranty cost?",
-                    a: "Prices vary based on bike age, mileage and cover level. On average in the UK, extended motorcycle warranty plans start from £20 to £45 per month, or £250 to £450 per year, depending on your bike and selected claim limit."
-                  },
-                  {
-                    q: "Should I get a warranty on a used motorcycle?",
-                    a: "Yes. Used motorcycles are more likely to require repairs such as clutch failures, alternator issues, starter motor faults, or ECU problems. A used motorcycle warranty prevents surprise bills and protects your budget."
-                  },
-                  {
-                    q: "What motorcycle has the least problems?",
-                    a: "Honda, Yamaha and Suzuki typically have the best reliability records in the UK. European brands like Ducati and Aprilia are more performance-driven but may have higher repair costs."
-                  }
-                ].map((faq, index) => (
-                  <div key={index} className="bg-background p-6 rounded-lg border">
-                    <h3 className="text-xl font-bold mb-3">{faq.q}</h3>
-                    <p className="text-muted-foreground">{faq.a}</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+              <div className="space-y-4">
+                {motorcycleFAQs.map((faq, index) => (
+                  <div key={index} className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg overflow-hidden">
+                    <button
+                      onClick={() => {
+                        const button = document.getElementById(`faq-${index}`);
+                        const content = document.getElementById(`faq-content-${index}`);
+                        if (button && content) {
+                          const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+                          content.style.maxHeight = isOpen ? '0px' : content.scrollHeight + 'px';
+                          button.querySelector('svg')?.classList.toggle('rotate-180');
+                        }
+                      }}
+                      id={`faq-${index}`}
+                      className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-orange-600/20 transition-colors"
+                    >
+                      <span className="font-semibold text-lg text-white pr-4">
+                        {faq.question}
+                      </span>
+                      <ChevronDown 
+                        className="w-6 h-6 flex-shrink-0 text-white transition-transform duration-300"
+                      />
+                    </button>
+                    
+                    <div 
+                      id={`faq-content-${index}`}
+                      className="overflow-hidden transition-all duration-200 ease-out"
+                      style={{ maxHeight: '0px' }}
+                    >
+                      <div className="px-6 pb-5 bg-white border-t border-orange-200">
+                        <div className="pt-4">
+                          <p className="text-brand-dark-text leading-relaxed whitespace-pre-line">
+                            {faq.answer}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Help Section - Orange Strip */}
+        <section className="bg-gradient-to-r from-orange-500 to-orange-600 py-12">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center space-y-6 text-white">
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Need help? Our team of warranty experts are here to help.
+              </h2>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-lg">
+                <a href="tel:03302295040" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <Phone className="w-5 h-5" />
+                  <span className="font-semibold">Call us: 0330 229 5040</span>
+                </a>
+                <span className="hidden sm:inline">|</span>
+                <a href="mailto:support@buyawarranty.co.uk" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <Mail className="w-5 h-5" />
+                  <span className="font-semibold">Email us: support@buyawarranty.co.uk</span>
+                </a>
+              </div>
+              <p className="text-xl font-bold mt-4">Drive Smarter</p>
             </div>
           </div>
         </section>
