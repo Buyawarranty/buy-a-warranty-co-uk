@@ -201,8 +201,6 @@ const MotorcycleWarranty = () => {
       </header>
       
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-        <TrustpilotHeader />
-        
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-20">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -225,6 +223,8 @@ const MotorcycleWarranty = () => {
             </div>
           </div>
         </section>
+
+        <TrustpilotHeader />
 
         {/* Why Choose Us Section */}
         <section className="bg-card py-16">
