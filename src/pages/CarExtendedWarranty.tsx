@@ -583,10 +583,10 @@ const CarExtendedWarranty: React.FC = () => {
                         <OptimizedImage 
                           src={trustpilotLogo} 
                           alt="Trustpilot Excellent Rating" 
-                          className="h-auto w-40 object-contain"
+                          className="h-auto w-20 object-contain"
                           priority={false}
-                          width={320}
-                          height={100}
+                          width={160}
+                          height={50}
                         />
                       </a>
                     </div>
