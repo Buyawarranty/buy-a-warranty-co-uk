@@ -1476,8 +1476,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         'Loading Payment Gateway...'
                       ) : (
                         <>
-                          Complete Purchase
-                          <ArrowRight className="w-5 h-5 ml-2" strokeWidth={3.5} />
+            Complete Purchase
+            <ArrowRight className="w-5 h-5 ml-2" strokeWidth={4.5} />
                         </>
                       )}
                     </ProtectedButton>

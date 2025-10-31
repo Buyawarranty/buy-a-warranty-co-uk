@@ -711,7 +711,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                       <>
                         <span className="hidden sm:inline">Get my instant quote</span>
                         <span className="sm:hidden">Get my instant quote</span>
-                        <ArrowRight className="w-5 h-5 ml-2" strokeWidth={3.5} />
+                        <ArrowRight className="w-5 h-5 ml-2" strokeWidth={4.5} />
                       </>
                     )}
                   </Button>
