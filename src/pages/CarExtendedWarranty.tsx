@@ -1007,7 +1007,7 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Fiat', logo: 'https://logo.clearbit.com/fiat.com' },
                 { name: 'Ford', logo: 'https://logo.clearbit.com/ford.com' },
                 { name: 'Honda', logo: 'https://logo.clearbit.com/honda.com' },
-                { name: 'Hyundai', logo: 'https://logo.clearbit.com/hyundai.com' },
+                { name: 'Hyundai', logo: 'https://logo.clearbit.com/hyundai.com', link: '/car-extended-warranty/hyundai/' },
                 { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
                 { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
                 { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
