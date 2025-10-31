@@ -560,13 +560,13 @@ const BMWWarranty: React.FC = () => {
       {/* Final CTA */}
       <section className="py-16 bg-primary text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
             Before You Leave - Secure Your BMW's Protection
           </h2>
-          <p className="text-xl mb-8">
+          <p className="text-xl mb-8 text-white">
             Average repairs on BMWs can exceed £1,500+. A warranty gives you financial peace of mind, fast claims handling, and flexible monthly cover.
           </p>
-          <p className="text-lg mb-8">
+          <p className="text-lg mb-8 text-white">
             Just enter your reg and mileage.
           </p>
           <Button 
