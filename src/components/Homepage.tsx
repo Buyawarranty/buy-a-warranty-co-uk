@@ -207,6 +207,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       toast({
         title: "Mileage Required", 
         description: "Please enter your vehicle's mileage to continue.",
+        variant: "destructive",
       });
       return;
     }
