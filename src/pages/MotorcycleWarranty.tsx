@@ -553,21 +553,21 @@ const MotorcycleWarranty = () => {
         <section className="bg-gradient-to-r from-orange-500 to-orange-600 py-12">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center space-y-6 text-white">
-              <h2 className="text-3xl md:text-4xl font-bold">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">
                 Need help? Our team of warranty experts are here to help.
               </h2>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-lg">
-                <a href="tel:03302295040" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                  <Phone className="w-5 h-5" />
-                  <span className="font-semibold">Call us: 0330 229 5040</span>
+                <a href="tel:03302295040" className="flex items-center gap-2 hover:opacity-80 transition-opacity text-white">
+                  <Phone className="w-5 h-5 text-white" />
+                  <span className="font-semibold text-white">Call us: 0330 229 5040</span>
                 </a>
-                <span className="hidden sm:inline">|</span>
-                <a href="mailto:support@buyawarranty.co.uk" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                  <Mail className="w-5 h-5" />
-                  <span className="font-semibold">Email us: support@buyawarranty.co.uk</span>
+                <span className="hidden sm:inline text-white">|</span>
+                <a href="mailto:support@buyawarranty.co.uk" className="flex items-center gap-2 hover:opacity-80 transition-opacity text-white">
+                  <Mail className="w-5 h-5 text-white" />
+                  <span className="font-semibold text-white">Email us: support@buyawarranty.co.uk</span>
                 </a>
               </div>
-              <p className="text-xl font-bold mt-4">Drive Smarter</p>
+              <p className="text-xl font-bold mt-4 text-white">Drive Smarter</p>
             </div>
           </div>
         </section>
