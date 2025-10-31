@@ -505,6 +505,8 @@ const CarExtendedWarranty: React.FC = () => {
                         <div className="w-full">
                           <input
                             type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             value={mileage}
                             onChange={handleMileageChange}
                             onFocus={handleMileageFocus}

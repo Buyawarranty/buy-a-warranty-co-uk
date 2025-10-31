@@ -210,6 +210,8 @@ const HomepageAlt: React.FC<HomepageAltProps> = ({ onRegistrationSubmit }) => {
                     </label>
                     <Input
                       type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       value={mileage ? parseInt(mileage).toLocaleString() : ''}
                       onChange={handleMileageChange}
                       placeholder="e.g. 50,000"
