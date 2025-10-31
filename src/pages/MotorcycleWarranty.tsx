@@ -592,7 +592,6 @@ const MotorcycleWarranty = () => {
         </section>
 
         <NewFooter />
-        <WebsiteFooter />
 
         {/* Floating Contact Buttons */}
         {isMobile && (
