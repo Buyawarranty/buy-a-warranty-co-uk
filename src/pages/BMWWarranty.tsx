@@ -178,9 +178,12 @@ const BMWWarranty: React.FC = () => {
                   height={64}
                 />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                BMW Extended Warranty - Affordable Cover with Fast Claims
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+                Reliable BMW Extended Warranty
               </h1>
+              <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 mb-6">
+                Affordable Cover with Fast Claims
+              </h2>
               <p className="text-xl text-gray-700 mb-8">
                 Protect Your BMW. Avoid Costly Repairs. Drive With Confidence.
               </p>
