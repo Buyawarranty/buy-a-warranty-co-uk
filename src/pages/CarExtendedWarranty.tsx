@@ -997,7 +997,7 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
                 { name: 'Alfa Romeo', logo: alfaRomeoLogo },
                 { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com' },
-                { name: 'BMW', logo: bmwLogo },
+                { name: 'BMW', logo: bmwLogo, link: '/car-extended-warranty/bmw/' },
                 { name: 'Chevrolet', logo: 'https://logo.clearbit.com/chevrolet.com' },
                 { name: 'Chrysler', logo: 'https://logo.clearbit.com/chrysler.com' },
                 { name: 'Citroën', logo: 'https://logo.clearbit.com/citroen.com' },
@@ -1032,10 +1032,10 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
                 { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
               ].map((brand) => (
-                brand.name === 'Hyundai' ? (
+                brand.link ? (
                   <Link 
                     key={brand.name}
-                    to="/car-extended-warranty/hyundai/" 
+                    to={brand.link} 
                     className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors flex flex-col items-center gap-3 cursor-pointer"
                   >
                     <img 
