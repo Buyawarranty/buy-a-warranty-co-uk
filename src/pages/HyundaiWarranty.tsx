@@ -16,7 +16,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { trackButtonClick } from '@/utils/analytics';
 import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 import whatsappIconNew from '@/assets/whatsapp-icon-new.png';
-import companyRegistration from '@/assets/company-registration-footer.png';
+import hyundaiHeroImage from '@/assets/kona-kia-extended-used-car-warranty.png';
 
 const HyundaiWarranty = () => {
   const navigate = useNavigate();
@@ -198,25 +198,34 @@ const HyundaiWarranty = () => {
       </header>
       
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-        <TrustpilotHeader />
-        
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-20">
-          <div className="max-w-5xl mx-auto text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-              Hyundai Extended Warranty
-              <span className="block text-primary mt-2">Extend Protection After Hyundai's 5-Year Warranty Ends</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              A Hyundai extended warranty protects you from costly repairs after the original manufacturer's warranty expires. Modern Hyundais rely on advanced electrical and ECU systems, and when they fail, the repair bill is yours.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button onClick={navigateToQuoteForm} size="lg" className="text-lg px-8 py-6 bg-primary hover:bg-primary/90">
-                Get Instant Hyundai Warranty Quote
-              </Button>
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="space-y-6 text-center lg:text-left">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                Hyundai Extended Warranty
+              </h1>
+              <p className="text-xl md:text-2xl font-bold text-primary">
+                Extend Protection After Hyundai's 5-Year Warranty Ends
+              </p>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
+                A Hyundai extended warranty protects you from costly repairs after the original manufacturer's warranty expires. Modern Hyundais rely on advanced electrical and ECU systems, and when they fail, the repair bill is yours.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button onClick={navigateToQuoteForm} size="lg" className="text-lg px-8 py-6 bg-primary hover:bg-primary/90">
+                  Get Instant Hyundai Warranty Quote
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center justify-center gap-2">
-              <img src={trustpilotLogo} alt="Trustpilot Excellent Rating" className="h-8 md:h-10" />
+            <div className="space-y-6">
+              <img 
+                src={hyundaiHeroImage} 
+                alt="Hyundai Kona extended used car warranty" 
+                className="w-full h-auto rounded-lg shadow-lg object-cover"
+              />
+              <div className="flex justify-center lg:justify-start">
+                <TrustpilotHeader />
+              </div>
             </div>
           </div>
         </section>
@@ -542,7 +551,6 @@ const HyundaiWarranty = () => {
         </section>
 
         <NewFooter />
-        <WebsiteFooter />
 
         {/* Floating Contact Buttons */}
         {isMobile && (
@@ -574,16 +582,6 @@ const HyundaiWarranty = () => {
           </button>
         )}
 
-        {/* Company Registration */}
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-center">
-            <img 
-              src={companyRegistration} 
-              alt="Company Registration Details" 
-              className="h-auto max-w-full"
-            />
-          </div>
-        </div>
       </div>
     </>
   );
