@@ -256,7 +256,7 @@ const BMWWarranty: React.FC = () => {
       </section>
 
       {/* Why BMW Owners Choose Us */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             Why BMW Owners Choose Us
@@ -396,7 +396,7 @@ const BMWWarranty: React.FC = () => {
       </section>
 
       {/* BMW Warranty Coverage by Model */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             BMW Warranty Coverage by Model
@@ -516,7 +516,7 @@ const BMWWarranty: React.FC = () => {
       </section>
 
       {/* Used BMW Warranty */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             Used BMW Warranty - Ideal for Older & High-Mileage Cars
