@@ -230,6 +230,47 @@ serve(async (req: Request) => {
 
         console.log(`[TRUSTPILOT-REVIEW] Email sent to ${policy.email}:`, emailResult);
 
+        // Send Trustpilot invitation via API
+        try {
+          const trustpilotApiKey = Deno.env.get("TRUSTPILOT_API_KEY");
+          const trustpilotBusinessUnitId = Deno.env.get("TRUSTPILOT_BUSINESS_UNIT_ID");
+
+          if (trustpilotApiKey && trustpilotBusinessUnitId) {
+            const trustpilotResponse = await fetch(
+              `https://invitations-api.trustpilot.com/v1/private/business-units/${trustpilotBusinessUnitId}/email-invitations`,
+              {
+                method: "POST",
+                headers: {
+                  "Authorization": `ApiKey ${trustpilotApiKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  recipientEmail: policy.email,
+                  recipientName: customerFirstName,
+                  referenceId: policy.policy_number,
+                  locale: "en-GB",
+                  serviceReviewInvitation: {
+                    preferredSendTime: new Date().toISOString(),
+                  },
+                }),
+              }
+            );
+
+            if (trustpilotResponse.ok) {
+              const trustpilotData = await trustpilotResponse.json();
+              console.log(`[TRUSTPILOT-REVIEW] Trustpilot invitation created:`, trustpilotData);
+            } else {
+              const errorText = await trustpilotResponse.text();
+              console.error(`[TRUSTPILOT-REVIEW] Trustpilot API error:`, errorText);
+            }
+          } else {
+            console.warn("[TRUSTPILOT-REVIEW] Trustpilot API credentials not configured");
+          }
+        } catch (trustpilotError) {
+          console.error("[TRUSTPILOT-REVIEW] Error sending Trustpilot invitation:", trustpilotError);
+          // Don't fail the whole process if Trustpilot API fails
+        }
+
         // Log the email
         const { data: emailLog, error: logError } = await supabase
           .from("email_logs")
