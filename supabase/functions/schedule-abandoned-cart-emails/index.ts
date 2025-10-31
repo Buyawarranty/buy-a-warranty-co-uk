@@ -26,7 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: abandonedCarts, error: cartsError } = await supabase
       .from('abandoned_carts')
       .select('*')
-      .gte('created_at', new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()) // Last 2 hours
+      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
       .order('created_at', { ascending: false });
 
     if (cartsError) {
