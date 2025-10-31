@@ -217,14 +217,15 @@ const MotorcycleWarranty = () => {
                   Get Your Motorcycle Warranty Quote
                 </Button>
               </div>
+              <div className="flex justify-center lg:justify-start mt-6">
+                <TrustpilotHeader />
+              </div>
             </div>
             <div className="relative flex justify-center">
               <img src={motorcycleHero} alt="Motorcycle Extended Warranty UK - Protect Your Bike" className="w-3/4 h-auto" />
             </div>
           </div>
         </section>
-
-        <TrustpilotHeader />
 
         {/* Why Choose Us Section */}
         <section className="bg-card py-16">

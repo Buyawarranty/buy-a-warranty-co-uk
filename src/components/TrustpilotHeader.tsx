@@ -19,10 +19,10 @@ const TrustpilotHeader: React.FC<TrustpilotHeaderProps> = ({ className = "" }) =
         <OptimizedImage 
           src={trustpilotLogo} 
           alt="Trustpilot 5 stars" 
-          className="h-auto w-20 object-contain"
+          className="h-auto w-30 object-contain"
           priority={false}
-          width={160}
-          height={50}
+          width={240}
+          height={75}
         />
       </a>
     </div>
