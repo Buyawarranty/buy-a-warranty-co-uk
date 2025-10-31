@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, Star, Shield, Phone, Menu } from 'lucide-react';
+import { Check, ArrowRight, Star, Shield, Phone, Menu, ChevronDown, ChevronUp } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
@@ -22,6 +22,11 @@ const BMWWarranty: React.FC = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openFaqId, setOpenFaqId] = useState<number | null>(null);
+
+  const toggleFaq = (index: number) => {
+    setOpenFaqId(openFaqId === index ? null : index);
+  };
 
   const navigateToQuoteForm = () => {
     trackButtonClick('bmw_warranty_get_quote');
@@ -553,11 +558,27 @@ const BMWWarranty: React.FC = () => {
             Frequently Asked Questions
           </h2>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {bmwFAQs.map((faq, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-bold mb-3">{faq.question}</h3>
-                <p className="text-gray-700">{faq.answer}</p>
+              <div key={index} className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg overflow-hidden">
+                <button
+                  onClick={() => toggleFaq(index)}
+                  className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-orange-600/20 transition-colors"
+                >
+                  <span className="font-semibold text-lg text-white pr-4">
+                    {faq.question}
+                  </span>
+                  {openFaqId === index ? (
+                    <ChevronUp className="h-6 w-6 text-white flex-shrink-0" />
+                  ) : (
+                    <ChevronDown className="h-6 w-6 text-white flex-shrink-0" />
+                  )}
+                </button>
+                {openFaqId === index && (
+                  <div className="px-6 py-5 bg-white">
+                    <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
