@@ -207,8 +207,10 @@ const MotorcycleWarranty = () => {
             <div className="space-y-6 text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                 Motorcycle Extended Warranty
-                <span className="block text-primary mt-2">Ride With Confidence, Avoid Unexpected Repair Bills</span>
               </h1>
+              <p className="text-xl md:text-2xl font-bold text-primary">
+                Ride With Confidence, Avoid Unexpected Repair Bills
+              </p>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
                 A motorcycle extended warranty protects you when expensive mechanical or electrical faults occur after the original warranty ends. Modern bikes have complex electronics, fuel systems and ECU modules, which means even a small issue can cost hundreds to repair.
               </p>
@@ -622,16 +624,6 @@ const MotorcycleWarranty = () => {
           </button>
         )}
 
-        {/* Company Registration */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex justify-center">
-            <img 
-              src={companyRegistration} 
-              alt="Company Registration Details" 
-              className="h-auto max-w-full"
-            />
-          </div>
-        </div>
       </div>
     </>
   );
