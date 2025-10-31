@@ -176,16 +176,11 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailPayload = {
-      from: "Buy A Warranty <noreply@buyawarranty.co.uk>",
-      reply_to: "info@buyawarranty.co.uk",
+      from: "Buy A Warranty <info@buyawarranty.co.uk>", // Same verified sender as welcome emails
       to: [emailRequest.email],
       subject: subject,
       html: htmlContent,
       text: textContent,
-      headers: {
-        'X-Entity-Ref-ID': `baw-cart-${Date.now()}-${emailRequest.email.substring(0, 8)}`,
-        'List-Unsubscribe': '<mailto:unsubscribe@buyawarranty.co.uk>',
-      },
       tags: [
         { name: 'category', value: 'transactional' },
         { name: 'type', value: 'abandoned-cart' },
