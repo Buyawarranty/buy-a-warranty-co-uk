@@ -185,17 +185,6 @@ const BMWWarranty: React.FC = () => {
               <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 mb-6">
                 Affordable Cover with Fast Claims
               </h2>
-              
-              {/* BMW Hero Image */}
-              <div className="mb-8">
-                <OptimizedImage
-                  src={bmwHeroImage}
-                  alt="BMW extended used car warranty - white BMW 3 series"
-                  className="w-full h-auto rounded-lg shadow-lg"
-                  width={1200}
-                  height={675}
-                />
-              </div>
 
               <p className="text-xl text-gray-700 mb-8">
                 Protect Your BMW. Avoid Costly Repairs. Drive With Confidence.
@@ -237,6 +226,16 @@ const BMWWarranty: React.FC = () => {
             </div>
 
             <div className="lg:pl-12">
+              {/* BMW Hero Image */}
+              <div className="mb-8">
+                <OptimizedImage
+                  src={bmwHeroImage}
+                  alt="BMW extended used car warranty - white BMW 3 series"
+                  className="w-full h-auto rounded-lg shadow-lg object-cover"
+                  width={1200}
+                  height={675}
+                />
+              </div>
               <TrustpilotHeader className="mb-8" />
             </div>
           </div>
