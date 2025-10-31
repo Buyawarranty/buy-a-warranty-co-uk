@@ -1477,7 +1477,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       ) : (
                         <>
                           Complete Purchase
-                          <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
+                          <ArrowRight className="w-5 h-5 ml-2" strokeWidth={3.5} />
                         </>
                       )}
                     </ProtectedButton>

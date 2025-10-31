@@ -286,7 +286,7 @@ export const HeroQuoteForm: React.FC<HeroQuoteFormProps> = ({ onRegistrationSubm
                   {isLookingUp ? 'Looking up vehicle...' : (
                     <>
                       Get my instant quote
-                      <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
+                      <ArrowRight className="w-5 h-5 ml-2" strokeWidth={3.5} />
                     </>
                   )}
                 </Button>
