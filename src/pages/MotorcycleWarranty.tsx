@@ -317,7 +317,7 @@ const MotorcycleWarranty = () => {
                         { name: "Cooling and radiator", included: true },
                         { name: "Braking systems", included: true },
                         { name: "Suspension and steering", included: true },
-                        { name: "Wear and tear items (pads, chain, tyres)", included: false },
+                        { name: "Wear and tear items (pads, chain, tyres)", included: false, optional: true },
                         { name: "Accidental damage", included: false }
                       ].map((row, index) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-background' : 'bg-muted/20'}>
@@ -325,6 +325,8 @@ const MotorcycleWarranty = () => {
                           <td className="px-6 py-4 text-center">
                             {row.included ? (
                               <span className="text-green-600 font-bold text-xl">✅ Yes</span>
+                            ) : row.optional ? (
+                              <span className="text-orange-600 font-bold text-xl">Optional</span>
                             ) : (
                               <span className="text-red-600 font-bold text-xl">❌ Not included</span>
                             )}
