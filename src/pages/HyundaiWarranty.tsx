@@ -221,7 +221,7 @@ const HyundaiWarranty = () => {
               <img 
                 src={hyundaiHeroImage} 
                 alt="Hyundai Kona extended used car warranty" 
-                className="w-full h-auto rounded-lg shadow-lg object-cover"
+                className="w-full h-auto object-cover"
               />
               <div className="flex justify-center lg:justify-start">
                 <TrustpilotHeader />
@@ -268,6 +268,20 @@ const HyundaiWarranty = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-center">
               How Much Does A Hyundai Extended Warranty Cost?
             </h2>
+            <div className="flex justify-center mb-6">
+              <a 
+                href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="transition-opacity hover:opacity-80"
+              >
+                <img 
+                  src={trustpilotLogo} 
+                  alt="Trustpilot 5 stars" 
+                  className="h-auto w-32 object-contain"
+                />
+              </a>
+            </div>
             <p className="text-lg text-muted-foreground text-center">
               The cost depends on the model, age and mileage of your Hyundai. On average, extended warranty prices range between £300 and £800 per year for used Hyundais (i10, i20, i30). Larger SUVs, such as the Tucson or Santa Fe, and hybrid/EV models (Kona Electric, Ioniq, and Ioniq 5) may cost more due to advanced systems and higher repair costs.
             </p>
@@ -494,9 +508,23 @@ const HyundaiWarranty = () => {
         {/* Why Choose Us */}
         <section className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
               Why Hyundai Owners Choose Us
             </h2>
+            <div className="flex justify-center mb-8">
+              <a 
+                href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="transition-opacity hover:opacity-80"
+              >
+                <img 
+                  src={trustpilotLogo} 
+                  alt="Trustpilot 5 stars" 
+                  className="h-auto w-32 object-contain"
+                />
+              </a>
+            </div>
             <div className="grid md:grid-cols-2 gap-6">
               {[
                 "UK-based customer support",
