@@ -17,6 +17,7 @@ import { OptimizedImage } from '@/components/OptimizedImage';
 import bmwLogo from '@/assets/logos/bmw.webp';
 import bmwHeroImage from '@/assets/Bmw-extended-used-car-warranty.png';
 import buyawarrantyLogo from '@/assets/buyawarranty-logo.webp';
+import trustpilotLogo from '@/assets/trustpilot-excellent-box.webp';
 
 const BMWWarranty: React.FC = () => {
   const isMobile = useIsMobile();
@@ -520,6 +521,20 @@ const BMWWarranty: React.FC = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             Used BMW Warranty - Ideal for Older & High-Mileage Cars
           </h2>
+          <div className="flex justify-center mb-6">
+            <a 
+              href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="transition-opacity hover:opacity-80"
+            >
+              <img 
+                src={trustpilotLogo} 
+                alt="Trustpilot 5 stars" 
+                className="h-auto w-32 object-contain"
+              />
+            </a>
+          </div>
           <p className="text-center text-lg text-gray-600 mb-12">
             Bought a used BMW or planning to extend cover beyond year 3?
           </p>
@@ -591,6 +606,20 @@ const BMWWarranty: React.FC = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
             Before You Leave - Secure Your BMW's Protection
           </h2>
+          <div className="flex justify-center mb-6">
+            <a 
+              href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="transition-opacity hover:opacity-80"
+            >
+              <img 
+                src={trustpilotLogo} 
+                alt="Trustpilot 5 stars" 
+                className="h-auto w-32 object-contain"
+              />
+            </a>
+          </div>
           <p className="text-xl mb-8 text-white">
             Average repairs on BMWs can exceed £1,500+. A warranty gives you financial peace of mind, fast claims handling, and flexible monthly cover.
           </p>
