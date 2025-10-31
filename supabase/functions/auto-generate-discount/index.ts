@@ -48,45 +48,47 @@ serve(async (req) => {
 
     logStep("Auto-generating discount code", { customerEmail, orderAmount });
 
-    // Check for existing active campaign code for email capture
+    // Check for existing campaign code (any status)
     const campaignCode = "EMAIL25SAVE";
     const { data: existingCampaignCode } = await supabaseClient
       .from('discount_codes')
       .select('*')
       .eq('code', campaignCode)
-      .eq('active', true)
-      .gte('valid_to', new Date().toISOString())
       .single();
 
     let discountCodeData;
+    const validFrom = new Date();
+    const validTo = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
 
     if (existingCampaignCode) {
-      logStep("Using existing campaign code", { code: campaignCode });
+      logStep("Updating existing campaign code", { code: campaignCode });
       
-      // Ensure the code has the correct type (fixed £25, not percentage)
-      if (existingCampaignCode.type !== 'fixed' || existingCampaignCode.value !== 25) {
-        logStep("Updating campaign code to correct type", { oldType: existingCampaignCode.type, oldValue: existingCampaignCode.value });
-        const { data: updatedCode } = await supabaseClient
-          .from('discount_codes')
-          .update({
-            type: 'fixed',
-            value: 25
-          })
-          .eq('id', existingCampaignCode.id)
-          .select()
-          .single();
-        
-        discountCodeData = updatedCode || existingCampaignCode;
-      } else {
-        discountCodeData = existingCampaignCode;
+      // Update the existing code with correct values and extend expiry
+      const { data: updatedCode, error: updateError } = await supabaseClient
+        .from('discount_codes')
+        .update({
+          type: 'fixed',
+          value: 25,
+          valid_from: validFrom.toISOString(),
+          valid_to: validTo.toISOString(),
+          active: true,
+          usage_limit: null,
+          applicable_products: ["all"]
+        })
+        .eq('id', existingCampaignCode.id)
+        .select()
+        .single();
+
+      if (updateError) {
+        logStep("Error updating campaign code", { error: updateError });
+        throw new Error("Failed to update campaign discount code");
       }
+      
+      discountCodeData = updatedCode;
     } else {
       logStep("Creating new campaign code", { code: campaignCode });
       
       // Create the campaign discount code with longer expiry and unlimited use
-      const validFrom = new Date();
-      const validTo = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
-
       const { data: newDiscountCode, error: createError } = await supabaseClient
         .from('discount_codes')
         .insert({
