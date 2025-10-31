@@ -15,6 +15,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { trackButtonClick } from '@/utils/analytics';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import bmwLogo from '@/assets/logos/bmw.webp';
+import bmwHeroImage from '@/assets/Bmw-extended-used-car-warranty.png';
 
 const BMWWarranty: React.FC = () => {
   const isMobile = useIsMobile();
@@ -184,6 +185,18 @@ const BMWWarranty: React.FC = () => {
               <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 mb-6">
                 Affordable Cover with Fast Claims
               </h2>
+              
+              {/* BMW Hero Image */}
+              <div className="mb-8">
+                <OptimizedImage
+                  src={bmwHeroImage}
+                  alt="BMW extended used car warranty - white BMW 3 series"
+                  className="w-full h-auto rounded-lg shadow-lg"
+                  width={1200}
+                  height={675}
+                />
+              </div>
+
               <p className="text-xl text-gray-700 mb-8">
                 Protect Your BMW. Avoid Costly Repairs. Drive With Confidence.
               </p>
