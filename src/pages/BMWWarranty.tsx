@@ -16,6 +16,7 @@ import { trackButtonClick } from '@/utils/analytics';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import bmwLogo from '@/assets/logos/bmw.webp';
 import bmwHeroImage from '@/assets/Bmw-extended-used-car-warranty.png';
+import buyawarrantyLogo from '@/assets/buyawarranty-logo.webp';
 
 const BMWWarranty: React.FC = () => {
   const isMobile = useIsMobile();
@@ -107,9 +108,15 @@ const BMWWarranty: React.FC = () => {
       <header className="bg-white border-b sticky top-0 z-50">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <Link to="/" className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="text-xl font-bold text-primary">Buy A Warranty</span>
+            <Link to="/" className="hover:opacity-80 transition-opacity">
+              <OptimizedImage 
+                src={buyawarrantyLogo} 
+                alt="Buy a Warranty Logo - Affordable Car Warranty UK" 
+                className="h-6 sm:h-8 w-auto"
+                priority={true}
+                width={240}
+                height={40}
+              />
             </Link>
 
             {isMobile ? (
