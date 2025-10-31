@@ -2340,6 +2340,7 @@ export type Database = {
       }
       triggered_emails_log: {
         Row: {
+          cart_id: string | null
           created_at: string | null
           email: string
           email_status: string | null
@@ -2350,6 +2351,7 @@ export type Database = {
           vehicle_reg: string | null
         }
         Insert: {
+          cart_id?: string | null
           created_at?: string | null
           email: string
           email_status?: string | null
@@ -2360,6 +2362,7 @@ export type Database = {
           vehicle_reg?: string | null
         }
         Update: {
+          cart_id?: string | null
           created_at?: string | null
           email?: string
           email_status?: string | null
@@ -2370,6 +2373,13 @@ export type Database = {
           vehicle_reg?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "triggered_emails_log_cart_id_fkey"
+            columns: ["cart_id"]
+            isOneToOne: false
+            referencedRelation: "abandoned_carts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "triggered_emails_log_template_id_fkey"
             columns: ["template_id"]

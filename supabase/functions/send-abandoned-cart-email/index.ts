@@ -54,6 +54,7 @@ const corsHeaders = {
 };
 
 interface SendEmailRequest {
+  cartId: string; // Track individual cart
   email: string;
   firstName?: string;
   vehicleReg?: string;
@@ -82,26 +83,24 @@ const handler = async (req: Request): Promise<Response> => {
     const emailRequest: SendEmailRequest = await req.json();
     console.log('Sending abandoned cart email:', emailRequest);
 
-    // Check if we've already sent this type of email to this person recently
+    // Check if we've already sent this type of email for this specific cart
     const { data: recentEmails, error: checkError } = await supabase
       .from('triggered_emails_log')
       .select('*')
-      .eq('email', emailRequest.email)
+      .eq('cart_id', emailRequest.cartId)
       .eq('trigger_type', emailRequest.triggerType)
-      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
-      .order('created_at', { ascending: false })
       .limit(1);
 
     if (checkError) {
       console.error('Error checking recent emails:', checkError);
     }
 
-    // If we already sent this type of email in the last 24 hours, skip
+    // If we already sent this type of email for this cart, skip
     if (recentEmails && recentEmails.length > 0) {
-      console.log(`Skipping email - already sent ${emailRequest.triggerType} email to ${emailRequest.email} recently`);
+      console.log(`Skipping email - already sent ${emailRequest.triggerType} email for cart ${emailRequest.cartId}`);
       return new Response(JSON.stringify({ 
         success: true, 
-        message: "Email already sent recently" 
+        message: "Email already sent for this cart" 
       }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -214,6 +213,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { error: logError } = await supabase
       .from('triggered_emails_log')
       .insert([{
+        cart_id: emailRequest.cartId,
         email: emailRequest.email,
         trigger_type: emailRequest.triggerType,
         template_id: template.id,

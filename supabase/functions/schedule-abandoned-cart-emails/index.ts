@@ -92,13 +92,12 @@ const handler = async (req: Request): Promise<Response> => {
           continue;
         }
 
-        // Check if we already sent this type of email to this person recently
+        // Check if we already sent this type of email for this specific cart
         const { data: recentEmails, error: checkError } = await supabase
           .from('triggered_emails_log')
           .select('*')
-          .eq('email', cart.email)
+          .eq('cart_id', cart.id)
           .eq('trigger_type', triggerType)
-          .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
           .limit(1);
 
         if (checkError) {
@@ -107,12 +106,13 @@ const handler = async (req: Request): Promise<Response> => {
         }
 
         if (recentEmails && recentEmails.length > 0) {
-          console.log(`Already sent ${triggerType} email to ${cart.email} recently`);
+          console.log(`Already sent ${triggerType} email for cart ${cart.id}`);
           continue;
         }
 
         // Send the email
         const emailPayload = {
+          cartId: cart.id, // Include cart ID to track individual carts
           email: cart.email,
           firstName: cart.full_name?.split(' ')[0] || 'there',
           vehicleReg: cart.vehicle_reg,
