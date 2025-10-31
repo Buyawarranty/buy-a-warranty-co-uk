@@ -202,7 +202,7 @@ const MotorcycleWarranty = () => {
       
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-12 md:py-20">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="space-y-6 text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
@@ -229,7 +229,7 @@ const MotorcycleWarranty = () => {
 
         {/* Why Choose Us Section */}
         <section className="bg-card py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Why Riders Choose Buy A Warranty
@@ -259,7 +259,7 @@ const MotorcycleWarranty = () => {
         </section>
 
         {/* What Your Warranty Covers */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold">
@@ -295,7 +295,7 @@ const MotorcycleWarranty = () => {
 
         {/* Comparison Table */}
         <section className="bg-muted/30 py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
                 Motorcycle Warranty Comparison Table
@@ -343,7 +343,7 @@ const MotorcycleWarranty = () => {
         </section>
 
         {/* How It Works */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-4xl mx-auto text-center space-y-12">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -369,7 +369,7 @@ const MotorcycleWarranty = () => {
 
         {/* Motorcycle Types We Cover */}
         <section className="bg-card py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
                 Motorcycle Types We Cover
@@ -397,7 +397,7 @@ const MotorcycleWarranty = () => {
         </section>
 
         {/* Brands We Cover */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
               Motorcycle Brands We Cover in the UK
@@ -432,7 +432,7 @@ const MotorcycleWarranty = () => {
 
         {/* Is It Worth It */}
         <section className="bg-muted/30 py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto space-y-8">
               <h2 className="text-3xl md:text-4xl font-bold text-center">
                 Is a Motorcycle Warranty Worth It?
@@ -471,7 +471,7 @@ const MotorcycleWarranty = () => {
         </section>
 
         {/* Flexible Payment */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="relative flex justify-center">
               <img src={motorcyclePanda} alt="Motorcycle Warranty Payment Options" className="w-1/2 h-auto" />
@@ -502,7 +502,7 @@ const MotorcycleWarranty = () => {
 
         {/* FAQs */}
         <section className="bg-card py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
               <div className="space-y-4">
@@ -551,7 +551,7 @@ const MotorcycleWarranty = () => {
 
         {/* Help Section - Orange Strip */}
         <section className="bg-gradient-to-r from-orange-500 to-orange-600 py-12">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center space-y-6 text-white">
               <h2 className="text-3xl md:text-4xl font-bold text-white">
                 Need help? Our team of warranty experts are here to help.
@@ -573,7 +573,7 @@ const MotorcycleWarranty = () => {
         </section>
 
         {/* Final CTA */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-4xl mx-auto text-center space-y-6 bg-primary/5 rounded-lg p-12">
             <h2 className="text-3xl md:text-4xl font-bold">
               Start Your Motorcycle Warranty
@@ -623,7 +623,7 @@ const MotorcycleWarranty = () => {
         )}
 
         {/* Company Registration */}
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex justify-center">
             <img 
               src={companyRegistration} 

@@ -322,7 +322,7 @@ const VanWarrantyNew = () => {
         </section>
 
         {/* Trustpilot Badge */}
-        <div className="py-8 flex justify-end container mx-auto px-4">
+        <div className="py-8 flex justify-end container mx-auto px-4 sm:px-6 lg:px-8">
           <TrustpilotHeader />
         </div>
 
@@ -493,7 +493,7 @@ const VanWarrantyNew = () => {
         </section>
 
         {/* Trustpilot Badge */}
-        <div className="py-8 flex justify-end container mx-auto px-4">
+        <div className="py-8 flex justify-end container mx-auto px-4 sm:px-6 lg:px-8">
           <TrustpilotHeader />
         </div>
 
@@ -593,7 +593,7 @@ const VanWarrantyNew = () => {
         </section>
 
         {/* Trustpilot Badge */}
-        <div className="py-8 flex justify-end container mx-auto px-4">
+        <div className="py-8 flex justify-end container mx-auto px-4 sm:px-6 lg:px-8">
           <TrustpilotHeader />
         </div>
 

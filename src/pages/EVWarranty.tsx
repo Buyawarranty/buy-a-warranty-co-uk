@@ -250,7 +250,7 @@ const EVWarranty = () => {
         <TrustpilotHeader />
         
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-12 md:py-20">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="space-y-6 text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
@@ -300,13 +300,13 @@ const EVWarranty = () => {
         </section>
 
         {/* Trustpilot Badge */}
-        <div className="py-8 flex justify-end container mx-auto px-4">
+        <div className="py-8 flex justify-end container mx-auto px-4 sm:px-6 lg:px-8">
           <TrustpilotHeader />
         </div>
 
         {/* Specialist Protection Section */}
         <section className="bg-muted/30 py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center space-y-6 mb-12">
               <h2 className="text-3xl md:text-4xl font-bold">
                 Specialist Protection for Electric & Hybrid Vehicles
@@ -333,12 +333,12 @@ const EVWarranty = () => {
         </section>
 
         {/* Trustpilot Badge */}
-        <div className="py-8 flex justify-end container mx-auto px-4">
+        <div className="py-8 flex justify-end container mx-auto px-4 sm:px-6 lg:px-8">
           <TrustpilotHeader />
         </div>
 
         {/* Why Choose Us Section */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Why Choose Buy A Warranty for EV Cover
@@ -413,7 +413,7 @@ const EVWarranty = () => {
 
         {/* What's Covered Section */}
         <section className="bg-card py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <h2 className="text-3xl md:text-4xl font-bold">
@@ -457,12 +457,12 @@ const EVWarranty = () => {
         </section>
 
         {/* Trustpilot Badge */}
-        <div className="py-8 flex justify-end container mx-auto px-4">
+        <div className="py-8 flex justify-end container mx-auto px-4 sm:px-6 lg:px-8">
           <TrustpilotHeader />
         </div>
 
         {/* Why Worth It Section */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">
               Why an Electric Vehicle Warranty is Worth It
@@ -488,7 +488,7 @@ const EVWarranty = () => {
 
         {/* EV Warranty Plans Section */}
         <section className="bg-muted/30 py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 EV Warranty Plans & Payment Options
@@ -538,7 +538,7 @@ const EVWarranty = () => {
         </section>
 
         {/* Coverage for Used EVs Section */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
               Coverage for Used & High-Mileage EVs
@@ -567,7 +567,7 @@ const EVWarranty = () => {
 
         {/* Easy Claims Section */}
         <section className="bg-card py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
                 Easy Claims, Fast Repairs
@@ -601,7 +601,7 @@ const EVWarranty = () => {
         </section>
 
         {/* Why UK Drivers Trust Section */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Why UK Drivers Trust Buy A Warranty
@@ -698,7 +698,7 @@ const EVWarranty = () => {
 
         {/* FAQs Section */}
         <section className="bg-muted/30 py-16">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
               Frequently Asked Questions
             </h2>
@@ -751,7 +751,7 @@ const EVWarranty = () => {
         </section>
 
         {/* Final CTA Section */}
-        <section className="container mx-auto px-4 py-16">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-4xl mx-auto text-center space-y-6 bg-primary/5 p-8 md:p-12 rounded-lg border-2 border-primary/20">
             <h2 className="text-3xl md:text-4xl font-bold">
               Get Your Electric Car Warranty Quote
