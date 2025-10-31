@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, CheckCircle, Edit, User, CreditCard, MapPin, X, ArrowUp, Check } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Edit, User, CreditCard, MapPin, X, ArrowUp, Check, ArrowRight } from 'lucide-react';
 import { PostcodeAutocomplete } from '@/components/ui/uk-postcode-autocomplete';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -1472,7 +1472,14 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       disabled={isLoadingPayment}
                       loading={isLoadingPayment}
                     >
-                      {isLoadingPayment ? 'Loading Payment Gateway...' : 'Complete Purchase'}
+                      {isLoadingPayment ? (
+                        'Loading Payment Gateway...'
+                      ) : (
+                        <>
+                          Complete Purchase
+                          <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
+                        </>
+                      )}
                     </ProtectedButton>
 
                     <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">

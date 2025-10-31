@@ -2125,6 +2125,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                 className="text-lg font-semibold px-12 py-3"
               >
                 Continue to Checkout
+                <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
               </Button>
             </div>
           </div>
@@ -2190,6 +2191,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
               className="text-lg font-semibold px-8 py-3 bg-primary hover:bg-primary/90"
             >
               Continue to Pay
+              <ArrowRight className="w-5 h-5 ml-2" strokeWidth={2.5} />
             </Button>
           </div>
         </div>
