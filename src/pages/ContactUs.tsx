@@ -452,7 +452,7 @@ const ContactUs = () => {
               {/* Left Side - Image and Text */}
               <div className="space-y-4 sm:space-y-6 order-2 lg:order-1">
                 <div className="text-center lg:text-left">
-                  <p className="text-primary text-base sm:text-lg font-medium mb-2">Contact Us</p>
+                  <p className="text-primary text-base sm:text-lg font-bold mb-2">Contact Us</p>
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
                     Get in Touch With Our <span className="text-primary">Support</span> Team!
                   </h2>
