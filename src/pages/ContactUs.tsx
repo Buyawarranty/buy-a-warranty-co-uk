@@ -343,7 +343,7 @@ const ContactUs = () => {
                 <img 
                   src="/car-warranty-uk-suv-warranty-uk.png" 
                   alt="Car warranty UK SUV warranty - Panda mascot with cars vans motorcycles and savings jar showing affordable protection" 
-                  className="w-full max-w-xs sm:max-w-sm lg:max-w-md h-auto"
+                  className="w-full max-w-md sm:max-w-lg lg:max-w-2xl h-auto"
                 />
                 
                 {/* Trustpilot Section */}
@@ -356,7 +356,7 @@ const ContactUs = () => {
                   <OptimizedImage 
                     src={trustpilotLogo} 
                     alt="Trustpilot Excellent Rating - 5 Stars"
-                    className="h-12 w-auto"
+                    className="h-12 w-auto object-contain"
                     priority={false}
                     width={160}
                     height={50}
@@ -381,11 +381,11 @@ const ContactUs = () => {
                   <div className="ml-11 sm:ml-14 space-y-2">
                     <div className="text-sm sm:text-base">
                       <span className="font-medium text-gray-700">Email:</span>
-                      <span className="text-gray-600"> support@buyawarranty.co.uk</span>
+                      <span className="font-bold text-brand-orange"> support@buyawarranty.co.uk</span>
                     </div>
                     <div className="text-sm sm:text-base">
                       <span className="font-medium text-gray-700">Phone:</span>
-                      <span className="text-gray-600"> 0330 229 5040</span>
+                      <span className="font-bold text-brand-orange"> 0330 229 5040</span>
                     </div>
                   </div>
                 </div>
@@ -401,11 +401,11 @@ const ContactUs = () => {
                   <div className="ml-11 sm:ml-14 space-y-2">
                     <div className="text-sm sm:text-base">
                       <span className="font-medium text-gray-700">Email:</span>
-                      <span className="text-gray-600"> claims@buyawarranty.co.uk</span>
+                      <span className="font-bold text-brand-orange"> claims@buyawarranty.co.uk</span>
                     </div>
                     <div className="text-sm sm:text-base">
                       <span className="font-medium text-gray-700">Phone:</span>
-                      <span className="text-gray-600"> 0330 229 5045</span>
+                      <span className="font-bold text-brand-orange"> 0330 229 5045</span>
                     </div>
                   </div>
                 </div>
@@ -437,7 +437,7 @@ const ContactUs = () => {
                     <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Opening Hours:</h2>
                   </div>
                   <div className="ml-11 sm:ml-14">
-                    <p className="text-gray-600 text-sm sm:text-base">Monday – Saturday : 9am to 5:30pm</p>
+                    <p className="text-gray-600 text-sm sm:text-base">Monday – Saturday : 9am to 5pm</p>
                   </div>
                 </div>
               </div>
