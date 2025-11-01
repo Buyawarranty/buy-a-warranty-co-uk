@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, Mail, Clock, Upload, Menu, X } from 'lucide-react';
+import { MessageCircle, Mail, Clock, Upload, Menu, X, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -177,7 +177,7 @@ const ContactUs = () => {
       toast({
         title: "✓ Message Sent Successfully",
         description: "Thank you for contacting us! We'll get back to you within 1-2 business days.",
-        className: "bg-green-500 text-white border-green-600",
+        className: "bg-green-500 text-white border-green-600 animate-in slide-in-from-top-5 duration-300",
       });
 
       // Reset form
@@ -611,9 +611,14 @@ const ContactUs = () => {
                     <Button 
                       type="submit" 
                       disabled={isSubmitting}
-                      className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg disabled:opacity-50"
+                      className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg disabled:opacity-50 flex items-center gap-2"
                     >
-                      {isSubmitting ? 'Submitting...' : 'Submit'}
+                      {isSubmitting ? 'Submitting...' : (
+                        <>
+                          Submit
+                          <ArrowRight className="w-5 h-5" strokeWidth={3} />
+                        </>
+                      )}
                     </Button>
                   </div>
                 </form>
