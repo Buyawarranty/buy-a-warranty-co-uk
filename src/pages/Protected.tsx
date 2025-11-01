@@ -383,10 +383,10 @@ const Protected = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Full list of <span className="text-primary">covered components</span>
+              Full List of Covered Components
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Click on each vehicle type to see the complete list of covered components
+              Select your vehicle type to view everything that's include -covering electrical, mechanical parts, consequential damage and labour.
             </p>
           </div>
           
