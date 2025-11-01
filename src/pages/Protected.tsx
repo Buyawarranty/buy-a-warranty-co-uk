@@ -327,12 +327,12 @@ const Protected = () => {
           
           {/* Instant Activation Notice */}
           <div className="max-w-2xl mx-auto mb-8">
-            <div className="bg-green-50 border border-green-400 rounded-lg p-4 shadow-sm">
+            <div className="bg-green-50 border border-green-400 rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-lg hover:scale-105 hover:bg-green-100 cursor-pointer group">
               <div className="flex items-center justify-center mb-1.5">
-                <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                <h3 className="text-lg font-bold text-gray-900">Instant Activation</h3>
+                <CheckCircle className="w-5 h-5 text-green-600 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                <h3 className="text-lg font-bold text-gray-900 transition-colors duration-300 group-hover:text-green-700">Instant Activation</h3>
               </div>
-              <p className="text-sm text-gray-700 text-center">
+              <p className="text-sm text-gray-700 text-center transition-colors duration-300 group-hover:text-gray-900">
                 Cover starts immediately after purchase - excludes pre-existing conditions.
               </p>
             </div>
@@ -368,7 +368,7 @@ const Protected = () => {
               <OptimizedImage 
                 src={trustpilotLogo} 
                 alt="Trustpilot Excellent Rating - 5 Stars"
-                className="h-12 w-auto"
+                className="h-12 w-auto object-contain"
                 priority={false}
                 width={160}
                 height={50}
