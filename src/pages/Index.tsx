@@ -584,10 +584,8 @@ const Index = () => {
     saveStateToLocalStorage(4);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // Track plan selection for abandoned cart emails
-    if (vehicleData) {
-      trackAbandonedCart(vehicleData, 4, planName, paymentType);
-    }
+    // Note: Abandoned cart tracking for step 4 is handled in CustomerDetailsStep
+    // once the user enters their email in the checkout form
   };
 
 

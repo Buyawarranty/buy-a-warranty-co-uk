@@ -195,6 +195,47 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     setUpdatedPricingData(pricingData);
   }, [pricingData]);
 
+  // Track abandoned cart when email is filled in (with debounce)
+  useEffect(() => {
+    // Only track if we have a valid email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!customerData.email || !emailRegex.test(customerData.email)) {
+      return;
+    }
+
+    console.log('📧 Valid email detected, scheduling abandoned cart tracking');
+
+    // Debounce the API call by 2 seconds
+    const timeoutId = setTimeout(async () => {
+      try {
+        console.log('🔔 Tracking abandoned cart for email:', customerData.email);
+        
+        await supabase.functions.invoke('track-abandoned-cart', {
+          body: {
+            email: customerData.email,
+            full_name: `${customerData.first_name || ''} ${customerData.last_name || ''}`.trim() || customerData.email,
+            phone: customerData.phone || '',
+            vehicle_reg: vehicleData.regNumber || '',
+            vehicle_make: vehicleData.make || '',
+            vehicle_model: vehicleData.model || '',
+            vehicle_year: vehicleData.year || '',
+            vehicle_type: 'car',
+            mileage: vehicleData.mileage || '',
+            plan_name: planName || '',
+            payment_type: paymentType || '',
+            step_abandoned: 4
+          }
+        });
+
+        console.log('✅ Abandoned cart tracked successfully for step 4');
+      } catch (error) {
+        console.error('❌ Error tracking abandoned cart:', error);
+      }
+    }, 2000); // Wait 2 seconds after user stops typing
+
+    return () => clearTimeout(timeoutId);
+  }, [customerData.email, customerData.first_name, customerData.last_name, customerData.phone, vehicleData, planName, paymentType]);
+
   // Function to remove add-on and recalculate pricing
   const removeAddOn = (addOnKey: string) => {
     if (!updatedPricingData.protectionAddOns) return;
