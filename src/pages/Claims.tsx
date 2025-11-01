@@ -500,7 +500,7 @@ Issue Timing: ${formData.issueTiming}
                     </div>
                   </div>
                   <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">0330 229 5045</p>
-                  <p className="text-sm text-green-600 font-medium mt-3">Monday to Friday, 9am to 5.30pm</p>
+                  <p className="text-sm text-green-600 font-medium mt-3">Monday to Friday, 9am to 5pm</p>
                 </a>
               </div>
             </div>

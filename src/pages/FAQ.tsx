@@ -1177,34 +1177,38 @@ const FAQ = () => {
                     Can't find the answer you're looking for? Our friendly team is here to help.
                   </p>
                   
-                  <div className="grid md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                    <Button asChild className="bg-primary hover:bg-primary/90">
-                      <a href="tel:03302295040" className="flex items-center justify-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        Call Us
-                      </a>
-                    </Button>
+                  <div className="space-y-4 max-w-2xl mx-auto">
+                    <div className="flex items-start gap-3 text-left">
+                      <Phone className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-brand-dark-text">
+                          Call Us
+                        </p>
+                        <a href="tel:03302295040" className="text-primary hover:underline">
+                          Phone: 0330 229 5040
+                        </a>
+                        <span className="text-brand-dark-text"> | </span>
+                        <a href="tel:03302295045" className="text-primary hover:underline">
+                          Claims: 0330 229 5045
+                        </a>
+                      </div>
+                    </div>
                     
-                    <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                      <a href="mailto:info@buyawarranty.co.uk" className="flex items-center justify-center gap-2">
-                        <Mail className="w-4 h-4" />
-                        Email Us
-                      </a>
-                    </Button>
-                    
-                    <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                      <Link to="/" className="flex items-center justify-center gap-2">
-                        <MessageCircle className="w-4 h-4" />
-                        Live Chat
-                      </Link>
-                    </Button>
+                    <div className="flex items-start gap-3 text-left">
+                      <Mail className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-brand-dark-text">
+                          Email Us
+                        </p>
+                        <a href="mailto:support@buyawarranty.co.uk" className="text-primary hover:underline">
+                          support@buyawarranty.co.uk
+                        </a>
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="mt-6 text-sm text-brand-dark-text">
-                    <p className="mb-2">
-                      <strong>Phone:</strong> 0330 229 5040 | <strong>Claims:</strong> 0330 229 5045
-                    </p>
-                    <p>Monday to Friday, 9am to 6pm</p>
+                    <p>Monday to Friday, 9am to 5pm</p>
                   </div>
                 </div>
               </section>
