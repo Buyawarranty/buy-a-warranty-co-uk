@@ -234,7 +234,7 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     }, 2000); // Wait 2 seconds after user stops typing
 
     return () => clearTimeout(timeoutId);
-  }, [customerData.email, customerData.first_name, customerData.last_name, customerData.phone, vehicleData, planName, paymentType]);
+  }, [customerData.email, customerData.first_name, customerData.last_name, customerData.phone, vehicleData.regNumber, vehicleData.make, vehicleData.model, vehicleData.year, vehicleData.mileage, planName, paymentType]);
 
   // Function to remove add-on and recalculate pricing
   const removeAddOn = (addOnKey: string) => {
