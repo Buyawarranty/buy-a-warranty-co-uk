@@ -38,10 +38,21 @@ const ContactUs = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    
+    // For phone field, only allow numbers, spaces, dashes, and plus sign
+    if (name === 'phone') {
+      const filteredValue = value.replace(/[^\d\s\-+]/g, '');
+      setFormData({
+        ...formData,
+        [name]: filteredValue
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -519,6 +530,7 @@ const ContactUs = () => {
                         placeholder="Telephone"
                         value={formData.phone}
                         onChange={handleInputChange}
+                        pattern="[\d\s\-+]*"
                         className="mt-1"
                       />
                     </div>
