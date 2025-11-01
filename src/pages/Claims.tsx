@@ -483,7 +483,7 @@ Issue Timing: ${formData.issueTiming}
                     </div>
                   </div>
                   <p className="text-lg font-semibold text-orange-500 group-hover:text-orange-600 transition-colors duration-300">claims@buyawarranty.co.uk</p>
-                  <p className="text-sm text-green-600 font-medium mt-3">We typically respond within 2 hours</p>
+                  <p className="text-sm text-green-600 font-medium mt-3">We respond as quickly as possible during working hours.</p>
                 </a>
 
                 <a 
