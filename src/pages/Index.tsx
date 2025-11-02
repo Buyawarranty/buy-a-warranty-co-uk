@@ -278,6 +278,7 @@ const Index = () => {
   
   // Update URL when step changes
   const updateStepInUrl = (step: number) => {
+    console.log('🔗 updateStepInUrl called:', { step, currentUrl: window.location.href });
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set('step', step.toString());
     
@@ -285,9 +286,11 @@ const Index = () => {
     // This allows proper back button navigation
     const newUrl = `${window.location.pathname}?${newSearchParams.toString()}`;
     window.history.pushState({ step }, '', newUrl);
+    console.log('🔗 History pushed, new URL:', newUrl);
     
     // Also update React Router's search params without adding another history entry
     setSearchParams(newSearchParams, { replace: true });
+    console.log('✅ updateStepInUrl completed');
   };
   
   // Restore state from localStorage for a specific step
@@ -344,6 +347,7 @@ const Index = () => {
 
   // Redirect to step 1 if accessing step 2+ without vehicle data
   useEffect(() => {
+    console.log('🔍 Checking vehicle data:', { currentStep, hasVehicleData: !!vehicleData });
     if (currentStep >= 2 && !vehicleData) {
       console.log('⚠️ Accessing step', currentStep, 'without vehicle data, redirecting to step 1');
       handleStepChange(1);
@@ -542,10 +546,12 @@ const Index = () => {
   };
 
   const handleBackToStep = (step: number) => {
+    console.log('🔙 handleBackToStep called:', { from: currentStep, to: step });
     setCurrentStep(step);
     updateStepInUrl(step);
     saveStateToLocalStorage(step);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    console.log('✅ handleBackToStep completed');
   };
 
   const handleFormDataUpdate = (data: Partial<VehicleData>) => {

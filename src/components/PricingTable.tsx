@@ -888,7 +888,10 @@ const PricingTable: React.FC<PricingTableProps> = ({
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <button 
-              onClick={onBack}
+              onClick={() => {
+                console.log('🔙 PricingTable Back button clicked');
+                onBack();
+              }}
               className="flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
             >
               <ArrowLeft className="w-4 h-4" />
