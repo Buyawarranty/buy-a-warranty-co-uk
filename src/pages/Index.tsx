@@ -700,7 +700,7 @@ const Index = () => {
           <QuoteDeliveryStep 
             vehicleData={vehicleData}
             onNext={handleQuoteDeliveryComplete}
-            onBack={() => window.history.back()}
+            onBack={() => handleBackToStep(1)}
             onSkip={() => handleStepChange(3)}
           />
         </PerformanceOptimizedSuspense>
