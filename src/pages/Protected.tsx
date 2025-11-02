@@ -386,7 +386,7 @@ const Protected = () => {
               Full List of Covered Components
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Select your vehicle type to view everything that's include -covering electrical, mechanical parts, consequential damage and labour.
+              Select your vehicle type to view everything that's include - covering electrical, mechanical parts, consequential damage and labour.
             </p>
           </div>
           
