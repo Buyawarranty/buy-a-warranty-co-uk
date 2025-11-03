@@ -620,7 +620,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                 </div>
                 <div className="flex items-center">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0" />
-                  <span className="font-medium">Unlimited claims • Complete Cover • No excess</span>
+                  <span className="font-medium">Unlimited claims • Parts and Labour • No excess</span>
                 </div>
               </div>
 
