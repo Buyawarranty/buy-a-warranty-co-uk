@@ -133,12 +133,17 @@ const handler = async (req: Request): Promise<Response> => {
         regNumber: emailRequest.vehicleReg,
         email: emailRequest.email,
         firstName: emailRequest.firstName,
-        vehicleMake: emailRequest.vehicleMake,
-        vehicleModel: emailRequest.vehicleModel,
+        make: emailRequest.vehicleMake, // Use 'make' to match frontend VehicleData interface
+        model: emailRequest.vehicleModel, // Use 'model' to match frontend VehicleData interface
         vehicleType: emailRequest.vehicleType, // Important for special vehicles
         step: emailRequest.triggerType === 'pricing_page_view' ? 3 : 4,
         planName: emailRequest.planName,
-        paymentType: emailRequest.paymentType
+        paymentType: emailRequest.paymentType,
+        // Add additional fields that might be needed
+        mileage: '0', // Default value
+        phone: '', // Will be filled in by user
+        lastName: '', // Will be filled in by user
+        address: '' // Will be filled in by user
       }));
       continueUrl = `${baseUrl}?restore=${encodeURIComponent(stateParam)}`;
       checkoutUrl = continueUrl;

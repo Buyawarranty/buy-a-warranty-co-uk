@@ -211,8 +211,89 @@ const Index = () => {
   
   const { restoreQuoteData } = useQuoteRestoration();
 
+  // CRITICAL: Handle restore parameter from abandoned cart emails FIRST
+  // This runs once on mount and has priority over other restoration logic
+  useEffect(() => {
+    const restoreParam = searchParams.get('restore');
+    
+    if (restoreParam) {
+      console.log('🔗 Restoring cart from email link...');
+      try {
+        const restoredData = JSON.parse(atob(restoreParam));
+        console.log('✅ Successfully decoded restore data:', restoredData);
+        
+        // Set all state immediately
+        setVehicleData(restoredData);
+        setFormData(prev => ({ ...prev, ...restoredData }));
+        
+        // Construct selectedPlan from planName and paymentType if available
+        let reconstructedPlan = null;
+        if (restoredData.selectedPlan) {
+          reconstructedPlan = restoredData.selectedPlan;
+        } else if (restoredData.planName && restoredData.paymentType) {
+          // If we have planName and paymentType but not full selectedPlan object,
+          // create a minimal plan object that will be filled in when pricing loads
+          reconstructedPlan = {
+            id: 'pending', // Will be updated when pricing loads
+            name: restoredData.planName,
+            paymentType: restoredData.paymentType
+          };
+          console.log('🔧 Reconstructed minimal plan object:', reconstructedPlan);
+        }
+        
+        if (reconstructedPlan) {
+          setSelectedPlan(reconstructedPlan);
+        }
+        
+        const restoredStep = restoredData.step || 3;
+        setCurrentStep(restoredStep);
+        
+        // CRITICAL: Save everything to localStorage so the app works consistently
+        const updates: Record<string, string> = {
+          buyawarranty_vehicleData: JSON.stringify(restoredData),
+          buyawarranty_formData: JSON.stringify(restoredData),
+          buyawarranty_currentStep: restoredStep.toString(),
+          warrantyJourneyState: JSON.stringify({
+            step: restoredStep,
+            vehicleData: restoredData,
+            selectedPlan: reconstructedPlan,
+            formData: restoredData
+          })
+        };
+        
+        if (reconstructedPlan) {
+          updates.buyawarranty_selectedPlan = JSON.stringify(reconstructedPlan);
+        }
+        
+        Object.entries(updates).forEach(([key, value]) => 
+          localStorage.setItem(key, value)
+        );
+        
+        console.log('✅ Saved restored data to localStorage');
+        
+        // Update URL to remove restore param but keep step
+        const newSearchParams = new URLSearchParams();
+        newSearchParams.set('step', restoredStep.toString());
+        setSearchParams(newSearchParams, { replace: true });
+        
+        console.log('✅ Cart restoration complete, navigating to step', restoredStep);
+      } catch (error) {
+        console.error('❌ Error restoring data from URL:', error);
+        // On error, redirect to step 1 with error notification
+        setCurrentStep(1);
+        updateStepInUrl(1);
+      }
+    }
+  }, []); // Run only once on mount, before other effects
+
   // Quote restoration effect - optimized with memoization
   useEffect(() => {
+    // Skip if we're handling a restore parameter (handled by effect above)
+    const restoreParam = searchParams.get('restore');
+    if (restoreParam) {
+      return;
+    }
+    
     if (quoteParam && emailParam) {
       restoreQuoteData(quoteParam, emailParam).then(restoredData => {
         if (restoredData) {
@@ -432,33 +513,17 @@ const Index = () => {
     // Note: popstate is now handled by useMobileBackNavigation hook
     // which includes state restoration logic
     
+    // Skip if we're handling a restore parameter (handled by dedicated effect above)
+    const restoreParam = searchParams.get('restore');
+    if (restoreParam) {
+      return;
+    }
+    
     // Load saved state on initial load
     const savedState = loadStateFromLocalStorage();
     const stepFromUrl = getStepFromUrl();
     
-    // Check for restore parameter from email links
-    const restoreParam = searchParams.get('restore');
-    
-    if (restoreParam) {
-      try {
-        const restoredData = JSON.parse(atob(restoreParam));
-        setVehicleData(restoredData);
-        setFormData(prev => ({ ...prev, ...restoredData }));
-        if (restoredData.selectedPlan) {
-          setSelectedPlan(restoredData.selectedPlan);
-        }
-        const restoredStep = restoredData.step || 3;
-        setCurrentStep(restoredStep);
-        updateStepInUrl(restoredStep);
-        
-        // Clear the restore parameter but keep step
-        const newSearchParams = new URLSearchParams();
-        newSearchParams.set('step', restoredStep.toString());
-        setSearchParams(newSearchParams, { replace: true });
-      } catch (error) {
-        console.error('Error restoring data from URL:', error);
-      }
-    } else if (savedState && stepFromUrl > 1) {
+    if (savedState && stepFromUrl > 1) {
       // Restore from localStorage if we're not on step 1
       setVehicleData(savedState.vehicleData);
       setSelectedPlan(savedState.selectedPlan);
