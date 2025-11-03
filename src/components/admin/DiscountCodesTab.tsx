@@ -72,13 +72,13 @@ export function DiscountCodesTab() {
   const [filterSource, setFilterSource] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'created_at' | 'valid_to' | 'used_count' | 'code'>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [validityPeriod, setValidityPeriod] = useState<'6months' | '1month' | 'custom'>('6months');
+  const [validityPeriod, setValidityPeriod] = useState<'6months' | '1month' | 'noend' | 'custom'>('noend');
   const [formData, setFormData] = useState<DiscountCodeFormData>({
     code: '',
     type: 'percentage',
     value: 0,
     valid_from: new Date().toISOString().split('T')[0],
-    valid_to: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 6 months default
+    valid_to: new Date(Date.now() + 3650 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 10 years (no end date)
     usage_limit: 1,
     campaign_source: 'GENERAL',
     active: true,
@@ -302,13 +302,13 @@ export function DiscountCodesTab() {
   };
 
   const resetForm = () => {
-    setValidityPeriod('6months');
+    setValidityPeriod('noend');
     setFormData({
       code: '',
       type: 'percentage',
       value: 0,
       valid_from: new Date().toISOString().split('T')[0],
-      valid_to: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 6 months default
+      valid_to: new Date(Date.now() + 3650 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 10 years (no end date)
       usage_limit: 1,
       campaign_source: 'GENERAL',
       active: true,
@@ -352,7 +352,7 @@ export function DiscountCodesTab() {
     return `${source}${value}${randomWord}`;
   };
 
-  const handleValidityPeriodChange = (period: '6months' | '1month' | 'custom') => {
+  const handleValidityPeriodChange = (period: '6months' | '1month' | 'noend' | 'custom') => {
     setValidityPeriod(period);
     
     if (period !== 'custom') {
@@ -363,6 +363,8 @@ export function DiscountCodesTab() {
         validToDate.setMonth(validToDate.getMonth() + 6);
       } else if (period === '1month') {
         validToDate.setMonth(validToDate.getMonth() + 1);
+      } else if (period === 'noend') {
+        validToDate = new Date(Date.now() + 3650 * 24 * 60 * 60 * 1000); // 10 years in the future
       }
       
       setFormData({
@@ -384,6 +386,8 @@ export function DiscountCodesTab() {
         validToDate.setMonth(validToDate.getMonth() + 6);
       } else if (validityPeriod === '1month') {
         validToDate.setMonth(validToDate.getMonth() + 1);
+      } else if (validityPeriod === 'noend') {
+        validToDate = new Date(Date.now() + 3650 * 24 * 60 * 60 * 1000); // 10 years in the future
       }
       
       setFormData({
@@ -738,12 +742,13 @@ export function DiscountCodesTab() {
 
                   <div className="space-y-2">
                     <Label>Validity Period</Label>
-                    <Select value={validityPeriod} onValueChange={(value: '6months' | '1month' | 'custom') => handleValidityPeriodChange(value)}>
+                    <Select value={validityPeriod} onValueChange={(value: '6months' | '1month' | 'noend' | 'custom') => handleValidityPeriodChange(value)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-white border shadow-lg z-50">
-                        <SelectItem value="6months">6 Months (Default)</SelectItem>
+                        <SelectItem value="noend">No End Date (Default)</SelectItem>
+                        <SelectItem value="6months">6 Months</SelectItem>
                         <SelectItem value="1month">1 Month</SelectItem>
                         <SelectItem value="custom">Custom End Date</SelectItem>
                       </SelectContent>
