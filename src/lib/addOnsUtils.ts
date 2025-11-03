@@ -48,7 +48,7 @@ export const getAutoIncludedAddOns = (paymentType: string): string[] => {
     case '24months':
       return ['breakdown', 'motFee']; // 2-Year: Vehicle recovery, MOT test fee
     case '36months':
-      return ['breakdown', 'motFee', 'rental', 'tyre']; // 3-Year: All above + Rental, Tyre
+      return ['breakdown', 'motFee', 'rental']; // 3-Year: All above + Rental
     default:
       return []; // 12-month plans have no auto-included add-ons
   }
