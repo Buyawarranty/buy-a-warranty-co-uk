@@ -76,22 +76,30 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
   const handleValidateDiscount = async () => {
     if (!discountCode.trim()) return;
     
+    // Prevent multiple rapid clicks
+    if (validatingDiscount) return;
+    
     setValidatingDiscount(true);
+    setDiscountValidation(null); // Clear previous validation state
+    
     try {
       const { data, error } = await supabase.functions.invoke('validate-discount-code', {
         body: {
-          code: discountCode,
+          code: discountCode.trim(),
           customerEmail: '', // We don't have customer email at this stage
           orderAmount: subtotal
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Discount validation error:', error);
+        throw error;
+      }
 
       if (data.valid) {
         setDiscountValidation({
           valid: true,
-          message: `Discount applied! You save £${data.discountAmount.toFixed(2)}`,
+          message: `✓ Discount code "${discountCode.toUpperCase()}" applied successfully!`,
           discountAmount: data.discountAmount,
           finalAmount: data.finalAmount
         });
@@ -109,7 +117,7 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
       console.error('Discount validation error:', error);
       setDiscountValidation({
         valid: false,
-        message: 'Failed to validate discount code',
+        message: 'Failed to validate discount code. Please try again.',
         discountAmount: 0,
         finalAmount: subtotal
       });
@@ -386,31 +394,59 @@ const WarrantyCart: React.FC<WarrantyCartProps> = ({ onAddMore, onProceedToCheck
                     <Input
                       placeholder="Enter discount code"
                       value={discountCode}
-                      onChange={(e) => setDiscountCode(e.target.value)}
+                      onChange={(e) => {
+                        setDiscountCode(e.target.value);
+                        // Clear validation when code changes
+                        if (discountValidation) {
+                          setDiscountValidation(null);
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && discountCode.trim() && !validatingDiscount) {
+                          handleValidateDiscount();
+                        }
+                      }}
                       className="flex-1"
+                      disabled={discountValidation?.valid}
                     />
                     <Button 
                       type="button" 
-                      variant="outline"
+                      variant={discountValidation?.valid ? "default" : "outline"}
                       onClick={handleValidateDiscount}
-                      disabled={!discountCode.trim() || validatingDiscount}
+                      disabled={!discountCode.trim() || validatingDiscount || discountValidation?.valid}
+                      className={discountValidation?.valid ? "bg-green-600 hover:bg-green-700" : ""}
                     >
-                      {validatingDiscount ? 'Validating...' : 'Apply'}
+                      {validatingDiscount ? 'Validating...' : discountValidation?.valid ? '✓ Applied' : 'Apply'}
                     </Button>
                   </div>
                   
                   {discountValidation && (
                     <div className={`text-sm px-3 py-2 rounded-md mt-2 ${
                       discountValidation.valid 
-                        ? 'bg-green-50 text-green-700 border border-green-200' 
+                        ? 'bg-green-50 text-green-800 border-2 border-green-500 font-medium' 
                         : 'bg-red-50 text-red-700 border border-red-200'
                     }`}>
-                      <div className="flex items-center gap-2">
-                        {discountValidation.valid ? 
-                          <CheckCircle className="w-4 h-4" /> : 
-                          <AlertCircle className="w-4 h-4" />
-                        }
-                        {discountValidation.message}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          {discountValidation.valid ? 
+                            <CheckCircle className="w-4 h-4 text-green-600" /> : 
+                            <AlertCircle className="w-4 h-4" />
+                          }
+                          {discountValidation.message}
+                        </div>
+                        {discountValidation.valid && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setDiscountValidation(null);
+                              setDiscountCode('');
+                            }}
+                            className="text-xs h-auto py-1 px-2"
+                          >
+                            Remove
+                          </Button>
+                        )}
                       </div>
                     </div>
                   )}
