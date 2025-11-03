@@ -497,25 +497,43 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 
                 {/* Pricing Section */}
                 <div className="space-y-2 mt-6 mb-4">
-                  <div className="text-3xl font-bold text-orange-500">
+                  <div className="text-3xl font-bold text-gray-900">
                     £{option.monthlyPrice}/month
                   </div>
                   <div className="text-sm text-gray-600">
                     {option.id === '12months' 
-                      ? 'Only 12 easy payments' 
+                      ? '12 monthly payments' 
                       : option.id === '24months' 
-                        ? 'Nothing to pay in Year 2' 
-                        : 'Nothing to pay in Year 2 and Year 3'
+                        ? '12 monthly payments' 
+                        : '12 monthly payments'
                     }
                   </div>
-                  <div className="text-sm font-semibold text-gray-900">
-                    Total cost: {option.originalPrice ? (
-                      <>
-                        <span className="line-through text-gray-400">£{option.originalPrice}</span>{' '}
-                        <span className="text-orange-500">£{option.totalPrice}</span>
-                      </>
+                  <div className="text-sm text-gray-600 mb-1">
+                    {option.id === '24months' 
+                      ? 'Coverage continues in Year 2 at no extra cost' 
+                      : option.id === '36months'
+                        ? 'Coverage continues in Year 2 & 3 at no extra cost'
+                        : ''
+                    }
+                  </div>
+                  <div className="mt-3">
+                    <div className="text-sm font-semibold text-gray-900 mb-1">
+                      Total cost:
+                    </div>
+                    {option.originalPrice ? (
+                      <div className="space-y-1">
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-lg line-through text-gray-400">£{option.originalPrice}</span>
+                          <span className="text-3xl font-bold text-green-600">£{option.totalPrice}</span>
+                        </div>
+                        <div className="text-base font-semibold text-green-600">
+                          You save £{option.originalPrice - option.totalPrice}!
+                        </div>
+                      </div>
                     ) : (
-                      `£${option.totalPrice}`
+                      <div className="text-3xl font-bold text-gray-900">
+                        £{option.totalPrice}
+                      </div>
                     )}
                   </div>
                 </div>
