@@ -582,7 +582,7 @@ const AudiWarranty = () => {
               <Button 
                 onClick={navigateToQuoteForm}
                 size="lg"
-                className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-6"
+                className="bg-white text-black hover:bg-gray-100 text-lg px-8 py-6 font-semibold"
               >
                 👉 Get my Audi warranty quote →
               </Button>
