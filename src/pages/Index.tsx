@@ -145,15 +145,73 @@ const Index = () => {
   console.log('Immediate quote check:', { quoteParam, emailParam });
   console.log('All URL params:', Object.fromEntries(searchParams.entries()));
   
-  // Initialize state variables first - check localStorage immediately for vehicleData
-  const [vehicleData, setVehicleData] = useState<VehicleData | null>(() => {
+  // CRITICAL: Check for restore parameter FIRST and initialize state with it
+  const getInitialVehicleData = (): VehicleData | null => {
+    // Priority 1: Check for restore parameter from email links
+    const restoreParam = searchParams.get('restore');
+    if (restoreParam) {
+      try {
+        const restoredData = JSON.parse(atob(restoreParam));
+        console.log('🔗 Initializing with restored data from email:', restoredData);
+        
+        // Save to localStorage immediately
+        localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(restoredData));
+        localStorage.setItem('buyawarranty_formData', JSON.stringify(restoredData));
+        
+        return restoredData;
+      } catch (error) {
+        console.error('❌ Error decoding restore parameter:', error);
+      }
+    }
+    
+    // Priority 2: Check localStorage
     try {
       const saved = localStorage.getItem('buyawarranty_vehicleData');
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
     }
-  });
+  };
+  
+  // Initialize state variables first - check restore param and localStorage
+  const [vehicleData, setVehicleData] = useState<VehicleData | null>(getInitialVehicleData);
+  const getInitialSelectedPlan = () => {
+    // Priority 1: Check for restore parameter from email links
+    const restoreParam = searchParams.get('restore');
+    if (restoreParam) {
+      try {
+        const restoredData = JSON.parse(atob(restoreParam));
+        
+        let reconstructedPlan = null;
+        if (restoredData.selectedPlan) {
+          reconstructedPlan = restoredData.selectedPlan;
+        } else if (restoredData.planName && restoredData.paymentType) {
+          reconstructedPlan = {
+            id: 'pending',
+            name: restoredData.planName,
+            paymentType: restoredData.paymentType
+          };
+        }
+        
+        if (reconstructedPlan) {
+          console.log('🔗 Initializing with restored plan:', reconstructedPlan);
+          localStorage.setItem('buyawarranty_selectedPlan', JSON.stringify(reconstructedPlan));
+          return reconstructedPlan;
+        }
+      } catch (error) {
+        console.error('❌ Error decoding restore plan:', error);
+      }
+    }
+    
+    // Priority 2: Check localStorage
+    try {
+      const saved = localStorage.getItem('buyawarranty_selectedPlan');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  };
+  
   const [selectedPlan, setSelectedPlan] = useState<{
     id: string, 
     paymentType: string, 
@@ -166,28 +224,73 @@ const Index = () => {
       protectionAddOns?: {[key: string]: boolean},
       claimLimit?: number
     }
-  } | null>(null);
-  const [formData, setFormData] = useState({
-    regNumber: '',
-    mileage: '',
-    email: '',
-    phone: '',
-    firstName: '',
-    lastName: '',
-    address: '',
-    make: '',
-    model: '',
-    fuelType: '',
-    transmission: '',
-    year: '',
-    vehicleType: ''
-  });
+  } | null>(getInitialSelectedPlan);
+  const getInitialFormData = () => {
+    // Priority 1: Check for restore parameter from email links
+    const restoreParam = searchParams.get('restore');
+    if (restoreParam) {
+      try {
+        const restoredData = JSON.parse(atob(restoreParam));
+        console.log('🔗 Initializing formData with restored data');
+        return restoredData;
+      } catch (error) {
+        console.error('❌ Error decoding restore formData:', error);
+      }
+    }
+    
+    // Priority 2: Check localStorage
+    try {
+      const saved = localStorage.getItem('buyawarranty_formData');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch {
+      // Continue to default
+    }
+    
+    // Priority 3: Return empty form
+    return {
+      regNumber: '',
+      mileage: '',
+      email: '',
+      phone: '',
+      firstName: '',
+      lastName: '',
+      address: '',
+      make: '',
+      model: '',
+      fuelType: '',
+      transmission: '',
+      year: '',
+      vehicleType: ''
+    };
+  };
+  
+  const [formData, setFormData] = useState(getInitialFormData);
   
   // State for back navigation confirmation dialog
   const [showBackConfirmDialog, setShowBackConfirmDialog] = useState(false);
   
   // Get current step from URL or default to 1
   const getStepFromUrl = () => {
+    // Priority 1: Check for restore parameter which includes step
+    const restoreParam = searchParams.get('restore');
+    if (restoreParam) {
+      try {
+        const restoredData = JSON.parse(atob(restoreParam));
+        const restoredStep = restoredData.step || 3;
+        console.log('🔗 Initializing with restored step:', restoredStep);
+        
+        // Save to localStorage immediately
+        localStorage.setItem('buyawarranty_currentStep', restoredStep.toString());
+        
+        return restoredStep;
+      } catch (error) {
+        console.error('❌ Error decoding restore step:', error);
+      }
+    }
+    
+    // Priority 2: Check URL step parameter
     const stepParam = searchParams.get('step');
     console.log('getStepFromUrl - stepParam:', stepParam);
     if (stepParam) {
@@ -195,14 +298,18 @@ const Index = () => {
       console.log('getStepFromUrl - parsed step:', step);
       return step >= 1 && step <= 5 ? step : 1;
     }
-    // Also check window.location for step parameter as fallback
-    const urlParams = new URLSearchParams(window.location.search);
-    const fallbackStep = urlParams.get('step');
-    console.log('getStepFromUrl - fallback step from window.location:', fallbackStep);
-    if (fallbackStep) {
-      const step = parseInt(fallbackStep);
-      return step >= 1 && step <= 5 ? step : 1;
+    
+    // Priority 3: Check localStorage
+    try {
+      const saved = localStorage.getItem('buyawarranty_currentStep');
+      if (saved) {
+        const step = parseInt(saved);
+        return step >= 1 && step <= 5 ? step : 1;
+      }
+    } catch {
+      // Continue to default
     }
+    
     return 1;
   };
   
@@ -211,80 +318,25 @@ const Index = () => {
   
   const { restoreQuoteData } = useQuoteRestoration();
 
-  // CRITICAL: Handle restore parameter from abandoned cart emails FIRST
-  // This runs once on mount and has priority over other restoration logic
+  // CRITICAL: Clean up restore parameter from URL after initial state is set
+  // This effect only handles URL cleanup since state is now initialized in useState
   useEffect(() => {
     const restoreParam = searchParams.get('restore');
     
     if (restoreParam) {
-      console.log('🔗 Restoring cart from email link...');
-      try {
-        const restoredData = JSON.parse(atob(restoreParam));
-        console.log('✅ Successfully decoded restore data:', restoredData);
-        
-        // Set all state immediately
-        setVehicleData(restoredData);
-        setFormData(prev => ({ ...prev, ...restoredData }));
-        
-        // Construct selectedPlan from planName and paymentType if available
-        let reconstructedPlan = null;
-        if (restoredData.selectedPlan) {
-          reconstructedPlan = restoredData.selectedPlan;
-        } else if (restoredData.planName && restoredData.paymentType) {
-          // If we have planName and paymentType but not full selectedPlan object,
-          // create a minimal plan object that will be filled in when pricing loads
-          reconstructedPlan = {
-            id: 'pending', // Will be updated when pricing loads
-            name: restoredData.planName,
-            paymentType: restoredData.paymentType
-          };
-          console.log('🔧 Reconstructed minimal plan object:', reconstructedPlan);
-        }
-        
-        if (reconstructedPlan) {
-          setSelectedPlan(reconstructedPlan);
-        }
-        
-        const restoredStep = restoredData.step || 3;
-        setCurrentStep(restoredStep);
-        
-        // CRITICAL: Save everything to localStorage so the app works consistently
-        const updates: Record<string, string> = {
-          buyawarranty_vehicleData: JSON.stringify(restoredData),
-          buyawarranty_formData: JSON.stringify(restoredData),
-          buyawarranty_currentStep: restoredStep.toString(),
-          warrantyJourneyState: JSON.stringify({
-            step: restoredStep,
-            vehicleData: restoredData,
-            selectedPlan: reconstructedPlan,
-            formData: restoredData
-          })
-        };
-        
-        if (reconstructedPlan) {
-          updates.buyawarranty_selectedPlan = JSON.stringify(reconstructedPlan);
-        }
-        
-        Object.entries(updates).forEach(([key, value]) => 
-          localStorage.setItem(key, value)
-        );
-        
-        console.log('✅ Saved restored data to localStorage');
-        
-        // Update URL to remove restore param but keep step
-        const newSearchParams = new URLSearchParams();
-        newSearchParams.set('step', restoredStep.toString());
-        setSearchParams(newSearchParams, { replace: true });
-        
-        console.log('✅ Cart restoration complete, navigating to step', restoredStep);
-      } catch (error) {
-        console.error('❌ Error restoring data from URL:', error);
-        // On error, redirect to step 1 with error notification
-        setCurrentStep(1);
-        updateStepInUrl(1);
-      }
+      console.log('🔗 Cleaning up restore parameter from URL');
+      
+      // Update URL to remove restore param but keep step
+      const newSearchParams = new URLSearchParams();
+      const currentStepValue = currentStep || 3;
+      newSearchParams.set('step', currentStepValue.toString());
+      
+      // Use replace to avoid adding to browser history
+      setSearchParams(newSearchParams, { replace: true });
+      
+      console.log('✅ URL cleanup complete');
     }
-  }, []); // Run only once on mount, before other effects
+  }, []); // Run only once on mount
 
   // Quote restoration effect - optimized with memoization
   useEffect(() => {
