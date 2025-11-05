@@ -158,6 +158,18 @@ export function DiscountCodesTab() {
         finalCode = `${formData.campaign_source}${formData.value}${randomWord}`;
       }
 
+      // Validate code format - Stripe only allows alphanumeric, hyphens, and underscores
+      const codeRegex = /^[a-zA-Z0-9\-_]+$/;
+      if (!codeRegex.test(finalCode)) {
+        toast({
+          title: "Invalid code format",
+          description: "Discount codes can only contain letters, numbers, hyphens (-), and underscores (_). Special characters like %, $, @ are not allowed.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       // Convert date strings to ISO timestamps
       const validFromDate = new Date(formData.valid_from);
       validFromDate.setHours(0, 0, 0, 0);
@@ -708,7 +720,11 @@ export function DiscountCodesTab() {
                     <Input
                       id="code"
                       value={formData.code}
-                      onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                      onChange={(e) => {
+                        // Only allow alphanumeric, hyphens, and underscores
+                        const sanitized = e.target.value.toUpperCase().replace(/[^A-Z0-9\-_]/g, '');
+                        setFormData({ ...formData, code: sanitized });
+                      }}
                       placeholder="Will auto-generate if empty"
                       className="flex-1"
                     />
@@ -724,7 +740,7 @@ export function DiscountCodesTab() {
                     </Button>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Format: {formData.campaign_source}{formData.value}[Random Code]
+                    Only letters, numbers, hyphens (-), and underscores (_) allowed
                   </p>
                 </div>
 
