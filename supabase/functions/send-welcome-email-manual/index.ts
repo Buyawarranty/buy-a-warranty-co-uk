@@ -226,7 +226,7 @@ const handler = async (req: Request): Promise<Response> => {
         .eq('id', policy.id);
     }
 
-    // Load the Platinum warranty plan PDF attachment
+    // Load the required PDF attachments (Terms + Platinum warranty for all purchases)
     console.log(JSON.stringify({ evt: "pdf.load.start", rid }));
     
     let attachments = [];
@@ -246,22 +246,40 @@ const handler = async (req: Request): Promise<Response> => {
         return btoa(binary);
       };
 
-      // Load Platinum Warranty Plan PDF v2.4
-      const premiumResponse = await fetch('https://buyawarranty.co.uk/Platinum-Warranty-Plan_v2.4.pdf');
-      if (premiumResponse.ok) {
-        const premiumBuffer = await premiumResponse.arrayBuffer();
-        const premiumBase64 = arrayBufferToBase64(premiumBuffer);
+      // Load Terms and Conditions PDF v2.3
+      const termsResponse = await fetch('https://buyawarranty.co.uk/Terms-and-Conditions-v2.3.pdf');
+      if (termsResponse.ok) {
+        const termsBuffer = await termsResponse.arrayBuffer();
+        const termsBase64 = arrayBufferToBase64(termsBuffer);
         
         attachments.push({
-          filename: 'Platinum-Warranty-Plan-v2.4.pdf',
-          content: premiumBase64,
+          filename: 'Terms-and-Conditions-v2.3.pdf',
+          content: termsBase64,
           type: 'application/pdf',
           disposition: 'attachment'
         });
         
-        console.log(JSON.stringify({ evt: "platinum.pdf.attached", rid, size: premiumBuffer.byteLength }));
+        console.log(JSON.stringify({ evt: "terms.pdf.attached", rid, size: termsBuffer.byteLength }));
       } else {
-        console.log(JSON.stringify({ evt: "platinum.pdf.failed", rid, status: premiumResponse.status }));
+        console.log(JSON.stringify({ evt: "terms.pdf.failed", rid, status: termsResponse.status }));
+      }
+
+      // Load Platinum Warranty Plan PDF v2.4 (used for all plan types)
+      const platinumResponse = await fetch('https://buyawarranty.co.uk/Platinum-Warranty-Plan_v2.4.pdf');
+      if (platinumResponse.ok) {
+        const platinumBuffer = await platinumResponse.arrayBuffer();
+        const platinumBase64 = arrayBufferToBase64(platinumBuffer);
+        
+        attachments.push({
+          filename: 'Platinum-Warranty-Plan-v2.4.pdf',
+          content: platinumBase64,
+          type: 'application/pdf',
+          disposition: 'attachment'
+        });
+        
+        console.log(JSON.stringify({ evt: "platinum.pdf.attached", rid, size: platinumBuffer.byteLength }));
+      } else {
+        console.log(JSON.stringify({ evt: "platinum.pdf.failed", rid, status: platinumResponse.status }));
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -607,14 +625,19 @@ const handler = async (req: Request): Promise<Response> => {
           `}
 
           <div style="margin-bottom: 25px;">
-            <h2 style="color: #333; font-size: 20px; margin-bottom: 15px;">📎 Your Warranty Plan</h2>
+            <h2 style="color: #333; font-size: 20px; margin-bottom: 15px;">📎 Your Documents</h2>
             
             <p style="color: #333; margin-bottom: 15px;">
-              Attached to this email, you'll find your Platinum Warranty Plan certificate.
+              Attached to this email, you'll find:
             </p>
             
+            <ul style="color: #333; padding-left: 20px;">
+              <li style="margin-bottom: 5px;">Platinum Warranty Plan Certificate</li>
+              <li style="margin-bottom: 5px;">Terms & Conditions</li>
+            </ul>
+            
             <p style="color: #333; margin-top: 15px;">
-              Please keep this safe — you'll need it if you ever need to make a claim.
+              Please keep these safe — you'll need them if you ever need to make a claim.
             </p>
           </div>
 

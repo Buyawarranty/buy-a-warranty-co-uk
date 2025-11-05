@@ -191,20 +191,28 @@ serve(async (req) => {
       throw new Error('RESEND_API_KEY not configured');
     }
 
-    // Fetch Platinum warranty plan PDF from Supabase Storage
-    logStep("Fetching Platinum warranty plan from Supabase Storage");
+    // Fetch documents from Supabase Storage
+    logStep("Fetching documents from Supabase Storage");
     
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || 'https://mzlpuxzwyrcyrgrongeb.supabase.co';
     
-    // Construct direct public URL for Platinum plan in Storage
-    const planStoragePath = 'platinum/Platinum-Warranty-Plan-v2.3.pdf';
+    // Construct direct public URLs for documents in Storage
+    // Always use Platinum warranty plan for all purchases
+    const termsStoragePath = 'terms/Terms-and-Conditions-v2.3.pdf';
+    const platinumPlanPath = 'platinum/Platinum-Warranty-Plan-v2.3.pdf';
+    
+    const termsDoc = {
+      file_url: `${supabaseUrl}/storage/v1/object/public/policy-documents/${termsStoragePath}`,
+      document_name: 'Terms-and-Conditions-v2.3.pdf'
+    };
     
     const planDoc = {
-      file_url: `${supabaseUrl}/storage/v1/object/public/policy-documents/${planStoragePath}`,
+      file_url: `${supabaseUrl}/storage/v1/object/public/policy-documents/${platinumPlanPath}`,
       document_name: 'Platinum-Warranty-Plan-v2.3.pdf'
     };
     
-    logStep("Document URL constructed", { 
+    logStep("Document URLs constructed", { 
+      termsUrl: termsDoc.file_url, 
       planUrl: planDoc.file_url 
     });
 
@@ -244,11 +252,36 @@ serve(async (req) => {
       });
     };
 
-    // Load the Platinum warranty plan PDF from Supabase Storage
+    // Load the required PDF attachments from Supabase Storage
     const attachments = [];
     
     try {
-      // Load Platinum Warranty Plan PDF from Storage
+      // Load Terms and Conditions PDF from Storage
+      logStep("Fetching Terms PDF", { url: termsDoc.file_url });
+      const termsResponse = await fetch(termsDoc.file_url);
+      if (termsResponse.ok) {
+        const termsBuffer = await termsResponse.arrayBuffer();
+        const termsBytes = new Uint8Array(termsBuffer);
+        
+        // Convert to base64 properly using a binary string approach
+        let binary = '';
+        for (let i = 0; i < termsBytes.length; i++) {
+          binary += String.fromCharCode(termsBytes[i]);
+        }
+        const termsBase64 = btoa(binary);
+        
+        attachments.push({
+          filename: termsDoc.document_name,
+          content: termsBase64,
+          type: 'application/pdf',
+          disposition: 'attachment'
+        });
+        logStep("Terms PDF attached successfully", { size: termsBytes.length });
+      } else {
+        logStep("Terms PDF fetch failed", { status: termsResponse.status });
+      }
+      
+      // Load Platinum Warranty Plan PDF from Storage (used for all plan types)
       logStep("Fetching Platinum Warranty Plan PDF", { url: planDoc.file_url });
       const planResponse = await fetch(planDoc.file_url);
       if (planResponse.ok) {
@@ -273,7 +306,7 @@ serve(async (req) => {
         logStep("Platinum Plan PDF fetch failed", { status: planResponse.status });
       }
     } catch (error) {
-      logStep("ERROR: Could not load PDF attachment from Storage", error);
+      logStep("ERROR: Could not load PDF attachments from Storage", error);
     }
 
     // Send welcome email directly using Resend
@@ -343,9 +376,13 @@ serve(async (req) => {
 
           <!-- Documents -->
           <div style="margin-bottom: 25px;">
-            <h3 style="color: #333333; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">📎 Your Warranty Plan</h3>
-            <p style="color: #333333; font-size: 15px; line-height: 1.6; margin: 0 0 10px 0;">Attached to this email, you'll find your Platinum Warranty Plan certificate.</p>
-            <p style="color: #333333; font-size: 15px; line-height: 1.6; margin: 0;">Please keep this safe — you'll need it if you ever need to make a claim.</p>
+            <h3 style="color: #333333; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">📎 Your Documents</h3>
+            <p style="color: #333333; font-size: 15px; line-height: 1.6; margin: 0 0 10px 0;">Attached to this email, you'll find:</p>
+            <ul style="color: #333333; font-size: 15px; line-height: 1.8; margin: 0 0 10px 0; padding-left: 20px;">
+              <li>Platinum Warranty Plan Certificate</li>
+              <li>Terms & Conditions</li>
+            </ul>
+            <p style="color: #333333; font-size: 15px; line-height: 1.6; margin: 0;">Please keep these safe — you'll need them if you ever need to make a claim.</p>
           </div>
 
           <!-- Support -->
