@@ -380,7 +380,7 @@ const MercedesWarranty = () => {
               <img 
                 src={mercedesVanImage} 
                 alt="Mercedes-Benz Van Extended Warranty" 
-                className="w-full max-w-md mx-auto h-auto rounded-lg"
+                className="w-full max-w-[180px] mx-auto h-auto rounded-lg"
               />
             </div>
           </div>
