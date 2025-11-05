@@ -624,8 +624,7 @@ const AudiWarranty = () => {
         </a>
       </div>
 
-      <NewFooter />
-      <WebsiteFooter />
+        <NewFooter />
     </>
   );
 };
