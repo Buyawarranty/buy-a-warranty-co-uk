@@ -136,6 +136,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   // State for scroll-to-top button
   const [showScrollTop, setShowScrollTop] = useState(false);
   
+  // State for seasonal offer
+  const [seasonalOfferClaimed, setSeasonalOfferClaimed] = useState(false);
+  
   // State for field validation
   const [validatedFields, setValidatedFields] = useState<{[key: string]: boolean}>({});
 
@@ -147,6 +150,20 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Check for seasonal offer on mount
+  useEffect(() => {
+    const claimed = localStorage.getItem('seasonal_offer_claimed');
+    setSeasonalOfferClaimed(claimed === 'true');
+
+    // Listen for offer claim events
+    const handleOfferClaimed = () => {
+      setSeasonalOfferClaimed(true);
+    };
+
+    window.addEventListener('offerClaimed', handleOfferClaimed);
+    return () => window.removeEventListener('offerClaimed', handleOfferClaimed);
   }, []);
 
   // Reset loading state when user returns from payment page via back button
@@ -1292,12 +1309,23 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                       </div>
 
                       {/* Total Discount Summary */}
-                      {hasValidDiscountCodes && (
-                        <div className="mt-3 pt-3 border-t border-green-200">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="font-medium text-gray-700">Total Discount:</span>
-                            <span className="font-bold text-green-600">-£{totalDiscountAmount.toFixed(2)}</span>
-                          </div>
+                      {(hasValidDiscountCodes || seasonalOfferClaimed) && (
+                        <div className="mt-3 pt-3 border-t border-green-200 space-y-2">
+                          {hasValidDiscountCodes && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="font-medium text-gray-700">Total Discount:</span>
+                              <span className="font-bold text-green-600">-£{totalDiscountAmount.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {seasonalOfferClaimed && (
+                            <div className="flex justify-between items-center text-sm bg-blue-50 p-2 rounded">
+                              <span className="font-medium text-blue-700 flex items-center gap-1">
+                                <span>❄️</span>
+                                <span>3 Months FREE Bonus Cover</span>
+                              </span>
+                              <span className="font-bold text-blue-600">Added!</span>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -1310,73 +1338,106 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         // Always calculate monthly payment based on 12 monthly payments, regardless of warranty duration
                         const monthlyPayment = Math.round(discountedBumperPrice / 12);
                        
-                       if (months === 12) {
-                         return (
-                           <div className="text-center">
-                             <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
-                              <div className="flex items-center justify-center mb-2">
-                                <span className="mr-2 text-green-600">✓</span>
-                                <span className="font-medium text-foreground">Only 12 easy payments</span>
-                              </div>
-                              <div className="text-center">
-                                <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
-                                <div className="text-2xl font-bold text-blue-600">£{discountedBumperPrice}</div>
-                              </div>
-                           </div>
-                         );
-                       } else if (months === 24) {
+                        if (months === 12) {
+                          return (
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
+                               <div className="flex items-center justify-center mb-2">
+                                 <span className="mr-2 text-green-600">✓</span>
+                                 <span className="font-medium text-foreground">Only 12 easy payments</span>
+                               </div>
+                               {seasonalOfferClaimed && (
+                                 <div className="flex items-center justify-center mb-2 text-blue-600">
+                                   <span className="mr-2">❄️</span>
+                                   <span className="font-semibold">+ 3 Months FREE Bonus</span>
+                                 </div>
+                               )}
+                               <div className="text-center">
+                                 <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
+                                 <div className="text-2xl font-bold text-blue-600">£{discountedBumperPrice}</div>
+                                 {seasonalOfferClaimed && (
+                                   <div className="text-sm text-blue-600 mt-1 font-medium">
+                                     15 months total cover for the price of 12!
+                                   </div>
+                                 )}
+                               </div>
+                            </div>
+                          );
+                        } else if (months === 24) {
                          // Use actual pricing data instead of simulated calculations
                          const originalPrice = discountedBumperPrice + 100; // £100 discount for 2-year
                          const savings = 100;
-                         return (
-                           <div className="text-center">
-                             <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
-                              <div className="space-y-1 mb-3">
-                                <div className="flex items-center justify-center">
-                                  <span className="mr-2 text-green-600">✓</span>
-                                  <span className="font-medium text-foreground">Only 12 easy payments</span>
-                                </div>
-                                <div className="flex items-center justify-center">
-                                  <span className="mr-2 text-green-600">✓</span>
-                                  <span className="font-medium text-foreground">Nothing to pay in Year 2</span>
-                                </div>
-                              </div>
-                               <div className="text-center">
-                                 <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
-                                 <div className="flex items-center justify-center gap-2">
-                                   <span className="line-through text-red-600 text-2xl font-bold">£{originalPrice}</span>
-                                   <span className="text-blue-600 text-2xl font-bold">£{discountedBumperPrice}</span>
+                          return (
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
+                               <div className="space-y-1 mb-3">
+                                 <div className="flex items-center justify-center">
+                                   <span className="mr-2 text-green-600">✓</span>
+                                   <span className="font-medium text-foreground">Only 12 easy payments</span>
                                  </div>
-                               </div>
-                           </div>
-                         );
-                       } else if (months === 36) {
-                         // Use actual pricing data instead of simulated calculations  
-                         const originalPrice = discountedBumperPrice + 200; // £200 discount for 3-year
-                         const savings = 200;
-                         return (
-                           <div className="text-center">
-                             <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
-                              <div className="space-y-1 mb-3">
-                                <div className="flex items-center justify-center">
-                                  <span className="mr-2 text-green-600">✓</span>
-                                  <span className="font-medium text-foreground">Only 12 easy payments</span>
-                                </div>
-                                <div className="flex items-center justify-center">
-                                  <span className="mr-2 text-green-600">✓</span>
-                                  <span className="font-medium text-foreground">Nothing to pay in Year 2 and Year 3</span>
-                                </div>
-                              </div>
-                               <div className="text-center">
-                                 <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
-                                 <div className="flex items-center justify-center gap-2">
-                                   <span className="line-through text-red-600 text-2xl font-bold">£{originalPrice}</span>
-                                   <span className="text-blue-600 text-2xl font-bold">£{discountedBumperPrice}</span>
+                                 <div className="flex items-center justify-center">
+                                   <span className="mr-2 text-green-600">✓</span>
+                                   <span className="font-medium text-foreground">Nothing to pay in Year 2</span>
                                  </div>
+                                 {seasonalOfferClaimed && (
+                                   <div className="flex items-center justify-center text-blue-600">
+                                     <span className="mr-2">❄️</span>
+                                     <span className="font-semibold">+ 3 Months FREE Bonus</span>
+                                   </div>
+                                 )}
                                </div>
-                           </div>
-                         );
-                       }
+                                <div className="text-center">
+                                  <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
+                                  <div className="flex items-center justify-center gap-2">
+                                    <span className="line-through text-red-600 text-2xl font-bold">£{originalPrice}</span>
+                                    <span className="text-blue-600 text-2xl font-bold">£{discountedBumperPrice}</span>
+                                  </div>
+                                  {seasonalOfferClaimed && (
+                                    <div className="text-sm text-blue-600 mt-1 font-medium">
+                                      27 months total cover!
+                                    </div>
+                                  )}
+                                </div>
+                            </div>
+                          );
+                         } else if (months === 36) {
+                          // Use actual pricing data instead of simulated calculations  
+                          const originalPrice = discountedBumperPrice + 200; // £200 discount for 3-year
+                          const savings = 200;
+                          return (
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
+                               <div className="space-y-1 mb-3">
+                                 <div className="flex items-center justify-center">
+                                   <span className="mr-2 text-green-600">✓</span>
+                                   <span className="font-medium text-foreground">Only 12 easy payments</span>
+                                 </div>
+                                 <div className="flex items-center justify-center">
+                                   <span className="mr-2 text-green-600">✓</span>
+                                   <span className="font-medium text-foreground">Nothing to pay in Year 2 and Year 3</span>
+                                 </div>
+                                 {seasonalOfferClaimed && (
+                                   <div className="flex items-center justify-center text-blue-600">
+                                     <span className="mr-2">❄️</span>
+                                     <span className="font-semibold">+ 3 Months FREE Bonus</span>
+                                   </div>
+                                 )}
+                               </div>
+                                <div className="text-center">
+                                  <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
+                                  <div className="flex items-center justify-center gap-2">
+                                    <span className="line-through text-red-600 text-2xl font-bold">£{originalPrice}</span>
+                                    <span className="text-blue-600 text-2xl font-bold">£{discountedBumperPrice}</span>
+                                  </div>
+                                  {seasonalOfferClaimed && (
+                                    <div className="text-sm text-blue-600 mt-1 font-medium">
+                                      39 months total cover!
+                                    </div>
+                                  )}
+                                </div>
+                            </div>
+                          );
+                        }
                        return null;
                      })()}
                    </div>
