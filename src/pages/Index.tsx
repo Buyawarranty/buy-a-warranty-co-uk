@@ -14,7 +14,7 @@ import { WebPageSchema } from '@/components/schema/WebPageSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { useMobileBackNavigation } from '@/hooks/useMobileBackNavigation';
 import { useQuoteRestoration } from '@/hooks/useQuoteRestoration';
-import { batchLocalStorageWrite, safeLocalStorageRemove, parseLocalStorageJSON } from '@/utils/localStorage';
+import { batchLocalStorageWrite, safeLocalStorageRemove, parseLocalStorageJSON, saveWithTimestamp, getWithTimestamp } from '@/utils/localStorage';
 import PerformanceOptimizedSuspense from '@/components/PerformanceOptimizedSuspense';
 import { BackNavigationConfirmDialog } from '@/components/BackNavigationConfirmDialog';
 
@@ -154,9 +154,9 @@ const Index = () => {
         const restoredData = JSON.parse(atob(restoreParam));
         console.log('🔗 Initializing with restored data from email:', restoredData);
         
-        // Save to localStorage immediately
-        localStorage.setItem('buyawarranty_vehicleData', JSON.stringify(restoredData));
-        localStorage.setItem('buyawarranty_formData', JSON.stringify(restoredData));
+        // Save to localStorage immediately with timestamp
+        saveWithTimestamp('buyawarranty_vehicleData', JSON.stringify(restoredData));
+        saveWithTimestamp('buyawarranty_formData', JSON.stringify(restoredData));
         
         return restoredData;
       } catch (error) {
@@ -164,16 +164,20 @@ const Index = () => {
       }
     }
     
-    // Priority 2: Check localStorage
+    // Priority 2: Check localStorage with 30-day expiry
     try {
-      const saved = localStorage.getItem('buyawarranty_vehicleData');
-      return saved ? JSON.parse(saved) : null;
+      const saved = getWithTimestamp('buyawarranty_vehicleData', 30);
+      if (!saved) {
+        console.log('⏰ Vehicle data expired or not found');
+        return null;
+      }
+      return JSON.parse(saved);
     } catch {
       return null;
     }
   };
   
-  // Initialize state variables first - check restore param and localStorage
+  // Initialize state variables first - check restore param and localStorage with timestamp check
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(getInitialVehicleData);
   const getInitialSelectedPlan = () => {
     // Priority 1: Check for restore parameter from email links
@@ -195,7 +199,7 @@ const Index = () => {
         
         if (reconstructedPlan) {
           console.log('🔗 Initializing with restored plan:', reconstructedPlan);
-          localStorage.setItem('buyawarranty_selectedPlan', JSON.stringify(reconstructedPlan));
+          saveWithTimestamp('buyawarranty_selectedPlan', JSON.stringify(reconstructedPlan));
           return reconstructedPlan;
         }
       } catch (error) {
@@ -203,10 +207,14 @@ const Index = () => {
       }
     }
     
-    // Priority 2: Check localStorage
+    // Priority 2: Check localStorage with 30-day expiry
     try {
-      const saved = localStorage.getItem('buyawarranty_selectedPlan');
-      return saved ? JSON.parse(saved) : null;
+      const saved = getWithTimestamp('buyawarranty_selectedPlan', 30);
+      if (!saved) {
+        console.log('⏰ Selected plan expired or not found');
+        return null;
+      }
+      return JSON.parse(saved);
     } catch {
       return null;
     }
@@ -238,9 +246,9 @@ const Index = () => {
       }
     }
     
-    // Priority 2: Check localStorage
+    // Priority 2: Check localStorage with 30-day expiry
     try {
-      const saved = localStorage.getItem('buyawarranty_formData');
+      const saved = getWithTimestamp('buyawarranty_formData', 30);
       if (saved) {
         return JSON.parse(saved);
       }
@@ -271,7 +279,7 @@ const Index = () => {
   // State for back navigation confirmation dialog
   const [showBackConfirmDialog, setShowBackConfirmDialog] = useState(false);
   
-  // Get current step from URL or default to 1
+  // Get current step from URL or default to 1 with 30-day expiry
   const getStepFromUrl = () => {
     // Priority 1: Check for restore parameter which includes step
     const restoreParam = searchParams.get('restore');
@@ -281,8 +289,8 @@ const Index = () => {
         const restoredStep = restoredData.step || 3;
         console.log('🔗 Initializing with restored step:', restoredStep);
         
-        // Save to localStorage immediately
-        localStorage.setItem('buyawarranty_currentStep', restoredStep.toString());
+        // Save to localStorage with timestamp
+        saveWithTimestamp('buyawarranty_currentStep', restoredStep.toString());
         
         return restoredStep;
       } catch (error) {
@@ -299,15 +307,24 @@ const Index = () => {
       return step >= 1 && step <= 5 ? step : 1;
     }
     
-    // Priority 3: Check localStorage
+    // Priority 3: Check localStorage with 30-day expiry
     try {
-      const saved = localStorage.getItem('buyawarranty_currentStep');
-      if (saved) {
-        const step = parseInt(saved);
-        return step >= 1 && step <= 5 ? step : 1;
+      const saved = getWithTimestamp('buyawarranty_currentStep', 30);
+      if (!saved) {
+        console.log('⏰ Current step expired or not found, clearing all saved data');
+        // Clear all related data if step has expired
+        safeLocalStorageRemove([
+          'buyawarranty_vehicleData',
+          'buyawarranty_selectedPlan',
+          'buyawarranty_formData',
+          'warrantyJourneyState'
+        ]);
+        return 1;
       }
+      const step = parseInt(saved);
+      return step >= 1 && step <= 5 ? step : 1;
     } catch {
-      // Continue to default
+      return 1;
     }
     
     return 1;
@@ -369,7 +386,7 @@ const Index = () => {
     }
   }, [quoteParam, emailParam, restoreQuoteData]);
   
-  // Optimized localStorage operations with batching
+  // Optimized localStorage operations with batching and 30-day expiry
   const saveStateToLocalStorage = useCallback((step?: number) => {
     const currentStepValue = step || currentStep;
     const state = {
@@ -379,23 +396,17 @@ const Index = () => {
       formData
     };
     
-    // Batch all localStorage operations to reduce I/O
-    const updates: Record<string, string> = {
-      warrantyJourneyState: JSON.stringify(state),
-      buyawarranty_formData: JSON.stringify(formData),
-      buyawarranty_currentStep: String(currentStepValue)
-    };
+    // Save with timestamps for 30-day expiry
+    saveWithTimestamp('warrantyJourneyState', JSON.stringify(state));
+    saveWithTimestamp('buyawarranty_formData', JSON.stringify(formData));
+    saveWithTimestamp('buyawarranty_currentStep', String(currentStepValue));
     
     if (vehicleData) {
-      updates.buyawarranty_vehicleData = JSON.stringify(vehicleData);
+      saveWithTimestamp('buyawarranty_vehicleData', JSON.stringify(vehicleData));
     }
     if (selectedPlan) {
-      updates.buyawarranty_selectedPlan = JSON.stringify(selectedPlan);
+      saveWithTimestamp('buyawarranty_selectedPlan', JSON.stringify(selectedPlan));
     }
-    
-    Object.entries(updates).forEach(([key, value]) => 
-      localStorage.setItem(key, value)
-    );
   }, [currentStep, vehicleData, selectedPlan, formData]);
   
   // Memoized localStorage operations
@@ -802,7 +813,10 @@ const Index = () => {
       {/* Progress Bar with Moving Car - Steps 2, 3, and 4 */}
       {currentStep >= 2 && currentStep <= 4 && (
         <PerformanceOptimizedSuspense height="120px">
-          <CarJourneyProgress currentStep={currentStep} />
+          <CarJourneyProgress 
+            currentStep={currentStep} 
+            onStepChange={currentStep === 3 ? () => handleStepChange(1) : undefined}
+          />
         </PerformanceOptimizedSuspense>
       )}
       
