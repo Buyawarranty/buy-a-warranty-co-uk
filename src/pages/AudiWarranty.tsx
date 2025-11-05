@@ -257,7 +257,7 @@ const AudiWarranty = () => {
 
         {/* Audi Car Image Section */}
         <section className="container mx-auto px-4 py-16">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             <img 
               src={audiCarImage} 
               alt="Audi car with buyawarranty branding" 
