@@ -814,8 +814,37 @@ const Index = () => {
       {currentStep >= 2 && currentStep <= 4 && (
         <PerformanceOptimizedSuspense height="120px">
           <CarJourneyProgress 
-            currentStep={currentStep} 
-            onStepChange={currentStep === 3 ? () => handleStepChange(1) : undefined}
+            currentStep={currentStep}
+            onLogoClick={() => {
+              // Clear all saved data
+              safeLocalStorageRemove([
+                'buyawarranty_vehicleData',
+                'buyawarranty_selectedPlan',
+                'buyawarranty_formData',
+                'buyawarranty_currentStep',
+                'warrantyJourneyState'
+              ]);
+              // Reset state
+              setVehicleData(null);
+              setSelectedPlan(null);
+              setFormData({
+                regNumber: '',
+                mileage: '',
+                email: '',
+                phone: '',
+                firstName: '',
+                lastName: '',
+                address: '',
+                make: '',
+                model: '',
+                fuelType: '',
+                transmission: '',
+                year: '',
+                vehicleType: ''
+              });
+              // Go to step 1
+              handleStepChange(1);
+            }}
           />
         </PerformanceOptimizedSuspense>
       )}
