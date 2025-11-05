@@ -993,10 +993,6 @@ const CarExtendedWarranty: React.FC = () => {
             
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center">
               {[
-                { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
-                { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
-                { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
-                { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
                 { name: 'Alfa Romeo', logo: alfaRomeoLogo },
                 { name: 'Audi', logo: 'https://logo.clearbit.com/audi.com', link: '/car-extended-warranty/audi/' },
                 { name: 'BMW', logo: bmwLogo, link: '/car-extended-warranty/bmw/' },
@@ -1013,11 +1009,15 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
                 { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
                 { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
+                { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
                 { name: 'Jeep', logo: 'https://logo.clearbit.com/jeep.com' },
                 { name: 'Kia', logo: 'https://logo.clearbit.com/kia.com' },
+                { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com' },
                 { name: 'Lexus', logo: 'https://logo.clearbit.com/lexus.com' },
                 { name: 'Mazda', logo: 'https://logo.clearbit.com/mazda.com' },
                 { name: 'Mercedes-Benz', logo: 'https://logo.clearbit.com/mercedes-benz.com', link: '/car-extended-warranty/mercedes-benz/' },
+                { name: 'MG', logo: 'https://logo.clearbit.com/mgmotor.eu' },
+                { name: 'Mini', logo: 'https://logo.clearbit.com/mini.com' },
                 { name: 'Mitsubishi', logo: 'https://logo.clearbit.com/mitsubishi-motors.com' },
                 { name: 'Nissan', logo: nissanLogo },
                 { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
