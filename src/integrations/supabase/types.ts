@@ -1052,6 +1052,7 @@ export type Database = {
           policy_end_date: string
           policy_number: string
           policy_start_date: string
+          seasonal_bonus_months: number | null
           status: string
           stripe_session_id: string | null
           stripe_subscription_id: string | null
@@ -1100,6 +1101,7 @@ export type Database = {
           policy_end_date: string
           policy_number: string
           policy_start_date?: string
+          seasonal_bonus_months?: number | null
           status?: string
           stripe_session_id?: string | null
           stripe_subscription_id?: string | null
@@ -1148,6 +1150,7 @@ export type Database = {
           policy_end_date?: string
           policy_number?: string
           policy_start_date?: string
+          seasonal_bonus_months?: number | null
           status?: string
           stripe_session_id?: string | null
           stripe_subscription_id?: string | null
@@ -1277,6 +1280,7 @@ export type Database = {
           postcode: string | null
           registration_plate: string | null
           review_email_sent_at: string | null
+          seasonal_bonus_months: number | null
           signup_date: string
           status: string
           street: string | null
@@ -1334,6 +1338,7 @@ export type Database = {
           postcode?: string | null
           registration_plate?: string | null
           review_email_sent_at?: string | null
+          seasonal_bonus_months?: number | null
           signup_date?: string
           status?: string
           street?: string | null
@@ -1391,6 +1396,7 @@ export type Database = {
           postcode?: string | null
           registration_plate?: string | null
           review_email_sent_at?: string | null
+          seasonal_bonus_months?: number | null
           signup_date?: string
           status?: string
           street?: string | null

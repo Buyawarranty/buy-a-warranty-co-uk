@@ -18,6 +18,7 @@ interface PaymentWebhookData {
   vehicleDetails?: any;
   paymentProvider: 'stripe' | 'bumper';
   bumperOrderId?: string;
+  seasonalBonusMonths?: number;
 }
 
 const supabase = createClient(
@@ -46,7 +47,8 @@ const handler = async (req: Request): Promise<Response> => {
       sessionId,
       bumperOrderId,
       paymentProvider,
-      vehicleDetails
+      vehicleDetails,
+      seasonalBonusMonths
     } = webhookData;
 
     // Step 1: Determine vehicle type and document path
@@ -91,6 +93,7 @@ const handler = async (req: Request): Promise<Response> => {
       signup_date: new Date().toISOString(),
       country: 'United Kingdom',
       voluntary_excess: vehicleDetails?.voluntaryExcess ?? vehicleDetails?.voluntary_excess ?? 0,
+      seasonal_bonus_months: seasonalBonusMonths || vehicleDetails?.seasonalBonusMonths || 0,
       ...(vehicleDetails || {})
     };
 
@@ -148,7 +151,8 @@ const handler = async (req: Request): Promise<Response> => {
       customer_full_name: customerName,
       document_type: vehicleType,
       pdf_document_path: documentPath,
-      email_sent_status: 'pending'
+      email_sent_status: 'pending',
+      seasonal_bonus_months: seasonalBonusMonths || vehicleDetails?.seasonalBonusMonths || 0
     };
 
     const { data: policy, error: policyError } = await supabase

@@ -280,6 +280,7 @@ serve(async (req) => {
     const claimLimit = transactionData.claim_limit || calculateClaimLimit(planId, originalWarrantyDuration);
     // CRITICAL: Use user's selected voluntary excess, not a calculated default
     const voluntaryExcess = protectionAddOns?.voluntaryExcess ?? 0;
+    const seasonalBonusMonths = protectionAddOns?.seasonalBonusMonths ?? 0;
 
     logStep("Using claim limit with correct warranty duration", { 
       transactionClaimLimit: transactionData.claim_limit, 
@@ -287,7 +288,8 @@ serve(async (req) => {
       finalClaimLimit: claimLimit, 
       voluntaryExcess: voluntaryExcess,
       voluntaryExcessSource: protectionAddOns?.voluntaryExcess !== undefined ? 'user_selection' : 'default',
-      warrantyDuration: originalWarrantyDuration
+      warrantyDuration: originalWarrantyDuration,
+      seasonalBonusMonths: seasonalBonusMonths
     });
 
     // Call handle-successful-payment with proper metadata including protectionAddOns and claim_limit
@@ -304,6 +306,7 @@ serve(async (req) => {
       protectionAddOns: addOnFields, // Use processed add-ons with auto-inclusions
       claimLimit: claimLimit, // Pass as direct parameter
       voluntaryExcess: voluntaryExcess, // Pass as direct parameter - user's actual selection
+      seasonalBonusMonths: seasonalBonusMonths, // Pass seasonal bonus
       skipEmail: false, // CRITICAL: Ensure welcome emails are sent for Bumper purchases
       metadata: {
         source: 'bumper',
@@ -312,6 +315,7 @@ serve(async (req) => {
         discount_code: discountCode,
         claim_limit: claimLimit,
         voluntary_excess: voluntaryExcess,
+        seasonal_bonus_months: seasonalBonusMonths, // Include in metadata
         final_amount: finalAmount,
         // Vehicle details for metadata - ensure these are populated
         vehicle_reg: vehicleData?.regNumber || vehicleData?.registration || customerData?.vehicle_reg,

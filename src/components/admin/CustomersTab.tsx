@@ -576,7 +576,8 @@ export const CustomersTab = () => {
           consequential: false,
           claim_limit: policy.claim_limit || 1250,
           brevo_contact_id: null,
-          review_email_sent_at: null
+          review_email_sent_at: null,
+          seasonal_bonus_months: 0
         }));
         
         directData = [...directData, ...orphanedAsCustomers];

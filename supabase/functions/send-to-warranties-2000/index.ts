@@ -481,7 +481,17 @@ serve(async (req) => {
       })(),
       Ref: policy?.policy_number || policy?.warranty_number || customer.warranty_reference_number || `REF-${Date.now()}`,
       VolEx: String(finalVoluntaryExcess),
-      Notes: `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${finalClaimLimit} | VolExcess: ${finalVoluntaryExcess}`
+      Notes: (() => {
+        let notes = `Plan: ${policy?.plan_type || customer.plan_type || 'N/A'} | Payment: ${paymentType || 'N/A'} | ClaimLimit: ${finalClaimLimit} | VolExcess: ${finalVoluntaryExcess}`;
+        
+        // Add seasonal bonus information if present
+        const bonusMonths = policy?.seasonal_bonus_months || customer?.seasonal_bonus_months || 0;
+        if (bonusMonths > 0) {
+          notes += ` | PROMOTION: ${bonusMonths} Months FREE Bonus - Total ${parseInt(coverageMonths) + bonusMonths} months coverage`;
+        }
+        
+        return notes;
+      })()
       // Note: Add-ons are only sent when actually selected to avoid W2000 API validation errors
     };
 

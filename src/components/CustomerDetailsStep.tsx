@@ -617,7 +617,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
               motFee: updatedPricingData.protectionAddOns?.motFee || false,
               lostKey: false, // Not available in frontend selection
               consequential: false // Not available in frontend selection
-            }
+            },
+            seasonalBonusMonths: seasonalOfferClaimed ? 3 : 0
           }
         });
 
