@@ -151,16 +151,28 @@ const Index = () => {
     const restoreParam = searchParams.get('restore');
     if (restoreParam) {
       try {
-        const restoredData = JSON.parse(atob(restoreParam));
-        console.log('🔗 Initializing with restored data from email:', restoredData);
+        console.log('🔗 Attempting to restore from URL parameter');
+        const decoded = atob(restoreParam);
+        console.log('🔗 Decoded restore data:', decoded);
+        const restoredData = JSON.parse(decoded);
+        console.log('🔗 Parsed restore data:', restoredData);
+        
+        // Ensure required fields exist
+        if (!restoredData.regNumber || !restoredData.email) {
+          console.error('❌ Invalid restore data - missing required fields');
+          return null;
+        }
         
         // Save to localStorage immediately with timestamp
         saveWithTimestamp('buyawarranty_vehicleData', JSON.stringify(restoredData));
         saveWithTimestamp('buyawarranty_formData', JSON.stringify(restoredData));
         
+        console.log('✅ Successfully restored vehicle data from email');
         return restoredData;
       } catch (error) {
         console.error('❌ Error decoding restore parameter:', error);
+        // Don't block the page - just log and continue
+        return null;
       }
     }
     
@@ -343,15 +355,21 @@ const Index = () => {
     if (restoreParam) {
       console.log('🔗 Cleaning up restore parameter from URL');
       
-      // Update URL to remove restore param but keep step
-      const newSearchParams = new URLSearchParams();
-      const currentStepValue = currentStep || 3;
-      newSearchParams.set('step', currentStepValue.toString());
-      
-      // Use replace to avoid adding to browser history
-      setSearchParams(newSearchParams, { replace: true });
-      
-      console.log('✅ URL cleanup complete');
+      try {
+        // Update URL to remove restore param but keep step
+        const newSearchParams = new URLSearchParams();
+        const currentStepValue = currentStep || 3;
+        newSearchParams.set('step', currentStepValue.toString());
+        
+        // Use replace to avoid adding to browser history
+        setSearchParams(newSearchParams, { replace: true });
+        
+        console.log('✅ URL cleanup complete, redirected to step:', currentStepValue);
+      } catch (error) {
+        console.error('❌ Error cleaning up URL:', error);
+        // Fallback: just go to step 1 if there's an error
+        setSearchParams({ step: '1' }, { replace: true });
+      }
     }
   }, []); // Run only once on mount
 

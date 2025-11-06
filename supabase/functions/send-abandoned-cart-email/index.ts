@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.2';
+import React from 'npm:react@18.3.1';
+import { renderAsync } from 'npm:@react-email/components@0.0.22';
+import { AbandonedCartEmail } from './_templates/abandoned-cart.tsx';
 
 // Utility functions for retrying fetch requests
 const timedFetch = (url: string, options: RequestInit, timeout = 30000): Promise<Response> => {
@@ -149,27 +152,31 @@ const handler = async (req: Request): Promise<Response> => {
       checkoutUrl = continueUrl;
     }
 
-    // Replace template variables
+    // Render React Email template
+    const htmlContent = await renderAsync(
+      React.createElement(AbandonedCartEmail, {
+        firstName: emailRequest.firstName || 'there',
+        vehicleReg: emailRequest.vehicleReg || '',
+        vehicleMake: emailRequest.vehicleMake || '',
+        vehicleModel: emailRequest.vehicleModel || '',
+        planName: emailRequest.planName || '',
+        continueUrl,
+        triggerType: emailRequest.triggerType
+      })
+    );
+
+    // Get subject from template or use dynamic based on trigger
+    let subject = template.subject;
     const variables = {
       firstName: emailRequest.firstName || 'there',
       vehicleReg: emailRequest.vehicleReg || '',
       vehicleMake: emailRequest.vehicleMake || '',
-      vehicleModel: emailRequest.vehicleModel || '',
-      planName: emailRequest.planName || '',
-      paymentType: emailRequest.paymentType || '',
-      continueUrl,
-      checkoutUrl
+      vehicleModel: emailRequest.vehicleModel || ''
     };
-
-    let htmlContent = template.html_content;
-    let textContent = template.text_content || '';
-    let subject = template.subject;
-
-    // Replace all variables in content and subject
+    
+    // Replace variables in subject
     Object.entries(variables).forEach(([key, value]) => {
       const placeholder = `{{${key}}}`;
-      htmlContent = htmlContent.replace(new RegExp(placeholder, 'g'), value);
-      textContent = textContent.replace(new RegExp(placeholder, 'g'), value);
       subject = subject.replace(new RegExp(placeholder, 'g'), value);
     });
 
@@ -180,11 +187,14 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailPayload = {
-      from: "Buy A Warranty <info@buyawarranty.co.uk>", // Same verified sender as welcome emails
+      from: "Buy A Warranty <info@buyawarranty.co.uk>",
       to: [emailRequest.email],
       subject: subject,
       html: htmlContent,
-      text: textContent,
+      headers: {
+        'X-Entity-Ref-ID': `cart-${emailRequest.cartId}`,
+        'List-Unsubscribe': `<mailto:unsubscribe@buyawarranty.co.uk?subject=unsubscribe>`,
+      },
       tags: [
         { name: 'category', value: 'transactional' },
         { name: 'type', value: 'abandoned-cart' },
