@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, Sparkles } from 'lucide-react';
+import pandaMascot from '@/assets/panda-mascot.png';
 
 export const SeasonalOfferBanner = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -51,23 +52,41 @@ export const SeasonalOfferBanner = () => {
 
       <div className="relative container mx-auto px-4 py-4 md:py-5">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex-1 text-center md:text-left">
+          {/* Panda Mascot - positioned differently for mobile and desktop */}
+          <div className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 w-24 h-24 lg:w-32 lg:h-32">
+            <img 
+              src={pandaMascot} 
+              alt="Warranty Panda" 
+              className="w-full h-full object-contain drop-shadow-lg"
+            />
+          </div>
+
+          <div className="flex-1 text-center md:text-left md:ml-28 lg:ml-36">
+            {/* Mobile Panda - shows above text on mobile */}
+            <div className="md:hidden w-20 h-20 mx-auto mb-2">
+              <img 
+                src={pandaMascot} 
+                alt="Warranty Panda" 
+                className="w-full h-full object-contain drop-shadow-lg"
+              />
+            </div>
+            
             <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
-              <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
-              <h3 className="text-xl md:text-2xl font-bold">
+              <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
+              <h3 className="text-xl md:text-2xl font-bold text-white">
                 Get 3 Extra Months Cover FREE - Limited Time!
               </h3>
-              <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
+              <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
             </div>
-            <p className="text-sm md:text-base text-blue-100">
+            <p className="text-sm md:text-base text-white">
               Order by Sunday 11:00 PM to claim your bonus cover.
             </p>
           </div>
           
           <div className="flex items-center gap-3">
             {isClaimed ? (
-              <div className="flex items-center gap-2 px-6 py-3 bg-green-600 rounded-lg font-semibold">
-                <Sparkles className="w-5 h-5" />
+              <div className="flex items-center gap-2 px-6 py-3 bg-green-600 rounded-lg font-semibold text-white">
+                <Sparkles className="w-5 h-5 text-yellow-300 drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
                 <span>Offer Claimed!</span>
               </div>
             ) : (
@@ -85,7 +104,7 @@ export const SeasonalOfferBanner = () => {
               className="p-2 hover:bg-white/20 rounded-full transition-colors"
               aria-label="Close banner"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 text-white" />
             </button>
           </div>
         </div>
