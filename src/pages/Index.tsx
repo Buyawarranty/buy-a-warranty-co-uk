@@ -508,13 +508,31 @@ const Index = () => {
   };
 
   // Redirect to step 1 if accessing step 2+ without vehicle data
+  // BUT: Don't redirect if we're restoring from a URL parameter (give it time to load)
+  const [isRestoringFromUrl, setIsRestoringFromUrl] = useState(() => !!searchParams.get('restore'));
+  
   useEffect(() => {
-    console.log('🔍 Checking vehicle data:', { currentStep, hasVehicleData: !!vehicleData });
+    // Clear the restoring flag after initial mount
+    if (isRestoringFromUrl) {
+      const timer = setTimeout(() => setIsRestoringFromUrl(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isRestoringFromUrl]);
+  
+  useEffect(() => {
+    console.log('🔍 Checking vehicle data:', { currentStep, hasVehicleData: !!vehicleData, isRestoringFromUrl });
+    
+    // Skip redirect check if we're still restoring from URL
+    if (isRestoringFromUrl) {
+      console.log('⏳ Skipping redirect check - restoring from URL');
+      return;
+    }
+    
     if (currentStep >= 2 && !vehicleData) {
       console.log('⚠️ Accessing step', currentStep, 'without vehicle data, redirecting to step 1');
       handleStepChange(1);
     }
-  }, [currentStep, vehicleData]);
+  }, [currentStep, vehicleData, isRestoringFromUrl]);
 
   // Handle mobile back button navigation to keep users on the site
   const { allowLeave, stay } = useMobileBackNavigation({
