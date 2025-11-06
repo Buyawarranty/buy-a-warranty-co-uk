@@ -60,10 +60,16 @@ interface SendEmailRequest {
   cartId: string; // Track individual cart
   email: string;
   firstName?: string;
+  lastName?: string;
+  phone?: string;
   vehicleReg?: string;
   vehicleMake?: string;
   vehicleModel?: string;
+  vehicleYear?: string;
   vehicleType?: string; // Added for special vehicles (EV, PHEV, MOTORBIKE)
+  mileage?: string;
+  fuelType?: string;
+  transmission?: string;
   triggerType: 'pricing_page_view' | 'plan_selected';
   planName?: string;
   paymentType?: string;
@@ -135,17 +141,20 @@ const handler = async (req: Request): Promise<Response> => {
       const stateParam = btoa(JSON.stringify({
         regNumber: emailRequest.vehicleReg,
         email: emailRequest.email,
-        firstName: emailRequest.firstName,
+        firstName: emailRequest.firstName || '',
+        lastName: emailRequest.lastName || '',
+        phone: emailRequest.phone || '',
         make: emailRequest.vehicleMake, // Use 'make' to match frontend VehicleData interface
         model: emailRequest.vehicleModel, // Use 'model' to match frontend VehicleData interface
-        vehicleType: emailRequest.vehicleType, // Important for special vehicles
+        year: emailRequest.vehicleYear || '',
+        vehicleType: emailRequest.vehicleType || 'car', // Important for special vehicles
+        fuelType: emailRequest.fuelType || '',
+        transmission: emailRequest.transmission || '',
         step: emailRequest.triggerType === 'pricing_page_view' ? 3 : 4,
         planName: emailRequest.planName,
         paymentType: emailRequest.paymentType,
         // Add additional fields that might be needed
-        mileage: '0', // Default value
-        phone: '', // Will be filled in by user
-        lastName: '', // Will be filled in by user
+        mileage: emailRequest.mileage || '0', // Include actual mileage if available
         address: '' // Will be filled in by user
       }));
       continueUrl = `${baseUrl}?restore=${encodeURIComponent(stateParam)}`;

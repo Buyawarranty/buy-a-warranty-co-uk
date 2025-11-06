@@ -157,21 +157,37 @@ const Index = () => {
         const restoredData = JSON.parse(decoded);
         console.log('🔗 Parsed restore data:', restoredData);
         
-        // Ensure required fields exist
-        if (!restoredData.regNumber || !restoredData.email) {
-          console.error('❌ Invalid restore data - missing required fields');
+        // Validate required fields
+        if (!restoredData.regNumber && !restoredData.email) {
+          console.error('❌ Invalid restore data - missing both regNumber and email');
           return null;
         }
         
-        // Save to localStorage immediately with timestamp
-        saveWithTimestamp('buyawarranty_vehicleData', JSON.stringify(restoredData));
-        saveWithTimestamp('buyawarranty_formData', JSON.stringify(restoredData));
+        // Build complete vehicle data object with all required fields
+        const completeVehicleData: VehicleData = {
+          regNumber: restoredData.regNumber || '',
+          mileage: restoredData.mileage || '0',
+          email: restoredData.email || '',
+          phone: restoredData.phone || '',
+          firstName: restoredData.firstName || '',
+          lastName: restoredData.lastName || '',
+          address: restoredData.address || '',
+          make: restoredData.make || '',
+          model: restoredData.model || '',
+          fuelType: restoredData.fuelType || '',
+          transmission: restoredData.transmission || '',
+          year: restoredData.year || '',
+          vehicleType: restoredData.vehicleType || 'car'
+        };
         
-        console.log('✅ Successfully restored vehicle data from email');
-        return restoredData;
+        // Save to localStorage immediately with timestamp
+        saveWithTimestamp('buyawarranty_vehicleData', JSON.stringify(completeVehicleData));
+        saveWithTimestamp('buyawarranty_formData', JSON.stringify(completeVehicleData));
+        
+        console.log('✅ Successfully restored vehicle data from email:', completeVehicleData);
+        return completeVehicleData;
       } catch (error) {
         console.error('❌ Error decoding restore parameter:', error);
-        // Don't block the page - just log and continue
         return null;
       }
     }
@@ -347,31 +363,57 @@ const Index = () => {
   
   const { restoreQuoteData } = useQuoteRestoration();
 
-  // CRITICAL: Clean up restore parameter from URL after initial state is set
-  // This effect only handles URL cleanup since state is now initialized in useState
+  // Track restoration state to prevent premature redirects
+  const [isRestoringFromUrl, setIsRestoringFromUrl] = useState(() => {
+    const hasRestore = !!searchParams.get('restore');
+    console.log('🔗 Initial restoration check:', hasRestore);
+    return hasRestore;
+  });
+  
+  // Loading state for showing restoration UI
+  const [isRestoring, setIsRestoring] = useState(() => !!searchParams.get('restore'));
+
+  // CRITICAL: Clean up restore parameter from URL after state initialization
   useEffect(() => {
     const restoreParam = searchParams.get('restore');
     
-    if (restoreParam) {
-      console.log('🔗 Cleaning up restore parameter from URL');
+    if (restoreParam && !isRestoringFromUrl) {
+      console.log('🔗 Cleaning up restore parameter from URL after restoration');
       
       try {
+        // Parse the restore data to get the intended step
+        const restoredData = JSON.parse(atob(restoreParam));
+        const targetStep = restoredData.step || 3;
+        
         // Update URL to remove restore param but keep step
         const newSearchParams = new URLSearchParams();
-        const currentStepValue = currentStep || 3;
-        newSearchParams.set('step', currentStepValue.toString());
+        newSearchParams.set('step', targetStep.toString());
         
         // Use replace to avoid adding to browser history
         setSearchParams(newSearchParams, { replace: true });
         
-        console.log('✅ URL cleanup complete, redirected to step:', currentStepValue);
+        console.log('✅ URL cleanup complete, now on step:', targetStep);
       } catch (error) {
         console.error('❌ Error cleaning up URL:', error);
-        // Fallback: just go to step 1 if there's an error
-        setSearchParams({ step: '1' }, { replace: true });
+        // If there's an error, keep current step
+        const newSearchParams = new URLSearchParams();
+        newSearchParams.set('step', currentStep.toString());
+        setSearchParams(newSearchParams, { replace: true });
       }
     }
-  }, []); // Run only once on mount
+  }, [isRestoringFromUrl]); // Run when restoration completes
+  
+  useEffect(() => {
+    if (isRestoringFromUrl) {
+      console.log('⏳ Restoration in progress, allowing 2 seconds for state initialization');
+      const timer = setTimeout(() => {
+        console.log('✅ Restoration period complete');
+        setIsRestoringFromUrl(false);
+        setIsRestoring(false);
+      }, 2000); // Increased to 2 seconds to ensure state is fully initialized
+      return () => clearTimeout(timer);
+    }
+  }, [isRestoringFromUrl]);
 
   // Quote restoration effect - optimized with memoization
   useEffect(() => {
@@ -508,19 +550,14 @@ const Index = () => {
   };
 
   // Redirect to step 1 if accessing step 2+ without vehicle data
-  // BUT: Don't redirect if we're restoring from a URL parameter (give it time to load)
-  const [isRestoringFromUrl, setIsRestoringFromUrl] = useState(() => !!searchParams.get('restore'));
-  
+  // BUT: Don't redirect if we're still restoring from URL
   useEffect(() => {
-    // Clear the restoring flag after initial mount
-    if (isRestoringFromUrl) {
-      const timer = setTimeout(() => setIsRestoringFromUrl(false), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [isRestoringFromUrl]);
-  
-  useEffect(() => {
-    console.log('🔍 Checking vehicle data:', { currentStep, hasVehicleData: !!vehicleData, isRestoringFromUrl });
+    console.log('🔍 Checking vehicle data:', { 
+      currentStep, 
+      hasVehicleData: !!vehicleData, 
+      isRestoringFromUrl,
+      vehicleDataKeys: vehicleData ? Object.keys(vehicleData) : 'null'
+    });
     
     // Skip redirect check if we're still restoring from URL
     if (isRestoringFromUrl) {
@@ -802,6 +839,23 @@ const Index = () => {
   }, []);
 
   // All vehicles now use the modern PricingTable layout
+
+  // Show loading state during restoration
+  if (isRestoring) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">
+        <div className="max-w-md w-full mx-auto px-6 text-center space-y-6">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto"></div>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Restoring Your Cart...
+          </h2>
+          <p className="text-gray-600">
+            We're loading your warranty details. This will only take a moment.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen overflow-x-hidden w-full">

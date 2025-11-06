@@ -119,10 +119,16 @@ const handler = async (req: Request): Promise<Response> => {
               cartId: cart.id, // Include cart ID to track individual carts
               email: cart.email,
               firstName: cart.full_name?.split(' ')[0] || 'there',
+              lastName: cart.full_name?.split(' ').slice(1).join(' ') || '', // Get last name from full name
+              phone: cart.phone || '',
               vehicleReg: cart.vehicle_reg,
               vehicleMake: cart.vehicle_make,
               vehicleModel: cart.vehicle_model,
+              vehicleYear: cart.vehicle_year || '',
               vehicleType: cart.vehicle_type, // Include vehicle type for special vehicles
+              mileage: cart.mileage || '0',
+              fuelType: '', // Not stored in abandoned carts, will be empty
+              transmission: '', // Not stored in abandoned carts, will be empty
               triggerType,
               planName: cart.plan_name,
               paymentType: cart.payment_type
