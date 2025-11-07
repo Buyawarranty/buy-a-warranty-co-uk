@@ -32,54 +32,35 @@ export const SeasonalOfferBanner = () => {
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-r from-[#1e3a8a] via-[#3b82f6] to-[#1e40af] text-white">
-      {/* Animated snowflakes */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-[fall_10s_linear_infinite] opacity-60"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `-${Math.random() * 20}%`,
-              animationDelay: `${Math.random() * 10}s`,
-              fontSize: `${Math.random() * 10 + 10}px`,
-            }}
-          >
-            ❄
-          </div>
-        ))}
-      </div>
-
-      <div className="relative container mx-auto px-4 py-4 md:py-5">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="relative container mx-auto px-4 py-6 md:py-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Panda Mascot - positioned differently for mobile and desktop */}
-          <div className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 w-24 h-24 lg:w-32 lg:h-32">
+          <div className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 w-28 h-28 lg:w-36 lg:h-36">
             <img 
               src={pandaMascot} 
               alt="Warranty Panda" 
-              className="w-full h-full object-contain drop-shadow-lg"
+              className="w-full h-full object-contain drop-shadow-2xl"
             />
           </div>
 
-          <div className="flex-1 text-center md:text-left md:ml-28 lg:ml-36">
+          <div className="flex-1 text-center md:text-left md:ml-32 lg:ml-40">
             {/* Mobile Panda - shows above text on mobile */}
-            <div className="md:hidden w-20 h-20 mx-auto mb-2">
+            <div className="md:hidden w-24 h-24 mx-auto mb-3">
               <img 
                 src={pandaMascot} 
                 alt="Warranty Panda" 
-                className="w-full h-full object-contain drop-shadow-lg"
+                className="w-full h-full object-contain drop-shadow-2xl"
               />
             </div>
             
-            <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
-              <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
-              <h3 className="text-xl md:text-2xl font-bold text-white">
-                Don't Risk a Breakdown This Winter
-              </h3>
-              <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
-            </div>
-            <p className="text-sm md:text-base text-white">
-              Get 3 Extra Months Cover FREE – Limited Time Only! Order by Sunday 11:00pm to Guarantee Your Bonus Cover
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center justify-center md:justify-start gap-2">
+              ❄️ Don't Risk a Breakdown This Winter
+            </h1>
+            <h2 className="text-xl md:text-2xl font-semibold text-yellow-300 mb-2">
+              Get 3 Extra Months Cover FREE
+            </h2>
+            <p className="text-base md:text-lg text-white/90">
+              Order by Sunday 11pm to Secure Cover
             </p>
           </div>
           
@@ -110,16 +91,6 @@ export const SeasonalOfferBanner = () => {
         </div>
       </div>
 
-      <style>{`
-        @keyframes fall {
-          0% {
-            transform: translateY(0) rotate(0deg);
-          }
-          100% {
-            transform: translateY(100vh) rotate(360deg);
-          }
-        }
-      `}</style>
     </div>
   );
 };
