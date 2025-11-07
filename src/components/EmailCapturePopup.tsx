@@ -205,14 +205,14 @@ export const EmailCapturePopup: React.FC<EmailCapturePopupProps> = ({
                   </h2>
                   
                   <p className="text-gray-700 text-base leading-relaxed">
-                    Just pop your email below and we'll give you an instant discount code – no strings attached!
+                    Enter your email below and we&apos;ll instantly apply £25 off to your checkout – plus send you the discount code for safekeeping!
                   </p>
                 </>
               ) : (
                 <>
                   <div className="text-5xl mb-4">🎉</div>
                   <h2 className="text-2xl font-bold text-green-600 mb-2">
-                    Your discount code is ready!
+                    £25 Discount Applied to Checkout!
                   </h2>
                   
                   <div className="bg-white border-2 border-green-200 rounded-lg p-4 mb-4 shadow-sm">
@@ -230,7 +230,7 @@ export const EmailCapturePopup: React.FC<EmailCapturePopupProps> = ({
                   </div>
                   
                   <p className="text-gray-600 text-sm">
-                    Great! We've sent this code to your email too. Use it at checkout to save £25!
+                    Perfect! Your £25 discount has been automatically added to the checkout page. We&apos;ve also emailed you the discount code for your records.
                   </p>
                 </>
               )}
