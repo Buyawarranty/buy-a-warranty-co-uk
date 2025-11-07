@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { isStorageAvailable } from '@/utils/localStorage';
 
 export interface CartItem {
   id: string;
@@ -49,23 +50,37 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('warrantyCart');
-    if (savedCart) {
-      try {
+    if (!isStorageAvailable('localStorage')) {
+      console.warn('⚠️ localStorage not available - cart will not persist');
+      return;
+    }
+    
+    try {
+      const savedCart = localStorage.getItem('warrantyCart');
+      if (savedCart) {
         const parsedCart = JSON.parse(savedCart);
+        console.log('✅ Cart restored from localStorage:', parsedCart.length, 'items');
         setItems(parsedCart.map((item: any) => ({
           ...item,
           addedAt: new Date(item.addedAt)
         })));
-      } catch (error) {
-        console.error('Error loading cart from localStorage:', error);
       }
+    } catch (error) {
+      console.error('❌ Error loading cart from localStorage:', error);
     }
   }, []);
 
   // Save cart to localStorage whenever items change
   useEffect(() => {
-    localStorage.setItem('warrantyCart', JSON.stringify(items));
+    if (!isStorageAvailable('localStorage')) {
+      return;
+    }
+    
+    try {
+      localStorage.setItem('warrantyCart', JSON.stringify(items));
+    } catch (error) {
+      console.error('❌ Error saving cart to localStorage:', error);
+    }
   }, [items]);
 
   const addToCart = (item: Omit<CartItem, 'id' | 'addedAt'>) => {
@@ -80,7 +95,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     
     // Check for "add another warranty" discount from previous purchase
-    const hasAddAnotherWarrantyDiscount = localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
+    let hasAddAnotherWarrantyDiscount = false;
+    try {
+      hasAddAnotherWarrantyDiscount = isStorageAvailable('localStorage') && 
+        localStorage.getItem('addAnotherWarrantyDiscount') === 'true';
+    } catch (error) {
+      console.error('❌ Error checking discount flag:', error);
+    }
     
     // Apply 10% discount ONLY if user has "add another warranty" discount from previous purchase
     const shouldApplyDiscount = hasAddAnotherWarrantyDiscount;
@@ -106,7 +127,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Clear the localStorage flag after using it
       if (hasAddAnotherWarrantyDiscount) {
-        localStorage.removeItem('addAnotherWarrantyDiscount');
+        try {
+          localStorage.removeItem('addAnotherWarrantyDiscount');
+        } catch (error) {
+          console.error('❌ Error removing discount flag:', error);
+        }
       }
     }
     
@@ -131,7 +156,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = () => {
     setItems([]);
-    localStorage.removeItem('warrantyCart');
+    try {
+      if (isStorageAvailable('localStorage')) {
+        localStorage.removeItem('warrantyCart');
+      }
+    } catch (error) {
+      console.error('❌ Error clearing cart from localStorage:', error);
+    }
   };
 
   const getTotalPrice = () => {
