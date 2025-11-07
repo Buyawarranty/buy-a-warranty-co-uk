@@ -194,23 +194,23 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
   // Mobile-specific: Allow cart to restore before rendering
   useEffect(() => {
-    // Wait for cart items to be available on mobile
-    const checkCart = () => {
-      console.log('🔍 Checking cart restoration:', items.length, 'items');
-      if (items.length > 0) {
-        setIsCartRestoring(false);
-        console.log('✅ Cart restored successfully');
-      } else {
-        // Retry after short delay for mobile
-        setTimeout(() => {
-          setIsCartRestoring(false);
-          console.log('⚠️ Cart restoration timeout - proceeding anyway');
-        }, 1000);
-      }
-    };
+    console.log('🔍 MultiWarrantyCheckout mounted with', items.length, 'items');
     
-    checkCart();
-  }, [items]);
+    // Give cart context more time to restore on mobile (increased timeout)
+    const timer = setTimeout(() => {
+      console.log('⏱️ Cart restoration timeout reached:', items.length, 'items');
+      setIsCartRestoring(false);
+    }, 2500); // Increased from 1000ms to 2500ms for slower mobile devices
+    
+    // If items are already loaded, stop waiting
+    if (items.length > 0) {
+      console.log('✅ Cart already loaded with', items.length, 'items');
+      clearTimeout(timer);
+      setIsCartRestoring(false);
+    }
+    
+    return () => clearTimeout(timer);
+  }, [items.length]);
 
   // Handle page visibility, popstate, and pageshow to detect when user returns from payment gateway
   useEffect(() => {

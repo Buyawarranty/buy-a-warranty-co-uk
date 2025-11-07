@@ -47,27 +47,59 @@ export const useCart = () => {
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isRestoring, setIsRestoring] = useState(true);
 
-  // Load cart from localStorage on mount
+  // Aggressive cart restoration with retry logic for mobile devices
   useEffect(() => {
-    if (!isStorageAvailable('localStorage')) {
-      console.warn('⚠️ localStorage not available - cart will not persist');
-      return;
-    }
-    
-    try {
-      const savedCart = localStorage.getItem('warrantyCart');
-      if (savedCart) {
-        const parsedCart = JSON.parse(savedCart);
-        console.log('✅ Cart restored from localStorage:', parsedCart.length, 'items');
-        setItems(parsedCart.map((item: any) => ({
-          ...item,
-          addedAt: new Date(item.addedAt)
-        })));
+    let attemptCount = 0;
+    const maxAttempts = 5;
+    const retryDelay = 200; // Start with 200ms
+
+    const attemptRestore = () => {
+      attemptCount++;
+      console.log(`🔄 Cart restore attempt ${attemptCount}/${maxAttempts}`);
+
+      if (!isStorageAvailable('localStorage')) {
+        console.warn('⚠️ localStorage not available - cart will not persist');
+        setIsRestoring(false);
+        return;
       }
-    } catch (error) {
-      console.error('❌ Error loading cart from localStorage:', error);
-    }
+      
+      try {
+        const savedCart = localStorage.getItem('warrantyCart');
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          if (parsedCart && parsedCart.length > 0) {
+            console.log('✅ Cart restored from localStorage:', parsedCart.length, 'items');
+            setItems(parsedCart.map((item: any) => ({
+              ...item,
+              addedAt: new Date(item.addedAt)
+            })));
+            setIsRestoring(false);
+            return;
+          }
+        }
+        
+        // No cart found - check if this is expected
+        console.log('ℹ️ No cart data found in localStorage');
+        setIsRestoring(false);
+      } catch (error) {
+        console.error(`❌ Error loading cart (attempt ${attemptCount}):`, error);
+        
+        // Retry with exponential backoff for mobile
+        if (attemptCount < maxAttempts) {
+          const nextDelay = retryDelay * Math.pow(2, attemptCount - 1);
+          console.log(`⏳ Retrying in ${nextDelay}ms...`);
+          setTimeout(attemptRestore, nextDelay);
+        } else {
+          console.error('❌ Cart restoration failed after', maxAttempts, 'attempts');
+          setIsRestoring(false);
+        }
+      }
+    };
+
+    // Start restoration immediately
+    attemptRestore();
   }, []);
 
   // Save cart to localStorage whenever items change
