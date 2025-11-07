@@ -18,6 +18,7 @@ interface MultiWarrantyCheckoutProps {
 }
 
 const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, onBack, onAddAnother }) => {
+  const [isCartRestoring, setIsCartRestoring] = useState(true);
   const [customerData, setCustomerData] = useState(() => {
     try {
       const saved = localStorage.getItem('multiWarrantyCheckoutData');
@@ -79,6 +80,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
   
   console.log('MultiWarrantyCheckout Debug:', {
     itemsCount: items.length,
+    isCartRestoring,
     totalPrice,
     subtotalAfterMultiDiscount,
     finalPrice,
@@ -90,6 +92,46 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       totalPrice: item.pricingData.totalPrice
     }))
   });
+
+  // Show loading state while cart is being restored on mobile
+  if (isCartRestoring) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your cart...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if cart is empty after restoration attempt
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-4">
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle />
+              Cart Empty
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-gray-600">Your cart appears to be empty. This may happen if:</p>
+            <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+              <li>Your session expired</li>
+              <li>Browser storage is disabled</li>
+              <li>You're in private/incognito mode</li>
+            </ul>
+            <Button onClick={onBack} className="w-full">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Return to Quote
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Check for URL discount parameters (existing and return discount)
   useEffect(() => {
@@ -149,6 +191,26 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       console.error('❌ Failed to save discount validation:', error);
     }
   }, [discountValidation]);
+
+  // Mobile-specific: Allow cart to restore before rendering
+  useEffect(() => {
+    // Wait for cart items to be available on mobile
+    const checkCart = () => {
+      console.log('🔍 Checking cart restoration:', items.length, 'items');
+      if (items.length > 0) {
+        setIsCartRestoring(false);
+        console.log('✅ Cart restored successfully');
+      } else {
+        // Retry after short delay for mobile
+        setTimeout(() => {
+          setIsCartRestoring(false);
+          console.log('⚠️ Cart restoration timeout - proceeding anyway');
+        }, 1000);
+      }
+    };
+    
+    checkCart();
+  }, [items]);
 
   // Handle page visibility, popstate, and pageshow to detect when user returns from payment gateway
   useEffect(() => {

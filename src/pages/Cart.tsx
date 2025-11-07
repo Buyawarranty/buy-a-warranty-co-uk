@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import WarrantyCart from '@/components/WarrantyCart';
 import MultiWarrantyCheckout from '@/components/MultiWarrantyCheckout';
 import { useCart, CartItem } from '@/contexts/CartContext';
@@ -68,6 +69,13 @@ const Cart: React.FC = () => {
   };
 
   const handleProceedToCheckout = (cartItems: CartItem[]) => {
+    // Validate cart has items before proceeding
+    if (cartItems.length === 0) {
+      toast.error('Your cart is empty. Please add items before checkout.');
+      console.error('❌ Attempted checkout with empty cart');
+      return;
+    }
+    
     try {
       sessionStorage.setItem('wasInCheckout', 'true');
     } catch (error) {
@@ -97,6 +105,13 @@ const Cart: React.FC = () => {
   };
 
   if (showCheckout) {
+    // Additional guard: Don't show checkout if cart is empty
+    if (items.length === 0) {
+      console.error('❌ Checkout view with empty cart - redirecting back');
+      setShowCheckout(false);
+      return null;
+    }
+    
     return (
       <>
         <SEOHead 
