@@ -85,16 +85,16 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     pricingData: pricingData ? 'present' : 'missing'
   });
   const [customerData, setCustomerData] = useState(() => {
-    // Try to restore customer data from localStorage
-    const savedCustomerData = localStorage.getItem('buyawarranty_customerData');
-    if (savedCustomerData) {
-      try {
+    // Try to restore customer data from localStorage (iOS-safe)
+    try {
+      const savedCustomerData = localStorage.getItem('buyawarranty_customerData');
+      if (savedCustomerData) {
         const parsed = JSON.parse(savedCustomerData);
         console.log('✅ Restored customer data from localStorage:', parsed);
         return parsed;
-      } catch (error) {
-        console.error('Error parsing saved customer data:', error);
       }
+    } catch (error) {
+      console.error('❌ Error restoring customer data (iOS/Safari):', error);
     }
     return {
       first_name: '',
@@ -304,37 +304,41 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
 
   // Check for discount code on component mount and set up email popup timer
   useEffect(() => {
-    // Check for auto-apply discount code from return banner
-    const autoApplyCode = localStorage.getItem('autoApplyDiscountCode');
-    if (autoApplyCode && autoApplyCode.startsWith('RETURN20-')) {
-      setAppliedDiscountCodes([{
-        code: autoApplyCode,
-        type: 'percentage',
-        value: 20,
-        discountAmount: bumperTotalPrice * 0.20
-      }]);
-      // Clear the auto-apply flag
-      localStorage.removeItem('autoApplyDiscountCode');
-      toast.success('Your 20% return discount has been applied!');
-    }
-    
-    // Check for second warranty discount code
-    const savedDiscountCode = localStorage.getItem('secondWarrantyDiscountCode');
-    if (savedDiscountCode && savedDiscountCode.startsWith('SECOND10-')) {
-      setAppliedDiscountCodes(prev => {
-        // Don't add if already applied
-        if (prev.some(code => code.code === savedDiscountCode)) {
-          return prev;
-        }
-        // Show success message
-        toast.success('✓ Your discount code has been applied for checkout!');
-        return [...prev, {
-          code: savedDiscountCode,
+    try {
+      // Check for auto-apply discount code from return banner
+      const autoApplyCode = localStorage.getItem('autoApplyDiscountCode');
+      if (autoApplyCode && autoApplyCode.startsWith('RETURN20-')) {
+        setAppliedDiscountCodes([{
+          code: autoApplyCode,
           type: 'percentage',
-          value: 10,
-          discountAmount: bumperTotalPrice * 0.10
-        }];
-      });
+          value: 20,
+          discountAmount: bumperTotalPrice * 0.20
+        }]);
+        // Clear the auto-apply flag
+        localStorage.removeItem('autoApplyDiscountCode');
+        toast.success('Your 20% return discount has been applied!');
+      }
+      
+      // Check for second warranty discount code
+      const savedDiscountCode = localStorage.getItem('secondWarrantyDiscountCode');
+      if (savedDiscountCode && savedDiscountCode.startsWith('SECOND10-')) {
+        setAppliedDiscountCodes(prev => {
+          // Don't add if already applied
+          if (prev.some(code => code.code === savedDiscountCode)) {
+            return prev;
+          }
+          // Show success message
+          toast.success('✓ Your discount code has been applied for checkout!');
+          return [...prev, {
+            code: savedDiscountCode,
+            type: 'percentage',
+            value: 10,
+            discountAmount: bumperTotalPrice * 0.10
+          }];
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error checking discount codes (iOS/Safari):', error);
     }
 
     // Show email capture popup after 35 seconds
@@ -366,8 +370,12 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     const updatedData = { ...customerData, [field]: value };
     setCustomerData(updatedData);
     
-    // Save to localStorage whenever customer data changes
-    localStorage.setItem('buyawarranty_customerData', JSON.stringify(updatedData));
+    // Save to localStorage whenever customer data changes (iOS-safe)
+    try {
+      localStorage.setItem('buyawarranty_customerData', JSON.stringify(updatedData));
+    } catch (error) {
+      console.error('❌ Failed to save customer data (iOS/Safari):', error);
+    }
     
     if (fieldErrors[field]) {
       setFieldErrors(prev => ({ ...prev, [field]: '' }));

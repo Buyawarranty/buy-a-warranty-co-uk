@@ -1,6 +1,24 @@
 // Optimized localStorage utilities with batching and error handling
 
+// Check if storage is available (handles iOS Safari private mode)
+export const isStorageAvailable = (type: 'localStorage' | 'sessionStorage' = 'localStorage'): boolean => {
+  try {
+    const storage = type === 'localStorage' ? window.localStorage : window.sessionStorage;
+    const testKey = '__storage_test__';
+    storage.setItem(testKey, 'test');
+    storage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    console.warn(`${type} is not available:`, error);
+    return false;
+  }
+};
+
 export const batchLocalStorageWrite = (updates: Record<string, string>) => {
+  if (!isStorageAvailable('localStorage')) {
+    console.warn('localStorage not available - skipping batch write');
+    return;
+  }
   try {
     Object.entries(updates).forEach(([key, value]) => {
       localStorage.setItem(key, value);

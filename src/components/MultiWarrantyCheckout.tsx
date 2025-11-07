@@ -19,8 +19,16 @@ interface MultiWarrantyCheckoutProps {
 
 const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, onBack, onAddAnother }) => {
   const [customerData, setCustomerData] = useState(() => {
-    const saved = localStorage.getItem('multiWarrantyCheckoutData');
-    return saved ? JSON.parse(saved) : {
+    try {
+      const saved = localStorage.getItem('multiWarrantyCheckoutData');
+      if (saved) {
+        console.log('✅ Restored checkout data from localStorage');
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error('❌ Failed to restore checkout data (iOS/Safari):', error);
+    }
+    return {
       first_name: '',
       last_name: '',
       email: '',
@@ -41,8 +49,13 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
   const [showValidation, setShowValidation] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'bumper'>(() => {
-    const saved = localStorage.getItem('multiWarrantyPaymentMethod');
-    return (saved as 'stripe' | 'bumper') || 'stripe';
+    try {
+      const saved = localStorage.getItem('multiWarrantyPaymentMethod');
+      return (saved as 'stripe' | 'bumper') || 'stripe';
+    } catch (error) {
+      console.error('❌ Failed to restore payment method:', error);
+      return 'stripe';
+    }
   });
   const [discountValidation, setDiscountValidation] = useState<{
     valid: boolean;
@@ -50,8 +63,13 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     discountAmount: number;
     finalAmount: number;
   } | null>(() => {
-    const saved = localStorage.getItem('multiWarrantyDiscountValidation');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('multiWarrantyDiscountValidation');
+      return saved ? JSON.parse(saved) : null;
+    } catch (error) {
+      console.error('❌ Failed to restore discount validation:', error);
+      return null;
+    }
   });
 
   // Calculate total price
@@ -103,20 +121,32 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('multiWarrantyCheckoutData', JSON.stringify(customerData));
+    try {
+      localStorage.setItem('multiWarrantyCheckoutData', JSON.stringify(customerData));
+    } catch (error) {
+      console.error('❌ Failed to save checkout data:', error);
+    }
   }, [customerData]);
 
   // Save payment method to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('multiWarrantyPaymentMethod', selectedPaymentMethod);
+    try {
+      localStorage.setItem('multiWarrantyPaymentMethod', selectedPaymentMethod);
+    } catch (error) {
+      console.error('❌ Failed to save payment method:', error);
+    }
   }, [selectedPaymentMethod]);
 
   // Save discount validation to localStorage whenever it changes
   useEffect(() => {
-    if (discountValidation) {
-      localStorage.setItem('multiWarrantyDiscountValidation', JSON.stringify(discountValidation));
-    } else {
-      localStorage.removeItem('multiWarrantyDiscountValidation');
+    try {
+      if (discountValidation) {
+        localStorage.setItem('multiWarrantyDiscountValidation', JSON.stringify(discountValidation));
+      } else {
+        localStorage.removeItem('multiWarrantyDiscountValidation');
+      }
+    } catch (error) {
+      console.error('❌ Failed to save discount validation:', error);
     }
   }, [discountValidation]);
 
@@ -125,75 +155,117 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
     // Reset loading state on mount (in case user returned via back button)
     setLoading(false);
     
+    // iOS-specific: Restore data immediately on mount
+    try {
+      const savedData = localStorage.getItem('multiWarrantyCheckoutData');
+      const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+      
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        setCustomerData(parsed);
+        console.log('✅ iOS: Restored customer data on mount');
+      }
+      if (savedDiscount) {
+        setDiscountValidation(JSON.parse(savedDiscount));
+        console.log('✅ iOS: Restored discount validation on mount');
+      }
+    } catch (error) {
+      console.error('❌ iOS restoration error:', error);
+    }
+    
     const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        // User returned to the page - restore data from localStorage
-        console.log('✅ User returned to checkout page (visibility) - restoring data & clearing loading');
+      try {
+        if (!document.hidden) {
+          // User returned to the page - restore data from localStorage
+          console.log('✅ User returned to checkout page (visibility) - restoring data');
+          const savedData = localStorage.getItem('multiWarrantyCheckoutData');
+          const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+          
+          if (savedData) {
+            const parsed = JSON.parse(savedData);
+            setCustomerData(parsed);
+            console.log('Restored customer data:', parsed);
+          }
+          if (savedDiscount) {
+            setDiscountValidation(JSON.parse(savedDiscount));
+          }
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('❌ Visibility change error:', error);
+        setLoading(false);
+      }
+    };
+
+    const handlePageShow = (event: PageTransitionEvent) => {
+      try {
+        // Handles back button navigation from payment gateway
+        console.log('✅ Page shown (pageshow) - restoring data, persisted:', event.persisted);
         const savedData = localStorage.getItem('multiWarrantyCheckoutData');
         const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
         
         if (savedData) {
           const parsed = JSON.parse(savedData);
           setCustomerData(parsed);
-          console.log('Restored customer data:', parsed);
+          console.log('Restored customer data from pageshow');
         }
-        // DON'T restore payment method here - user may have changed their selection
         if (savedDiscount) {
           setDiscountValidation(JSON.parse(savedDiscount));
-          console.log('Restored discount validation');
         }
-        // Reset loading state to allow resubmission
+        setLoading(false);
+      } catch (error) {
+        console.error('❌ Pageshow error:', error);
         setLoading(false);
       }
     };
 
-    const handlePageShow = (event: PageTransitionEvent) => {
-      // Handles back button navigation from payment gateway (persisted page from bfcache)
-      console.log('✅ Page shown (pageshow event) - user likely returned from payment gateway');
-      const savedData = localStorage.getItem('multiWarrantyCheckoutData');
-      const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
-      
-      if (savedData) {
-        const parsed = JSON.parse(savedData);
-        setCustomerData(parsed);
-        console.log('Restored customer data from pageshow:', parsed);
-      }
-      // DON'T restore payment method here - user may have changed their selection
-      if (savedDiscount) {
-        setDiscountValidation(JSON.parse(savedDiscount));
-      }
-      // Always reset loading state when page is shown
-      setLoading(false);
-      console.log('✅ Loading state cleared - user can proceed with payment again');
-    };
-
     const handlePopState = (event: PopStateEvent) => {
-      // User clicked back button - restore data
-      console.log('✅ Back button detected (popstate) - restoring checkout data & clearing loading');
-      const savedData = localStorage.getItem('multiWarrantyCheckoutData');
-      const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
-      
-      if (savedData) {
-        const parsed = JSON.parse(savedData);
-        setCustomerData(parsed);
-        console.log('Restored customer data from back navigation:', parsed);
+      try {
+        // User clicked back button - restore data
+        console.log('✅ Back button detected (popstate) - restoring data');
+        const savedData = localStorage.getItem('multiWarrantyCheckoutData');
+        const savedDiscount = localStorage.getItem('multiWarrantyDiscountValidation');
+        
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          setCustomerData(parsed);
+        }
+        if (savedDiscount) {
+          setDiscountValidation(JSON.parse(savedDiscount));
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('❌ Popstate error:', error);
+        setLoading(false);
       }
-      // DON'T restore payment method here - user may have changed their selection
-      if (savedDiscount) {
-        setDiscountValidation(JSON.parse(savedDiscount));
-      }
-      // Reset loading state to allow resubmission
-      setLoading(false);
     };
 
+    // iOS Safari compatibility: Use passive listeners
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('pageshow', handlePageShow);
     window.addEventListener('popstate', handlePopState);
+    
+    // iOS fallback: Also listen for focus events
+    const handleFocus = () => {
+      try {
+        console.log('✅ Window focused - checking for restored data');
+        const savedData = localStorage.getItem('multiWarrantyCheckoutData');
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          setCustomerData(parsed);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('❌ Focus event error:', error);
+      }
+    };
+    window.addEventListener('focus', handleFocus);
     
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('pageshow', handlePageShow);
       window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('focus', handleFocus);
     };
   }, []);
 
@@ -336,11 +408,19 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       return;
     }
 
-    // Explicitly save all data before redirect to ensure persistence
-    localStorage.setItem('multiWarrantyCheckoutData', JSON.stringify(customerData));
-    localStorage.setItem('multiWarrantyPaymentMethod', selectedPaymentMethod);
-    if (discountValidation) {
-      localStorage.setItem('multiWarrantyDiscountValidation', JSON.stringify(discountValidation));
+    // Explicitly save all data before redirect to ensure persistence (iOS-safe)
+    try {
+      localStorage.setItem('multiWarrantyCheckoutData', JSON.stringify(customerData));
+      localStorage.setItem('multiWarrantyPaymentMethod', selectedPaymentMethod);
+      if (discountValidation) {
+        localStorage.setItem('multiWarrantyDiscountValidation', JSON.stringify(discountValidation));
+      }
+      console.log('✅ All checkout data saved before redirect');
+    } catch (error) {
+      console.error('❌ Failed to save data before redirect (iOS):', error);
+      toast.error('Unable to save your information. Please check your browser settings.');
+      setLoading(false);
+      return;
     }
 
     setLoading(true);

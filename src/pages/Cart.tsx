@@ -11,19 +11,26 @@ const Cart: React.FC = () => {
   const navigate = useNavigate();
   const { items } = useCart();
   const [showCheckout, setShowCheckout] = useState(() => {
-    // Check if returning from payment - restore checkout view
-    const wasInCheckout = sessionStorage.getItem('wasInCheckout') === 'true';
-    const urlParams = new URLSearchParams(window.location.search);
-    const returnFromPayment = urlParams.get('returnFromPayment') === 'true';
-    
-    // If user is returning from payment gateway or was in checkout, show checkout view
-    if (returnFromPayment && !wasInCheckout) {
-      sessionStorage.setItem('wasInCheckout', 'true');
-      console.log('✅ Detected return from payment gateway - showing checkout');
-      return true;
+    try {
+      // Check if returning from payment - restore checkout view
+      const wasInCheckout = sessionStorage.getItem('wasInCheckout') === 'true';
+      const urlParams = new URLSearchParams(window.location.search);
+      const returnFromPayment = urlParams.get('returnFromPayment') === 'true';
+      
+      // If user is returning from payment gateway or was in checkout, show checkout view
+      if (returnFromPayment && !wasInCheckout) {
+        sessionStorage.setItem('wasInCheckout', 'true');
+        console.log('✅ Detected return from payment gateway - showing checkout');
+        return true;
+      }
+      
+      return wasInCheckout;
+    } catch (error) {
+      console.error('❌ Storage access error (iOS/Safari):', error);
+      // Fallback: check URL params only if storage fails
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('returnFromPayment') === 'true';
     }
-    
-    return wasInCheckout;
   });
   const [showBackConfirmDialog, setShowBackConfirmDialog] = useState(false);
 
@@ -48,7 +55,11 @@ const Cart: React.FC = () => {
   // Clear checkout flag when component unmounts
   React.useEffect(() => {
     return () => {
-      sessionStorage.removeItem('wasInCheckout');
+      try {
+        sessionStorage.removeItem('wasInCheckout');
+      } catch (error) {
+        console.error('❌ Storage cleanup error:', error);
+      }
     };
   }, []);
 
@@ -57,12 +68,20 @@ const Cart: React.FC = () => {
   };
 
   const handleProceedToCheckout = (cartItems: CartItem[]) => {
-    sessionStorage.setItem('wasInCheckout', 'true');
+    try {
+      sessionStorage.setItem('wasInCheckout', 'true');
+    } catch (error) {
+      console.error('❌ Storage write error:', error);
+    }
     setShowCheckout(true);
   };
 
   const handleBackToCart = () => {
-    sessionStorage.removeItem('wasInCheckout');
+    try {
+      sessionStorage.removeItem('wasInCheckout');
+    } catch (error) {
+      console.error('❌ Storage cleanup error:', error);
+    }
     // Clear return from payment URL param if present
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('returnFromPayment')) {
