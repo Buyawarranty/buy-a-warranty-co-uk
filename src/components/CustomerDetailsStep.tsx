@@ -1342,10 +1342,10 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                         if (months === 12) {
                           return (
                             <div className="text-center">
-                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
+                              <div className="text-3xl font-bold text-gray-900 mb-3">£{monthlyPayment}/month</div>
                                <div className="flex items-center justify-center mb-2">
-                                 <span className="mr-2 text-green-600">✓</span>
-                                 <span className="font-medium text-foreground">Only 12 easy payments</span>
+                                 <span className="mr-2 text-green-600 text-lg">✓</span>
+                                 <span className="font-medium text-gray-700">Only 12 easy payments</span>
                                </div>
                                {seasonalOfferClaimed && (
                                  <div className="flex items-center justify-center mb-2 text-blue-600">
@@ -1353,9 +1353,9 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                    <span className="font-semibold">+ 3 Months FREE Bonus</span>
                                  </div>
                                )}
-                               <div className="text-center">
-                                 <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
-                                 <div className="text-2xl font-bold text-blue-600">£{discountedBumperPrice}</div>
+                               <div className="text-center mt-4">
+                                 <div className="text-lg font-bold text-gray-900 mb-1">Total cost:</div>
+                                 <div className="text-3xl font-bold text-green-600">£{discountedBumperPrice}</div>
                                  {seasonalOfferClaimed && (
                                    <div className="text-sm text-blue-600 mt-1 font-medium">
                                      15 months total cover for the price of 12!
@@ -1370,15 +1370,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                          const savings = 100;
                           return (
                             <div className="text-center">
-                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
-                               <div className="space-y-1 mb-3">
+                              <div className="text-3xl font-bold text-gray-900 mb-3">£{monthlyPayment}/month</div>
+                               <div className="space-y-2 mb-3">
                                  <div className="flex items-center justify-center">
-                                   <span className="mr-2 text-green-600">✓</span>
-                                   <span className="font-medium text-foreground">Only 12 easy payments</span>
+                                   <span className="mr-2 text-green-600 text-lg">✓</span>
+                                   <span className="font-medium text-gray-700">Only 12 easy payments</span>
                                  </div>
                                  <div className="flex items-center justify-center">
-                                   <span className="mr-2 text-green-600">✓</span>
-                                   <span className="font-medium text-foreground">Nothing to pay in Year 2</span>
+                                   <span className="mr-2 text-green-600 text-lg">✓</span>
+                                   <span className="font-medium text-gray-700">Nothing to pay in Year 2</span>
                                  </div>
                                  {seasonalOfferClaimed && (
                                    <div className="flex items-center justify-center text-blue-600">
@@ -1387,18 +1387,21 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                    </div>
                                  )}
                                </div>
-                                <div className="text-center">
-                                  <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
-                                  <div className="flex items-center justify-center gap-2">
-                                    <span className="line-through text-red-600 text-2xl font-bold">£{originalPrice}</span>
-                                    <span className="text-blue-600 text-2xl font-bold">£{discountedBumperPrice}</span>
-                                  </div>
-                                  {seasonalOfferClaimed && (
-                                    <div className="text-sm text-blue-600 mt-1 font-medium">
-                                      27 months total cover!
-                                    </div>
-                                  )}
-                                </div>
+                               <div className="text-center mt-4">
+                                 <div className="text-lg font-bold text-gray-900 mb-1">Total cost:</div>
+                                 <div className="flex items-center justify-center gap-3">
+                                   <span className="line-through text-gray-400 text-xl font-medium">£{originalPrice}</span>
+                                   <span className="text-green-600 text-3xl font-bold">£{discountedBumperPrice}</span>
+                                 </div>
+                                 <div className="text-green-600 font-bold text-lg mt-2">
+                                   You save £{savings}!
+                                 </div>
+                                 {seasonalOfferClaimed && (
+                                   <div className="text-sm text-blue-600 mt-1 font-medium">
+                                     27 months total cover!
+                                   </div>
+                                 )}
+                               </div>
                             </div>
                           );
                          } else if (months === 36) {
@@ -1407,15 +1410,15 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                           const savings = 200;
                           return (
                             <div className="text-center">
-                              <div className="text-2xl font-bold text-orange-600 mb-2">£{monthlyPayment}/month</div>
-                               <div className="space-y-1 mb-3">
+                              <div className="text-3xl font-bold text-gray-900 mb-3">£{monthlyPayment}/month</div>
+                               <div className="space-y-2 mb-3">
                                  <div className="flex items-center justify-center">
-                                   <span className="mr-2 text-green-600">✓</span>
-                                   <span className="font-medium text-foreground">Only 12 easy payments</span>
+                                   <span className="mr-2 text-green-600 text-lg">✓</span>
+                                   <span className="font-medium text-gray-700">Only 12 easy payments</span>
                                  </div>
                                  <div className="flex items-center justify-center">
-                                   <span className="mr-2 text-green-600">✓</span>
-                                   <span className="font-medium text-foreground">Nothing to pay in Year 2 and Year 3</span>
+                                   <span className="mr-2 text-green-600 text-lg">✓</span>
+                                   <span className="font-medium text-gray-700">Nothing to pay in Year 2 and Year 3</span>
                                  </div>
                                  {seasonalOfferClaimed && (
                                    <div className="flex items-center justify-center text-blue-600">
@@ -1424,18 +1427,21 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
                                    </div>
                                  )}
                                </div>
-                                <div className="text-center">
-                                  <div className="text-lg font-bold text-foreground mb-1">Total cost:</div>
-                                  <div className="flex items-center justify-center gap-2">
-                                    <span className="line-through text-red-600 text-2xl font-bold">£{originalPrice}</span>
-                                    <span className="text-blue-600 text-2xl font-bold">£{discountedBumperPrice}</span>
-                                  </div>
-                                  {seasonalOfferClaimed && (
-                                    <div className="text-sm text-blue-600 mt-1 font-medium">
-                                      39 months total cover!
-                                    </div>
-                                  )}
-                                </div>
+                               <div className="text-center mt-4">
+                                 <div className="text-lg font-bold text-gray-900 mb-1">Total cost:</div>
+                                 <div className="flex items-center justify-center gap-3">
+                                   <span className="line-through text-gray-400 text-xl font-medium">£{originalPrice}</span>
+                                   <span className="text-green-600 text-3xl font-bold">£{discountedBumperPrice}</span>
+                                 </div>
+                                 <div className="text-green-600 font-bold text-lg mt-2">
+                                   You save £{savings}!
+                                 </div>
+                                 {seasonalOfferClaimed && (
+                                   <div className="text-sm text-blue-600 mt-1 font-medium">
+                                     39 months total cover!
+                                   </div>
+                                 )}
+                               </div>
                             </div>
                           );
                         }
