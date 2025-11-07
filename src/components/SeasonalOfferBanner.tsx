@@ -16,12 +16,15 @@ export const SeasonalOfferBanner = () => {
   }, []);
 
   const handleClaimOffer = () => {
-    localStorage.setItem('seasonal_offer_claimed', 'true');
-    setIsClaimed(true);
+    const newClaimedState = !isClaimed;
+    localStorage.setItem('seasonal_offer_claimed', newClaimedState.toString());
+    setIsClaimed(newClaimedState);
     
-    // Show success feedback
-    const event = new CustomEvent('offerClaimed');
-    window.dispatchEvent(event);
+    if (newClaimedState) {
+      // Show success feedback
+      const event = new CustomEvent('offerClaimed');
+      window.dispatchEvent(event);
+    }
   };
 
   const handleClose = () => {
@@ -45,7 +48,7 @@ export const SeasonalOfferBanner = () => {
 
           <div className="flex-1 text-center md:text-left md:ml-32 lg:ml-40">
             {/* Mobile Panda - shows above text on mobile */}
-            <div className="md:hidden w-24 h-24 mx-auto mb-3">
+            <div className="md:hidden w-32 h-32 mx-auto mb-3">
               <img 
                 src={pandaMascot} 
                 alt="Warranty Panda" 
@@ -53,32 +56,36 @@ export const SeasonalOfferBanner = () => {
               />
             </div>
             
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center justify-center md:justify-start gap-2">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 text-center md:text-left">
               ❄️ Don't Risk a Breakdown This Winter
             </h1>
-            <h2 className="text-xl md:text-2xl font-semibold text-yellow-300 mb-2">
+            <h2 className="text-lg md:text-xl font-semibold text-yellow-300 mb-2 text-center md:text-left">
               Get 3 Extra Months Cover FREE
             </h2>
-            <p className="text-base md:text-lg text-white/90">
-              Order by Sunday 11pm to Secure Cover
+            <p className="text-sm md:text-base text-white/90 text-center md:text-left">
+              ⏰ Order by Sunday 11pm to Secure Cover
             </p>
           </div>
           
           <div className="flex items-center gap-3">
-            {isClaimed ? (
-              <div className="flex items-center gap-2 px-6 py-3 bg-green-600 rounded-lg font-semibold text-white">
-                <Sparkles className="w-5 h-5 text-yellow-300 drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
-                <span>Offer Claimed!</span>
-              </div>
-            ) : (
-              <Button
-                onClick={handleClaimOffer}
-                size="lg"
-                className="bg-white text-blue-700 hover:bg-blue-50 font-bold px-6 py-3 shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                Claim Now
-              </Button>
-            )}
+            <Button
+              onClick={handleClaimOffer}
+              size="lg"
+              className={`font-bold px-6 py-3 shadow-lg transition-all duration-300 ${
+                isClaimed 
+                  ? 'bg-green-600 text-white hover:bg-green-700 animate-pulse' 
+                  : 'bg-white text-blue-700 hover:bg-blue-50 hover:scale-105'
+              }`}
+            >
+              {isClaimed ? (
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-yellow-300 drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
+                  Offer Claimed!
+                </span>
+              ) : (
+                'Claim Now'
+              )}
+            </Button>
             
             <button
               onClick={handleClose}
