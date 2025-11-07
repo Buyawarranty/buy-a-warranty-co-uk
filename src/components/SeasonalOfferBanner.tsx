@@ -80,7 +80,7 @@ export const SeasonalOfferBanner = () => {
               ❄️ Don't Risk a Breakdown This Winter
             </h1>
             <h2 className="text-lg md:text-xl font-semibold text-yellow-300 mb-2 text-center md:text-left">
-              Get 3 Extra Months Cover FREE
+              Claim 3 Months FREE Extra Cover
             </h2>
             <p className="text-sm md:text-base text-white/90 text-center md:text-left">
               ⏰ Order by Sunday 11pm to Secure Cover
