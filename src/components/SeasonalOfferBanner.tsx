@@ -27,8 +27,9 @@ export const SeasonalOfferBanner = () => {
     }
   };
 
-  const handleClose = () => {
-    setIsVisible(false);
+  const handleReset = () => {
+    setIsClaimed(false);
+    localStorage.setItem('seasonal_offer_claimed', 'false');
   };
 
   if (!isVisible) return null;
@@ -46,7 +47,7 @@ export const SeasonalOfferBanner = () => {
             />
           </div>
 
-          <div className="flex-1 text-center md:text-left md:ml-32 lg:ml-40">
+          <div className="flex-1 text-center md:text-left md:ml-32 lg:ml-40 md:mr-4">
             {/* Mobile Panda - shows above text on mobile */}
             <div className="md:hidden w-32 h-32 mx-auto mb-3">
               <img 
@@ -71,10 +72,10 @@ export const SeasonalOfferBanner = () => {
             <Button
               onClick={handleClaimOffer}
               size="lg"
-              className={`font-bold px-6 py-3 shadow-lg transition-all duration-300 ${
+              className={`font-bold px-6 py-3 transition-all duration-300 ${
                 isClaimed 
-                  ? 'bg-green-600 text-white hover:bg-green-700 animate-pulse' 
-                  : 'bg-white text-blue-700 hover:bg-blue-50 hover:scale-105'
+                  ? 'bg-green-600 text-white hover:bg-green-700 shadow-[0_0_20px_rgba(34,197,94,0.6)]' 
+                  : 'bg-orange-500 text-white hover:bg-orange-600 hover:scale-105 shadow-lg'
               }`}
             >
               {isClaimed ? (
@@ -88,9 +89,9 @@ export const SeasonalOfferBanner = () => {
             </Button>
             
             <button
-              onClick={handleClose}
+              onClick={handleReset}
               className="p-2 hover:bg-white/20 rounded-full transition-colors"
-              aria-label="Close banner"
+              aria-label="Reset offer"
             >
               <X className="w-5 h-5 text-white" />
             </button>
