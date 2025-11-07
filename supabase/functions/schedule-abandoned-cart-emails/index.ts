@@ -22,10 +22,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Processing abandoned cart emails...');
 
-    // Get abandoned carts that need emails sent
+    // Get abandoned carts that need emails sent (exclude converted carts)
     const { data: abandonedCarts, error: cartsError } = await supabase
       .from('abandoned_carts')
       .select('*')
+      .eq('is_converted', false) // Only get unconverted carts
       .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
       .order('created_at', { ascending: false });
 

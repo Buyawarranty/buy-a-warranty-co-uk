@@ -49,6 +49,17 @@ export async function trackEmailConversion(
 
       console.log('Email conversion tracked:', emailLog.tracking_id);
     }
+    
+    // Also mark any abandoned carts as converted
+    await supabase
+      .from('abandoned_carts')
+      .update({ 
+        is_converted: true,
+        converted_at: new Date().toISOString()
+      })
+      .eq('email', email)
+      .eq('is_converted', false);
+      
   } catch (error) {
     console.error('Error tracking email conversion:', error);
   }

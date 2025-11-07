@@ -59,10 +59,12 @@ export type Database = {
           contact_notes: string | null
           contact_status: string | null
           contacted_by: string | null
+          converted_at: string | null
           created_at: string
           email: string
           full_name: string | null
           id: string
+          is_converted: boolean | null
           last_contacted_at: string | null
           mileage: string | null
           payment_type: string | null
@@ -82,10 +84,12 @@ export type Database = {
           contact_notes?: string | null
           contact_status?: string | null
           contacted_by?: string | null
+          converted_at?: string | null
           created_at?: string
           email: string
           full_name?: string | null
           id?: string
+          is_converted?: boolean | null
           last_contacted_at?: string | null
           mileage?: string | null
           payment_type?: string | null
@@ -105,10 +109,12 @@ export type Database = {
           contact_notes?: string | null
           contact_status?: string | null
           contacted_by?: string | null
+          converted_at?: string | null
           created_at?: string
           email?: string
           full_name?: string | null
           id?: string
+          is_converted?: boolean | null
           last_contacted_at?: string | null
           mileage?: string | null
           payment_type?: string | null

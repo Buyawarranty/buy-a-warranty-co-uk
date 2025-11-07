@@ -345,6 +345,26 @@ serve(async (req) => {
     } else {
       logStep("Customer record created successfully", { customerId: customerData2.id });
       
+      // Mark any abandoned carts for this email as converted
+      try {
+        const { error: cartUpdateError } = await supabaseClient
+          .from('abandoned_carts')
+          .update({ 
+            is_converted: true,
+            converted_at: new Date().toISOString()
+          })
+          .eq('email', userEmail)
+          .eq('is_converted', false);
+        
+        if (cartUpdateError) {
+          logStep("Warning: Failed to mark abandoned carts as converted", cartUpdateError);
+        } else {
+          logStep("Successfully marked abandoned carts as converted for email", { userEmail });
+        }
+      } catch (cartError) {
+        logStep("Error updating abandoned cart status", cartError);
+      }
+      
       // Use the same final addon data that was calculated earlier
       const finalAddOnsData = finalAddOnsForCustomer;
       
