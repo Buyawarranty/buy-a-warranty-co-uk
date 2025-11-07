@@ -36,6 +36,25 @@ export const SeasonalOfferBanner = () => {
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-r from-[#1e3a8a] via-[#3b82f6] to-[#1e40af] text-white">
+      {/* Snowfall Effect */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-white opacity-60 animate-[fall_linear_infinite]"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `-${Math.random() * 20}%`,
+              fontSize: `${Math.random() * 10 + 10}px`,
+              animationDuration: `${Math.random() * 3 + 5}s`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          >
+            ❄
+          </div>
+        ))}
+      </div>
+      
       <div className="relative container mx-auto px-4 py-6 md:py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Panda Mascot - positioned differently for mobile and desktop */}

@@ -226,6 +226,16 @@ export default {
 					'50%': {
 						transform: 'translateY(-3px)'
 					}
+				},
+				'fall': {
+					'0%': {
+						transform: 'translateY(-20vh) rotate(0deg)',
+						opacity: '0.8'
+					},
+					'100%': {
+						transform: 'translateY(110vh) rotate(360deg)',
+						opacity: '0.6'
+					}
 				}
 			},
 			animation: {
@@ -244,7 +254,8 @@ export default {
 				'slide': 'slide 12s ease-in-out infinite',
 				'float': 'float 2s ease-in-out infinite',
 				'bounce-slow': 'bounce-slow 3s ease-in-out infinite',
-				'gentle-bounce': 'gentle-bounce 4s ease-in-out infinite'
+				'gentle-bounce': 'gentle-bounce 4s ease-in-out infinite',
+				'fall': 'fall 8s linear infinite'
 			}
 		}
 	},
