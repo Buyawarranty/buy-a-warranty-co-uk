@@ -72,6 +72,7 @@ serve(async (req) => {
           valid_from: validFrom.toISOString(),
           valid_to: validTo.toISOString(),
           active: true,
+          archived: false,
           usage_limit: null,
           applicable_products: ["all"]
         })
