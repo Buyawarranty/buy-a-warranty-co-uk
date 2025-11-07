@@ -1116,7 +1116,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                     </label>
                   </div>
                   
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 border border-amber-200 rounded-lg p-4 bg-gradient-to-r from-amber-50 to-orange-50 hover:border-amber-300 transition-colors">
                     <input
                       type="radio"
                       id="stripe"
@@ -1129,18 +1129,33 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
                         localStorage.setItem('multiWarrantyPaymentMethod', 'stripe');
                         setLoading(false);
                       }}
-                      className="w-4 h-4 text-blue-600"
+                      className="w-4 h-4 text-amber-600 mt-1"
                     />
                     <label htmlFor="stripe" className="flex-1 cursor-pointer">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-900">Pay Full Amount</span>
-                        <div className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                          Save a further 5% (£{Math.round(finalPrice * 0.05)})
+                      <div className="flex flex-col gap-2">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <span className="text-base font-bold text-gray-900">Pay in Full Today</span>
+                            <p className="text-xs text-gray-600 mt-0.5">One-time payment, instant coverage</p>
+                          </div>
+                          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap ml-2">
+                            💰 Save 5% Today
+                          </div>
+                        </div>
+                        <div className="bg-white/60 rounded-md px-3 py-2 border border-amber-100">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-2xl font-bold text-gray-900">£{Math.round(finalPrice * 0.95)}</span>
+                            <span className="text-sm text-gray-500 line-through">£{finalPrice}</span>
+                            <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">Save £{Math.round(finalPrice * 0.05)}</span>
+                          </div>
+                          <p className="text-xs text-gray-600 mt-1">
+                            <span className="inline-flex items-center gap-1">
+                              <CreditCard size={12} className="text-gray-500" />
+                              Secure payment powered by Stripe
+                            </span>
+                          </p>
                         </div>
                       </div>
-                      <p className="text-xs text-gray-600 mt-1">
-                        Pay £{Math.round(finalPrice * 0.95)} upfront via card (was £{finalPrice})
-                      </p>
                     </label>
                   </div>
                 </div>
