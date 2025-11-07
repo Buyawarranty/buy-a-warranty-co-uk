@@ -74,12 +74,12 @@ export const SeasonalOfferBanner = () => {
             <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
               <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
               <h3 className="text-xl md:text-2xl font-bold text-white">
-                Get 3 Extra Months Cover FREE - Limited Time!
+                Don't Risk a Breakdown This Winter
               </h3>
               <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
             </div>
             <p className="text-sm md:text-base text-white">
-              Order by Sunday 11:00 PM to claim your bonus cover.
+              Get 3 Extra Months Cover FREE – Limited Time Only! Order by Sunday 11:00pm to Guarantee Your Bonus Cover
             </p>
           </div>
           
