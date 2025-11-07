@@ -58,7 +58,7 @@ serve(async (req) => {
 
     let discountCodeData;
     const validFrom = new Date();
-    const validTo = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+    const validTo = new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000); // 100 years - indefinite
 
     if (existingCampaignCode) {
       logStep("Updating existing campaign code", { code: campaignCode });
