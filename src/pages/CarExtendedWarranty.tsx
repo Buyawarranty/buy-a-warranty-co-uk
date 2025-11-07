@@ -1030,7 +1030,7 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Suzuki', logo: 'https://logo.clearbit.com/suzuki.com' },
                 { name: 'Tesla', logo: 'https://logo.clearbit.com/tesla.com' },
                 { name: 'Toyota', logo: 'https://logo.clearbit.com/toyota.com' },
-                { name: 'Volkswagen', logo: 'https://logo.clearbit.com/volkswagen.com' },
+                { name: 'Volkswagen', logo: 'https://logo.clearbit.com/volkswagen.com', link: '/car-extended-warranty/volkswagen/' },
                 { name: 'Volvo', logo: 'https://logo.clearbit.com/volvo.com' },
                 { name: 'Yamaha', logo: 'https://logo.clearbit.com/yamaha-motor.com' }
               ].map((brand) => (
