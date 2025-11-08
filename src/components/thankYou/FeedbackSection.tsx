@@ -85,7 +85,7 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
   };
 
   return (
-    <Card className="border border-border shadow-sm bg-gradient-to-br from-primary/5 to-background">
+    <Card className="border border-border shadow-sm bg-gradient-to-br from-green-50 to-background">
       <CardContent className="p-6 md:p-8">
         {!isOpen ? (
           <div className="text-center">

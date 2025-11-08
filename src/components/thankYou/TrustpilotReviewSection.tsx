@@ -20,13 +20,13 @@ export const TrustpilotReviewSection: React.FC = () => {
           Enjoying Your Experience?
         </h3>
         <p className="text-sm md:text-base text-muted-foreground mb-4">
-          Share your thoughts on Trustpilot – it only takes a moment and helps others make confident decisions!
+          Please share your thoughts on Trustpilot – it only takes a minute and really helps others make confident decisions.
         </p>
         <Button
           onClick={handleReviewClick}
-          className="bg-primary hover:bg-primary/90"
+          className="bg-[#00b67a] hover:bg-[#00a870] text-white"
         >
-          ⭐ Leave a Review on Trustpilot
+          ⭐ Leave Your Review Now
         </Button>
       </CardContent>
     </Card>

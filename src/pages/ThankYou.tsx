@@ -487,16 +487,16 @@ const ThankYou = () => {
                 {/* Need Help */}
                 <NeedHelpSection />
 
-                {/* Share & Save */}
-                <ShareAndSaveSection 
-                  onReferClick={() => trackButtonClick('refer_friend', { page: 'thank_you' })}
-                  customerName={firstName || undefined}
-                />
-
                 {/* Quick Feedback */}
                 <FeedbackSection 
                   onSurveyClick={() => trackButtonClick('feedback_survey', { page: 'thank_you' })}
                   policyNumber={policyNumber || undefined}
+                />
+
+                {/* Share & Save */}
+                <ShareAndSaveSection 
+                  onReferClick={() => trackButtonClick('refer_friend', { page: 'thank_you' })}
+                  customerName={firstName || undefined}
                 />
 
                 {/* Trust & Security Footer */}
