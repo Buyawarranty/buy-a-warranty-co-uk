@@ -149,69 +149,129 @@ serve(async (req: Request) => {
 
         const greeting = content.greeting.replace("{{customerFirstName}}", customerFirstName);
 
-        // Build HTML email
+        // Build HTML email with updated design
         const htmlContent = `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${template.subject}</title>
+  <title>Thank You for Choosing BuyAWarranty.co.uk – We'd Love Your Feedback</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .container { width: 100% !important; }
+      .logo { max-width: 200px !important; }
+      .content { padding: 30px 20px !important; }
+      .button { padding: 14px 30px !important; font-size: 15px !important; }
+    }
+  </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f4f4f4;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f5f5;">
     <tr>
       <td style="padding: 40px 20px;">
-        <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          <!-- Header -->
+        <table role="presentation" class="container" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+          
+          <!-- Logo Header -->
           <tr>
-            <td style="background-color: #eb4b00; padding: 30px 40px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">
-                ${template.subject}
-              </h1>
+            <td style="background-color: #ffffff; padding: 40px 40px 30px 40px; text-align: center;">
+              <img 
+                src="https://buyawarranty.co.uk/images/buyawarranty-logo.png" 
+                alt="Buy A Warranty" 
+                class="logo"
+                style="max-width: 280px; width: 100%; height: auto; display: block; margin: 0 auto;"
+              />
             </td>
           </tr>
           
-          <!-- Body -->
+          <!-- Body Content -->
           <tr>
-            <td style="padding: 40px;">
+            <td class="content" style="padding: 20px 40px 40px 40px;">
+              
+              <!-- Greeting -->
               <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
-                ${greeting}
+                Hi <strong>${customerFirstName}</strong>,
               </p>
               
-              <p style="margin: 0 0 30px 0; color: #555555; font-size: 15px; line-height: 1.6; white-space: pre-line;">
-                ${content.body}
+              <!-- Main Message -->
+              <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
+                Thank you for choosing <strong>BuyAWarranty.co.uk</strong>. We're so pleased you've secured reliable protection for your vehicle.
               </p>
               
-              <!-- CTA Button -->
-              <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0;">
-                <tr>
-                  <td style="text-align: center;">
-                    <a href="${content.cta_url}" 
-                       style="display: inline-block; padding: 16px 40px; background-color: #eb4b00; color: #ffffff; text-decoration: none; border-radius: 4px; font-size: 16px; font-weight: bold;">
-                      ${content.cta_text}
-                    </a>
-                  </td>
-                </tr>
-              </table>
-              
-              <p style="margin: 30px 0 0 0; color: #555555; font-size: 15px; line-height: 1.6; white-space: pre-line;">
-                ${content.footer}
+              <p style="margin: 0 0 30px 0; color: #555555; font-size: 15px; line-height: 1.6;">
+                Your peace of mind matters to us, and your feedback helps us improve while guiding other drivers to make confident choices.
               </p>
+              
+              <!-- Call to Action Section -->
+              <div style="background-color: #f8f9fa; padding: 30px; border-radius: 8px; margin: 0 0 30px 0; text-align: center;">
+                <p style="margin: 0 0 8px 0; color: #333333; font-size: 18px; font-weight: 600;">
+                  🚗 Share Your Experience
+                </p>
+                <p style="margin: 0 0 25px 0; color: #666666; font-size: 15px;">
+                  It Only Takes 60 Seconds
+                </p>
+                <p style="margin: 0 0 25px 0; color: #555555; font-size: 15px; line-height: 1.6;">
+                  We'd be truly grateful if you could leave us a quick review on Trustpilot. Your opinion helps others find the best protection for their vehicles.
+                </p>
+                
+                <!-- CTA Button -->
+                <table role="presentation" style="margin: 0 auto;">
+                  <tr>
+                    <td style="border-radius: 6px; background-color: #00b67a;">
+                      <a 
+                        href="https://uk.trustpilot.com/review/buyawarranty.co.uk" 
+                        class="button"
+                        style="display: inline-block; padding: 16px 40px; background-color: #00b67a; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600; transition: background-color 0.3s;"
+                      >
+                        👉 Leave Your Review on Trustpilot
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              
+              <!-- Support Section -->
+              <div style="background-color: #fafafa; padding: 25px; border-radius: 8px; border-left: 4px solid #eb4b00;">
+                <p style="margin: 0 0 15px 0; color: #333333; font-size: 16px; font-weight: 600;">
+                  Need help or have questions?
+                </p>
+                <p style="margin: 0 0 12px 0; color: #555555; font-size: 15px;">
+                  We're here for you.
+                </p>
+                <p style="margin: 0 0 6px 0; color: #555555; font-size: 14px;">
+                  <strong>Email:</strong> <a href="mailto:info@buyawarranty.co.uk" style="color: #eb4b00; text-decoration: none;">info@buyawarranty.co.uk</a>
+                </p>
+                <p style="margin: 0 0 6px 0; color: #555555; font-size: 14px;">
+                  <strong>Phone:</strong> <a href="tel:03302295040" style="color: #eb4b00; text-decoration: none;">0330 229 5040</a>
+                </p>
+                <p style="margin: 0; color: #555555; font-size: 14px;">
+                  <strong>Website:</strong> <a href="https://www.buyawarranty.co.uk" style="color: #eb4b00; text-decoration: none;">www.buyawarranty.co.uk</a>
+                </p>
+              </div>
+              
+              <!-- Closing Message -->
+              <p style="margin: 30px 0 0 0; color: #555555; font-size: 15px; line-height: 1.6; text-align: center;">
+                Thanks again for choosing us. We're proud to be your trusted warranty partner.
+              </p>
+              <p style="margin: 10px 0 0 0; color: #333333; font-size: 15px; font-weight: 600; text-align: center;">
+                The BuyAWarranty.co.uk Team
+              </p>
+              
             </td>
           </tr>
           
           <!-- Footer -->
           <tr>
-            <td style="background-color: #f8f8f8; padding: 30px 40px; text-align: center; border-top: 1px solid #eeeeee;">
-              <p style="margin: 0 0 10px 0; color: #888888; font-size: 13px;">
-                BuyAWarranty.co.uk
+            <td style="background-color: #f8f8f8; padding: 25px 40px; text-align: center; border-top: 1px solid #e5e5e5;">
+              <p style="margin: 0 0 8px 0; color: #888888; font-size: 13px; line-height: 1.5;">
+                <strong style="color: #666666;">Your trusted warranty partner</strong>
               </p>
               <p style="margin: 0; color: #888888; font-size: 13px;">
-                Email: info@buyawarranty.co.uk | Phone: 0330 229 5040
+                BuyAWarranty.co.uk
               </p>
             </td>
           </tr>
+          
         </table>
       </td>
     </tr>
@@ -220,11 +280,11 @@ serve(async (req: Request) => {
 </html>
         `;
 
-        // Send email via Resend
+        // Send email via Resend with updated subject
         const emailResult = await resend.emails.send({
           from: template.from_email,
           to: [policy.email],
-          subject: template.subject,
+          subject: "Thank You for Choosing BuyAWarranty.co.uk – We'd Love Your Feedback",
           html: htmlContent,
         });
 
