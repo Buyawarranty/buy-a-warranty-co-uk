@@ -10,10 +10,17 @@ import TrustpilotHeader from '@/components/TrustpilotHeader';
 import { CarDrivingSpinner } from '@/components/ui/car-driving-spinner';
 import { TrophySpinner } from '@/components/ui/trophy-spinner';
 import { SEOHead } from '@/components/SEOHead';
-import { ArrowRight, Check, Shield, Star, Users, Clock } from 'lucide-react';
+import { ArrowRight, Clock } from 'lucide-react';
 import pandaCelebratingOrangeCar from '@/assets/panda-celebrating-orange-car.png';
 import { trackPurchaseComplete, trackButtonClick } from '@/utils/analytics';
 import { sendTrustpilotInvitation } from '@/utils/trustpilotInvite';
+import { ConfirmationSection } from '@/components/thankYou/ConfirmationSection';
+import { OrderSummary } from '@/components/thankYou/OrderSummary';
+import { WhatHappensNext } from '@/components/thankYou/WhatHappensNext';
+import { NeedHelpSection } from '@/components/thankYou/NeedHelpSection';
+import { ShareAndSaveSection } from '@/components/thankYou/ShareAndSaveSection';
+import { TrustSecurityFooter } from '@/components/thankYou/TrustSecurityFooter';
+import { FeedbackSection } from '@/components/thankYou/FeedbackSection';
 
 // Extend Window interface for gtag
 declare global {
@@ -375,150 +382,132 @@ const ThankYou = () => {
     window.location.href = 'https://www.buyawarranty.co.uk';
   };
 
+  // Extract customer data from URL params
+  const email = searchParams.get('email');
+  const firstName = searchParams.get('first_name');
+  const lastName = searchParams.get('last_name');
+
   return (
-    <div className="bg-gradient-to-br from-blue-50 via-white to-orange-50 min-h-screen">
+    <div className="bg-gradient-to-br from-background via-background to-muted/20 min-h-screen">
       <SEOHead 
-        title="You're All Set! | Warranty Purchase Complete"
-        description="Your car warranty is active and ready to protect you. Access your policy documents and explore additional coverage options."
-        keywords="warranty purchase complete, policy confirmation, car warranty active"
+        title="Thank You! Your Warranty is Active | Buy-A-Warranty"
+        description="Your car warranty purchase is complete. Your policy is now active and documents are on their way to your inbox."
+        keywords="warranty purchase complete, policy confirmation, car warranty active, thank you"
       />
       
       {/* Trustpilot header */}
       <div className="w-full px-4 pt-4 pb-2">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <TrustpilotHeader />
         </div>
       </div>
       
-      <div className="max-w-5xl mx-auto px-4 py-8 md:py-12">
-        {/* Celebration Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-3">
-            🎉 You're All Set – and Covered!
-          </h1>
-          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
-            Your warranty is active. We've sent your plan details to your inbox.
-          </p>
-          
-          {isProcessing ? (
-            <div className="mt-6 space-y-3">
-              <TrophySpinner />
-              <p className="text-gray-600">Processing your warranty registration...</p>
-            </div>
-          ) : policyNumber && (
-            <div className="mt-6 inline-block bg-green-50 border-2 border-green-500 rounded-lg px-6 py-4">
-              <p className="text-sm text-green-700 font-medium mb-1">
-                {source === 'bumper' ? 'BAW Policy Number' : 'Policy Number'}
-              </p>
-              <p className="text-2xl font-bold text-green-900 font-mono">{policyNumber}</p>
-            </div>
-          )}
-        </div>
-
-        {/* Image - Max 30-35% vertical space */}
-        <div className="flex justify-center mb-8">
-          <img 
-            src={pandaCelebratingOrangeCar}
-            alt="Celebrating panda with orange car" 
-            className="w-full max-w-md h-auto object-contain"
-            style={{ maxHeight: '35vh' }}
-          />
-        </div>
-
-        {/* Check if redirecting to second warranty */}
-        {searchParams.get('addAnotherWarranty') === 'true' ? (
-          <div className="text-center mb-8">
-            <Card className="bg-orange-50 border-2 border-orange-500">
-              <CardContent className="p-6">
-                <p className="text-orange-900 font-bold text-xl mb-2">
-                  🎉 Redirecting you to add your next vehicle
-                </p>
-                <p className="text-orange-800 text-lg mb-4">
-                  with 10% discount applied!
-                </p>
-                <CarDrivingSpinner />
-              </CardContent>
-            </Card>
+      <div className="max-w-4xl mx-auto px-4 py-6 md:py-10">
+        {isProcessing ? (
+          <div className="text-center py-12">
+            <TrophySpinner />
+            <p className="text-muted-foreground mt-4">Processing your warranty registration...</p>
           </div>
         ) : (
           <>
-            {/* Second Purchase Offer */}
-            <Card className="mb-8 border-2 border-blue-500 shadow-lg">
-              <CardContent className="p-6 md:p-8 text-center">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                  🚗 Got Another Vehicle?
-                </h2>
-                <p className="text-lg text-gray-700 mb-3">
-                  Get <span className="font-bold text-orange-600">10% off</span> a second warranty – valid for 24 hours!
-                </p>
-                <p className="text-orange-600 font-semibold mb-6 flex items-center justify-center gap-2">
-                  <Clock className="w-5 h-5" />
-                  {timeRemaining && timeRemaining !== 'Expired' 
-                    ? `Offer expires in ${timeRemaining}` 
-                    : 'Limited time offer'}
-                </p>
-                <Button
-                  onClick={handleGetSecondWarranty}
-                  size="lg"
-                  className="w-full md:w-auto bg-orange-600 hover:bg-orange-700 text-white text-lg px-8 py-6 font-semibold shadow-lg hover:shadow-xl transition-all"
-                >
-                  Get 10% off a 2nd warranty
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Trust Section */}
-            <Card className="mb-8 bg-white shadow-md">
-              <CardContent className="p-6 md:p-8">
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 text-center">
-                  🔒 Why Choose Us Again?
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-semibold text-gray-900">Trusted by thousands</p>
-                      <p className="text-sm text-gray-600">Join our community of satisfied customers</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-semibold text-gray-900">UK-based support</p>
-                      <p className="text-sm text-gray-600">Expert help when you need it</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-semibold text-gray-900">No hidden fees</p>
-                      <p className="text-sm text-gray-600">Transparent pricing, always</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Check className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-semibold text-gray-900">Rated ★★★★★</p>
-                      <p className="text-sm text-gray-600">Excellent customer reviews</p>
-                    </div>
-                  </div>
+            {/* Check if redirecting to second warranty */}
+            {searchParams.get('addAnotherWarranty') === 'true' ? (
+              <div className="text-center mb-8">
+                <Card className="border-2 border-primary shadow-lg">
+                  <CardContent className="p-6">
+                    <p className="text-foreground font-bold text-xl mb-2">
+                      🎉 Redirecting you to add your next vehicle
+                    </p>
+                    <p className="text-muted-foreground text-lg mb-4">
+                      with 10% discount applied!
+                    </p>
+                    <CarDrivingSpinner />
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Celebration Image */}
+                <div className="flex justify-center mb-6">
+                  <img 
+                    src={pandaCelebratingOrangeCar}
+                    alt="Celebrating panda with orange car" 
+                    className="w-full max-w-xs md:max-w-sm h-auto object-contain"
+                  />
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Footer */}
-            <div className="text-center">
-              <Button
-                onClick={handleReturnHome}
-                variant="outline"
-                size="lg"
-                className="text-gray-700 border-gray-300 hover:bg-gray-50"
-              >
-                🔁 Return to Buy-A-Warranty.co.uk
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </div>
+                {/* Confirmation Section */}
+                <ConfirmationSection 
+                  firstName={firstName || undefined}
+                  email={email || undefined}
+                  policyNumber={policyNumber || undefined}
+                  source={source || undefined}
+                />
+
+                {/* Order Summary */}
+                <OrderSummary 
+                  plan={plan || undefined}
+                  paymentType={paymentType || undefined}
+                  warrantyStartDate={undefined}
+                />
+
+                {/* What Happens Next */}
+                <WhatHappensNext />
+
+                {/* Second Purchase Offer */}
+                <Card className="border-2 border-primary shadow-lg bg-gradient-to-br from-primary/5 to-background">
+                  <CardContent className="p-6 md:p-8 text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                      🚗 Got Another Vehicle?
+                    </h2>
+                    <p className="text-lg text-muted-foreground mb-3">
+                      Get <span className="font-bold text-primary">10% off</span> a second warranty – valid for 24 hours!
+                    </p>
+                    <p className="text-primary font-semibold mb-6 flex items-center justify-center gap-2">
+                      <Clock className="w-5 h-5" />
+                      {timeRemaining && timeRemaining !== 'Expired' 
+                        ? `Offer expires in ${timeRemaining}` 
+                        : 'Limited time offer'}
+                    </p>
+                    <Button
+                      onClick={handleGetSecondWarranty}
+                      size="lg"
+                      className="w-full md:w-auto bg-primary hover:bg-primary/90 text-lg px-8 py-6 font-semibold shadow-lg hover:shadow-xl transition-all"
+                    >
+                      Get 10% off a 2nd warranty
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Need Help */}
+                <NeedHelpSection />
+
+                {/* Share & Save */}
+                <ShareAndSaveSection 
+                  onReferClick={() => trackButtonClick('refer_friend', { page: 'thank_you' })}
+                />
+
+                {/* Quick Feedback */}
+                <FeedbackSection 
+                  onSurveyClick={() => trackButtonClick('feedback_survey', { page: 'thank_you' })}
+                />
+
+                {/* Trust & Security Footer */}
+                <TrustSecurityFooter />
+
+                {/* Return Home Button */}
+                <div className="text-center pt-4">
+                  <Button
+                    onClick={handleReturnHome}
+                    variant="outline"
+                    size="lg"
+                  >
+                    Return to Buy-A-Warranty.co.uk
+                  </Button>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
