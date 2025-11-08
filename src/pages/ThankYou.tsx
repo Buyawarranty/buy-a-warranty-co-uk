@@ -397,13 +397,13 @@ const ThankYou = () => {
       />
       
       {/* Trustpilot header */}
-      <div className="w-full px-4 pt-4 pb-2">
+      <div className="w-full px-4 pt-4 pb-0">
         <div className="max-w-4xl mx-auto">
           <TrustpilotHeader />
         </div>
       </div>
       
-      <div className="max-w-4xl mx-auto px-4 py-6 md:py-10">
+      <div className="max-w-4xl mx-auto px-4 pt-2 pb-6 md:pt-4 md:pb-10">
         {isProcessing ? (
           <div className="text-center py-12">
             <TrophySpinner />
@@ -429,7 +429,7 @@ const ThankYou = () => {
             ) : (
               <div className="space-y-6">
                 {/* Celebration Image */}
-                <div className="flex justify-center mb-6">
+                <div className="flex justify-center mb-3">
                   <img 
                     src={pandaCelebratingOrangeCar}
                     alt="Celebrating panda with orange car" 
