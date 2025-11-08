@@ -9,7 +9,7 @@ export const TrustSecurityFooter: React.FC = () => {
         <div className="text-center mb-6">
           <h3 className="text-lg md:text-xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
             <Shield className="w-5 h-5 text-primary" />
-            Trust & Security
+            Your trusted warranty partner
           </h3>
           <p className="text-sm text-muted-foreground">
             <a 
@@ -20,7 +20,6 @@ export const TrustSecurityFooter: React.FC = () => {
             >
               buyawarranty.co.uk
             </a>
-            {' '}- Your trusted warranty partner
           </p>
         </div>
         

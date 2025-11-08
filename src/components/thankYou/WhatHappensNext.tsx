@@ -53,27 +53,6 @@ export const WhatHappensNext: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-border">
-            <div className="flex items-start gap-3 mb-4">
-              <UserCircle className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-semibold text-foreground mb-1">
-                  Your Customer Portal
-                </p>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Feel free to log into your customer portal to see all your cover details.
-                </p>
-                <Button 
-                  onClick={handlePortalClick}
-                  variant="outline"
-                  size="sm"
-                  className="w-full md:w-auto"
-                >
-                  Access Customer Portal
-                </Button>
-              </div>
-            </div>
-          </div>
         </div>
       </CardContent>
     </Card>

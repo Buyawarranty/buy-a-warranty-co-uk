@@ -17,6 +17,7 @@ import { sendTrustpilotInvitation } from '@/utils/trustpilotInvite';
 import { ConfirmationSection } from '@/components/thankYou/ConfirmationSection';
 import { OrderSummary } from '@/components/thankYou/OrderSummary';
 import { WhatHappensNext } from '@/components/thankYou/WhatHappensNext';
+import { TrustpilotReviewSection } from '@/components/thankYou/TrustpilotReviewSection';
 import { NeedHelpSection } from '@/components/thankYou/NeedHelpSection';
 import { ShareAndSaveSection } from '@/components/thankYou/ShareAndSaveSection';
 import { TrustSecurityFooter } from '@/components/thankYou/TrustSecurityFooter';
@@ -454,6 +455,9 @@ const ThankYou = () => {
                 {/* What Happens Next */}
                 <WhatHappensNext />
 
+                {/* Trustpilot Review Section */}
+                <TrustpilotReviewSection />
+
                 {/* Second Purchase Offer */}
                 <Card className="border-2 border-primary shadow-lg bg-gradient-to-br from-primary/5 to-background">
                   <CardContent className="p-6 md:p-8 text-center">
@@ -486,11 +490,13 @@ const ThankYou = () => {
                 {/* Share & Save */}
                 <ShareAndSaveSection 
                   onReferClick={() => trackButtonClick('refer_friend', { page: 'thank_you' })}
+                  customerName={firstName || undefined}
                 />
 
                 {/* Quick Feedback */}
                 <FeedbackSection 
                   onSurveyClick={() => trackButtonClick('feedback_survey', { page: 'thank_you' })}
+                  policyNumber={policyNumber || undefined}
                 />
 
                 {/* Trust & Security Footer */}
@@ -500,8 +506,8 @@ const ThankYou = () => {
                 <div className="text-center pt-4">
                   <Button
                     onClick={handleReturnHome}
-                    variant="outline"
                     size="lg"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     Return to Buy-A-Warranty.co.uk
                   </Button>

@@ -1182,6 +1182,42 @@ export type Database = {
           },
         ]
       }
+      customer_surveys: {
+        Row: {
+          created_at: string
+          ease_explanation: string | null
+          ease_rating: string
+          id: string
+          other_reason: string | null
+          policy_number: string
+          reasons_chosen: string[]
+          submitted_at: string
+          suggestions: string | null
+        }
+        Insert: {
+          created_at?: string
+          ease_explanation?: string | null
+          ease_rating: string
+          id?: string
+          other_reason?: string | null
+          policy_number: string
+          reasons_chosen: string[]
+          submitted_at?: string
+          suggestions?: string | null
+        }
+        Update: {
+          created_at?: string
+          ease_explanation?: string | null
+          ease_rating?: string
+          id?: string
+          other_reason?: string | null
+          policy_number?: string
+          reasons_chosen?: string[]
+          submitted_at?: string
+          suggestions?: string | null
+        }
+        Relationships: []
+      }
       customer_tag_assignments: {
         Row: {
           assigned_at: string

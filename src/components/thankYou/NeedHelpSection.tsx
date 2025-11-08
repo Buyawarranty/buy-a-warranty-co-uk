@@ -5,7 +5,7 @@ import { Mail, HelpCircle } from 'lucide-react';
 
 export const NeedHelpSection: React.FC = () => {
   const handleContactSupport = () => {
-    window.location.href = 'mailto:support@buyawarranty.co.uk';
+    window.open('https://buyawarranty.co.uk/contact-us/', '_blank');
   };
 
   const handleFAQClick = () => {

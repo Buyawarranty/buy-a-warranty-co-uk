@@ -1,23 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Gift, Star } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Gift, Star, Loader2 } from 'lucide-react';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import trustpilotLogo from '/lovable-uploads/4e4faf8a-b202-4101-a858-9c58ad0a28c5.png';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface ShareAndSaveSectionProps {
   onReferClick?: () => void;
+  customerName?: string;
 }
 
 export const ShareAndSaveSection: React.FC<ShareAndSaveSectionProps> = ({
-  onReferClick
+  onReferClick,
+  customerName
 }) => {
-  const handleReferClick = () => {
+  const [friendEmail, setFriendEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleReferClick = async () => {
+    if (!friendEmail || !friendEmail.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
     if (onReferClick) {
       onReferClick();
     }
-    // Implement referral logic
-    window.open('mailto:?subject=Get £30 off your car warranty&body=I just got a great warranty from Buy-A-Warranty. Use my referral to get £30 off! https://www.buyawarranty.co.uk', '_blank');
+
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.functions.invoke('send-referral-email', {
+        body: {
+          friendEmail,
+          referrerName: customerName || 'A Friend'
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Referral sent! Your friend will receive an email shortly.');
+      setFriendEmail('');
+    } catch (error) {
+      console.error('Error sending referral:', error);
+      toast.error('Failed to send referral. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleTrustpilotClick = () => {
@@ -41,12 +73,30 @@ export const ShareAndSaveSection: React.FC<ShareAndSaveSectionProps> = ({
             <p className="text-sm text-muted-foreground mb-4">
               Share the love and save on your future coverage
             </p>
-            <Button
-              onClick={handleReferClick}
-              className="w-full md:w-auto bg-primary hover:bg-primary/90"
-            >
-              📨 Refer a Friend
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+              <Input
+                type="email"
+                placeholder="Enter friend's email"
+                value={friendEmail}
+                onChange={(e) => setFriendEmail(e.target.value)}
+                className="flex-1"
+                disabled={isSubmitting}
+              />
+              <Button
+                onClick={handleReferClick}
+                className="bg-primary hover:bg-primary/90"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  '📨 Refer a Friend'
+                )}
+              </Button>
+            </div>
           </div>
           
           {/* Trustpilot Section */}

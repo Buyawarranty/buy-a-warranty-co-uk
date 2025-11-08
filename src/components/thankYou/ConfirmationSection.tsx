@@ -24,8 +24,11 @@ export const ConfirmationSection: React.FC<ConfirmationSectionProps> = ({
           </div>
           <div className="flex-1">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Thanks{firstName ? `, ${firstName}` : ''} – your payment went through smoothly!
+              🎉 Thanks{firstName ? `, ${firstName}` : ''}, You're All Set!
             </h1>
+            <p className="text-lg text-muted-foreground mb-3">
+              Your payment went through smoothly – and your warranty is now active!
+            </p>
             
             {policyNumber && (
               <div className="mb-4 p-3 bg-background rounded-lg border border-border">
