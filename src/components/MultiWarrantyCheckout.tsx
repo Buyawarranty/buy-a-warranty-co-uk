@@ -18,7 +18,6 @@ interface MultiWarrantyCheckoutProps {
 }
 
 const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, onBack, onAddAnother }) => {
-  const [isCartRestoring, setIsCartRestoring] = useState(true);
   const [customerData, setCustomerData] = useState(() => {
     try {
       const saved = localStorage.getItem('multiWarrantyCheckoutData');
@@ -80,7 +79,6 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
   
   console.log('MultiWarrantyCheckout Debug:', {
     itemsCount: items.length,
-    isCartRestoring,
     totalPrice,
     subtotalAfterMultiDiscount,
     finalPrice,
@@ -92,18 +90,6 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       totalPrice: item.pricingData.totalPrice
     }))
   });
-
-  // Show loading state while cart is being restored on mobile
-  if (isCartRestoring) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your cart...</p>
-        </div>
-      </div>
-    );
-  }
 
   // Show error if cart is empty after restoration attempt
   if (items.length === 0) {
@@ -191,26 +177,6 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
       console.error('❌ Failed to save discount validation:', error);
     }
   }, [discountValidation]);
-
-  // Mobile-specific: Allow cart to restore before rendering
-  useEffect(() => {
-    console.log('🔍 MultiWarrantyCheckout mounted with', items.length, 'items');
-    
-    // Give cart context more time to restore on mobile (increased timeout)
-    const timer = setTimeout(() => {
-      console.log('⏱️ Cart restoration timeout reached:', items.length, 'items');
-      setIsCartRestoring(false);
-    }, 2500); // Increased from 1000ms to 2500ms for slower mobile devices
-    
-    // If items are already loaded, stop waiting
-    if (items.length > 0) {
-      console.log('✅ Cart already loaded with', items.length, 'items');
-      clearTimeout(timer);
-      setIsCartRestoring(false);
-    }
-    
-    return () => clearTimeout(timer);
-  }, [items.length]);
 
   // Handle page visibility, popstate, and pageshow to detect when user returns from payment gateway
   useEffect(() => {

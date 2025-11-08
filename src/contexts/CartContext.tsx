@@ -47,25 +47,17 @@ export const useCart = () => {
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [isRestoring, setIsRestoring] = useState(true);
 
-  // Aggressive cart restoration with retry logic for mobile devices
+  // Non-blocking cart restoration - runs in background without blocking app render
   useEffect(() => {
-    let attemptCount = 0;
-    const maxAttempts = 5;
-    const retryDelay = 200; // Start with 200ms
-
-    const attemptRestore = () => {
-      attemptCount++;
-      console.log(`🔄 Cart restore attempt ${attemptCount}/${maxAttempts}`);
-
-      if (!isStorageAvailable('localStorage')) {
-        console.warn('⚠️ localStorage not available - cart will not persist');
-        setIsRestoring(false);
-        return;
-      }
-      
+    // Wrap everything in try-catch to prevent app crashes
+    const safeRestore = async () => {
       try {
+        if (!isStorageAvailable('localStorage')) {
+          console.warn('⚠️ localStorage not available - cart will not persist');
+          return;
+        }
+        
         const savedCart = localStorage.getItem('warrantyCart');
         if (savedCart) {
           const parsedCart = JSON.parse(savedCart);
@@ -75,31 +67,23 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...item,
               addedAt: new Date(item.addedAt)
             })));
-            setIsRestoring(false);
-            return;
           }
-        }
-        
-        // No cart found - check if this is expected
-        console.log('ℹ️ No cart data found in localStorage');
-        setIsRestoring(false);
-      } catch (error) {
-        console.error(`❌ Error loading cart (attempt ${attemptCount}):`, error);
-        
-        // Retry with exponential backoff for mobile
-        if (attemptCount < maxAttempts) {
-          const nextDelay = retryDelay * Math.pow(2, attemptCount - 1);
-          console.log(`⏳ Retrying in ${nextDelay}ms...`);
-          setTimeout(attemptRestore, nextDelay);
         } else {
-          console.error('❌ Cart restoration failed after', maxAttempts, 'attempts');
-          setIsRestoring(false);
+          console.log('ℹ️ No cart data found in localStorage');
+        }
+      } catch (error) {
+        // Silently fail - don't crash the app
+        console.error('❌ Error loading cart:', error);
+        // Clear potentially corrupted cart data
+        try {
+          localStorage.removeItem('warrantyCart');
+        } catch (e) {
+          console.error('❌ Error clearing corrupted cart:', e);
         }
       }
     };
 
-    // Start restoration immediately
-    attemptRestore();
+    safeRestore();
   }, []);
 
   // Save cart to localStorage whenever items change
