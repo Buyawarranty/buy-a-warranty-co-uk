@@ -262,8 +262,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       planTitle: 'Platinum Complete Plan',
       features: [
         'All mechanical & electrical parts',
-        'Up to 10 claims per policy',
-        'Labour costs included',
+        'Claim up to the value of the car',
+        'Labour costs up to £100 p/hour',
         'Fault diagnostics',
         'Consequential damage cover',
         'Fast claims process',
@@ -288,10 +288,10 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       planTitle: 'Platinum Complete Plan',
       features: [
         'All mechanical & electrical parts',
-        'Unlimited claims',
-        'Labour costs included',
+        'Claim up to the value of the car',
+        'Labour costs up to £100 p/hour',
         'Fault diagnostics',
-        'Reimbursement of the MOT test fee',
+        'MOT test fee',
         'Vehicle recovery claim-back',
         'Consequential damage cover',
         'Fast claims process',
@@ -316,17 +316,17 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       planTitle: 'Platinum Complete Plan',
       features: [
         'All mechanical & electrical parts',
-        'Unlimited claims',
-        'Labour costs included',
+        'Claim up to the value of the car',
+        'Labour costs up to £100 p/hour',
         'Fault diagnostics',
         'Vehicle recovery claim-back',
-        'Reimbursement of the MOT test fee',
+        'MOT test fee',
         'Europe repair cover',
         'Vehicle rental cover',
         'Consequential damage cover',
         'Fast claims process',
         '14-day money-back guarantee',
-        'Optional extras available – tailor your cover to suit your needs'
+        'Optional extras available'
       ],
       exclusions: [
         'Pre-existing faults are not covered'
