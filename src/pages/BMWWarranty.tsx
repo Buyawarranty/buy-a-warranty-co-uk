@@ -111,70 +111,122 @@ const BMWWarranty: React.FC = () => {
       />
 
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-50">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <Link to="/" className="hover:opacity-80 transition-opacity">
-              <OptimizedImage 
-                src={buyawarrantyLogo} 
-                alt="Buy a Warranty Logo - Affordable Car Warranty UK" 
-                className="h-6 sm:h-8 w-auto"
-                priority={true}
-                width={240}
-                height={40}
-              />
-            </Link>
+      <header className="bg-white shadow-sm py-1 sm:py-2 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Link to="/" className="hover:opacity-80 transition-opacity">
+                <OptimizedImage 
+                  src={buyawarrantyLogo} 
+                  alt="Buy a Warranty Logo - Affordable Car Warranty UK" 
+                  className="h-6 sm:h-8 w-auto"
+                  priority={true}
+                  width={240}
+                  height={40}
+                />
+              </Link>
+            </div>
 
-            {isMobile ? (
-              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <nav className="flex flex-col gap-4 mt-8">
-                    <Link to="/about" className="text-lg hover:text-primary transition-colors">
-                      About Us
-                    </Link>
-                    <Link to="/contact" className="text-lg hover:text-primary transition-colors">
-                      Contact
-                    </Link>
-                    <Link to="/blog" className="text-lg hover:text-primary transition-colors">
-                      Blog
-                    </Link>
-                    <a href="tel:03333444247" className="flex items-center gap-2 text-lg">
-                      <Phone className="h-5 w-5" />
-                      0333 344 4247
-                    </a>
-                  </nav>
-                </SheetContent>
-              </Sheet>
-            ) : (
-              <div className="flex items-center gap-6">
-                <Link to="/about" className="text-gray-700 hover:text-primary transition-colors">
-                  About Us
-                </Link>
-                <Link to="/contact" className="text-gray-700 hover:text-primary transition-colors">
-                  Contact
-                </Link>
-                <Link to="/blog" className="text-gray-700 hover:text-primary transition-colors">
-                  Blog
-                </Link>
-                <a 
-                  href="tel:03333444247" 
-                  className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors"
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+              <Link to="/what-is-covered/" className="relative text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-orange-500 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">What's Covered</Link>
+              <Link to="/make-a-claim/" className="relative text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-orange-500 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">Make a Claim</Link>
+              <Link to="/faq/" className="relative text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-orange-500 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">FAQs</Link>
+              <Link to="/contact-us/" className="relative text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-orange-500 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">Contact Us</Link>
+            </nav>
+
+            <div className="hidden lg:flex items-center space-x-3">
+              <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-[#00B67A] text-white border-[#00B67A] hover:bg-[#008C5A] hover:border-[#008C5A] px-3 text-sm"
                 >
-                  <Phone className="h-5 w-5" />
-                  0333 344 4247
-                </a>
-                <Button onClick={navigateToQuoteForm}>
-                  Get Quote
+                  WhatsApp Us
                 </Button>
-              </div>
-            )}
+              </a>
+              <Button 
+                size="sm"
+                onClick={navigateToQuoteForm}
+                className="bg-primary text-white hover:bg-primary/90 px-3 text-sm"
+              >
+                Get my quote
+              </Button>
+            </div>
+
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="lg" className="lg:hidden p-3 min-w-[48px] min-h-[48px]">
+                  <Menu className="h-8 w-8" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px] overflow-y-auto">
+                <div className="flex flex-col h-full max-h-screen">
+                  <div className="flex items-center justify-between pb-4 flex-shrink-0">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
+                      <OptimizedImage 
+                        src={buyawarrantyLogo} 
+                        alt="Buy a Warranty Logo"
+                        className="h-8 w-auto"
+                        priority={false}
+                        width={240}
+                        height={40}
+                      />
+                    </Link>
+                  </div>
+
+                  <nav className="flex flex-col space-y-4 flex-1 overflow-y-auto pb-4">
+                    <Link 
+                      to="/what-is-covered/" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      What's Covered
+                    </Link>
+                    <Link 
+                      to="/make-a-claim/" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Make a Claim
+                    </Link>
+                    <Link 
+                      to="/faq/" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      FAQs
+                    </Link>
+                    <Link 
+                      to="/contact-us/" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-base py-3 border-b border-gray-200 min-h-[48px] flex items-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Contact Us
+                    </Link>
+                  </nav>
+
+                  <div className="space-y-4 pt-4 mt-auto flex-shrink-0">
+                    <a href="https://wa.me/message/SPQPJ6O3UBF5B1" target="_blank" rel="noopener noreferrer" className="block">
+                      <Button 
+                        variant="outline" 
+                        className="w-full bg-[#00B67A] text-white border-[#00B67A] hover:bg-[#008C5A] hover:border-[#008C5A] text-base py-4 min-h-[48px] flex items-center justify-center gap-3"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        WhatsApp Us
+                      </Button>
+                    </a>
+                    <Button 
+                      className="w-full bg-primary text-white hover:bg-primary/90 text-base py-4 min-h-[48px]" 
+                      onClick={() => { setIsMobileMenuOpen(false); navigateToQuoteForm(); }}
+                    >
+                      Get my quote
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
-        </nav>
+        </div>
       </header>
 
       {/* Hero Section */}
