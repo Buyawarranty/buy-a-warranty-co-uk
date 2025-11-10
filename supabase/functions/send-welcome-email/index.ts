@@ -43,6 +43,17 @@ serve(async (req) => {
       throw new Error("Missing required parameters: email, planType, paymentType, and policyNumber are all required");
     }
 
+    // Fetch policy/customer data to get seasonal bonus information
+    logStep("Fetching policy data for seasonal bonus");
+    const { data: policyData, error: policyFetchError } = await supabaseClient
+      .from('customer_policies')
+      .select('seasonal_bonus_months')
+      .eq('policy_number', policyNumber)
+      .maybeSingle();
+
+    const seasonalBonusMonths = policyData?.seasonal_bonus_months || 0;
+    logStep("Seasonal bonus retrieved", { seasonalBonusMonths });
+
     // Check if welcome email already sent for this email address
     logStep("Checking for existing welcome email record");
     const { data: existingWelcomeEmail } = await supabaseClient
@@ -237,11 +248,12 @@ serve(async (req) => {
 
     const finalCustomerName = customerName || email.split('@')[0];
 
-    // Calculate coverage period in months and dates
-    const coverageMonths = getCoverageInMonths(paymentType);
+    // Calculate coverage period in months and dates (including seasonal bonus)
+    const baseCoverageMonths = getCoverageInMonths(paymentType);
+    const totalCoverageMonths = baseCoverageMonths + seasonalBonusMonths;
     const startDate = new Date();
     const endDate = new Date(startDate);
-    endDate.setMonth(endDate.getMonth() + coverageMonths);
+    endDate.setMonth(endDate.getMonth() + totalCoverageMonths);
 
     // Format dates
     const formatDate = (date: Date) => {
@@ -329,6 +341,19 @@ serve(async (req) => {
             <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0;">Thanks for choosing Buy A Warranty to protect your vehicle — we're pleased to let you know that your warranty is now active!</p>
           </div>
 
+          ${seasonalBonusMonths > 0 ? `
+          <!-- Seasonal Bonus Banner -->
+          <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: center;">
+            <h2 style="color: #ffffff; margin: 0 0 10px 0; font-size: 22px; font-weight: 700;">🎉 Special Bonus!</h2>
+            <p style="color: #ffffff; font-size: 16px; margin: 0; line-height: 1.6;">
+              You've received an <strong>extra ${seasonalBonusMonths} months</strong> of warranty coverage at no additional cost!
+            </p>
+            <p style="color: #ffffff; font-size: 14px; margin: 10px 0 0 0; opacity: 0.95;">
+              Your warranty now covers you until <strong>${formatDate(endDate)}</strong>
+            </p>
+          </div>
+          ` : ''}
+
           <!-- Policy Details -->
           <div style="margin-bottom: 25px;">
             <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0;"><strong>Here are your policy details:</strong></p>
@@ -347,7 +372,7 @@ serve(async (req) => {
               </tr>
               <tr>
                 <td style="padding: 8px 0; color: #555555; font-size: 15px;"><strong>Coverage Period:</strong></td>
-                <td style="padding: 8px 0; color: #333333; font-size: 15px;">${coverageMonths} months</td>
+                <td style="padding: 8px 0; color: #333333; font-size: 15px;">${totalCoverageMonths} months${seasonalBonusMonths > 0 ? ` <span style="color: #10b981; font-weight: 600;">(+${seasonalBonusMonths} bonus months!)</span>` : ''}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; color: #555555; font-size: 15px;"><strong>Start Date:</strong></td>
