@@ -29,6 +29,7 @@ interface CustomerPolicy {
   policy_number: string;
   policy_start_date: string;
   policy_end_date: string;
+  seasonal_bonus_months?: number;
   status: string;
   address: any;
   pdf_basic_url?: string;
@@ -746,6 +747,10 @@ const CustomerDashboard = () => {
     if (!policy) return;
     
     const endDate = new Date(policy.policy_end_date);
+    // Add bonus months to the end date if applicable
+    if (policy.seasonal_bonus_months) {
+      endDate.setMonth(endDate.getMonth() + policy.seasonal_bonus_months);
+    }
     const now = new Date();
     const diffTime = endDate.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -1200,12 +1205,23 @@ const CustomerDashboard = () => {
                                  {selectedPolicy?.policy_start_date ? new Date(selectedPolicy.policy_start_date).toLocaleDateString('en-GB') : 'N/A'}
                                </p>
                              </div>
-                             <div>
-                               <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy End Date</Label>
-                               <p className="font-semibold text-sm sm:text-base">
-                                 {selectedPolicy?.policy_end_date ? new Date(selectedPolicy.policy_end_date).toLocaleDateString('en-GB') : 'N/A'}
-                               </p>
-                             </div>
+                              <div>
+                                <Label className="text-xs sm:text-sm font-medium text-gray-500">Policy End Date</Label>
+                                <p className="font-semibold text-sm sm:text-base">
+                                  {selectedPolicy?.policy_end_date ? (() => {
+                                    const endDate = new Date(selectedPolicy.policy_end_date);
+                                    if (selectedPolicy.seasonal_bonus_months && selectedPolicy.seasonal_bonus_months > 0) {
+                                      endDate.setMonth(endDate.getMonth() + selectedPolicy.seasonal_bonus_months);
+                                    }
+                                    return endDate.toLocaleDateString('en-GB');
+                                  })() : 'N/A'}
+                                </p>
+                                {selectedPolicy?.seasonal_bonus_months && selectedPolicy.seasonal_bonus_months > 0 && (
+                                  <p className="text-xs text-green-600 font-medium mt-1">
+                                    +{selectedPolicy.seasonal_bonus_months} months FREE bonus applied
+                                  </p>
+                                )}
+                              </div>
                           </div>
 
                           {/* Add-On Protection Packages */}

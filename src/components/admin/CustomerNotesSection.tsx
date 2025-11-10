@@ -70,7 +70,51 @@ export const CustomerNotesSection = ({ customerId, onNotesChange }: CustomerNote
     fetchNotes();
     fetchTags();
     getCurrentUser();
+    checkAndCreateBonusNote();
   }, [customerId]);
+
+  const checkAndCreateBonusNote = async () => {
+    try {
+      // Check if customer has seasonal bonus
+      const { data: policies } = await supabase
+        .from('customer_policies')
+        .select('seasonal_bonus_months, policy_end_date, plan_type')
+        .eq('customer_id', customerId)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (policies && policies.length > 0 && policies[0].seasonal_bonus_months && policies[0].seasonal_bonus_months > 0) {
+        const bonusMonths = policies[0].seasonal_bonus_months;
+        const endDate = new Date(policies[0].policy_end_date);
+        endDate.setMonth(endDate.getMonth() + bonusMonths);
+        
+        // Check if note already exists
+        const { data: existingNotes } = await supabase
+          .from('customer_notes')
+          .select('id')
+          .eq('customer_id', customerId)
+          .ilike('note_text', `%${bonusMonths} months FREE bonus%`)
+          .limit(1);
+
+        // Only create note if it doesn't exist
+        if (!existingNotes || existingNotes.length === 0) {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await supabase
+              .from('customer_notes')
+              .insert({
+                customer_id: customerId,
+                note_text: `🎉 PROMOTIONAL DISCOUNT APPLIED: Customer received ${bonusMonths} months FREE bonus warranty extension. Extended warranty end date: ${endDate.toLocaleDateString('en-GB')}`,
+                created_by: user.id,
+                is_pinned: true
+              });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking/creating bonus note:', error);
+    }
+  };
 
   const getCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();

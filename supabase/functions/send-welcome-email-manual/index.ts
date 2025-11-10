@@ -491,7 +491,17 @@ const handler = async (req: Request): Promise<Response> => {
     };
 
     const periodInMonths = calculatePeriodInMonths(policy.payment_type);
-    const coveragePeriod = `${periodInMonths} month${periodInMonths === 1 ? '' : 's'}`;
+    const bonusMonths = policy.seasonal_bonus_months || 0;
+    const totalMonths = periodInMonths + bonusMonths;
+    const coveragePeriod = bonusMonths > 0 
+      ? `${totalMonths} months (${periodInMonths} months + ${bonusMonths} months FREE BONUS)` 
+      : `${periodInMonths} month${periodInMonths === 1 ? '' : 's'}`;
+
+    // Calculate actual end date including bonus months
+    const policyEndDate = new Date(policy.policy_end_date);
+    if (bonusMonths > 0) {
+      policyEndDate.setMonth(policyEndDate.getMonth() + bonusMonths);
+    }
 
     // Determine payment method based on available data
     let paymentMethod = 'Online Payment';
@@ -576,13 +586,22 @@ const handler = async (req: Request): Promise<Response> => {
                 <strong>Start Date:</strong> ${formatDate(policy.policy_start_date)}
               </li>
               <li style="margin-bottom: 8px; color: #333;">
-                <strong>End Date:</strong> ${formatDate(policy.policy_end_date)}
+                <strong>End Date:</strong> ${formatDate(policyEndDate)}
               </li>
               <li style="margin-bottom: 8px; color: #333;">
                 <strong>Payment Method:</strong> ${paymentMethod}
               </li>
             </ul>
           </div>
+
+          ${bonusMonths > 0 ? `
+          <div style="margin-bottom: 25px; padding: 15px; background-color: #dcfce7; border-left: 4px solid #22c55e; border-radius: 5px;">
+            <h3 style="color: #166534; font-size: 18px; margin: 0 0 10px 0;">🎉 Special Offer Applied!</h3>
+            <p style="color: #166534; margin: 0;">
+              You've received <strong>${bonusMonths} months FREE</strong> warranty extension! Your warranty now covers you until <strong>${formatDate(policyEndDate)}</strong>.
+            </p>
+          </div>
+          ` : ''}
 
           ${shouldIncludeLoginDetails ? `
           <div style="margin-bottom: 25px;">
