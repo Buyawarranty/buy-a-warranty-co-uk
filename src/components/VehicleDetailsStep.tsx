@@ -709,6 +709,8 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             
             <input
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={mileage}
               onChange={handleMileageChange}
               placeholder="e.g. 45,000"

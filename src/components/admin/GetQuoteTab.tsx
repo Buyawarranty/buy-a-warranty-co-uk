@@ -385,6 +385,8 @@ info@buyawarranty.co.uk`;
               <Label>Mileage</Label>
               <Input
                 type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={mileage}
                 onChange={handleMileageChange}
                 placeholder="e.g. 45000"

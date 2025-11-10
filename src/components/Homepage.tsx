@@ -654,6 +654,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
                   <div>
                     <input
                       type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       value={mileage}
                       onChange={handleMileageChange}
                       onFocus={handleMileageFocus}
