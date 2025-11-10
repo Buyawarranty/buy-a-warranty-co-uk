@@ -151,28 +151,30 @@ serve(async (req) => {
              motRepair: fullSession.metadata?.addon_mot_repair === 'true',
              lostKey: fullSession.metadata?.addon_lost_key === 'true',
              consequential: fullSession.metadata?.addon_consequential === 'true'
-           };
+            };
 
-           const claimLimit = parseInt(fullSession.metadata?.claim_limit || '1250');
-           
-           logStep("Extracted add-ons and claim limit", { protectionAddOns, claimLimit });
+            const claimLimit = parseInt(fullSession.metadata?.claim_limit || '1250');
+            const seasonalBonusMonths = parseInt(fullSession.metadata?.seasonal_bonus_months || '0');
+            
+            logStep("Extracted add-ons, claim limit, and seasonal bonus", { protectionAddOns, claimLimit, seasonalBonusMonths });
 
-           // Call handle-successful-payment directly
-           const { data: processData, error: processError } = await supabaseClient.functions.invoke('handle-successful-payment', {
-             body: {
-               planId: fullSession.metadata?.plan_id || planId,
-               paymentType: fullSession.metadata?.payment_type || paymentType,
-               userEmail: vehicleData.email,
-               userId: fullSession.metadata?.user_id || null,
-               stripeSessionId: session.id,
-               vehicleData: vehicleData,
-               customerData: customerData,
-               protectionAddOns: protectionAddOns,
-               claim_limit: claimLimit,
-               metadata: fullSession.metadata || {},
-               skipEmail: false // Allow email sending
-             }
-           });
+            // Call handle-successful-payment directly
+            const { data: processData, error: processError } = await supabaseClient.functions.invoke('handle-successful-payment', {
+              body: {
+                planId: fullSession.metadata?.plan_id || planId,
+                paymentType: fullSession.metadata?.payment_type || paymentType,
+                userEmail: vehicleData.email,
+                userId: fullSession.metadata?.user_id || null,
+                stripeSessionId: session.id,
+                vehicleData: vehicleData,
+                customerData: customerData,
+                protectionAddOns: protectionAddOns,
+                claim_limit: claimLimit,
+                seasonalBonusMonths: seasonalBonusMonths,
+                metadata: fullSession.metadata || {},
+                skipEmail: false // Allow email sending
+              }
+            });
 
           if (processError) {
             logStep("Error processing payment via handle-successful-payment", processError);

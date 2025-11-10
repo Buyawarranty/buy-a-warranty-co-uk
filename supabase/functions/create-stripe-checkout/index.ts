@@ -27,8 +27,8 @@ serve(async (req) => {
     );
 
     const body = await req.json();
-    const { planId, vehicleData, paymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount, protectionAddOns, claimLimit } = body;
-    logStep("Request data", { planId, vehicleData, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns, claimLimit });
+    const { planId, vehicleData, paymentType, voluntaryExcess = 0, customerData, discountCode, finalAmount, protectionAddOns, claimLimit, seasonalBonusMonths = 0 } = body;
+    logStep("Request data", { planId, vehicleData, paymentType, voluntaryExcess, discountCode, finalAmount, protectionAddOns, claimLimit, seasonalBonusMonths });
 
     // Validate vehicle age (must be 15 years or newer)
     const vehicleYear = vehicleData?.year;
@@ -299,6 +299,7 @@ serve(async (req) => {
         customer_email: customerEmail,
         original_amount: totalAmount.toString(),
         claim_limit: claimLimit?.toString() || getMaxClaimAmount(planData.name, paymentType),
+        seasonal_bonus_months: seasonalBonusMonths.toString(),
         // Add-ons data - using correct field names that match handle-successful-payment
         addon_tyre_cover: protectionAddOns?.tyre ? 'true' : 'false',
         addon_wear_tear: protectionAddOns?.wearAndTear ? 'true' : 'false', // Fixed key: wearAndTear not wearTear

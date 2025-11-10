@@ -743,7 +743,8 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
           consequential: false // Not available in frontend selection
         },
         discountCode: appliedDiscountCodes.map(code => code.code).join(', '),
-        finalAmount: finalPrice
+        finalAmount: finalPrice,
+        seasonalBonusMonths: seasonalOfferClaimed ? 3 : 0
       }
     });
 
