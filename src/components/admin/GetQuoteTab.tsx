@@ -86,27 +86,22 @@ export const GetQuoteTab = () => {
 
       if (error) {
         console.error('DVLA lookup error:', error);
-        // Allow progression even if lookup fails
-        setVehicleData({
-          regNumber: regNumber.toUpperCase(),
-          mileage: mileage,
+        toast({
+          title: "Vehicle Not Found",
+          description: "Unable to find vehicle details. Please check the registration number and try again.",
+          variant: "destructive",
         });
-        setStep(2);
         setIsLookingUp(false);
         return;
       }
 
-      // Check if the API returned an error message
-      if (data?.error) {
+      // Check if the API returned an error message or no vehicle data
+      if (data?.error || !data?.make || !data?.model) {
         toast({
-          title: "Vehicle Lookup Issue",
-          description: data.error || "We couldn't find your vehicle details. You can still continue.",
+          title: "Vehicle Not Recognized",
+          description: data?.error || "We couldn't find this vehicle in the DVLA database. Please verify the registration number.",
+          variant: "destructive",
         });
-        setVehicleData({
-          regNumber: regNumber.toUpperCase(),
-          mileage: mileage,
-        });
-        setStep(2);
         setIsLookingUp(false);
         return;
       }
@@ -132,12 +127,12 @@ export const GetQuoteTab = () => {
         }
       }
 
-      // Set vehicle data with whatever we got from the lookup
+      // Set vehicle data with confirmed lookup results
       setVehicleData({
         regNumber: regNumber.toUpperCase(),
         mileage: mileage,
-        make: data.make || '',
-        model: data.model || '',
+        make: data.make,
+        model: data.model,
         fuelType: data.fuelType || '',
         transmission: data.transmission || '',
         year: data.yearOfManufacture || data.year || '',
@@ -147,12 +142,11 @@ export const GetQuoteTab = () => {
       setStep(2);
     } catch (error) {
       console.error('Error looking up vehicle:', error);
-      // Allow progression even on error
-      setVehicleData({
-        regNumber: regNumber.toUpperCase(),
-        mileage: mileage,
+      toast({
+        title: "Lookup Failed",
+        description: "Unable to connect to vehicle database. Please try again.",
+        variant: "destructive",
       });
-      setStep(2);
     } finally {
       setIsLookingUp(false);
     }
