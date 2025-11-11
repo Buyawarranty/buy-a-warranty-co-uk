@@ -168,16 +168,21 @@ const CustomerDashboard = () => {
   }, [user, isImpersonating]);
 
   useEffect(() => {
-    console.log("CustomerDashboard: useEffect triggered");
-    console.log("CustomerDashboard: user", user, "loading", loading);
+    console.log("=== AUTH USEEFFECT TRIGGERED ===");
+    console.log("User:", user?.email, user?.id);
+    console.log("Loading:", loading);
+    console.log("Is impersonating:", isImpersonating);
+    console.log("Impersonated customer:", impersonatedCustomer);
     
-    // Don't redirect if still loading auth state
+    // Don't do anything if still loading auth state
     if (loading) {
+      console.log("⏳ Still loading auth state, waiting...");
       return;
     }
     
     // If user is logged in or impersonating, fetch their policies
     if (user || isImpersonating) {
+      console.log("✅ User authenticated or impersonating, fetching policies...");
       fetchPolicies();
       
       // Update last login timestamp for actual user login (not for impersonation)
@@ -194,7 +199,7 @@ const CustomerDashboard = () => {
             event: 'INSERT',
             schema: 'public',
             table: 'customer_policies',
-            filter: `email=eq.${user.email}`
+            filter: `email=eq.${user?.email || impersonatedCustomer?.customerEmail}`
           },
           (payload) => {
             console.log('New warranty detected, refreshing policies');
@@ -207,7 +212,7 @@ const CustomerDashboard = () => {
             event: 'UPDATE',
             schema: 'public',
             table: 'customer_policies',
-            filter: `email=eq.${user.email}`
+            filter: `email=eq.${user?.email || impersonatedCustomer?.customerEmail}`
           },
           (payload) => {
             console.log('Warranty updated, refreshing policies');
@@ -220,14 +225,17 @@ const CustomerDashboard = () => {
         supabase.removeChannel(channel);
       };
     } else {
+      console.log("❌ No user and not impersonating, showing login form");
       // User not logged in, show login form (don't redirect)
       setPolicyLoading(false);
     }
-  }, [user, loading]);
+  }, [user, loading, isImpersonating, impersonatedCustomer]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
+
+    console.log("=== LOGIN ATTEMPT ===", { email });
 
     try {
       // Use the customer-login edge function instead of direct Supabase auth
@@ -238,7 +246,10 @@ const CustomerDashboard = () => {
         }
       });
 
+      console.log("Login response:", { data, error });
+
       if (error) {
+        console.error("Login error:", error);
         toast({
           title: "Login Failed",
           description: error.message,
@@ -248,18 +259,28 @@ const CustomerDashboard = () => {
       }
 
       if (data?.user && data?.session) {
+        console.log("Setting session with tokens...");
+        
         // Set the session in Supabase auth
-        await supabase.auth.setSession({
+        const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
           access_token: data.session.access_token,
           refresh_token: data.session.refresh_token
         });
+        
+        console.log("Session set result:", { sessionData, sessionError });
         
         toast({
           title: "Welcome back!",
           description: "You have been signed in successfully.",
         });
-        // User state will be updated by the auth listener
+        
+        // Force a policies fetch after a brief delay to ensure auth state is updated
+        setTimeout(() => {
+          console.log("Forcing policies fetch after login...");
+          fetchPolicies();
+        }, 1000);
       } else {
+        console.error("No user or session in response");
         toast({
           title: "Login Failed",
           description: "Invalid email or password.",
@@ -267,7 +288,7 @@ const CustomerDashboard = () => {
         });
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login exception:', error);
       toast({
         title: "Login Failed",
         description: "An unexpected error occurred. Please try again.",
