@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
+import { FAQSchema } from '@/components/schema/FAQSchema';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import pandaSavingsFaq from '@/assets/panda-savings-faq.png';
 import { OptimizedImage } from '@/components/OptimizedImage';
@@ -634,13 +635,25 @@ const FAQ = () => {
     }
   };
 
+  // Convert FAQ data to schema format
+  const faqSchemaData = useMemo(() => {
+    return faqData.flatMap(category => 
+      category.questions.map(q => ({
+        question: q.question,
+        answer: q.answer
+      }))
+    );
+  }, []);
+
   return (
     <>
       <SEOHead 
         title="FAQ's - Frequently Asked Questions | BuyAWarranty.co.uk"
         description="Find answers to common questions about car warranties, claims, coverage, and more. Get help with warranty plans, repairs, and customer support."
         keywords="car warranty FAQ, warranty questions, car insurance claims, vehicle warranty coverage, warranty help"
+        canonical="https://buyawarranty.co.uk/faq/"
       />
+      <FAQSchema faqs={faqSchemaData} />
       
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
@@ -986,7 +999,7 @@ const FAQ = () => {
               )}
 
               {filteredFAQs.map((category) => (
-                <section key={category.id} id={category.id} className="mb-12">
+                <section key={category.id} id={category.id} className="mb-12" itemScope itemType="https://schema.org/FAQPage">
                   <div className="flex items-center justify-between mb-6 pb-3 border-b-2 border-primary">
                     <h2 className="text-2xl font-bold text-brand-dark-text">
                       {category.category}
@@ -1012,15 +1025,15 @@ const FAQ = () => {
                   
                   <div className="space-y-4">
                     {category.questions.map((faq) => (
-                      <div key={faq.id} id={faq.id} className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg overflow-hidden">
+                      <article key={faq.id} id={faq.id} className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-lg overflow-hidden" itemScope itemProp="mainEntity" itemType="https://schema.org/Question">
                         <button
                           onClick={() => toggleItem(faq.id)}
                           className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-orange-600/20 transition-colors"
                         >
                           <div className="flex items-center">
-                            <span className="font-semibold text-lg text-white pr-4">
+                            <h3 className="font-semibold text-lg text-white pr-4" itemProp="name">
                               {faq.question}
-                            </span>
+                            </h3>
                             {faq.popular && (
                               <span className="bg-white text-orange-600 text-xs px-2 py-1 rounded-full font-medium">
                                 Popular
@@ -1039,15 +1052,15 @@ const FAQ = () => {
                             ? 'max-h-screen opacity-100 animate-accordion-down' 
                             : 'max-h-0 opacity-0'
                         }`}>
-                          <div className="px-6 pb-5 bg-white border-t border-orange-200">
+                          <div className="px-6 pb-5 bg-white border-t border-orange-200" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
                             <div className="pt-4 transform translate-y-0">
-                              <p className="text-brand-dark-text leading-relaxed whitespace-pre-line">
+                              <div className="text-brand-dark-text leading-relaxed whitespace-pre-line" itemProp="text">
                                 {renderAnswerWithLinks(faq.answer)}
-                              </p>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </article>
                     ))}
                   </div>
                 </section>
