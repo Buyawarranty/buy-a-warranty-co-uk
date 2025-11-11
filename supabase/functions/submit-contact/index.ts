@@ -150,7 +150,7 @@ const handler = async (req: Request): Promise<Response> => {
         <p>If you have any urgent queries, please don't hesitate to contact us:</p>
         <ul>
           <li>Email: support@buyawarranty.co.uk</li>
-          <li>Phone: 0330 229 5045</li>
+          <li>Phone: 0330 229 5040</li>
         </ul>
         <p>Best regards,<br>The Buy a Warranty Team</p>
         <hr>
