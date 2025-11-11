@@ -1081,21 +1081,56 @@ const CustomerDashboard = () => {
             <CardHeader>
               <CardTitle>No Policies Found</CardTitle>
               <CardDescription>
-                We couldn't find any active policies for your account. Please contact support if you believe this is an error.
+                We couldn't find any active policies for your account. 
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600 mb-4">
-                Debug info: User ID: {user?.id}
-              </p>
-              <div className="flex gap-4">
-                <Button onClick={fetchPolicies} variant="outline">
-                  Refresh Policy Data
-                </Button>
-                <Button onClick={() => setShowSupportForm(true)} variant="default">
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Contact Support
-                </Button>
+              <div className="space-y-4">
+                <div className="text-sm text-gray-600 space-y-2 bg-gray-50 p-4 rounded">
+                  <p><strong>Debug Info:</strong></p>
+                  <p>User ID: {user?.id || 'Not set'}</p>
+                  <p>Email: {user?.email || 'Not set'}</p>
+                  <p>Auth Status: {loading ? 'Loading...' : user ? 'Authenticated' : 'Not authenticated'}</p>
+                  <p>Policies Loading: {policyLoading ? 'Yes' : 'No'}</p>
+                </div>
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={async () => {
+                      console.log("Manual refresh clicked");
+                      console.log("Current user:", user);
+                      console.log("Current email:", user?.email);
+                      await fetchPolicies();
+                    }} 
+                    variant="outline"
+                    disabled={policyLoading}
+                  >
+                    {policyLoading ? 'Loading...' : 'Refresh Policy Data'}
+                  </Button>
+                  <Button 
+                    onClick={async () => {
+                      // Test direct query
+                      console.log("Testing direct query...");
+                      const { data, error } = await supabase
+                        .from('customer_policies')
+                        .select('*')
+                        .eq('email', user?.email);
+                      console.log("Direct query result:", { data, error, count: data?.length });
+                      
+                      toast({
+                        title: "Test Query Result",
+                        description: error ? `Error: ${error.message}` : `Found ${data?.length || 0} policies`,
+                        variant: error ? "destructive" : "default"
+                      });
+                    }}
+                    variant="secondary"
+                  >
+                    Test Database Query
+                  </Button>
+                  <Button onClick={() => setShowSupportForm(true)} variant="default">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Contact Support
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

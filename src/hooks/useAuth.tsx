@@ -13,6 +13,8 @@ export const useAuth = () => {
   useEffect(() => {
     let mounted = true;
     
+    console.log("=== useAuth: Initializing ===");
+    
     // Check for master admin status
     const masterAdminStatus = localStorage.getItem('masterAdmin') === 'true';
     setIsMasterAdmin(masterAdminStatus);
@@ -21,7 +23,13 @@ export const useAuth = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (mounted) {
-          console.log('Auth state changed:', event, session?.user?.email);
+          console.log('=== Auth state changed ===', { 
+            event, 
+            email: session?.user?.email,
+            userId: session?.user?.id,
+            hasSession: !!session 
+          });
+          
           setSession(session);
           setUser(session?.user ?? null);
           
@@ -38,6 +46,7 @@ export const useAuth = () => {
                 
                 if (mounted) {
                   setUserRole(roleData?.role || null);
+                  console.log('User role:', roleData?.role);
                 }
               } catch (error) {
                 console.error('Error fetching user role:', error);
@@ -58,10 +67,17 @@ export const useAuth = () => {
     // Get initial session AFTER setting up listener
     const getInitialSession = async () => {
       try {
+        console.log('=== Fetching initial session ===');
         const { data: { session }, error } = await supabase.auth.getSession();
         if (mounted) {
           if (error) {
             console.error('Error getting initial session:', error);
+          } else {
+            console.log('Initial session:', { 
+              hasSession: !!session, 
+              email: session?.user?.email,
+              userId: session?.user?.id 
+            });
           }
           setSession(session);
           setUser(session?.user ?? null);
@@ -84,6 +100,7 @@ export const useAuth = () => {
   }, []);
 
   const signOut = async () => {
+    console.log('=== Signing out ===');
     await supabase.auth.signOut();
     // Also clear master admin status
     setIsMasterAdmin(false);
