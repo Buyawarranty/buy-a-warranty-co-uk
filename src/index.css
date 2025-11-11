@@ -248,39 +248,15 @@ body {
   }
 }
 
-/* Breathing animation for the Get My Quote button */
-@keyframes breathe {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-}
-
-/* Slow pulsate animation for the Get My Quote button */
-@keyframes slow-pulsate {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.03);
-    opacity: 0.9;
-  }
-}
-
-.btn-breathing {
-  animation: breathe 3s ease-in-out infinite;
-}
-
-.btn-slow-pulsate {
-  animation: slow-pulsate 2.56s ease-in-out infinite;
-}
-
-.btn-breathing:hover, .btn-slow-pulsate:hover {
-  animation: none;
-}
+/* Enhanced CTA Button Animation - Now defined in Tailwind Config */
+/* 
+  Main CTA buttons use animate-cta-enhanced class which combines:
+  - breathing animation (3.5s) - gentle scale for attention
+  - glow-pulse animation (2.5s) - soft shadow glow with low opacity (20-30%)
+  
+  This creates attention without anxiety, ideal for trust-based services.
+  No hover animation override needed - breathing effect adds natural interaction.
+*/
 
 /* Swinton Design System Components */
 

@@ -548,7 +548,7 @@ const CarExtendedWarranty: React.FC = () => {
                           className={`w-full max-w-full px-4 sm:px-6 md:px-12 h-[54px] sm:h-[66px] text-base sm:text-lg md:text-xl font-bold rounded-lg transition-all ${
                             isLookingUp
                               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              : 'bg-brand-orange hover:bg-brand-orange/90 text-white btn-slow-pulsate'
+                              : 'bg-brand-orange hover:bg-brand-orange/90 text-white animate-cta-enhanced'
                           }`}
                           disabled={isLookingUp}
                         >

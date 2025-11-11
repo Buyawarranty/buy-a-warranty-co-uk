@@ -239,7 +239,7 @@ const HomepageAlt: React.FC<HomepageAltProps> = ({ onRegistrationSubmit }) => {
                 <Button
                   onClick={handleGetQuote}
                   disabled={isLoading}
-                  className="w-full h-14 text-lg bg-[#eb4b00] hover:bg-[#d63f00] text-white"
+                  className="w-full h-14 text-lg bg-brand-orange hover:bg-brand-orange/90 text-white animate-cta-enhanced"
                 >
                   {isLoading ? 'Loading...' : 'Get my instant quote ➜'}
                 </Button>
