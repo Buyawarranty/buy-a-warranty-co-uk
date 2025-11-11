@@ -17,7 +17,45 @@ export const useAuth = () => {
     const masterAdminStatus = localStorage.getItem('masterAdmin') === 'true';
     setIsMasterAdmin(masterAdminStatus);
 
-    // Get initial session first
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (mounted) {
+          console.log('Auth state changed:', event, session?.user?.email);
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          // Fetch user role when session changes
+          if (session?.user) {
+            // Use setTimeout to defer the Supabase call and prevent deadlock
+            setTimeout(async () => {
+              try {
+                const { data: roleData } = await supabase
+                  .from('user_roles')
+                  .select('role')
+                  .eq('user_id', session.user.id)
+                  .maybeSingle();
+                
+                if (mounted) {
+                  setUserRole(roleData?.role || null);
+                }
+              } catch (error) {
+                console.error('Error fetching user role:', error);
+              }
+            }, 0);
+            
+            setIsMasterAdmin(false);
+            localStorage.removeItem('masterAdmin');
+          } else {
+            setUserRole(null);
+          }
+          
+          setLoading(false);
+        }
+      }
+    );
+
+    // Get initial session AFTER setting up listener
     const getInitialSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -36,39 +74,6 @@ export const useAuth = () => {
         }
       }
     };
-
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (mounted) {
-          console.log('Auth state changed:', event, session?.user?.email);
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          // Fetch user role when session changes
-          if (session?.user) {
-            try {
-              const { data: roleData } = await supabase
-                .from('user_roles')
-                .select('role')
-                .eq('user_id', session.user.id)
-                .maybeSingle();
-              
-              setUserRole(roleData?.role || null);
-            } catch (error) {
-              console.error('Error fetching user role:', error);
-            }
-            
-            setIsMasterAdmin(false);
-            localStorage.removeItem('masterAdmin');
-          } else {
-            setUserRole(null);
-          }
-          
-          setLoading(false);
-        }
-      }
-    );
 
     getInitialSession();
 
