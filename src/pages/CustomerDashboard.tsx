@@ -379,14 +379,37 @@ const CustomerDashboard = () => {
       return;
     }
     
-    console.log("fetchPolicies: Fetching policies for user:", user?.id, "email:", effectiveEmail);
+    console.log("fetchPolicies: Fetching policies for:", { 
+      userId: user?.id, 
+      effectiveEmail, 
+      isImpersonating,
+      authEmail: user?.email 
+    });
     
     try {
       let data: any[] | null = null;
       let error: any = null;
 
-      // Try by user_id first if available
-      if (user?.id && !isImpersonating) {
+      // Build query with OR condition to match either user_id or email
+      if (user?.id && effectiveEmail) {
+        console.log("fetchPolicies: Querying with OR filter (user_id OR email)");
+        const result = await supabase
+          .from('customer_policies')
+          .select('*')
+          .or(`user_id.eq.${user.id},email.ilike.${effectiveEmail}`)
+          .order('created_at', { ascending: false });
+        
+        data = result.data;
+        error = result.error;
+        console.log("fetchPolicies: OR query result:", { 
+          data, 
+          error, 
+          count: data?.length,
+          errorDetails: error ? JSON.stringify(error) : null 
+        });
+      } else if (user?.id) {
+        // Fallback to user_id only
+        console.log("fetchPolicies: Querying by user_id only");
         const result = await supabase
           .from('customer_policies')
           .select('*')
@@ -395,21 +418,19 @@ const CustomerDashboard = () => {
         
         data = result.data;
         error = result.error;
-        console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
-      }
-
-      // If no data by user_id or in impersonation mode, try by email
-      if ((!data || data.length === 0) && effectiveEmail) {
-        console.log("fetchPolicies: Trying email match for:", effectiveEmail);
-        const emailResult = await supabase
+        console.log("fetchPolicies: user_id query result:", { data, error, count: data?.length });
+      } else if (effectiveEmail) {
+        // Fallback to email only
+        console.log("fetchPolicies: Querying by email only");
+        const result = await supabase
           .from('customer_policies')
           .select('*')
-          .eq('email', effectiveEmail)
+          .ilike('email', effectiveEmail)
           .order('created_at', { ascending: false });
         
-        data = emailResult.data;
-        error = emailResult.error;
-        console.log("fetchPolicies: Query by email result:", { data, error, count: data?.length });
+        data = result.data;
+        error = result.error;
+        console.log("fetchPolicies: email query result:", { data, error, count: data?.length });
       }
       
       // If we have policies, fetch customer data separately
