@@ -279,6 +279,7 @@ const AdminDashboard = () => {
               <Link to="/make-a-claim/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
               <Link to="/faq/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
               <Link to="/contact-us/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
+              <Link to="/customer-dashboard" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Customer Dashboard</Link>
               <span className="text-orange-500 font-semibold text-sm xl:text-base">Admin Dashboard</span>
             </nav>
 
@@ -364,6 +365,13 @@ const AdminDashboard = () => {
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Contact Us
+                    </Link>
+                    <Link 
+                      to="/customer-dashboard" 
+                      className="text-gray-700 hover:text-gray-900 font-medium text-sm py-2 border-b border-gray-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Customer Dashboard
                     </Link>
                     <span className="text-orange-500 font-semibold text-sm py-2 border-b border-gray-200">
                       Admin Dashboard
