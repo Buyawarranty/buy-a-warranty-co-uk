@@ -381,17 +381,10 @@ const CustomerDashboard = () => {
     console.log("fetchPolicies: Fetching policies for user:", user.id, "email:", user.email);
     
     try {
-      // First try by user_id (most reliable after trigger update)
+      // First try by user_id without foreign key join to avoid potential join issues
       let { data, error } = await supabase
         .from('customer_policies')
-        .select(`
-          *,
-          customers!customer_id (
-            id, vehicle_make, vehicle_model, registration_plate, mileage, 
-            phone, first_name, last_name, street, town, postcode, country,
-            building_number, building_name, flat_number
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -400,24 +393,36 @@ const CustomerDashboard = () => {
       // In impersonation mode, always use email. Otherwise check both user_id and email
       if (isImpersonating || ((!data || data.length === 0) && effectiveEmail)) {
         if (!isImpersonating) {
-          console.log("fetchPolicies: No policies found by user_id, trying case-insensitive email match");
+          console.log("fetchPolicies: No policies found by user_id, trying email match");
         }
         const emailResult = await supabase
           .from('customer_policies')
-          .select(`
-            *,
-            customers!customer_id (
-              id, vehicle_make, vehicle_model, registration_plate, mileage, 
-              phone, first_name, last_name, street, town, postcode, country,
-              building_number, building_name, flat_number
-            )
-          `)
-          .ilike('email', user.email)
+          .select('*')
+          .eq('email', effectiveEmail)
           .order('created_at', { ascending: false });
         
         data = emailResult.data;
         error = emailResult.error;
-        console.log("fetchPolicies: Query by case-insensitive email result:", { data, error, count: data?.length });
+        console.log("fetchPolicies: Query by email result:", { data, error, count: data?.length });
+      }
+      
+      // If we have policies, fetch customer data separately
+      if (data && data.length > 0) {
+        const customerIds = [...new Set(data.map(p => p.customer_id).filter(Boolean))];
+        if (customerIds.length > 0) {
+          const { data: customersData } = await supabase
+            .from('customers')
+            .select('id, vehicle_make, vehicle_model, registration_plate, mileage, phone, first_name, last_name, street, town, postcode, country, building_number, building_name, flat_number')
+            .in('id', customerIds);
+          
+          // Attach customer data to policies
+          if (customersData) {
+            data = data.map(policy => ({
+              ...policy,
+              customers: customersData.find(c => c.id === policy.customer_id) || null
+            }));
+          }
+        }
       }
 
       if (error && error.code !== 'PGRST116') {
