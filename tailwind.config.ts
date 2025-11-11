@@ -115,16 +115,6 @@ export default {
 						transform: 'scale(1.02)'
 					}
 				},
-				'glow-pulse': {
-					'0%, 100%': {
-						boxShadow: '0 0 20px rgba(255, 106, 0, 0.2), 0 0 40px rgba(255, 106, 0, 0.1)',
-						filter: 'blur(0px)'
-					},
-					'50%': {
-						boxShadow: '0 0 30px rgba(255, 106, 0, 0.3), 0 0 60px rgba(255, 106, 0, 0.15)',
-						filter: 'blur(0.5px)'
-					}
-				},
 				'fade-in': {
 					'0%': {
 						opacity: '0',
@@ -252,8 +242,7 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'breathing': 'breathing 3.5s ease-in-out infinite',
-				'glow-pulse': 'glow-pulse 2.5s ease-in-out infinite',
-				'cta-enhanced': 'breathing 3.5s ease-in-out infinite, glow-pulse 2.5s ease-in-out infinite',
+				'cta-enhanced': 'breathing 3.5s ease-in-out infinite',
 				'fade-in': 'fade-in 0.5s ease-out forwards',
 				'spin-slow': 'spin 3s linear infinite',
 				'car-drive': 'car-drive 3s ease-in-out infinite',
