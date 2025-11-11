@@ -412,13 +412,13 @@ const CustomerDashboard = () => {
       let data: any[] | null = null;
       let error: any = null;
 
-      // Strategy 1: Try by email first (most reliable)
+      // Strategy 1: Try by email first (most reliable) - using case-insensitive match
       if (effectiveEmail) {
         console.log("Strategy 1: Querying by email:", effectiveEmail);
         const result = await supabase
           .from('customer_policies')
           .select('*')
-          .eq('email', effectiveEmail)
+          .ilike('email', effectiveEmail)
           .order('created_at', { ascending: false });
         
         console.log("Email query result:", result);
