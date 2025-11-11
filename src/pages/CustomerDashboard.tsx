@@ -373,28 +373,34 @@ const CustomerDashboard = () => {
   const fetchPolicies = async () => {
     const effectiveEmail = isImpersonating ? impersonatedCustomer?.customerEmail : user?.email;
     
-    if (!effectiveEmail) {
-      console.log("fetchPolicies: No user available");
+    if (!effectiveEmail && !user?.id) {
+      console.log("fetchPolicies: No user or email available");
+      setPolicyLoading(false);
       return;
     }
     
-    console.log("fetchPolicies: Fetching policies for user:", user.id, "email:", user.email);
+    console.log("fetchPolicies: Fetching policies for user:", user?.id, "email:", effectiveEmail);
     
     try {
-      // First try by user_id without foreign key join to avoid potential join issues
-      let { data, error } = await supabase
-        .from('customer_policies')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      let data: any[] | null = null;
+      let error: any = null;
 
-      console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
+      // Try by user_id first if available
+      if (user?.id && !isImpersonating) {
+        const result = await supabase
+          .from('customer_policies')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+        
+        data = result.data;
+        error = result.error;
+        console.log("fetchPolicies: Query by user_id result:", { data, error, count: data?.length });
+      }
 
-      // In impersonation mode, always use email. Otherwise check both user_id and email
-      if (isImpersonating || ((!data || data.length === 0) && effectiveEmail)) {
-        if (!isImpersonating) {
-          console.log("fetchPolicies: No policies found by user_id, trying email match");
-        }
+      // If no data by user_id or in impersonation mode, try by email
+      if ((!data || data.length === 0) && effectiveEmail) {
+        console.log("fetchPolicies: Trying email match for:", effectiveEmail);
         const emailResult = await supabase
           .from('customer_policies')
           .select('*')
