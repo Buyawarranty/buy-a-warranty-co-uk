@@ -81,7 +81,7 @@ export const GetQuoteTab = () => {
     setIsLookingUp(true);
     try {
       const { data, error } = await supabase.functions.invoke('dvla-vehicle-lookup', {
-        body: { registration: regNumber }
+        body: { registrationNumber: regNumber }
       });
 
       if (error) {
