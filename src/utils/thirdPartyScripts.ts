@@ -6,16 +6,35 @@
 let scriptsLoaded = false;
 
 const loadFacebookPixel = () => {
+  if (typeof window === 'undefined') return;
   if (window.fbq) return;
+  
+  // Initialize stub function to queue calls before script loads
+  const fbqStub: any = function() {
+    if (fbqStub.callMethod) {
+      fbqStub.callMethod.apply(fbqStub, arguments);
+    } else {
+      fbqStub.queue.push(arguments);
+    }
+  };
+  fbqStub.push = fbqStub;
+  fbqStub.loaded = true;
+  fbqStub.version = '2.0';
+  fbqStub.queue = [];
+  window.fbq = fbqStub;
   
   const script = document.createElement('script');
   script.async = true;
   script.src = 'https://connect.facebook.net/en_US/fbevents.js';
   script.onload = () => {
+    console.info('Facebook Pixel loaded successfully');
     if (window.fbq) {
       window.fbq('init', '4105451209698810');
       window.fbq('track', 'PageView');
     }
+  };
+  script.onerror = () => {
+    console.error('Failed to load Facebook Pixel script');
   };
   document.head.appendChild(script);
 };
@@ -99,12 +118,16 @@ export const loadThirdPartyScripts = () => {
   }
 };
 
-// Load scripts on first user interaction
+// Load scripts immediately to prevent "fbq is not defined" errors
 export const initThirdPartyScripts = () => {
+  // Load Facebook Pixel immediately with stub to queue early calls
+  loadFacebookPixel();
+  
+  // Load TikTok after interaction to optimize performance
   const events = ['mousedown', 'keydown', 'touchstart', 'scroll'];
   
   const loadOnce = () => {
-    loadThirdPartyScripts();
+    loadTikTokPixel();
     events.forEach(event => {
       window.removeEventListener(event, loadOnce);
     });
@@ -114,6 +137,10 @@ export const initThirdPartyScripts = () => {
     window.addEventListener(event, loadOnce, { passive: true, once: true });
   });
   
-  // Fallback: load after 3 seconds if no interaction
-  setTimeout(loadThirdPartyScripts, 3000);
+  // Fallback: load TikTok after 3 seconds if no interaction
+  setTimeout(() => {
+    if (!window.ttq || typeof window.ttq.load !== 'function') {
+      loadTikTokPixel();
+    }
+  }, 3000);
 };
