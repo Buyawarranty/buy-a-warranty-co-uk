@@ -38,6 +38,22 @@ const AccountSettings = () => {
         toast.error(error.message);
       } else {
         toast.success('Password updated successfully');
+        
+        // Send notification email to info@buyawarranty.co.uk
+        try {
+          await supabase.functions.invoke('notify-admin-credential-change', {
+            body: {
+              adminEmail: user?.email || '',
+              changeType: 'password',
+              changedAt: new Date().toISOString()
+            }
+          });
+          console.log('Admin credential change notification sent');
+        } catch (notifyError) {
+          console.error('Failed to send notification:', notifyError);
+          // Don't show error to user, just log it
+        }
+        
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
