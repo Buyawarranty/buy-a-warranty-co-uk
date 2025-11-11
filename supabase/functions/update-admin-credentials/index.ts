@@ -23,7 +23,7 @@ serve(async (req) => {
     });
 
     const newEmail = 'info@buyawarranty.co.uk';
-    const newPassword = 'PasswordLogin123-';
+    const newPassword = 'Poland333!';
 
     console.log('Looking for existing admin user...');
 
