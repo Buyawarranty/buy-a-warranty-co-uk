@@ -371,76 +371,82 @@ const CustomerDashboard = () => {
   };
 
   const fetchPolicies = async () => {
-    const effectiveEmail = isImpersonating ? impersonatedCustomer?.customerEmail : user?.email;
-    
-    if (!effectiveEmail && !user?.id) {
-      console.log("fetchPolicies: No user or email available");
-      setPolicyLoading(false);
-      return;
-    }
-    
-    console.log("fetchPolicies: Fetching policies for:", { 
-      userId: user?.id, 
-      effectiveEmail, 
-      isImpersonating,
-      authEmail: user?.email 
-    });
-    
     try {
+      setPolicyLoading(true);
+      const effectiveEmail = isImpersonating ? impersonatedCustomer?.customerEmail : user?.email;
+      
+      console.log("=== FETCH POLICIES DEBUG ===");
+      console.log("User:", user);
+      console.log("Effective email:", effectiveEmail);
+      console.log("Is impersonating:", isImpersonating);
+      
+      if (!effectiveEmail && !user?.id) {
+        console.log("ERROR: No user or email available");
+        setPolicyLoading(false);
+        setPolicies([]);
+        return;
+      }
+
+      // Try multiple query strategies
       let data: any[] | null = null;
       let error: any = null;
 
-      // Build query with OR condition to match either user_id or email
-      if (user?.id && effectiveEmail) {
-        console.log("fetchPolicies: Querying with OR filter (user_id OR email)");
+      // Strategy 1: Try by email first (most reliable)
+      if (effectiveEmail) {
+        console.log("Strategy 1: Querying by email:", effectiveEmail);
         const result = await supabase
           .from('customer_policies')
           .select('*')
-          .or(`user_id.eq.${user.id},email.ilike.${effectiveEmail}`)
+          .eq('email', effectiveEmail)
           .order('created_at', { ascending: false });
         
+        console.log("Email query result:", result);
         data = result.data;
         error = result.error;
-        console.log("fetchPolicies: OR query result:", { 
-          data, 
-          error, 
-          count: data?.length,
-          errorDetails: error ? JSON.stringify(error) : null 
-        });
-      } else if (user?.id) {
-        // Fallback to user_id only
-        console.log("fetchPolicies: Querying by user_id only");
+      }
+
+      // Strategy 2: If no results, try by user_id
+      if ((!data || data.length === 0) && user?.id) {
+        console.log("Strategy 2: Querying by user_id:", user.id);
         const result = await supabase
           .from('customer_policies')
           .select('*')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
         
+        console.log("User ID query result:", result);
         data = result.data;
         error = result.error;
-        console.log("fetchPolicies: user_id query result:", { data, error, count: data?.length });
-      } else if (effectiveEmail) {
-        // Fallback to email only
-        console.log("fetchPolicies: Querying by email only");
-        const result = await supabase
-          .from('customer_policies')
-          .select('*')
-          .ilike('email', effectiveEmail)
-          .order('created_at', { ascending: false });
-        
-        data = result.data;
-        error = result.error;
-        console.log("fetchPolicies: email query result:", { data, error, count: data?.length });
       }
       
-      // If we have policies, fetch customer data separately
+      if (error && error.code !== 'PGRST116') {
+        console.error('ERROR fetching policies:', error);
+        toast({
+          title: "Error fetching policies",
+          description: error.message,
+          variant: "destructive",
+        });
+        setPolicyLoading(false);
+        setPolicies([]);
+        return;
+      }
+
+      console.log("Final data check:", { hasData: !!data, count: data?.length });
+
       if (data && data.length > 0) {
+        console.log("SUCCESS: Found", data.length, "policies");
+        
+        // Fetch customer data separately
         const customerIds = [...new Set(data.map(p => p.customer_id).filter(Boolean))];
+        console.log("Customer IDs to fetch:", customerIds);
+        
         if (customerIds.length > 0) {
           const { data: customersData } = await supabase
             .from('customers')
             .select('id, vehicle_make, vehicle_model, registration_plate, mileage, phone, first_name, last_name, street, town, postcode, country, building_number, building_name, flat_number')
             .in('id', customerIds);
+          
+          console.log("Customers data:", customersData);
           
           // Attach customer data to policies
           if (customersData) {
@@ -450,84 +456,58 @@ const CustomerDashboard = () => {
             }));
           }
         }
-      }
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching policies:', error);
-        toast({
-          title: "Error fetching policies",
-          description: error.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (data && data.length > 0) {
-        console.log("fetchPolicies: Found policies:", data.length);
-        console.log("fetchPolicies: Policy data:", data);
         
         // Fetch documents for policies
         const policiesWithDocuments = await fetchPolicyDocuments(data);
+        console.log("Policies with documents:", policiesWithDocuments);
         
         setPolicies(policiesWithDocuments);
-        setSelectedPolicy(policiesWithDocuments[0]); // Set first policy as selected (latest)
+        setSelectedPolicy(policiesWithDocuments[0]);
         
-        // Set customer data from the first policy's linked customer data
+        // Set customer data from the first policy
         const firstPolicy = policiesWithDocuments[0];
         if (firstPolicy?.customers) {
           const customerData = firstPolicy.customers;
-          console.log('Setting customer data from policy:', customerData);
           setCustomerData(customerData);
           
           // Set address from customer data
           setAddress(prev => ({
             ...prev,
             phone: customerData.phone || '',
-            firstName: customerData.first_name || firstPolicy.first_name || '',
-            lastName: customerData.last_name || firstPolicy.last_name || '',
+            firstName: customerData.first_name || '',
+            lastName: customerData.last_name || '',
             street: (() => {
               const addressParts = [
                 customerData.flat_number,
                 customerData.building_name,
                 customerData.building_number,
                 customerData.street
-              ].filter(part => part && part.trim() && part !== ',');
-              return addressParts.length > 0 ? addressParts.join(', ') : (firstPolicy.street || '');
+              ].filter(part => part && part.trim());
+              return addressParts.join(', ');
             })(),
-            city: customerData.town || firstPolicy.town || '',
-            postcode: customerData.postcode || firstPolicy.postcode || '',
-            country: customerData.country || firstPolicy.country || 'United Kingdom'
-          }));
-        } else {
-          // Fallback to policy data if no linked customer data
-          setAddress(prev => ({
-            ...prev,
-            phone: firstPolicy.phone || '',
-            firstName: firstPolicy.first_name || '',
-            lastName: firstPolicy.last_name || '',
-            street: firstPolicy.street || '',
-            city: firstPolicy.town || '',
-            postcode: firstPolicy.postcode || '',
-            country: firstPolicy.country || 'United Kingdom'
+            city: customerData.town || '',
+            postcode: customerData.postcode || '',
+            country: customerData.country || 'United Kingdom'
           }));
         }
 
-        // Check for renewal notification
         checkRenewalNotification(policiesWithDocuments[0]);
       } else {
-        console.log("fetchPolicies: No policies found for user");
+        console.log("WARNING: No policies found");
         setPolicies([]);
         setSelectedPolicy(null);
       }
     } catch (error) {
-      console.error('fetchPolicies: Error:', error);
+      console.error('EXCEPTION in fetchPolicies:', error);
       toast({
         title: "Error",
         description: "Failed to fetch policies. Please try again.",
         variant: "destructive",
       });
+      setPolicies([]);
     } finally {
       setPolicyLoading(false);
+      console.log("=== FETCH POLICIES COMPLETE ===");
     }
   };
 
