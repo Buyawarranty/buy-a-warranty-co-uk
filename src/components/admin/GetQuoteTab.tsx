@@ -40,11 +40,11 @@ export const GetQuoteTab = () => {
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerName, setCustomerName] = useState('');
-  const [selectedPlan, setSelectedPlan] = useState('');
-  const [paymentType, setPaymentType] = useState('monthly');
+  const [selectedPlan, setSelectedPlan] = useState('platinum');
+  const [paymentType, setPaymentType] = useState('12months');
   const [finalPrice, setFinalPrice] = useState(0);
-  const [excessAmount, setExcessAmount] = useState('100');
-  const [claimLimit, setClaimLimit] = useState('3000');
+  const [excessAmount, setExcessAmount] = useState(100);
+  const [claimLimit, setClaimLimit] = useState(1250);
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [emailContent, setEmailContent] = useState('');
   const [emailSubject, setEmailSubject] = useState('');
@@ -158,6 +158,34 @@ export const GetQuoteTab = () => {
     }
   };
 
+  // Use the same pricing logic as the customer journey
+  const getPricingData = (excess: number, claimLimit: number, paymentPeriod: string) => {
+    const pricingTable = {
+      '12months': {
+        0: { 750: 547, 1250: 587, 2000: 697 },
+        50: { 750: 517, 1250: 537, 2000: 647 },
+        100: { 750: 457, 1250: 497, 2000: 597 },
+        150: { 750: 427, 1250: 457, 2000: 567 }
+      },
+      '24months': {
+        0: { 750: 1057, 1250: 1097, 2000: 1207 },
+        50: { 750: 967, 1250: 1037, 2000: 1127 },
+        100: { 750: 867, 1250: 927, 2000: 1037 },
+        150: { 750: 817, 1250: 867, 2000: 967 }
+      },
+      '36months': {
+        0: { 750: 1587, 1250: 1637, 2000: 1757 },
+        50: { 750: 1467, 1250: 1517, 2000: 1637 },
+        100: { 750: 1287, 1250: 1387, 2000: 1507 },
+        150: { 750: 1237, 1250: 1287, 2000: 1407 }
+      }
+    };
+    
+    const periodData = pricingTable[paymentPeriod as keyof typeof pricingTable] || pricingTable['12months'];
+    const excessData = periodData[excess as keyof typeof periodData] || periodData[0];
+    return excessData[claimLimit as keyof typeof excessData] || excessData[1250];
+  };
+
   const handleCalculateQuote = () => {
     if (!selectedPlan || !customerEmail || !customerName) {
       toast({
@@ -168,125 +196,75 @@ export const GetQuoteTab = () => {
       return;
     }
 
-    // Calculate price based on plan and payment type
-    let basePrice = 0;
-    switch (selectedPlan) {
-      case 'essential':
-        basePrice = paymentType === 'monthly' ? 47 : (paymentType === '24months' ? 94 : 141);
-        break;
-      case 'complete':
-        basePrice = paymentType === 'monthly' ? 67 : (paymentType === '24months' ? 134 : 201);
-        break;
-      case 'premium':
-        basePrice = paymentType === 'monthly' ? 87 : (paymentType === '24months' ? 174 : 261);
-        break;
-    }
-
-    setFinalPrice(basePrice);
+    // Calculate price using the same logic as customer journey
+    const totalPrice = getPricingData(excessAmount, claimLimit, paymentType);
+    setFinalPrice(totalPrice);
     setStep(3);
   };
 
   const generateEmailContent = (): { subject: string; content: string } => {
-    const planNames = {
-      essential: 'Essential Cover',
-      complete: 'Full EV Warranty Cover',
-      premium: 'Premium Cover'
-    };
-
+    const firstName = customerName.split(' ')[0];
+    
     const paymentLabels = {
-      monthly: '1 Year Cover',
-      '24months': '2 Year Cover',
-      '36months': '3 Year Cover'
+      '12months': 'Monthly',
+      '24months': 'Monthly',
+      '36months': 'Monthly'
     };
 
-    const paymentMonths = {
-      monthly: 12,
+    const durationMonths = {
+      '12months': 12,
       '24months': 24,
       '36months': 36
     };
 
-    const standardCoverage = [
-      'Engine & Internal Components',
-      'Gearbox / Transmission Systems',
-      'Drivetrain & Clutch Assemblies',
-      'Turbocharger & Supercharger Units',
-      'Fuel Delivery Systems',
-      'Cooling & Heating Systems',
-      'Exhaust & Emissions Systems',
-      'Braking Systems',
-      'Suspension & Steering Systems',
-      'Air Conditioning & Climate Control',
-      'Electrical & Charging Systems',
-      'ECUs & Sensors',
-      'Lighting & Ignition Systems',
-      'Multimedia & Infotainment',
-      'Driver Assistance Systems',
-      'Safety Systems',
-      'Convertible Power-Hood Components'
-    ];
+    const bonusMonths = {
+      '12months': 3,
+      '24months': 3,
+      '36months': 3
+    };
 
-    const evCoverage = [
-      'EV Drive Motors & Gearbox',
-      'High-Voltage Battery & Charging Ports',
-      'Power Control Units & Inverters',
-      'Regenerative Braking Systems',
-      'Thermal Management & DC-DC Converters',
-      'EV Control Electronics & High-Voltage Cables'
-    ];
+    const months = durationMonths[paymentType as keyof typeof durationMonths];
+    const bonus = bonusMonths[paymentType as keyof typeof bonusMonths];
+    const totalMonths = months + bonus;
+    const monthlyPrice = Math.round(finalPrice / 12);
 
-    const subject = `Your Quote for ${vehicleData?.regNumber} – ${planNames[selectedPlan as keyof typeof planNames]}`;
-    
-    const months = paymentMonths[paymentType as keyof typeof paymentMonths];
-    const totalCost = finalPrice * months;
+    const subject = `Your Warranty Quote for ${vehicleData?.make} ${vehicleData?.model} - ${vehicleData?.regNumber}`;
 
-    const content = `Hi ${customerName.split(' ')[0]},
+    const content = `Hi ${firstName},
 
-Subject: Your Quote for ${vehicleData?.regNumber} – ${planNames[selectedPlan as keyof typeof planNames]}
+Thank you for considering BuyAWarranty.co.uk for your vehicle protection. Please find your quote details below:
 
-It was a pleasure speaking with you earlier.
+Quote Summary:
 
-Here's your personalised quote for your ${vehicleData?.make || ''} ${vehicleData?.model || ''} ${vehicleData?.year ? `(${vehicleData.year})` : ''} – registration ${vehicleData?.regNumber}, with ${parseInt(vehicleData?.mileage || '0').toLocaleString()} miles on the clock.
-
-What's Covered?
-
-Your vehicle is protected across all major systems, including:
-
-${standardCoverage.join(' • ')}
-
-${vehicleData?.fuelType?.toLowerCase().includes('electric') || vehicleData?.fuelType?.toLowerCase().includes('hybrid') ? `
-Plus, full EV-specific cover including:
-
-${evCoverage.join(' • ')}
-` : ''}
-
-Why Choose Buyawarranty?
-
-✓ Trusted UK warranty provider
-✓ Easy claims
-✓ Fast payouts
-✓ No hidden fees
-✓ All parts & labour covered
-✓ 0% APR available
-
-Tap here to get protected in 60 seconds – no stress, just peace of mind.
-https://buyawarranty.co.uk/
-
-Your Quote:
-
-£${finalPrice}/month for ${paymentLabels[paymentType as keyof typeof paymentLabels]}
-Just ${months} easy payments
-Total: £${totalCost}
+Vehicle: ${vehicleData?.make || ''} ${vehicleData?.model || ''}
+Registration: ${vehicleData?.regNumber}
+Mileage: ${parseInt(vehicleData?.mileage || '0').toLocaleString()} miles
+Plan: Platinum
+Payment: ${paymentLabels[paymentType as keyof typeof paymentLabels]}
+Price: £${monthlyPrice}/month (interest-free)
 Excess: £${excessAmount}
-Claim Limit: £${parseInt(claimLimit).toLocaleString()}
+Claim Limit: £${claimLimit.toLocaleString()}
+Unlimited Claims up to the value of your vehicle
+Cover Period: ${months} months + ${bonus} extra months free (total ${totalMonths} months)
+Coverage: All mechanical and electrical parts, including labour.
 
-If you have any questions, feel free to call me directly on 0330 229 5040.
+Breakdowns Happen. Don't Risk It!
 
-Kind regards,
+For full details on what's covered, please visit:
+https://buyawarranty.co.uk/what-is-covered/
 
+If you have any questions or would like to proceed, please call Mike Swan on 0330 229 5040 or follow the link sent separately from our payment partner, Bumper.
+
+Your peace of mind is our priority.
+
+If It Breaks, We'll Fix It!
+
+Thank you for choosing BuyAWarranty.co.uk.
+
+The BuyAWarranty.co.uk Team
 Customer Service & Sales: 0330 229 5040
-Claimsline: 0330 229 5045
-www.buyawarranty.co.uk
-info@buyawarranty.co.uk`;
+Claims Line: 0330 229 5045
+www.buyawarranty.co.uk | info@buyawarranty.co.uk`;
 
     return { subject, content };
   };
@@ -301,7 +279,8 @@ info@buyawarranty.co.uk`;
   const handleSendEmail = async () => {
     setIsSendingEmail(true);
     try {
-      const { error } = await supabase.functions.invoke('send-admin-quote', {
+      // First send the email
+      const { error: emailError } = await supabase.functions.invoke('send-admin-quote', {
         body: {
           to: customerEmail,
           subject: emailSubject,
@@ -317,29 +296,60 @@ info@buyawarranty.co.uk`;
         }
       });
 
-      if (error) throw error;
+      if (emailError) throw emailError;
+
+      // Then add to abandoned_carts for tracking as incomplete customer
+      const { error: abandonedCartError } = await supabase
+        .from('abandoned_carts')
+        .insert({
+          email: customerEmail,
+          full_name: customerName,
+          phone: '',
+          vehicle_reg: vehicleData?.regNumber,
+          vehicle_make: vehicleData?.make,
+          vehicle_model: vehicleData?.model,
+          vehicle_year: vehicleData?.year,
+          vehicle_type: vehicleData?.vehicleType,
+          mileage: vehicleData?.mileage,
+          plan_name: 'Platinum',
+          payment_type: paymentType,
+          step_abandoned: 3,
+          contact_status: 'contacted',
+          cart_metadata: {
+            excess: excessAmount,
+            claimLimit: claimLimit,
+            totalPrice: finalPrice,
+            quoteSource: 'admin_sent'
+          }
+        });
+
+      if (abandonedCartError) {
+        console.error('Error adding to abandoned carts:', abandonedCartError);
+      }
 
       toast({
-        title: "Email Sent",
-        description: `Quote email sent successfully to ${customerEmail}`,
+        title: "Quote Sent Successfully",
+        description: `Quote email sent to ${customerEmail} and added to incomplete customers`,
       });
       setShowEmailDialog(false);
       // Reset form
       setStep(1);
       setRegNumber('');
       setMileage('');
+      setSliderMileage(0);
       setVehicleData(null);
       setCustomerEmail('');
       setCustomerName('');
-      setSelectedPlan('');
+      setSelectedPlan('platinum');
       setFinalPrice(0);
-      setExcessAmount('100');
-      setClaimLimit('3000');
+      setExcessAmount(100);
+      setClaimLimit(1250);
+      setPaymentType('12months');
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error('Error sending quote:', error);
       toast({
         title: "Error",
-        description: "Failed to send email. Please try again.",
+        description: "Failed to send quote. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -357,7 +367,7 @@ info@buyawarranty.co.uk`;
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Get Quote for Customer</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Send a Quote</h1>
         <p className="text-gray-600 mt-2">Generate and send quotes while on the phone with customers</p>
       </div>
 
@@ -453,28 +463,17 @@ info@buyawarranty.co.uk`;
 
             <div className="space-y-2">
               <Label>Plan Type</Label>
-              <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="essential" id="essential" />
-                  <Label htmlFor="essential" className="cursor-pointer">Essential Cover</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="complete" id="complete" />
-                  <Label htmlFor="complete" className="cursor-pointer">Complete Cover</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="premium" id="premium" />
-                  <Label htmlFor="premium" className="cursor-pointer">Premium Cover</Label>
-                </div>
-              </RadioGroup>
+              <div className="p-3 bg-muted rounded-md">
+                <p className="text-sm font-medium">Platinum Plan (All customers receive the same comprehensive coverage)</p>
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Payment Type</Label>
+              <Label>Warranty Duration</Label>
               <RadioGroup value={paymentType} onValueChange={setPaymentType}>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="monthly" id="monthly" />
-                  <Label htmlFor="monthly" className="cursor-pointer">Monthly (12 months)</Label>
+                  <RadioGroupItem value="12months" id="12months" />
+                  <Label htmlFor="12months" className="cursor-pointer">12 Months</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="24months" id="24months" />
@@ -490,21 +489,41 @@ info@buyawarranty.co.uk`;
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Excess Amount (£)</Label>
-                <Input
-                  type="number"
-                  value={excessAmount}
-                  onChange={(e) => setExcessAmount(e.target.value)}
-                  placeholder="100"
-                />
+                <RadioGroup value={excessAmount.toString()} onValueChange={(val) => setExcessAmount(parseInt(val))}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="0" id="excess-0" />
+                    <Label htmlFor="excess-0" className="cursor-pointer">£0</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="50" id="excess-50" />
+                    <Label htmlFor="excess-50" className="cursor-pointer">£50</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="100" id="excess-100" />
+                    <Label htmlFor="excess-100" className="cursor-pointer">£100</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="150" id="excess-150" />
+                    <Label htmlFor="excess-150" className="cursor-pointer">£150</Label>
+                  </div>
+                </RadioGroup>
               </div>
               <div className="space-y-2">
                 <Label>Claim Limit (£)</Label>
-                <Input
-                  type="number"
-                  value={claimLimit}
-                  onChange={(e) => setClaimLimit(e.target.value)}
-                  placeholder="3000"
-                />
+                <RadioGroup value={claimLimit.toString()} onValueChange={(val) => setClaimLimit(parseInt(val))}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="750" id="claim-750" />
+                    <Label htmlFor="claim-750" className="cursor-pointer">£750</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="1250" id="claim-1250" />
+                    <Label htmlFor="claim-1250" className="cursor-pointer">£1,250</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="2000" id="claim-2000" />
+                    <Label htmlFor="claim-2000" className="cursor-pointer">£2,000</Label>
+                  </div>
+                </RadioGroup>
               </div>
             </div>
 
@@ -534,7 +553,7 @@ info@buyawarranty.co.uk`;
           <CardHeader>
             <CardTitle>Step 3: Send Quote</CardTitle>
             <CardDescription>
-              Quote: £{finalPrice}/month for {customerName}
+              Quote: £{Math.round(finalPrice / 12)}/month for {customerName}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -544,11 +563,12 @@ info@buyawarranty.co.uk`;
                 <p><strong>Vehicle:</strong> {vehicleData?.make} {vehicleData?.model} ({vehicleData?.year})</p>
                 <p><strong>Registration:</strong> {vehicleData?.regNumber}</p>
                 <p><strong>Mileage:</strong> {parseInt(vehicleData?.mileage || '0').toLocaleString()} miles</p>
-                <p><strong>Plan:</strong> {selectedPlan}</p>
-                <p><strong>Payment:</strong> {paymentType}</p>
-                <p><strong>Price:</strong> £{finalPrice}/month</p>
+                <p><strong>Plan:</strong> Platinum</p>
+                <p><strong>Duration:</strong> {paymentType === '12months' ? '12' : paymentType === '24months' ? '24' : '36'} months</p>
+                <p><strong>Total Price:</strong> £{finalPrice}</p>
+                <p><strong>Monthly Price:</strong> £{Math.round(finalPrice / 12)}/month</p>
                 <p><strong>Excess:</strong> £{excessAmount}</p>
-                <p><strong>Claim Limit:</strong> £{parseInt(claimLimit).toLocaleString()}</p>
+                <p><strong>Claim Limit:</strong> £{claimLimit.toLocaleString()}</p>
               </div>
             </div>
 

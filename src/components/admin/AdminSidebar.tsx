@@ -85,7 +85,7 @@ const SortableTab: React.FC<SortableTabProps> = ({ tab, isActive, onClick }) => 
 const defaultTabs: Tab[] = [
   {
     id: 'get-quote',
-    label: 'Get Quote',
+    label: 'Send a Quote',
     icon: Calculator,
     description: 'Generate and send quotes to customers'
   },
