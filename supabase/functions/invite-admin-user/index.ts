@@ -18,7 +18,7 @@ interface InviteUserRequest {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'admin' | 'member' | 'viewer' | 'guest';
+  role: 'admin' | 'member' | 'viewer' | 'guest' | 'blog_writer';
   permissions: Record<string, boolean>;
 }
 

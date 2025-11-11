@@ -49,6 +49,7 @@ const AdminDashboard = () => {
   const [isCheckingRole, setIsCheckingRole] = useState(true);
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const { session, loading: authLoading } = useAuth();
 
@@ -84,8 +85,8 @@ const AdminDashboard = () => {
 
       console.log('📊 Role query result:', { data, error });
 
-      // Allow all admin role types: admin, member, viewer, guest
-      if (error || !data || !['admin', 'member', 'viewer', 'guest'].includes(data.role)) {
+      // Allow all admin role types: admin, member, viewer, guest, blog_writer
+      if (error || !data || !['admin', 'member', 'viewer', 'guest', 'blog_writer'].includes(data.role)) {
         console.error('❌ Access denied - not an admin user', error, data);
         console.log('🏠 User has no admin role, redirecting to homepage');
         navigate('/', { replace: true });
@@ -93,8 +94,14 @@ const AdminDashboard = () => {
       }
 
       console.log('✅ Access granted for role:', data.role);
+      setUserRole(data.role);
       setHasAdminAccess(true);
       setIsCheckingRole(false);
+      
+      // Set default tab for blog writers
+      if (data.role === 'blog_writer') {
+        setActiveTab('blog-writing');
+      }
     } catch (error) {
       console.error('💥 Error checking admin access:', error);
       navigate('/', { replace: true });
@@ -417,7 +424,7 @@ const AdminDashboard = () => {
       </header>
       
       <div className="flex-1 flex flex-col lg:flex-row">
-        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} userRole={userRole} />
         
         <div className="flex-1 lg:ml-64 overflow-hidden">
           <main className="p-4 lg:p-6 overflow-y-auto h-[calc(100vh-80px)]">

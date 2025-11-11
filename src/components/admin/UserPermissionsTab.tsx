@@ -40,7 +40,7 @@ export const UserPermissionsTab = () => {
     email: '',
     firstName: '',
     lastName: '',
-    role: 'guest' as 'admin' | 'member' | 'viewer' | 'guest',
+    role: 'guest' as 'admin' | 'member' | 'viewer' | 'guest' | 'blog_writer',
     permissions: {} as Record<string, boolean>
   });
 
@@ -193,6 +193,7 @@ export const UserPermissionsTab = () => {
       case 'admin': return <Shield className="h-4 w-4" />;
       case 'member': return <Users className="h-4 w-4" />;
       case 'viewer': return <Eye className="h-4 w-4" />;
+      case 'blog_writer': return <UserPlus className="h-4 w-4" />;
       default: return <UserPlus className="h-4 w-4" />;
     }
   };
@@ -202,6 +203,7 @@ export const UserPermissionsTab = () => {
       case 'admin': return 'destructive';
       case 'member': return 'default';
       case 'viewer': return 'secondary';
+      case 'blog_writer': return 'default';
       default: return 'outline';
     }
   };
@@ -274,15 +276,16 @@ export const UserPermissionsTab = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="admin">Admin - Full access</SelectItem>
+                     <SelectItem value="admin">Admin - Full access</SelectItem>
                     <SelectItem value="member">Member - Limited access</SelectItem>
                     <SelectItem value="viewer">Viewer - Read-only access</SelectItem>
                     <SelectItem value="guest">Guest - Minimal access</SelectItem>
+                    <SelectItem value="blog_writer">Blog Writer - Blog Writing access only</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {inviteData.role !== 'admin' && (
+              {inviteData.role !== 'admin' && inviteData.role !== 'blog_writer' && (
                 <div className="space-y-4">
                   <Label>Permissions</Label>
                   {Object.entries(groupedPermissions).map(([category, categoryPermissions]) => (

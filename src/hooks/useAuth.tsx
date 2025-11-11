@@ -8,6 +8,7 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMasterAdmin, setIsMasterAdmin] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -35,18 +36,33 @@ export const useAuth = () => {
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (mounted) {
           console.log('Auth state changed:', event, session?.user?.email);
           setSession(session);
           setUser(session?.user ?? null);
-          setLoading(false);
           
-          // Clear master admin status if regular user logs in
+          // Fetch user role when session changes
           if (session?.user) {
+            try {
+              const { data: roleData } = await supabase
+                .from('user_roles')
+                .select('role')
+                .eq('user_id', session.user.id)
+                .maybeSingle();
+              
+              setUserRole(roleData?.role || null);
+            } catch (error) {
+              console.error('Error fetching user role:', error);
+            }
+            
             setIsMasterAdmin(false);
             localStorage.removeItem('masterAdmin');
+          } else {
+            setUserRole(null);
           }
+          
+          setLoading(false);
         }
       }
     );
@@ -71,6 +87,7 @@ export const useAuth = () => {
     session,
     loading,
     signOut,
-    isMasterAdmin
+    isMasterAdmin,
+    userRole
   };
 };

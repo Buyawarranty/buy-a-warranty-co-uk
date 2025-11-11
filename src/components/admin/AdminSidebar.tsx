@@ -27,6 +27,7 @@ interface Tab {
 interface AdminSidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  userRole?: string | null;
 }
 
 interface SortableTabProps {
@@ -181,9 +182,19 @@ const defaultTabs: Tab[] = [
   }
 ];
 
-export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChange }) => {
+export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChange, userRole }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabs, setTabs] = useState<Tab[]>(defaultTabs);
+
+  // Filter tabs based on user role
+  const getVisibleTabs = () => {
+    if (userRole === 'blog_writer') {
+      // Blog writers only see the blog-writing tab
+      return defaultTabs.filter(tab => tab.id === 'blog-writing');
+    }
+    // All other roles see all tabs
+    return defaultTabs;
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -192,26 +203,37 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, onTabChan
     })
   );
 
-  // Load saved order from localStorage
+  // Load saved order from localStorage (only for non-blog writers)
   useEffect(() => {
+    const visibleTabs = getVisibleTabs();
+    
+    // Blog writers don't need custom ordering
+    if (userRole === 'blog_writer') {
+      setTabs(visibleTabs);
+      return;
+    }
+    
     const savedOrder = localStorage.getItem('adminSidebarOrder');
     if (savedOrder) {
       try {
         const orderIds = JSON.parse(savedOrder);
         const orderedTabs = orderIds
-          .map((id: string) => defaultTabs.find(tab => tab.id === id))
+          .map((id: string) => visibleTabs.find(tab => tab.id === id))
           .filter(Boolean);
         
         // Add any new tabs that weren't in saved order
         const existingIds = new Set(orderIds);
-        const newTabs = defaultTabs.filter(tab => !existingIds.has(tab.id));
+        const newTabs = visibleTabs.filter(tab => !existingIds.has(tab.id));
         
         setTabs([...orderedTabs, ...newTabs] as Tab[]);
       } catch (e) {
         console.error('Failed to load sidebar order:', e);
+        setTabs(visibleTabs);
       }
+    } else {
+      setTabs(visibleTabs);
     }
-  }, []);
+  }, [userRole]);
 
   // Save order to localStorage whenever it changes
   const saveOrder = (newTabs: Tab[]) => {

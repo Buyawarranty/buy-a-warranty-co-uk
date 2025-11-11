@@ -2735,6 +2735,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_blog_writer: { Args: { user_id: string }; Returns: boolean }
       is_ip_blocked: { Args: { check_ip: unknown }; Returns: boolean }
       log_click_activity: {
         Args: {
@@ -2769,7 +2770,13 @@ export type Database = {
       verify_warranty_selection: { Args: { audit_id: string }; Returns: Json }
     }
     Enums: {
-      user_role: "admin" | "customer" | "member" | "viewer" | "guest"
+      user_role:
+        | "admin"
+        | "customer"
+        | "member"
+        | "viewer"
+        | "guest"
+        | "blog_writer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2897,7 +2904,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      user_role: ["admin", "customer", "member", "viewer", "guest"],
+      user_role: [
+        "admin",
+        "customer",
+        "member",
+        "viewer",
+        "guest",
+        "blog_writer",
+      ],
     },
   },
 } as const
