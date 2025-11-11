@@ -21,7 +21,10 @@ export const useAuth = () => {
     const getInitialSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
-        if (mounted && !error) {
+        if (mounted) {
+          if (error) {
+            console.error('Error getting initial session:', error);
+          }
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
