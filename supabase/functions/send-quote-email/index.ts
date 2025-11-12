@@ -48,6 +48,14 @@ const generateQuoteEmail = (data: QuoteEmailRequest, baseUrl: string): string =>
   const { vehicleData, firstName, lastName, selectedPlan, quoteId } = data;
   const customerName = firstName || 'Valued Customer';
   
+  // Calculate cover period with seasonal bonus
+  const basePeriod = selectedPlan?.paymentType === 'monthly' || selectedPlan?.paymentType === 'yearly' || selectedPlan?.paymentType === '12months' ? '12 months' :
+                     selectedPlan?.paymentType === '24months' ? '24 months' :
+                     selectedPlan?.paymentType === '36months' ? '36 months' : '12 months';
+  const totalPeriod = selectedPlan?.paymentType === 'monthly' || selectedPlan?.paymentType === 'yearly' || selectedPlan?.paymentType === '12months' ? '15 months' :
+                      selectedPlan?.paymentType === '24months' ? '27 months' :
+                      selectedPlan?.paymentType === '36months' ? '39 months' : '15 months';
+  
   return `
     <!DOCTYPE html>
     <html>
@@ -58,102 +66,113 @@ const generateQuoteEmail = (data: QuoteEmailRequest, baseUrl: string): string =>
     </head>
     <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #2563eb; margin: 0;">buya<span style="color: #ea580c;">warranty</span></h1>
-        <p style="color: #64748b; margin: 5px 0 0 0;">Your Warranty Quote</p>
+        <img src="https://buyawarranty.co.uk/lovable-uploads/baw-logo-new-2025.png" alt="Buy A Warranty" style="width: 180px; height: auto;" />
       </div>
       
       <div style="background: #f8fafc; border-radius: 8px; padding: 30px; margin-bottom: 20px;">
-        <h2 style="color: #1e293b; margin-top: 0;">Hello ${customerName}!</h2>
-        
         <p style="font-size: 16px; margin-bottom: 20px;">
-          Thank you for requesting a warranty quote. Here are your details:
+          👋 Hi ${customerName},
         </p>
         
+        <p style="font-size: 16px; margin-bottom: 20px;">
+          Thank you for considering BuyAWarranty.co.uk for your vehicle protection. Please find your quote details below:
+        </p>
+        
+        <h3 style="color: #1e293b; margin-top: 30px; margin-bottom: 15px;">📋 Quote Summary:</h3>
+        
         <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0;">
-          <h3 style="color: #1e293b; margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Vehicle Details</h3>
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Registration:</strong></td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.regNumber}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>🚗 Vehicle:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.make || ''} ${vehicleData.model || ''}</td>
             </tr>
-            ${vehicleData.make ? `
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Make & Model:</strong></td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.make || ''} ${vehicleData.model || ''}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>🔢 Registration:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.regNumber}</td>
             </tr>
-            ` : ''}
-            ${vehicleData.year ? `
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Year:</strong></td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.year}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>📊 Mileage:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.mileage} miles</td>
             </tr>
-            ` : ''}
+            ${selectedPlan ? `
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Mileage:</strong></td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.mileage} miles</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>🛡️ Plan:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">${selectedPlan.name}</td>
             </tr>
-            ${vehicleData.fuelType ? `
             <tr>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;"><strong>Fuel Type:</strong></td>
-              <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9;">${vehicleData.fuelType}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>💳 Payment:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">${formatPaymentType(selectedPlan.paymentType)}</td>
             </tr>
-            ` : ''}
-            ${vehicleData.transmission ? `
             <tr>
-              <td style="padding: 8px 0;"><strong>Transmission:</strong></td>
-              <td style="padding: 8px 0;">${vehicleData.transmission}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>💰 Price:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">£${selectedPlan.price}/${selectedPlan.paymentType === 'monthly' || selectedPlan.paymentType === '12months' ? 'month' : 'year'} (interest-free)</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>💵 Excess:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">£100</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>📈 Claim Limit:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">£1,250</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>✅ Claims:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">Unlimited Claims up to the value of your vehicle</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><strong>📅 Cover Period:</strong></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">${basePeriod} + 3 extra months free (total ${totalPeriod})</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0;"><strong>🔧 Coverage:</strong></td>
+              <td style="padding: 10px 0;">All mechanical and electrical parts, including labour.</td>
             </tr>
             ` : ''}
           </table>
         </div>
         
-        ${selectedPlan ? `
-        <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0; border: 2px solid #22c55e;">
-          <h3 style="color: #16a34a; margin-top: 0; border-bottom: 2px solid #dcfce7; padding-bottom: 10px;">Selected Plan</h3>
-          <div style="text-align: center;">
-            <div style="font-size: 20px; font-weight: bold; color: #16a34a; margin-bottom: 10px;">
-              ${selectedPlan.name}
-            </div>
-            <div style="font-size: 24px; font-weight: bold; color: #1e293b; margin-bottom: 5px;">
-              £${selectedPlan.price}
-            </div>
-            <div style="color: #64748b; font-size: 14px;">
-              ${formatPaymentType(selectedPlan.paymentType)} Payment
-            </div>
-          </div>
-        </div>
-        ` : ''}
-      </div>
-      
-      <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; text-align: center;">
-        <h3 style="color: #1e293b; margin-top: 0;">Ready to Complete Your Purchase?</h3>
-        <p>Click the link below to resume your quote and complete your warranty purchase:</p>
-        
-        <div style="margin: 20px 0;">
-          ${quoteId ? `
-          <a href="${baseUrl}/?quote=${quoteId}&email=${data.email}" 
-             style="background: #ea580c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
-            Continue My Quote
-          </a>
-          ` : `
-          <a href="${baseUrl}/?regNumber=${vehicleData.regNumber}&mileage=${vehicleData.mileage}" 
-             style="background: #ea580c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
-            Complete My Purchase
-          </a>
-          `}
+        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 25px 0; border-radius: 4px;">
+          <p style="font-size: 18px; font-weight: bold; color: #856404; margin: 0;">
+            ⚠️ Breakdowns Happen. Don't Risk It!
+          </p>
         </div>
         
-        <p style="font-size: 14px; color: #64748b; margin-top: 20px;">
-          ${quoteId ? 'This link will restore your vehicle details and take you directly to choose your plan.' : 'This link will take you back to get your quote with your vehicle details pre-filled.'}
+        <p style="font-size: 16px; margin-bottom: 20px;">
+          For full details on what's covered, please visit:<br>
+          <a href="https://buyawarranty.co.uk/what-is-covered/" style="color: #ea580c; text-decoration: underline;">https://buyawarranty.co.uk/what-is-covered/</a>
+        </p>
+        
+        <p style="font-size: 16px; margin-bottom: 20px;">
+          If you have any questions or would like to proceed, please call <strong>Mike Swan on 📞 0330 229 5040</strong> or follow the link sent separately from our payment partner, Bumper.
+        </p>
+        
+        <p style="font-size: 16px; margin-bottom: 20px;">
+          Your peace of mind is our priority.
+        </p>
+        
+        <div style="background: #22c55e; color: white; text-align: center; padding: 20px; margin: 25px 0; border-radius: 8px;">
+          <p style="font-size: 20px; font-weight: bold; margin: 0;">
+            🔧 If It Breaks, We'll Fix It! 🔧
+          </p>
+        </div>
+        
+        <p style="font-size: 16px; margin-top: 30px;">
+          Thank you for choosing BuyAWarranty.co.uk.
         </p>
       </div>
       
       <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
-        <p style="font-size: 12px; color: #64748b;">
-          Questions? Contact us at info@buyawarranty.co.uk or call us at 0800 123 4567
+        <p style="font-size: 14px; color: #64748b; margin-bottom: 5px;">
+          <strong>The BuyAWarranty.co.uk Team</strong>
         </p>
-        <p style="font-size: 12px; color: #64748b; margin-top: 10px;">
-          BuyaWarranty - Protecting your peace of mind
+        <p style="font-size: 13px; color: #64748b; margin: 5px 0;">
+          📞 Customer Service & Sales: 0330 229 5040
+        </p>
+        <p style="font-size: 13px; color: #64748b; margin: 5px 0;">
+          📞 Claims Line: 0330 229 5045
+        </p>
+        <p style="font-size: 13px; color: #64748b; margin: 5px 0;">
+          🌐 <a href="https://www.buyawarranty.co.uk" style="color: #ea580c; text-decoration: none;">www.buyawarranty.co.uk</a> | 📧 <a href="mailto:info@buyawarranty.co.uk" style="color: #ea580c; text-decoration: none;">info@buyawarranty.co.uk</a>
         </p>
       </div>
     </body>
