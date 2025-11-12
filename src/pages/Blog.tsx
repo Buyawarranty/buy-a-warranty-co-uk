@@ -106,9 +106,6 @@ const Blog = () => {
       </script>
 
       <div className="min-h-screen bg-white">
-        {/* Seasonal Offer Banner */}
-        <SeasonalOfferBanner />
-        
         {/* Header */}
         <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
