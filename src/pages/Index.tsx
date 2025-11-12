@@ -813,13 +813,16 @@ const Index = () => {
     }
     
     try {
-      // Use email if valid, otherwise use vehicle reg as identifier
-      const identifier = hasValidEmail ? data.email : data.regNumber;
+      // Only track if we have a valid email
+      if (!hasValidEmail) {
+        console.log('⏭️ Skipping abandoned cart tracking - no valid email yet');
+        return;
+      }
       
       await supabase.functions.invoke('track-abandoned-cart', {
         body: {
-          full_name: data.firstName && data.lastName ? `${data.firstName} ${data.lastName}` : (hasValidEmail ? data.email : ''),
-          email: identifier, // This will be used as the unique identifier
+          full_name: data.firstName && data.lastName ? `${data.firstName} ${data.lastName}` : data.email,
+          email: data.email,
           phone: data.phone || '',
           vehicle_reg: data.regNumber,
           vehicle_make: data.make,
@@ -832,7 +835,7 @@ const Index = () => {
           step_abandoned: step
         }
       });
-      console.log(`✅ Tracked abandoned cart at step ${step} for:`, identifier);
+      console.log(`✅ Tracked abandoned cart at step ${step} for:`, data.email);
     } catch (error) {
       console.error('Error tracking abandoned cart:', error);
     }

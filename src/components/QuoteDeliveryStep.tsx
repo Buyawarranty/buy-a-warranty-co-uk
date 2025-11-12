@@ -43,9 +43,8 @@ const QuoteDeliveryStep: React.FC<QuoteDeliveryStepProps> = ({ vehicleData, onNe
   const [sendingEmail, setSendingEmail] = useState(false);
 
   const handleSkipClick = async () => {
-    // Track abandoned cart with whatever data we have
+    // Track abandoned cart only if we have a valid email
     try {
-      const trackingEmail = email.trim() || vehicleData?.make || 'no-email-provided';
       if (email.trim()) {
         await supabase.functions.invoke('track-abandoned-cart', {
           body: {

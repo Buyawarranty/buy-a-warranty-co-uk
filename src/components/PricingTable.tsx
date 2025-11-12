@@ -329,14 +329,18 @@ const PricingTable: React.FC<PricingTableProps> = ({
       }
       
       try {
-        const identifier = hasValidEmail ? vehicleData.email : vehicleData.regNumber;
+        // Only track if we have a valid email
+        if (!hasValidEmail) {
+          console.log('⏭️ Skipping abandoned cart tracking - no valid email yet');
+          return;
+        }
         
         await supabase.functions.invoke('track-abandoned-cart', {
           body: {
             full_name: vehicleData?.firstName && vehicleData?.lastName 
               ? `${vehicleData.firstName} ${vehicleData.lastName}` 
-              : (hasValidEmail ? vehicleData.email : ''),
-            email: identifier,
+              : vehicleData.email,
+            email: vehicleData.email,
             phone: vehicleData?.phone || '',
             vehicle_reg: vehicleData?.regNumber,
             vehicle_make: vehicleData?.make,
