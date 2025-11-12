@@ -175,6 +175,7 @@ export const ManualOrderEntry = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [templateText, setTemplateText] = useState(defaultTemplate);
+  const isSubmittingRef = React.useRef(false);
 
   const updateOrderData = (field: keyof ManualOrderData, value: string | boolean | number) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
@@ -395,15 +396,67 @@ export const ManualOrderEntry = () => {
   };
 
   const handleSubmit = async () => {
+    // Prevent double submissions
+    if (isSubmittingRef.current || isLoading) {
+      console.log('Submission already in progress, ignoring duplicate request');
+      return;
+    }
+
+    isSubmittingRef.current = true;
     setIsLoading(true);
+    
     try {
+      // Check for recent duplicate submissions by email and registration
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      
+      const { data: recentPolicy, error: checkError } = await supabase
+        .from('customer_policies')
+        .select('id, policy_number, email, created_at')
+        .eq('email', orderData.email.toLowerCase())
+        .gte('created_at', fiveMinutesAgo)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError;
+      }
+
+      if (recentPolicy) {
+        toast.error(
+          `A policy for this email was created less than 5 minutes ago (${recentPolicy.policy_number}). Please verify before creating another.`,
+          { duration: 8000 }
+        );
+        return;
+      }
+
+      // Check for duplicate registration plate in active policies
+      if (orderData.registrationPlate) {
+        const { data: existingReg } = await supabase
+          .from('customers')
+          .select('id, email, registration_plate, name')
+          .eq('registration_plate', orderData.registrationPlate.toUpperCase())
+          .eq('status', 'Active')
+          .limit(1)
+          .maybeSingle();
+
+        if (existingReg && existingReg.email.toLowerCase() !== orderData.email.toLowerCase()) {
+          const proceed = window.confirm(
+            `Warning: Registration ${orderData.registrationPlate} is already registered to ${existingReg.name} (${existingReg.email}). Do you want to continue?`
+          );
+          if (!proceed) {
+            return;
+          }
+        }
+      }
+
       const warrantyReference = generateWarrantyReference();
       const customerName = `${orderData.firstName} ${orderData.lastName}`.trim();
 
       // Create customer record
       const customerRecord = {
         name: customerName,
-        email: orderData.email,
+        email: orderData.email.toLowerCase(),
         phone: orderData.phone,
         first_name: orderData.firstName,
         last_name: orderData.lastName,
@@ -418,7 +471,7 @@ export const ManualOrderEntry = () => {
         plan_type: orderData.planType,
         payment_type: orderData.paymentType,
         stripe_session_id: `manual_${Date.now()}`,
-        registration_plate: orderData.registrationPlate,
+        registration_plate: orderData.registrationPlate.toUpperCase(),
         vehicle_make: orderData.vehicleMake,
         vehicle_model: orderData.vehicleModel,
         vehicle_year: orderData.vehicleYear,
@@ -435,7 +488,7 @@ export const ManualOrderEntry = () => {
       const { data: existingCustomer } = await supabase
         .from('customers')
         .select('id')
-        .eq('email', orderData.email)
+        .ilike('email', orderData.email)
         .maybeSingle();
 
       let customerData;
@@ -544,33 +597,66 @@ export const ManualOrderEntry = () => {
       // Only send to Warranties 2000 if checkbox is checked
       if (orderData.sendToWarranties2000) {
         try {
-          // Add logic here to send to Warranties 2000 API
-          console.log('Sending to Warranties 2000 API...');
+          console.log('Sending to Warranties 2000 API via manual-bumper-completion...');
+          
+          const { data: w2kResponse, error: w2kError } = await supabase.functions.invoke(
+            'manual-bumper-completion',
+            {
+              body: { email: orderData.email.toLowerCase() }
+            }
+          );
+
+          if (w2kError) {
+            console.error('Warranties 2000 API error:', w2kError);
+            await supabase
+              .from('admin_notes')
+              .insert({
+                customer_id: customerData.id,
+                note: `Failed to send to Warranties 2000 API: ${w2kError.message}`,
+                created_by: (await supabase.auth.getUser()).data.user?.id
+              });
+            toast.error('Order created but failed to send to Warranties 2000');
+          } else {
+            console.log('Warranties 2000 API response:', w2kResponse);
+            await supabase
+              .from('admin_notes')
+              .insert({
+                customer_id: customerData.id,
+                note: `Successfully sent to Warranties 2000 API`,
+                created_by: (await supabase.auth.getUser()).data.user?.id
+              });
+            toast.success('Order created and sent to Warranties 2000!');
+          }
+        } catch (w2kError) {
+          console.error('Failed to send to Warranties 2000:', w2kError);
           await supabase
             .from('admin_notes')
             .insert({
               customer_id: customerData.id,
-              note: `Sent to Warranties 2000 API`,
+              note: `Exception sending to Warranties 2000 API: ${w2kError instanceof Error ? w2kError.message : String(w2kError)}`,
               created_by: (await supabase.auth.getUser()).data.user?.id
             });
-        } catch (w2kError) {
-          console.error('Failed to send to Warranties 2000:', w2kError);
           toast.error('Order created but failed to send to Warranties 2000');
         }
+      } else {
+        toast.success(`Manual warranty order created successfully! Reference: ${warrantyReference}`);
       }
 
-      toast.success(`Manual warranty order created successfully! Reference: ${warrantyReference}`);
+      // Reset form and close dialog
       setIsOpen(false);
       setOrderData(initialOrderData);
       
       // Trigger a refresh of the customers list
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
 
     } catch (error) {
       console.error('Manual order creation failed:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to create manual order');
     } finally {
       setIsLoading(false);
+      isSubmittingRef.current = false;
     }
   };
 
