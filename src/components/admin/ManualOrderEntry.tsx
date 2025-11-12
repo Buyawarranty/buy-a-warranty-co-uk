@@ -396,18 +396,29 @@ export const ManualOrderEntry = () => {
   };
 
   const handleSubmit = async () => {
+    console.log('🚀 Manual order submission started', { email: orderData.email, isLoading, isSubmitting: isSubmittingRef.current });
+    
     // Prevent double submissions
     if (isSubmittingRef.current || isLoading) {
-      console.log('Submission already in progress, ignoring duplicate request');
+      console.log('⚠️ Submission already in progress, ignoring duplicate request');
+      toast.warning('Submission already in progress...');
+      return;
+    }
+
+    // Basic validation
+    if (!orderData.email || !orderData.firstName || !orderData.lastName) {
+      toast.error('Please fill in all required customer details');
       return;
     }
 
     isSubmittingRef.current = true;
     setIsLoading(true);
+    console.log('✅ Validation passed, proceeding with submission');
     
     try {
       // Check for recent duplicate submissions by email and registration
       const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      console.log('🔍 Checking for duplicate policies...');
       
       const { data: recentPolicy, error: checkError } = await supabase
         .from('customer_policies')
@@ -419,19 +430,26 @@ export const ManualOrderEntry = () => {
         .maybeSingle();
 
       if (checkError && checkError.code !== 'PGRST116') {
+        console.error('❌ Error checking for duplicates:', checkError);
         throw checkError;
       }
 
       if (recentPolicy) {
+        console.log('⚠️ Recent policy found, blocking submission', recentPolicy);
         toast.error(
           `A policy for this email was created less than 5 minutes ago (${recentPolicy.policy_number}). Please verify before creating another.`,
           { duration: 8000 }
         );
+        isSubmittingRef.current = false;
+        setIsLoading(false);
         return;
       }
 
+      console.log('✅ No recent duplicates found');
+
       // Check for duplicate registration plate in active policies
       if (orderData.registrationPlate) {
+        console.log('🔍 Checking for duplicate registration plates...');
         const { data: existingReg } = await supabase
           .from('customers')
           .select('id, email, registration_plate, name')
@@ -441,17 +459,23 @@ export const ManualOrderEntry = () => {
           .maybeSingle();
 
         if (existingReg && existingReg.email.toLowerCase() !== orderData.email.toLowerCase()) {
+          console.log('⚠️ Duplicate registration found', existingReg);
           const proceed = window.confirm(
             `Warning: Registration ${orderData.registrationPlate} is already registered to ${existingReg.name} (${existingReg.email}). Do you want to continue?`
           );
           if (!proceed) {
+            console.log('❌ User cancelled due to duplicate registration');
+            isSubmittingRef.current = false;
+            setIsLoading(false);
             return;
           }
         }
       }
 
+      console.log('📝 Generating warranty reference...');
       const warrantyReference = generateWarrantyReference();
       const customerName = `${orderData.firstName} ${orderData.lastName}`.trim();
+      console.log('✅ Warranty reference generated:', warrantyReference);
 
       // Create customer record
       const customerRecord = {
@@ -642,19 +666,22 @@ export const ManualOrderEntry = () => {
         toast.success(`Manual warranty order created successfully! Reference: ${warrantyReference}`);
       }
 
-      // Reset form and close dialog
-      setIsOpen(false);
-      setOrderData(initialOrderData);
+      console.log('🎉 Manual order created successfully!');
       
-      // Trigger a refresh of the customers list
+      // Reset form and close dialog
+      setOrderData(initialOrderData);
+      setIsOpen(false);
+      
+      // Wait a moment before refreshing to ensure database updates are complete
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
+      }, 1500);
 
     } catch (error) {
-      console.error('Manual order creation failed:', error);
+      console.error('❌ Manual order creation failed:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to create manual order');
     } finally {
+      console.log('🔄 Resetting loading state');
       setIsLoading(false);
       isSubmittingRef.current = false;
     }
