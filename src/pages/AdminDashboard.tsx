@@ -11,6 +11,7 @@ import { CustomersTab } from '@/components/admin/CustomersTab';
 import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
 import { DiscountCodesTab } from '@/components/admin/DiscountCodesTab';
+import { ReferralsTab } from '@/components/admin/ReferralsTab';
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
 import UnifiedEmailHub from '@/components/admin/UnifiedEmailHub';
 import AccountSettings from '@/components/admin/AccountSettings';
@@ -134,6 +135,8 @@ const AdminDashboard = () => {
         return <SpecialVehiclePlansTab />;
       case 'discount-codes':
         return <DiscountCodesTab />;
+      case 'referrals':
+        return <ReferralsTab />;
       case 'claims':
         return <ClaimsTab />;
       case 'contact':

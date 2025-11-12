@@ -33,10 +33,14 @@ export const ShareAndSaveSection: React.FC<ShareAndSaveSectionProps> = ({
     setIsSubmitting(true);
 
     try {
+      // Get current user's email for referrer tracking
+      const { data: { user } } = await supabase.auth.getUser();
+      
       const { error } = await supabase.functions.invoke('send-referral-email', {
         body: {
           friendEmail,
-          referrerName: customerName || 'A Friend'
+          referrerName: customerName || 'A Friend',
+          referrerEmail: user?.email || null
         }
       });
 

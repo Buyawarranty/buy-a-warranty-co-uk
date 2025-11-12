@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent, Shield, FolderOpen, Receipt, MessageSquare, PenTool, ShoppingCart, Calculator, GripVertical } from 'lucide-react';
+import { Users, FileText, Car, BarChart3, Mail, Settings, Menu, X, TestTube, Percent, Shield, FolderOpen, Receipt, MessageSquare, PenTool, ShoppingCart, Calculator, GripVertical, UserPlus } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -119,6 +119,12 @@ const defaultTabs: Tab[] = [
     label: 'Discount Codes',
     icon: Percent,
     description: 'Manage discount codes and promotions'
+  },
+  {
+    id: 'referrals',
+    label: 'Referrals',
+    icon: UserPlus,
+    description: 'Track customer referrals and conversions'
   },
   {
     id: 'claims',

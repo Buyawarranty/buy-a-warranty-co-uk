@@ -1519,6 +1519,8 @@ export type Database = {
           created_at: string
           created_by: string | null
           id: string
+          is_referral_code: boolean | null
+          referrer_email: string | null
           stripe_coupon_id: string | null
           stripe_promo_code_id: string | null
           type: string
@@ -1540,6 +1542,8 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          is_referral_code?: boolean | null
+          referrer_email?: string | null
           stripe_coupon_id?: string | null
           stripe_promo_code_id?: string | null
           type: string
@@ -1561,6 +1565,8 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          is_referral_code?: boolean | null
+          referrer_email?: string | null
           stripe_coupon_id?: string | null
           stripe_promo_code_id?: string | null
           type?: string
@@ -2191,6 +2197,53 @@ export type Database = {
           window_start?: string
         }
         Relationships: []
+      }
+      referrals: {
+        Row: {
+          converted_at: string | null
+          created_at: string
+          discount_code: string | null
+          discount_code_id: string | null
+          friend_email: string
+          id: string
+          referrer_email: string
+          referrer_name: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string
+          discount_code?: string | null
+          discount_code_id?: string | null
+          friend_email: string
+          id?: string
+          referrer_email: string
+          referrer_name?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string
+          discount_code?: string | null
+          discount_code_id?: string | null
+          friend_email?: string
+          id?: string
+          referrer_email?: string
+          referrer_name?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_discount_code_id_fkey"
+            columns: ["discount_code_id"]
+            isOneToOne: false
+            referencedRelation: "discount_codes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sales_targets: {
         Row: {

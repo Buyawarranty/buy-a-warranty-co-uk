@@ -1,7 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,7 +23,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { friendEmail, referrerName }: ReferralEmailRequest = await req.json();
+    const { friendEmail, referrerName, referrerEmail }: ReferralEmailRequest & { referrerEmail?: string } = await req.json();
 
     if (!friendEmail || !friendEmail.includes('@')) {
       return new Response(
@@ -30,6 +33,50 @@ const handler = async (req: Request): Promise<Response> => {
           headers: { "Content-Type": "application/json", ...corsHeaders },
         }
       );
+    }
+
+    // Initialize Supabase client
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Generate a unique discount code for this referral
+    const discountCode = `FRIEND-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
+    
+    // Create discount code in database
+    const { data: discountData, error: discountError } = await supabase
+      .from('discount_codes')
+      .insert({
+        code: discountCode,
+        type: 'fixed',
+        value: 30,
+        valid_from: new Date().toISOString(),
+        valid_to: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days
+        usage_limit: 1,
+        campaign_source: 'referral',
+        is_referral_code: true,
+        referrer_email: referrerEmail || null
+      })
+      .select()
+      .single();
+
+    if (discountError) {
+      console.error("Error creating discount code:", discountError);
+      throw new Error("Failed to create discount code");
+    }
+
+    // Track referral in database
+    const { error: referralError } = await supabase
+      .from('referrals')
+      .insert({
+        referrer_email: referrerEmail || 'unknown',
+        referrer_name: referrerName,
+        friend_email: friendEmail,
+        discount_code: discountCode,
+        discount_code_id: discountData.id,
+        status: 'sent'
+      });
+
+    if (referralError) {
+      console.error("Error tracking referral:", referralError);
     }
 
     const emailResponse = await resend.emails.send({
@@ -56,7 +103,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <p style="color: #0B0B0B; font-size: 16px; line-height: 1.6; margin-bottom: 15px;">
-            Plus, if you sign up, I get £30 off my next warranty – so it's a win-win! 😄
+            Plus, use the code <strong style="color: #FF6B00;">${discountCode}</strong> to get £30 off your warranty – it's a win-win! 😄
           </p>
           
           <p style="color: #0B0B0B; font-size: 16px; line-height: 1.6; margin-bottom: 15px;">

@@ -345,6 +345,71 @@ serve(async (req) => {
     } else {
       logStep("Customer record created successfully", { customerId: customerData2.id });
       
+      // Track referral conversion if discount code was used
+      if (customerData?.discount_code) {
+        try {
+          logStep("Checking if discount code is a referral code", { code: customerData.discount_code });
+          
+          // Check if this discount code is a referral code
+          const { data: discountCodeData, error: dcError } = await supabaseClient
+            .from('discount_codes')
+            .select('id, is_referral_code, code, used_count')
+            .eq('code', customerData.discount_code.toUpperCase())
+            .single();
+          
+          if (!dcError && discountCodeData?.is_referral_code) {
+            logStep("Discount code is a referral code, marking referral as converted", {
+              discountCodeId: discountCodeData.id
+            });
+            
+            // Mark the referral as converted
+            const { error: referralUpdateError } = await supabaseClient
+              .from('referrals')
+              .update({
+                status: 'converted',
+                converted_at: new Date().toISOString()
+              })
+              .eq('discount_code_id', discountCodeData.id)
+              .eq('friend_email', userEmail);
+            
+            if (referralUpdateError) {
+              logStep("Warning: Failed to mark referral as converted", referralUpdateError);
+            } else {
+              logStep("Successfully marked referral as converted");
+            }
+            
+            // Record discount code usage
+            const { error: usageError } = await supabaseClient
+              .from('discount_code_usage')
+              .insert({
+                discount_code_id: discountCodeData.id,
+                customer_email: userEmail,
+                discount_amount: customerData.discount_amount || 0,
+                order_amount: customerData.final_amount || 0,
+                stripe_session_id: stripeSessionId
+              });
+            
+            if (usageError) {
+              logStep("Warning: Failed to record discount code usage", usageError);
+            } else {
+              // Increment used_count for the discount code
+              const { error: countError } = await supabaseClient
+                .from('discount_codes')
+                .update({ used_count: (discountCodeData.used_count || 0) + 1 })
+                .eq('id', discountCodeData.id);
+              
+              if (countError) {
+                logStep("Warning: Failed to increment discount code usage count", countError);
+              } else {
+                logStep("Successfully recorded discount code usage and incremented count");
+              }
+            }
+          }
+        } catch (referralError) {
+          logStep("Error tracking referral conversion", referralError);
+        }
+      }
+      
       // Mark any abandoned carts for this email as converted
       try {
         const { error: cartUpdateError } = await supabaseClient
