@@ -45,6 +45,8 @@ export const GetQuoteTab = () => {
   const [finalPrice, setFinalPrice] = useState(0);
   const [excessAmount, setExcessAmount] = useState(100);
   const [claimLimit, setClaimLimit] = useState(1250);
+  const [customMonthlyPrice, setCustomMonthlyPrice] = useState('');
+  const [customFullPrice, setCustomFullPrice] = useState('');
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [emailContent, setEmailContent] = useState('');
   const [emailSubject, setEmailSubject] = useState('');
@@ -156,22 +158,22 @@ export const GetQuoteTab = () => {
   const getPricingData = (excess: number, claimLimit: number, paymentPeriod: string) => {
     const pricingTable = {
       '12months': {
-        0: { 750: 547, 1250: 587, 2000: 697 },
-        50: { 750: 517, 1250: 537, 2000: 647 },
-        100: { 750: 457, 1250: 497, 2000: 597 },
-        150: { 750: 427, 1250: 457, 2000: 567 }
+        0: { 750: 547, 1250: 587, 2000: 697, 2500: 747, 3000: 797, 4000: 897, 5000: 997, 6000: 1097 },
+        50: { 750: 517, 1250: 537, 2000: 647, 2500: 697, 3000: 747, 4000: 847, 5000: 947, 6000: 1047 },
+        100: { 750: 457, 1250: 497, 2000: 597, 2500: 647, 3000: 697, 4000: 797, 5000: 897, 6000: 997 },
+        150: { 750: 427, 1250: 457, 2000: 567, 2500: 617, 3000: 667, 4000: 767, 5000: 867, 6000: 967 }
       },
       '24months': {
-        0: { 750: 1057, 1250: 1097, 2000: 1207 },
-        50: { 750: 967, 1250: 1037, 2000: 1127 },
-        100: { 750: 867, 1250: 927, 2000: 1037 },
-        150: { 750: 817, 1250: 867, 2000: 967 }
+        0: { 750: 1057, 1250: 1097, 2000: 1207, 2500: 1307, 3000: 1407, 4000: 1607, 5000: 1807, 6000: 2007 },
+        50: { 750: 967, 1250: 1037, 2000: 1127, 2500: 1227, 3000: 1327, 4000: 1527, 5000: 1727, 6000: 1927 },
+        100: { 750: 867, 1250: 927, 2000: 1037, 2500: 1137, 3000: 1237, 4000: 1437, 5000: 1637, 6000: 1837 },
+        150: { 750: 817, 1250: 867, 2000: 967, 2500: 1067, 3000: 1167, 4000: 1367, 5000: 1567, 6000: 1767 }
       },
       '36months': {
-        0: { 750: 1587, 1250: 1637, 2000: 1757 },
-        50: { 750: 1467, 1250: 1517, 2000: 1637 },
-        100: { 750: 1287, 1250: 1387, 2000: 1507 },
-        150: { 750: 1237, 1250: 1287, 2000: 1407 }
+        0: { 750: 1587, 1250: 1637, 2000: 1757, 2500: 1907, 3000: 2057, 4000: 2357, 5000: 2657, 6000: 2957 },
+        50: { 750: 1467, 1250: 1517, 2000: 1637, 2500: 1787, 3000: 1937, 4000: 2237, 5000: 2537, 6000: 2837 },
+        100: { 750: 1287, 1250: 1387, 2000: 1507, 2500: 1657, 3000: 1807, 4000: 2107, 5000: 2407, 6000: 2707 },
+        150: { 750: 1237, 1250: 1287, 2000: 1407, 2500: 1557, 3000: 1707, 4000: 2007, 5000: 2307, 6000: 2607 }
       }
     };
     
@@ -190,8 +192,16 @@ export const GetQuoteTab = () => {
       return;
     }
 
-    // Calculate price using the same logic as customer journey
-    const totalPrice = getPricingData(excessAmount, claimLimit, paymentType);
+    // Use custom prices if provided, otherwise calculate using pricing table
+    let totalPrice = 0;
+    if (customFullPrice && parseFloat(customFullPrice) > 0) {
+      totalPrice = parseFloat(customFullPrice);
+    } else if (customMonthlyPrice && parseFloat(customMonthlyPrice) > 0) {
+      totalPrice = parseFloat(customMonthlyPrice) * 12;
+    } else {
+      totalPrice = getPricingData(excessAmount, claimLimit, paymentType);
+    }
+    
     setFinalPrice(totalPrice);
     setStep(3);
   };
@@ -338,6 +348,8 @@ www.buyawarranty.co.uk | info@buyawarranty.co.uk`;
       setFinalPrice(0);
       setExcessAmount(100);
       setClaimLimit(1250);
+      setCustomMonthlyPrice('');
+      setCustomFullPrice('');
       setPaymentType('12months');
     } catch (error) {
       console.error('Error sending quote:', error);
@@ -517,8 +529,63 @@ www.buyawarranty.co.uk | info@buyawarranty.co.uk`;
                     <RadioGroupItem value="2000" id="claim-2000" />
                     <Label htmlFor="claim-2000" className="cursor-pointer">£2,000</Label>
                   </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="2500" id="claim-2500" />
+                    <Label htmlFor="claim-2500" className="cursor-pointer">£2,500</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="3000" id="claim-3000" />
+                    <Label htmlFor="claim-3000" className="cursor-pointer">£3,000</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="4000" id="claim-4000" />
+                    <Label htmlFor="claim-4000" className="cursor-pointer">£4,000</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="5000" id="claim-5000" />
+                    <Label htmlFor="claim-5000" className="cursor-pointer">£5,000</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="6000" id="claim-6000" />
+                    <Label htmlFor="claim-6000" className="cursor-pointer">£6,000</Label>
+                  </div>
                 </RadioGroup>
               </div>
+            </div>
+
+            <div className="border-t pt-4 space-y-4">
+              <div className="space-y-2">
+                <Label className="text-base font-semibold">Custom Pricing (Optional)</Label>
+                <p className="text-sm text-muted-foreground">Override calculated price with custom values</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="custom-monthly">Custom Monthly Price (£)</Label>
+                  <Input
+                    id="custom-monthly"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={customMonthlyPrice}
+                    onChange={(e) => setCustomMonthlyPrice(e.target.value)}
+                    placeholder="e.g. 45.99"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="custom-full">Custom Full Price (£)</Label>
+                  <Input
+                    id="custom-full"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={customFullPrice}
+                    onChange={(e) => setCustomFullPrice(e.target.value)}
+                    placeholder="e.g. 499.99"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">Leave empty to use automatic pricing calculation</p>
             </div>
 
             <div className="flex gap-3">
