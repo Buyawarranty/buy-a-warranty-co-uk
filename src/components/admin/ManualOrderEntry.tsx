@@ -312,7 +312,9 @@ export const ManualOrderEntry = () => {
     }
     
     setOrderData(prev => ({ ...prev, ...data } as ManualOrderData));
-    toast.success('Template parsed successfully! Review and submit the order.');
+    
+    // Automatically submit after parsing
+    setTimeout(() => handleSubmit(), 100);
   };
 
   const handleVehicleLookup = async () => {
@@ -744,20 +746,12 @@ export const ManualOrderEntry = () => {
 
             <Button
               onClick={parseTemplate}
-              disabled={!templateText.trim()}
+              disabled={!templateText.trim() || isLoading}
               className="w-full"
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              Parse Template & Create Order
+              {isLoading ? 'Creating Order...' : 'Parse Template & Create Order'}
             </Button>
-
-            {(orderData.email || orderData.firstName) && (
-              <Alert className="bg-green-50 border-green-200">
-                <AlertDescription>
-                  ✓ Template parsed! The order will be created with the parsed information.
-                </AlertDescription>
-              </Alert>
-            )}
           </TabsContent>
 
           <TabsContent value="manual" className="space-y-6">
