@@ -1853,12 +1853,23 @@ export const CustomersTab = () => {
 
       <Tabs defaultValue="complete" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="complete">Active Orders</TabsTrigger>
-          <TabsTrigger value="deleted">
+          <TabsTrigger 
+            value="complete" 
+            className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200 data-[state=active]:border-2"
+          >
+            Active Orders
+          </TabsTrigger>
+          <TabsTrigger 
+            value="deleted"
+            className="data-[state=active]:bg-amber-50 data-[state=active]:text-amber-700 data-[state=active]:border-amber-200 data-[state=active]:border-2"
+          >
             <Archive className="h-4 w-4 mr-2" />
             Order Archive
           </TabsTrigger>
-          <TabsTrigger value="incomplete" className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700">
+          <TabsTrigger 
+            value="incomplete" 
+            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 data-[state=active]:border-2"
+          >
             Incomplete Customers
           </TabsTrigger>
         </TabsList>
