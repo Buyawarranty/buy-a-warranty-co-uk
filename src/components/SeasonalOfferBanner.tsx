@@ -59,7 +59,7 @@ export const SeasonalOfferBanner = () => {
         </div>
         
         <CollapsibleContent>
-          <div className="relative container mx-auto px-4 py-6 md:py-8">
+          <div className="relative container mx-auto px-4 py-4 md:py-6 pb-2 md:pb-3">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               {/* Panda Mascot - positioned differently for mobile and desktop */}
               <div className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 w-28 h-28 lg:w-36 lg:h-36">
@@ -124,7 +124,7 @@ export const SeasonalOfferBanner = () => {
         </CollapsibleContent>
 
         {/* Collapse/Expand Trigger */}
-        <div className="flex justify-center pb-2">
+        <div className="flex justify-center pb-1">
           <CollapsibleTrigger asChild>
             <button
               className="p-2 hover:bg-white/20 rounded-full transition-colors"
