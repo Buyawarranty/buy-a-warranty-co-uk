@@ -1852,23 +1852,23 @@ export const CustomersTab = () => {
       </div>
 
       <Tabs defaultValue="complete" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-3 bg-transparent gap-2">
           <TabsTrigger 
             value="complete" 
-            className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200 data-[state=active]:border-2"
+            className="bg-blue-50 text-blue-700 border border-blue-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 data-[state=active]:border-blue-400 data-[state=active]:border-2 data-[state=active]:shadow-sm"
           >
             Active Orders
           </TabsTrigger>
           <TabsTrigger 
             value="deleted"
-            className="data-[state=active]:bg-amber-50 data-[state=active]:text-amber-700 data-[state=active]:border-amber-200 data-[state=active]:border-2"
+            className="bg-amber-50 text-amber-700 border border-amber-200 data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900 data-[state=active]:border-amber-400 data-[state=active]:border-2 data-[state=active]:shadow-sm"
           >
             <Archive className="h-4 w-4 mr-2" />
             Order Archive
           </TabsTrigger>
           <TabsTrigger 
             value="incomplete" 
-            className="data-[state=active]:bg-red-50 data-[state=active]:text-red-700 data-[state=active]:border-red-200 data-[state=active]:border-2"
+            className="bg-red-50 text-red-700 border border-red-200 data-[state=active]:bg-red-100 data-[state=active]:text-red-900 data-[state=active]:border-red-400 data-[state=active]:border-2 data-[state=active]:shadow-sm"
           >
             Incomplete Customers
           </TabsTrigger>
