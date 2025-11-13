@@ -263,6 +263,19 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
     }
   }, [customerToEdit, policyToEdit]);
 
+  // Auto-calculate expiry date when start date or duration changes
+  useEffect(() => {
+    if (orderData.startDate && orderData.duration) {
+      const calculatedExpiry = calculatePolicyEndDate(orderData.duration, orderData.startDate);
+      const expiryDateString = new Date(calculatedExpiry).toISOString().split('T')[0];
+      
+      // Only update if different to avoid infinite loop
+      if (expiryDateString !== orderData.expiryDate) {
+        setOrderData(prev => ({ ...prev, expiryDate: expiryDateString }));
+      }
+    }
+  }, [orderData.startDate, orderData.duration]);
+
   const updateOrderData = (field: keyof ManualOrderData, value: string | boolean | number) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
   };

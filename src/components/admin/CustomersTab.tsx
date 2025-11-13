@@ -35,6 +35,7 @@ import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 // Helper function to map plan types to Warranties 2000 warranty types
 function getWarrantyType(planType: string): string {
@@ -2472,64 +2473,97 @@ Please log in and change your password after first login.`;
 
                                   <div className="space-y-4 pt-4 border-t">
                                     <h3 className="text-lg font-semibold">Warranty & Payment Details</h3>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-4">
                                       <div>
-                                        <Label htmlFor="edit-plan-type">Plan Type</Label>
-                                        <Select
-                                          value={editingCustomer.plan_type}
-                                          onValueChange={(value) => setEditingCustomer({ ...editingCustomer, plan_type: value })}
+                                        <Label className="mb-2 block">Plan Type</Label>
+                                        <ToggleGroup 
+                                          type="single" 
+                                          value={editingCustomer.plan_type || 'Platinum'} 
+                                          onValueChange={(value) => value && setEditingCustomer({ ...editingCustomer, plan_type: value })}
+                                          className="justify-start flex-wrap gap-2"
                                         >
-                                          <SelectTrigger id="edit-plan-type">
-                                            <SelectValue placeholder="Select plan type" />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="Basic">Basic</SelectItem>
-                                            <SelectItem value="Gold">Gold</SelectItem>
-                                            <SelectItem value="Platinum">Platinum</SelectItem>
-                                            <SelectItem value="Electric">Electric</SelectItem>
-                                            <SelectItem value="PHEV">PHEV</SelectItem>
-                                            <SelectItem value="Motorbike">Motorbike</SelectItem>
-                                          </SelectContent>
-                                        </Select>
+                                          <ToggleGroupItem value="Basic" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Basic</ToggleGroupItem>
+                                          <ToggleGroupItem value="Gold" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Gold</ToggleGroupItem>
+                                          <ToggleGroupItem value="Platinum" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Platinum</ToggleGroupItem>
+                                          <ToggleGroupItem value="Electric" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Electric</ToggleGroupItem>
+                                          <ToggleGroupItem value="PHEV" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">PHEV</ToggleGroupItem>
+                                          <ToggleGroupItem value="Motorbike" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Motorbike</ToggleGroupItem>
+                                        </ToggleGroup>
                                       </div>
+
                                       <div>
-                                        <Label htmlFor="edit-payment-type">Payment Type / Duration</Label>
-                                        <Select
-                                          value={editingCustomer.payment_type || 'monthly'}
-                                          onValueChange={(value) => setEditingCustomer({ ...editingCustomer, payment_type: value })}
+                                        <Label className="mb-2 block">Duration</Label>
+                                        <ToggleGroup 
+                                          type="single" 
+                                          value={editingCustomer.payment_type || '12months'} 
+                                          onValueChange={(value) => {
+                                            if (value) {
+                                              setEditingCustomer({ ...editingCustomer, payment_type: value });
+                                              
+                                              // Auto-calculate expiry date
+                                              if (editingCustomer.customer_policies?.[0]?.policy_start_date) {
+                                                const startDate = new Date(editingCustomer.customer_policies[0].policy_start_date);
+                                                const months = getWarrantyDurationInMonths(value);
+                                                const expiry = new Date(startDate);
+                                                expiry.setMonth(expiry.getMonth() + months);
+                                                
+                                                const updatedPolicies = [...(editingCustomer.customer_policies || [])];
+                                                updatedPolicies[0] = {
+                                                  ...updatedPolicies[0],
+                                                  policy_end_date: expiry.toISOString()
+                                                };
+                                                setEditingCustomer({ ...editingCustomer, payment_type: value, customer_policies: updatedPolicies });
+                                              }
+                                            }
+                                          }}
+                                          className="justify-start flex-wrap gap-2"
                                         >
-                                          <SelectTrigger id="edit-payment-type">
-                                            <SelectValue placeholder="Select payment type" />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="monthly">Monthly (12 months)</SelectItem>
-                                            <SelectItem value="12months">12 Months</SelectItem>
-                                            <SelectItem value="24months">24 Months</SelectItem>
-                                            <SelectItem value="36months">36 Months</SelectItem>
-                                            <SelectItem value="yearly">Yearly</SelectItem>
-                                            <SelectItem value="twoYear">Two Year</SelectItem>
-                                            <SelectItem value="threeYear">Three Year</SelectItem>
-                                          </SelectContent>
-                                        </Select>
+                                          <ToggleGroupItem value="3months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">3 Months</ToggleGroupItem>
+                                          <ToggleGroupItem value="6months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">6 Months</ToggleGroupItem>
+                                          <ToggleGroupItem value="12months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">1 Year</ToggleGroupItem>
+                                          <ToggleGroupItem value="24months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">2 Years</ToggleGroupItem>
+                                          <ToggleGroupItem value="36months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">3 Years</ToggleGroupItem>
+                                          <ToggleGroupItem value="48months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">4 Years</ToggleGroupItem>
+                                          <ToggleGroupItem value="60months" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">5 Years</ToggleGroupItem>
+                                        </ToggleGroup>
                                       </div>
+
                                       <div>
-                                        <Label htmlFor="edit-voluntary-excess">Voluntary Excess (£)</Label>
-                                        <Input
-                                          id="edit-voluntary-excess"
-                                          type="number"
-                                          value={editingCustomer.voluntary_excess}
-                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, voluntary_excess: Number(e.target.value) })}
-                                        />
+                                        <Label className="mb-2 block">Voluntary Excess</Label>
+                                        <ToggleGroup 
+                                          type="single" 
+                                          value={editingCustomer.voluntary_excess?.toString() || '0'} 
+                                          onValueChange={(value) => value && setEditingCustomer({ ...editingCustomer, voluntary_excess: parseInt(value) })}
+                                          className="justify-start flex-wrap gap-2"
+                                        >
+                                          <ToggleGroupItem value="0" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£0</ToggleGroupItem>
+                                          <ToggleGroupItem value="50" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£50</ToggleGroupItem>
+                                          <ToggleGroupItem value="100" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£100</ToggleGroupItem>
+                                          <ToggleGroupItem value="150" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£150</ToggleGroupItem>
+                                          <ToggleGroupItem value="200" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£200</ToggleGroupItem>
+                                        </ToggleGroup>
                                       </div>
+
                                       <div>
-                                        <Label htmlFor="edit-claim-limit">Claim Limit (£)</Label>
-                                        <Input
-                                          id="edit-claim-limit"
-                                          type="number"
-                                          value={editingCustomer.claim_limit || ''}
-                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, claim_limit: Number(e.target.value) })}
-                                        />
+                                        <Label className="mb-2 block">Claim Limit</Label>
+                                        <ToggleGroup 
+                                          type="single" 
+                                          value={editingCustomer.claim_limit?.toString() || '1250'} 
+                                          onValueChange={(value) => value && setEditingCustomer({ ...editingCustomer, claim_limit: parseInt(value) })}
+                                          className="justify-start flex-wrap gap-2"
+                                        >
+                                          <ToggleGroupItem value="750" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£750</ToggleGroupItem>
+                                          <ToggleGroupItem value="1250" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£1,250</ToggleGroupItem>
+                                          <ToggleGroupItem value="2000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£2,000</ToggleGroupItem>
+                                          <ToggleGroupItem value="2500" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£2,500</ToggleGroupItem>
+                                          <ToggleGroupItem value="3000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£3,000</ToggleGroupItem>
+                                          <ToggleGroupItem value="4000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£4,000</ToggleGroupItem>
+                                          <ToggleGroupItem value="5000" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">£5,000</ToggleGroupItem>
+                                        </ToggleGroup>
                                       </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4 pt-4">
                                       <div>
                                         <Label htmlFor="edit-original-amount">Original Amount (£)</Label>
                                         <Input
@@ -2646,10 +2680,16 @@ Please log in and change your password after first login.`;
                                             : ''}
                                           onChange={(e) => {
                                             if (editingCustomer.customer_policies && editingCustomer.customer_policies[0]) {
+                                              const startDate = new Date(e.target.value);
+                                              const months = getWarrantyDurationInMonths(editingCustomer.payment_type || '12months');
+                                              const expiry = new Date(startDate);
+                                              expiry.setMonth(expiry.getMonth() + months);
+                                              
                                               const updatedPolicies = [...editingCustomer.customer_policies];
                                               updatedPolicies[0] = {
                                                 ...updatedPolicies[0],
-                                                policy_start_date: e.target.value
+                                                policy_start_date: e.target.value,
+                                                policy_end_date: expiry.toISOString()
                                               };
                                               setEditingCustomer({ ...editingCustomer, customer_policies: updatedPolicies });
                                             }
