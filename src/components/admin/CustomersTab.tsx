@@ -2896,23 +2896,25 @@ Please log in and change your password after first login.`;
                                         <Button 
                                           onClick={() => {
                                             if (editingCustomer.customer_policies[0]?.id) {
-                                              handleSendToWarranties2000(
-                                                editingCustomer.customer_policies[0].id,
-                                                editingCustomer.id,
-                                                true // Force resend even if already sent
-                                              );
+                                              if (confirm('⚠️ WARNING: Warranties 2000 should only receive ONE submission per warranty.\n\nOnly resend if you have updated critical information that must be corrected in their system.\n\nContinue with manual resend?')) {
+                                                handleSendToWarranties2000(
+                                                  editingCustomer.customer_policies[0].id,
+                                                  editingCustomer.id,
+                                                  true // Force resend - overrides duplicate check
+                                                );
+                                              }
                                             }
                                           }}
                                           variant="outline"
-                                          className="flex items-center gap-2"
+                                          className="flex items-center gap-2 border-orange-300 hover:bg-orange-50 hover:border-orange-400"
                                           disabled={emailSendingLoading[editingCustomer.id]?.warranties2000}
                                         >
                                           {emailSendingLoading[editingCustomer.id]?.warranties2000 ? (
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
                                           ) : (
-                                            <Send className="h-4 w-4" />
+                                            <Send className="h-4 w-4 text-orange-600" />
                                           )}
-                                          Resend to Warranties 2000
+                                          <span className="text-orange-600">Manual Resend to Warranties 2000</span>
                                         </Button>
                                         <EditOrderButton 
                                           customer={editingCustomer}
