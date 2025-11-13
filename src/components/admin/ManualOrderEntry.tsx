@@ -190,8 +190,11 @@ export const ManualOrderEntry = () => {
       const label = lines[i].toLowerCase();
       const value = lines[i + 1];
       
-      // Skip if value is a label itself or placeholder
-      if (value.startsWith('[') || value.toLowerCase().includes('enter') && value.includes(']')) {
+      // Skip if value is a label itself or placeholder or common placeholder values
+      if (value.startsWith('[') || 
+          (value.toLowerCase().includes('enter') && value.includes(']')) ||
+          value.toLowerCase() === 'optional' ||
+          value.toLowerCase() === '[optional]') {
         continue;
       }
       
@@ -407,9 +410,9 @@ export const ManualOrderEntry = () => {
       return;
     }
 
-    // Basic validation
-    if (!orderData.email || !orderData.firstName || !orderData.lastName) {
-      toast.error('Please fill in all required customer details');
+    // Basic validation - only check for email as minimum requirement
+    if (!orderData.email) {
+      toast.error('Please provide at least an email address');
       return;
     }
 
@@ -476,39 +479,41 @@ export const ManualOrderEntry = () => {
 
       console.log('📝 Generating warranty reference...');
       const warrantyReference = generateWarrantyReference();
-      const customerName = `${orderData.firstName} ${orderData.lastName}`.trim();
+      const customerName = `${orderData.firstName || ''} ${orderData.lastName || ''}`.trim() || 'Customer';
       console.log('✅ Warranty reference generated:', warrantyReference);
 
-      // Create customer record
-      const customerRecord = {
+      // Create customer record - only include non-empty fields
+      const customerRecord: any = {
         name: customerName,
         email: orderData.email.toLowerCase(),
-        phone: orderData.phone,
-        first_name: orderData.firstName,
-        last_name: orderData.lastName,
-        flat_number: orderData.flatNumber,
-        building_name: orderData.buildingName,
-        building_number: orderData.buildingNumber,
-        street: orderData.street,
-        town: orderData.town,
-        county: orderData.county,
-        postcode: orderData.postcode,
-        country: orderData.country,
         plan_type: orderData.planType,
         payment_type: orderData.paymentType,
         stripe_session_id: `manual_${Date.now()}`,
-        registration_plate: orderData.registrationPlate.toUpperCase(),
-        vehicle_make: orderData.vehicleMake,
-        vehicle_model: orderData.vehicleModel,
-        vehicle_year: orderData.vehicleYear,
-        vehicle_fuel_type: orderData.vehicleFuelType,
-        vehicle_transmission: orderData.vehicleTransmission,
-        mileage: orderData.mileage,
         status: 'Active',
         warranty_reference_number: warrantyReference,
         voluntary_excess: orderData.voluntaryExcess,
         claim_limit: orderData.claimLimit
       };
+
+      // Only add fields if they have actual values (not empty strings)
+      if (orderData.phone?.trim()) customerRecord.phone = orderData.phone;
+      if (orderData.firstName?.trim()) customerRecord.first_name = orderData.firstName;
+      if (orderData.lastName?.trim()) customerRecord.last_name = orderData.lastName;
+      if (orderData.flatNumber?.trim()) customerRecord.flat_number = orderData.flatNumber;
+      if (orderData.buildingName?.trim()) customerRecord.building_name = orderData.buildingName;
+      if (orderData.buildingNumber?.trim()) customerRecord.building_number = orderData.buildingNumber;
+      if (orderData.street?.trim()) customerRecord.street = orderData.street;
+      if (orderData.town?.trim()) customerRecord.town = orderData.town;
+      if (orderData.county?.trim()) customerRecord.county = orderData.county;
+      if (orderData.postcode?.trim()) customerRecord.postcode = orderData.postcode;
+      if (orderData.country?.trim()) customerRecord.country = orderData.country;
+      if (orderData.registrationPlate?.trim()) customerRecord.registration_plate = orderData.registrationPlate.toUpperCase();
+      if (orderData.vehicleMake?.trim()) customerRecord.vehicle_make = orderData.vehicleMake;
+      if (orderData.vehicleModel?.trim()) customerRecord.vehicle_model = orderData.vehicleModel;
+      if (orderData.vehicleYear?.trim()) customerRecord.vehicle_year = orderData.vehicleYear;
+      if (orderData.vehicleFuelType?.trim()) customerRecord.vehicle_fuel_type = orderData.vehicleFuelType;
+      if (orderData.vehicleTransmission?.trim()) customerRecord.vehicle_transmission = orderData.vehicleTransmission;
+      if (orderData.mileage?.trim()) customerRecord.mileage = orderData.mileage;
 
       // Check if customer exists by email
       const { data: existingCustomer } = await supabase
