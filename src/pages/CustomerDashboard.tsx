@@ -87,8 +87,12 @@ interface PolicyDocument {
 }
 
 interface AddressData {
+  flatNumber?: string;
+  buildingName?: string;
+  buildingNumber?: string;
   street: string;
   city: string;
+  county?: string;
   postcode: string;
   country: string;
   phone?: string;
@@ -109,8 +113,12 @@ const CustomerDashboard = () => {
   const [showSupportForm, setShowSupportForm] = useState(false);
   const [customerData, setCustomerData] = useState<any>(null);
   const [address, setAddress] = useState<AddressData>({
+    flatNumber: '',
+    buildingName: '',
+    buildingNumber: '',
     street: '',
     city: '',
+    county: '',
     postcode: '',
     country: 'United Kingdom',
     phone: '',
@@ -462,9 +470,9 @@ const CustomerDashboard = () => {
         console.log("Customer IDs to fetch:", customerIds);
         
         if (customerIds.length > 0) {
-          const { data: customersData } = await supabase
+        const { data: customersData } = await supabase
             .from('customers')
-            .select('id, vehicle_make, vehicle_model, registration_plate, mileage, phone, first_name, last_name, street, town, postcode, country, building_number, building_name, flat_number')
+            .select('id, vehicle_make, vehicle_model, registration_plate, mileage, phone, first_name, last_name, flat_number, building_name, building_number, street, town, county, postcode, country')
             .in('id', customerIds);
           
           console.log("Customers data:", customersData);
@@ -497,16 +505,12 @@ const CustomerDashboard = () => {
             phone: customerData.phone || '',
             firstName: customerData.first_name || '',
             lastName: customerData.last_name || '',
-            street: (() => {
-              const addressParts = [
-                customerData.flat_number,
-                customerData.building_name,
-                customerData.building_number,
-                customerData.street
-              ].filter(part => part && part.trim());
-              return addressParts.join(', ');
-            })(),
+            flatNumber: customerData.flat_number || '',
+            buildingName: customerData.building_name || '',
+            buildingNumber: customerData.building_number || '',
+            street: customerData.street || '',
             city: customerData.town || '',
+            county: (customerData as any).county || '',
             postcode: customerData.postcode || '',
             country: customerData.country || 'United Kingdom'
           }));
@@ -537,8 +541,12 @@ const CustomerDashboard = () => {
 
     try {
       const addressJson = {
+        flat_number: address.flatNumber,
+        building_name: address.buildingName,
+        building_number: address.buildingNumber,
         street: address.street,
         city: address.city,
+        county: address.county,
         postcode: address.postcode,
         country: address.country
       };
@@ -550,8 +558,12 @@ const CustomerDashboard = () => {
           first_name: address.firstName,
           last_name: address.lastName,
           phone: address.phone,
+          flat_number: address.flatNumber,
+          building_name: address.buildingName,
+          building_number: address.buildingNumber,
           street: address.street,
           town: address.city,
+          county: address.county,
           postcode: address.postcode,
           country: address.country
         })
@@ -1437,15 +1449,49 @@ const CustomerDashboard = () => {
                                 onChange={(e) => setAddress({...address, phone: e.target.value})}
                               />
                             </div>
-                             <div>
-                               <Label htmlFor="street">Address Line 1</Label>
-                               <Input
-                                 id="street"
-                                 placeholder="Flat/Building Number, Building Name, Street"
-                                 value={address.street}
-                                 onChange={(e) => setAddress({...address, street: e.target.value})}
-                               />
-                             </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="flatNumber">Flat Number</Label>
+                                <Input
+                                  id="flatNumber"
+                                  placeholder="e.g., Flat 2"
+                                  value={address.flatNumber}
+                                  onChange={(e) => setAddress({...address, flatNumber: e.target.value})}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="buildingName">Building Name</Label>
+                                <Input
+                                  id="buildingName"
+                                  placeholder="e.g., Oak Court"
+                                  value={address.buildingName}
+                                  onChange={(e) => setAddress({...address, buildingName: e.target.value})}
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="buildingNumber">Building Number</Label>
+                                <Input
+                                  id="buildingNumber"
+                                  placeholder="e.g., 5"
+                                  value={address.buildingNumber}
+                                  onChange={(e) => setAddress({...address, buildingNumber: e.target.value})}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="street">Street</Label>
+                                <Input
+                                  id="street"
+                                  placeholder="e.g., Jessica Grove"
+                                  value={address.street}
+                                  onChange={(e) => setAddress({...address, street: e.target.value})}
+                                />
+                              </div>
+                            </div>
+                            
                             <div className="grid grid-cols-2 gap-4">
                               <div>
                                 <Label htmlFor="city">City/Town</Label>
@@ -1456,11 +1502,31 @@ const CustomerDashboard = () => {
                                 />
                               </div>
                               <div>
+                                <Label htmlFor="county">County</Label>
+                                <Input
+                                  id="county"
+                                  placeholder="e.g., Staffordshire"
+                                  value={address.county}
+                                  onChange={(e) => setAddress({...address, county: e.target.value})}
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
                                 <Label htmlFor="postcode">Post Code</Label>
                                 <Input
                                   id="postcode"
                                   value={address.postcode}
                                   onChange={(e) => setAddress({...address, postcode: e.target.value})}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="country">Country</Label>
+                                <Input
+                                  id="country"
+                                  value={address.country}
+                                  onChange={(e) => setAddress({...address, country: e.target.value})}
                                 />
                               </div>
                             </div>
@@ -1503,27 +1569,69 @@ const CustomerDashboard = () => {
                                </p>
                              </div>
                              
-                             {/* Address Line 1 */}
-                             <div>
-                               <Label className="text-sm font-medium text-gray-500">Address Line 1</Label>
-                               <p className="font-semibold text-base">
-                                 {address.street || 'N/A'}
-                               </p>
-                             </div>
+                             {/* Flat Number */}
+                             {address.flatNumber && (
+                               <div>
+                                 <Label className="text-sm font-medium text-gray-500">Flat Number</Label>
+                                 <p className="font-semibold text-base">
+                                   {address.flatNumber}
+                                 </p>
+                               </div>
+                             )}
                              
-                             {/* Post Code */}
-                             <div>
-                               <Label className="text-sm font-medium text-gray-500">Post Code</Label>
-                               <p className="font-semibold text-base">
-                                 {address.postcode || 'N/A'}
-                               </p>
-                             </div>
+                             {/* Building Name */}
+                             {address.buildingName && (
+                               <div>
+                                 <Label className="text-sm font-medium text-gray-500">Building Name</Label>
+                                 <p className="font-semibold text-base">
+                                   {address.buildingName}
+                                 </p>
+                               </div>
+                             )}
+                             
+                             {/* Building Number */}
+                             {address.buildingNumber && (
+                               <div>
+                                 <Label className="text-sm font-medium text-gray-500">Building Number</Label>
+                                 <p className="font-semibold text-base">
+                                   {address.buildingNumber}
+                                 </p>
+                               </div>
+                             )}
+                             
+                             {/* Street */}
+                             {address.street && (
+                               <div>
+                                 <Label className="text-sm font-medium text-gray-500">Street</Label>
+                                 <p className="font-semibold text-base">
+                                   {address.street}
+                                 </p>
+                               </div>
+                             )}
                              
                              {/* City/Town */}
                              <div>
                                <Label className="text-sm font-medium text-gray-500">City/Town</Label>
                                <p className="font-semibold text-base">
                                  {address.city || 'N/A'}
+                               </p>
+                             </div>
+                             
+                             {/* County */}
+                             {address.county && (
+                               <div>
+                                 <Label className="text-sm font-medium text-gray-500">County</Label>
+                                 <p className="font-semibold text-base">
+                                   {address.county}
+                                 </p>
+                               </div>
+                             )}
+                             
+                             {/* Post Code */}
+                             <div>
+                               <Label className="text-sm font-medium text-gray-500">Post Code</Label>
+                               <p className="font-semibold text-base">
+                                 {address.postcode || 'N/A'}
                                </p>
                              </div>
                              
