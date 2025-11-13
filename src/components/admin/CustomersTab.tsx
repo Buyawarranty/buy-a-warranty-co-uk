@@ -1054,21 +1054,14 @@ export const CustomersTab = () => {
 
       if (customerError) throw customerError;
 
-      // Update customer_policies table to sync warranty details
-      if (editingCustomer.customer_policies && editingCustomer.customer_policies.length > 0) {
-        const policyId = editingCustomer.customer_policies[0].id;
-        
-        // Calculate new end date if payment_type changed
-        const startDate = editingCustomer.customer_policies[0].policy_start_date;
-        const newEndDate = calculateExpiryDate(startDate, editingCustomer.payment_type || 'monthly');
-        
-        const { error: policyError } = await supabase
-          .from('customer_policies')
-          .update({
+        // Update customer_policies table to sync warranty details
+        if (editingCustomer.customer_policies && editingCustomer.customer_policies.length > 0) {
+          const policyId = editingCustomer.customer_policies[0].id;
+          
+          const policyUpdateData: any = {
             voluntary_excess: editingCustomer.voluntary_excess,
             claim_limit: editingCustomer.claim_limit,
             payment_type: editingCustomer.payment_type,
-            policy_end_date: newEndDate.toISOString(),
             mot_fee: editingCustomer.mot_fee,
             tyre_cover: editingCustomer.tyre_cover,
             wear_tear: editingCustomer.wear_tear,
@@ -1080,18 +1073,30 @@ export const CustomersTab = () => {
             lost_key: editingCustomer.lost_key,
             consequential: editingCustomer.consequential,
             updated_at: new Date().toISOString()
-          })
-          .eq('id', policyId);
+          };
 
-        if (policyError) {
-          console.error('Error updating policy:', policyError);
-          toast.error('Customer updated but failed to sync policy details');
+          // Add policy dates if they exist
+          if (editingCustomer.customer_policies[0].policy_start_date) {
+            policyUpdateData.policy_start_date = new Date(editingCustomer.customer_policies[0].policy_start_date).toISOString();
+          }
+          if (editingCustomer.customer_policies[0].policy_end_date) {
+            policyUpdateData.policy_end_date = new Date(editingCustomer.customer_policies[0].policy_end_date).toISOString();
+          }
+          
+          const { error: policyError } = await supabase
+            .from('customer_policies')
+            .update(policyUpdateData)
+            .eq('id', policyId);
+
+          if (policyError) {
+            console.error('Error updating policy:', policyError);
+            toast.error('Customer updated but failed to sync policy details');
+          } else {
+            toast.success('Customer and warranty details updated successfully');
+          }
         } else {
-          toast.success('Customer and warranty details updated successfully');
+          toast.success('Customer updated successfully');
         }
-      } else {
-        toast.success('Customer updated successfully');
-      }
       
       fetchCustomers();
       setEditingCustomer(null);
@@ -2470,11 +2475,22 @@ Please log in and change your password after first login.`;
                                     <div className="grid grid-cols-2 gap-4">
                                       <div>
                                         <Label htmlFor="edit-plan-type">Plan Type</Label>
-                                        <Input
-                                          id="edit-plan-type"
+                                        <Select
                                           value={editingCustomer.plan_type}
-                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, plan_type: e.target.value })}
-                                        />
+                                          onValueChange={(value) => setEditingCustomer({ ...editingCustomer, plan_type: value })}
+                                        >
+                                          <SelectTrigger id="edit-plan-type">
+                                            <SelectValue placeholder="Select plan type" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="Basic">Basic</SelectItem>
+                                            <SelectItem value="Gold">Gold</SelectItem>
+                                            <SelectItem value="Platinum">Platinum</SelectItem>
+                                            <SelectItem value="Electric">Electric</SelectItem>
+                                            <SelectItem value="PHEV">PHEV</SelectItem>
+                                            <SelectItem value="Motorbike">Motorbike</SelectItem>
+                                          </SelectContent>
+                                        </Select>
                                       </div>
                                       <div>
                                         <Label htmlFor="edit-payment-type">Payment Type / Duration</Label>
@@ -2598,7 +2614,7 @@ Please log in and change your password after first login.`;
                                           </PopoverContent>
                                         </Popover>
                                       </div>
-                                      <div>
+                                       <div>
                                         <Label>Purchase Date</Label>
                                         <div className="w-full px-3 py-2 text-sm border rounded-md bg-gray-50">
                                           {editingCustomer.customer_policies?.[0]?.created_at ? (
@@ -2619,6 +2635,46 @@ Please log in and change your password after first login.`;
                                             <span className="text-gray-400">N/A</span>
                                           )}
                                         </div>
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-start-date">Warranty Start Date</Label>
+                                        <Input
+                                          id="edit-start-date"
+                                          type="date"
+                                          value={editingCustomer.customer_policies?.[0]?.policy_start_date 
+                                            ? new Date(editingCustomer.customer_policies[0].policy_start_date).toISOString().split('T')[0]
+                                            : ''}
+                                          onChange={(e) => {
+                                            if (editingCustomer.customer_policies && editingCustomer.customer_policies[0]) {
+                                              const updatedPolicies = [...editingCustomer.customer_policies];
+                                              updatedPolicies[0] = {
+                                                ...updatedPolicies[0],
+                                                policy_start_date: e.target.value
+                                              };
+                                              setEditingCustomer({ ...editingCustomer, customer_policies: updatedPolicies });
+                                            }
+                                          }}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-expiry-date">Warranty Expiry Date</Label>
+                                        <Input
+                                          id="edit-expiry-date"
+                                          type="date"
+                                          value={editingCustomer.customer_policies?.[0]?.policy_end_date 
+                                            ? new Date(editingCustomer.customer_policies[0].policy_end_date).toISOString().split('T')[0]
+                                            : ''}
+                                          onChange={(e) => {
+                                            if (editingCustomer.customer_policies && editingCustomer.customer_policies[0]) {
+                                              const updatedPolicies = [...editingCustomer.customer_policies];
+                                              updatedPolicies[0] = {
+                                                ...updatedPolicies[0],
+                                                policy_end_date: e.target.value
+                                              };
+                                              setEditingCustomer({ ...editingCustomer, customer_policies: updatedPolicies });
+                                            }
+                                          }}
+                                        />
                                       </div>
                                     </div>
                                   </div>

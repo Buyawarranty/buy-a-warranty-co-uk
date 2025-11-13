@@ -41,6 +41,8 @@ interface ManualOrderData {
   planType: string;
   paymentType: string;
   duration: string;
+  startDate: string;
+  expiryDate: string;
   voluntaryExcess: number;
   claimLimit: number;
   totalAmount: string;
@@ -83,9 +85,11 @@ const initialOrderData: ManualOrderData = {
   vehicleFuelType: '',
   vehicleTransmission: '',
   mileage: '',
-  planType: 'platinum',
+  planType: 'Platinum',
   paymentType: 'bumper',
   duration: '12months',
+  startDate: new Date().toISOString().split('T')[0],
+  expiryDate: '',
   voluntaryExcess: 0,
   claimLimit: 1250,
   totalAmount: '',
@@ -203,6 +207,19 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
         else duration = '60months';
       }
       
+      const startDate = policyToEdit.policy_start_date 
+        ? new Date(policyToEdit.policy_start_date).toISOString().split('T')[0]
+        : new Date().toISOString().split('T')[0];
+      
+      const expiryDate = policyToEdit.policy_end_date
+        ? new Date(policyToEdit.policy_end_date).toISOString().split('T')[0]
+        : '';
+      
+      // Capitalize plan type
+      const capitalizedPlanType = policyToEdit.plan_type 
+        ? policyToEdit.plan_type.charAt(0).toUpperCase() + policyToEdit.plan_type.slice(1).toLowerCase()
+        : 'Platinum';
+      
       setOrderData({
         firstName: customerToEdit.first_name || '',
         lastName: customerToEdit.last_name || '',
@@ -223,9 +240,11 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
         vehicleFuelType: customerToEdit.vehicle_fuel_type || '',
         vehicleTransmission: customerToEdit.vehicle_transmission || '',
         mileage: customerToEdit.mileage || '',
-        planType: policyToEdit.plan_type || 'platinum',
+        planType: capitalizedPlanType,
         paymentType: policyToEdit.payment_type || 'bumper',
         duration: duration,
+        startDate: startDate,
+        expiryDate: expiryDate,
         voluntaryExcess: policyToEdit.voluntary_excess || 0,
         claimLimit: policyToEdit.claim_limit || 1250,
         totalAmount: policyToEdit.payment_amount?.toString() || '',
@@ -437,34 +456,34 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
     return `MAN-${dateCode}-${randomSerial}`;
   };
 
-  const calculatePolicyEndDate = (duration: string): string => {
-    const now = new Date();
+  const calculatePolicyEndDate = (duration: string, startDate?: string): string => {
+    const start = startDate ? new Date(startDate) : new Date();
     switch (duration) {
       case '3months':
-        now.setMonth(now.getMonth() + 3);
+        start.setMonth(start.getMonth() + 3);
         break;
       case '6months':
-        now.setMonth(now.getMonth() + 6);
+        start.setMonth(start.getMonth() + 6);
         break;
       case '12months':
-        now.setFullYear(now.getFullYear() + 1);
+        start.setFullYear(start.getFullYear() + 1);
         break;
       case '24months':
-        now.setFullYear(now.getFullYear() + 2);
+        start.setFullYear(start.getFullYear() + 2);
         break;
       case '36months':
-        now.setFullYear(now.getFullYear() + 3);
+        start.setFullYear(start.getFullYear() + 3);
         break;
       case '48months':
-        now.setFullYear(now.getFullYear() + 4);
+        start.setFullYear(start.getFullYear() + 4);
         break;
       case '60months':
-        now.setFullYear(now.getFullYear() + 5);
+        start.setFullYear(start.getFullYear() + 5);
         break;
       default:
-        now.setFullYear(now.getFullYear() + 1);
+        start.setFullYear(start.getFullYear() + 1);
     }
-    return now.toISOString();
+    return start.toISOString();
   };
 
   const handleSubmit = async () => {
@@ -645,6 +664,14 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
 
       if (!customerData) throw new Error('Customer update/creation failed');
 
+      // Calculate end date if expiry date not manually set
+      let endDate;
+      if (orderData.expiryDate) {
+        endDate = new Date(orderData.expiryDate).toISOString();
+      } else {
+        endDate = calculatePolicyEndDate(orderData.duration, orderData.startDate);
+      }
+      
       // Prepare policy record
       const policyRecord = {
         customer_id: customerData.id,
@@ -652,8 +679,8 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
         plan_type: orderData.planType.toLowerCase(),
         payment_type: orderData.paymentType,
         policy_number: warrantyReference,
-        policy_start_date: policyToEdit?.policy_start_date || new Date().toISOString(),
-        policy_end_date: calculatePolicyEndDate(orderData.duration),
+        policy_start_date: new Date(orderData.startDate).toISOString(),
+        policy_end_date: endDate,
         status: 'active',
         email_sent_status: policyToEdit?.email_sent_status || 'pending',
         customer_full_name: customerName,
@@ -1158,12 +1185,12 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
                   onValueChange={(value) => value && updateOrderData('planType', value)}
                   className="justify-start flex-wrap gap-2"
                 >
-                  <ToggleGroupItem value="basic" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Basic</ToggleGroupItem>
-                  <ToggleGroupItem value="gold" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Gold</ToggleGroupItem>
-                  <ToggleGroupItem value="platinum" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Platinum</ToggleGroupItem>
-                  <ToggleGroupItem value="electric" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Electric</ToggleGroupItem>
-                  <ToggleGroupItem value="phev" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">PHEV</ToggleGroupItem>
-                  <ToggleGroupItem value="motorbike" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Motorbike</ToggleGroupItem>
+                  <ToggleGroupItem value="Basic" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Basic</ToggleGroupItem>
+                  <ToggleGroupItem value="Gold" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Gold</ToggleGroupItem>
+                  <ToggleGroupItem value="Platinum" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Platinum</ToggleGroupItem>
+                  <ToggleGroupItem value="Electric" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Electric</ToggleGroupItem>
+                  <ToggleGroupItem value="PHEV" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">PHEV</ToggleGroupItem>
+                  <ToggleGroupItem value="Motorbike" className="px-4 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">Motorbike</ToggleGroupItem>
                 </ToggleGroup>
               </div>
 
@@ -1243,6 +1270,27 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
                   value={orderData.totalAmount}
                   onChange={(e) => updateOrderData('totalAmount', e.target.value)}
                   placeholder="827.00"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="startDate">Warranty Start Date</Label>
+                <Input
+                  id="startDate"
+                  type="date"
+                  value={orderData.startDate}
+                  onChange={(e) => updateOrderData('startDate', e.target.value)}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="expiryDate">Warranty Expiry Date</Label>
+                <Input
+                  id="expiryDate"
+                  type="date"
+                  value={orderData.expiryDate}
+                  onChange={(e) => updateOrderData('expiryDate', e.target.value)}
+                  placeholder="Leave blank to auto-calculate from duration"
                 />
               </div>
             </div>
