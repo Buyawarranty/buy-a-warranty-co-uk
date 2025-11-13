@@ -282,11 +282,9 @@ const CustomerDashboard = () => {
           description: "You have been signed in successfully.",
         });
         
-        // Force a policies fetch after a brief delay to ensure auth state is updated
-        setTimeout(() => {
-          console.log("Forcing policies fetch after login...");
-          fetchPolicies();
-        }, 1000);
+        // Immediately fetch policies after successful login
+        console.log("Fetching policies immediately after login...");
+        await fetchPolicies();
       } else {
         console.error("No user or session in response");
         toast({
