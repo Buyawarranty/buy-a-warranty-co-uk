@@ -102,11 +102,12 @@ export const ReturnDiscountBanner: React.FC<ReturnDiscountBannerProps> = ({
   };
 
   const handleGetDiscount = () => {
+    // Store code in localStorage for auto-apply if available
     if (discountCode) {
-      // Store code in localStorage for auto-apply
       localStorage.setItem('autoApplyDiscountCode', discountCode);
-      navigate('/');
     }
+    // Always navigate to homepage to create new order
+    navigate('/');
   };
 
   if (!isEligible) {
