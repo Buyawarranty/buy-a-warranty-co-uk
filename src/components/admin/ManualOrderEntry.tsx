@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, User, Car, CreditCard, FileText, MapPin, Search, Sparkles } from 'lucide-react';
+import { Plus, User, Car, CreditCard, FileText, MapPin, Search, Sparkles, Edit } from 'lucide-react';
 
 interface ManualOrderData {
   // Customer details
@@ -169,13 +169,64 @@ No
 Additional Notes
 [Any additional notes]`;
 
-export const ManualOrderEntry = () => {
+interface ManualOrderEntryProps {
+  customerToEdit?: any;
+  policyToEdit?: any;
+  onClose?: () => void;
+}
+
+export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: ManualOrderEntryProps = {}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [orderData, setOrderData] = useState<ManualOrderData>(initialOrderData);
   const [isLoading, setIsLoading] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [templateText, setTemplateText] = useState(defaultTemplate);
   const isSubmittingRef = React.useRef(false);
+  const isEditMode = !!customerToEdit;
+
+  // Pre-populate data when editing
+  useEffect(() => {
+    if (customerToEdit && policyToEdit) {
+      setOrderData({
+        firstName: customerToEdit.first_name || '',
+        lastName: customerToEdit.last_name || '',
+        email: customerToEdit.email || '',
+        phone: customerToEdit.phone || '',
+        flatNumber: customerToEdit.flat_number || '',
+        buildingName: customerToEdit.building_name || '',
+        buildingNumber: customerToEdit.building_number || '',
+        street: customerToEdit.street || '',
+        town: customerToEdit.town || '',
+        county: customerToEdit.county || '',
+        postcode: customerToEdit.postcode || '',
+        country: customerToEdit.country || 'United Kingdom',
+        registrationPlate: customerToEdit.registration_plate || '',
+        vehicleMake: customerToEdit.vehicle_make || '',
+        vehicleModel: customerToEdit.vehicle_model || '',
+        vehicleYear: customerToEdit.vehicle_year || '',
+        vehicleFuelType: customerToEdit.vehicle_fuel_type || '',
+        vehicleTransmission: customerToEdit.vehicle_transmission || '',
+        mileage: customerToEdit.mileage || '',
+        planType: policyToEdit.plan_type || 'platinum',
+        paymentType: policyToEdit.payment_type || 'bumper',
+        duration: '12months',
+        voluntaryExcess: policyToEdit.voluntary_excess || 0,
+        claimLimit: policyToEdit.claim_limit || 1250,
+        totalAmount: policyToEdit.payment_amount?.toString() || '',
+        wearTearCover: policyToEdit.wear_tear || false,
+        vehicleRecovery: policyToEdit.breakdown_recovery || true,
+        tyreCover: policyToEdit.tyre_cover || false,
+        europeCover: policyToEdit.europe_cover || false,
+        vehicleRental: policyToEdit.vehicle_rental || false,
+        motFeeCover: policyToEdit.mot_fee || true,
+        transferCover: policyToEdit.transfer_cover || false,
+        notes: '',
+        sendToWarranties2000: false,
+        dashboardEmail: customerToEdit.email || '',
+        dashboardPassword: ''
+      });
+    }
+  }, [customerToEdit, policyToEdit]);
 
   const updateOrderData = (field: keyof ManualOrderData, value: string | boolean | number) => {
     setOrderData(prev => ({ ...prev, [field]: value }));
@@ -401,7 +452,12 @@ export const ManualOrderEntry = () => {
   };
 
   const handleSubmit = async () => {
-    console.log('🚀 Manual order submission started', { email: orderData.email, isLoading, isSubmitting: isSubmittingRef.current });
+    console.log('🚀 Manual order submission started', { 
+      email: orderData.email, 
+      isLoading, 
+      isSubmitting: isSubmittingRef.current,
+      isEditMode 
+    });
     
     // Prevent double submissions
     if (isSubmittingRef.current || isLoading) {
@@ -421,39 +477,42 @@ export const ManualOrderEntry = () => {
     console.log('✅ Validation passed, proceeding with submission');
     
     try {
-      // Check for recent duplicate submissions by email and registration
-      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-      console.log('🔍 Checking for duplicate policies...');
-      
-      const { data: recentPolicy, error: checkError } = await supabase
-        .from('customer_policies')
-        .select('id, policy_number, email, created_at')
-        .eq('email', orderData.email.toLowerCase())
-        .gte('created_at', fiveMinutesAgo)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      // Skip duplicate checking if we're in edit mode
+      if (!isEditMode) {
+        // Check for recent duplicate submissions by email and registration
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+        console.log('🔍 Checking for duplicate policies...');
+        
+        const { data: recentPolicy, error: checkError } = await supabase
+          .from('customer_policies')
+          .select('id, policy_number, email, created_at')
+          .eq('email', orderData.email.toLowerCase())
+          .gte('created_at', fiveMinutesAgo)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
 
-      if (checkError && checkError.code !== 'PGRST116') {
-        console.error('❌ Error checking for duplicates:', checkError);
-        throw checkError;
+        if (checkError && checkError.code !== 'PGRST116') {
+          console.error('❌ Error checking for duplicates:', checkError);
+          throw checkError;
+        }
+
+        if (recentPolicy) {
+          console.log('⚠️ Recent policy found, blocking submission', recentPolicy);
+          toast.error(
+            `A policy for this email was created less than 5 minutes ago (${recentPolicy.policy_number}). Please verify before creating another.`,
+            { duration: 8000 }
+          );
+          isSubmittingRef.current = false;
+          setIsLoading(false);
+          return;
+        }
+
+        console.log('✅ No recent duplicates found');
       }
 
-      if (recentPolicy) {
-        console.log('⚠️ Recent policy found, blocking submission', recentPolicy);
-        toast.error(
-          `A policy for this email was created less than 5 minutes ago (${recentPolicy.policy_number}). Please verify before creating another.`,
-          { duration: 8000 }
-        );
-        isSubmittingRef.current = false;
-        setIsLoading(false);
-        return;
-      }
-
-      console.log('✅ No recent duplicates found');
-
-      // Check for duplicate registration plate in active policies
-      if (orderData.registrationPlate) {
+      // Check for duplicate registration plate in active policies (skip if editing own record)
+      if (orderData.registrationPlate && !isEditMode) {
         console.log('🔍 Checking for duplicate registration plates...');
         const { data: existingReg } = await supabase
           .from('customers')
@@ -477,10 +536,11 @@ export const ManualOrderEntry = () => {
         }
       }
 
-      console.log('📝 Generating warranty reference...');
-      const warrantyReference = generateWarrantyReference();
+      const warrantyReference = isEditMode && customerToEdit?.warranty_reference_number 
+        ? customerToEdit.warranty_reference_number 
+        : generateWarrantyReference();
       const customerName = `${orderData.firstName || ''} ${orderData.lastName || ''}`.trim() || 'Customer';
-      console.log('✅ Warranty reference generated:', warrantyReference);
+      console.log(isEditMode ? '📝 Updating existing order...' : '📝 Creating new order...', warrantyReference);
 
       // Create customer record - only include non-empty fields
       const customerRecord: any = {
@@ -677,11 +737,16 @@ export const ManualOrderEntry = () => {
         toast.success(`Manual warranty order created successfully! Reference: ${warrantyReference}`);
       }
 
-      console.log('🎉 Manual order created successfully!');
+      console.log(isEditMode ? '🎉 Manual order updated successfully!' : '🎉 Manual order created successfully!');
       
       // Reset form and close dialog
       setOrderData(initialOrderData);
       setIsOpen(false);
+      
+      // Call onClose if provided (for edit mode from parent)
+      if (onClose) {
+        onClose();
+      }
       
       // Wait a moment before refreshing to ensure database updates are complete
       setTimeout(() => {
@@ -699,18 +764,29 @@ export const ManualOrderEntry = () => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Add Manual Order
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isEditMode ? true : isOpen} onOpenChange={isEditMode ? undefined : setIsOpen}>
+      {!isEditMode && (
+        <DialogTrigger asChild>
+          <Button className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Add Manual Order
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Manual Warranty Order Entry
+            {isEditMode ? (
+              <>
+                <Edit className="h-5 w-5" />
+                Edit Warranty Order
+              </>
+            ) : (
+              <>
+                <Plus className="h-5 w-5" />
+                Manual Warranty Order Entry
+              </>
+            )}
           </DialogTitle>
         </DialogHeader>
 
@@ -1317,7 +1393,9 @@ export const ManualOrderEntry = () => {
           {/* Action Button */}
           <div className="flex justify-end gap-2 pt-4">
             <Button onClick={handleSubmit} disabled={isLoading} size="lg">
-              {isLoading ? 'Creating Order...' : 'Create Order'}
+              {isLoading 
+                ? (isEditMode ? 'Updating Order...' : 'Creating Order...') 
+                : (isEditMode ? 'Update Order' : 'Create Order')}
             </Button>
           </div>
 

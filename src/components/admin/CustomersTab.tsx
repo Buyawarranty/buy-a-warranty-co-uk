@@ -20,6 +20,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
+import { EditOrderButton } from './EditOrderButton';
 import { MOTHistorySection } from './MOTHistorySection';
 import { W2000DataPreview } from './W2000DataPreview';
 import { SendNotificationDialog } from './SendNotificationDialog';
@@ -2504,6 +2505,14 @@ Please log in and change your password after first login.`;
                                 <TabsContent value="warranty">
                                   {editingCustomer.customer_policies && editingCustomer.customer_policies.length > 0 ? (
                                     <div className="space-y-4">
+                                      {/* Edit Order Button at the top */}
+                                      <div className="flex justify-end">
+                                        <EditOrderButton 
+                                          customer={editingCustomer}
+                                          policy={editingCustomer.customer_policies[0]}
+                                        />
+                                      </div>
+                                      
                                       {editingCustomer.customer_policies.map((policy: any, index: number) => (
                                         <Card key={index} className="p-4">
                                           <div className="grid grid-cols-2 gap-4">
