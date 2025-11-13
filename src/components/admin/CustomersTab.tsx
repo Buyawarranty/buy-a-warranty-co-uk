@@ -1056,6 +1056,36 @@ export const CustomersTab = () => {
 
       if (customerError) throw customerError;
 
+      let authAccountCreated = false;
+      // Create customer dashboard account if credentials provided
+      if (editingCustomer.email && editingCustomer.temporary_password) {
+        try {
+          const { data: authData, error: authError } = await supabase.functions.invoke(
+            'create-customer-account',
+            {
+              body: {
+                email: editingCustomer.email,
+                password: editingCustomer.temporary_password,
+                firstName: editingCustomer.first_name || editingCustomer.name?.split(' ')[0] || '',
+                lastName: editingCustomer.last_name || editingCustomer.name?.split(' ').slice(1).join(' ') || '',
+                customerId: editingCustomer.id
+              }
+            }
+          );
+
+          if (authError) {
+            console.error('Error creating auth account:', authError);
+            toast.error(`Customer updated but failed to create auth account: ${authError.message}`);
+          } else {
+            console.log('Auth account created/updated successfully for:', editingCustomer.email);
+            authAccountCreated = true;
+          }
+        } catch (authErr: any) {
+          console.error('Exception creating auth account:', authErr);
+          toast.warning('Customer updated but auth account creation had issues. Check admin notes.');
+        }
+      }
+
         // Update customer_policies table to sync warranty details
         if (editingCustomer.customer_policies && editingCustomer.customer_policies.length > 0) {
           const policyId = editingCustomer.customer_policies[0].id;
@@ -1093,11 +1123,17 @@ export const CustomersTab = () => {
           if (policyError) {
             console.error('Error updating policy:', policyError);
             toast.error('Customer updated but failed to sync policy details');
+          } else if (authAccountCreated) {
+            toast.success(`Customer, warranty, and auth account updated for ${editingCustomer.email}`);
           } else {
             toast.success('Customer and warranty details updated successfully');
           }
         } else {
-          toast.success('Customer updated successfully');
+          if (authAccountCreated) {
+            toast.success(`Customer updated and auth account created for ${editingCustomer.email}`);
+          } else {
+            toast.success('Customer updated successfully');
+          }
         }
       
       fetchCustomers();
