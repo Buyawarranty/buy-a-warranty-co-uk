@@ -131,33 +131,17 @@ const generateQuoteEmail = (data: QuoteEmailRequest, baseUrl: string): string =>
           </table>
         </div>
         
-        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 25px 0; border-radius: 4px;">
-          <p style="font-size: 18px; font-weight: bold; color: #856404; margin: 0;">
-            ⚠️ Breakdowns Happen. Don't Risk It!
-          </p>
-        </div>
-        
         <p style="font-size: 16px; margin-bottom: 20px;">
-          For full details on what's covered, please visit:<br>
+          For complete coverage details, please visit:<br>
           <a href="https://buyawarranty.co.uk/what-is-covered/" style="color: #ea580c; text-decoration: underline;">https://buyawarranty.co.uk/what-is-covered/</a>
         </p>
         
         <p style="font-size: 16px; margin-bottom: 20px;">
-          If you have any questions or would like to proceed, please call <strong>Mike Swan on 📞 0330 229 5040</strong> or follow the link sent separately from our payment partner, Bumper.
+          If you have any questions about this quote or would like to proceed, please contact Mike Swan on 📞 0330 229 5040 or follow the link sent separately from our payment partner, Bumper.
         </p>
-        
-        <p style="font-size: 16px; margin-bottom: 20px;">
-          Your peace of mind is our priority.
-        </p>
-        
-        <div style="background: #22c55e; color: white; text-align: center; padding: 20px; margin: 25px 0; border-radius: 8px;">
-          <p style="font-size: 20px; font-weight: bold; margin: 0;">
-            🔧 If It Breaks, We'll Fix It! 🔧
-          </p>
-        </div>
         
         <p style="font-size: 16px; margin-top: 30px;">
-          Thank you for choosing BuyAWarranty.co.uk.
+          Thank you for your interest in BuyAWarranty.co.uk.
         </p>
       </div>
       

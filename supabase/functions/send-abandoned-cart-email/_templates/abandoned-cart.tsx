@@ -38,35 +38,35 @@ export const AbandonedCartEmail = ({
     switch(triggerType) {
       case 'pricing_page_view_24h':
         return {
-          subject: "Still thinking it over? Here's 10% off to help decide",
-          heading: "Still thinking it over? Here's 10% off to help decide",
-          intro: `Re: Your ${vehicleMake} warranty quote is saved – complete it in seconds`,
-          body: "We understand warranties can feel complicated. But with Buy A Warranty, it's simple:",
+          subject: `${vehicleReg} - Your warranty quote from Buy A Warranty`,
+          heading: `Your Warranty Quote for ${vehicleMake} ${vehicleModel}`,
+          intro: `Hi ${firstName}, you requested a warranty quote for your ${vehicleMake} ${vehicleModel} (${vehicleReg}).`,
+          body: "We've saved your quote details. You can review and complete your application whenever you're ready.",
           promoCode: "SAVE10NOW",
-          promoText: "Use promo code SAVE10NOW to get 10% off your warranty quote. Just complete your purchase within the next 24 hours.",
-          ctaText: "Return to Your Cart"
+          promoText: "Special offer: Use code SAVE10NOW for 10% off (valid for 24 hours).",
+          ctaText: "View My Quote"
         };
       
       case 'pricing_page_view_72h':
         return {
-          subject: "Last chance to secure your quote – 10% off ends soon",
-          heading: "Last chance to secure your quote – 10% off ends soon",
-          intro: `Re: Protect Your Vehicle Registration: ${vehicleReg}`,
-          body: "Your warranty quote is about to expire. Don't miss out on affordable cover and peace of mind.",
+          subject: `${vehicleReg} - Warranty quote saved for ${vehicleMake} ${vehicleModel}`,
+          heading: `Your Saved Warranty Quote`,
+          intro: `Hi ${firstName}, this is a reminder about your warranty quote for ${vehicleReg}.`,
+          body: "Your quote information is still available to review.",
           promoCode: "SAVE10NOW",
-          promoText: "Use promo code SAVE10NOW to get 10% off before it's gone.",
-          ctaText: "Return to Your Cart"
+          promoText: "Limited time: Use code SAVE10NOW for 10% off your purchase.",
+          ctaText: "View My Quote"
         };
       
       default:
         return {
-          subject: "Your warranty quote is still here – don't risk costly repairs",
-          heading: "Get 3 Extra Months Cover FREE - Limited Time!",
-          intro: `You left your warranty quote behind for your ${vehicleMake} ${vehicleModel} (Registration: ${vehicleReg}). It's still in your cart, ready when you are.`,
-          body: "We've saved everything so you can jump back in anytime.",
+          subject: `${vehicleReg} - Your warranty quote for ${vehicleMake} ${vehicleModel}`,
+          heading: `Your Warranty Quote`,
+          intro: `Hi ${firstName}, you recently requested a warranty quote for your ${vehicleMake} ${vehicleModel} (Registration: ${vehicleReg}).`,
+          body: "We've saved your quote information and it's ready to review.",
           promoCode: null,
-          promoText: "Don't risk costly repairs. Get covered today.",
-          ctaText: "Return to Your Cart"
+          promoText: "Your quote includes 3 months additional cover at no extra cost.",
+          ctaText: "View My Quote"
         };
     }
   };
@@ -106,27 +106,23 @@ export const AbandonedCartEmail = ({
             )}
 
             <Section style={benefitsSection}>
-              <Text style={benefitsHeading}>Why choose Buy A Warranty?</Text>
-              <Text style={benefitItem}>✓ Flexible cover options</Text>
-              <Text style={benefitItem}>✓ UK-based support team</Text>
-              <Text style={benefitItem}>✓ Fast, easy claims</Text>
-              <Text style={benefitItem}>✓ Cancel within 14 days for a full refund</Text>
-              <Text style={benefitItem}>✓ Get covered in 60 seconds!</Text>
+              <Text style={benefitsHeading}>Your Quote Includes:</Text>
+              <Text style={benefitItem}>• Comprehensive vehicle warranty coverage</Text>
+              <Text style={benefitItem}>• UK-based customer support</Text>
+              <Text style={benefitItem}>• Straightforward claims process</Text>
+              <Text style={benefitItem}>• 14-day cooling-off period</Text>
             </Section>
 
             <Section style={ctaSection}>
               <Link href={continueUrl} style={button}>
-                👉 {content.ctaText}
+                {content.ctaText}
               </Link>
             </Section>
-
-            <Text style={tagline}>Warranty that works when your vehicle doesn't!</Text>
 
             <Hr style={hr} />
 
             <Text style={footer}>
-              <strong>Still have questions?</strong><br />
-              Just reply to this email or get in touch.
+              If you have any questions about your quote, please don't hesitate to contact us.
             </Text>
 
             <Text style={footer}>
