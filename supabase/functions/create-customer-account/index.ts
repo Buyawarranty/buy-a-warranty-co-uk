@@ -33,23 +33,57 @@ serve(async (req) => {
 
     console.log('Creating customer account for:', email);
 
-    // Create user account with admin privileges
-    const { data: authData, error: signUpError } = await supabase.auth.admin.createUser({
-      email: email,
-      password: password,
-      email_confirm: true, // Auto-confirm email
-      user_metadata: {
-        first_name: firstName || '',
-        last_name: lastName || ''
+    // First, try to find if user already exists
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const existingUser = existingUsers?.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+
+    let userId: string;
+    
+    if (existingUser) {
+      console.log('User already exists, updating password for:', email);
+      
+      // Update existing user's password
+      const { data: updateData, error: updateError } = await supabase.auth.admin.updateUserById(
+        existingUser.id,
+        {
+          password: password,
+          email_confirm: true,
+          user_metadata: {
+            first_name: firstName || existingUser.user_metadata?.first_name || '',
+            last_name: lastName || existingUser.user_metadata?.last_name || ''
+          }
+        }
+      );
+
+      if (updateError) {
+        console.error('Error updating user:', updateError);
+        throw updateError;
       }
-    });
 
-    if (signUpError) {
-      console.error('Error creating user:', signUpError);
-      throw signUpError;
+      userId = existingUser.id;
+      console.log('User password updated successfully:', userId);
+    } else {
+      console.log('Creating new user:', email);
+      
+      // Create new user account
+      const { data: authData, error: signUpError } = await supabase.auth.admin.createUser({
+        email: email,
+        password: password,
+        email_confirm: true,
+        user_metadata: {
+          first_name: firstName || '',
+          last_name: lastName || ''
+        }
+      });
+
+      if (signUpError) {
+        console.error('Error creating user:', signUpError);
+        throw signUpError;
+      }
+
+      userId = authData.user.id;
+      console.log('User created successfully:', userId);
     }
-
-    console.log('User created successfully:', authData.user.id);
 
     // Log credentials in admin note if customerId provided
     if (customerId) {
@@ -57,7 +91,7 @@ serve(async (req) => {
         .from('admin_notes')
         .insert({
           customer_id: customerId,
-          note: `Dashboard credentials created:\nEmail: ${email}\nPassword: ${password}\nUser ID: ${authData.user.id}`
+          note: `Dashboard credentials ${existingUser ? 'updated' : 'created'}:\nEmail: ${email}\nPassword: ${password}\nUser ID: ${userId}`
         });
 
       if (noteError) {
@@ -68,8 +102,9 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true,
-        userId: authData.user.id,
-        email: email
+        userId: userId,
+        email: email,
+        action: existingUser ? 'updated' : 'created'
       }),
       { 
         status: 200, 
