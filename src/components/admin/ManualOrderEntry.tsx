@@ -187,6 +187,22 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
   // Pre-populate data when editing
   useEffect(() => {
     if (customerToEdit && policyToEdit) {
+      // Calculate duration from policy dates
+      let duration = '12months';
+      if (policyToEdit.policy_start_date && policyToEdit.policy_end_date) {
+        const start = new Date(policyToEdit.policy_start_date);
+        const end = new Date(policyToEdit.policy_end_date);
+        const monthsDiff = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 30));
+        
+        if (monthsDiff <= 3) duration = '3months';
+        else if (monthsDiff <= 6) duration = '6months';
+        else if (monthsDiff <= 12) duration = '12months';
+        else if (monthsDiff <= 24) duration = '24months';
+        else if (monthsDiff <= 36) duration = '36months';
+        else if (monthsDiff <= 48) duration = '48months';
+        else duration = '60months';
+      }
+      
       setOrderData({
         firstName: customerToEdit.first_name || '',
         lastName: customerToEdit.last_name || '',
@@ -209,7 +225,7 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
         mileage: customerToEdit.mileage || '',
         planType: policyToEdit.plan_type || 'platinum',
         paymentType: policyToEdit.payment_type || 'bumper',
-        duration: '12months',
+        duration: duration,
         voluntaryExcess: policyToEdit.voluntary_excess || 0,
         claimLimit: policyToEdit.claim_limit || 1250,
         totalAmount: policyToEdit.payment_amount?.toString() || '',
@@ -576,54 +592,70 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
       if (orderData.vehicleTransmission && String(orderData.vehicleTransmission).trim()) customerRecord.vehicle_transmission = String(orderData.vehicleTransmission).trim();
       if (orderData.mileage && String(orderData.mileage).trim()) customerRecord.mileage = String(orderData.mileage).trim();
 
-      // Check if customer exists by email
-      const { data: existingCustomer } = await supabase
-        .from('customers')
-        .select('id')
-        .ilike('email', orderData.email)
-        .maybeSingle();
-
       let customerData;
       
-      if (existingCustomer) {
-        // Update existing customer - explicitly set updated_at to refresh timestamp
+      if (isEditMode && customerToEdit) {
+        // In edit mode, update the existing customer directly by ID
         const { data, error: updateError } = await supabase
           .from('customers')
           .update({
             ...customerRecord,
             updated_at: new Date().toISOString()
           })
-          .eq('id', existingCustomer.id)
+          .eq('id', customerToEdit.id)
           .select()
           .single();
         
         if (updateError) throw updateError;
         customerData = data;
       } else {
-        // Insert new customer
-        const { data, error: insertError } = await supabase
+        // In create mode, check if customer exists by email
+        const { data: existingCustomer } = await supabase
           .from('customers')
-          .insert(customerRecord)
-          .select()
-          .single();
-        
-        if (insertError) throw insertError;
-        customerData = data;
+          .select('id')
+          .ilike('email', orderData.email)
+          .maybeSingle();
+
+        if (existingCustomer) {
+          // Update existing customer
+          const { data, error: updateError } = await supabase
+            .from('customers')
+            .update({
+              ...customerRecord,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', existingCustomer.id)
+            .select()
+            .single();
+          
+          if (updateError) throw updateError;
+          customerData = data;
+        } else {
+          // Insert new customer
+          const { data, error: insertError } = await supabase
+            .from('customers')
+            .insert(customerRecord)
+            .select()
+            .single();
+          
+          if (insertError) throw insertError;
+          customerData = data;
+        }
       }
 
-      if (!customerData) throw new Error('Customer creation failed');
+      if (!customerData) throw new Error('Customer update/creation failed');
 
-      // Create policy record
+      // Prepare policy record
       const policyRecord = {
         customer_id: customerData.id,
         email: orderData.email,
         plan_type: orderData.planType.toLowerCase(),
         payment_type: orderData.paymentType,
         policy_number: warrantyReference,
-        policy_start_date: new Date().toISOString(),
+        policy_start_date: policyToEdit?.policy_start_date || new Date().toISOString(),
         policy_end_date: calculatePolicyEndDate(orderData.duration),
         status: 'active',
-        email_sent_status: 'pending',
+        email_sent_status: policyToEdit?.email_sent_status || 'pending',
         customer_full_name: customerName,
         voluntary_excess: orderData.voluntaryExcess,
         claim_limit: orderData.claimLimit,
@@ -634,14 +666,26 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
         europe_cover: orderData.europeCover,
         vehicle_rental: orderData.vehicleRental,
         mot_fee: orderData.motFeeCover,
-        transfer_cover: orderData.transferCover
+        transfer_cover: orderData.transferCover,
+        updated_at: new Date().toISOString()
       };
 
-      const { error: policyError } = await supabase
-        .from('customer_policies')
-        .insert(policyRecord);
+      if (isEditMode && policyToEdit?.id) {
+        // Update existing policy
+        const { error: policyError } = await supabase
+          .from('customer_policies')
+          .update(policyRecord)
+          .eq('id', policyToEdit.id);
 
-      if (policyError) throw policyError;
+        if (policyError) throw policyError;
+      } else {
+        // Insert new policy
+        const { error: policyError } = await supabase
+          .from('customer_policies')
+          .insert(policyRecord);
+
+        if (policyError) throw policyError;
+      }
 
       // Add admin note if provided
       if (orderData.notes.trim()) {
@@ -734,7 +778,10 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
           toast.error('Order created but failed to send to Warranties 2000');
         }
       } else {
-        toast.success(`Manual warranty order created successfully! Reference: ${warrantyReference}`);
+        toast.success(isEditMode 
+          ? `Warranty order updated successfully! Reference: ${warrantyReference}`
+          : `Manual warranty order created successfully! Reference: ${warrantyReference}`
+        );
       }
 
       console.log(isEditMode ? '🎉 Manual order updated successfully!' : '🎉 Manual order created successfully!');
@@ -754,8 +801,8 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
       }, 1500);
 
     } catch (error) {
-      console.error('❌ Manual order creation failed:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to create manual order');
+      console.error(isEditMode ? '❌ Manual order update failed:' : '❌ Manual order creation failed:', error);
+      toast.error(error instanceof Error ? error.message : isEditMode ? 'Failed to update warranty order' : 'Failed to create manual order');
     } finally {
       console.log('🔄 Resetting loading state');
       setIsLoading(false);
