@@ -1785,70 +1785,57 @@ export const CustomersTab = () => {
             <Download className="h-4 w-4" />
             <span>Export CSV</span>
           </Button>
-        </div>
-      </div>
+          
+          {/* Debug Info Button */}
+          {debugInfo && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="flex items-center space-x-2 text-gray-600">
+                  <AlertCircle className="h-4 w-4" />
+                  <span>Debug Info</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-96">
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm">Debug Information</h4>
+                  <pre className="text-xs text-gray-700 whitespace-pre-wrap bg-gray-50 p-2 rounded">{debugInfo}</pre>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
 
-      {/* Compact Info Banners */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {/* Debug Information - Compact */}
-        {debugInfo && (
+          {/* Order Management Guide Button */}
           <Popover>
             <PopoverTrigger asChild>
-              <Card className="p-3 cursor-pointer hover:bg-gray-50 transition-colors border-yellow-200 bg-yellow-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 text-yellow-600" />
-                    <span className="text-sm font-medium text-yellow-800">Debug Info</span>
-                  </div>
-                  <AlertCircle className="h-3.5 w-3.5 text-yellow-500" />
-                </div>
-              </Card>
+              <Button variant="outline" className="flex items-center space-x-2 text-gray-600">
+                <AlertCircle className="h-4 w-4" />
+                <span>Order Management Guide</span>
+              </Button>
             </PopoverTrigger>
             <PopoverContent className="w-96">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-sm">Debug Information</h4>
-                <pre className="text-xs text-gray-700 whitespace-pre-wrap bg-gray-50 p-2 rounded">{debugInfo}</pre>
+              <div className="space-y-3">
+                <h4 className="font-semibold text-sm text-blue-900">Easily manage your vehicle warranty orders</h4>
+                <p className="text-xs text-blue-700">
+                  Need to delete an order? You can do that anytime — and if you change your mind, it's not gone forever.
+                </p>
+                <div className="space-y-2 text-xs text-blue-700">
+                  <div className="flex items-start gap-2">
+                    <Archive className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <strong>Deleted orders are safely stored</strong> — You'll find them in your Order Archive, where you can restore or review them whenever you like.
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <RotateCcw className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <strong>Restore with one click</strong> — Mistakes happen. That's why we've made it easy to bring back any deleted order.
+                    </div>
+                  </div>
+                </div>
               </div>
             </PopoverContent>
           </Popover>
-        )}
-
-        {/* Order Management Info - Compact */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Card className="p-3 cursor-pointer hover:bg-gray-50 transition-colors border-blue-200 bg-blue-50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">Order Management Guide</span>
-                </div>
-                <AlertCircle className="h-3.5 w-3.5 text-blue-500" />
-              </div>
-            </Card>
-          </PopoverTrigger>
-          <PopoverContent className="w-96">
-            <div className="space-y-3">
-              <h4 className="font-semibold text-sm text-blue-900">Easily manage your vehicle warranty orders</h4>
-              <p className="text-xs text-blue-700">
-                Need to delete an order? You can do that anytime — and if you change your mind, it's not gone forever.
-              </p>
-              <div className="space-y-2 text-xs text-blue-700">
-                <div className="flex items-start gap-2">
-                  <Archive className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong>Deleted orders are safely stored</strong> — You'll find them in your Order Archive, where you can restore or review them whenever you like.
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <RotateCcw className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong>Restore with one click</strong> — Mistakes happen. That's why we've made it easy to bring back any deleted order.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
+        </div>
       </div>
 
       <Tabs defaultValue="complete" className="w-full">
