@@ -1613,7 +1613,7 @@ export const CustomersTab = () => {
     }
   };
 
-  const handleSendToWarranties2000 = async (policyId: string, customerId: string) => {
+  const handleSendToWarranties2000 = async (policyId: string, customerId: string, force = false) => {
     setEmailSendingLoading(prev => ({ 
       ...prev, 
       [customerId]: { ...prev[customerId], warranties2000: true } 
@@ -1623,7 +1623,8 @@ export const CustomersTab = () => {
       const { data, error } = await supabase.functions.invoke('send-to-warranties-2000', {
         body: { 
           policyId: policyId,
-          customerId: customerId 
+          customerId: customerId,
+          force: force // Allow resending even if already sent
         }
       });
 
@@ -2890,8 +2891,29 @@ Please log in and change your password after first login.`;
                                 <TabsContent value="warranty">
                                   {editingCustomer.customer_policies && editingCustomer.customer_policies.length > 0 ? (
                                     <div className="space-y-4">
-                                      {/* Edit Order Button at the top */}
-                                      <div className="flex justify-end">
+                                      {/* Action Buttons at the top */}
+                                      <div className="flex justify-between items-center gap-2">
+                                        <Button 
+                                          onClick={() => {
+                                            if (editingCustomer.customer_policies[0]?.id) {
+                                              handleSendToWarranties2000(
+                                                editingCustomer.customer_policies[0].id,
+                                                editingCustomer.id,
+                                                true // Force resend even if already sent
+                                              );
+                                            }
+                                          }}
+                                          variant="outline"
+                                          className="flex items-center gap-2"
+                                          disabled={emailSendingLoading[editingCustomer.id]?.warranties2000}
+                                        >
+                                          {emailSendingLoading[editingCustomer.id]?.warranties2000 ? (
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                          ) : (
+                                            <Send className="h-4 w-4" />
+                                          )}
+                                          Resend to Warranties 2000
+                                        </Button>
                                         <EditOrderButton 
                                           customer={editingCustomer}
                                           policy={editingCustomer.customer_policies[0]}
