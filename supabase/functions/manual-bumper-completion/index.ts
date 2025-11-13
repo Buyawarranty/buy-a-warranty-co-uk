@@ -25,13 +25,13 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    const { email } = await req.json();
+    const { email, notes } = await req.json();
     
     if (!email) {
       throw new Error("Email is required");
     }
 
-    logStep("Processing manual completion for", { email });
+    logStep("Processing manual completion for", { email, hasNotes: !!notes });
 
     // Get customer and policy data
     const { data: customer, error: customerError } = await supabaseClient
@@ -117,7 +117,8 @@ serve(async (req) => {
           Month: "12", // 1 year coverage
           MaxClm: "500",
           MOTDue: "2026-03-25",
-          Ref: warrantyRef
+          Ref: warrantyRef,
+          Notes: notes || ''
         };
 
         logStep("Sending registration data to Warranties 2000", { 

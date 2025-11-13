@@ -633,7 +633,10 @@ export const ManualOrderEntry = () => {
           const { data: w2kResponse, error: w2kError } = await supabase.functions.invoke(
             'manual-bumper-completion',
             {
-              body: { email: orderData.email.toLowerCase() }
+              body: { 
+                email: orderData.email.toLowerCase(),
+                notes: orderData.notes?.trim() || '' 
+              }
             }
           );
 
