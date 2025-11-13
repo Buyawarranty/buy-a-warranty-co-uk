@@ -13,6 +13,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TrustpilotHeader from '@/components/TrustpilotHeader';
 import AdminLoginDebug from '@/components/admin/AdminLoginDebug';
+import CustomerLoginDebugTool from '@/components/admin/CustomerLoginDebugTool';
 
 const Auth = () => {
   const { toast } = useToast();
@@ -528,9 +529,10 @@ const Auth = () => {
           </CardContent>
         </Card>
         
-        {/* Debug tool for admin login issues */}
-        <div className="mt-8">
+        {/* Debug tools for login issues */}
+        <div className="mt-8 grid md:grid-cols-2 gap-6">
           <AdminLoginDebug />
+          <CustomerLoginDebugTool />
         </div>
         </div>
       </div>
