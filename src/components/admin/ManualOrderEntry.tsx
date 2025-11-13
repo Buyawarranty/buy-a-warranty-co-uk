@@ -496,24 +496,25 @@ export const ManualOrderEntry = () => {
       };
 
       // Only add fields if they have actual values (not empty strings)
-      if (orderData.phone?.trim()) customerRecord.phone = orderData.phone;
-      if (orderData.firstName?.trim()) customerRecord.first_name = orderData.firstName;
-      if (orderData.lastName?.trim()) customerRecord.last_name = orderData.lastName;
-      if (orderData.flatNumber?.trim()) customerRecord.flat_number = orderData.flatNumber;
-      if (orderData.buildingName?.trim()) customerRecord.building_name = orderData.buildingName;
-      if (orderData.buildingNumber?.trim()) customerRecord.building_number = orderData.buildingNumber;
-      if (orderData.street?.trim()) customerRecord.street = orderData.street;
-      if (orderData.town?.trim()) customerRecord.town = orderData.town;
-      if (orderData.county?.trim()) customerRecord.county = orderData.county;
-      if (orderData.postcode?.trim()) customerRecord.postcode = orderData.postcode;
-      if (orderData.country?.trim()) customerRecord.country = orderData.country;
-      if (orderData.registrationPlate?.trim()) customerRecord.registration_plate = orderData.registrationPlate.toUpperCase();
-      if (orderData.vehicleMake?.trim()) customerRecord.vehicle_make = orderData.vehicleMake;
-      if (orderData.vehicleModel?.trim()) customerRecord.vehicle_model = orderData.vehicleModel;
-      if (orderData.vehicleYear?.trim()) customerRecord.vehicle_year = orderData.vehicleYear;
-      if (orderData.vehicleFuelType?.trim()) customerRecord.vehicle_fuel_type = orderData.vehicleFuelType;
-      if (orderData.vehicleTransmission?.trim()) customerRecord.vehicle_transmission = orderData.vehicleTransmission;
-      if (orderData.mileage?.trim()) customerRecord.mileage = orderData.mileage;
+      // Convert to string and trim to ensure we handle all value types correctly
+      if (orderData.phone && String(orderData.phone).trim()) customerRecord.phone = String(orderData.phone).trim();
+      if (orderData.firstName && String(orderData.firstName).trim()) customerRecord.first_name = String(orderData.firstName).trim();
+      if (orderData.lastName && String(orderData.lastName).trim()) customerRecord.last_name = String(orderData.lastName).trim();
+      if (orderData.flatNumber && String(orderData.flatNumber).trim()) customerRecord.flat_number = String(orderData.flatNumber).trim();
+      if (orderData.buildingName && String(orderData.buildingName).trim()) customerRecord.building_name = String(orderData.buildingName).trim();
+      if (orderData.buildingNumber && String(orderData.buildingNumber).trim()) customerRecord.building_number = String(orderData.buildingNumber).trim();
+      if (orderData.street && String(orderData.street).trim()) customerRecord.street = String(orderData.street).trim();
+      if (orderData.town && String(orderData.town).trim()) customerRecord.town = String(orderData.town).trim();
+      if (orderData.county && String(orderData.county).trim()) customerRecord.county = String(orderData.county).trim();
+      if (orderData.postcode && String(orderData.postcode).trim()) customerRecord.postcode = String(orderData.postcode).trim();
+      if (orderData.country && String(orderData.country).trim()) customerRecord.country = String(orderData.country).trim();
+      if (orderData.registrationPlate && String(orderData.registrationPlate).trim()) customerRecord.registration_plate = String(orderData.registrationPlate).trim().toUpperCase();
+      if (orderData.vehicleMake && String(orderData.vehicleMake).trim()) customerRecord.vehicle_make = String(orderData.vehicleMake).trim();
+      if (orderData.vehicleModel && String(orderData.vehicleModel).trim()) customerRecord.vehicle_model = String(orderData.vehicleModel).trim();
+      if (orderData.vehicleYear && String(orderData.vehicleYear).trim()) customerRecord.vehicle_year = String(orderData.vehicleYear).trim();
+      if (orderData.vehicleFuelType && String(orderData.vehicleFuelType).trim()) customerRecord.vehicle_fuel_type = String(orderData.vehicleFuelType).trim();
+      if (orderData.vehicleTransmission && String(orderData.vehicleTransmission).trim()) customerRecord.vehicle_transmission = String(orderData.vehicleTransmission).trim();
+      if (orderData.mileage && String(orderData.mileage).trim()) customerRecord.mileage = String(orderData.mileage).trim();
 
       // Check if customer exists by email
       const { data: existingCustomer } = await supabase
