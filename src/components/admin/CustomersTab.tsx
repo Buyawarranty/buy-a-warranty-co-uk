@@ -32,6 +32,7 @@ import { BulkEmailDialog } from './BulkEmailDialog';
 import { BulkTagDialog } from './BulkTagDialog';
 import CoverageDetailsDisplay from '@/components/CoverageDetailsDisplay';
 import AddOnProtectionDisplay from '@/components/AddOnProtectionDisplay';
+import { W2KAuditLog } from './W2KAuditLog';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
@@ -161,6 +162,7 @@ interface Customer {
     warranty_number?: string;
     email_sent_status?: string;
     warranties_2000_status?: string;
+    warranties_2000_sent_at?: string;
     created_at?: string;
   }>;
 }
@@ -482,6 +484,7 @@ export const CustomersTab = () => {
             warranty_number,
             email_sent_status,
             warranties_2000_status,
+            warranties_2000_sent_at,
             mot_fee,
             tyre_cover,
             wear_tear,
@@ -705,6 +708,7 @@ export const CustomersTab = () => {
             warranty_number,
             email_sent_status,
             warranties_2000_status,
+            warranties_2000_sent_at,
             mot_fee,
             tyre_cover,
             wear_tear,
@@ -2891,35 +2895,55 @@ Please log in and change your password after first login.`;
                                 <TabsContent value="warranty">
                                   {editingCustomer.customer_policies && editingCustomer.customer_policies.length > 0 ? (
                                     <div className="space-y-4">
-                                      {/* Action Buttons at the top */}
-                                      <div className="flex justify-between items-center gap-2">
-                                        <Button 
-                                          onClick={() => {
-                                            if (editingCustomer.customer_policies[0]?.id) {
-                                              if (confirm('⚠️ WARNING: Warranties 2000 should only receive ONE submission per warranty.\n\nOnly resend if you have updated critical information that must be corrected in their system.\n\nContinue with manual resend?')) {
-                                                handleSendToWarranties2000(
-                                                  editingCustomer.customer_policies[0].id,
-                                                  editingCustomer.id,
-                                                  true // Force resend - overrides duplicate check
-                                                );
+                                      {/* Last Sent Info & Action Buttons */}
+                                      <div className="space-y-3">
+                                        {editingCustomer.customer_policies[0]?.warranties_2000_sent_at && (
+                                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                            <div className="flex items-center gap-2 text-sm">
+                                              <Clock className="h-4 w-4 text-blue-600" />
+                                              <span className="font-medium text-blue-900">Last sent to Warranties 2000:</span>
+                                              <span className="text-blue-700">
+                                                {new Date(editingCustomer.customer_policies[0].warranties_2000_sent_at).toLocaleString('en-GB', {
+                                                  day: '2-digit',
+                                                  month: 'short',
+                                                  year: 'numeric',
+                                                  hour: '2-digit',
+                                                  minute: '2-digit'
+                                                })}
+                                              </span>
+                                            </div>
+                                          </div>
+                                        )}
+                                        
+                                        <div className="flex justify-between items-center gap-2">
+                                          <Button 
+                                            onClick={() => {
+                                              if (editingCustomer.customer_policies[0]?.id) {
+                                                if (confirm('⚠️ WARNING: Warranties 2000 should only receive ONE submission per warranty.\n\nOnly resend if you have updated critical information that must be corrected in their system.\n\nContinue with manual resend?')) {
+                                                  handleSendToWarranties2000(
+                                                    editingCustomer.customer_policies[0].id,
+                                                    editingCustomer.id,
+                                                    true // Force resend - overrides duplicate check
+                                                  );
+                                                }
                                               }
-                                            }
-                                          }}
-                                          variant="outline"
-                                          className="flex items-center gap-2 border-orange-300 hover:bg-orange-50 hover:border-orange-400"
-                                          disabled={emailSendingLoading[editingCustomer.id]?.warranties2000}
-                                        >
-                                          {emailSendingLoading[editingCustomer.id]?.warranties2000 ? (
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
-                                          ) : (
-                                            <Send className="h-4 w-4 text-orange-600" />
-                                          )}
-                                          <span className="text-orange-600">Manual Resend to Warranties 2000</span>
-                                        </Button>
-                                        <EditOrderButton 
-                                          customer={editingCustomer}
-                                          policy={editingCustomer.customer_policies[0]}
-                                        />
+                                            }}
+                                            variant="outline"
+                                            className="flex items-center gap-2 border-orange-300 hover:bg-orange-50 hover:border-orange-400"
+                                            disabled={emailSendingLoading[editingCustomer.id]?.warranties2000}
+                                          >
+                                            {emailSendingLoading[editingCustomer.id]?.warranties2000 ? (
+                                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
+                                            ) : (
+                                              <Send className="h-4 w-4 text-orange-600" />
+                                            )}
+                                            <span className="text-orange-600">Manual Resend to Warranties 2000</span>
+                                          </Button>
+                                          <EditOrderButton 
+                                            customer={editingCustomer}
+                                            policy={editingCustomer.customer_policies[0]}
+                                          />
+                                        </div>
                                       </div>
                                       
                                       {editingCustomer.customer_policies.map((policy: any, index: number) => (
@@ -3054,6 +3078,11 @@ Please log in and change your password after first login.`;
                                           </div>
                                         </Card>
                                       ))}
+                                      
+                                      {/* Warranties 2000 Submission History */}
+                                      {editingCustomer.customer_policies[0]?.id && (
+                                        <W2KAuditLog policyId={editingCustomer.customer_policies[0].id} />
+                                      )}
                                     </div>
                                   ) : (
                                     <div className="text-center text-gray-500 py-8">

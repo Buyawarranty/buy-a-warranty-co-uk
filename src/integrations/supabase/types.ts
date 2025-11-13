@@ -2563,6 +2563,60 @@ export type Database = {
         }
         Relationships: []
       }
+      warranties_2000_audit_log: {
+        Row: {
+          action_type: string
+          admin_email: string | null
+          admin_user_id: string | null
+          created_at: string | null
+          customer_id: string | null
+          data_sent: Json
+          id: string
+          notes: string | null
+          policy_id: string | null
+          w2k_response: Json | null
+        }
+        Insert: {
+          action_type: string
+          admin_email?: string | null
+          admin_user_id?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          data_sent: Json
+          id?: string
+          notes?: string | null
+          policy_id?: string | null
+          w2k_response?: Json | null
+        }
+        Update: {
+          action_type?: string
+          admin_email?: string | null
+          admin_user_id?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          data_sent?: Json
+          id?: string
+          notes?: string | null
+          policy_id?: string | null
+          w2k_response?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranties_2000_audit_log_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranties_2000_audit_log_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "customer_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       warranty_audit_log: {
         Row: {
           created_by: string | null

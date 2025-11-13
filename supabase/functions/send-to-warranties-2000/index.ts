@@ -645,6 +645,33 @@ serve(async (req) => {
       } else {
         console.log(`[WARRANTIES-2000] Updated policy status successfully`);
       }
+      
+      // Create audit log entry
+      const { data: { user } } = await supabase.auth.getUser();
+      const actionType = force ? 'manual_resend' : 'initial_send';
+      
+      const { error: auditError } = await supabase
+        .from('warranties_2000_audit_log')
+        .insert({
+          policy_id: policy.id,
+          customer_id: customer.id,
+          admin_user_id: user?.id || null,
+          admin_email: user?.email || 'system',
+          action_type: actionType,
+          data_sent: registrationData,
+          w2k_response: {
+            status: response.status,
+            response: responseText,
+            timestamp: new Date().toISOString()
+          },
+          notes: force ? 'Manual resend by admin' : 'Initial warranty registration'
+        });
+      
+      if (auditError) {
+        console.error(`[WARRANTIES-2000] Failed to create audit log:`, auditError);
+      } else {
+        console.log(`[WARRANTIES-2000] Audit log created successfully for ${actionType}`);
+      }
     }
 
     if (!response.ok) {
