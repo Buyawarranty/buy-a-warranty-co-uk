@@ -340,29 +340,19 @@ const handler = async (req: Request): Promise<Response> => {
         console.log(JSON.stringify({ evt: "user.exists", rid, userId: userExists.id }));
         userId = userExists.id;
         
-        // Only update password if this is a new temporary password (first time)
-        if (!latestWelcomeEmail?.temporary_password) {
-          // First time customer - create password
-          await supabase.auth.admin.updateUserById(userExists.id, {
-            password: tempPassword,
-            user_metadata: {
-              plan_type: policy.plan_type,
-              policy_number: policy.policy_number,
-              warranty_number: policy.warranty_number
-            }
-          });
-          console.log(JSON.stringify({ evt: "user.password.set.first.time", rid, userId }));
-        } else {
-          // Existing customer with existing password - just update metadata
-          await supabase.auth.admin.updateUserById(userExists.id, {
-            user_metadata: {
-              plan_type: policy.plan_type,
-              policy_number: policy.policy_number,
-              warranty_number: policy.warranty_number
-            }
-          });
-          console.log(JSON.stringify({ evt: "user.metadata.updated.same.password", rid, userId }));
-        }
+        // ALWAYS update the password to ensure it's synced with auth system
+        // This fixes cases where the password exists in welcome_emails but not in auth
+        await supabase.auth.admin.updateUserById(userExists.id, {
+          password: tempPassword,
+          user_metadata: {
+            plan_type: policy.plan_type,
+            policy_number: policy.policy_number,
+            warranty_number: policy.warranty_number
+          }
+        });
+        
+        const passwordAction = latestWelcomeEmail?.temporary_password ? "reapplied" : "set.first.time";
+        console.log(JSON.stringify({ evt: `user.password.${passwordAction}`, rid, userId }));
       } else {
         // Create new user account
         const { data: userData, error: userError } = await supabase.auth.admin.createUser({
