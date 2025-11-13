@@ -705,13 +705,13 @@ export const ManualOrderEntry = () => {
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="quick" className="w-full">
+        <Tabs defaultValue="manual" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="manual">Manual Entry</TabsTrigger>
             <TabsTrigger value="quick" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               Quick Entry
             </TabsTrigger>
-            <TabsTrigger value="manual">Manual Entry</TabsTrigger>
           </TabsList>
 
           <TabsContent value="quick" className="space-y-4">
