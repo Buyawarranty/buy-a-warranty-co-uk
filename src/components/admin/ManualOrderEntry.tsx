@@ -913,13 +913,13 @@ export const ManualOrderEntry = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="mileage">Mileage</Label>
+                <Label htmlFor="mileage">Mileage Range</Label>
                 <Select 
                   value={orderData.mileage} 
                   onValueChange={(value) => updateOrderData('mileage', value)}
                 >
                   <SelectTrigger id="mileage">
-                    <SelectValue placeholder="Select mileage" />
+                    <SelectValue placeholder="Select mileage range" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0-10000">0 - 10,000 miles</SelectItem>
@@ -935,6 +935,16 @@ export const ManualOrderEntry = () => {
                     <SelectItem value="100001+">100,001+ miles</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label htmlFor="exactMileage">Or Enter Exact Mileage</Label>
+                <Input
+                  id="exactMileage"
+                  type="number"
+                  value={orderData.mileage && !orderData.mileage.includes('-') && !orderData.mileage.includes('+') ? orderData.mileage : ''}
+                  onChange={(e) => updateOrderData('mileage', e.target.value)}
+                  placeholder="e.g., 45678"
+                />
               </div>
               <div className="col-span-2">
                 <Button 
