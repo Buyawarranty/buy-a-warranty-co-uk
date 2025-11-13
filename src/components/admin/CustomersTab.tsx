@@ -13,7 +13,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive, ChevronDown, ChevronUp, Eye, Copy, FileText } from 'lucide-react';
+import { Edit, Download, Search, RefreshCw, AlertCircle, CalendarIcon, Save, Key, Send, Clock, CheckCircle, Trash2, UserX, Phone, Mail, RotateCcw, Archive, ChevronDown, ChevronUp, Eye, Copy, FileText, User } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
@@ -133,6 +133,7 @@ interface Customer {
   deleted_at?: string;
   deleted_by?: string;
   last_login?: string;
+  temporary_password?: string;
   // Add-on coverage fields
   tyre_cover?: boolean;
   wear_tear?: boolean;
@@ -2801,6 +2802,43 @@ Please log in and change your password after first login.`;
                                           onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, consequential: !!checked })}
                                         />
                                         <Label htmlFor="edit-consequential" className="font-normal cursor-pointer">Consequential Loss</Label>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Customer Dashboard Access */}
+                                  <div className="space-y-4 pt-6 border-t">
+                                    <div className="flex items-center gap-2 mb-4">
+                                      <User className="h-5 w-5" />
+                                      <h3 className="text-lg font-semibold">Customer Dashboard Access</h3>
+                                    </div>
+                                    
+                                    <div className="bg-muted/50 p-4 rounded-lg">
+                                      <p className="text-sm text-muted-foreground">
+                                        Set up dashboard credentials to test customer login before they receive their welcome email.
+                                      </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label htmlFor="edit-dashboard-email">Dashboard Email</Label>
+                                        <Input
+                                          id="edit-dashboard-email"
+                                          type="email"
+                                          value={editingCustomer.email || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, email: e.target.value })}
+                                          placeholder="customer@example.com"
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-temp-password">Temporary Password</Label>
+                                        <Input
+                                          id="edit-temp-password"
+                                          type="text"
+                                          value={editingCustomer.temporary_password || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, temporary_password: e.target.value })}
+                                          placeholder="temp-password-123"
+                                        />
                                       </div>
                                     </div>
                                   </div>
