@@ -1031,9 +1031,14 @@ export const CustomersTab = () => {
           vehicle_transmission: editingCustomer.vehicle_transmission,
           mileage: editingCustomer.mileage,
           plan_type: editingCustomer.plan_type,
+          payment_type: editingCustomer.payment_type,
           status: editingCustomer.status,
           voluntary_excess: editingCustomer.voluntary_excess,
           claim_limit: editingCustomer.claim_limit,
+          discount_code: editingCustomer.discount_code,
+          original_amount: editingCustomer.original_amount,
+          discount_amount: editingCustomer.discount_amount,
+          final_amount: editingCustomer.final_amount,
           mot_fee: editingCustomer.mot_fee,
           tyre_cover: editingCustomer.tyre_cover,
           wear_tear: editingCustomer.wear_tear,
@@ -2337,6 +2342,60 @@ Please log in and change your password after first login.`;
                                   </div>
 
                                   <div className="space-y-4 pt-4 border-t">
+                                    <h3 className="text-lg font-semibold">Vehicle Details</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label htmlFor="edit-vehicle-make">Make</Label>
+                                        <Input
+                                          id="edit-vehicle-make"
+                                          value={editingCustomer.vehicle_make || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, vehicle_make: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-vehicle-model">Model</Label>
+                                        <Input
+                                          id="edit-vehicle-model"
+                                          value={editingCustomer.vehicle_model || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, vehicle_model: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-vehicle-year">Year</Label>
+                                        <Input
+                                          id="edit-vehicle-year"
+                                          value={editingCustomer.vehicle_year || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, vehicle_year: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-mileage">Mileage</Label>
+                                        <Input
+                                          id="edit-mileage"
+                                          value={editingCustomer.mileage || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, mileage: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-fuel-type">Fuel Type</Label>
+                                        <Input
+                                          id="edit-fuel-type"
+                                          value={editingCustomer.vehicle_fuel_type || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, vehicle_fuel_type: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-transmission">Transmission</Label>
+                                        <Input
+                                          id="edit-transmission"
+                                          value={editingCustomer.vehicle_transmission || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, vehicle_transmission: e.target.value })}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="space-y-4 pt-4 border-t">
                                     <h3 className="text-lg font-semibold">Address Details</h3>
                                     <div className="grid grid-cols-2 gap-4">
                                       <div>
@@ -2406,90 +2465,246 @@ Please log in and change your password after first login.`;
                                     </div>
                                   </div>
 
-                                  <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-                                    <div>
-                                      <Label htmlFor="edit-plan-type">Plan Type</Label>
-                                      <Input
-                                        id="edit-plan-type"
-                                        value={editingCustomer.plan_type}
-                                        onChange={(e) => setEditingCustomer({ ...editingCustomer, plan_type: e.target.value })}
-                                      />
+                                  <div className="space-y-4 pt-4 border-t">
+                                    <h3 className="text-lg font-semibold">Warranty & Payment Details</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label htmlFor="edit-plan-type">Plan Type</Label>
+                                        <Input
+                                          id="edit-plan-type"
+                                          value={editingCustomer.plan_type}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, plan_type: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-payment-type">Payment Type / Duration</Label>
+                                        <Select
+                                          value={editingCustomer.payment_type || 'monthly'}
+                                          onValueChange={(value) => setEditingCustomer({ ...editingCustomer, payment_type: value })}
+                                        >
+                                          <SelectTrigger id="edit-payment-type">
+                                            <SelectValue placeholder="Select payment type" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="monthly">Monthly (12 months)</SelectItem>
+                                            <SelectItem value="12months">12 Months</SelectItem>
+                                            <SelectItem value="24months">24 Months</SelectItem>
+                                            <SelectItem value="36months">36 Months</SelectItem>
+                                            <SelectItem value="yearly">Yearly</SelectItem>
+                                            <SelectItem value="twoYear">Two Year</SelectItem>
+                                            <SelectItem value="threeYear">Three Year</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-voluntary-excess">Voluntary Excess (£)</Label>
+                                        <Input
+                                          id="edit-voluntary-excess"
+                                          type="number"
+                                          value={editingCustomer.voluntary_excess}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, voluntary_excess: Number(e.target.value) })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-claim-limit">Claim Limit (£)</Label>
+                                        <Input
+                                          id="edit-claim-limit"
+                                          type="number"
+                                          value={editingCustomer.claim_limit || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, claim_limit: Number(e.target.value) })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-original-amount">Original Amount (£)</Label>
+                                        <Input
+                                          id="edit-original-amount"
+                                          type="number"
+                                          step="0.01"
+                                          value={editingCustomer.original_amount || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, original_amount: Number(e.target.value) })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-discount-amount">Discount Amount (£)</Label>
+                                        <Input
+                                          id="edit-discount-amount"
+                                          type="number"
+                                          step="0.01"
+                                          value={editingCustomer.discount_amount || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, discount_amount: Number(e.target.value) })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-final-amount">Final Amount (£)</Label>
+                                        <Input
+                                          id="edit-final-amount"
+                                          type="number"
+                                          step="0.01"
+                                          value={editingCustomer.final_amount || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, final_amount: Number(e.target.value) })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-discount-code">Discount Code</Label>
+                                        <Input
+                                          id="edit-discount-code"
+                                          value={editingCustomer.discount_code || ''}
+                                          onChange={(e) => setEditingCustomer({ ...editingCustomer, discount_code: e.target.value })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-status">Status</Label>
+                                        <Select
+                                          value={editingCustomer.status}
+                                          onValueChange={(value) => setEditingCustomer({ ...editingCustomer, status: value })}
+                                        >
+                                          <SelectTrigger id="edit-status">
+                                            <SelectValue placeholder="Select status" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="Active">Active</SelectItem>
+                                            <SelectItem value="Inactive">Inactive</SelectItem>
+                                            <SelectItem value="Pending">Pending</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-signup-date">Signup Date</Label>
+                                        <Popover>
+                                          <PopoverTrigger asChild>
+                                            <Button
+                                              id="edit-signup-date"
+                                              variant="outline"
+                                              className={cn(
+                                                "w-full justify-start text-left font-normal",
+                                                !editingCustomer.signup_date && "text-muted-foreground"
+                                              )}
+                                            >
+                                              <CalendarIcon className="mr-2 h-4 w-4" />
+                                              {editingCustomer.signup_date ? (
+                                                format(new Date(editingCustomer.signup_date), 'dd/MM/yyyy')
+                                              ) : (
+                                                <span>Pick a date</span>
+                                              )}
+                                            </Button>
+                                          </PopoverTrigger>
+                                          <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                              mode="single"
+                                              selected={editingCustomer.signup_date ? new Date(editingCustomer.signup_date) : undefined}
+                                              onSelect={(date) => date && setEditingCustomer({ ...editingCustomer, signup_date: date.toISOString() })}
+                                              initialFocus
+                                            />
+                                          </PopoverContent>
+                                        </Popover>
+                                      </div>
+                                      <div>
+                                        <Label>Purchase Date</Label>
+                                        <div className="w-full px-3 py-2 text-sm border rounded-md bg-gray-50">
+                                          {editingCustomer.customer_policies?.[0]?.created_at ? (
+                                            <>
+                                              {format(new Date(editingCustomer.customer_policies[0].created_at), 'dd/MM/yyyy')}
+                                              <span className="text-gray-500 ml-2">
+                                                {format(new Date(editingCustomer.customer_policies[0].created_at), 'HH:mm:ss')}
+                                              </span>
+                                            </>
+                                          ) : editingCustomer.created_at ? (
+                                            <>
+                                              {format(new Date(editingCustomer.created_at), 'dd/MM/yyyy')}
+                                              <span className="text-gray-500 ml-2">
+                                                {format(new Date(editingCustomer.created_at), 'HH:mm:ss')}
+                                              </span>
+                                            </>
+                                          ) : (
+                                            <span className="text-gray-400">N/A</span>
+                                          )}
+                                        </div>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <Label htmlFor="edit-voluntary-excess">Voluntary Excess (£)</Label>
-                                      <Input
-                                        id="edit-voluntary-excess"
-                                        type="number"
-                                        value={editingCustomer.voluntary_excess}
-                                        onChange={(e) => setEditingCustomer({ ...editingCustomer, voluntary_excess: Number(e.target.value) })}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label htmlFor="edit-status">Status</Label>
-                                      <Select
-                                        value={editingCustomer.status}
-                                        onValueChange={(value) => setEditingCustomer({ ...editingCustomer, status: value })}
-                                      >
-                                        <SelectTrigger id="edit-status">
-                                          <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          <SelectItem value="Active">Active</SelectItem>
-                                          <SelectItem value="Inactive">Inactive</SelectItem>
-                                          <SelectItem value="Pending">Pending</SelectItem>
-                                        </SelectContent>
-                                      </Select>
-                                    </div>
-                                    <div>
-                                      <Label htmlFor="edit-signup-date">Signup Date</Label>
-                                      <Popover>
-                                        <PopoverTrigger asChild>
-                                          <Button
-                                            id="edit-signup-date"
-                                            variant="outline"
-                                            className={cn(
-                                              "w-full justify-start text-left font-normal",
-                                              !editingCustomer.signup_date && "text-muted-foreground"
-                                            )}
-                                          >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {editingCustomer.signup_date ? (
-                                              format(new Date(editingCustomer.signup_date), 'dd/MM/yyyy')
-                                            ) : (
-                                              <span>Pick a date</span>
-                                            )}
-                                          </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
-                                          <Calendar
-                                            mode="single"
-                                            selected={editingCustomer.signup_date ? new Date(editingCustomer.signup_date) : undefined}
-                                            onSelect={(date) => date && setEditingCustomer({ ...editingCustomer, signup_date: date.toISOString() })}
-                                            initialFocus
-                                          />
-                                        </PopoverContent>
-                                      </Popover>
-                                    </div>
-                                    <div>
-                                      <Label>Purchase Date</Label>
-                                      <div className="w-full px-3 py-2 text-sm border rounded-md bg-gray-50">
-                                        {editingCustomer.customer_policies?.[0]?.created_at ? (
-                                          <>
-                                            {format(new Date(editingCustomer.customer_policies[0].created_at), 'dd/MM/yyyy')}
-                                            <span className="text-gray-500 ml-2">
-                                              {format(new Date(editingCustomer.customer_policies[0].created_at), 'HH:mm:ss')}
-                                            </span>
-                                          </>
-                                        ) : editingCustomer.created_at ? (
-                                          <>
-                                            {format(new Date(editingCustomer.created_at), 'dd/MM/yyyy')}
-                                            <span className="text-gray-500 ml-2">
-                                              {format(new Date(editingCustomer.created_at), 'HH:mm:ss')}
-                                            </span>
-                                          </>
-                                        ) : (
-                                          <span className="text-gray-400">N/A</span>
-                                        )}
+                                  </div>
+                                  
+                                  <div className="space-y-4 pt-4 border-t">
+                                    <h3 className="text-lg font-semibold">Add-On Protections</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-mot-fee"
+                                          checked={editingCustomer.mot_fee || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, mot_fee: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-mot-fee" className="font-normal cursor-pointer">MOT Test Fee Cover</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-breakdown-recovery"
+                                          checked={editingCustomer.breakdown_recovery || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, breakdown_recovery: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-breakdown-recovery" className="font-normal cursor-pointer">Breakdown Recovery</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-tyre-cover"
+                                          checked={editingCustomer.tyre_cover || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, tyre_cover: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-tyre-cover" className="font-normal cursor-pointer">Tyre Cover</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-wear-tear"
+                                          checked={editingCustomer.wear_tear || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, wear_tear: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-wear-tear" className="font-normal cursor-pointer">Wear & Tear Cover</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-europe-cover"
+                                          checked={editingCustomer.europe_cover || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, europe_cover: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-europe-cover" className="font-normal cursor-pointer">Europe Cover</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-vehicle-rental"
+                                          checked={editingCustomer.vehicle_rental || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, vehicle_rental: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-vehicle-rental" className="font-normal cursor-pointer">Vehicle Rental</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-transfer-cover"
+                                          checked={editingCustomer.transfer_cover || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, transfer_cover: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-transfer-cover" className="font-normal cursor-pointer">Transfer Cover</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-mot-repair"
+                                          checked={editingCustomer.mot_repair || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, mot_repair: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-mot-repair" className="font-normal cursor-pointer">MOT Repair</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-lost-key"
+                                          checked={editingCustomer.lost_key || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, lost_key: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-lost-key" className="font-normal cursor-pointer">Lost Key Cover</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox 
+                                          id="edit-consequential"
+                                          checked={editingCustomer.consequential || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, consequential: !!checked })}
+                                        />
+                                        <Label htmlFor="edit-consequential" className="font-normal cursor-pointer">Consequential Loss</Label>
                                       </div>
                                     </div>
                                   </div>
