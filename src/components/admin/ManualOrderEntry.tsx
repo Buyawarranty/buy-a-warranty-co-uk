@@ -878,15 +878,18 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
         </DialogHeader>
 
         <Tabs defaultValue="manual" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="manual">Manual Entry</TabsTrigger>
-            <TabsTrigger value="quick" className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              Quick Entry
-            </TabsTrigger>
-          </TabsList>
+          {!isEditMode && (
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="manual">Manual Entry</TabsTrigger>
+              <TabsTrigger value="quick" className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                Quick Entry
+              </TabsTrigger>
+            </TabsList>
+          )}
 
-          <TabsContent value="quick" className="space-y-4">
+          {!isEditMode && (
+            <TabsContent value="quick" className="space-y-4">
             <Alert>
               <AlertDescription>
                 Fill in the template below with customer information. Each field label is followed by a line for the value. Simply replace the placeholder text with actual values.
@@ -925,6 +928,7 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
               {isLoading ? 'Creating Order...' : 'Parse Template & Create Order'}
             </Button>
           </TabsContent>
+          )}
 
           <TabsContent value="manual" className="space-y-6">
           {/* Customer Details Section */}
@@ -1509,7 +1513,9 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
 
           <Alert>
             <AlertDescription>
-              This will create a manual warranty order entry. A warranty reference number starting with "MAN-" will be generated automatically.
+              {isEditMode 
+                ? 'Update the warranty order details below. Changes will be saved to the existing order.'
+                : 'This will create a manual warranty order entry. A warranty reference number starting with "MAN-" will be generated automatically.'}
             </AlertDescription>
           </Alert>
           </TabsContent>

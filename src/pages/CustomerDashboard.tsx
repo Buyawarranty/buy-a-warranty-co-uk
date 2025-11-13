@@ -1276,7 +1276,11 @@ const CustomerDashboard = () => {
                              <div>
                                <Label className="text-xs sm:text-sm font-medium text-gray-500">Mileage</Label>
                                <p className="font-semibold text-sm sm:text-base">
-                                 {customerData?.mileage && customerData.mileage.trim() ? `${Number(customerData.mileage).toLocaleString()} miles` : 'Not provided'}
+                                 {customerData?.mileage && customerData.mileage.trim() 
+                                   ? (customerData.mileage.includes('to') || customerData.mileage.includes('-') || isNaN(Number(customerData.mileage))
+                                       ? customerData.mileage
+                                       : `${Number(customerData.mileage).toLocaleString()} miles`)
+                                   : 'Not provided'}
                                </p>
                              </div>
                              <div>
