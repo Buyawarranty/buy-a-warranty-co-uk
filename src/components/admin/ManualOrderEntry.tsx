@@ -989,12 +989,18 @@ export const ManualOrderEntry = () => {
               </div>
               <div className="col-span-2">
                 <Label htmlFor="vehicleTransmission">Transmission</Label>
-                <Input
-                  id="vehicleTransmission"
-                  value={orderData.vehicleTransmission}
-                  onChange={(e) => updateOrderData('vehicleTransmission', e.target.value)}
-                  placeholder="Manual"
-                />
+                <Select 
+                  value={orderData.vehicleTransmission} 
+                  onValueChange={(value) => updateOrderData('vehicleTransmission', value)}
+                >
+                  <SelectTrigger id="vehicleTransmission">
+                    <SelectValue placeholder="Select transmission" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Manual">Manual</SelectItem>
+                    <SelectItem value="Automatic">Automatic</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
