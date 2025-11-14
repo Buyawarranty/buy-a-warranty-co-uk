@@ -137,15 +137,14 @@ serve(async (req) => {
       }
     }
 
-    // Send welcome email
+    // Send welcome email using manual function
     try {
-      const welcomeEmailResponse = await supabaseClient.functions.invoke('send-welcome-email', {
+      logStep("Invoking send-welcome-email-manual", { policyId: policy.id, customerId: customer.id });
+      
+      const welcomeEmailResponse = await supabaseClient.functions.invoke('send-welcome-email-manual', {
         body: {
-          email: customer.email,
-          policyNumber: policy.policy_number,
-          planType: policy.plan_type,
-          paymentType: policy.payment_type || 'yearly', // Required parameter
-          customerName: customer.name
+          policyId: policy.id,
+          customerId: customer.id
         }
       });
       
@@ -156,7 +155,7 @@ serve(async (req) => {
       }
     } catch (emailError) {
       const errorMessage = emailError instanceof Error ? emailError.message : String(emailError);
-      logStep("Welcome email failed", { error: errorMessage });
+      logStep("Welcome email error", { error: errorMessage });
     }
 
     return new Response(JSON.stringify({
