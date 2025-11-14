@@ -33,25 +33,45 @@ serve(async (req) => {
 
     logStep("Processing manual completion for", { email, hasNotes: !!notes });
 
-    // Get customer and policy data
-    const { data: customer, error: customerError } = await supabaseClient
-      .from('customers')
-      .select('*')
-      .eq('email', email)
-      .single();
-
-    if (customerError || !customer) {
-      throw new Error("Customer not found");
-    }
-
+    // Get policy data first (more reliable for manual entries)
     const { data: policy, error: policyError } = await supabaseClient
       .from('customer_policies')
       .select('*')
-      .eq('email', email)
+      .ilike('email', email)
+      .order('created_at', { ascending: false })
+      .limit(1)
       .single();
 
     if (policyError || !policy) {
-      throw new Error("Policy not found");
+      logStep("Policy not found", { error: policyError });
+      throw new Error("Policy not found for this email");
+    }
+
+    // Get customer data - try by customer_id first, then by email
+    let customer = null;
+    if (policy.customer_id) {
+      const { data: customerById } = await supabaseClient
+        .from('customers')
+        .select('*')
+        .eq('id', policy.customer_id)
+        .single();
+      customer = customerById;
+    }
+    
+    // If not found by customer_id, try by email
+    if (!customer) {
+      const { data: customerByEmail } = await supabaseClient
+        .from('customers')
+        .select('*')
+        .ilike('email', email)
+        .limit(1)
+        .single();
+      customer = customerByEmail;
+    }
+
+    if (!customer) {
+      logStep("Customer not found", { policyId: policy.id, email });
+      throw new Error("Customer not found");
     }
 
     logStep("Customer and policy found", { 
