@@ -92,49 +92,25 @@ serve(async (req) => {
     // Register with Warranties 2000
     if (warrantyRef) {
       try {
-        logStep("Sending to Warranties 2000");
+        logStep("Sending to Warranties 2000 via send-to-warranties-2000 function");
         
-        const registrationData = {
-          Title: "Mr",
-          First: "Kamran",
-          Surname: "Qureshi",
-          Addr1: "41 Blawith Road",
-          Addr2: "Harrow",
-          Town: "Middlesex",
-          PCode: "HA1 1QA",
-          Tel: "07960111131",
-          Mobile: "07960111131",
-          EMail: email,
-          PurDate: new Date().toISOString().split('T')[0],
-          Make: "AUDI",
-          Model: "A4",
-          RegNum: customer.registration_plate || "B11CSD",
-          Mileage: "50000",
-          EngSize: "1968",
-          PurPrc: "276", // From the order summary
-          RegDate: "2018-03-01",
-          WarType: "B-PLATINUM",
-          Month: "12", // 1 year coverage
-          MaxClm: "500",
-          MOTDue: "2026-03-25",
-          Ref: warrantyRef,
-          Notes: notes || ''
-        };
+        // Use the send-to-warranties-2000 function which has proper data mapping
+        const { data: w2kData, error: w2kError } = await supabaseClient.functions.invoke(
+          'send-to-warranties-2000',
+          {
+            body: {
+              customerId: customer.id,
+              policyId: policy.id,
+              force: true
+            }
+          }
+        );
 
-        logStep("Sending registration data to Warranties 2000", { 
-          regNum: registrationData.RegNum,
-          warType: registrationData.WarType 
-        });
-
-        const warrantiesResponse = await supabaseClient.functions.invoke('warranties-2000-registration', {
-          body: registrationData
-        });
-
-        if (warrantiesResponse.error) {
-          logStep("Warranties 2000 registration failed", { error: warrantiesResponse.error });
-        } else {
-          logStep("Warranties 2000 registration successful", { response: warrantiesResponse.data });
+        if (w2kError) {
+          throw w2kError;
         }
+
+        logStep("Successfully registered with Warranties 2000", { response: w2kData });
       } catch (warrantiesError) {
         const errorMessage = warrantiesError instanceof Error ? warrantiesError.message : String(warrantiesError);
         logStep("Error during Warranties 2000 registration", { error: errorMessage });
