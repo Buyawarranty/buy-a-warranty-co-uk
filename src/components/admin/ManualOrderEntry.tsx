@@ -15,10 +15,12 @@ import { Plus, User, Car, CreditCard, FileText, MapPin, Search, Sparkles, Edit }
 
 interface ManualOrderData {
   // Customer details
+  title: string;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
+  mobile: string;
   flatNumber: string;
   buildingName: string;
   buildingNumber: string;
@@ -36,6 +38,10 @@ interface ManualOrderData {
   vehicleFuelType: string;
   vehicleTransmission: string;
   mileage: string;
+  engineSize: string;
+  purchasePrice: string;
+  purchaseDate: string;
+  registrationDate: string;
   
   // Plan details
   planType: string;
@@ -66,10 +72,12 @@ interface ManualOrderData {
 }
 
 const initialOrderData: ManualOrderData = {
+  title: 'Mr',
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
+  mobile: '',
   flatNumber: '',
   buildingName: '',
   buildingNumber: '',
@@ -85,6 +93,10 @@ const initialOrderData: ManualOrderData = {
   vehicleFuelType: '',
   vehicleTransmission: '',
   mileage: '',
+  engineSize: '',
+  purchasePrice: '',
+  purchaseDate: new Date().toISOString().split('T')[0],
+  registrationDate: '',
   planType: 'Platinum',
   paymentType: 'bumper',
   duration: '12months',
@@ -221,10 +233,12 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
         : 'Platinum';
       
       setOrderData({
+        title: 'Mr',
         firstName: customerToEdit.first_name || '',
         lastName: customerToEdit.last_name || '',
         email: customerToEdit.email || '',
         phone: customerToEdit.phone || '',
+        mobile: customerToEdit.phone || '',
         flatNumber: customerToEdit.flat_number || '',
         buildingName: customerToEdit.building_name || '',
         buildingNumber: customerToEdit.building_number || '',
@@ -240,6 +254,10 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
         vehicleFuelType: customerToEdit.vehicle_fuel_type || '',
         vehicleTransmission: customerToEdit.vehicle_transmission || '',
         mileage: customerToEdit.mileage || '',
+        engineSize: '',
+        purchasePrice: policyToEdit.payment_amount?.toString() || '',
+        purchaseDate: startDate,
+        registrationDate: '',
         planType: capitalizedPlanType,
         paymentType: policyToEdit.payment_type || 'bumper',
         duration: duration,
@@ -939,6 +957,25 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
+                <Label htmlFor="title">Title</Label>
+                <Select 
+                  value={orderData.title} 
+                  onValueChange={(value) => updateOrderData('title', value)}
+                >
+                  <SelectTrigger id="title">
+                    <SelectValue placeholder="Select title" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Mr">Mr</SelectItem>
+                    <SelectItem value="Mrs">Mrs</SelectItem>
+                    <SelectItem value="Miss">Miss</SelectItem>
+                    <SelectItem value="Ms">Ms</SelectItem>
+                    <SelectItem value="Dr">Dr</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div></div>
+              <div>
                 <Label htmlFor="firstName">First Name</Label>
                 <Input
                   id="firstName"
@@ -972,6 +1009,15 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
                   id="phone"
                   value={orderData.phone}
                   onChange={(e) => updateOrderData('phone', e.target.value)}
+                  placeholder="07123456789"
+                />
+              </div>
+              <div>
+                <Label htmlFor="mobile">Mobile</Label>
+                <Input
+                  id="mobile"
+                  value={orderData.mobile}
+                  onChange={(e) => updateOrderData('mobile', e.target.value)}
                   placeholder="07123456789"
                 />
               </div>
@@ -1182,6 +1228,42 @@ export const ManualOrderEntry = ({ customerToEdit, policyToEdit, onClose }: Manu
                     <SelectItem value="Automatic">Automatic</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label htmlFor="engineSize">Engine Size (cc)</Label>
+                <Input
+                  id="engineSize"
+                  value={orderData.engineSize}
+                  onChange={(e) => updateOrderData('engineSize', e.target.value)}
+                  placeholder="e.g., 1968"
+                />
+              </div>
+              <div>
+                <Label htmlFor="purchasePrice">Purchase Price (£)</Label>
+                <Input
+                  id="purchasePrice"
+                  value={orderData.purchasePrice}
+                  onChange={(e) => updateOrderData('purchasePrice', e.target.value)}
+                  placeholder="e.g., 10000"
+                />
+              </div>
+              <div>
+                <Label htmlFor="purchaseDate">Purchase Date</Label>
+                <Input
+                  id="purchaseDate"
+                  type="date"
+                  value={orderData.purchaseDate}
+                  onChange={(e) => updateOrderData('purchaseDate', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="registrationDate">First Registration Date</Label>
+                <Input
+                  id="registrationDate"
+                  type="date"
+                  value={orderData.registrationDate}
+                  onChange={(e) => updateOrderData('registrationDate', e.target.value)}
+                />
               </div>
             </div>
           </div>
