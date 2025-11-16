@@ -81,7 +81,7 @@ export const AbandonedCartEmail = ({
         <Container style={container}>
           <Section style={header}>
             <Img
-              src="https://mzlpuxzwyrcyrgrongeb.supabase.co/storage/v1/object/public/policy-documents/logo/baw-logo.png"
+              src="https://buyawarranty.co.uk/lovable-uploads/baw-logo-new-2025.png"
               width="180"
               height="50"
               alt="Buy A Warranty"
