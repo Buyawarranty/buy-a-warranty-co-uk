@@ -70,7 +70,7 @@ interface SendEmailRequest {
   mileage?: string;
   fuelType?: string;
   transmission?: string;
-  triggerType: 'pricing_page_view' | 'plan_selected';
+  triggerType: 'pricing_page_view' | 'plan_selected' | 'pricing_page_view_24h' | 'pricing_page_view_72h';
   planName?: string;
   paymentType?: string;
 }
@@ -138,24 +138,31 @@ const handler = async (req: Request): Promise<Response> => {
 
     // If we have vehicle registration, create a state parameter to restore the flow
     if (emailRequest.vehicleReg) {
+      // Map trigger types to correct steps:
+      // - pricing_page_view, pricing_page_view_24h, pricing_page_view_72h → step 2 (quote page)
+      // - plan_selected → step 3 (plan selection)
+      let targetStep = 2; // Default to quote page
+      if (emailRequest.triggerType === 'plan_selected') {
+        targetStep = 3; // Plan was selected, return to plan selection
+      }
+      
       const stateParam = btoa(JSON.stringify({
         regNumber: emailRequest.vehicleReg,
         email: emailRequest.email,
         firstName: emailRequest.firstName || '',
         lastName: emailRequest.lastName || '',
         phone: emailRequest.phone || '',
-        make: emailRequest.vehicleMake, // Use 'make' to match frontend VehicleData interface
-        model: emailRequest.vehicleModel, // Use 'model' to match frontend VehicleData interface
+        make: emailRequest.vehicleMake || '',
+        model: emailRequest.vehicleModel || '',
         year: emailRequest.vehicleYear || '',
-        vehicleType: emailRequest.vehicleType || 'car', // Important for special vehicles
+        vehicleType: emailRequest.vehicleType || 'car',
         fuelType: emailRequest.fuelType || '',
         transmission: emailRequest.transmission || '',
-        step: emailRequest.triggerType === 'pricing_page_view' ? 3 : 4,
+        step: targetStep,
         planName: emailRequest.planName,
         paymentType: emailRequest.paymentType,
-        // Add additional fields that might be needed
-        mileage: emailRequest.mileage || '0', // Include actual mileage if available
-        address: '' // Will be filled in by user
+        mileage: emailRequest.mileage || '0',
+        address: ''
       }));
       continueUrl = `${baseUrl}?restore=${encodeURIComponent(stateParam)}`;
       checkoutUrl = continueUrl;
