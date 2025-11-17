@@ -792,7 +792,7 @@ export function DiscountCodesTab() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="usage_limit">Usage Limit (Recommended: 1 for single-use, 100 for campaigns)</Label>
+                  <Label htmlFor="usage_limit">Allow these codes to be used indefinitely</Label>
                   <Input
                     id="usage_limit"
                     type="number"
