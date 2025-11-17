@@ -596,10 +596,10 @@ const AudiWarranty = () => {
         <section className="bg-primary text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">
                 Ready to protect your Audi?
               </h2>
-              <p className="text-xl">
+              <p className="text-xl text-white">
                 Avoid unexpected repair bills and enjoy worry-free driving with a comprehensive Audi extended warranty.
               </p>
               <Button 
@@ -609,7 +609,7 @@ const AudiWarranty = () => {
               >
                 👉 Get my Audi warranty quote →
               </Button>
-              <p className="text-sm">Takes less than 60 seconds. No phone calls, no pressure - just instant pricing.</p>
+              <p className="text-sm text-white">Takes less than 60 seconds. No phone calls, no pressure - just instant pricing.</p>
             </div>
           </div>
         </section>
