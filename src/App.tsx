@@ -18,6 +18,15 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import { SeasonalOfferBanner } from "@/components/SeasonalOfferBanner";
 
+// Component to conditionally render banner only on homepage
+const ConditionalSeasonalBanner = () => {
+  const location = useLocation();
+  const isHomepage = location.pathname === '/' || location.pathname === '/home' || location.pathname === '/home/';
+  
+  if (!isHomepage) return null;
+  return <SeasonalOfferBanner />;
+};
+
 // Lazy load pages
 const FAQ = lazy(() => import("./pages/FAQ"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
@@ -100,7 +109,7 @@ const App = () => {
             <ScrollToTop />
             <PageViewTracker />
             <CookieBanner />
-            <SeasonalOfferBanner />
+            <ConditionalSeasonalBanner />
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
               <main className="flex-1 pb-16 w-full">
                 <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
