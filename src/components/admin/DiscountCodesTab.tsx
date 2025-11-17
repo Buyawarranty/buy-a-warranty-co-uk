@@ -138,6 +138,35 @@ export function DiscountCodesTab() {
     }
   };
 
+  const updateAllToUnlimited = async () => {
+    try {
+      setLoading(true);
+      
+      const { error } = await supabase
+        .from('discount_codes')
+        .update({ usage_limit: 1000000 })
+        .neq('usage_limit', 1000000);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Success",
+        description: "All discount codes updated to 1,000,000 usage limit",
+      });
+      
+      fetchDiscountCodes();
+    } catch (error) {
+      console.error('Error updating codes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update discount codes",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -608,6 +637,10 @@ export function DiscountCodesTab() {
           <Button variant="outline" onClick={autoExpireCodes} disabled={loading}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Auto-Expire
+          </Button>
+          
+          <Button variant="outline" onClick={updateAllToUnlimited} disabled={loading}>
+            Set All to 1M Limit
           </Button>
           
           {selectedCodes.size > 0 && (
