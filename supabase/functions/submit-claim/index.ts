@@ -15,10 +15,12 @@ interface ClaimSubmissionRequest {
   email: string;
   phone?: string;
   vehicleReg?: string;
+  currentMileage?: number;
   faultDescription?: string;
   dateOccurred?: string;
   faultDetails?: string;
   issueTiming?: string;
+  additionalInfo?: string;
   file?: {
     name: string;
     size: number;
@@ -46,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { name, email, phone, vehicleReg, faultDescription, dateOccurred, faultDetails, issueTiming, file }: ClaimSubmissionRequest = await req.json();
+    const { name, email, phone, vehicleReg, currentMileage, faultDescription, dateOccurred, faultDetails, issueTiming, additionalInfo, file }: ClaimSubmissionRequest = await req.json();
 
     console.log('Received claim submission:', { name, email, phone: phone || 'N/A', vehicleReg: vehicleReg || 'N/A' });
 
@@ -95,10 +97,12 @@ const handler = async (req: Request): Promise<Response> => {
     // Combine claim details into message for database storage
     const claimMessage = [
       vehicleReg && `Vehicle: ${vehicleReg}`,
+      currentMileage && `Current Mileage: ${currentMileage.toLocaleString()}`,
       faultDescription && `Fault: ${faultDescription}`,
       dateOccurred && `Date: ${dateOccurred}`,
       faultDetails && `Details: ${faultDetails}`,
-      issueTiming && `Timing: ${issueTiming}`
+      issueTiming && `Timing: ${issueTiming}`,
+      additionalInfo && `Additional Info: ${additionalInfo}`
     ].filter(Boolean).join('\n');
 
     // Store submission in database
@@ -142,6 +146,7 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h2 style="color: #333; margin-top: 0;">Vehicle Details</h2>
           <p><strong>Vehicle Reg/Make/Model:</strong> ${vehicleReg || 'Not provided'}</p>
+          ${currentMileage ? `<p><strong>Current Mileage:</strong> ${currentMileage.toLocaleString()} miles</p>` : ''}
         </div>
         
         <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -153,6 +158,13 @@ const handler = async (req: Request): Promise<Response> => {
           <p><strong>When Issue Was Noticed:</strong></p>
           <p style="white-space: pre-wrap;">${issueTiming || 'Not provided'}</p>
         </div>
+        
+        ${additionalInfo ? `
+        <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0ea5e9;">
+          <h2 style="color: #333; margin-top: 0;">💬 Additional Information</h2>
+          <p style="white-space: pre-wrap;">${additionalInfo}</p>
+        </div>
+        ` : ''}
         
         ${fileName ? `
         <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">

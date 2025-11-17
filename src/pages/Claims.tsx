@@ -35,7 +35,8 @@ const Claims = () => {
     dateOccurred: '',
     faultDetails: '',
     issueTiming: '',
-    currentMileage: 50000
+    currentMileage: 50000,
+    additionalInfo: ''
   });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -214,6 +215,7 @@ Fault Description: ${formData.faultDescription}
 Date Occurred: ${formData.dateOccurred}
 Fault Details: ${formData.faultDetails}
 Issue Timing: ${formData.issueTiming}
+Additional Information: ${formData.additionalInfo}
       `.trim();
 
       const response = await supabase.functions.invoke('submit-claim', {
@@ -227,6 +229,7 @@ Issue Timing: ${formData.issueTiming}
           dateOccurred: formData.dateOccurred,
           faultDetails: formData.faultDetails,
           issueTiming: formData.issueTiming,
+          additionalInfo: formData.additionalInfo,
           file: fileData
         }
       });
@@ -251,7 +254,8 @@ Issue Timing: ${formData.issueTiming}
         dateOccurred: '',
         faultDetails: '',
         issueTiming: '',
-        currentMileage: 50000
+        currentMileage: 50000,
+        additionalInfo: ''
       });
       setUploadedFile(null);
       setErrors({});
@@ -520,78 +524,91 @@ Issue Timing: ${formData.issueTiming}
                 {/* Form Section - Takes 2 columns */}
                 <div className="lg:col-span-2">
                   <div className="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                      {/* Contact Information - 2 Column Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="name" className="text-gray-700 font-medium text-sm">
-                            Name *
-                          </Label>
-                          <Input
-                            id="name"
-                            name="name"
-                            type="text"
-                            placeholder="Your Name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            required
-                            className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
-                          />
-                          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                      {/* Section 1: Contact Information */}
+                      <div>
+                        <div className="flex items-center gap-3 mb-4 pb-3 border-b-2 border-orange-100">
+                          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold text-sm">
+                            1
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900">Your Contact Details</h3>
                         </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="name" className="text-gray-700 font-medium text-sm">
+                              Name *
+                            </Label>
+                            <Input
+                              id="name"
+                              name="name"
+                              type="text"
+                              placeholder="Your Name"
+                              value={formData.name}
+                              onChange={handleInputChange}
+                              required
+                              className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                            />
+                            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                          </div>
 
-                        <div>
-                          <Label htmlFor="email" className="text-gray-700 font-medium text-sm">
-                            Email *
-                          </Label>
-                          <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="Your Email Address"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            required
-                            className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
-                          />
-                          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-                        </div>
+                          <div>
+                            <Label htmlFor="email" className="text-gray-700 font-medium text-sm">
+                              Email *
+                            </Label>
+                            <Input
+                              id="email"
+                              name="email"
+                              type="email"
+                              placeholder="Your Email Address"
+                              value={formData.email}
+                              onChange={handleInputChange}
+                              required
+                              className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                            />
+                            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                          </div>
 
-                        <div>
-                          <Label htmlFor="phone" className="text-gray-700 font-medium text-sm">
-                            Phone Number *
-                          </Label>
-                          <Input
-                            id="phone"
-                            name="phone"
-                            type="tel"
-                            placeholder="07123456789"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                            className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
-                          />
-                          {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
-                        </div>
+                          <div>
+                            <Label htmlFor="phone" className="text-gray-700 font-medium text-sm">
+                              Phone Number *
+                            </Label>
+                            <Input
+                              id="phone"
+                              name="phone"
+                              type="tel"
+                              placeholder="07123456789"
+                              value={formData.phone}
+                              onChange={handleInputChange}
+                              className={`mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                            />
+                            {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
+                          </div>
 
-                        <div>
-                          <Label htmlFor="vehicleReg" className="text-gray-700 font-medium text-sm">
-                            Vehicle Reg/Make/Model
-                          </Label>
-                          <Input
-                            id="vehicleReg"
-                            name="vehicleReg"
-                            type="text"
-                            placeholder="AB12 CDE"
-                            value={formData.vehicleReg}
-                            onChange={handleInputChange}
-                            className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                          />
+                          <div>
+                            <Label htmlFor="vehicleReg" className="text-gray-700 font-medium text-sm">
+                              Vehicle Reg/Make/Model
+                            </Label>
+                            <Input
+                              id="vehicleReg"
+                              name="vehicleReg"
+                              type="text"
+                              placeholder="AB12 CDE"
+                              value={formData.vehicleReg}
+                              onChange={handleInputChange}
+                              className="mt-1.5 h-11 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                            />
+                          </div>
                         </div>
                       </div>
 
-                      {/* Tell Us What Happened Section */}
-                      <div className="border-t pt-5 mt-2">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Tell Us What Happened</h3>
+                      {/* Section 2: Claim Details */}
+                      <div>
+                        <div className="flex items-center gap-3 mb-4 pb-3 border-b-2 border-orange-100">
+                          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold text-sm">
+                            2
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900">Tell Us What Happened</h3>
+                        </div>
                         <p className="text-gray-600 text-sm mb-4">
                           Share details about the issue so we can help you quickly
                         </p>
@@ -682,78 +699,113 @@ Issue Timing: ${formData.issueTiming}
                             />
                           </div>
 
-                          {/* File Upload */}
-                          <div>
-                            <Label htmlFor="file-upload" className="text-gray-700 font-medium text-sm">
-                              Upload Supporting Documents (Optional)
-                            </Label>
-                            <p className="text-gray-500 text-xs mb-2">
-                              Garage reports, photos, or other documents (Max 20MB)
-                            </p>
-                            
-                            {!uploadedFile ? (
-                              <div className="mt-1.5">
-                                <label htmlFor="file-upload" className="cursor-pointer">
-                                  <div 
-                                    className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                                      isDragging 
-                                        ? 'border-orange-500 bg-orange-50' 
-                                        : 'border-gray-300 hover:border-orange-500'
-                                    }`}
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={handleDrop}
-                                  >
-                                    <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                                    <p className="mt-2 text-sm text-gray-600">
-                                      Click to upload or drag and drop
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                      PDF, DOC, JPG, PNG up to 20MB
-                                    </p>
-                                  </div>
-                                </label>
-                                <input
-                                  id="file-upload"
-                                  name="file-upload"
-                                  type="file"
-                                  className="hidden"
-                                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                  onChange={handleFileUpload}
-                                />
-                              </div>
-                            ) : (
-                              <div className="mt-1.5 p-3 bg-gray-50 rounded-lg border flex items-center justify-between">
-                                <div className="flex items-center space-x-3">
-                                  <div className="text-orange-500">
-                                    <Upload className="h-5 w-5" />
-                                  </div>
-                                  <div>
-                                    <p className="text-sm font-medium text-gray-900">{uploadedFile.name}</p>
-                                    <p className="text-xs text-gray-500">
-                                      {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
-                                    </p>
-                                  </div>
-                                </div>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={removeFile}
-                                  className="text-gray-500 hover:text-red-500"
-                                >
-                                  <X className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            )}
+                        </div>
+                      </div>
+
+                      {/* Section 3: Supporting Documents */}
+                      <div>
+                        <div className="flex items-center gap-3 mb-4 pb-3 border-b-2 border-orange-100">
+                          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold text-sm">
+                            3
                           </div>
+                          <h3 className="text-xl font-bold text-gray-900">Supporting Documents</h3>
+                        </div>
+                        <div>
+                          <Label htmlFor="file-upload" className="text-gray-700 font-medium text-sm">
+                            Upload Documents (Optional)
+                          </Label>
+                          <p className="text-gray-500 text-xs mb-2">
+                            Garage reports, photos, or other documents (Max 20MB)
+                          </p>
+                          
+                          {!uploadedFile ? (
+                            <div className="mt-1.5">
+                              <label htmlFor="file-upload" className="cursor-pointer">
+                                <div 
+                                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                                    isDragging 
+                                      ? 'border-orange-500 bg-orange-50' 
+                                      : 'border-gray-300 hover:border-orange-500'
+                                  }`}
+                                  onDragOver={handleDragOver}
+                                  onDragLeave={handleDragLeave}
+                                  onDrop={handleDrop}
+                                >
+                                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                                  <p className="mt-2 text-sm text-gray-600">
+                                    Click to upload or drag and drop
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    PDF, DOC, JPG, PNG up to 20MB
+                                  </p>
+                                </div>
+                              </label>
+                              <input
+                                id="file-upload"
+                                name="file-upload"
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                onChange={handleFileUpload}
+                              />
+                            </div>
+                          ) : (
+                            <div className="mt-1.5 p-3 bg-gray-50 rounded-lg border flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="text-orange-500">
+                                  <Upload className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{uploadedFile.name}</p>
+                                  <p className="text-xs text-gray-500">
+                                    {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                                  </p>
+                                </div>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={removeFile}
+                                className="text-gray-500 hover:text-red-500"
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Section 4: Additional Information */}
+                      <div>
+                        <div className="flex items-center gap-3 mb-4 pb-3 border-b-2 border-orange-100">
+                          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold text-sm">
+                            4
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900">Anything Else You'd Like to Tell Us</h3>
+                        </div>
+                        <div>
+                          <Label htmlFor="additionalInfo" className="text-gray-700 font-medium text-sm">
+                            Additional Information (Optional)
+                          </Label>
+                          <p className="text-gray-500 text-xs mb-2">
+                            Is there anything else you'd like us to know?
+                          </p>
+                          <Textarea
+                            id="additionalInfo"
+                            name="additionalInfo"
+                            placeholder="Share any other details that might help us process your claim..."
+                            value={formData.additionalInfo}
+                            onChange={handleInputChange}
+                            className="mt-1.5 min-h-[100px] border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                          />
                         </div>
                       </div>
 
                       <Button 
                         type="submit" 
                         disabled={isSubmitting}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 w-full text-base font-semibold rounded-lg disabled:opacity-50 transition-colors mt-4"
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 w-full text-base font-semibold rounded-lg disabled:opacity-50 transition-colors"
                       >
                         {isSubmitting ? 'Submitting...' : 'Submit Claim'}
                       </Button>
