@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound";
 import { CookieBanner } from "@/components/CookieBanner";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import { SeasonalOfferBanner } from "@/components/SeasonalOfferBanner";
+import StickyNavigation from "@/components/StickyNavigation";
 
 // Component to conditionally render banner only on homepage
 const ConditionalSeasonalBanner = () => {
@@ -112,6 +113,7 @@ const App = () => {
             <PageViewTracker />
             <CookieBanner />
             <ConditionalSeasonalBanner />
+            <StickyNavigation />
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
               <main className="flex-1 pb-16 w-full">
                 <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>

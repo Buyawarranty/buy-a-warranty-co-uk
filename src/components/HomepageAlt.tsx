@@ -145,31 +145,6 @@ const HomepageAlt: React.FC<HomepageAltProps> = ({ onRegistrationSubmit }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center">
-              <OptimizedImage 
-                src={buyawarrantyLogo} 
-                alt="Buy a Warranty Logo" 
-                className="h-10 w-auto"
-                priority={true}
-                width={240}
-                height={40}
-              />
-            </Link>
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="/faq/" className="text-gray-700 hover:text-[#eb4b00] transition-colors">FAQ</a>
-              <a href="/contact-us/" className="text-gray-700 hover:text-[#eb4b00] transition-colors">Contact</a>
-              <a href="/customer-dashboard/" className="text-gray-700 hover:text-[#eb4b00] transition-colors">Login</a>
-              <Button className="bg-[#eb4b00] hover:bg-[#d63f00] text-white">
-                Get Started
-              </Button>
-            </nav>
-          </div>
-        </div>
-      </header>
 
       {/* Hero Section */}
       <section className="py-16 lg:py-24">
