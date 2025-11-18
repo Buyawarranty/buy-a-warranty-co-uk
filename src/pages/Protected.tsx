@@ -74,7 +74,7 @@ const Protected = () => {
       id: 'hybrid-phev',
       title: 'Hybrid & PHEV Vehicles',
       components: [
-        'Includes all related petrol/diesel engine parts and labour plus:',
+        'Includes ALL related petrol/diesel engine parts and labour PLUS:',
         'Hybrid Drive Motors & ECUs',
         'Hybrid Battery Failure',
         'Power Control Units, Inverters & DC-DC Converters',
@@ -89,7 +89,7 @@ const Protected = () => {
       id: 'electric-vehicles',
       title: 'Electric vehicles (EVs)',
       components: [
-        'Includes all related petrol/diesel engine parts and labour plus:',
+        'Includes ALL related petrol/diesel engine parts and labour PLUS:',
         'EV Drive Motors & Reduction Gear',
         'EV Transmission & Reduction Gearbox Assemblies',
         'High-Voltage Battery Failure',
@@ -214,7 +214,7 @@ const Protected = () => {
                 );
               }
               // Bold formatting for "Includes all related..." text in hybrid and EV sections
-              if (component.startsWith('Includes all related petrol/diesel engine parts and labour plus')) {
+              if (component.startsWith('Includes ALL related petrol/diesel engine parts and labour PLUS')) {
                 return (
                   <li key={index} className="flex items-start text-gray-700">
                     <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
