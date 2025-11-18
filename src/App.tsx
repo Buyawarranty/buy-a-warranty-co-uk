@@ -113,7 +113,9 @@ const App = () => {
             <PageViewTracker />
             <CookieBanner />
             <ConditionalSeasonalBanner />
-            <StickyNavigation />
+            <React.Fragment key="sticky-nav">
+              <StickyNavigation />
+            </React.Fragment>
             <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
               <main className="flex-1 pb-16 w-full">
                 <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
