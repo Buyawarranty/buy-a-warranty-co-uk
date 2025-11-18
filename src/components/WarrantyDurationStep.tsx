@@ -263,7 +263,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       features: [
         'All mechanical & electrical parts',
         'Up to 10 claims per year',
-        'Labour costs up to £100 p/hour',
+        'Labour costs covered',
         'Fault diagnostics',
         'Consequential damage cover',
         'Fast claims process',
@@ -288,8 +288,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       planTitle: 'Platinum Complete Plan',
       features: [
         'All mechanical & electrical parts',
-        'Claim up to the value of the car',
-        'Labour costs up to £100 p/hour',
+        'Unlimited Claims',
+        'Labour costs covered',
         'Fault diagnostics',
         'MOT test fee',
         'Vehicle recovery claim-back',
@@ -316,8 +316,8 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
       planTitle: 'Platinum Complete Plan',
       features: [
         'All mechanical & electrical parts',
-        'Claim up to the value of the car',
-        'Labour costs up to £100 p/hour',
+        'Unlimited Claims',
+        'Labour costs covered',
         'Fault diagnostics',
         'Vehicle recovery claim-back',
         'MOT test fee',
