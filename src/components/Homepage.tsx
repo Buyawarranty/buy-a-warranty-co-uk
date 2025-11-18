@@ -412,7 +412,8 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <div className="space-y-2 mb-2 sm:mb-4">
                 <h1 className="text-2xl sm:text-4xl lg:text-6xl font-black leading-tight">
                   <span className="text-gray-900">Warranty that works</span>
-                  <span className="text-brand-orange">...when your car doesn't</span>
+                  <span className="text-gray-900">...</span>
+                  <span className="text-brand-orange">when your car doesn't</span>
                 </h1>
               </div>
 
