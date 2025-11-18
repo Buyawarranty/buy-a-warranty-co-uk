@@ -1161,7 +1161,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   <div className="flex items-center gap-2 mb-4">
                     <ShieldCheck className="w-5 h-5 text-black flex-shrink-0" />
                     <p className="text-black font-medium">
-                      Electrical and mechanical parts unique to hybrid vehicles PLUS those above found in petrol and diesel vehicles
+                      Includes ALL related petrol/diesel engine parts and labour PLUS:
                     </p>
                   </div>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -1227,7 +1227,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   <div className="flex items-center gap-2 mb-4">
                     <ShieldCheck className="w-5 h-5 text-black flex-shrink-0" />
                     <p className="text-black font-medium">
-                      Electrical and mechanical parts unique to electric vehicles PLUS those above found in petrol and diesel vehicles
+                      Includes ALL related petrol/diesel engine parts and labour PLUS:
                     </p>
                   </div>
                   <div className="grid md:grid-cols-2 gap-6">
