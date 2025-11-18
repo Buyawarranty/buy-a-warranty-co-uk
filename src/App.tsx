@@ -21,7 +21,9 @@ import { SeasonalOfferBanner } from "@/components/SeasonalOfferBanner";
 // Component to conditionally render banner only on homepage
 const ConditionalSeasonalBanner = () => {
   const location = useLocation();
-  const isHomepage = location.pathname === '/' || location.pathname === '/home' || location.pathname === '/home/';
+  const searchParams = new URLSearchParams(location.search);
+  const hasStep = searchParams.has('step');
+  const isHomepage = (location.pathname === '/' || location.pathname === '/home' || location.pathname === '/home/') && !hasStep;
   
   if (!isHomepage) return null;
   return <SeasonalOfferBanner />;
