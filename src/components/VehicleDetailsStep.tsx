@@ -289,7 +289,7 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const rawMileage = mileage.replace(/,/g, '');
     const numericMileage = parseInt(rawMileage);
@@ -298,6 +298,147 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
     if (!mileage.trim()) {
       setMileageError('Enter approximate mileage');
       return;
+    }
+    
+    // If vehicle hasn't been looked up yet and we're not in manual entry mode, look it up first
+    if (!vehicleFound && !showManualEntry) {
+      setIsLookingUp(true);
+      setVehicleData(null);
+      
+      try {
+        console.log('Looking up vehicle:', regNumber);
+        
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Lookup timeout - please try again')), 12000);
+        });
+        
+        const lookupPromise = supabase.functions.invoke('dvla-vehicle-lookup', {
+          body: { registrationNumber: regNumber }
+        });
+        
+        const { data, error } = await Promise.race([lookupPromise, timeoutPromise]) as any;
+
+        if (error) {
+          console.error('DVSA lookup error:', error);
+          throw error;
+        }
+
+        console.log('DVSA lookup result:', data);
+        
+        setVehicleData(data);
+        
+        if (data.found) {
+          // Block vehicle if year information is missing
+          if (!data.yearOfManufacture) {
+            console.log('Vehicle blocked: Year information not available');
+            toast({
+              title: "Vehicle Not Eligible",
+              description: "We cannot verify the age of this vehicle. Please contact support for assistance.",
+              variant: "destructive",
+            });
+            setIsLookingUp(false);
+            return;
+          }
+          
+          setVehicleFound(true);
+          
+          // Check if this is a high-performance model
+          if (data.make && data.model && isHighPerformanceModel(data.make, data.model)) {
+            console.log('High-performance vehicle detected:', `${data.make} ${data.model}`);
+            toast({
+              title: "Warranty Coverage Not Available",
+              description: getHighPerformanceBlockMessage(),
+              variant: "destructive",
+            });
+            setIsLookingUp(false);
+            return;
+          }
+          
+          // Check if blocked
+          if (data.blocked) {
+            console.log('Blocked vehicle detected:', data.blockReason);
+            toast({
+              title: "Vehicle Not Eligible",
+              description: data.blockReason || "This vehicle is not eligible for warranty coverage.",
+              variant: "destructive",
+            });
+            setIsLookingUp(false);
+            return;
+          }
+          
+          // Vehicle found and eligible, proceed with submission
+          const submitData: any = { 
+            regNumber, 
+            mileage: rawMileage,
+            make: data.make,
+            model: data.model,
+            fuelType: data.fuelType,
+            transmission: data.transmission,
+            year: data.yearOfManufacture,
+            vehicleType: data.vehicleType || 'Car or Van'
+          };
+          
+          trackFormSubmission('vehicle_details', {
+            entry_type: 'auto_detected',
+            make: data.make,
+            year: data.yearOfManufacture,
+            vehicle_found: true
+          });
+          
+          trackStepCompletion(1, 'vehicle_details', {
+            make: data.make,
+            year: data.yearOfManufacture
+          });
+          
+          setIsLookingUp(false);
+          onNext(submitData);
+          return;
+        } else {
+          console.log('Vehicle not found in DVLA database for registration:', regNumber);
+          
+          // Check if error is about vehicle age
+          if (data.error && data.error.includes('15 years')) {
+            console.log('Vehicle blocked: Over 15 years old');
+            toast({
+              title: "Vehicle Not Eligible",
+              description: "We cannot offer warranties for vehicles over 15 years of age.",
+              variant: "destructive",
+            });
+            setIsLookingUp(false);
+            return;
+          }
+          
+          // For other "not found" cases, show generic error and offer manual entry
+          toast({
+            title: "Oops! We couldn't find that registration. 🚗💨",
+            description: "Double-check the number and try again, or enter your vehicle details manually.",
+            variant: "destructive",
+          });
+          setShowManualEntry(true);
+          setIsLookingUp(false);
+          return;
+        }
+      } catch (error: any) {
+        console.error('Error looking up vehicle:', error);
+        
+        if (error.message && error.message.includes('timeout')) {
+          toast({
+            title: "Lookup Timeout",
+            description: "The vehicle lookup is taking longer than usual. Please try again or enter details manually.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Oops! We couldn't find that registration. 🚗💨",
+            description: "Double-check the number and try again. If it's still not working, the vehicle might be over 15 years old or not supported in our cover.",
+            variant: "destructive",
+          });
+        }
+        
+        setShowManualEntry(true);
+        setIsLookingUp(false);
+        return;
+      }
     }
     
     if (showManualEntry) {
@@ -508,22 +649,6 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
              </div>
            )}
           
-          {!showManualEntry && !vehicleFound && (
-             <ProtectedButton 
-               actionType="vehicle_lookup"
-               onClick={handleFindCar}
-               disabled={!regNumber || isLookingUp || regError !== ''}
-               className="w-full max-w-[520px] block text-white text-[21px] font-bold py-[20px] sm:py-[24px] px-[20px] rounded-[6px] mb-4 border-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-               style={{
-                 backgroundColor: regNumber && !isLookingUp && !regError ? '#eb4b00' : '#eb4b00',
-                 borderColor: regNumber && !isLookingUp && !regError ? '#eb4b00' : '#eb4b00',
-                 color: 'white',
-                 opacity: regNumber && !isLookingUp && !regError ? 1 : 0.5
-               }}
-             >
-               Find my vehicle
-             </ProtectedButton>
-          )}
 
            {vehicleFound && vehicleData?.found && !showManualEntry && (
              <div style={{ backgroundColor: '#f0f8ff', borderColor: '#224380' }} className="border rounded-[4px] p-4 mb-4">
@@ -726,40 +851,36 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
             )}
           </div>
 
-          {/* Quote Button */}
-          {(vehicleFound || showManualEntry) && (
-            <>
-              <div className="mb-6">
-                <ProtectedButton 
-                  actionType="quote_generation"
-                  onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent)}
-                  disabled={!(showManualEntry ? isManualFormValid : isAutoFormValid)}
-                  className="w-full text-white text-xl font-bold py-4 px-6 rounded-[6px] border-2 transition-all duration-200 disabled:cursor-not-allowed"
-                  style={{
-                    backgroundColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
-                    borderColor: (showManualEntry ? isManualFormValid : isAutoFormValid) ? '#eb4b00' : '#eb4b00',
-                    opacity: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 1 : 0.5,
-                    animation: (showManualEntry ? isManualFormValid : isAutoFormValid) ? 'breathe 5s ease-in-out infinite' : 'none'
-                  }}
-                >
-                  Get my quote →
-                </ProtectedButton>
-              </div>
-              
-              {/* Back button moved inside the main container */}
-              <div className="flex justify-center">
-                <a 
-                  href="https://buyawarranty.co.uk/" 
-                  className="inline-flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                  </svg>
-                  Back
-                </a>
-              </div>
-            </>
-          )}
+           {/* Quote Button - Always visible */}
+           <div className="mb-6">
+             <ProtectedButton 
+               actionType="quote_generation"
+               onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent)}
+               disabled={!regNumber || !mileage || isLookingUp || !!mileageError || !!regError || (showManualEntry && !isManualFormValid)}
+               className="w-full text-white text-xl font-bold py-4 px-6 rounded-[6px] border-2 transition-all duration-200 disabled:cursor-not-allowed"
+               style={{
+                 backgroundColor: '#eb4b00',
+                 borderColor: '#eb4b00',
+                 opacity: (!regNumber || !mileage || isLookingUp || !!mileageError || !!regError) ? 0.5 : 1,
+                 animation: (!regNumber || !mileage || isLookingUp || !!mileageError || !!regError) ? 'none' : 'breathe 5s ease-in-out infinite'
+               }}
+             >
+               {isLookingUp ? 'Looking up vehicle...' : 'Get my quote →'}
+             </ProtectedButton>
+           </div>
+           
+           {/* Back button */}
+           <div className="flex justify-center">
+             <a 
+               href="https://buyawarranty.co.uk/" 
+               className="inline-flex items-center gap-2 text-base font-medium py-3 px-6 rounded-lg border transition-all duration-200 bg-white hover:bg-gray-50 border-gray-200 text-gray-700"
+             >
+               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+               </svg>
+               Back
+             </a>
+           </div>
            </form>
          </div>
        </div>
