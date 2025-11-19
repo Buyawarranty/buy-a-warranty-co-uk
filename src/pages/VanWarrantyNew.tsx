@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Phone, Mail, Shield, Clock, CheckCircle2, FileText, Wrench, Zap, Menu } from 'lucide-react';
+import { Phone, Shield, Clock, CheckCircle2, FileText, Wrench, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SEOHead } from '@/components/SEOHead';
 import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
 import { WebPageSchema } from '@/components/schema/WebPageSchema';
