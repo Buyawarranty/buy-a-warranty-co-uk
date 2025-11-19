@@ -44,7 +44,7 @@ const LandRoverWarranty: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen">
       <SEOHead
         title="Land Rover Extended Warranty | Affordable Cover for Used Models"
         description="Protect your Land Rover with reliable extended warranty cover. Includes major mechanical and electrical faults with flexible plans and instant quotes."

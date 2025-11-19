@@ -898,7 +898,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden w-full">
+    <div className="min-h-screen w-full">
       <SEOHead 
         title={
           currentStep === 1 ? "Car Warranty Prices | Affordable UK Vehicle Warranties" :
@@ -999,7 +999,7 @@ const Index = () => {
       )}
 
       {currentStep === 3 && (
-        <div className="bg-[#e8f4fb] w-full overflow-x-hidden">
+        <div className="bg-[#e8f4fb] w-full">
           {(() => {
             console.log('🚗 Step 3 rendering - vehicleData:', vehicleData);
             console.log('🚗 vehicleData exists:', !!vehicleData);
