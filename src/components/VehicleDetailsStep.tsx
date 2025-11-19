@@ -574,21 +574,6 @@ const VehicleDetailsStep: React.FC<VehicleDetailsStepProps> = ({ onNext, initial
 
   return (
     <div>
-      {/* Header with Logo */}
-      <div className="bg-white border-b">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-center">
-            <a href="/" className="hover:opacity-80 transition-opacity">
-              <img 
-                src="/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png" 
-                alt="Buy a Warranty" 
-                className="h-8 w-auto"
-              />
-            </a>
-          </div>
-        </div>
-      </div>
-      
       <section className="bg-[#e8f4fb] py-2 px-3 sm:px-0">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-6">
          <div className="mb-4">

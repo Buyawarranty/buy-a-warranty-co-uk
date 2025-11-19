@@ -446,6 +446,43 @@ const Index = () => {
     }
   }, [quoteParam, emailParam, restoreQuoteData]);
   
+  // Handle reg and mileage URL parameters from van warranty page
+  useEffect(() => {
+    const regParam = searchParams.get('reg');
+    const mileageParam = searchParams.get('mileage');
+    const makeParam = searchParams.get('make');
+    const modelParam = searchParams.get('model');
+    const fuelTypeParam = searchParams.get('fuelType');
+    const yearParam = searchParams.get('year');
+    const vehicleTypeParam = searchParams.get('vehicleType');
+    const stepParam = searchParams.get('step');
+    
+    // Only process if we have reg and mileage params and we're on step 2
+    if (regParam && mileageParam && stepParam === '2' && !vehicleData) {
+      console.log('📋 Processing URL parameters from van warranty page:', { regParam, mileageParam, makeParam, modelParam });
+      
+      const urlVehicleData: VehicleData = {
+        regNumber: decodeURIComponent(regParam),
+        mileage: decodeURIComponent(mileageParam),
+        email: '',
+        phone: '',
+        firstName: '',
+        lastName: '',
+        address: '',
+        make: makeParam ? decodeURIComponent(makeParam) : '',
+        model: modelParam ? decodeURIComponent(modelParam) : '',
+        fuelType: fuelTypeParam ? decodeURIComponent(fuelTypeParam) : '',
+        transmission: '',
+        year: yearParam ? decodeURIComponent(yearParam) : '',
+        vehicleType: vehicleTypeParam ? decodeURIComponent(vehicleTypeParam) : ''
+      };
+      
+      console.log('✅ Setting vehicle data from URL params:', urlVehicleData);
+      setVehicleData(urlVehicleData);
+      saveWithTimestamp('buyawarranty_vehicleData', JSON.stringify(urlVehicleData));
+    }
+  }, [searchParams, vehicleData]);
+  
   // Optimized localStorage operations with batching and 30-day expiry
   const saveStateToLocalStorage = useCallback((step?: number) => {
     const currentStepValue = step || currentStep;
