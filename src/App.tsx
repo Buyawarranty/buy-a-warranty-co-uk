@@ -112,12 +112,10 @@ const App = () => {
             <ScrollToTop />
             <PageViewTracker />
             <CookieBanner />
-            <ConditionalSeasonalBanner />
-            <React.Fragment key="sticky-nav">
+            <div className="min-h-screen flex flex-col w-full">
               <StickyNavigation />
-            </React.Fragment>
-            <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
-              <main className="flex-1 pb-16 w-full">
+              <ConditionalSeasonalBanner />
+              <main className="flex-1 pb-16 w-full overflow-x-hidden">
                 <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
                   <Routes>
                     <Route path="/" element={<Index />} />
