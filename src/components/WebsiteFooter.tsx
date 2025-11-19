@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, Phone, Mail } from 'lucide-react';
+import { Star, Phone, Mail, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import buyawarrantyLogo from '@/assets/buyawarranty-logo.webp';
@@ -12,7 +12,7 @@ const WebsiteFooter = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Need advice? Have an questions?
+              Need advice? Have any questions?
             </h2>
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8">
               <a 
@@ -20,14 +20,23 @@ const WebsiteFooter = () => {
                 className="flex items-center text-lg font-semibold text-[#eb4b00] hover:text-[#d63f00] transition-colors"
               >
                 <Phone className="w-5 h-5 mr-2" />
-                Call us: 0330 229 5040 (Mon-Fri 9am to 5:30pm)
+                Call us: 0330 229 5040
               </a>
               <a 
                 href="mailto:support@buyawarranty.co.uk" 
                 className="flex items-center text-lg font-semibold text-[#eb4b00] hover:text-[#d63f00] transition-colors"
               >
                 <Mail className="w-5 h-5 mr-2" />
-                or email us: support@buyawarranty.co.uk
+                Email us: support@buyawarranty.co.uk
+              </a>
+              <a 
+                href="https://wa.me/443302295040" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center text-lg font-semibold text-[#eb4b00] hover:text-[#d63f00] transition-colors"
+              >
+                <MessageCircle className="w-5 h-5 mr-2" />
+                WhatsApp Us
               </a>
             </div>
           </div>
