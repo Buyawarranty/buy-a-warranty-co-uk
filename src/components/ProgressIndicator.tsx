@@ -13,20 +13,6 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ currentStep, tota
     <div className="w-full bg-white border-b border-gray-200 shadow-sm overflow-x-hidden">
 
       <div className="max-w-4xl mx-auto px-4 py-2 sm:py-4">
-        {/* Centered Logo - 25% smaller */}
-        <div className="flex justify-center mb-2 sm:mb-4">
-          <a 
-            href="http://buyawarranty.co.uk/"
-            className="cursor-pointer"
-          >
-            <img 
-              src="/lovable-uploads/ce43a78c-28ec-400b-8a16-1e98b15e0185.png" 
-              alt="Buy a Warranty" 
-              className="h-9 sm:h-12 w-auto hover:opacity-80 transition-opacity duration-200"
-            />
-          </a>
-        </div>
-
         {/* Progress Bar */}
         <div className="relative">
           {/* Background Progress Track */}
