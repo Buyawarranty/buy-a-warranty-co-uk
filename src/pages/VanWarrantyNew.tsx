@@ -27,7 +27,20 @@ const VanWarrantyNew = () => {
   
   const handleVehicleNext = (data: any) => {
     // Navigate to step 2 with vehicle data
-    navigate(`/?step=2&reg=${encodeURIComponent(data.regNumber)}&mileage=${encodeURIComponent(data.mileage)}`);
+    const params = new URLSearchParams({
+      step: '2',
+      reg: data.regNumber,
+      mileage: data.mileage
+    });
+    
+    // Add optional vehicle details if available
+    if (data.make) params.set('make', data.make);
+    if (data.model) params.set('model', data.model);
+    if (data.fuelType) params.set('fuelType', data.fuelType);
+    if (data.year) params.set('year', data.year);
+    if (data.vehicleType) params.set('vehicleType', data.vehicleType);
+    
+    navigate(`/?${params.toString()}`);
   };
 
   const vanWarrantyFAQs = [
