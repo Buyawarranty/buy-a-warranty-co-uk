@@ -28,7 +28,11 @@ const MobileNavigation: React.FC = () => {
           <div className="flex flex-col h-full max-h-screen">
             {/* Header with logo */}
             <div className="flex items-center justify-between pb-4 flex-shrink-0">
-              <Link to="/" className="hover:opacity-80 transition-opacity">
+              <Link 
+                to="/" 
+                className="hover:opacity-80 transition-opacity"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
                   <OptimizedImage 
                     src={buyawarrantyLogo} 
                     alt="Buy a Warranty Logo"
