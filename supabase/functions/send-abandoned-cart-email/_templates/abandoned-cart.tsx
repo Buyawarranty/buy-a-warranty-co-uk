@@ -82,8 +82,7 @@ export const AbandonedCartEmail = ({
           <Section style={header}>
             <Img
               src="https://buyawarranty.co.uk/lovable-uploads/baw-logo-new-2025.png"
-              width="180"
-              height="50"
+              width="200"
               alt="Buy A Warranty"
               style={logo}
             />
