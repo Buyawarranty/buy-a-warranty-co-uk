@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HomepageAlt from '@/components/HomepageAlt';
-import WebsiteFooter from '@/components/WebsiteFooter';
 
 interface VehicleData {
   registration: string;
@@ -26,7 +25,6 @@ const UsedCarWarrantyUK = () => {
   return (
     <div>
       <HomepageAlt onRegistrationSubmit={handleRegistrationSubmit} />
-      <WebsiteFooter />
     </div>
   );
 };
