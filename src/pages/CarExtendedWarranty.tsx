@@ -913,7 +913,7 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Infiniti', logo: 'https://logo.clearbit.com/infiniti.com' },
                 { name: 'Isuzu', logo: 'https://logo.clearbit.com/isuzu.com' },
                 { name: 'Iveco', logo: 'https://logo.clearbit.com/iveco.com' },
-                { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com' },
+                { name: 'Jaguar', logo: 'https://logo.clearbit.com/jaguar.com', link: '/car-extended-warranty/jaguar/' },
                 { name: 'Jeep', logo: 'https://logo.clearbit.com/jeep.com' },
                 { name: 'Kia', logo: 'https://logo.clearbit.com/kia.com' },
                 { name: 'Land Rover', logo: 'https://logo.clearbit.com/landrover.com', link: '/car-extended-warranty/land-rover/' },
