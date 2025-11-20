@@ -1746,75 +1746,71 @@ const PricingTable: React.FC<PricingTableProps> = ({
           </div>
           
           {/* Claim Limit Boost Card */}
-          <div className="mt-6 ml-11">
-            <div className={`p-6 rounded-lg transition-all duration-300 border-2 ${
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <div className={`md:col-span-3 p-6 rounded-lg transition-all duration-300 border-2 ${
               claimLimitBoostEnabled
-                ? 'bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-500 shadow-xl shadow-orange-500/30'
-                : 'bg-gradient-to-br from-gray-50 to-gray-100/50 border-gray-300 shadow-lg hover:shadow-xl hover:border-orange-300'
+                ? 'bg-gradient-to-br from-green-50 to-green-100/50 border-green-500 shadow-lg shadow-green-500/30'
+                : 'bg-white border-gray-300 shadow-sm hover:shadow-md hover:border-green-300'
             }`}>
-              <div className="flex items-center justify-between gap-4 mb-4">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-full transition-colors ${
-                    claimLimitBoostEnabled ? 'bg-orange-500' : 'bg-gray-400'
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className={`p-3 rounded-full transition-colors ${
+                    claimLimitBoostEnabled ? 'bg-success' : 'bg-gray-400'
                   }`}>
-                    <Zap className="w-5 h-5 text-white" />
+                    <Zap className="w-6 h-6 text-white" />
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-                      Claim Limit Boost
-                      <Badge variant="secondary" className="text-xs">+£1,000</Badge>
-                    </h3>
-                    <p className="text-sm text-muted-foreground">Increase any plan's claim limit by £1,000</p>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="text-2xl font-bold text-foreground">Boost Your Cover</h3>
+                      <span className="text-2xl font-bold text-success">+£1,000</span>
+                    </div>
+                    <p className="text-base text-muted-foreground">Upgrade: Extra £1,000 Protection</p>
                   </div>
                 </div>
                 
-                {/* Toggle Switch */}
-                <button
-                  onClick={() => setClaimLimitBoostEnabled(!claimLimitBoostEnabled)}
-                  className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
-                    claimLimitBoostEnabled ? 'bg-orange-500' : 'bg-gray-300'
-                  }`}
-                  role="switch"
-                  aria-checked={claimLimitBoostEnabled}
-                >
-                  <span
-                    className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${
-                      claimLimitBoostEnabled ? 'translate-x-9' : 'translate-x-1'
+                {/* Toggle Switch with green styling */}
+                <div className="flex items-center gap-3">
+                  <div className="text-right mr-2">
+                    <div className="text-lg font-bold text-foreground">£{claimLimitBoostPrice}</div>
+                    <div className="text-sm text-muted-foreground">£97/year</div>
+                  </div>
+                  <button
+                    onClick={() => setClaimLimitBoostEnabled(!claimLimitBoostEnabled)}
+                    className={`relative inline-flex h-10 w-20 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-success focus:ring-offset-2 ${
+                      claimLimitBoostEnabled ? 'bg-success' : 'bg-gray-300'
                     }`}
-                  />
-                </button>
+                    role="switch"
+                    aria-checked={claimLimitBoostEnabled}
+                  >
+                    <span
+                      className={`inline-flex items-center justify-center h-8 w-8 transform rounded-full bg-white shadow-lg transition-all duration-300 ${
+                        claimLimitBoostEnabled ? 'translate-x-11' : 'translate-x-1'
+                      }`}
+                    >
+                      {claimLimitBoostEnabled && (
+                        <Check className="w-5 h-5 text-success" strokeWidth={3} />
+                      )}
+                    </span>
+                  </button>
+                </div>
               </div>
               
-              {/* Pricing Display */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-gray-200">
-                  <div className="text-sm text-muted-foreground">Cost per year</div>
-                  <div className="text-lg font-bold text-foreground">£97</div>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-white/70 rounded-lg border border-gray-200">
-                  <div className="text-sm text-muted-foreground">Total boost cost</div>
-                  <div className="text-lg font-bold text-orange-600">
-                    £{claimLimitBoostPrice}
-                  </div>
-                </div>
-                
-                {claimLimitBoostEnabled && selectedClaimLimit && (
-                  <div className="p-4 bg-orange-500/10 rounded-lg border-2 border-orange-500/30 mt-3">
-                    <div className="flex items-center justify-center gap-3">
-                      <div className="text-center">
-                        <div className="text-sm text-muted-foreground mb-1">Original Limit</div>
-                        <div className="text-xl font-bold text-foreground">£{selectedClaimLimit.toLocaleString()}</div>
-                      </div>
-                      <ArrowRight className="w-6 h-6 text-orange-500" />
-                      <div className="text-center">
-                        <div className="text-sm text-muted-foreground mb-1">Boosted Limit</div>
-                        <div className="text-2xl font-bold text-orange-600">£{(selectedClaimLimit + 1000).toLocaleString()}</div>
-                      </div>
+              {/* Dynamic Boosted Limit Display */}
+              {claimLimitBoostEnabled && selectedClaimLimit && (
+                <div className="mt-4 p-4 bg-white rounded-lg border-2 border-success/30">
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground mb-1">Original Limit</div>
+                      <div className="text-xl font-bold text-foreground">£{selectedClaimLimit.toLocaleString()}</div>
+                    </div>
+                    <ArrowRight className="w-6 h-6 text-success" />
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground mb-1">Boosted Limit</div>
+                      <div className="text-2xl font-bold text-success">£{(selectedClaimLimit + 1000).toLocaleString()}</div>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
