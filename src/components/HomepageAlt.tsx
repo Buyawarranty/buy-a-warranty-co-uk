@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import buyawarrantyLogo from '@/assets/buyawarranty-logo.webp';
-import orangeSuvImage from '@/assets/orange-suv-with-logo.png';
+import pandaMechanicImage from '@/assets/panda-mechanic-car.png';
 
 interface VehicleData {
   registration: string;
@@ -250,12 +250,12 @@ const HomepageAlt: React.FC<HomepageAltProps> = ({ onRegistrationSubmit }) => {
             <div className="relative hidden lg:block">
               <div className="relative flex items-center justify-center">
                 <OptimizedImage 
-                  src={orangeSuvImage}
-                  alt="Orange UK SUV with bonnet open showing Buy A Warranty branding - comprehensive vehicle warranty cover"
-                  className="w-full max-w-[400px] h-auto object-contain"
+                  src={pandaMechanicImage}
+                  alt="Friendly mechanic panda with car and tools - Buy A Warranty UK comprehensive vehicle warranty cover"
+                  className="w-full max-w-[350px] h-auto object-contain"
                   priority={true}
-                  width={400}
-                  height={300}
+                  width={350}
+                  height={280}
                 />
               </div>
             </div>
