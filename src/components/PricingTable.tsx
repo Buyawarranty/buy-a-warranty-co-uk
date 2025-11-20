@@ -1761,10 +1761,10 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-2xl font-bold text-foreground">Boost Your Cover</h3>
-                      <span className="text-2xl font-bold text-success">+£1,000</span>
+                      <h3 className="text-xl font-bold text-foreground">Boost Your Cover</h3>
+                      <span className="text-xl font-bold text-success">+£1,000</span>
                     </div>
-                    <p className="text-base text-muted-foreground">Upgrade: Extra £1,000 Protection</p>
+                    <p className="text-xl font-bold text-muted-foreground">Upgrade: Extra £1,000 Protection</p>
                   </div>
                 </div>
                 
