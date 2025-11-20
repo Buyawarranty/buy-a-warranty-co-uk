@@ -34,7 +34,8 @@ const EVWarranty = () => {
     const params = new URLSearchParams({
       step: '2',
       reg: data.regNumber,
-      mileage: data.mileage
+      mileage: data.mileage,
+      referrer: '/ev-warranty/'
     });
     
     // Add optional vehicle details if available

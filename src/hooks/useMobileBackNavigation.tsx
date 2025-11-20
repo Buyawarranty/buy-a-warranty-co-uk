@@ -57,8 +57,16 @@ export const useMobileBackNavigation = ({
     // Get the step from URL to determine if we're going back or forward
     const urlParams = new URLSearchParams(window.location.search);
     const urlStep = parseInt(urlParams.get('step') || '1');
+    const referrer = urlParams.get('referrer');
     
-    console.log('📱 URL step:', urlStep, 'Current step:', currentStep);
+    console.log('📱 URL step:', urlStep, 'Current step:', currentStep, 'Referrer:', referrer);
+    
+    // If on step 2 and going back, check for referrer
+    if (currentStep === 2 && urlStep < 2 && referrer) {
+      console.log('📱 Going back from step 2 with referrer, navigating to:', referrer);
+      window.location.href = referrer;
+      return;
+    }
     
     // If moving between internal steps (not leaving the site)
     if (urlStep >= 1 && urlStep <= totalSteps && urlStep !== currentStep) {
@@ -110,6 +118,14 @@ export const useMobileBackNavigation = ({
     // If we're on step 1 and trying to go back, allow it (user wants to leave)
     if (urlStep <= 1 && currentStep <= 1) {
       console.log('📱 On step 1, allowing natural back navigation');
+      
+      // Check if there's a referrer parameter to navigate back to
+      if (referrer) {
+        console.log('📱 Found referrer, navigating back to:', referrer);
+        window.location.href = referrer;
+        return;
+      }
+      
       return;
     }
     
