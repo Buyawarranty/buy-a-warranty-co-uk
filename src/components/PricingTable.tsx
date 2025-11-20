@@ -160,9 +160,6 @@ const PricingTable: React.FC<PricingTableProps> = ({
   const [summaryDismissed, setSummaryDismissed] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   
-  // Claim Limit Boost state
-  const [claimLimitBoostEnabled, setClaimLimitBoostEnabled] = useState(false);
-  
   // Fetch PDF documents from Supabase
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -407,7 +404,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
   // Reset summary dismissed state when user changes options
   useEffect(() => {
     setSummaryDismissed(false);
-  }, [selectedClaimLimit, paymentType, voluntaryExcess, selectedProtectionAddOns, claimLimitBoostEnabled]);
+  }, [selectedClaimLimit, paymentType, voluntaryExcess, selectedProtectionAddOns]);
 
   // Auto-include add-ons for 2-year and 3-year plans using imported utility
   useEffect(() => {
@@ -649,18 +646,10 @@ const PricingTable: React.FC<PricingTableProps> = ({
     return calculateAddOnPrice(selectedProtectionAddOns, paymentType, durationMonths);
   }, [paymentType, selectedProtectionAddOns]);
 
-  // Memoized claim limit boost price calculation
-  const claimLimitBoostPrice = useMemo(() => {
-    if (!claimLimitBoostEnabled) return 0;
-    const warrantyYears = paymentType === '12months' ? 1 : 
-                         paymentType === '24months' ? 2 : 3;
-    return 97 * warrantyYears; // £97 per year
-  }, [claimLimitBoostEnabled, paymentType]);
-
-  // Memoized total price calculation - should be base price + add-ons + boost for consistency
+  // Memoized total price calculation - should be base price + add-ons for consistency
   const totalPrice = useMemo(() => {
-    return basePlanPrice + addOnPrice + claimLimitBoostPrice;
-  }, [basePlanPrice, addOnPrice, claimLimitBoostPrice]);
+    return basePlanPrice + addOnPrice;
+  }, [basePlanPrice, addOnPrice]);
 
   // Memoized discounted base price for display
   const discountedBasePlanPrice = useMemo(() => {
@@ -673,10 +662,10 @@ const PricingTable: React.FC<PricingTableProps> = ({
     return discountedPrice;
   }, [basePlanPrice, paymentType]);
 
-  // Memoized total discounted price (with add-ons and boost)
+  // Memoized total discounted price (with add-ons)
   const totalDiscountedPrice = useMemo(() => {
-    return discountedBasePlanPrice + addOnPrice + claimLimitBoostPrice;
-  }, [discountedBasePlanPrice, addOnPrice, claimLimitBoostPrice]);
+    return discountedBasePlanPrice + addOnPrice;
+  }, [discountedBasePlanPrice, addOnPrice]);
 
   // Memoized monthly price calculation - always divide total by 12 for monthly payments
   const monthlyPrice = useMemo(() => {
@@ -867,7 +856,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
         discountedBasePrice = adjustedBasePrice - 200; // £200 discount for 3-year plans
       }
       
-      const totalPrice = discountedBasePrice + recurringAddonTotal + oneTimeAddonTotal + claimLimitBoostPrice;
+      const totalPrice = discountedBasePrice + recurringAddonTotal + oneTimeAddonTotal;
       
       // Don't allow progression if vehicle is too old
       if (vehicleAgeError) {
@@ -885,12 +874,9 @@ const PricingTable: React.FC<PricingTableProps> = ({
         discountedBasePrice,
         recurringAddonTotal,
         oneTimeAddonTotal,
-        claimLimitBoostPrice,
         totalPrice: totalPrice,
         voluntaryExcess,
         selectedClaimLimit,
-        claimLimitBoostEnabled,
-        boostedClaimLimit: claimLimitBoostEnabled && selectedClaimLimit ? selectedClaimLimit + 1000 : selectedClaimLimit,
         selectedAddOns: selectedAddOns[selectedPlan.id],
         protectionAddOns: selectedProtectionAddOns
       });
@@ -928,7 +914,7 @@ const PricingTable: React.FC<PricingTableProps> = ({
           voluntaryExcess,
           selectedAddOns: selectedAddOns[selectedPlan.id] || {},
           protectionAddOns: selectedProtectionAddOns,
-          claimLimit: claimLimitBoostEnabled && selectedClaimLimit ? selectedClaimLimit + 1000 : selectedClaimLimit
+          claimLimit: selectedClaimLimit
         }
       );
       
@@ -1742,75 +1728,6 @@ const PricingTable: React.FC<PricingTableProps> = ({
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-            </div>
-          </div>
-          
-          {/* Claim Limit Boost Card */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div className={`md:col-span-3 p-6 rounded-lg transition-all duration-300 border-2 ${
-              claimLimitBoostEnabled
-                ? 'bg-gradient-to-br from-green-50 to-green-100/50 border-green-500 shadow-lg shadow-green-500/30'
-                : 'bg-white border-gray-300 shadow-sm hover:shadow-md hover:border-green-300'
-            }`}>
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4 flex-1">
-                  <div className={`p-3 rounded-full transition-colors ${
-                    claimLimitBoostEnabled ? 'bg-success' : 'bg-gray-400'
-                  }`}>
-                    <Zap className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-xl font-bold text-foreground">Boost Your Cover</h3>
-                      <span className="text-xl font-bold text-success">+£1,000</span>
-                    </div>
-                    <p className="text-xl font-bold text-muted-foreground">Upgrade: Extra £1,000 Protection</p>
-                  </div>
-                </div>
-                
-                {/* Toggle Switch with green styling */}
-                <div className="flex items-center gap-3">
-                  <div className="text-right mr-2">
-                    <div className="text-lg font-bold text-foreground">£{claimLimitBoostPrice}</div>
-                    <div className="text-sm text-muted-foreground">£97/year</div>
-                  </div>
-                  <button
-                    onClick={() => setClaimLimitBoostEnabled(!claimLimitBoostEnabled)}
-                    className={`relative inline-flex h-10 w-20 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-success focus:ring-offset-2 ${
-                      claimLimitBoostEnabled ? 'bg-success' : 'bg-gray-300'
-                    }`}
-                    role="switch"
-                    aria-checked={claimLimitBoostEnabled}
-                  >
-                    <span
-                      className={`inline-flex items-center justify-center h-8 w-8 transform rounded-full bg-white shadow-lg transition-all duration-300 ${
-                        claimLimitBoostEnabled ? 'translate-x-11' : 'translate-x-1'
-                      }`}
-                    >
-                      {claimLimitBoostEnabled && (
-                        <Check className="w-5 h-5 text-success" strokeWidth={3} />
-                      )}
-                    </span>
-                  </button>
-                </div>
-              </div>
-              
-              {/* Dynamic Boosted Limit Display */}
-              {claimLimitBoostEnabled && selectedClaimLimit && (
-                <div className="mt-4 p-4 bg-white rounded-lg border-2 border-success/30">
-                  <div className="flex items-center justify-center gap-4">
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground mb-1">Original Limit</div>
-                      <div className="text-xl font-bold text-foreground">£{selectedClaimLimit.toLocaleString()}</div>
-                    </div>
-                    <ArrowRight className="w-6 h-6 text-success" />
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground mb-1">Boosted Limit</div>
-                      <div className="text-2xl font-bold text-success">£{(selectedClaimLimit + 1000).toLocaleString()}</div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
