@@ -412,7 +412,7 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
               <div className="space-y-2 mb-2 sm:mb-4">
                 <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black leading-tight">
                   <span className="text-gray-900">We've got you </span>
-                  <span className="text-brand-orange">covered</span>
+                  <span className="text-brand-orange">covered!</span>
                 </h1>
               </div>
 
