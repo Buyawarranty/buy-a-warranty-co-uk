@@ -555,14 +555,16 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                   </Button>
                   
                   <Button 
-                    className="w-full font-medium text-sm bg-white border-2 border-gray-400 text-gray-700 hover:bg-gray-100 hover:border-gray-500"
+                    type="button"
+                    variant="outline"
+                    className="w-full font-medium text-sm py-2.5 border-2"
                     onClick={(e) => {
                       e.stopPropagation();
                       const mailto = `mailto:?subject=Car Warranty Quote - ${vehicleData?.regNumber || 'Vehicle'}&body=I'd like to share this warranty quote with you:%0D%0A%0D%0APlan: Platinum Complete Plan%0D%0ADuration: ${option.title}%0D%0AMonthly Payment: £${option.monthlyPrice}%0D%0ATotal Cost: £${option.totalPrice}%0D%0A%0D%0AGet your own quote at: https://buyawarranty.co.uk`;
                       window.location.href = mailto;
                     }}
                   >
-                    Email Quote
+                    📧 Email Quote
                   </Button>
                 </div>
                 
