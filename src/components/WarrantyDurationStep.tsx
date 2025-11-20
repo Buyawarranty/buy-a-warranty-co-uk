@@ -539,7 +539,7 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                 </div>
                 
                 {/* Select Button */}
-                <div className="mt-4">
+                <div className="mt-4 space-y-2">
                   <Button 
                     className={`w-full font-semibold ${
                       selectedPaymentType === option.id 
@@ -549,6 +549,17 @@ const WarrantyDurationStep: React.FC<WarrantyDurationStepProps> = ({
                     onClick={() => setSelectedPaymentType(option.id)}
                   >
                     {selectedPaymentType === option.id ? 'Selected' : 'Select'}
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    className="w-full font-medium text-sm border-gray-300 hover:bg-gray-50"
+                    onClick={() => {
+                      const mailto = `mailto:?subject=Car Warranty Quote - ${vehicleData?.regNumber || 'Vehicle'}&body=I'd like to share this warranty quote with you:%0D%0A%0D%0APlan: Platinum Complete Plan%0D%0ADuration: ${option.title}%0D%0AMonthly Payment: £${option.monthlyPrice}%0D%0ATotal Cost: £${option.totalPrice}%0D%0A%0D%0AGet your own quote at: https://buyawarranty.co.uk`;
+                      window.location.href = mailto;
+                    }}
+                  >
+                    Email Quote
                   </Button>
                 </div>
                 
