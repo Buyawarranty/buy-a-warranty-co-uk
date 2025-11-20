@@ -97,6 +97,18 @@ const PricingTable: React.FC<PricingTableProps> = ({
   previousSelectedAddOns,
   previousProtectionAddOns
 }) => {
+  // Email quote dialog states
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [emailForQuote, setEmailForQuote] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [selectedPlanForEmail, setSelectedPlanForEmail] = useState<{
+    title: string;
+    monthlyPrice: number;
+    totalPrice: number;
+    paymentType: string;
+  } | null>(null);
+
   const [plans, setPlans] = useState<Plan[]>([]);
   const [paymentType, setPaymentType] = useState<'12months' | '24months' | '36months' | null>(previousPaymentType || '24months');
   // If previousVoluntaryExcess is explicitly set (including 0), use it; otherwise default to £100
@@ -718,6 +730,74 @@ const PricingTable: React.FC<PricingTableProps> = ({
       ...prev,
       [planId]: !prev[planId]
     }));
+  };
+
+  const handleEmailQuote = (planData: { title: string; monthlyPrice: number; totalPrice: number; paymentType: string }) => {
+    setSelectedPlanForEmail(planData);
+    setShowEmailDialog(true);
+    setEmailForQuote('');
+    setEmailError('');
+  };
+
+  const validateEmail = (email: string) => {
+    if (!email.trim()) {
+      setEmailError('Email address is required');
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+
+  const handleSendQuoteEmail = async () => {
+    if (!validateEmail(emailForQuote) || !selectedPlanForEmail) {
+      return;
+    }
+
+    setSendingEmail(true);
+
+    try {
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-quote-email', {
+        body: {
+          email: emailForQuote.trim(),
+          firstName: '',
+          lastName: '',
+          vehicleData: {
+            regNumber: vehicleData.regNumber,
+            make: vehicleData.make,
+            model: vehicleData.model,
+            year: vehicleData.year,
+            mileage: vehicleData.mileage,
+            fuelType: vehicleData.fuelType,
+            transmission: vehicleData.transmission,
+            vehicleType: vehicleData.vehicleType
+          },
+          selectedPlan: {
+            name: 'Platinum Complete Plan',
+            price: selectedPlanForEmail.totalPrice,
+            paymentType: selectedPlanForEmail.paymentType
+          }
+        }
+      });
+
+      if (emailError) {
+        console.error('Error sending quote email:', emailError);
+        toast.error('Failed to send email. Please try again.');
+      } else {
+        console.log('Quote email sent successfully:', emailResponse);
+        toast.success('Quote sent to your email!');
+        setShowEmailDialog(false);
+        setEmailForQuote('');
+      }
+    } catch (error) {
+      console.error('Error sending quote email:', error);
+      toast.error('Failed to send email. Please try again.');
+    } finally {
+      setSendingEmail(false);
+    }
   };
 
   const handleSelectPlan = async () => {
@@ -1923,8 +2003,12 @@ const PricingTable: React.FC<PricingTableProps> = ({
                      type="button"
                      onClick={(e) => {
                        e.stopPropagation();
-                       const mailto = `mailto:?subject=Car Warranty Quote - ${vehicleData?.regNumber || 'Vehicle'}&body=I'd like to share this warranty quote with you:%0D%0A%0D%0APlan: Platinum Complete Plan%0D%0ADuration: ${option.title}%0D%0AMonthly Payment: £${displayedMonthlyPrice}%0D%0ATotal Cost: £${discountedPrice}%0D%0A%0D%0AGet your own quote at: https://buyawarranty.co.uk`;
-                       window.location.href = mailto;
+                       handleEmailQuote({
+                         title: option.title,
+                         monthlyPrice: displayedMonthlyPrice,
+                         totalPrice: discountedPrice,
+                         paymentType: option.id
+                       });
                      }}
                      className="w-full py-3 text-base font-semibold bg-white border-2 border-gray-500 text-gray-800 hover:bg-gray-50 hover:border-gray-600"
                    >
@@ -2222,6 +2306,87 @@ const PricingTable: React.FC<PricingTableProps> = ({
           </div>
         </div>
       )}
+
+      {/* Email Quote Dialog */}
+      <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold">Email Your Quote</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-gray-600">
+              Enter your email address and we'll send you this warranty quote instantly.
+            </p>
+            
+            {selectedPlanForEmail && (
+              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Plan:</span>
+                  <span className="font-medium">Platinum Complete</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Duration:</span>
+                  <span className="font-medium">{selectedPlanForEmail.title}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Monthly Payment:</span>
+                  <span className="font-medium">£{selectedPlanForEmail.monthlyPrice}/month</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Total Cost:</span>
+                  <span className="font-medium text-green-600">£{selectedPlanForEmail.totalPrice}</span>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <label htmlFor="email-quote" className="text-sm font-medium">
+                Email Address
+              </label>
+              <input
+                id="email-quote"
+                type="email"
+                value={emailForQuote}
+                onChange={(e) => {
+                  setEmailForQuote(e.target.value);
+                  if (emailError) setEmailError('');
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSendQuoteEmail();
+                  }
+                }}
+                placeholder="your.email@example.com"
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+                  emailError ? 'border-red-500' : 'border-gray-300'
+                }`}
+                disabled={sendingEmail}
+              />
+              {emailError && (
+                <p className="text-sm text-red-500">{emailError}</p>
+              )}
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowEmailDialog(false)}
+                disabled={sendingEmail}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSendQuoteEmail}
+                disabled={sendingEmail || !emailForQuote.trim()}
+                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                {sendingEmail ? 'Sending...' : 'Send Quote'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );
