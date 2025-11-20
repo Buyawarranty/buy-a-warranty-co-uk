@@ -1903,13 +1903,13 @@ const PricingTable: React.FC<PricingTableProps> = ({
                        </div>
                    </div>
                   
-                   {/* Select Button */}
+                    {/* Select Button */}
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();
                         setPaymentType(option.id as '12months' | '24months' | '36months');
                       }}
-                      className={`w-full py-3 text-lg font-semibold transition-all ${
+                      className={`w-full py-3 text-lg font-semibold transition-all mb-3 ${
                         paymentType === option.id
                           ? 'bg-black hover:bg-gray-800 text-white'
                           : 'bg-orange-500 hover:bg-orange-600 text-white'
@@ -1917,6 +1917,19 @@ const PricingTable: React.FC<PricingTableProps> = ({
                     >
                       {paymentType === option.id ? 'Selected' : 'Select'}
                     </Button>
+                   
+                   {/* Email Quote Button */}
+                   <Button
+                     type="button"
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       const mailto = `mailto:?subject=Car Warranty Quote - ${vehicleData?.regNumber || 'Vehicle'}&body=I'd like to share this warranty quote with you:%0D%0A%0D%0APlan: Platinum Complete Plan%0D%0ADuration: ${option.title}%0D%0AMonthly Payment: £${displayedMonthlyPrice}%0D%0ATotal Cost: £${discountedPrice}%0D%0A%0D%0AGet your own quote at: https://buyawarranty.co.uk`;
+                       window.location.href = mailto;
+                     }}
+                     className="w-full py-3 text-base font-semibold bg-white border-2 border-gray-500 text-gray-800 hover:bg-gray-50 hover:border-gray-600"
+                   >
+                     📧 Email Quote
+                   </Button>
                    
                    {/* Footer note */}
                    <div className="mt-3 text-center">
