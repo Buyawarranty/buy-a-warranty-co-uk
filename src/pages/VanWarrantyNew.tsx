@@ -29,7 +29,8 @@ const VanWarrantyNew = () => {
     const params = new URLSearchParams({
       step: '2',
       reg: data.regNumber,
-      mileage: data.mileage
+      mileage: data.mileage,
+      referrer: '/van-warranty/'
     });
     
     // Add optional vehicle details if available
