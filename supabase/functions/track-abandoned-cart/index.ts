@@ -81,13 +81,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`📊 Tracking abandoned cart for: ${cartData.email} at step ${cartData.step_abandoned}`);
 
-    // Check if we already have a recent abandoned cart entry for this email and step
+    // Check if we already have a recent abandoned cart entry for this email (any step)
     const { data: existingCart, error: checkError } = await supabase
       .from('abandoned_carts')
-      .select('id, created_at')
+      .select('id, created_at, step_abandoned')
       .eq('email', cartData.email)
-      .eq('step_abandoned', cartData.step_abandoned)
-      .gte('created_at', new Date(Date.now() - 10 * 60 * 1000).toISOString()) // Last 10 minutes
+      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
       .order('created_at', { ascending: false })
       .limit(1);
 
@@ -111,6 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
           plan_name: cartData.plan_name,
           payment_type: cartData.payment_type,
           vehicle_type: cartData.vehicle_type,
+          step_abandoned: cartData.step_abandoned, // Update to the latest step reached
           // Store extended data in metadata JSON
           cart_metadata: {
             total_price: cartData.total_price,
@@ -128,7 +128,7 @@ const handler = async (req: Request): Promise<Response> => {
         throw updateError;
       }
 
-      console.log('Updated existing abandoned cart entry for:', cartData.email);
+      console.log(`Updated existing abandoned cart entry for: ${cartData.email} (step ${existingCart[0].step_abandoned} → ${cartData.step_abandoned})`);
     } else {
       // Create new abandoned cart entry with extended metadata
       const { error: insertError } = await supabase
