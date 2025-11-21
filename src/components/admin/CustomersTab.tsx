@@ -3713,10 +3713,10 @@ Please log in and change your password after first login.`;
                     />
                   </TableHead>
                   <TableHead>Date</TableHead>
+                  <TableHead>Phone</TableHead>
                   <TableHead>Contact Status</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
                   <TableHead>Vehicle</TableHead>
                   <TableHead>Mileage</TableHead>
                   <TableHead>Plan</TableHead>
@@ -3762,6 +3762,7 @@ Please log in and change your password after first login.`;
                           {format(new Date(customer.created_at), 'HH:mm')}
                         </div>
                       </TableCell>
+                      <TableCell>{customer.phone || 'N/A'}</TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
                           <div 
@@ -3802,7 +3803,6 @@ Please log in and change your password after first login.`;
                           </Button>
                         </div>
                       </TableCell>
-                      <TableCell>{customer.phone || 'N/A'}</TableCell>
                       <TableCell>
                         <div>
                           <div>{customer.vehicle_reg || 'N/A'}</div>
