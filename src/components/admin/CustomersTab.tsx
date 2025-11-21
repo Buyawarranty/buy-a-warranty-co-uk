@@ -711,6 +711,29 @@ export const CustomersTab = () => {
     }
   };
 
+  const handleBulkDeleteIncompleteCustomers = async () => {
+    try {
+      const { error } = await supabase
+        .from('abandoned_carts')
+        .delete()
+        .in('id', selectedIncompleteCustomers);
+
+      if (error) {
+        console.error('Error deleting incomplete customers:', error);
+        throw error;
+      }
+
+      toast.success(`Successfully deleted ${selectedIncompleteCustomers.length} incomplete customer${selectedIncompleteCustomers.length > 1 ? 's' : ''}`);
+      
+      // Clear selection and refresh
+      setSelectedIncompleteCustomers([]);
+      await fetchIncompleteCustomers();
+    } catch (error) {
+      console.error('Error deleting incomplete customers:', error);
+      toast.error('Failed to delete incomplete customers');
+    }
+  };
+
   const fetchDeletedCustomers = async () => {
     try {
       setDeletedLoading(true);
@@ -3645,6 +3668,35 @@ Please log in and change your password after first login.`;
                     <SelectItem value="not_contacted">Mark as Not Contacted</SelectItem>
                   </SelectContent>
                 </Select>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="flex items-center space-x-2"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Delete</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete {selectedIncompleteCustomers.length} Incomplete Customer{selectedIncompleteCustomers.length > 1 ? 's' : ''}?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete {selectedIncompleteCustomers.length} incomplete customer record{selectedIncompleteCustomers.length > 1 ? 's' : ''}. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleBulkDeleteIncompleteCustomers}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Delete {selectedIncompleteCustomers.length} Customer{selectedIncompleteCustomers.length > 1 ? 's' : ''}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             )}
           </div>
