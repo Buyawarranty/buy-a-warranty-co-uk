@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
@@ -687,6 +688,26 @@ export const CustomersTab = () => {
       toast.error('Failed to load incomplete customers');
     } finally {
       setIncompleteLoading(false);
+    }
+  };
+
+  const handleDeleteIncompleteCustomer = async (customerId: string) => {
+    try {
+      const { error } = await supabase
+        .from('abandoned_carts')
+        .delete()
+        .eq('id', customerId);
+
+      if (error) {
+        console.error('Error deleting incomplete customer:', error);
+        throw error;
+      }
+
+      toast.success('Incomplete customer deleted successfully');
+      await fetchIncompleteCustomers();
+    } catch (error) {
+      console.error('Error deleting incomplete customer:', error);
+      toast.error('Failed to delete incomplete customer');
     }
   };
 
@@ -3893,6 +3914,36 @@ The Buy A Warranty Team
                           >
                             <Phone className="h-4 w-4" />
                           </Button>
+
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                title="Delete incomplete customer"
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Incomplete Customer?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete this incomplete customer record for {customer.full_name || customer.email}. This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteIncompleteCustomer(customer.id)}
+                                  className="bg-red-600 hover:bg-red-700"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </TableCell>
                     </TableRow>
