@@ -3660,6 +3660,7 @@ Please log in and change your password after first login.`;
                       aria-label="Select all customers"
                     />
                   </TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Contact Status</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Email</TableHead>
@@ -3668,7 +3669,6 @@ Please log in and change your password after first login.`;
                   <TableHead>Mileage</TableHead>
                   <TableHead>Plan</TableHead>
                   <TableHead>Step Abandoned</TableHead>
-                  <TableHead>Date</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -3701,6 +3701,14 @@ Please log in and change your password after first login.`;
                           onCheckedChange={() => toggleSelectCustomer(customer.id)}
                           aria-label={`Select ${customer.full_name || customer.email}`}
                         />
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          {format(new Date(customer.created_at), 'MMM dd, yyyy')}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {format(new Date(customer.created_at), 'HH:mm')}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
@@ -3775,14 +3783,6 @@ Please log in and change your password after first login.`;
                         <Badge variant={customer.step_abandoned === 1 ? 'destructive' : 'secondary'}>
                           Step {customer.step_abandoned}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {format(new Date(customer.created_at), 'MMM dd, yyyy')}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {format(new Date(customer.created_at), 'HH:mm')}
-                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
