@@ -275,7 +275,8 @@ const AdminDashboard = () => {
       {/* Header with same navigation as homepage */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
+          {/* First line - Standard navigation */}
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center">
               <Link to="/" className="hover:opacity-80 transition-opacity">
@@ -285,12 +286,10 @@ const AdminDashboard = () => {
             
             {/* Navigation - Hidden on mobile, visible on lg+ */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-              <Link to="/what-is-covered/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">What's Covered</Link>
-              <Link to="/make-a-claim/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Make a Claim</Link>
-              <Link to="/faq/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">FAQs</Link>
-              <Link to="/contact-us/" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Contact Us</Link>
-              <Link to="/customer-dashboard" className="text-gray-700 hover:text-gray-900 font-medium text-sm xl:text-base">Customer Dashboard</Link>
-              <span className="text-orange-500 font-semibold text-sm xl:text-base">Admin Dashboard</span>
+              <Link to="/what-is-covered/" className="text-gray-700 hover:text-gray-900 font-medium text-sm">What's Covered</Link>
+              <Link to="/make-a-claim/" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Make a Claim</Link>
+              <Link to="/faq/" className="text-gray-700 hover:text-gray-900 font-medium text-sm">FAQs</Link>
+              <Link to="/contact-us/" className="text-gray-700 hover:text-gray-900 font-medium text-sm">Contact Us</Link>
             </nav>
 
             {/* Desktop CTA Buttons - Show on desktop */}
@@ -311,15 +310,6 @@ const AdminDashboard = () => {
               >
                 Get my quote
               </Button>
-              <button
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  navigate('/auth');
-                }}
-                className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
-              >
-                Sign Out
-              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -422,6 +412,20 @@ const AdminDashboard = () => {
                 </div>
               </SheetContent>
             </Sheet>
+          </div>
+          
+          {/* Second line - Admin-specific navigation */}
+          <div className="hidden lg:flex items-center justify-center space-x-6 py-2 border-t border-gray-200">
+            <span className="text-orange-500 font-semibold text-sm">Admin Dashboard</span>
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate('/auth');
+              }}
+              className="bg-red-600 text-white px-3 py-1.5 rounded-lg hover:bg-red-700 transition-colors text-sm"
+            >
+              Sign Out
+            </button>
           </div>
         </div>
       </header>
