@@ -927,7 +927,7 @@ const CarExtendedWarranty: React.FC = () => {
                 { name: 'Peugeot', logo: 'https://logo.clearbit.com/peugeot.com' },
                 { name: 'Renault', logo: renaultLogo },
                 { name: 'SEAT', logo: seatLogo },
-                { name: 'Škoda', logo: skodaLogo },
+                { name: 'Škoda', logo: skodaLogo, link: '/car-extended-warranty/skoda/' },
                 { name: 'Smart', logo: 'https://logo.clearbit.com/smart.com' },
                 { name: 'SsangYong', logo: ssangyongLogo },
                 { name: 'Subaru', logo: 'https://logo.clearbit.com/subaru.com' },
