@@ -79,7 +79,7 @@ const handler = async (req: Request): Promise<Response> => {
         }
 
         // Determine which trigger type to send next based on time elapsed and previous emails
-        // Email sequence: 1st at 1 hour, 2nd at 24 hours, 3rd at 72 hours
+        // Email sequence: 1st at 5 minutes, 2nd at 24 hours, 3rd at 72 hours
         let triggerType: 'pricing_page_view' | 'plan_selected' | 'pricing_page_view_24h' | 'pricing_page_view_72h' | null = null;
         let requiredDelayMinutes = 0;
         
@@ -87,9 +87,9 @@ const handler = async (req: Request): Promise<Response> => {
         const hoursElapsed = (Date.now() - cartTime) / (1000 * 60 * 60);
 
         if (!sentEmails || sentEmails.length === 0) {
-          // First email: send after 1 hour
+          // First email: send after 5 minutes
           triggerType = cart.step_abandoned === 4 ? 'plan_selected' : 'pricing_page_view';
-          requiredDelayMinutes = 60;
+          requiredDelayMinutes = 5;
         } else if (sentEmails.length === 1) {
           // Second email: send after 24 hours from cart creation
           triggerType = 'pricing_page_view_24h';
