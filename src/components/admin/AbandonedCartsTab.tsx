@@ -19,7 +19,8 @@ import {
   Clock,
   AlertCircle,
   MapPin,
-  Shield
+  Shield,
+  Trash2
 } from 'lucide-react';
 
 interface AbandonedCart {
@@ -173,6 +174,27 @@ export const AbandonedCartsTab: React.FC = () => {
       toast.error('Failed to save notes');
     } finally {
       setSavingNotes(false);
+    }
+  };
+
+  const deleteCart = async (cartId: string) => {
+    if (!confirm('Are you sure you want to delete this abandoned cart? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('abandoned_carts')
+        .delete()
+        .eq('id', cartId);
+
+      if (error) throw error;
+
+      toast.success('Abandoned cart deleted successfully');
+      fetchAbandonedCarts();
+    } catch (error) {
+      console.error('Error deleting cart:', error);
+      toast.error('Failed to delete cart');
     }
   };
 
@@ -526,6 +548,16 @@ export const AbandonedCartsTab: React.FC = () => {
                       </Button>
                     </>
                   )}
+
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-red-600 border-red-600 hover:bg-red-50"
+                    onClick={() => deleteCart(cart.id)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete
+                  </Button>
                 </div>
               </div>
             </CardContent>
