@@ -60,58 +60,62 @@ const handler = async (req: Request): Promise<Response> => {
           continue;
         }
         
-        // Check if ANY email has already been sent for this cart
-        const { data: anyExistingEmails, error: checkAnyError } = await supabase
+        // Get all emails sent for this cart to determine next email to send
+        const { data: sentEmails, error: checkError } = await supabase
           .from('triggered_emails_log')
-          .select('*')
+          .select('trigger_type, sent_at')
           .eq('cart_id', cart.id)
-          .limit(1);
+          .order('sent_at', { ascending: true });
 
-        if (checkAnyError) {
-          console.error('Error checking existing emails:', checkAnyError);
+        if (checkError) {
+          console.error('Error checking existing emails:', checkError);
           continue;
         }
 
-        if (anyExistingEmails && anyExistingEmails.length > 0) {
-          console.log(`Email already sent for cart ${cart.id}, skipping all triggers for this cart`);
+        // Check if we've already sent 3 emails (maximum)
+        if (sentEmails && sentEmails.length >= 3) {
+          console.log(`Maximum 3 emails already sent for cart ${cart.id}, skipping`);
           continue;
         }
 
-        // Determine trigger type based on step - send only ONE email per cart
+        // Determine which trigger type to send next based on time elapsed and previous emails
+        // Email sequence: 1st at 1 hour, 2nd at 24 hours, 3rd at 72 hours
         let triggerType: 'pricing_page_view' | 'plan_selected' | 'pricing_page_view_24h' | 'pricing_page_view_72h' | null = null;
+        let requiredDelayMinutes = 0;
         
-        if (cart.step_abandoned === 3) {
-          triggerType = 'pricing_page_view';
-        } else if (cart.step_abandoned === 4) {
-          triggerType = 'plan_selected';
-        } else {
-          continue; // Skip if not a step we want to send emails for
+        const cartTime = new Date(cart.created_at).getTime();
+        const hoursElapsed = (Date.now() - cartTime) / (1000 * 60 * 60);
+
+        if (!sentEmails || sentEmails.length === 0) {
+          // First email: send after 1 hour
+          triggerType = cart.step_abandoned === 4 ? 'plan_selected' : 'pricing_page_view';
+          requiredDelayMinutes = 60;
+        } else if (sentEmails.length === 1) {
+          // Second email: send after 24 hours from cart creation
+          triggerType = 'pricing_page_view_24h';
+          requiredDelayMinutes = 24 * 60;
+        } else if (sentEmails.length === 2) {
+          // Third email: send after 72 hours from cart creation
+          triggerType = 'pricing_page_view_72h';
+          requiredDelayMinutes = 72 * 60;
         }
 
-        // Process only the single trigger type for this cart
+        // Skip if not a step we want to send emails for
+        if (!triggerType || (cart.step_abandoned !== 3 && cart.step_abandoned !== 4)) {
+          continue;
+        }
+
+        // Check if enough time has passed since cart was abandoned
+        const delayMs = requiredDelayMinutes * 60 * 1000;
+        const shouldSendAt = cartTime + delayMs;
+        
+        if (Date.now() < shouldSendAt) {
+          console.log(`Not yet time to send email ${sentEmails?.length + 1}/3 for cart ${cart.id} (${hoursElapsed.toFixed(1)}h elapsed, need ${requiredDelayMinutes / 60}h)`);
+          continue;
+        }
+
+        // Send the email
         try {
-          // Get the template to check delay time
-          const { data: template, error: templateError } = await supabase
-            .from('abandoned_cart_email_templates')
-            .select('send_delay_minutes')
-            .eq('trigger_type', triggerType)
-            .eq('is_active', true)
-            .single();
-
-          if (templateError || !template) {
-            console.log(`No template found for trigger type: ${triggerType}`);
-            continue;
-          }
-
-          // Check if enough time has passed since cart was abandoned
-          const cartTime = new Date(cart.created_at).getTime();
-          const delayMs = template.send_delay_minutes * 60 * 1000;
-          const shouldSendAt = cartTime + delayMs;
-          
-          if (Date.now() < shouldSendAt) {
-            console.log(`Not yet time to send ${triggerType} email for cart ${cart.id}`);
-            continue;
-          }
 
             // Send the email
             const emailPayload = {
@@ -133,7 +137,7 @@ const handler = async (req: Request): Promise<Response> => {
               paymentType: cart.payment_type
             };
 
-            console.log('Sending abandoned cart email for:', emailPayload);
+            console.log(`Sending abandoned cart email ${(sentEmails?.length || 0) + 1}/3 for:`, emailPayload);
 
             const emailResponse = await supabase.functions.invoke('send-abandoned-cart-email', {
               body: emailPayload
@@ -143,7 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
             console.error('Error sending email:', emailResponse.error);
             errorsCount++;
           } else {
-            console.log('Email sent successfully for cart:', cart.id);
+            console.log(`Email ${(sentEmails?.length || 0) + 1}/3 sent successfully for cart: ${cart.id}`);
             emailsSent++;
           }
         } catch (innerError) {
