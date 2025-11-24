@@ -140,9 +140,9 @@ interface Customer {
   tyre_cover?: boolean;
   wear_tear?: boolean;
   europe_cover?: boolean;
-  transfer_cover?: boolean;
-  breakdown_recovery?: boolean;
-  vehicle_rental?: boolean;
+  transfer_fee?: boolean;
+  breakdown_cover?: boolean;
+  rental_car?: boolean;
   mot_fee?: boolean;
   claim_limit?: number;
   mot_repair?: boolean;
@@ -490,9 +490,9 @@ export const CustomersTab = () => {
             tyre_cover,
             wear_tear,
             europe_cover,
-            transfer_cover,
-            breakdown_recovery,
-            vehicle_rental,
+            transfer_fee,
+            breakdown_cover,
+            rental_car,
             claim_limit,
             mot_repair,
             lost_key,
@@ -574,9 +574,9 @@ export const CustomersTab = () => {
           tyre_cover: false,
           wear_tear: false,
           europe_cover: false,
-          transfer_cover: false,
-          breakdown_recovery: false,
-          vehicle_rental: false,
+          transfer_fee: false,
+          breakdown_cover: false,
+          rental_car: false,
           mot_fee: false,
           mot_repair: false,
           lost_key: false,
@@ -681,8 +681,36 @@ export const CustomersTab = () => {
       }
 
       console.log('✅ Found incomplete customers:', data?.length || 0);
-      setIncompleteCustomers(data || []);
-      setFilteredIncompleteCustomers(data || []);
+      
+      // Transform abandoned_carts data to match IncompleteCustomer interface
+      const transformedData: IncompleteCustomer[] = (data || []).map((cart: any) => {
+        const vehicleData = cart.vehicle_data || {};
+        return {
+          id: cart.id,
+          email: cart.email,
+          full_name: cart.first_name && cart.last_name ? `${cart.first_name} ${cart.last_name}` : cart.first_name || cart.last_name || undefined,
+          phone: cart.phone,
+          vehicle_reg: vehicleData.regNumber || undefined,
+          vehicle_make: vehicleData.make || undefined,
+          vehicle_model: vehicleData.model || undefined,
+          vehicle_year: vehicleData.year || undefined,
+          mileage: vehicleData.mileage?.toString() || undefined,
+          plan_name: vehicleData.planType || undefined,
+          payment_type: vehicleData.paymentType || undefined,
+          vehicle_type: vehicleData.vehicleType || undefined,
+          step_abandoned: parseInt(cart.step_abandoned) || 2,
+          created_at: cart.created_at,
+          updated_at: cart.updated_at,
+          contact_status: cart.contact_status || 'not_contacted',
+          contact_notes: cart.contact_notes,
+          last_contacted_at: cart.last_contacted_at,
+          contacted_by: undefined,
+          cart_metadata: vehicleData
+        };
+      });
+      
+      setIncompleteCustomers(transformedData);
+      setFilteredIncompleteCustomers(transformedData);
     } catch (error) {
       console.error('Error fetching incomplete customers:', error);
       toast.error('Failed to load incomplete customers');
@@ -757,9 +785,9 @@ export const CustomersTab = () => {
             tyre_cover,
             wear_tear,
             europe_cover,
-            transfer_cover,
-            breakdown_recovery,
-            vehicle_rental,
+            transfer_fee,
+            breakdown_cover,
+            rental_car,
             claim_limit,
             mot_repair,
             lost_key,
@@ -1093,9 +1121,9 @@ export const CustomersTab = () => {
           tyre_cover: editingCustomer.tyre_cover,
           wear_tear: editingCustomer.wear_tear,
           europe_cover: editingCustomer.europe_cover,
-          transfer_cover: editingCustomer.transfer_cover,
-          breakdown_recovery: editingCustomer.breakdown_recovery,
-          vehicle_rental: editingCustomer.vehicle_rental,
+          transfer_fee: editingCustomer.transfer_fee,
+          breakdown_cover: editingCustomer.breakdown_cover,
+          rental_car: editingCustomer.rental_car,
           mot_repair: editingCustomer.mot_repair,
           lost_key: editingCustomer.lost_key,
           consequential: editingCustomer.consequential
@@ -1146,9 +1174,9 @@ export const CustomersTab = () => {
             tyre_cover: editingCustomer.tyre_cover,
             wear_tear: editingCustomer.wear_tear,
             europe_cover: editingCustomer.europe_cover,
-            transfer_cover: editingCustomer.transfer_cover,
-            breakdown_recovery: editingCustomer.breakdown_recovery,
-            vehicle_rental: editingCustomer.vehicle_rental,
+            transfer_fee: editingCustomer.transfer_fee,
+            breakdown_cover: editingCustomer.breakdown_cover,
+            rental_car: editingCustomer.rental_car,
             mot_repair: editingCustomer.mot_repair,
             lost_key: editingCustomer.lost_key,
             consequential: editingCustomer.consequential,
@@ -2818,9 +2846,9 @@ Please log in and change your password after first login.`;
                                       </div>
                                       <div className="flex items-center space-x-2">
                                         <Checkbox 
-                                          id="edit-breakdown-recovery"
-                                          checked={editingCustomer.breakdown_recovery || false}
-                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, breakdown_recovery: !!checked })}
+                                          id="edit-breakdown-cover"
+                                          checked={editingCustomer.breakdown_cover || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, breakdown_cover: !!checked })}
                                         />
                                         <Label htmlFor="edit-breakdown-recovery" className="font-normal cursor-pointer">Breakdown Recovery</Label>
                                       </div>
@@ -2850,19 +2878,19 @@ Please log in and change your password after first login.`;
                                       </div>
                                       <div className="flex items-center space-x-2">
                                         <Checkbox 
-                                          id="edit-vehicle-rental"
-                                          checked={editingCustomer.vehicle_rental || false}
-                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, vehicle_rental: !!checked })}
+                                          id="edit-rental-car"
+                                          checked={editingCustomer.rental_car || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, rental_car: !!checked })}
                                         />
-                                        <Label htmlFor="edit-vehicle-rental" className="font-normal cursor-pointer">Vehicle Rental</Label>
+                                        <Label htmlFor="edit-rental-car" className="font-normal cursor-pointer">Vehicle Rental</Label>
                                       </div>
                                       <div className="flex items-center space-x-2">
                                         <Checkbox 
-                                          id="edit-transfer-cover"
-                                          checked={editingCustomer.transfer_cover || false}
-                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, transfer_cover: !!checked })}
+                                          id="edit-transfer-fee"
+                                          checked={editingCustomer.transfer_fee || false}
+                                          onCheckedChange={(checked) => setEditingCustomer({ ...editingCustomer, transfer_fee: !!checked })}
                                         />
-                                        <Label htmlFor="edit-transfer-cover" className="font-normal cursor-pointer">Transfer Cover</Label>
+                                        <Label htmlFor="edit-transfer-fee" className="font-normal cursor-pointer">Transfer Cover</Label>
                                       </div>
                                       <div className="flex items-center space-x-2">
                                         <Checkbox 
@@ -3032,9 +3060,9 @@ Please log in and change your password after first login.`;
                                                 tyre_cover={editingCustomer.tyre_cover}
                                                 wear_tear={editingCustomer.wear_tear}
                                                 europe_cover={editingCustomer.europe_cover}
-                                                transfer_cover={editingCustomer.transfer_cover}
-                                                breakdown_recovery={editingCustomer.breakdown_recovery}
-                                                vehicle_rental={editingCustomer.vehicle_rental}
+                                                transfer_fee={editingCustomer.transfer_fee}
+                                                breakdown_cover={editingCustomer.breakdown_cover}
+                                                rental_car={editingCustomer.rental_car}
                                                 mot_repair={editingCustomer.mot_repair}
                                                 lost_key={editingCustomer.lost_key}
                                                 consequential={editingCustomer.consequential}

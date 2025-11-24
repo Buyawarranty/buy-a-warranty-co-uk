@@ -120,7 +120,33 @@ export const AbandonedCartsTab: React.FC = () => {
 
       if (error) throw error;
 
-      setCarts((data || []) as AbandonedCart[]);
+      // Transform database records to match AbandonedCart interface
+      const transformedData: AbandonedCart[] = (data || []).map((cart: any) => {
+        const vehicleData = cart.vehicle_data || {};
+        return {
+          id: cart.id,
+          full_name: cart.first_name && cart.last_name ? `${cart.first_name} ${cart.last_name}` : cart.first_name || cart.last_name || null,
+          email: cart.email,
+          phone: cart.phone,
+          vehicle_reg: vehicleData.regNumber || null,
+          vehicle_make: vehicleData.make || null,
+          vehicle_model: vehicleData.model || null,
+          vehicle_year: vehicleData.year || null,
+          mileage: vehicleData.mileage?.toString() || null,
+          plan_name: vehicleData.planType || null,
+          payment_type: vehicleData.paymentType || null,
+          vehicle_type: vehicleData.vehicleType || null,
+          step_abandoned: parseInt(cart.step_abandoned) || 2,
+          contact_status: cart.contact_status || 'not_contacted',
+          contact_notes: cart.contact_notes,
+          created_at: cart.created_at,
+          updated_at: cart.updated_at,
+          last_contacted_at: cart.last_contacted_at,
+          contacted_by: null,
+          cart_metadata: vehicleData
+        };
+      });
+      setCarts(transformedData);
       setNewCartsCount(0);
     } catch (error) {
       console.error('Error fetching abandoned carts:', error);
