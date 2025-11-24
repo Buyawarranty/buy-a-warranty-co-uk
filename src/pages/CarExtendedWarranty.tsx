@@ -355,121 +355,130 @@ const CarExtendedWarranty: React.FC = () => {
               </Button>
             </div>
 
-            {/* Hero Quote Form - Matching Homepage Design */}
-            <div id="quote-form" className="bg-white py-6 sm:py-8 lg:py-12 mt-6 sm:mt-8">
-              <div className="w-full mx-auto px-4 sm:px-6 max-w-7xl">
-                <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-center">
+            {/* Hero Quote Form - Matching Homepage Design Exactly */}
+            <section id="quote-form" className="bg-white py-3 sm:py-8 lg:py-16 px-3 sm:px-0">
+              <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+                <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center">
                   {/* Left Content */}
-                  <div className="space-y-3 sm:space-y-4 flex flex-col justify-center w-full">
+                  <div className="space-y-3 sm:space-y-4 px-0 sm:px-0 flex flex-col justify-center">
                     {/* Main Headline */}
-                    <div className="space-y-2 mb-3 sm:mb-4">
-                      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
-                        We{"'"}ve got you covered <span className="text-brand-orange">in 60 seconds!</span>
+                    <div className="space-y-2 mb-2 sm:mb-4">
+                      <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black leading-tight">
+                        <span className="text-gray-900">We've got you </span>
+                        <span className="text-brand-orange">covered in 60 seconds!</span>
                       </h2>
                     </div>
 
                     {/* Benefits */}
-                    <div className="mb-4 sm:mb-6 text-gray-700 text-xs sm:text-sm md:text-base space-y-2">
+                    <div className="mb-3 sm:mb-8 text-gray-700 text-xs sm:text-sm md:text-base space-y-1 sm:space-y-2">
                       <div className="flex items-center">
                         <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0" />
                         <span className="font-medium">From just 80p a day • Easy claims • Fast payouts</span>
                       </div>
                       <div className="flex items-center">
                         <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0" />
-                        <span className="font-medium">Unlimited claims • Complete Cover • No excess</span>
+                        <span className="font-medium">Unlimited claims • Parts and Labour • No excess</span>
                       </div>
                     </div>
 
                     {/* Registration Input Form */}
-                    <form onSubmit={handleGetQuote} className="space-y-3 w-full max-w-full">
-                      <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full max-w-full">
-                        {/* UK Section with flag */}
-                        <div className="bg-blue-600 text-white font-bold px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-center w-[60px] sm:w-[80px] flex-shrink-0 h-[54px] sm:h-[66px]">
-                          <div className="flex flex-col items-center">
-                            <div className="text-base sm:text-lg leading-tight mb-0.5 sm:mb-1">🇬🇧</div>
-                            <div className="text-xs sm:text-base font-bold leading-none">UK</div>
+                    <div className="space-y-2 sm:space-y-3 w-full max-w-56 mx-auto lg:mx-0">
+                      <form onSubmit={handleGetQuote} className="space-y-2 sm:space-y-3">
+                        <div className="flex items-stretch rounded-lg overflow-hidden shadow-lg border-2 border-black w-full">
+                          {/* UK Section with flag */}
+                          <div className="bg-blue-600 text-white font-bold px-2 sm:px-3 md:px-4 py-2 sm:py-4 flex items-center justify-center min-w-[45px] sm:min-w-[70px] md:min-w-[80px] h-[48px] sm:h-[60px] md:h-[66px]">
+                            <div className="flex flex-col items-center">
+                              <div className="text-xs sm:text-base md:text-lg leading-tight mb-1">🇬🇧</div>
+                              <div className="text-xs sm:text-sm md:text-base font-bold leading-none">UK</div>
+                            </div>
                           </div>
-                        </div>
-                        {/* Registration Input */}
-                        <input
-                          type="text"
-                          value={regNumber}
-                          onChange={handleRegChange}
-                          placeholder="ENTER REG"
-                          className="bg-yellow-400 border-none outline-none text-lg sm:text-xl md:text-2xl lg:text-3xl text-black flex-1 font-black placeholder:text-black/70 px-2 sm:px-3 md:px-4 py-3 sm:py-4 uppercase tracking-wide sm:tracking-wider h-[54px] sm:h-[66px] min-w-0 w-full"
-                          maxLength={8}
-                        />
-                      </div>
-                      <p className="text-xs sm:text-sm text-black text-left mt-0.5 px-1">
-                        Protection for vehicles up to 150,000 miles and 15 years.
-                      </p>
-
-                      {/* Mileage Options */}
-                      <div className="space-y-2 w-full">
-                        <div className="w-full">
+                          {/* Registration Input */}
                           <input
                             type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={mileage}
-                            onChange={handleMileageChange}
-                            onFocus={handleMileageFocus}
-                            onBlur={handleMileageBlur}
-                            placeholder={mileagePlaceholder}
-                            className={`w-full max-w-full px-3 sm:px-4 py-2.5 sm:py-3 text-base sm:text-lg border-2 rounded-lg focus:outline-none ${
-                              mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
-                            }`}
+                            value={regNumber}
+                            onChange={handleRegChange}
+                            placeholder="Enter reg"
+                            className="bg-yellow-400 border-none outline-none text-lg sm:text-2xl md:text-3xl text-black flex-1 font-black placeholder:text-black/70 px-2 sm:px-3 md:px-4 py-2 sm:py-4 uppercase tracking-wider h-[48px] sm:h-[60px] md:h-[66px] min-w-0"
+                            maxLength={8}
                           />
                         </div>
+                        <p className="text-xs sm:text-sm text-black text-left mt-0.5">
+                          Protection for vehicles up to 150,000 miles and 15 years.
+                        </p>
 
-                        {/* Slider Option */}
-                        <div className="w-full px-1">
-                          <MileageSlider
-                            value={sliderMileage}
-                            onChange={handleSliderChange}
-                            min={0}
-                            max={150000}
-                          />
-                        </div>
+                        {/* Mileage Options - Always Visible */}
+                        <div className="space-y-2">
+                          {/* Text Input Option */}
+                          <div>
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              value={mileage}
+                              onChange={handleMileageChange}
+                              onFocus={handleMileageFocus}
+                              onBlur={handleMileageBlur}
+                              placeholder={mileagePlaceholder}
+                              className={`w-full max-w-56 px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-sm sm:text-lg border-2 rounded-lg focus:outline-none min-w-0 ${
+                                mileageError ? 'border-blue-400 focus:border-blue-500' : 'border-gray-300 focus:border-orange-500'
+                              }`}
+                            />
+                          </div>
 
-                        {/* Error Messages */}
-                        {mileageError && (
-                          <p className="text-xs sm:text-sm text-blue-600 font-medium px-1">
-                            {mileageError}
-                          </p>
-                        )}
-                        {vehicleAgeError && (
-                          <p className="text-xs sm:text-sm text-blue-600 font-medium px-1">
-                            {vehicleAgeError}
-                          </p>
-                        )}
-                      </div>
+                          {/* Slider Option */}
+                          <div>
+                            <MileageSlider
+                              value={sliderMileage}
+                              onChange={handleSliderChange}
+                              min={0}
+                              max={150000}
+                            />
+                          </div>
 
-                      {/* Get Quote Button */}
-                      <div className="space-y-2 mt-2 w-full">
-                        <Button 
-                          type="submit"
-                          className={`w-full max-w-full px-4 sm:px-6 md:px-12 h-[54px] sm:h-[66px] text-base sm:text-lg md:text-xl font-bold rounded-lg transition-all ${
-                            isLookingUp
-                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              : 'bg-brand-orange hover:bg-brand-orange/90 text-white animate-cta-enhanced'
-                          }`}
-                          disabled={isLookingUp}
-                        >
-                          {isLookingUp ? 'Looking up...' : (
-                            <>
-                              <span className="hidden sm:inline">Get my instant quote</span>
-                              <span className="sm:hidden">Get quote</span>
-                              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" strokeWidth={2.5} />
-                            </>
+                          {/* Error Messages */}
+                          {mileageError && (
+                            <p className="text-sm text-blue-600 font-medium">
+                              {mileageError}
+                            </p>
                           )}
-                        </Button>
-                      </div>
-                    </form>
+                          {vehicleAgeError && (
+                            <p className="text-sm text-blue-600 font-medium">
+                              {vehicleAgeError}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Get Quote Button */}
+                        <div className="space-y-2 mt-2">
+                          <Button 
+                            type="submit"
+                            className={`w-full max-w-56 px-3 sm:px-6 md:px-12 h-[48px] sm:h-[60px] md:h-[66px] text-sm sm:text-lg md:text-xl font-bold rounded-lg transition-all min-w-0 ${
+                              isLookingUp
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-brand-orange hover:bg-brand-orange/90 text-white animate-cta-enhanced'
+                            }`}
+                            disabled={isLookingUp}
+                          >
+                            {isLookingUp ? (
+                              <>
+                                <span className="hidden sm:inline">Looking up vehicle...</span>
+                                <span className="sm:hidden">Looking up...</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="hidden sm:inline">Get my instant quote</span>
+                                <span className="sm:hidden">Get my instant quote</span>
+                                <ArrowRight className="w-5 h-5 ml-2" strokeWidth={4.5} />
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
 
                   {/* Right Content - Hero Image */}
-                  <div className="relative hidden lg:block">
+                  <div className="relative">
                     <OptimizedImage 
                       src="/extended_warranty_uk-car-trustworthy-reviews.png" 
                       alt="Extended warranty UK - Car trustworthy reviews - Panda mascot with vehicle collection" 
@@ -489,15 +498,15 @@ const CarExtendedWarranty: React.FC = () => {
                         <OptimizedImage 
                           src={trustpilotLogo} 
                           alt="Trustpilot Excellent Rating" 
-                          className="h-auto w-20 object-contain"
+                          className="h-auto w-32 sm:w-40 object-contain"
                           priority={false}
-                          width={160}
-                          height={50}
+                          width={320}
+                          height={100}
                         />
                       </a>
                     </div>
                     
-                    {/* Vehicle Types positioned underneath */}
+                    {/* Vehicle Types positioned underneath the panda's feet */}
                     <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-16 w-full px-4">
                       <div className="flex flex-col items-center gap-6">
                         <div className="flex items-center justify-center gap-6 flex-wrap max-w-full">
@@ -545,7 +554,7 @@ const CarExtendedWarranty: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
           </div>
         </div>
       </section>
