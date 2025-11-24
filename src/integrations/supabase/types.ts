@@ -1223,7 +1223,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      restore_customer: { Args: { customer_uuid: string }; Returns: undefined }
+      soft_delete_customer: {
+        Args: { admin_uuid: string; customer_uuid: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

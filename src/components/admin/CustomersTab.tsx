@@ -22,9 +22,9 @@ import { CustomerNotesSection } from './CustomerNotesSection';
 import { WarrantyActions } from './WarrantyActions';
 import { ManualOrderEntry } from './ManualOrderEntry';
 import { EditOrderButton } from './EditOrderButton';
-import { MOTHistorySection } from './MOTHistorySection';
+// import { MOTHistorySection } from './MOTHistorySection';
 import { W2000DataPreview } from './W2000DataPreview';
-import { SendNotificationDialog } from './SendNotificationDialog';
+// import { SendNotificationDialog } from './SendNotificationDialog';
 import { ViewAsCustomerButton } from './ViewAsCustomerButton';
 import { CustomerTagsManager } from './CustomerTagsManager';
 import { CustomerTagsDisplay } from './CustomerTagsDisplay';
@@ -2263,13 +2263,7 @@ export const CustomersTab = () => {
                           <DialogHeader>
                             <div className="flex items-center justify-between">
                               <DialogTitle>Manage Customer: {selectedCustomer?.name}</DialogTitle>
-                              {selectedCustomer && (
-                                <SendNotificationDialog 
-                                  customerId={selectedCustomer.id}
-                                  customerName={selectedCustomer.name}
-                                  customerEmail={selectedCustomer.email}
-                                />
-                              )}
+                              {/* SendNotificationDialog removed - table doesn't exist */}
                             </div>
                           </DialogHeader>
                           
@@ -3201,12 +3195,8 @@ Please log in and change your password after first login.`;
                                 </TabsContent>
 
                                 <TabsContent value="mot">
-                                  {selectedCustomer && (
-                                    <MOTHistorySection 
-                                      registrationNumber={selectedCustomer.registration_plate}
-                                      customerId={selectedCustomer.id}
-                                    />
-                                  )}
+                                  {/* MOTHistorySection removed - table doesn't exist */}
+                                  <p className="text-gray-500 p-4">MOT History feature is currently unavailable</p>
                                 </TabsContent>
 
                                 <TabsContent value="w2000">

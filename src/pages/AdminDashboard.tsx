@@ -11,7 +11,7 @@ import { CustomersTab } from '@/components/admin/CustomersTab';
 import { PlansTab } from '@/components/admin/PlansTab';
 import SpecialVehiclePlansTab from '@/components/admin/SpecialVehiclePlansTab';
 import { DiscountCodesTab } from '@/components/admin/DiscountCodesTab';
-import { ReferralsTab } from '@/components/admin/ReferralsTab';
+// import { ReferralsTab } from '@/components/admin/ReferralsTab';
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab';
 import UnifiedEmailHub from '@/components/admin/UnifiedEmailHub';
 import AccountSettings from '@/components/admin/AccountSettings';
@@ -25,7 +25,7 @@ import TestWarranties2000AddOns from '@/components/TestWarranties2000AddOns';
 import TestBumper from '@/components/TestBumper';
 import { ApiConnectivityTest } from '@/components/admin/ApiConnectivityTest';
 import { UserPermissionsTab } from '@/components/admin/UserPermissionsTab';
-import { DocumentMappingTab } from '@/components/admin/DocumentMappingTab';
+// import { DocumentMappingTab } from '@/components/admin/DocumentMappingTab';
 import { BulkPricingTab } from '@/components/admin/BulkPricingTab';
 import { BlogWritingTab } from '@/components/admin/BlogWritingTab';
 import OrderReconciliation from '@/components/admin/OrderReconciliation';
@@ -135,8 +135,8 @@ const AdminDashboard = () => {
         return <SpecialVehiclePlansTab />;
       case 'discount-codes':
         return <DiscountCodesTab />;
-      case 'referrals':
-        return <ReferralsTab />;
+      // case 'referrals':
+      //   return <ReferralsTab />;
       case 'claims':
         return <ClaimsTab />;
       case 'contact':
@@ -151,8 +151,8 @@ const AdminDashboard = () => {
         return <ClickFraudTab />;
       case 'user-permissions':
         return <UserPermissionsTab />;
-      case 'document-mapping':
-        return <DocumentMappingTab />;
+      // case 'document-mapping':
+      //   return <DocumentMappingTab />;
       case 'blog-writing':
         return <BlogWritingTab />;
       case 'get-quote':
