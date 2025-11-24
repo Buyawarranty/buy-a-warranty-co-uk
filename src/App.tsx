@@ -42,7 +42,7 @@ const Claims = lazy(() => import("./pages/Claims"));
 const ContactUs = lazy(() => import("./pages/ContactUs"));
 const Complaints = lazy(() => import("./pages/Complaints"));
 const Blog = lazy(() => import("./pages/Blog"));
-const BlogArticle = lazy(() => import("./pages/BlogArticle"));
+// const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const WarrantyPlan = lazy(() => import("./pages/WarrantyPlan"));
@@ -67,8 +67,8 @@ const UsedCarWarrantyUK = lazy(() => import("./pages/UsedCarWarrantyUK"));
 
 // Admin and auth pages
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const Auth = lazy(() => import("./pages/Auth"));
-const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
+// const Auth = lazy(() => import("./pages/Auth"));
+// const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
 const PasswordReset = lazy(() => import("./components/PasswordReset"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const QuickPasswordReset = lazy(() => import("./pages/QuickPasswordReset"));
