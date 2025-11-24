@@ -14,7 +14,171 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      abandoned_carts: {
+        Row: {
+          contact_notes: string | null
+          contact_status: string | null
+          converted: boolean | null
+          converted_at: string | null
+          created_at: string | null
+          email: string
+          first_name: string | null
+          id: string
+          last_contacted_at: string | null
+          last_name: string | null
+          phone: string | null
+          vehicle_data: Json | null
+        }
+        Insert: {
+          contact_notes?: string | null
+          contact_status?: string | null
+          converted?: boolean | null
+          converted_at?: string | null
+          created_at?: string | null
+          email: string
+          first_name?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          last_name?: string | null
+          phone?: string | null
+          vehicle_data?: Json | null
+        }
+        Update: {
+          contact_notes?: string | null
+          contact_status?: string | null
+          converted?: boolean | null
+          converted_at?: string | null
+          created_at?: string | null
+          email?: string
+          first_name?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          last_name?: string | null
+          phone?: string | null
+          vehicle_data?: Json | null
+        }
+        Relationships: []
+      }
+      email_logs: {
+        Row: {
+          click_tracked: boolean | null
+          clicked_at: string | null
+          conversion_tracked: boolean | null
+          converted_at: string | null
+          email: string
+          email_type: string
+          id: string
+          open_tracked: boolean | null
+          opened_at: string | null
+          sent_at: string | null
+          subject: string | null
+          tracking_id: string
+        }
+        Insert: {
+          click_tracked?: boolean | null
+          clicked_at?: string | null
+          conversion_tracked?: boolean | null
+          converted_at?: string | null
+          email: string
+          email_type: string
+          id?: string
+          open_tracked?: boolean | null
+          opened_at?: string | null
+          sent_at?: string | null
+          subject?: string | null
+          tracking_id: string
+        }
+        Update: {
+          click_tracked?: boolean | null
+          clicked_at?: string | null
+          conversion_tracked?: boolean | null
+          converted_at?: string | null
+          email?: string
+          email_type?: string
+          id?: string
+          open_tracked?: boolean | null
+          opened_at?: string | null
+          sent_at?: string | null
+          subject?: string | null
+          tracking_id?: string
+        }
+        Relationships: []
+      }
+      email_tracking_events: {
+        Row: {
+          created_at: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          tracking_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          tracking_id: string
+        }
+        Update: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          tracking_id?: string
+        }
+        Relationships: []
+      }
+      newsletter_signups: {
+        Row: {
+          created_at: string | null
+          discount_code: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          discount_code?: string | null
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          discount_code?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      quote_data: {
+        Row: {
+          created_at: string | null
+          customer_email: string
+          customer_name: string | null
+          id: string
+          plan_data: Json | null
+          quote_id: string
+          vehicle_data: Json
+        }
+        Insert: {
+          created_at?: string | null
+          customer_email: string
+          customer_name?: string | null
+          id?: string
+          plan_data?: Json | null
+          quote_id: string
+          vehicle_data: Json
+        }
+        Update: {
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string | null
+          id?: string
+          plan_data?: Json | null
+          quote_id?: string
+          vehicle_data?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
