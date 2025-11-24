@@ -7,9 +7,9 @@ interface CoverageDetailsProps {
   tyre_cover?: boolean;
   wear_tear?: boolean;
   europe_cover?: boolean;
-  transfer_cover?: boolean;
-  breakdown_recovery?: boolean;
-  vehicle_rental?: boolean;
+  transfer_fee?: boolean;
+  breakdown_cover?: boolean;
+  rental_car?: boolean;
   mot_repair?: boolean;
   lost_key?: boolean;
   consequential?: boolean;
@@ -22,9 +22,9 @@ const CoverageDetailsDisplay: React.FC<CoverageDetailsProps> = ({
   tyre_cover,
   wear_tear,
   europe_cover,
-  transfer_cover,
-  breakdown_recovery,
-  vehicle_rental,
+  transfer_fee,
+  breakdown_cover,
+  rental_car,
   mot_repair,
   lost_key,
   consequential,
@@ -52,9 +52,9 @@ const CoverageDetailsDisplay: React.FC<CoverageDetailsProps> = ({
     
     switch (normalizedPaymentType) {
       case '24months':
-        return ['breakdown_recovery', 'mot_fee'];
+        return ['breakdown_cover', 'mot_fee'];
       case '36months':
-        return ['breakdown_recovery', 'mot_fee', 'vehicle_rental', 'tyre_cover'];
+        return ['breakdown_cover', 'mot_fee', 'rental_car', 'tyre_cover'];
       default:
         return [];
     }
@@ -67,9 +67,9 @@ const CoverageDetailsDisplay: React.FC<CoverageDetailsProps> = ({
     { label: 'Tyre Cover', value: tyre_cover, key: 'tyre_cover', icon: '🛞' },
     { label: 'Wear & Tear', value: wear_tear, key: 'wear_tear', icon: '🛠️' },
     { label: 'European Cover', value: europe_cover, key: 'europe_cover', icon: '🇪🇺' },
-    { label: 'Transfer Cover', value: transfer_cover, key: 'transfer_cover', icon: '🔁' },
-    { label: 'Vehicle Recovery', value: breakdown_recovery, key: 'breakdown_recovery', icon: '🚗' },
-    { label: 'Hire Car', value: vehicle_rental, key: 'vehicle_rental', icon: '🚙' },
+    { label: 'Transfer Cover', value: transfer_fee, key: 'transfer_fee', icon: '🔁' },
+    { label: 'Vehicle Recovery', value: breakdown_cover, key: 'breakdown_cover', icon: '🚗' },
+    { label: 'Hire Car', value: rental_car, key: 'rental_car', icon: '🚙' },
     { label: 'MOT Repair', value: mot_repair, key: 'mot_repair', icon: '🔧' },
     { label: 'Lost Key Cover', value: lost_key, key: 'lost_key', icon: '🗝️' },
     { label: 'Consequential Loss', value: consequential, key: 'consequential', icon: '⚠️' }
