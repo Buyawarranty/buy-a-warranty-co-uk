@@ -224,6 +224,50 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_analytics: {
+        Row: {
+          campaign_id: string | null
+          click_rate: number | null
+          conversion_rate: number | null
+          created_at: string | null
+          id: string
+          open_rate: number | null
+          total_clicked: number | null
+          total_opened: number | null
+          total_sent: number | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          click_rate?: number | null
+          conversion_rate?: number | null
+          created_at?: string | null
+          id?: string
+          open_rate?: number | null
+          total_clicked?: number | null
+          total_opened?: number | null
+          total_sent?: number | null
+        }
+        Update: {
+          campaign_id?: string | null
+          click_rate?: number | null
+          conversion_rate?: number | null
+          created_at?: string | null
+          id?: string
+          open_rate?: number | null
+          total_clicked?: number | null
+          total_opened?: number | null
+          total_sent?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_analytics_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "email_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       claims_submissions: {
         Row: {
           claim_type: string | null
@@ -465,94 +509,106 @@ export type Database = {
       }
       customer_policies: {
         Row: {
-          breakdown_cover: boolean | null
+          breakdown_recovery: boolean | null
           claim_limit: number | null
+          consequential: boolean | null
           created_at: string
           customer_id: string | null
           email: string
           email_sent_status: string | null
           end_date: string | null
+          europe_cover: boolean | null
           european_cover: boolean | null
           id: string
           is_deleted: boolean | null
+          lost_key: boolean | null
           mot_fee: boolean | null
+          mot_repair: boolean | null
           payment_type: string | null
           plan_type: string
           policy_end_date: string | null
           policy_number: string | null
           policy_start_date: string | null
-          rental_car: boolean | null
           seasonal_bonus_months: number | null
           start_date: string
           status: string | null
-          transfer_fee: boolean | null
+          transfer_cover: boolean | null
           tyre_cover: boolean | null
           updated_at: string
           vehicle_data: Json | null
+          vehicle_rental: boolean | null
           warranties_2000_sent_at: string | null
           warranties_2000_status: string | null
           warranty_number: string | null
-          wear_and_tear: boolean | null
+          wear_tear: boolean | null
         }
         Insert: {
-          breakdown_cover?: boolean | null
+          breakdown_recovery?: boolean | null
           claim_limit?: number | null
+          consequential?: boolean | null
           created_at?: string
           customer_id?: string | null
           email: string
           email_sent_status?: string | null
           end_date?: string | null
+          europe_cover?: boolean | null
           european_cover?: boolean | null
           id?: string
           is_deleted?: boolean | null
+          lost_key?: boolean | null
           mot_fee?: boolean | null
+          mot_repair?: boolean | null
           payment_type?: string | null
           plan_type: string
           policy_end_date?: string | null
           policy_number?: string | null
           policy_start_date?: string | null
-          rental_car?: boolean | null
           seasonal_bonus_months?: number | null
           start_date?: string
           status?: string | null
-          transfer_fee?: boolean | null
+          transfer_cover?: boolean | null
           tyre_cover?: boolean | null
           updated_at?: string
           vehicle_data?: Json | null
+          vehicle_rental?: boolean | null
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
           warranty_number?: string | null
-          wear_and_tear?: boolean | null
+          wear_tear?: boolean | null
         }
         Update: {
-          breakdown_cover?: boolean | null
+          breakdown_recovery?: boolean | null
           claim_limit?: number | null
+          consequential?: boolean | null
           created_at?: string
           customer_id?: string | null
           email?: string
           email_sent_status?: string | null
           end_date?: string | null
+          europe_cover?: boolean | null
           european_cover?: boolean | null
           id?: string
           is_deleted?: boolean | null
+          lost_key?: boolean | null
           mot_fee?: boolean | null
+          mot_repair?: boolean | null
           payment_type?: string | null
           plan_type?: string
           policy_end_date?: string | null
           policy_number?: string | null
           policy_start_date?: string | null
-          rental_car?: boolean | null
           seasonal_bonus_months?: number | null
           start_date?: string
           status?: string | null
-          transfer_fee?: boolean | null
+          transfer_cover?: boolean | null
           tyre_cover?: boolean | null
           updated_at?: string
           vehicle_data?: Json | null
+          vehicle_rental?: boolean | null
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
           warranty_number?: string | null
-          wear_and_tear?: boolean | null
+          wear_tear?: boolean | null
         }
         Relationships: [
           {
@@ -682,43 +738,156 @@ export type Database = {
       }
       discount_codes: {
         Row: {
+          active: boolean | null
+          applicable_products: Json | null
+          archived: boolean | null
+          auto_archived_at: string | null
+          auto_archived_reason: string | null
+          campaign_source: string | null
           code: string
           created_at: string
+          created_by: string | null
           current_uses: number | null
           description: string | null
           expires_at: string | null
           id: string
           is_active: boolean | null
           max_uses: number | null
+          stripe_coupon_id: string | null
+          stripe_promo_code_id: string | null
+          stripe_promotion_code_id: string | null
           type: string
           updated_at: string
+          usage_limit: number | null
+          used_count: number | null
+          valid_from: string | null
+          valid_to: string | null
           value: number
         }
         Insert: {
+          active?: boolean | null
+          applicable_products?: Json | null
+          archived?: boolean | null
+          auto_archived_at?: string | null
+          auto_archived_reason?: string | null
+          campaign_source?: string | null
           code: string
           created_at?: string
+          created_by?: string | null
           current_uses?: number | null
           description?: string | null
           expires_at?: string | null
           id?: string
           is_active?: boolean | null
           max_uses?: number | null
+          stripe_coupon_id?: string | null
+          stripe_promo_code_id?: string | null
+          stripe_promotion_code_id?: string | null
           type: string
           updated_at?: string
+          usage_limit?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_to?: string | null
           value: number
         }
         Update: {
+          active?: boolean | null
+          applicable_products?: Json | null
+          archived?: boolean | null
+          auto_archived_at?: string | null
+          auto_archived_reason?: string | null
+          campaign_source?: string | null
           code?: string
           created_at?: string
+          created_by?: string | null
           current_uses?: number | null
           description?: string | null
           expires_at?: string | null
           id?: string
           is_active?: boolean | null
           max_uses?: number | null
+          stripe_coupon_id?: string | null
+          stripe_promo_code_id?: string | null
+          stripe_promotion_code_id?: string | null
           type?: string
           updated_at?: string
+          usage_limit?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_to?: string | null
           value?: number
+        }
+        Relationships: []
+      }
+      email_campaigns: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          scheduled_for: string | null
+          sent_at: string | null
+          status: string | null
+          subject: string
+          template_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: string | null
+          subject: string
+          template_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: string | null
+          subject?: string
+          template_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_campaigns_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "email_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_consents: {
+        Row: {
+          consent_date: string | null
+          consent_given: boolean | null
+          created_at: string | null
+          email: string
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          consent_date?: string | null
+          consent_given?: boolean | null
+          created_at?: string | null
+          email: string
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          consent_date?: string | null
+          consent_given?: boolean | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -728,8 +897,10 @@ export type Database = {
           clicked_at: string | null
           conversion_tracked: boolean | null
           converted_at: string | null
+          created_at: string | null
           email: string
           email_type: string
+          error_message: string | null
           id: string
           open_tracked: boolean | null
           opened_at: string | null
@@ -737,6 +908,7 @@ export type Database = {
           sent_at: string | null
           status: string | null
           subject: string | null
+          template_id: string | null
           tracking_id: string
         }
         Insert: {
@@ -744,8 +916,10 @@ export type Database = {
           clicked_at?: string | null
           conversion_tracked?: boolean | null
           converted_at?: string | null
+          created_at?: string | null
           email: string
           email_type: string
+          error_message?: string | null
           id?: string
           open_tracked?: boolean | null
           opened_at?: string | null
@@ -753,6 +927,7 @@ export type Database = {
           sent_at?: string | null
           status?: string | null
           subject?: string | null
+          template_id?: string | null
           tracking_id: string
         }
         Update: {
@@ -760,8 +935,10 @@ export type Database = {
           clicked_at?: string | null
           conversion_tracked?: boolean | null
           converted_at?: string | null
+          created_at?: string | null
           email?: string
           email_type?: string
+          error_message?: string | null
           id?: string
           open_tracked?: boolean | null
           opened_at?: string | null
@@ -769,15 +946,27 @@ export type Database = {
           sent_at?: string | null
           status?: string | null
           subject?: string | null
+          template_id?: string | null
           tracking_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "email_logs_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "email_templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       email_templates: {
         Row: {
           body: string
+          content: Json | null
           created_at: string
+          from_email: string | null
           id: string
+          is_active: boolean | null
           name: string
           subject: string
           template_type: string | null
@@ -785,8 +974,11 @@ export type Database = {
         }
         Insert: {
           body: string
+          content?: Json | null
           created_at?: string
+          from_email?: string | null
           id?: string
+          is_active?: boolean | null
           name: string
           subject: string
           template_type?: string | null
@@ -794,8 +986,11 @@ export type Database = {
         }
         Update: {
           body?: string
+          content?: Json | null
           created_at?: string
+          from_email?: string | null
           id?: string
+          is_active?: boolean | null
           name?: string
           subject?: string
           template_type?: string | null
@@ -952,6 +1147,33 @@ export type Database = {
           },
         ]
       }
+      plan_document_mapping: {
+        Row: {
+          created_at: string | null
+          document_path: string
+          id: string
+          plan_name: string
+          updated_at: string | null
+          vehicle_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          document_path: string
+          id?: string
+          plan_name: string
+          updated_at?: string | null
+          vehicle_type: string
+        }
+        Update: {
+          created_at?: string | null
+          document_path?: string
+          id?: string
+          plan_name?: string
+          updated_at?: string | null
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
       plans: {
         Row: {
           created_at: string
@@ -1051,6 +1273,39 @@ export type Database = {
         }
         Relationships: []
       }
+      scheduled_emails: {
+        Row: {
+          created_at: string | null
+          customer_email: string
+          error_message: string | null
+          id: string
+          scheduled_for: string
+          sent_at: string | null
+          status: string | null
+          template_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_email: string
+          error_message?: string | null
+          id?: string
+          scheduled_for: string
+          sent_at?: string | null
+          status?: string | null
+          template_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_email?: string
+          error_message?: string | null
+          id?: string
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string | null
+          template_id?: string | null
+        }
+        Relationships: []
+      }
       special_vehicle_plans: {
         Row: {
           coverage: string
@@ -1099,6 +1354,36 @@ export type Database = {
           updated_at?: string
           vehicle_type?: string | null
           yearly_price?: number | null
+        }
+        Relationships: []
+      }
+      subscriber_segments: {
+        Row: {
+          created_at: string | null
+          criteria: Json | null
+          description: string | null
+          id: string
+          name: string
+          subscriber_count: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          criteria?: Json | null
+          description?: string | null
+          id?: string
+          name: string
+          subscriber_count?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          criteria?: Json | null
+          description?: string | null
+          id?: string
+          name?: string
+          subscriber_count?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1169,7 +1454,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      restore_customer: { Args: { customer_uuid: string }; Returns: undefined }
+      soft_delete_customer: {
+        Args: { admin_uuid: string; customer_uuid: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
