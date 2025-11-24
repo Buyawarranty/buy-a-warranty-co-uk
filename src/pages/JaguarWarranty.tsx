@@ -111,8 +111,6 @@ const JaguarWarranty = () => {
       />
 
       <div className="min-h-screen flex flex-col">
-        <StickyNavigation />
-        
         <main className="flex-grow">
           <TrustpilotHeader />
 
@@ -607,7 +605,6 @@ const JaguarWarranty = () => {
           </section>
         </main>
 
-        <NewFooter />
         <WebsiteFooter />
 
         {/* Floating Action Buttons */}
