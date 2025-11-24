@@ -59,6 +59,134 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_documents: {
+        Row: {
+          created_at: string
+          file_name: string | null
+          file_size: number | null
+          file_url: string
+          id: string
+          mime_type: string | null
+          plan_type: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_name?: string | null
+          file_size?: number | null
+          file_url: string
+          id?: string
+          mime_type?: string | null
+          plan_type?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string | null
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          mime_type?: string | null
+          plan_type?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      customer_policies: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          email: string
+          end_date: string | null
+          id: string
+          payment_type: string | null
+          plan_type: string
+          policy_number: string | null
+          start_date: string
+          status: string | null
+          updated_at: string
+          vehicle_data: Json | null
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          email: string
+          end_date?: string | null
+          id?: string
+          payment_type?: string | null
+          plan_type: string
+          policy_number?: string | null
+          start_date?: string
+          status?: string | null
+          updated_at?: string
+          vehicle_data?: Json | null
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          email?: string
+          end_date?: string | null
+          id?: string
+          payment_type?: string | null
+          plan_type?: string
+          policy_number?: string | null
+          start_date?: string
+          status?: string | null
+          updated_at?: string
+          vehicle_data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_policies_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string | null
+          phone: string | null
+          plan_type: string | null
+          signup_date: string
+          status: string | null
+          updated_at: string
+          voluntary_excess: number | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name?: string | null
+          phone?: string | null
+          plan_type?: string | null
+          signup_date?: string
+          status?: string | null
+          updated_at?: string
+          voluntary_excess?: number | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string | null
+          phone?: string | null
+          plan_type?: string | null
+          signup_date?: string
+          status?: string | null
+          updated_at?: string
+          voluntary_excess?: number | null
+        }
+        Relationships: []
+      }
       email_logs: {
         Row: {
           click_tracked: boolean | null
@@ -149,6 +277,56 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          customer_id: string | null
+          email: string
+          id: string
+          payment_date: string
+          payment_method: string | null
+          plan_type: string
+          status: string | null
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          customer_id?: string | null
+          email: string
+          id?: string
+          payment_date?: string
+          payment_method?: string | null
+          plan_type: string
+          status?: string | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          customer_id?: string | null
+          email?: string
+          id?: string
+          payment_date?: string
+          payment_method?: string | null
+          plan_type?: string
+          status?: string | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quote_data: {
         Row: {
           created_at: string | null
@@ -176,6 +354,78 @@ export type Database = {
           plan_data?: Json | null
           quote_id?: string
           vehicle_data?: Json
+        }
+        Relationships: []
+      }
+      special_vehicle_plans: {
+        Row: {
+          coverage: string
+          created_at: string
+          description: string | null
+          features: Json | null
+          id: string
+          is_active: boolean
+          monthly_price: number | null
+          name: string
+          three_monthly_price: number | null
+          three_yearly_price: number | null
+          two_yearly_price: number | null
+          updated_at: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          coverage: string
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          monthly_price?: number | null
+          name: string
+          three_monthly_price?: number | null
+          three_yearly_price?: number | null
+          two_yearly_price?: number | null
+          updated_at?: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          coverage?: string
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          monthly_price?: number | null
+          name?: string
+          three_monthly_price?: number | null
+          three_yearly_price?: number | null
+          two_yearly_price?: number | null
+          updated_at?: string
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
