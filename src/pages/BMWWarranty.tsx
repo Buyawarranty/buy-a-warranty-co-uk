@@ -95,11 +95,11 @@ const BMWWarranty: React.FC = () => {
       <ProductSchema
         name="BMW Extended Warranty"
         description="Comprehensive warranty coverage for BMW vehicles"
-        price="35"
+        price="35.00"
         brand="Buy A Warranty"
         category="Vehicle Warranty"
-        image="https://buyawarranty.co.uk/logo.png"
-        availability="https://schema.org/InStock"
+        image="https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png"
+        availability="InStock"
         areaServed="GB"
       />
       <BreadcrumbSchema 

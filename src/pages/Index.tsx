@@ -928,7 +928,7 @@ const Index = () => {
       <ProductSchema 
         name="Car Warranty UK"
         description="Comprehensive car warranty protection for UK vehicles. Flexible plans from £20/month with instant online quotes and 14-day money-back guarantee."
-        price="20"
+        price="20.00"
         priceCurrency="GBP"
       />
       <BreadcrumbSchema 
