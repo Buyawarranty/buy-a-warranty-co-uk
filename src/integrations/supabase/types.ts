@@ -465,67 +465,94 @@ export type Database = {
       }
       customer_policies: {
         Row: {
+          breakdown_cover: boolean | null
           claim_limit: number | null
           created_at: string
           customer_id: string | null
           email: string
           email_sent_status: string | null
           end_date: string | null
+          european_cover: boolean | null
           id: string
           is_deleted: boolean | null
+          mot_fee: boolean | null
           payment_type: string | null
           plan_type: string
           policy_end_date: string | null
           policy_number: string | null
           policy_start_date: string | null
+          rental_car: boolean | null
           seasonal_bonus_months: number | null
           start_date: string
           status: string | null
+          transfer_fee: boolean | null
+          tyre_cover: boolean | null
           updated_at: string
           vehicle_data: Json | null
+          warranties_2000_sent_at: string | null
+          warranties_2000_status: string | null
           warranty_number: string | null
+          wear_and_tear: boolean | null
         }
         Insert: {
+          breakdown_cover?: boolean | null
           claim_limit?: number | null
           created_at?: string
           customer_id?: string | null
           email: string
           email_sent_status?: string | null
           end_date?: string | null
+          european_cover?: boolean | null
           id?: string
           is_deleted?: boolean | null
+          mot_fee?: boolean | null
           payment_type?: string | null
           plan_type: string
           policy_end_date?: string | null
           policy_number?: string | null
           policy_start_date?: string | null
+          rental_car?: boolean | null
           seasonal_bonus_months?: number | null
           start_date?: string
           status?: string | null
+          transfer_fee?: boolean | null
+          tyre_cover?: boolean | null
           updated_at?: string
           vehicle_data?: Json | null
+          warranties_2000_sent_at?: string | null
+          warranties_2000_status?: string | null
           warranty_number?: string | null
+          wear_and_tear?: boolean | null
         }
         Update: {
+          breakdown_cover?: boolean | null
           claim_limit?: number | null
           created_at?: string
           customer_id?: string | null
           email?: string
           email_sent_status?: string | null
           end_date?: string | null
+          european_cover?: boolean | null
           id?: string
           is_deleted?: boolean | null
+          mot_fee?: boolean | null
           payment_type?: string | null
           plan_type?: string
           policy_end_date?: string | null
           policy_number?: string | null
           policy_start_date?: string | null
+          rental_car?: boolean | null
           seasonal_bonus_months?: number | null
           start_date?: string
           status?: string | null
+          transfer_fee?: boolean | null
+          tyre_cover?: boolean | null
           updated_at?: string
           vehicle_data?: Json | null
+          warranties_2000_sent_at?: string | null
+          warranties_2000_status?: string | null
           warranty_number?: string | null
+          wear_and_tear?: boolean | null
         }
         Relationships: [
           {
@@ -708,6 +735,7 @@ export type Database = {
           opened_at: string | null
           recipient_email: string | null
           sent_at: string | null
+          status: string | null
           subject: string | null
           tracking_id: string
         }
@@ -723,6 +751,7 @@ export type Database = {
           opened_at?: string | null
           recipient_email?: string | null
           sent_at?: string | null
+          status?: string | null
           subject?: string | null
           tracking_id: string
         }
@@ -738,6 +767,7 @@ export type Database = {
           opened_at?: string | null
           recipient_email?: string | null
           sent_at?: string | null
+          status?: string | null
           subject?: string | null
           tracking_id?: string
         }
