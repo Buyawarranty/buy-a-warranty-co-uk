@@ -109,11 +109,11 @@ const VanWarrantyNew = () => {
       <ProductSchema
         name="Van Extended Warranty UK"
         description="Comprehensive extended warranty for new and used vans up to 150,000 miles. Covers mechanical and electrical breakdowns with flexible UK-wide protection."
-        price="69"
+        price="69.00"
         priceCurrency="GBP"
         brand="Buy A Warranty"
         category="Van Warranty & Commercial Vehicle Insurance"
-        image="https://buyawarranty.co.uk/van-warranty-product.jpg"
+        image="https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png"
         availability="InStock"
         areaServed="GB"
       />
