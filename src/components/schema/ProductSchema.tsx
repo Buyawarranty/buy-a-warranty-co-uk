@@ -52,6 +52,45 @@ export const ProductSchema = ({
           "seller": {
             "@type": "Organization",
             "name": "Buy A Warranty"
+          },
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+            "merchantReturnDays": 14,
+            "returnMethod": "https://schema.org/ReturnByMail",
+            "returnFees": "https://schema.org/FreeReturn"
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingDestination": {
+              "@type": "DefinedRegion",
+              "addressCountry": "GB"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "businessDays": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "https://schema.org/Monday",
+                  "https://schema.org/Tuesday",
+                  "https://schema.org/Wednesday",
+                  "https://schema.org/Thursday",
+                  "https://schema.org/Friday"
+                ]
+              },
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 1,
+                "unitCode": "DAY"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 1,
+                "unitCode": "DAY"
+              }
+            }
           }
         }
       }),
