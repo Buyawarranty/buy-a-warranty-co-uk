@@ -77,7 +77,6 @@ const PeugeotWarranty = () => {
         ogTitle="Peugeot Extended Warranty | Protect New and Used Models"
         ogDescription="Get extended warranty cover for your Peugeot. Protect new and used models from costly mechanical and electrical repairs with instant online quotes and flexible plans."
         ogImage="https://buyawarranty.co.uk/lovable-uploads/53652a24-3961-4346-bf9d-6588ef727aeb.png"
-        areaServed="GB"
       />
       
       <OrganizationSchema type="InsuranceAgency" />
