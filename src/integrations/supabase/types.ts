@@ -107,13 +107,49 @@ export type Database = {
           },
         ]
       }
+      admin_permissions: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          permission_key: string
+          permission_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          permission_key: string
+          permission_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          permission_key?: string
+          permission_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       admin_users: {
         Row: {
           created_at: string
           email: string
           first_name: string | null
           id: string
+          invite_sent_at: string | null
+          invite_token: string | null
+          invited_at: string | null
+          is_active: boolean | null
+          last_login: string | null
           last_name: string | null
+          permissions: Json | null
           role: string | null
           updated_at: string
           user_id: string
@@ -123,7 +159,13 @@ export type Database = {
           email: string
           first_name?: string | null
           id?: string
+          invite_sent_at?: string | null
+          invite_token?: string | null
+          invited_at?: string | null
+          is_active?: boolean | null
+          last_login?: string | null
           last_name?: string | null
+          permissions?: Json | null
           role?: string | null
           updated_at?: string
           user_id: string
@@ -133,7 +175,13 @@ export type Database = {
           email?: string
           first_name?: string | null
           id?: string
+          invite_sent_at?: string | null
+          invite_token?: string | null
+          invited_at?: string | null
+          is_active?: boolean | null
+          last_login?: string | null
           last_name?: string | null
+          permissions?: Json | null
           role?: string | null
           updated_at?: string
           user_id?: string
@@ -167,6 +215,63 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_authors: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      blog_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author: string | null
@@ -175,6 +280,7 @@ export type Database = {
           created_at: string
           excerpt: string | null
           featured_image: string | null
+          featured_image_url: string | null
           id: string
           published_at: string | null
           seo_description: string | null
@@ -193,6 +299,7 @@ export type Database = {
           created_at?: string
           excerpt?: string | null
           featured_image?: string | null
+          featured_image_url?: string | null
           id?: string
           published_at?: string | null
           seo_description?: string | null
@@ -211,6 +318,7 @@ export type Database = {
           created_at?: string
           excerpt?: string | null
           featured_image?: string | null
+          featured_image_url?: string | null
           id?: string
           published_at?: string | null
           seo_description?: string | null
@@ -507,6 +615,47 @@ export type Database = {
           },
         ]
       }
+      customer_notifications: {
+        Row: {
+          created_at: string | null
+          customer_id: string | null
+          id: string
+          message: string
+          read: boolean | null
+          title: string
+          type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_id?: string | null
+          id?: string
+          message: string
+          read?: boolean | null
+          title: string
+          type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_id?: string | null
+          id?: string
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_notifications_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customer_policies: {
         Row: {
           breakdown_recovery: boolean | null
@@ -688,11 +837,13 @@ export type Database = {
           assigned_to: string | null
           created_at: string
           email: string
+          final_amount: number | null
           id: string
           name: string | null
           payment_type: string | null
           phone: string | null
           plan_type: string | null
+          registration_plate: string | null
           signup_date: string
           status: string | null
           updated_at: string
@@ -702,11 +853,13 @@ export type Database = {
           assigned_to?: string | null
           created_at?: string
           email: string
+          final_amount?: number | null
           id?: string
           name?: string | null
           payment_type?: string | null
           phone?: string | null
           plan_type?: string | null
+          registration_plate?: string | null
           signup_date?: string
           status?: string | null
           updated_at?: string
@@ -716,11 +869,13 @@ export type Database = {
           assigned_to?: string | null
           created_at?: string
           email?: string
+          final_amount?: number | null
           id?: string
           name?: string | null
           payment_type?: string | null
           phone?: string | null
           plan_type?: string | null
+          registration_plate?: string | null
           signup_date?: string
           status?: string | null
           updated_at?: string
@@ -822,6 +977,8 @@ export type Database = {
       }
       email_campaigns: {
         Row: {
+          campaign_type: string | null
+          content: Json | null
           created_at: string | null
           id: string
           name: string
@@ -833,6 +990,8 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          campaign_type?: string | null
+          content?: Json | null
           created_at?: string | null
           id?: string
           name: string
@@ -844,6 +1003,8 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          campaign_type?: string | null
+          content?: Json | null
           created_at?: string | null
           id?: string
           name?: string
@@ -871,6 +1032,7 @@ export type Database = {
           created_at: string | null
           email: string
           id: string
+          unsubscribed_at: string | null
           updated_at: string | null
         }
         Insert: {
@@ -879,6 +1041,7 @@ export type Database = {
           created_at?: string | null
           email: string
           id?: string
+          unsubscribed_at?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -887,17 +1050,20 @@ export type Database = {
           created_at?: string | null
           email?: string
           id?: string
+          unsubscribed_at?: string | null
           updated_at?: string | null
         }
         Relationships: []
       }
       email_logs: {
         Row: {
+          campaign_id: string | null
           click_tracked: boolean | null
           clicked_at: string | null
           conversion_tracked: boolean | null
           converted_at: string | null
           created_at: string | null
+          delivery_status: string | null
           email: string
           email_type: string
           error_message: string | null
@@ -905,6 +1071,7 @@ export type Database = {
           open_tracked: boolean | null
           opened_at: string | null
           recipient_email: string | null
+          resend_count: number | null
           sent_at: string | null
           status: string | null
           subject: string | null
@@ -912,11 +1079,13 @@ export type Database = {
           tracking_id: string
         }
         Insert: {
+          campaign_id?: string | null
           click_tracked?: boolean | null
           clicked_at?: string | null
           conversion_tracked?: boolean | null
           converted_at?: string | null
           created_at?: string | null
+          delivery_status?: string | null
           email: string
           email_type: string
           error_message?: string | null
@@ -924,6 +1093,7 @@ export type Database = {
           open_tracked?: boolean | null
           opened_at?: string | null
           recipient_email?: string | null
+          resend_count?: number | null
           sent_at?: string | null
           status?: string | null
           subject?: string | null
@@ -931,11 +1101,13 @@ export type Database = {
           tracking_id: string
         }
         Update: {
+          campaign_id?: string | null
           click_tracked?: boolean | null
           clicked_at?: string | null
           conversion_tracked?: boolean | null
           converted_at?: string | null
           created_at?: string | null
+          delivery_status?: string | null
           email?: string
           email_type?: string
           error_message?: string | null
@@ -943,6 +1115,7 @@ export type Database = {
           open_tracked?: boolean | null
           opened_at?: string | null
           recipient_email?: string | null
+          resend_count?: number | null
           sent_at?: string | null
           status?: string | null
           subject?: string | null
@@ -950,6 +1123,13 @@ export type Database = {
           tracking_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "email_logs_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "email_campaigns"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "email_logs_template_id_fkey"
             columns: ["template_id"]
@@ -1049,6 +1229,33 @@ export type Database = {
           total_claims?: number | null
           total_paid?: number | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      mot_history: {
+        Row: {
+          created_at: string | null
+          customer_email: string | null
+          id: string
+          mot_tests: Json | null
+          registration: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_email?: string | null
+          id?: string
+          mot_tests?: Json | null
+          registration: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_email?: string | null
+          id?: string
+          mot_tests?: Json | null
+          registration?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1176,37 +1383,64 @@ export type Database = {
       }
       plans: {
         Row: {
+          add_ons: Json | null
+          claim_limit: number | null
+          coverage: string | null
           created_at: string
           description: string | null
           duration_months: number
           features: Json | null
           id: string
           is_active: boolean | null
+          monthly_price: number | null
           name: string
           price: number
+          pricing_matrix: Json | null
+          three_yearly_price: number | null
+          two_yearly_price: number | null
           updated_at: string
+          vehicle_type: string | null
+          yearly_price: number | null
         }
         Insert: {
+          add_ons?: Json | null
+          claim_limit?: number | null
+          coverage?: string | null
           created_at?: string
           description?: string | null
           duration_months: number
           features?: Json | null
           id?: string
           is_active?: boolean | null
+          monthly_price?: number | null
           name: string
           price: number
+          pricing_matrix?: Json | null
+          three_yearly_price?: number | null
+          two_yearly_price?: number | null
           updated_at?: string
+          vehicle_type?: string | null
+          yearly_price?: number | null
         }
         Update: {
+          add_ons?: Json | null
+          claim_limit?: number | null
+          coverage?: string | null
           created_at?: string
           description?: string | null
           duration_months?: number
           features?: Json | null
           id?: string
           is_active?: boolean | null
+          monthly_price?: number | null
           name?: string
           price?: number
+          pricing_matrix?: Json | null
+          three_yearly_price?: number | null
+          two_yearly_price?: number | null
           updated_at?: string
+          vehicle_type?: string | null
+          yearly_price?: number | null
         }
         Relationships: []
       }
@@ -1273,6 +1507,48 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          converted: boolean | null
+          converted_at: string | null
+          created_at: string | null
+          discount_code: string | null
+          friend_email: string | null
+          id: string
+          referred_email: string
+          referrer_email: string
+          referrer_name: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          converted?: boolean | null
+          converted_at?: string | null
+          created_at?: string | null
+          discount_code?: string | null
+          friend_email?: string | null
+          id?: string
+          referred_email: string
+          referrer_email: string
+          referrer_name?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          converted?: boolean | null
+          converted_at?: string | null
+          created_at?: string | null
+          discount_code?: string | null
+          friend_email?: string | null
+          id?: string
+          referred_email?: string
+          referrer_email?: string
+          referrer_name?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       scheduled_emails: {
         Row: {
           created_at: string | null
@@ -1316,6 +1592,7 @@ export type Database = {
           is_active: boolean
           monthly_price: number | null
           name: string
+          pricing_matrix: Json | null
           three_monthly_price: number | null
           three_yearly_price: number | null
           two_yearly_price: number | null
@@ -1332,6 +1609,7 @@ export type Database = {
           is_active?: boolean
           monthly_price?: number | null
           name: string
+          pricing_matrix?: Json | null
           three_monthly_price?: number | null
           three_yearly_price?: number | null
           two_yearly_price?: number | null
@@ -1348,6 +1626,7 @@ export type Database = {
           is_active?: boolean
           monthly_price?: number | null
           name?: string
+          pricing_matrix?: Json | null
           three_monthly_price?: number | null
           three_yearly_price?: number | null
           two_yearly_price?: number | null
@@ -1410,6 +1689,95 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      warranties_2000_audit_log: {
+        Row: {
+          action_type: string
+          admin_email: string | null
+          created_at: string | null
+          customer_email: string | null
+          details: Json | null
+          error_message: string | null
+          id: string
+          notes: string | null
+          status: string | null
+        }
+        Insert: {
+          action_type: string
+          admin_email?: string | null
+          created_at?: string | null
+          customer_email?: string | null
+          details?: Json | null
+          error_message?: string | null
+          id?: string
+          notes?: string | null
+          status?: string | null
+        }
+        Update: {
+          action_type?: string
+          admin_email?: string | null
+          created_at?: string | null
+          customer_email?: string | null
+          details?: Json | null
+          error_message?: string | null
+          id?: string
+          notes?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      warranty_audit_log: {
+        Row: {
+          action_type: string
+          admin_id: string | null
+          changes_made: Json | null
+          created_at: string | null
+          created_by: string | null
+          customer_id: string | null
+          details: Json | null
+          event_data: Json | null
+          event_timestamp: string | null
+          event_type: string | null
+          id: string
+          policy_id: string | null
+        }
+        Insert: {
+          action_type: string
+          admin_id?: string | null
+          changes_made?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_id?: string | null
+          details?: Json | null
+          event_data?: Json | null
+          event_timestamp?: string | null
+          event_type?: string | null
+          id?: string
+          policy_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          admin_id?: string | null
+          changes_made?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_id?: string | null
+          details?: Json | null
+          event_data?: Json | null
+          event_timestamp?: string | null
+          event_type?: string | null
+          id?: string
+          policy_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranty_audit_log_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       welcome_emails: {
         Row: {
