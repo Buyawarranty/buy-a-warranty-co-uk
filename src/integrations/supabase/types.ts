@@ -492,7 +492,7 @@ export type Database = {
           warranties_2000_sent_at: string | null
           warranties_2000_status: string | null
           warranty_number: string | null
-          wear_and_tear: boolean | null
+          wear_tear: boolean | null
         }
         Insert: {
           breakdown_cover?: boolean | null
@@ -522,7 +522,7 @@ export type Database = {
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
           warranty_number?: string | null
-          wear_and_tear?: boolean | null
+          wear_tear?: boolean | null
         }
         Update: {
           breakdown_cover?: boolean | null
@@ -552,7 +552,7 @@ export type Database = {
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
           warranty_number?: string | null
-          wear_and_tear?: boolean | null
+          wear_tear?: boolean | null
         }
         Relationships: [
           {
@@ -682,6 +682,9 @@ export type Database = {
       }
       discount_codes: {
         Row: {
+          active: boolean | null
+          archived: boolean | null
+          campaign_source: string | null
           code: string
           created_at: string
           current_uses: number | null
@@ -690,11 +693,20 @@ export type Database = {
           id: string
           is_active: boolean | null
           max_uses: number | null
+          stripe_coupon_id: string | null
+          stripe_promotion_code_id: string | null
           type: string
           updated_at: string
+          usage_limit: number | null
+          used_count: number | null
+          valid_from: string | null
+          valid_to: string | null
           value: number
         }
         Insert: {
+          active?: boolean | null
+          archived?: boolean | null
+          campaign_source?: string | null
           code: string
           created_at?: string
           current_uses?: number | null
@@ -703,11 +715,20 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           max_uses?: number | null
+          stripe_coupon_id?: string | null
+          stripe_promotion_code_id?: string | null
           type: string
           updated_at?: string
+          usage_limit?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_to?: string | null
           value: number
         }
         Update: {
+          active?: boolean | null
+          archived?: boolean | null
+          campaign_source?: string | null
           code?: string
           created_at?: string
           current_uses?: number | null
@@ -716,8 +737,14 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           max_uses?: number | null
+          stripe_coupon_id?: string | null
+          stripe_promotion_code_id?: string | null
           type?: string
           updated_at?: string
+          usage_limit?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_to?: string | null
           value?: number
         }
         Relationships: []
