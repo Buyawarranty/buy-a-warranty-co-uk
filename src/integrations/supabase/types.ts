@@ -467,19 +467,15 @@ export type Database = {
         Row: {
           breakdown_cover: boolean | null
           claim_limit: number | null
-          consequential: boolean | null
           created_at: string
           customer_id: string | null
           email: string
           email_sent_status: string | null
           end_date: string | null
-          europe_cover: boolean | null
           european_cover: boolean | null
           id: string
           is_deleted: boolean | null
-          lost_key: boolean | null
           mot_fee: boolean | null
-          mot_repair: boolean | null
           payment_type: string | null
           plan_type: string
           policy_end_date: string | null
@@ -496,24 +492,20 @@ export type Database = {
           warranties_2000_sent_at: string | null
           warranties_2000_status: string | null
           warranty_number: string | null
-          wear_tear: boolean | null
+          wear_and_tear: boolean | null
         }
         Insert: {
           breakdown_cover?: boolean | null
           claim_limit?: number | null
-          consequential?: boolean | null
           created_at?: string
           customer_id?: string | null
           email: string
           email_sent_status?: string | null
           end_date?: string | null
-          europe_cover?: boolean | null
           european_cover?: boolean | null
           id?: string
           is_deleted?: boolean | null
-          lost_key?: boolean | null
           mot_fee?: boolean | null
-          mot_repair?: boolean | null
           payment_type?: string | null
           plan_type: string
           policy_end_date?: string | null
@@ -530,24 +522,20 @@ export type Database = {
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
           warranty_number?: string | null
-          wear_tear?: boolean | null
+          wear_and_tear?: boolean | null
         }
         Update: {
           breakdown_cover?: boolean | null
           claim_limit?: number | null
-          consequential?: boolean | null
           created_at?: string
           customer_id?: string | null
           email?: string
           email_sent_status?: string | null
           end_date?: string | null
-          europe_cover?: boolean | null
           european_cover?: boolean | null
           id?: string
           is_deleted?: boolean | null
-          lost_key?: boolean | null
           mot_fee?: boolean | null
-          mot_repair?: boolean | null
           payment_type?: string | null
           plan_type?: string
           policy_end_date?: string | null
@@ -564,7 +552,7 @@ export type Database = {
           warranties_2000_sent_at?: string | null
           warranties_2000_status?: string | null
           warranty_number?: string | null
-          wear_tear?: boolean | null
+          wear_and_tear?: boolean | null
         }
         Relationships: [
           {
@@ -694,84 +682,42 @@ export type Database = {
       }
       discount_codes: {
         Row: {
-          active: boolean | null
-          applicable_products: Json | null
-          archived: boolean | null
-          auto_archived_at: string | null
-          auto_archived_reason: string | null
-          campaign_source: string | null
           code: string
           created_at: string
-          created_by: string | null
           current_uses: number | null
           description: string | null
           expires_at: string | null
           id: string
           is_active: boolean | null
           max_uses: number | null
-          stripe_coupon_id: string | null
-          stripe_promo_code_id: string | null
-          stripe_promotion_code_id: string | null
           type: string
           updated_at: string
-          usage_limit: number | null
-          used_count: number | null
-          valid_from: string | null
-          valid_to: string | null
           value: number
         }
         Insert: {
-          active?: boolean | null
-          applicable_products?: Json | null
-          archived?: boolean | null
-          auto_archived_at?: string | null
-          auto_archived_reason?: string | null
-          campaign_source?: string | null
           code: string
           created_at?: string
-          created_by?: string | null
           current_uses?: number | null
           description?: string | null
           expires_at?: string | null
           id?: string
           is_active?: boolean | null
           max_uses?: number | null
-          stripe_coupon_id?: string | null
-          stripe_promo_code_id?: string | null
-          stripe_promotion_code_id?: string | null
           type: string
           updated_at?: string
-          usage_limit?: number | null
-          used_count?: number | null
-          valid_from?: string | null
-          valid_to?: string | null
           value: number
         }
         Update: {
-          active?: boolean | null
-          applicable_products?: Json | null
-          archived?: boolean | null
-          auto_archived_at?: string | null
-          auto_archived_reason?: string | null
-          campaign_source?: string | null
           code?: string
           created_at?: string
-          created_by?: string | null
           current_uses?: number | null
           description?: string | null
           expires_at?: string | null
           id?: string
           is_active?: boolean | null
           max_uses?: number | null
-          stripe_coupon_id?: string | null
-          stripe_promo_code_id?: string | null
-          stripe_promotion_code_id?: string | null
           type?: string
           updated_at?: string
-          usage_limit?: number | null
-          used_count?: number | null
-          valid_from?: string | null
-          valid_to?: string | null
           value?: number
         }
         Relationships: []
@@ -1223,11 +1169,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      restore_customer: { Args: { customer_uuid: string }; Returns: undefined }
-      soft_delete_customer: {
-        Args: { admin_uuid: string; customer_uuid: string }
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
