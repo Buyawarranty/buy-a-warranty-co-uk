@@ -415,6 +415,23 @@ const Index = () => {
     }
   }, [isRestoringFromUrl]);
 
+  // Safety check: redirect to homepage if landing on checkout steps without data
+  useEffect(() => {
+    const restoreParam = searchParams.get('restore');
+    
+    // Skip safety check if we're currently restoring from URL
+    if (isRestoringFromUrl || restoreParam) {
+      return;
+    }
+    
+    // If user is on step 2, 3, or 4 without vehicle data, redirect to homepage
+    if (currentStep >= 2 && !vehicleData?.regNumber) {
+      console.log('⚠️ User landed on checkout step without vehicle data, redirecting to homepage');
+      setCurrentStep(1);
+      navigate('/', { replace: true });
+    }
+  }, [currentStep, vehicleData, isRestoringFromUrl, searchParams, navigate]);
+
   // Quote restoration effect - optimized with memoization
   useEffect(() => {
     // Skip if we're handling a restore parameter (handled by effect above)
