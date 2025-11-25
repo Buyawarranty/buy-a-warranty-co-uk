@@ -276,6 +276,7 @@ export type Database = {
         Row: {
           author: string | null
           author_id: string | null
+          category_id: string | null
           content: string | null
           created_at: string
           excerpt: string | null
@@ -284,6 +285,7 @@ export type Database = {
           id: string
           published_at: string | null
           seo_description: string | null
+          seo_keywords: string[] | null
           seo_title: string | null
           slug: string
           status: string | null
@@ -295,6 +297,7 @@ export type Database = {
         Insert: {
           author?: string | null
           author_id?: string | null
+          category_id?: string | null
           content?: string | null
           created_at?: string
           excerpt?: string | null
@@ -303,6 +306,7 @@ export type Database = {
           id?: string
           published_at?: string | null
           seo_description?: string | null
+          seo_keywords?: string[] | null
           seo_title?: string | null
           slug: string
           status?: string | null
@@ -314,6 +318,7 @@ export type Database = {
         Update: {
           author?: string | null
           author_id?: string | null
+          category_id?: string | null
           content?: string | null
           created_at?: string
           excerpt?: string | null
@@ -322,6 +327,7 @@ export type Database = {
           id?: string
           published_at?: string | null
           seo_description?: string | null
+          seo_keywords?: string[] | null
           seo_title?: string | null
           slug?: string
           status?: string | null
@@ -330,7 +336,15 @@ export type Database = {
           updated_at?: string
           view_count?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "blog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaign_analytics: {
         Row: {
@@ -384,7 +398,9 @@ export type Database = {
           description: string | null
           email: string | null
           id: string
+          internal_notes: string | null
           name: string | null
+          payment_amount: number | null
           policy_number: string | null
           status: string | null
           submitted_at: string | null
@@ -397,7 +413,9 @@ export type Database = {
           description?: string | null
           email?: string | null
           id?: string
+          internal_notes?: string | null
           name?: string | null
+          payment_amount?: number | null
           policy_number?: string | null
           status?: string | null
           submitted_at?: string | null
@@ -410,7 +428,9 @@ export type Database = {
           description?: string | null
           email?: string | null
           id?: string
+          internal_notes?: string | null
           name?: string | null
+          payment_amount?: number | null
           policy_number?: string | null
           status?: string | null
           submitted_at?: string | null
@@ -1700,7 +1720,9 @@ export type Database = {
           error_message: string | null
           id: string
           notes: string | null
+          policy_id: string | null
           status: string | null
+          w2k_response: Json | null
         }
         Insert: {
           action_type: string
@@ -1711,7 +1733,9 @@ export type Database = {
           error_message?: string | null
           id?: string
           notes?: string | null
+          policy_id?: string | null
           status?: string | null
+          w2k_response?: Json | null
         }
         Update: {
           action_type?: string
@@ -1722,9 +1746,19 @@ export type Database = {
           error_message?: string | null
           id?: string
           notes?: string | null
+          policy_id?: string | null
           status?: string | null
+          w2k_response?: Json | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "warranties_2000_audit_log_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "customer_policies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       warranty_audit_log: {
         Row: {
