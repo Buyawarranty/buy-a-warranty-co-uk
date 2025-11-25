@@ -493,6 +493,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               voluntaryExcess: item.pricingData.voluntaryExcess,
               vehicleData: item.vehicleData,
               selectedAddOns: item.pricingData.selectedAddOns,
+              seasonalBonusMonths: 3, // Automatically apply 3-month winter bonus
               protectionAddOns: {
                 tyre: item.pricingData.selectedAddOns?.tyre || false,
                 wearTear: item.pricingData.selectedAddOns?.wearTear || false,
@@ -592,6 +593,7 @@ const MultiWarrantyCheckout: React.FC<MultiWarrantyCheckoutProps> = ({ items, on
               voluntaryExcess: item.pricingData.voluntaryExcess,
               vehicleData: item.vehicleData,
               selectedAddOns: item.pricingData.selectedAddOns,
+              seasonalBonusMonths: 3, // Automatically apply 3-month winter bonus
             protectionAddOns: {
               tyre: item.pricingData.selectedAddOns?.tyre || false,
               wearTear: item.pricingData.selectedAddOns?.wearTear || false,
