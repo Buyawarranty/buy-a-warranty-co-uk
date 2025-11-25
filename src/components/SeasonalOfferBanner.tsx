@@ -1,38 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { X, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import pandaMascot from '@/assets/panda-mascot.png';
 
 export const SeasonalOfferBanner = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [isOpen, setIsOpen] = useState(true);
-  const [isClaimed, setIsClaimed] = useState(false);
-
-  useEffect(() => {
-    // Check if offer is already claimed
-    const claimed = localStorage.getItem('seasonal_offer_claimed');
-    if (claimed === 'true') {
-      setIsClaimed(true);
-    }
-  }, []);
-
-  const handleClaimOffer = () => {
-    const newClaimedState = !isClaimed;
-    localStorage.setItem('seasonal_offer_claimed', newClaimedState.toString());
-    setIsClaimed(newClaimedState);
-    
-    if (newClaimedState) {
-      // Show success feedback
-      const event = new CustomEvent('offerClaimed');
-      window.dispatchEvent(event);
-    }
-  };
-
-  const handleReset = () => {
-    setIsClaimed(false);
-    localStorage.setItem('seasonal_offer_claimed', 'false');
-  };
 
   if (!isVisible) return null;
 
@@ -89,28 +62,12 @@ export const SeasonalOfferBanner = () => {
                 <p className="text-sm md:text-base text-white/90 text-center md:text-left">
                   ⏰ Order by Sunday 11pm to Secure Cover
                 </p>
+                <p className="text-xs md:text-sm text-green-300 font-medium mt-2 text-center md:text-left">
+                  ✨ Automatically applied at checkout
+                </p>
               </div>
               
               <div className="flex items-center gap-3">
-                <Button
-                  onClick={handleClaimOffer}
-                  size="lg"
-                  className={`font-bold px-6 py-3 transition-all duration-300 ${
-                    isClaimed 
-                      ? 'bg-green-600 text-white hover:bg-green-700 shadow-[0_0_20px_rgba(34,197,94,0.6)]' 
-                      : 'bg-orange-500 text-white hover:bg-orange-600 hover:scale-105 shadow-lg'
-                  }`}
-                >
-                  {isClaimed ? (
-                    <span className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-yellow-300 drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
-                      Offer Claimed!
-                    </span>
-                  ) : (
-                    'Claim Now'
-                  )}
-                </Button>
-                
                 <button
                   onClick={() => setIsVisible(false)}
                   className="p-2 hover:bg-white/20 rounded-full transition-colors"
