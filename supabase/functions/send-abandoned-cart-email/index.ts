@@ -138,13 +138,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     // If we have vehicle registration, create a state parameter to restore the flow
     if (emailRequest.vehicleReg) {
-      // Map trigger types to correct steps:
-      // - pricing_page_view, pricing_page_view_24h, pricing_page_view_72h → step 2 (quote page)
-      // - plan_selected → step 3 (plan selection)
-      let targetStep = 2; // Default to quote page
-      if (emailRequest.triggerType === 'plan_selected') {
-        targetStep = 3; // Plan was selected, return to plan selection
-      }
+      // Always send users back to step 2 (quote page) to prevent landing on incomplete step 3
+      // Step 2 has all the necessary data to show the quote and allow progression
+      const targetStep = 2;
       
       const stateParam = btoa(JSON.stringify({
         regNumber: emailRequest.vehicleReg,
