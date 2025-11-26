@@ -15,7 +15,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { trackFormSubmission, trackEvent } from '@/utils/analytics';
 import { getWarrantyDurationInMonths } from '@/lib/warrantyDurationUtils';
 import { getAddOnInfo, isAddOnAutoIncluded, normalizePaymentType, calculateAddOnPrice } from '@/lib/addOnsUtils';
-import { EmailCapturePopup } from '@/components/EmailCapturePopup';
 import MobileNavigation from '@/components/MobileNavigation';
 import bumperLogo from '@/assets/bumper-logo-transparent.png';
 import stripeLogo from '@/assets/stripe-logo.png';
@@ -126,7 +125,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   }>>([]);
   const [promoCodeInput, setPromoCodeInput] = useState<string>('');
   const [promoCodeError, setPromoCodeError] = useState<string>('');
-  const [showEmailPopup, setShowEmailPopup] = useState(false);
   const { user } = useAuth();
   
   // State for managing updated pricing data when add-ons are removed
@@ -340,13 +338,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
     } catch (error) {
       console.error('❌ Error checking discount codes (iOS/Safari):', error);
     }
-
-    // Show email capture popup after 35 seconds
-    const timer = setTimeout(() => {
-      setShowEmailPopup(true);
-    }, 35000);
-
-    return () => clearTimeout(timer);
   }, [bumperTotalPrice]);
 
   // Calculate total discount from all applied codes
@@ -458,18 +449,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
   const removePromoCode = (codeToRemove: string) => {
     setAppliedDiscountCodes(prev => prev.filter(code => code.code !== codeToRemove));
     toast.success('Promo code removed');
-  };
-
-  const handleEmailPopupDiscountCode = (generatedCode: string) => {
-    // Auto-apply the discount code from email popup
-    const newDiscountCode = {
-      code: generatedCode,
-      type: 'fixed' as const,
-      value: 25,
-      discountAmount: 25
-    };
-    setAppliedDiscountCodes(prev => [...prev, newDiscountCode]);
-    toast.success('£25 discount code applied automatically!');
   };
 
   const validateForm = () => {
@@ -1610,13 +1589,6 @@ const CustomerDetailsStep: React.FC<CustomerDetailsStepProps> = ({
             </div>
           </CardContent>
         </Card>
-
-        {/* Email Capture Popup */}
-        <EmailCapturePopup
-          isOpen={showEmailPopup}
-          onClose={() => setShowEmailPopup(false)}
-          onDiscountCodeGenerated={handleEmailPopupDiscountCode}
-        />
         
         {/* Scroll to Top Button - Mobile Only */}
         {showScrollTop && (

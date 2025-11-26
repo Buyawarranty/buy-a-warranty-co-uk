@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import WebsiteFooter from './WebsiteFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { VoucherBanner } from './VoucherBanner';
-import { EmailCapturePopup } from './EmailCapturePopup';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import LazySection from './homepage/LazySection';
@@ -56,7 +55,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
   const [showVoucherBanner, setShowVoucherBanner] = useState(false);
   const [showSecondWarrantyDiscount, setShowSecondWarrantyDiscount] = useState(false);
   const [discountCode, setDiscountCode] = useState('');
-  const [showEmailPopup, setShowEmailPopup] = useState(false);
   const [mileagePlaceholder, setMileagePlaceholder] = useState('Enter current approximate mileage');
 
   useEffect(() => {
@@ -79,37 +77,6 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
       setDiscountCode(code);
       localStorage.setItem('secondWarrantyDiscountCode', code);
     }
-
-    // Show email popup after 60 seconds OR when user scrolls 70% down the page
-    let hasTriggered = false;
-    
-    const showPopup = () => {
-      if (!hasTriggered) {
-        hasTriggered = true;
-        setShowEmailPopup(true);
-      }
-    };
-
-    // Timer trigger (60 seconds)
-    const timer = setTimeout(showPopup, 60000);
-
-    // Scroll trigger (70% down the page)
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const documentHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrollPercentage = (scrollTop / documentHeight) * 100;
-      
-      if (scrollPercentage >= 70) {
-        showPopup();
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, []);
 
   const formatRegNumber = (value: string) => {
@@ -904,16 +871,10 @@ const Homepage: React.FC<HomepageProps> = ({ onRegistrationSubmit }) => {
             href="tel:03302295040"
             className="flex items-center justify-center w-14 h-14 bg-orange-500 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
-            <Phone className="w-7 h-7 text-white" />
-          </a>
-        </div>
-      )}
-
-      {/* Email Capture Popup */}
-      <EmailCapturePopup 
-        isOpen={showEmailPopup}
-        onClose={() => setShowEmailPopup(false)}
-      />
+          <Phone className="w-7 h-7 text-white" />
+        </a>
+      </div>
+    )}
     </div>
   );
 };

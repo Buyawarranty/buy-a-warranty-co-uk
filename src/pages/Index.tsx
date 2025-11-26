@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback, useMemo, lazy } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Homepage from '@/components/Homepage';
-import { DiscountPopup } from '@/components/DiscountPopup';
 import { SEOHead } from '@/components/SEOHead';
 import { OrganizationSchema } from '@/components/schema/OrganizationSchema';
 import { FAQSchema, defaultWarrantyFAQs } from '@/components/schema/FAQSchema';
@@ -359,7 +358,6 @@ const Index = () => {
   };
   
   const [currentStep, setCurrentStep] = useState(getStepFromUrl());
-  const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   
   const { restoreQuoteData } = useQuoteRestoration();
 
@@ -660,45 +658,6 @@ const Index = () => {
     console.log('URL params check:', { quoteParam, emailParam, currentUrl: window.location.href });
     
     // Quote restoration is now handled by the earlier effect to avoid duplication
-
-    // Show discount popup after 20 seconds of scrolling (not on homepage)
-    if (currentStep !== 1) {
-      // Check if already seen popup in this session
-      const hasSeenPopup = sessionStorage.getItem('hasSeenDiscountPopup');
-      if (hasSeenPopup) return;
-      
-      let scrollTime = 0;
-      let scrollTimer: NodeJS.Timeout;
-      let isScrolling = false;
-      
-      const handleScroll = () => {
-        if (!isScrolling) {
-          isScrolling = true;
-          scrollTimer = setInterval(() => {
-            scrollTime += 100; // Increment by 100ms
-            if (scrollTime >= 20000) { // 20 seconds
-              setShowDiscountPopup(true);
-              clearInterval(scrollTimer);
-              window.removeEventListener('scroll', handleScroll);
-            }
-          }, 100);
-        }
-        
-        // Reset scrolling flag after a brief pause
-        clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(() => {
-          isScrolling = false;
-          clearInterval(scrollTimer);
-        }, 150);
-      };
-      
-      window.addEventListener('scroll', handleScroll);
-      
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-        clearInterval(scrollTimer);
-      };
-    }
     
     // Note: popstate is now handled by useMobileBackNavigation hook
     // which includes state restoration logic
@@ -1098,15 +1057,6 @@ const Index = () => {
         </div>
       )}
       
-
-      {/* Discount Popup */}
-      <DiscountPopup 
-        isOpen={showDiscountPopup} 
-        onClose={() => {
-          setShowDiscountPopup(false);
-          sessionStorage.setItem('hasSeenDiscountPopup', 'true');
-        }}
-      />
 
       {/* Back Navigation Confirmation Dialog */}
       <BackNavigationConfirmDialog
