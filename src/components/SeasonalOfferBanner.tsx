@@ -37,7 +37,7 @@ export const SeasonalOfferBanner = () => {
               </p>
               <p>
                 <span className="font-bold text-white">⏰ Order by Sunday 11pm – ✨</span>
-                <span className="font-light text-[0.7rem] md:text-xs text-white"> Automatically Applied at Checkout</span>
+                <span className="text-[0.7rem] md:text-xs text-white"> Automatically Applied at Checkout</span>
               </p>
             </div>
           </div>
