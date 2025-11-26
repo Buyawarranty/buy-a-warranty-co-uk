@@ -183,6 +183,22 @@ interface IncompleteCustomer {
   last_contacted_at?: string | null;
   converted?: boolean | null;
   converted_at?: string | null;
+  // Computed fields from vehicle_data
+  full_name?: string;
+  vehicle_reg?: string;
+  vehicle_make?: string;
+  vehicle_model?: string;
+  vehicle_year?: string;
+  mileage?: string | number;
+  plan_name?: string;
+  payment_type?: string;
+  voluntary_excess?: number;
+  claim_limit?: number;
+  cart_metadata?: {
+    selectedAddons?: string[];
+    finalPrice?: number;
+    [key: string]: any;
+  };
 }
 
 interface EmailStatus {
@@ -675,8 +691,36 @@ export const CustomersTab = () => {
       }
 
       console.log('✅ Found incomplete customers:', data?.length || 0);
-      setIncompleteCustomers(data || []);
-      setFilteredIncompleteCustomers(data || []);
+      
+      // Process data to extract fields from vehicle_data JSON
+      const processedData = (data || []).map((customer: any) => {
+        const vehicleData = customer.vehicle_data || {};
+        const fullName = [customer.first_name, customer.last_name].filter(Boolean).join(' ') || 
+                        vehicleData.customerName || 
+                        'Unknown';
+        
+        return {
+          ...customer,
+          full_name: fullName,
+          vehicle_reg: vehicleData.registration || vehicleData.vehicleReg || '',
+          vehicle_make: vehicleData.make || vehicleData.vehicleMake || '',
+          vehicle_model: vehicleData.model || vehicleData.vehicleModel || '',
+          vehicle_year: vehicleData.year || vehicleData.vehicleYear || '',
+          mileage: vehicleData.mileage || '',
+          plan_name: vehicleData.planName || vehicleData.selectedPlan || '',
+          payment_type: vehicleData.paymentType || vehicleData.duration || '',
+          voluntary_excess: vehicleData.voluntaryExcess || vehicleData.excess || 0,
+          claim_limit: vehicleData.claimLimit || 0,
+          cart_metadata: {
+            selectedAddons: vehicleData.selectedAddons || [],
+            finalPrice: vehicleData.finalPrice || vehicleData.price || 0,
+            ...vehicleData
+          }
+        };
+      });
+      
+      setIncompleteCustomers(processedData);
+      setFilteredIncompleteCustomers(processedData);
     } catch (error) {
       console.error('Error fetching incomplete customers:', error);
       toast.error('Failed to load incomplete customers');
@@ -1934,22 +1978,23 @@ export const CustomersTab = () => {
         <TabsList className="grid w-full grid-cols-3 bg-transparent gap-2">
           <TabsTrigger 
             value="complete" 
-            className="bg-blue-50 text-blue-700 border border-blue-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 data-[state=active]:border-blue-400 data-[state=active]:border-2 data-[state=active]:shadow-sm"
+            className="bg-blue-50 text-blue-700 border border-blue-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900 data-[state=active]:border-blue-400 data-[state=active]:border-2 data-[state=active]:shadow-sm transition-all"
           >
             Active Orders
           </TabsTrigger>
           <TabsTrigger 
+            value="incomplete" 
+            className="bg-red-50 text-red-700 border border-red-200 data-[state=active]:bg-red-100 data-[state=active]:text-red-900 data-[state=active]:border-red-400 data-[state=active]:border-2 data-[state=active]:shadow-sm transition-all"
+          >
+            <AlertCircle className="h-4 w-4 mr-2" />
+            Incomplete Customers
+          </TabsTrigger>
+          <TabsTrigger 
             value="deleted"
-            className="bg-amber-50 text-amber-700 border border-amber-200 data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900 data-[state=active]:border-amber-400 data-[state=active]:border-2 data-[state=active]:shadow-sm"
+            className="bg-amber-50 text-amber-700 border border-amber-200 data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900 data-[state=active]:border-amber-400 data-[state=active]:border-2 data-[state=active]:shadow-sm transition-all"
           >
             <Archive className="h-4 w-4 mr-2" />
             Order Archive
-          </TabsTrigger>
-          <TabsTrigger 
-            value="incomplete" 
-            className="bg-red-50 text-red-700 border border-red-200 data-[state=active]:bg-red-100 data-[state=active]:text-red-900 data-[state=active]:border-red-400 data-[state=active]:border-2 data-[state=active]:shadow-sm"
-          >
-            Incomplete Customers
           </TabsTrigger>
         </TabsList>
 
@@ -3737,7 +3782,8 @@ Please log in and change your password after first login.`;
                 ) : (
                   filteredIncompleteCustomers.map((customer) => {
                     const metadata = customer.cart_metadata || {};
-                    const showDetails = customer.step_abandoned >= 3;
+                    const stepNum = parseInt(customer.step_abandoned || '0');
+                    const showDetails = stepNum >= 3;
                     
                     return (
                     <TableRow key={customer.id}>
@@ -3826,9 +3872,31 @@ Please log in and change your password after first login.`;
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={customer.step_abandoned === 1 ? 'destructive' : 'secondary'}>
-                          Step {customer.step_abandoned}
-                        </Badge>
+                        <div className="space-y-1">
+                          <Badge variant={stepNum === 1 ? 'destructive' : 'secondary'}>
+                            Step {customer.step_abandoned}
+                          </Badge>
+                          {showDetails && (
+                            <div className="text-xs space-y-1 mt-2">
+                              {customer.voluntary_excess !== undefined && (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-gray-500">Excess:</span>
+                                  <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                                    £{customer.voluntary_excess}
+                                  </Badge>
+                                </div>
+                              )}
+                              {customer.claim_limit > 0 && (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-gray-500">Claim Limit:</span>
+                                  <Badge variant="outline" className="bg-green-50 text-green-700">
+                                    £{customer.claim_limit}
+                                  </Badge>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
