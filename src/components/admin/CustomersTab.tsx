@@ -171,24 +171,18 @@ interface Customer {
 interface IncompleteCustomer {
   id: string;
   email: string;
-  full_name?: string;
-  phone?: string;
-  vehicle_reg?: string;
-  vehicle_make?: string;
-  vehicle_model?: string;
-  vehicle_year?: string;
-  mileage?: string;
-  plan_name?: string;
-  payment_type?: string;
-  vehicle_type?: string;
-  step_abandoned: number;
-  created_at: string;
-  updated_at: string;
-  contact_status: string;
-  contact_notes?: string;
-  last_contacted_at?: string;
-  contacted_by?: string;
-  cart_metadata?: any;
+  first_name?: string | null;
+  last_name?: string | null;
+  phone?: string | null;
+  vehicle_data?: any;
+  step_abandoned: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  contact_status: string | null;
+  contact_notes?: string | null;
+  last_contacted_at?: string | null;
+  converted?: boolean | null;
+  converted_at?: string | null;
 }
 
 interface EmailStatus {
