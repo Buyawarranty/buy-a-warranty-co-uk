@@ -25,28 +25,25 @@ import {
 
 interface AbandonedCart {
   id: string;
-  full_name: string | null;
+  first_name: string | null;
+  last_name: string | null;
   email: string;
   phone: string | null;
-  vehicle_reg: string | null;
-  vehicle_make: string | null;
-  vehicle_model: string | null;
-  vehicle_year: string | null;
-  mileage: string | null;
-  plan_name: string | null;
-  payment_type: string | null;
-  vehicle_type: string | null;
-  step_abandoned: number;
-  contact_status: string;
+  vehicle_data: any;
+  step_abandoned: string | null;
+  contact_status: string | null;
   contact_notes: string | null;
-  created_at: string;
-  updated_at: string;
+  created_at: string | null;
+  updated_at: string | null;
   last_contacted_at: string | null;
-  contacted_by: string | null;
+  converted: boolean | null;
+  converted_at: string | null;
   cart_metadata?: {
     total_price?: number;
     voluntary_excess?: number;
     claim_limit?: number;
+    plan_name?: string;
+    payment_type?: string;
     address?: {
       flat_number?: string;
       building_name?: string;
@@ -71,6 +68,22 @@ interface AbandonedCart {
     };
   };
 }
+
+// Helper functions to extract data from abandoned cart
+const getFullName = (cart: AbandonedCart) => {
+  if (cart.first_name && cart.last_name) {
+    return `${cart.first_name} ${cart.last_name}`;
+  }
+  return cart.first_name || cart.last_name || null;
+};
+
+const getVehicleReg = (cart: AbandonedCart) => cart.vehicle_data?.regNumber || cart.vehicle_data?.registration || null;
+const getVehicleMake = (cart: AbandonedCart) => cart.vehicle_data?.make || null;
+const getVehicleModel = (cart: AbandonedCart) => cart.vehicle_data?.model || null;
+const getVehicleYear = (cart: AbandonedCart) => cart.vehicle_data?.registrationYear || cart.vehicle_data?.year || null;
+const getMileage = (cart: AbandonedCart) => cart.vehicle_data?.mileage || null;
+const getPlanName = (cart: AbandonedCart) => cart.vehicle_data?.selectedPlan || cart.cart_metadata?.plan_name || null;
+const getPaymentType = (cart: AbandonedCart) => cart.vehicle_data?.paymentType || cart.cart_metadata?.payment_type || null;
 
 export const AbandonedCartsTab: React.FC = () => {
   const [carts, setCarts] = useState<AbandonedCart[]>([]);
@@ -200,12 +213,17 @@ export const AbandonedCartsTab: React.FC = () => {
 
   const filteredCarts = carts.filter(cart => {
     const searchLower = searchTerm.toLowerCase();
+    const fullName = getFullName(cart);
+    const vehicleReg = getVehicleReg(cart);
+    const vehicleMake = getVehicleMake(cart);
+    const vehicleModel = getVehicleModel(cart);
+    
     return (
       cart.email?.toLowerCase().includes(searchLower) ||
-      cart.full_name?.toLowerCase().includes(searchLower) ||
-      cart.vehicle_reg?.toLowerCase().includes(searchLower) ||
-      cart.vehicle_make?.toLowerCase().includes(searchLower) ||
-      cart.vehicle_model?.toLowerCase().includes(searchLower)
+      fullName?.toLowerCase().includes(searchLower) ||
+      vehicleReg?.toLowerCase().includes(searchLower) ||
+      vehicleMake?.toLowerCase().includes(searchLower) ||
+      vehicleModel?.toLowerCase().includes(searchLower)
     );
   });
 
@@ -350,7 +368,7 @@ export const AbandonedCartsTab: React.FC = () => {
                   {/* Customer Info */}
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-semibold">
-                      {cart.full_name || 'Anonymous Customer'}
+                      {getFullName(cart) || 'Anonymous Customer'}
                     </h3>
                     <Badge className={getStatusColor(cart.contact_status)}>
                       <span className="flex items-center gap-1">
@@ -371,11 +389,11 @@ export const AbandonedCartsTab: React.FC = () => {
                         <span>{cart.phone}</span>
                       </div>
                     )}
-                    {cart.vehicle_reg && (
+                    {getVehicleReg(cart) && (
                       <div className="flex items-center gap-2 text-gray-600">
                         <Car className="w-4 h-4" />
                         <span>
-                          {cart.vehicle_reg} - {cart.vehicle_make} {cart.vehicle_model} ({cart.vehicle_year})
+                          {getVehicleReg(cart)} - {getVehicleMake(cart)} {getVehicleModel(cart)} ({getVehicleYear(cart)})
                         </span>
                       </div>
                     )}
@@ -389,12 +407,12 @@ export const AbandonedCartsTab: React.FC = () => {
                   </div>
 
                   {/* Plan Info with Pricing */}
-                  {cart.plan_name && (
+                  {getPlanName(cart) && (
                     <div className="bg-gray-50 p-3 rounded space-y-2">
                       <p className="text-sm font-medium">Selected Plan</p>
                       <p className="text-sm text-gray-600">
-                        {cart.plan_name} - {cart.payment_type} 
-                        {cart.mileage && ` | ${parseInt(cart.mileage).toLocaleString()} miles`}
+                        {getPlanName(cart)} - {getPaymentType(cart)} 
+                        {getMileage(cart) && ` | ${parseInt(getMileage(cart)).toLocaleString()} miles`}
                       </p>
                       {cart.cart_metadata?.total_price && (
                         <div className="space-y-1 text-sm">
@@ -586,7 +604,7 @@ export const AbandonedCartsTab: React.FC = () => {
             <CardHeader>
               <CardTitle>Add Contact Notes</CardTitle>
               <p className="text-sm text-gray-600">
-                {selectedCart.full_name || selectedCart.email}
+                {getFullName(selectedCart) || selectedCart.email}
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
