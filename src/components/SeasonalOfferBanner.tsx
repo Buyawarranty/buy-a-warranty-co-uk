@@ -32,8 +32,8 @@ export const SeasonalOfferBanner = () => {
           <div className="flex-1">
             <div className="text-xs md:text-sm text-white text-center md:text-left space-y-0.5">
               <p>
-                <span className="font-bold text-yellow-300">❄️ Don't Risk a Breakdown This Winter</span>
-                <span className="text-white"> – Claim 3 Months FREE Extra Cover</span>
+                <span className="text-yellow-300">❄️ Don't Risk a Breakdown This Winter</span>
+                <span className="font-bold text-white"> – Claim 3 Months FREE Extra Cover</span>
               </p>
               <p>
                 <span className="font-bold text-white">⏰ Order by Sunday 11pm – ✨</span>
