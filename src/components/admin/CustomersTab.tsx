@@ -692,25 +692,30 @@ export const CustomersTab = () => {
 
       console.log('✅ Found incomplete customers:', data?.length || 0);
       
-      // Process data to extract fields from vehicle_data JSON
+      // Process data - most fields are direct columns, not in vehicle_data JSON
       const processedData = (data || []).map((customer: any) => {
         const vehicleData = customer.vehicle_data || {};
-        const fullName = [customer.first_name, customer.last_name].filter(Boolean).join(' ') || 
+        
+        // full_name is stored directly in the table, or build from first/last name
+        const fullName = customer.full_name || 
+                        [customer.first_name, customer.last_name].filter(Boolean).join(' ') || 
                         vehicleData.customerName || 
                         'Unknown';
         
         return {
           ...customer,
           full_name: fullName,
-          vehicle_reg: vehicleData.registration || vehicleData.vehicleReg || '',
-          vehicle_make: vehicleData.make || vehicleData.vehicleMake || '',
-          vehicle_model: vehicleData.model || vehicleData.vehicleModel || '',
-          vehicle_year: vehicleData.year || vehicleData.vehicleYear || '',
-          mileage: vehicleData.mileage || '',
-          plan_name: vehicleData.planName || vehicleData.selectedPlan || '',
-          payment_type: vehicleData.paymentType || vehicleData.duration || '',
-          voluntary_excess: vehicleData.voluntaryExcess || vehicleData.excess || 0,
-          claim_limit: vehicleData.claimLimit || 0,
+          // These fields are stored directly as columns in abandoned_carts table
+          vehicle_reg: customer.vehicle_reg || vehicleData.registration || vehicleData.vehicleReg || '',
+          vehicle_make: customer.vehicle_make || vehicleData.make || vehicleData.vehicleMake || '',
+          vehicle_model: customer.vehicle_model || vehicleData.model || vehicleData.vehicleModel || '',
+          vehicle_year: customer.vehicle_year || vehicleData.year || vehicleData.vehicleYear || '',
+          mileage: customer.mileage || vehicleData.mileage || '',
+          plan_name: customer.plan_name || vehicleData.planName || vehicleData.selectedPlan || '',
+          payment_type: customer.payment_type || vehicleData.paymentType || vehicleData.duration || '',
+          // These are typically in vehicle_data JSON
+          voluntary_excess: customer.voluntary_excess || vehicleData.voluntaryExcess || vehicleData.excess || 0,
+          claim_limit: customer.claim_limit || vehicleData.claimLimit || 0,
           cart_metadata: {
             selectedAddons: vehicleData.selectedAddons || [],
             finalPrice: vehicleData.finalPrice || vehicleData.price || 0,
