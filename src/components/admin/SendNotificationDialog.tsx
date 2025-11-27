@@ -53,9 +53,9 @@ export const SendNotificationDialog = ({
         .from('customer_notifications')
         .insert({
           customer_id: customerId,
+          title: 'Update from Buy-A-Warranty',
           message: message.trim(),
-          is_important: isImportant,
-          created_by: user?.id,
+          type: isImportant ? 'important' : 'general',
         });
 
       if (error) throw error;
