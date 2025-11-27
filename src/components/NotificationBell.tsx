@@ -67,16 +67,16 @@ export const NotificationBell = ({
                 <div
                   key={notification.id}
                   className={`p-4 hover:bg-muted/50 transition-colors ${
-                    !notification.is_read ? 'bg-muted/30' : ''
+                    !notification.read ? 'bg-muted/30' : ''
                   }`}
                 >
                   <div className="flex items-start gap-2">
                     <div className="flex-1">
                       <div className="flex items-start justify-between gap-2">
-                        <p className={`text-sm ${notification.is_important ? 'font-semibold' : ''}`}>
+                        <p className={`text-sm ${notification.type === 'important' ? 'font-semibold' : ''}`}>
                           {notification.message}
                         </p>
-                        {!notification.is_read && (
+                        {!notification.read && (
                           <Button
                             variant="ghost"
                             size="icon"
@@ -92,20 +92,10 @@ export const NotificationBell = ({
                           addSuffix: true,
                         })}
                       </p>
-                      {notification.is_important && (
+                      {notification.type === 'important' && (
                         <Badge variant="destructive" className="mt-2 text-xs">
                           Important
                         </Badge>
-                      )}
-                      {notification.attachment_url && (
-                        <a
-                          href={notification.attachment_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-primary hover:underline mt-2 block"
-                        >
-                          View attachment
-                        </a>
                       )}
                     </div>
                   </div>

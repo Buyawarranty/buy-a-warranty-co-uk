@@ -3,14 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 
 export interface CustomerNotification {
   id: string;
-  customer_id: string;
+  customer_id: string | null;
+  title: string;
   message: string;
-  is_important: boolean;
-  is_read: boolean;
-  created_by: string | null;
-  created_at: string;
-  read_at: string | null;
-  attachment_url: string | null;
+  read: boolean | null;
+  type: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export const useCustomerNotifications = (customerEmail: string | undefined) => {
@@ -57,7 +56,7 @@ export const useCustomerNotifications = (customerEmail: string | undefined) => {
       if (error) throw error;
 
       setNotifications(data || []);
-      setUnreadCount(data?.filter(n => !n.is_read).length || 0);
+      setUnreadCount(data?.filter(n => !n.read).length || 0);
     } catch (error) {
       console.error('Error fetching notifications:', error);
     } finally {
@@ -89,13 +88,13 @@ export const useCustomerNotifications = (customerEmail: string | undefined) => {
     try {
       const { error } = await supabase
         .from('customer_notifications')
-        .update({ is_read: true, read_at: new Date().toISOString() })
+        .update({ read: true, updated_at: new Date().toISOString() })
         .eq('id', notificationId);
 
       if (error) throw error;
 
       setNotifications(prev =>
-        prev.map(n => n.id === notificationId ? { ...n, is_read: true, read_at: new Date().toISOString() } : n)
+        prev.map(n => n.id === notificationId ? { ...n, read: true, updated_at: new Date().toISOString() } : n)
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
@@ -117,14 +116,14 @@ export const useCustomerNotifications = (customerEmail: string | undefined) => {
 
       const { error } = await supabase
         .from('customer_notifications')
-        .update({ is_read: true, read_at: new Date().toISOString() })
+        .update({ read: true, updated_at: new Date().toISOString() })
         .eq('customer_id', customer.id)
-        .eq('is_read', false);
+        .eq('read', false);
 
       if (error) throw error;
 
       setNotifications(prev =>
-        prev.map(n => ({ ...n, is_read: true, read_at: new Date().toISOString() }))
+        prev.map(n => ({ ...n, read: true, updated_at: new Date().toISOString() }))
       );
       setUnreadCount(0);
     } catch (error) {
