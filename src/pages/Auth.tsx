@@ -41,15 +41,15 @@ const Auth = () => {
   // Handle invitation flow
   const handleInvitation = async (token: string) => {
     try {
-      // Verify invitation token and get email
-      const { data: invitation, error } = await supabase
-        .from('admin_invitations')
-        .select('email, expires_at')
-        .eq('invitation_token', token)
-        .eq('accepted_at', null)
+      // Verify invitation token and get email from admin_users
+      const { data: adminUser, error } = await supabase
+        .from('admin_users')
+        .select('email, invite_token, invited_at')
+        .eq('invite_token', token)
+        .is('invite_sent_at', null)
         .single();
 
-      if (error || !invitation) {
+      if (error || !adminUser) {
         toast({
           title: "Invalid Invitation",
           description: "This invitation link is invalid or has already been used.",
@@ -58,18 +58,8 @@ const Auth = () => {
         return;
       }
 
-      // Check if invitation is expired
-      if (new Date(invitation.expires_at) < new Date()) {
-        toast({
-          title: "Expired Invitation",
-          description: "This invitation link has expired.",
-          variant: "destructive",
-        });
-        return;
-      }
-
       // Pre-fill email and show success message
-      setEmail(invitation.email);
+      setEmail(adminUser.email);
       toast({
         title: "Invitation Accepted",
         description: "Please sign in with your credentials from the invitation email.",
@@ -77,9 +67,9 @@ const Auth = () => {
 
       // Mark invitation as accepted
       await supabase
-        .from('admin_invitations')
-        .update({ accepted_at: new Date().toISOString() })
-        .eq('invitation_token', token);
+        .from('admin_users')
+        .update({ invite_sent_at: new Date().toISOString() })
+        .eq('invite_token', token);
 
     } catch (error: any) {
       console.error('Error processing invitation:', error);

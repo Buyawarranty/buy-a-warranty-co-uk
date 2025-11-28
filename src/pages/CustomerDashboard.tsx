@@ -381,16 +381,10 @@ const CustomerDashboard = () => {
     if (!user?.email) return;
     
     try {
-      // Update last_login in customers table
+      // Update updated_at timestamp in customers table as proxy for last login
       await supabase
         .from('customers')
-        .update({ last_login: new Date().toISOString() })
-        .eq('email', user.email);
-        
-      // Also update in customer_policies if exists
-      await supabase
-        .from('customer_policies')
-        .update({ last_login: new Date().toISOString() })
+        .update({ updated_at: new Date().toISOString() })
         .eq('email', user.email);
     } catch (error) {
       console.error('Error updating last login:', error);

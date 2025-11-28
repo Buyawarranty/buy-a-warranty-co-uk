@@ -303,21 +303,25 @@ www.buyawarranty.co.uk | info@buyawarranty.co.uk`;
       if (emailError) throw emailError;
 
       // Then add to abandoned_carts for tracking as incomplete customer
+      const nameParts = customerName?.split(' ') || [''];
       const { error: abandonedCartError } = await supabase
         .from('abandoned_carts')
         .insert({
           email: customerEmail,
-          full_name: customerName,
+          first_name: nameParts[0] || null,
+          last_name: nameParts.slice(1).join(' ') || null,
           phone: '',
-          vehicle_reg: vehicleData?.regNumber,
-          vehicle_make: vehicleData?.make,
-          vehicle_model: vehicleData?.model,
-          vehicle_year: vehicleData?.year,
-          vehicle_type: vehicleData?.vehicleType,
-          mileage: vehicleData?.mileage,
-          plan_name: 'Platinum',
-          payment_type: paymentType,
-          step_abandoned: 3,
+          vehicle_data: vehicleData ? {
+            regNumber: vehicleData.regNumber,
+            make: vehicleData.make,
+            model: vehicleData.model,
+            year: vehicleData.year,
+            vehicleType: vehicleData.vehicleType,
+            mileage: vehicleData.mileage,
+            planName: 'Platinum',
+            paymentType: paymentType
+          } : null,
+          step_abandoned: '3',
           contact_status: 'contacted',
           cart_metadata: {
             excess: excessAmount,
