@@ -187,6 +187,7 @@ const EmailManagementTab = () => {
       const templateData = {
         name: formData.name,
         subject: formData.subject,
+        body: JSON.stringify({ greeting: formData.greeting, content: formData.content }),
         template_type: formData.template_type,
         from_email: formData.from_email,
         content: {

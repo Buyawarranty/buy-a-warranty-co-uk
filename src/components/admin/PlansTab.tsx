@@ -161,7 +161,7 @@ export const PlansTab = () => {
           yearly_price: plan.yearly_price,
           two_yearly_price: plan.two_yearly_price,
           three_yearly_price: plan.three_yearly_price,
-          coverage: plan.coverage,
+          coverage: typeof plan.coverage === 'string' ? plan.coverage : JSON.stringify(plan.coverage),
           add_ons: plan.add_ons,
           is_active: plan.is_active,
           pricing_matrix: plan.pricing_matrix
@@ -195,7 +195,7 @@ export const PlansTab = () => {
       const { error } = await supabase
         .from('plans')
         .update({
-          coverage: defaults.coverage,
+          coverage: typeof defaults.coverage === 'string' ? defaults.coverage : JSON.stringify(defaults.coverage),
           add_ons: defaults.add_ons
         })
         .eq('id', editingPlan.id);
