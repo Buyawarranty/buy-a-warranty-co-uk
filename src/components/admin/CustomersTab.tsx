@@ -1341,6 +1341,112 @@ export const CustomersTab = () => {
     return isMasterAdmin || hasAdminRole;
   };
 
+  const generateInvoice = (customer: Customer) => {
+    // Create invoice HTML content
+    const invoiceDate = new Date().toLocaleDateString('en-GB');
+    const policyStartDate = customer.customer_policies?.[0]?.policy_start_date 
+      ? new Date(customer.customer_policies[0].policy_start_date).toLocaleDateString('en-GB')
+      : 'N/A';
+    const policyEndDate = customer.customer_policies?.[0]?.policy_end_date
+      ? new Date(customer.customer_policies[0].policy_end_date).toLocaleDateString('en-GB')
+      : 'N/A';
+
+    const invoiceHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice - ${customer.warranty_reference_number || 'N/A'}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .company-name { font-size: 24px; font-weight: bold; color: #ff6b00; }
+    .invoice-title { font-size: 20px; margin-top: 10px; }
+    .info-section { margin: 20px 0; }
+    .info-row { display: flex; justify-content: space-between; margin: 10px 0; }
+    .label { font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background-color: #ff6b00; color: white; }
+    .total { font-size: 18px; font-weight: bold; text-align: right; margin-top: 20px; }
+    .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="company-name">Buy-A-Warranty.co.uk</div>
+    <div class="invoice-title">WARRANTY INVOICE</div>
+  </div>
+
+  <div class="info-section">
+    <div class="info-row">
+      <span><span class="label">Invoice Date:</span> ${invoiceDate}</span>
+      <span><span class="label">Warranty Reference:</span> ${customer.warranty_reference_number || customer.warranty_number || 'N/A'}</span>
+    </div>
+    <div class="info-row">
+      <span><span class="label">Customer Name:</span> ${customer.name || 'N/A'}</span>
+      <span><span class="label">Email:</span> ${customer.email}</span>
+    </div>
+    <div class="info-row">
+      <span><span class="label">Phone:</span> ${customer.phone || 'N/A'}</span>
+      <span><span class="label">Registration:</span> ${customer.registration_plate || 'N/A'}</span>
+    </div>
+    <div class="info-row">
+      <span><span class="label">Address:</span> ${[customer.street, customer.town, customer.postcode].filter(Boolean).join(', ') || 'N/A'}</span>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Vehicle Details</th>
+        <th>Coverage Period</th>
+        <th>Amount (£)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>${customer.plan_type || 'Standard'} Warranty Plan<br><small>${getWarrantyDurationInMonths(customer.payment_type || '')} months coverage</small></td>
+        <td>${customer.vehicle_make || ''} ${customer.vehicle_model || ''}<br>${customer.vehicle_year || ''}</td>
+        <td>${policyStartDate} - ${policyEndDate}</td>
+        <td>£${(customer.final_amount || 0).toFixed(2)}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-section">
+    <div class="info-row"><span class="label">Voluntary Excess:</span> £${customer.voluntary_excess || 0}</div>
+    <div class="info-row"><span class="label">Claim Limit:</span> £${((customer.customer_policies?.[0] as any)?.claim_limit || customer.claim_limit || 1250).toLocaleString()}</div>
+    <div class="info-row"><span class="label">Payment Method:</span> ${customer.bumper_order_id ? 'Bumper' : customer.stripe_session_id ? 'Stripe' : 'N/A'}</div>
+  </div>
+
+  <div class="total">
+    Total Amount: £${(customer.final_amount || 0).toFixed(2)}
+  </div>
+
+  <div class="footer">
+    <p>Buy-A-Warranty.co.uk | 0330 229 5040 | info@buyawarranty.co.uk</p>
+    <p>Thank you for your business!</p>
+  </div>
+</body>
+</html>
+    `;
+
+    // Create a blob and download
+    const blob = new Blob([invoiceHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Invoice_${customer.warranty_reference_number || customer.id}_${invoiceDate.replace(/\//g, '-')}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success('Invoice generated successfully');
+  };
+
   const deleteCustomer = async (customerId: string, customerName: string) => {
     if (!isAdmin()) {
       toast.error('Only administrators can delete customer records');
@@ -3471,6 +3577,17 @@ Please log in and change your password after first login.`;
                     </TableCell>
                     <TableCell>
                      <div className="flex space-x-2">
+                        {/* Create Invoice */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => generateInvoice(customer)}
+                          title="Create Invoice"
+                          className="hover:bg-blue-50 hover:text-blue-600"
+                        >
+                          <FileText className="h-4 w-4" />
+                        </Button>
+
                         {/* DVLA Vehicle Data Refresh */}
                         <Button
                           variant="ghost"
