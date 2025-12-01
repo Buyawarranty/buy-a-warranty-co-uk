@@ -211,6 +211,36 @@ export const AbandonedCartsTab: React.FC = () => {
     }
   };
 
+  const sendReminderEmail = async (cart: AbandonedCart) => {
+    try {
+      const vehicleReg = getVehicleReg(cart);
+      const vehicleMake = getVehicleMake(cart);
+      const vehicleModel = getVehicleModel(cart);
+
+      const { error } = await supabase.functions.invoke('send-abandoned-cart-email', {
+        body: {
+          email: cart.email,
+          firstName: cart.first_name || 'Customer',
+          vehicleReg,
+          vehicleMake,
+          vehicleModel,
+          triggerType: 'pricing_page_view',
+          cartId: cart.id
+        }
+      });
+
+      if (error) throw error;
+
+      // Update contact status
+      await updateContactStatus(cart.id, 'contacted');
+
+      toast.success('Reminder email sent successfully');
+    } catch (error) {
+      console.error('Error sending reminder email:', error);
+      toast.error('Failed to send reminder email');
+    }
+  };
+
   const filteredCarts = carts.filter(cart => {
     const searchLower = searchTerm.toLowerCase();
     const fullName = getFullName(cart);
@@ -522,6 +552,14 @@ export const AbandonedCartsTab: React.FC = () => {
 
                 {/* Actions */}
                 <div className="flex flex-col gap-2 ml-4">
+                  <Button
+                    size="sm"
+                    className="bg-orange-600 hover:bg-orange-700 text-white"
+                    onClick={() => sendReminderEmail(cart)}
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Send Reminder
+                  </Button>
                   <Button
                     size="sm"
                     variant="outline"
